@@ -39,7 +39,7 @@ public class Config implements Service
 	private String localFileName = "local.ini";
 	
 	/** Nom du fichier de configuration a charger. */
-	public static String configFileName = "config_bleu.txt";
+	public static String configFileName = "config.txt";
 	
 	/** chemin relatif au chemin d'exécution d'ou charger le fichier de config */
 	private String path;

@@ -60,17 +60,7 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException {
 		try {
 
-			if(args[0].equals("jaune"))
-			{
-				Config.configFileName = "config_jaune.txt";
-			}else if (args[0].equals("bleu"))
-			{
-				Config.configFileName = "config_bleu.txt";
-			}else{
-				System.err.println("BAD COLOR");
-				return;
-			}
-
+			Config.configFileName = "config.txt";
 			container = new Container();
 			config = container.getService(Config.class);
 			//AffichageDebug aff = container.getService(AffichageDebug.class);
