@@ -36,8 +36,6 @@ import smartMath.Vec2;
 
 import java.util.ArrayList;
 
-//import enums.Direction;
-
 /**
  * Tests unitaires pour Deplacements.
  *

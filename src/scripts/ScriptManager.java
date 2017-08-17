@@ -57,20 +57,6 @@ public class ScriptManager implements Service
 		this.config = config;
 		
 		// exemple: instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(factory, config, log);
-		instanciedScripts[ScriptNames.CATCH_BALLS.ordinal()] = new CatchBalls(factory, config, log);
-		instanciedScripts[ScriptNames.DROP_BALLS.ordinal()] = new DropBalls(factory, config, log);
-		instanciedScripts[ScriptNames.CATCH_MODULE.ordinal()] = new CatchModule(factory, config, log);
-		instanciedScripts[ScriptNames.DROP_MODULE.ordinal()] = new DropModule(factory, config, log);
-		instanciedScripts[ScriptNames.INITIALISE_ROBOT.ordinal()] = new InitialisationRobot(factory, config, log);
-		instanciedScripts[ScriptNames.FULLSCRIPTED.ordinal()] = new FullScripted(factory, config, log);
-		instanciedScripts[ScriptNames.SCRIPTED_GO_TO.ordinal()] = new ScriptedGoTo(factory, config, log);
-		instanciedScripts[ScriptNames.SCRIPTED_GO_TO_CRATEREFOND.ordinal()] = new ScriptedGoTo_CratereFond(factory, config, log);
-		instanciedScripts[ScriptNames.SCRIPTED_GO_TO_CRATERE_PRES_BASE.ordinal()] = new ScriptedGoTo_CraterePresBase(factory, config, log);
-		instanciedScripts[ScriptNames.SCRIPTED_GO_TO_CRATERE_LIVRAISON_BOULES1.ordinal()] = new ScriptedGoTo_LivraisonBoules1(factory, config, log);
-		instanciedScripts[ScriptNames.SCRIPTED_GO_TO_CRATERE_LIVRAISON_BOULES2.ordinal()] = new ScriptedGoTo_LivraisonBoules2(factory, config, log);
-		instanciedScripts[ScriptNames.SCRIPTED_GO_TO_LIVRAISON_MODULEFOND.ordinal()] = new ScriptedGoTo_LivraisonModuleFond(factory, config, log);
-		instanciedScripts[ScriptNames.SCRIPTED_GO_TO_MODULEFOND.ordinal()] = new ScriptedGoTo_ModuleFond(factory, config, log);
-		instanciedScripts[ScriptNames.SCRIPTED_GO_TO_MODULE_PRES_BASE.ordinal()] = new ScriptedGoTo_ModulePresBase(factory, config, log);
 	}
 	
 	/**
