@@ -21,7 +21,6 @@ package table;
 
 
 import container.Service;
-import enums.ColorModule;
 import exceptions.ConfigPropertyNotFoundException;
 import smartMath.Vec2;
 import table.obstacles.ObstacleManager;
@@ -62,15 +61,6 @@ public class Table implements Service
 	private boolean symetry = false;
 
 	//TODO : définir les éléments de jeu de la table
-	public Balls ballsCratereDepart;
-	public Balls ballsCratereBaseLunaire;
-	public Fusee fuseeDepart;
-	public Fusee fuseeBase;
-	public Cylindre cylindreDevantDepart;
-	public Cylindre cylindreCratereDepart;
-	public Cylindre cylindreCratereBase;
-	public Cylindre cylindreDevantBase;
-	public Cylindre cylindrePleinMilieu;
 
 	// Au besoin, créer les classes nécessaires dans le package table
 
@@ -93,15 +83,6 @@ public class Table implements Service
 
 	public void initialise() // initialise la table du debut du jeu
 	{
-		ballsCratereDepart =new Balls(new Vec2(850, 540));
-		ballsCratereBaseLunaire =new Balls(new Vec2(500,1850 ));
-		fuseeDepart=new Fusee(new Vec2(350, 40), ColorModule.BLUE);
-		fuseeBase=new Fusee(new Vec2(1460, 1350),ColorModule.MULTI);
-		cylindreDevantDepart =new Cylindre(new Vec2(500,600),ColorModule.MULTI);
-		cylindreCratereDepart =new Cylindre(new Vec2(1300,600),ColorModule.BLUE);
-		cylindreCratereBase =new Cylindre(new Vec2(700,1850),ColorModule.BLUE);
-		cylindreDevantBase =new Cylindre(new Vec2(600,1400),ColorModule.MULTI);
-		cylindrePleinMilieu =new Cylindre(new Vec2(1000,1100),ColorModule.MULTI);
 
 		if(symetry)
 		{
