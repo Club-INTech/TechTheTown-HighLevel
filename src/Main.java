@@ -72,7 +72,7 @@ public class Main {
 
 			Thread.currentThread().setPriority(6);
 
-			// TODO : faire une initialisation du robot et de ses actionneurs
+			// TODO : initialisation des variables globales du robot & objets...
 			realState.robot.setPosition(Table.entryPosition);
 			realState.robot.setOrientation(-Math.PI/2);
 			realState.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
@@ -87,57 +87,14 @@ public class Main {
 		}
 		// container.startAllThreads();
 		try {
-			// System.out.println("Le robot commence le match");
-
-			System.out.println("90 secondes pour faire des points Billy");
-			scriptmanager.getScript(ScriptNames.INITIALISE_ROBOT).goToThenExec(0, realState, emptyHook);
-			realState.robot.setDirectionStrategy(DirectionStrategy.FASTEST);
-
-			waitMatchBegin();
+			// TODO : initialisation du robot avant retrait du jumper (actionneurs)
 			System.out.println("Le robot commence le match");
-			scriptmanager.getScript(ScriptNames.SCRIPTED_GO_TO).goToThenExec(0, realState, emptyHook);
+			waitMatchBegin();
+			// TODO : lancer l'IA
 
-		} catch (EnnemyCrashedException e) {
-
-			// On lance l'IA et la pathFinding
-			System.out.println("Et l'IA répondra a cet appel");
-
-			try {
-				System.out.println("Joke, on a plus de capteurs... Aller, salut !");
-
-				Pathfinding pf = container.getService(Pathfinding.class);
-
-				while (!ThreadTimer.matchEnded) {
-					Thread.sleep(1337);
-				}
-			} catch (ContainerException container) {
-				System.out.println("bug container");
-			}
-		} catch (UnableToMoveException unabletomove) {
-			try {
-				Pathfinding pf = container.getService(Pathfinding.class);
-
-				while (!ThreadTimer.matchEnded) {
-					try {
-						IA.decision(realState, scriptmanager, pf);
-					} catch (UnableToMoveException errorIa) {
-						System.out.println("Unable to move dans l'ia");
-						//dans le cas ou on bloque dans l'ia on refait le graphe.
-
-					} catch (Exception autre) {
-						System.out.println("wtf exception caught");
-						//dans le cas ou on bloque dans l'ia on refait le graphe.
-
-					}
-				}
-			} catch (ContainerException container) {
-				System.out.println("bug container");
-			}
-		} catch (Exception k) {
-			System.out.println("bon je bug hard");
-			k.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
 	}
 
 

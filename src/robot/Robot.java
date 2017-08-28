@@ -69,8 +69,6 @@ public class Robot implements Service {
 	 */
 	protected Vec2 position;
 
-	protected Pathfinding pathfinding;
-
 	/**
 	 * l'orientation du robot
 	 */
@@ -91,6 +89,11 @@ public class Robot implements Service {
 	 * Longueur du robot
 	 */
 	public int robotLength;
+
+	/**
+	 * Pathfinding
+	 */
+	private Pathfinding pathfinding;
 
 	/**
 	 * chemin en court par le robot, utilise par l'interface graphique
@@ -229,7 +232,7 @@ public class Robot implements Service {
 	 */
 	public void moveToCircle(Circle aim, ArrayList<Hook> hooksToConsider, Table table) throws UnableToMoveException, PointInObstacleException {
 		Vec2 aimPosition= Geometry.closestPointOnCircle(this.position,aim);
-		this.followPath(this.pathfinding.Astarfoulah(this.getPosition(),aimPosition,this.orientation, this.speed.translationSpeed,this.speed.rotationSpeed ),hooksToConsider, mLocomotion.getDirectionStrategy());
+		// TODO : Appel du followpath & Pathfinding !
 	}
 
 	/**

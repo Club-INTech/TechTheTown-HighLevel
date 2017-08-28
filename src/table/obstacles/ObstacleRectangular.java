@@ -19,8 +19,6 @@
 
 package table.obstacles;
 
-import pathfinder.Graphe;
-import pathfinder.Noeud;
 import smartMath.Segment;
 import smartMath.Vec2;
 
@@ -38,12 +36,6 @@ public class ObstacleRectangular extends Obstacle
 
 	/** taille du rectangle en mm selon l'axe Y */
 	protected int sizeY;
-
-	private ArrayList<Noeud> lNoeud=new ArrayList<Noeud>();
-
-	public ArrayList<Noeud> getlNoeud() {
-		return lNoeud;
-	}
 
 	/**
 	 *	crée un nouvel obstacle rectangulaire sur la table a la position désirée.
@@ -197,80 +189,6 @@ public class ObstacleRectangular extends Obstacle
 	{
 		this.sizeX=sizeX;
 		this.sizeY=sizeY;
-	}
-
-	/**
-	 * Ajoute les noeuds liés à l'obstacle sur le graphe et les relie entre eux
-	 * @param graphe
-	 * @param ecart écart minimal par rapport à l'obstacle
-	 *
-	 */
-	public ArrayList<Noeud> fabriqueNoeudRelie(Graphe graphe,int ecart) //fabrique n noeuds et les ajoute au grahe
-	{
-		ArrayList<Noeud> lN=fabriqueNoeud(graphe,ecart);
-		lN.get(0).attacheLien(lN.get(1));
-		lN.get(1).attacheLien(lN.get(0));
-		lN.get(0).attacheLien(lN.get(2));
-		lN.get(2).attacheLien(lN.get(0));
-
-				// et on relie les noeuds
-		lN.get(2).attacheLien(lN.get(3));
-		lN.get(3).attacheLien(lN.get(2));
-		lN.get(1).attacheLien(lN.get(3));
-		lN.get(3).attacheLien(lN.get(1));
-
-		return lN;
-	}
-
-	/**
-	 *  Fabrique dans graphe les 4 noeuds aux angles d'un obstacle rectangulaire et retourne la liste de ces noeuds
-	 * @param graphe là où on ajoute les noeuds
-	 * @param ecart ecart par rapport à l'angle
-	 * @return tableau des 4 noeuds
-	 */
-	public ArrayList<Noeud> fabriqueNoeud(Graphe graphe,int ecart)
-	{
-
-		Vec2 hautgauche= new Vec2(this.position.getX()-this.sizeX/2 -ecart,this.position.getY()+sizeY/2+ecart);
-		Vec2 basdroite= new Vec2(this.position.getX()+this.sizeX/2 +ecart,this.position.getY()-sizeY/2 -ecart);
-		Vec2 hautdroite=new Vec2(this.position.getX()+this.sizeX/2 +ecart,this.position.getY()+sizeY/2+ecart);
-		Vec2 basgauche=new Vec2(this.position.getX()-this.sizeX/2-ecart,this.position.getY()-sizeY/2-ecart);
-		Vec2 gauchemilieu= new Vec2(this.position.getX()-this.sizeX/2 -ecart,this.position.getY());
-		Vec2 basmilieu= new Vec2(this.position.getX(),this.position.getY()-sizeY/2 -ecart);
-		Vec2 hautmilieu=new Vec2(this.position.getX() ,this.position.getY()+sizeY/2+ecart);
-		Vec2 droitemilieu=new Vec2(this.position.getX()+this.sizeX/2+ecart,this.position.getY());
-
-		Noeud cbd=new Noeud(graphe,basdroite);
-		Noeud cbg=new Noeud(graphe,basgauche);
-		Noeud chd=new Noeud(graphe,hautdroite);
-		Noeud chg=new Noeud(graphe,hautgauche);
-
-		Noeud gm=new Noeud(graphe,gauchemilieu);
-		Noeud bm=new Noeud(graphe,basmilieu);
-		Noeud hm=new Noeud(graphe,hautmilieu);
-		Noeud dm=new Noeud(graphe,droitemilieu);
-
-		graphe.getlNoeuds().add(cbd);
-		graphe.getlNoeuds().add(cbg);
-		graphe.getlNoeuds().add(chd);
-		graphe.getlNoeuds().add(chg);
-
-		// BIEN METTRE LES NOEUDS DU MILIEU APRES CEUX DU HAUT
-		graphe.getlNoeuds().add(gm);
-		graphe.getlNoeuds().add(bm);
-		graphe.getlNoeuds().add(hm);
-		graphe.getlNoeuds().add(dm);
-
-		this.lNoeud.add(cbd);
-		this.lNoeud.add(cbg);
-		this.lNoeud.add(chd);
-		this.lNoeud.add(chg);
-		this.lNoeud.add(gm);
-		this.lNoeud.add(bm);
-		this.lNoeud.add(hm);
-		this.lNoeud.add(dm);
-
-		return this.lNoeud;
 	}
 
 	/**
