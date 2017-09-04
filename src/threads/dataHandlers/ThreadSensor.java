@@ -138,7 +138,6 @@ public class ThreadSensor extends AbstractThread
     private final double angleLB = -sensorPositionAngleB + Math.PI;
     private final double angleRB = sensorPositionAngleB - Math.PI;
 
-
     /**
      * Positions relatives au centre du robot
      */
@@ -176,7 +175,6 @@ public class ThreadSensor extends AbstractThread
 	 * 	Longueur du robot recuperée sur la config
 	 */
 	int robotLenght;
-
 
     /**
 	 * Crée un nouveau thread de capteurs
