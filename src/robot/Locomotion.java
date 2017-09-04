@@ -26,7 +26,6 @@ import enums.TurningStrategy;
 import enums.UnableToMoveReason;
 import exceptions.ConfigPropertyNotFoundException;
 import exceptions.Locomotion.BlockedException;
-import exceptions.Locomotion.EnnemyCrashedException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.serial.SerialConnexionException;
@@ -451,13 +450,6 @@ public class Locomotion implements Service
             totalTime += timeToWaitIfEnnemy;
             log.debug ("Ennemi détecté dans le sens de marche, on attend");
             isEnemy = table.getObstacleManager().isEnnemyForwardOrBackWard(detectionDistance,highLevelPosition, aim, highLevelOrientation);
-        }
-
-        if(totalTime >= timeOutEnnemyMove){
-
-            table.getObstacleManager().crashEnnemyAdd(highLevelPosition, aim);
-            log.debug("TimeOut dépassé, lancement d'une UnableToMoveException");
-            throw new EnnemyCrashedException(aim, UnableToMoveReason.OBSTACLE_DETECTED);
         }
         
         // Pour les capteurs

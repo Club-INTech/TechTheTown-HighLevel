@@ -577,7 +577,6 @@ public class ThreadSerial extends AbstractThread implements SerialPortEventListe
     {
     }
 
-
     /**
      * Fonction exécutée par le thread, capture tout ce qui arrive sur la série et trie selon différents canaux
      */

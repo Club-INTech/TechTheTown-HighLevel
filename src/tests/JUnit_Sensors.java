@@ -19,16 +19,12 @@
 
 package tests;
 
-import com.sun.tracing.dtrace.StabilityLevel;
-import enums.ActuatorOrder;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
-import exceptions.Locomotion.EnnemyCrashedException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
-import exceptions.ThreadException;
 import exceptions.serial.SerialConnexionException;
 import hook.Hook;
 import org.junit.Before;
@@ -39,11 +35,8 @@ import scripts.ScriptManager;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
-import sun.awt.windows.ThemeReader;
 import table.Table;
-import table.obstacles.Obstacle;
 import threads.ThreadInterface;
-import threads.dataHandlers.ThreadEvents;
 import threads.dataHandlers.ThreadSensor;
 import threads.dataHandlers.ThreadSerial;
 import utils.Config;
@@ -113,19 +106,6 @@ public class JUnit_Sensors extends JUnit_Test
 		Thread.sleep(2000);
 		log.debug ("Orientation :" + state.robot.getOrientation());
 		log.debug("Position :" + state.robot.getPosition());
-
-		try {
-			state.robot.moveLengthwise(-800);
-		}catch (EnnemyCrashedException e){
-			state.robot.turn(Math.PI/16, new ArrayList<Hook>(), false, true);
-			Sleep.sleep(3000);
-			state.robot.turn(Math.PI/16, new ArrayList<Hook>(), false, true);
-			Sleep.sleep(3000);
-			state.robot.turn(Math.PI/16, new ArrayList<Hook>(), false, true);
-			Sleep.sleep(3000);
-			state.robot.turn(Math.PI/16, new ArrayList<Hook>(), false, true);
-			Sleep.sleep(3000);
-		}
 
 		Thread.sleep(1000);
 		state.robot.switchSensor();
