@@ -839,7 +839,6 @@ public class ThreadSerial extends AbstractThread implements SerialPortEventListe
             try
             {
                 if((res = standardBuffer.peek()) != null) break;
-
                 Thread.sleep(2);
             }
             catch (InterruptedException e)
