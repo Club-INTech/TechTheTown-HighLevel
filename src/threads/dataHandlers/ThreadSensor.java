@@ -633,6 +633,7 @@ public class ThreadSensor extends AbstractThread
         {}
 	}
 
+	@Override
 	public void updateConfig()
 	{
 		try

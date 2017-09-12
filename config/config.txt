@@ -8,6 +8,7 @@ longueur_robot                     = 300
 rayon_robot                        = 240
 rayon_robot_adverse                = 200
 sleep_boucle_acquittement          = 50
+Eth_loopDelay                      = 100
 
 # ETAT INITIAL DES ROBOTS
 couleur                            = bleu
@@ -17,7 +18,7 @@ profondeur                         = 1
 
 # PARAMETRES POUR LES CAPTEUR
 horizon_capteurs                   = 500
-angle_detection_capteur 	   = 0.79
+angle_detection_capteur 	       = 0.79
 angle_position_capteur_av          = 0.01
 angle_position_capteur_ar          = 0.17
 duree_peremption_obstacles         = 5000
