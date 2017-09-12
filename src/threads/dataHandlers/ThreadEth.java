@@ -156,7 +156,6 @@ public class ThreadEth extends AbstractThread implements Service {
                 e.printStackTrace();
             }
         }
-
         if(response == null) {
             return "";
         } else {
@@ -165,20 +164,24 @@ public class ThreadEth extends AbstractThread implements Service {
         return response;
     }
 
+    /*******************************************
+     * FONCTION COMMUNICATION & RUN (LISTENER) *
+     *******************************************/
+
     /**
      * Envoie de message au LL & réception
      * @return LL response
      */
-    public synchronized void communicate(String message, int nb_line_response){
+    public synchronized String[] communicate(String message, int nb_line_response){
         String[] mess = {message};
-        communicate(mess, nb_line_response);
+        return communicate(mess, nb_line_response);
     }
 
     /**
      * Fonction pour envoyer un message au LL
      * @return LL response
      */
-    public synchronized void communicate(String[] message, int nb_line_response)
+    public synchronized String[] communicate(String[] message, int nb_line_response)
     {
         standardBuffer.clear();
         String inputLines[] = new String[nb_line_response];
@@ -238,6 +241,7 @@ public class ThreadEth extends AbstractThread implements Service {
         }catch (Exception e){
             e.printStackTrace();
         }
+        return inputLines;
     }
 
     @Override
