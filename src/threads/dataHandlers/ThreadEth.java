@@ -96,6 +96,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 }
                 outStandart = new BufferedWriter(new FileWriter(file));
                 outDebug = new BufferedWriter(new FileWriter(fileDebug));
+                createInterface();
 
             } catch (IOException e) {
                 log.critical("Manque de droits pour l'output des ordres");
@@ -112,7 +113,7 @@ public class ThreadEth extends AbstractThread implements Service {
      * Initialise la connexion
      * @throws IOException
      */
-    public void createInterface() throws IOException{
+    private void createInterface() throws IOException{
         server = new InetSocketAddress("192.168.0.1", 23500);
         socket = new Socket(server.getAddress(), server.getPort());
         input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -157,7 +158,6 @@ public class ThreadEth extends AbstractThread implements Service {
         }
 
         if(response == null) {
-            log.debug("Null dans le buffer");
             return "";
         } else {
             standardBuffer.poll();
@@ -166,27 +166,19 @@ public class ThreadEth extends AbstractThread implements Service {
     }
 
     /**
-     * Ping le LL !
-     * @return 0 si le LL n'est pas en PLS
+     * Envoie de message au LL & réception
+     * @return LL response
      */
-    public synchronized String ping()
-    {
-        String response;
-        try {
-            output.flush();
-            output.write("?\r", 0, 2);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return null;
+    public synchronized void communicate(String message, int nb_line_response){
+        String[] mess = {message};
+        communicate(mess, nb_line_response);
     }
 
     /**
      * Fonction pour envoyer un message au LL
      * @return LL response
      */
-    public synchronized String[] communicate(String[] message, int nb_line_response)
+    public synchronized void communicate(String[] message, int nb_line_response)
     {
         standardBuffer.clear();
         String inputLines[] = new String[nb_line_response];
@@ -196,41 +188,15 @@ public class ThreadEth extends AbstractThread implements Service {
         {
             for (String m : message)
             {
-                m += "\r";
-                output.flush();
+                m += "\r\n";
                 output.write(m, 0, m.length());
+                output.flush();
 
                 if(debug)
                 {
                     outStandart.write(m);
                     outStandart.newLine();
                     outStandart.flush();
-                }
-
-                int nb_tests = 0;
-                boolean acquitte = false;
-
-                while (!acquitte)
-                {
-                    String responseFromCard = waitAndGetResponse();
-
-                    for(int i=0 ; i < responseFromCard.length() ; i++)
-                        acquitte = acquitte || (responseFromCard.charAt(i) == '_');
-
-                    if (!acquitte)
-                    {
-                        log.critical("Non acquittement "+m.replaceAll("\r", "").replaceAll("\n", "")+" : "+responseFromCard);
-                        output.write(m, 0, m.length());
-                    } else if (debug) {
-                        outStandart.write("\t"+responseFromCard);
-                        outStandart.newLine();
-                        outStandart.flush();
-                    }
-                    if (++nb_tests > 10)
-                    {
-                        log.critical("La com " + this.name + " ne répond pas après " + nb_tests + " tentatives (envoyé : '" + m + "', reponse : '" + responseFromCard + "')");
-                        break;
-                    }
                 }
             }
         }
@@ -244,15 +210,19 @@ public class ThreadEth extends AbstractThread implements Service {
             for (int i = 0 ; i < nb_line_response; i++)
             {
                 inputLines[i] = waitAndGetResponse();
+
+                if(debug) {
+                    outStandart.write("\t" + inputLines[i]);
+                    outStandart.newLine();
+                    outStandart.flush();
+                }
+
                 if(inputLines[i]==null || inputLines[i].replaceAll(" ", "").equals("")|| inputLines[i].replaceAll(" ", "").equals("-"))
                 {
                     log.critical("Reception de "+inputLines[i]+" , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " envoi du message a nouveau");
                     if(debug)
                     {
-                        outStandart.newLine();
-                        outStandart.newLine();
                         outStandart.write("Reception de "+inputLines[i]+" , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " envoi du message a nouveau");
-                        outStandart.newLine();
                         outStandart.newLine();
                         outStandart.flush();
                     }
@@ -268,7 +238,6 @@ public class ThreadEth extends AbstractThread implements Service {
         }catch (Exception e){
             e.printStackTrace();
         }
-        return null;
     }
 
     @Override
@@ -314,4 +283,7 @@ public class ThreadEth extends AbstractThread implements Service {
             }
         }
     }
+    ConcurrentLinkedQueue<String> getEventBuffer() {return eventBuffer;}
+    ConcurrentLinkedQueue<String> getUltrasoundBuffer() {return ultrasoundBuffer;}
+    ConcurrentLinkedQueue<String> getStandardBuffer() {return standardBuffer;}
 }

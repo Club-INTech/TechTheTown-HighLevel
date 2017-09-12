@@ -858,6 +858,5 @@ public class ThreadSerial extends AbstractThread implements SerialPortEventListe
     }
 
     ConcurrentLinkedQueue<String> getEventBuffer() {return eventBuffer;}
-
     ConcurrentLinkedQueue<String> getUltrasoundBuffer() {return ultrasoundBuffer;}
 }
