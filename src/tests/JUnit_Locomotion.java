@@ -72,8 +72,6 @@ public class JUnit_Locomotion extends JUnit_Test
 		 */
 	}
 
-	
-	
 	/* (non-Javadoc)
 	 * @see tests.JUnit_Test#setUp()
 	 */
@@ -89,11 +87,11 @@ public class JUnit_Locomotion extends JUnit_Test
 		mLocomotion.setPosition(new Vec2 (1381,1000));
 		mLocomotion.setOrientation(Math.PI);
 	}
+
 	/**
 	 * Ca teste la capacité à avancer et à reculer dans le cas où il n'y a pas d'obstacles, 
 	 * et pas de hooks
 	 */
-
 	@Test
 	public void testMoveLengthwise() 
 	{
@@ -120,8 +118,6 @@ public class JUnit_Locomotion extends JUnit_Test
 				}
 				if(cardWrapper.isRobotMovingAndAbnormal()[1])
 					throw new Exception();
-
-
 			}
 		}
 		catch (Exception e)
@@ -486,14 +482,4 @@ public class JUnit_Locomotion extends JUnit_Test
 	 * Test de fermeture de la série
 	 * On teste un déplacement et on remarque que le robot n'a pas bougé
 	 */
-	@Test
-	public void testClose()
-	{
-		
-		log.debug("La série est fermée");
-		Vec2 beginning = mLocomotion.getPosition();
-		mLocomotion.close();
-		Vec2 end = mLocomotion.getPosition();
-		Assert.assertEquals(beginning, end);
-	}
 }

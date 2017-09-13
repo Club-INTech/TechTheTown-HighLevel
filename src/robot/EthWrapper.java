@@ -367,7 +367,7 @@ public class EthWrapper implements Service {
 
     /**
      * Active l'interface de debug pour l'asserv' (si ca existe encore dans le LL)
-     * @return
+     * @return des infos (?)
      */
     public synchronized double[] pfdebug()
     {
@@ -384,6 +384,13 @@ public class EthWrapper implements Service {
             }
         }
         return parsedInfos;
+    }
+
+    /**
+     * Coupe la connexion ethernet
+     */
+    public void close(){
+        eth.close();
     }
 
     @Override

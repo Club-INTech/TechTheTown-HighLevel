@@ -596,6 +596,13 @@ public class Robot implements Service {
 	}
 
 	/**
+	 * Coupe la connexion au LL
+	 */
+	public void closeConnexion(){
+		ethWrapper.close();
+	}
+
+	/**
 	 * Active/désactive les capteurs
 	 */
 	public void switchSensor() {

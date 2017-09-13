@@ -23,7 +23,8 @@ import enums.ThreadName;
 import exceptions.ContainerException;
 import threads.AbstractThread;
 import threads.ThreadExit;
-import threads.dataHandlers.ThreadSerial;
+import threads.dataHandlers.ThreadEth;
+import threads.dataHandlers.ThreadEth;
 import utils.Config;
 import utils.Log;
 
@@ -97,8 +98,8 @@ public class Container implements Service
 		 * Mieux vaut écrire ThreadSerial.class.getSimpleName()) que "ThreadSerial",
 		 * car en cas de refactor, le premier est automatiquement ajusté
 		 */
-		if(instanciedServices.containsKey(ThreadSerial.class.getSimpleName()))
-			((ThreadSerial)instanciedServices.get(ThreadSerial.class.getSimpleName())).close();
+		if(instanciedServices.containsKey(ThreadEth.class.getSimpleName()))
+			((ThreadEth)instanciedServices.get(ThreadEth.class.getSimpleName())).close();
 
 		if(showGraph)
 		{
@@ -315,7 +316,7 @@ public class Container implements Service
 			/*
 			  S'il s'agit d'un thread (hors ThreadSerial), on l'ajoute à la liste des threads instanciés
 			 */
-			if(s instanceof AbstractThread && !(s instanceof ThreadSerial))
+			if(s instanceof AbstractThread && !(s instanceof ThreadEth))
 			{
 				instanciedThreads.put(classe.getSimpleName(), (AbstractThread)s);
 			}

@@ -99,24 +99,9 @@ public class MainDebug
 
 
             t.start(); // On lance le thread
-
             realState.robot.turn(-0.01);
-            //realState.robot.setForceMovement(true);
-            //realState.robot.useActuator(ActuatorOrder.MED_PELLETEUSE, false);
-            //mSerialWrapper.turn(0.01);
-            //mSerialWrapper.switchAuto();
-
-
             Thread.sleep(500);
-
             t.join(); //On attend la fin du thread
-
-
-            //			waitMatchBegin();
-
-            //System.out.println("Le robot commence le match");
-
-            // TODO : lancer l'IA
 
             Log.stop();
 
