@@ -19,9 +19,8 @@
 
 package threads;
 
-import exceptions.serial.SerialConnexionException;
+import robot.EthWrapper;
 import robot.Robot;
-import robot.SerialWrapper;
 import table.Table;
 import threads.dataHandlers.ThreadSerial;
 import utils.Config;
@@ -44,54 +43,53 @@ public class ThreadTimer extends AbstractThread
 {
 	/** La table sur laquelle le thread doit croire évoluer */
 	private Table table;
-	
+
 	private Robot robot;
 
 	/** La carte avec laquelle on doit communiquer */
-	private SerialWrapper serialWrapper;
-	
+	private EthWrapper ethWrapper;
+
 	/** vrai si le match a effectivment démarré, faux sinon */
 	public static boolean matchStarted = false;
 
 	/** vrai si le match a effectivment pris fin, faux sinon */
 	public static boolean matchEnded = false;
-	
+
 	/** Date de début du match. */
 	public static long matchStartTimestamp;
-	
+
 	/** Durée en miliseconde d'un match recupéré de la config */
 	public static long matchDuration = 90000;
-	
+
 	/** Temps en ms qui s'écoule entre deux mise a jour de la liste des obstacle périmables. Lors de chaque mise a jour, les obstacles périmés sont détruits. */
 	public static int obstacleRefreshInterval = 100;
-	
+
 	/** interface graphique d'affichage de la table, pour le debug */
 	//public Window window;
-	
+
 	/**
 	 * indique si l'interface graphique est activée ou non 
 	 */
 	private boolean isGraphicalInterfaceEnabled = false;
 
-    private BufferedWriter out;
-	
-	
+	private BufferedWriter out;
+
+
 	/**
 	 * Crée le thread timer.-
 	 *
 	 * @param table La table sur laquelle le thread doit croire évoluer
-	 * @param locomotionCardWrapper La carte d'asservissement avec laquelle on doit communiquer
+	 * @param ethWrapper La carte d'asservissement avec laquelle on doit communiquer
 	 */
 
-	
-	ThreadTimer(Config config, Log log, Table table, Robot robot, SerialWrapper locomotionCardWrapper)
+	public ThreadTimer(Config config, Log log, Table table, Robot robot, EthWrapper ethWrapper)
 	{
 		super(config, log);
 
 		this.table = table;
-		this.serialWrapper = locomotionCardWrapper;
+		this.ethWrapper = ethWrapper;
 		this.robot=robot;
-		
+
 		updateConfig();
 		Thread.currentThread().setPriority(10);
 
@@ -117,25 +115,25 @@ public class ThreadTimer extends AbstractThread
 
 		// on eteind les capteursgetObstacleManager
 		//config.set("capteurs_on", "true");
-		serialWrapper.updateConfig();
+		ethWrapper.updateConfig();
 
-        try
-        {
-            File file = new File("pos.txt");
-            if (!file.exists()) {
-                //file.delete();
-                file.createNewFile();
-            }
-            out = new BufferedWriter(new FileWriter(file));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		try
+		{
+			File file = new File("pos.txt");
+			if (!file.exists()) {
+				//file.delete();
+				file.createNewFile();
+			}
+			out = new BufferedWriter(new FileWriter(file));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        // Attente du démarrage du match
-		
+		// Attente du démarrage du match
+
 		// attends que le jumper soit retiré du robot
 
-		while(serialWrapper.isJumperAbsent())
+		while(ethWrapper.isJumperAbsent())
 		{
 			try {
 				Thread.sleep(100);
@@ -144,7 +142,7 @@ public class ThreadTimer extends AbstractThread
 			}
 		}
 
-		while(!serialWrapper.isJumperAbsent())
+		while(!ethWrapper.isJumperAbsent())
 		{
 			try {
 				Thread.sleep(100);
@@ -155,7 +153,7 @@ public class ThreadTimer extends AbstractThread
 
 		// maintenant que le jumper est retiré, le match a commencé
 		matchStarted = true;
-		
+
 		//log.debug(!serialWrapper.isJumperAbsent() +" / "+ !matchStarted);
 
 		// Le match démarre ! On chage l'état du thread pour refléter ce changement
@@ -165,12 +163,12 @@ public class ThreadTimer extends AbstractThread
 		matchStarted = true;
 
 		// config.set("capteurs_on", "true");
-		serialWrapper.updateConfig();
+		ethWrapper.updateConfig();
 
 		log.debug("LE MATCH COMMENCE !");
-        long ddm = System.currentTimeMillis();
+		long ddm = System.currentTimeMillis();
 
-        // boucle principale, celle qui dure tout le match
+		// boucle principale, celle qui dure tout le match
 		while(System.currentTimeMillis() - matchStartTimestamp < matchDuration)
 		{
 
@@ -181,32 +179,21 @@ public class ThreadTimer extends AbstractThread
 				return;
 			}
 
-            if((System.currentTimeMillis()-ddm) >=12)
-            {
-               // log.debug("lol, i'm noob");
-                try {
-                    out.write(Integer.toString(robot.getPositionFast().getX()));
-                    out.write("\t");
-                    out.write(Integer.toString(robot.getPositionFast().getY()));
-                    out.newLine();
-                    out.flush();
-                    ddm = System.currentTimeMillis();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-			
-			//on rafraichit l'interface graphique de la table
-			/*if(isGraphicalInterfaceEnabled/* && window != null)
+			if((System.currentTimeMillis()-ddm) >=12)
 			{
-				window.getPanel().repaint();
-				
-				window.getPanel().drawArrayList(robot.cheminSuivi);
-			}*/
-			//else
-			//	System.out.println("damn");
-				
-			
+				// log.debug("lol, i'm noob");
+				try {
+					out.write(Integer.toString(robot.getPositionFast().getX()));
+					out.write("\t");
+					out.write(Integer.toString(robot.getPositionFast().getY()));
+					out.newLine();
+					out.flush();
+					ddm = System.currentTimeMillis();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
 			try
 			{
 				Thread.sleep(obstacleRefreshInterval);
@@ -218,74 +205,56 @@ public class ThreadTimer extends AbstractThread
 		}
 		log.debug("Fin des "+matchDuration+" ms de match, temps : "+(System.currentTimeMillis() - matchStartTimestamp));
 
-
 		// actions de fin de match
 		onMatchEnded();
-		
+
 		log.debug("Fin du thread timer");
-		
 	}
-	
+
 	/**
 	 * On match ended.
 	 */
 	private void onMatchEnded()
 	{
- 
+
 		log.debug("Fin du Match car fin des 90s !");
 
 		// Le match est fini, immobilisation du robot
 		matchEnded = true;
-
-		try
-		{
-            serialWrapper.immobilise();
-		} catch (SerialConnexionException e) {
-			log.debug( e.logStack());
-		}
+		ethWrapper.immobilise();
 
 		// fin du match : on eteint la STM
-		try 
-		{
-            serialWrapper.disableRotationnalFeedbackLoop();
-            serialWrapper.disableTranslationnalFeedbackLoop();
-            serialWrapper.disableSpeedFeedbackLoop();
+		ethWrapper.disableRotationnalFeedbackLoop();
+		ethWrapper.disableTranslationnalFeedbackLoop();
+		ethWrapper.disableSpeedFeedbackLoop();
 
-			//mLocomotionCardWrapper.shutdownSTM();
-			Log.stop();
-			ThreadSerial.shutdown = true;
-		}
-		catch (SerialConnexionException e)
-		{
-			log.critical( e.logStack());
-		}
-		
+		//mLocomotionCardWrapper.shutdownSTM();
+		Log.stop();
+		ThreadSerial.shutdown = true;
+
 		// et on coupe la connexion avec la carte d'asser comme ca on est sur qu'aucune partie du code ne peut faire quoi que ce soit pour faire bouger le robot
-        serialWrapper.closeLocomotion();
 	}
-	
-	
+
+
 	/**
 	 * Temps restant avant la fin du match.
-	 *
 	 * @return le temps restant du match en milisecondes
 	 */
 	public static long remainingTime()
 	{
 		return matchStartTimestamp + matchDuration - System.currentTimeMillis();
 	}
-	
+
 
 	/**
 	 * Temps écoulé depuis le début du match
-	 *
 	 * @return le temps écoulé du match en milisecondes
 	 */
 	public static long ellapsedTimeSinceMatchStarted()
 	{
 		return  System.currentTimeMillis() - matchStartTimestamp;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see threads.AbstractThread#updateConfig()
 	 */
@@ -301,5 +270,4 @@ public class ThreadTimer extends AbstractThread
 			log.warning(e);
 		}
 	}
-	
 }
