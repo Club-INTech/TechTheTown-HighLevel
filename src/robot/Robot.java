@@ -611,16 +611,12 @@ public class Robot implements Service {
 
 	public void enableRotationnalFeedbackLoop()
 	{
-		log.debug("appel de Robot.enableRotationnalFeedbackLoop()");
 		mLocomotion.enableRotationnalFeedbackLoop();
-
 	}
 
 	public void disableRotationnalFeedbackLoop()
 	{
-		log.debug("appel de Robot.disableRotationnalFeedbackLoop()");
 		mLocomotion.disableRotationnalFeedbackLoop();
-
 	}
 
 	public void enableFeedbackLoop() throws SerialConnexionException
