@@ -106,9 +106,9 @@ public class Robot implements Service {
 	protected boolean isForcing = false;
 
 	/**
-	 * Protocole de communication série
+	 * Protocole de communication Ethernet (et ouai !)
 	 */
-	private SerialWrapper serialWrapper;
+	private EthWrapper ethWrapper;
 
 	/**
 	 * Map pour la symétrie des actionneurs
@@ -130,26 +130,6 @@ public class Robot implements Service {
 	 */
 	private Locomotion mLocomotion;
 
-	private	boolean rempliDeBoules=false;
-
-	private int chargementModule=0;
-
-	public int getChargementModule() {
-		return chargementModule;
-	}
-
-	public void setRempliDeBoules(boolean rempliDeBoules) {
-		this.rempliDeBoules = rempliDeBoules;
-	}
-
-	public void setChargementModule(int chargementModule) {
-		this.chargementModule = chargementModule;
-	}
-
-	public boolean isRempliDeBoules() {
-		return rempliDeBoules;
-	}
-
 	public HashMap<ScriptNames,Boolean> dejaFait=new HashMap<ScriptNames,Boolean>();// Doublet nom de script / déjà fait
 
 
@@ -159,14 +139,14 @@ public class Robot implements Service {
 	 * @param deplacements  système de locomotion
 	 * @param config        fichier de config
 	 * @param log           fichier de log
-	 * @param serialWrapper protocole communication série
+	 * @param ethWrapper protocole communication série
 	 */
-	private Robot(Locomotion deplacements, Config config, Log log, SerialWrapper serialWrapper, Pathfinding pathfinding) {
+	private Robot(Locomotion deplacements, Config config, Log log, EthWrapper ethWrapper, Pathfinding pathfinding) {
 
 		this.config = config;
 		this.log = log;
 		this.pathfinding = pathfinding;
-		this.serialWrapper = serialWrapper;
+		this.ethWrapper = ethWrapper;
 		this.mLocomotion = deplacements;
 		updateConfig();
 		speed = Speed.SLOW_ALL;
@@ -184,12 +164,11 @@ public class Robot implements Service {
 	 *
 	 * @param order             l'ordre
 	 * @param waitForCompletion si on attends un temps prédéfini pendant l'action
-	 * @throws SerialConnexionException
 	 */
-	public void useActuator(ActuatorOrder order, boolean waitForCompletion) throws SerialConnexionException {
+	public void useActuator(ActuatorOrder order, boolean waitForCompletion) {
 		if (symmetry)
 			order = mActuatorCorrespondenceMap.getSymmetrizedActuatorOrder(order);
-		serialWrapper.useActuator(order);
+		ethWrapper.useActuator(order);
 
 		if (waitForCompletion) {
 			sleep(order.getDuration());
@@ -201,9 +180,9 @@ public class Robot implements Service {
 	 * LOCOMOTION *
 	 *************/
 
-			/************************
-		 	* APPELS AU PATHFINDING *
-		 	************************/
+	/************************
+	 * APPELS AU PATHFINDING *
+	 ************************/
 
 
 	/**
@@ -299,9 +278,9 @@ public class Robot implements Service {
 
 
 
-			/***********************
-	 		* MOUVEMENTS UNITAIRES *
-	 		***********************/
+	/***********************
+	 * MOUVEMENTS UNITAIRES *
+	 ***********************/
 
 
 	/**
@@ -506,23 +485,23 @@ public class Robot implements Service {
 		speed = oldSpeed;
 	}
 
-    /**
-     * Fait avancer le robot de la distance spécifiée. Le robot garde son orientation actuelle et va simplement avancer.
-     * Attention, cette méthode suppose qu'il n'y a pas de hooks a considérer, et que l'on est sensé percuter un mur. La vitesse du robor est alors réduite a Speed.INTO_WALL.
-     * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
-     * @param distance en mm que le robot doit franchir. Si cette distance est négative, le robot va reculer. Attention, en cas de distance négative, cette méthode ne vérifie pas s'il y a un système d'évitement a l'arrère du robot
-     * @param hooksToConsider les hooks déclenchables durant ce mouvement
-     * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
-     */
-    public void moveLengthwiseTowardWall(int distance, ArrayList<Hook> hooksToConsider) throws UnableToMoveException
-    {
+	/**
+	 * Fait avancer le robot de la distance spécifiée. Le robot garde son orientation actuelle et va simplement avancer.
+	 * Attention, cette méthode suppose qu'il n'y a pas de hooks a considérer, et que l'on est sensé percuter un mur. La vitesse du robor est alors réduite a Speed.INTO_WALL.
+	 * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
+	 * @param distance en mm que le robot doit franchir. Si cette distance est négative, le robot va reculer. Attention, en cas de distance négative, cette méthode ne vérifie pas s'il y a un système d'évitement a l'arrère du robot
+	 * @param hooksToConsider les hooks déclenchables durant ce mouvement
+	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
+	 */
+	public void moveLengthwiseTowardWall(int distance, ArrayList<Hook> hooksToConsider) throws UnableToMoveException
+	{
 
-        log.debug("appel de Robot.moveLengthwiseTowardWall(" + distance + "," + hooksToConsider + ")");
-        Speed oldSpeed = speed;
-        setLocomotionSpeed(Speed.SLOW_ALL);
-        moveLengthwise(distance, hooksToConsider, true, false);
-        setLocomotionSpeed(oldSpeed);
-    }
+		log.debug("appel de Robot.moveLengthwiseTowardWall(" + distance + "," + hooksToConsider + ")");
+		Speed oldSpeed = speed;
+		setLocomotionSpeed(Speed.SLOW_ALL);
+		moveLengthwise(distance, hooksToConsider, true, false);
+		setLocomotionSpeed(oldSpeed);
+	}
 
 
 	/*****************
@@ -551,22 +530,8 @@ public class Robot implements Service {
 	 */
 	public void setForceMovement(boolean state)
 	{
-		try {
-			mLocomotion.setForceMovement(state);
-		} catch (SerialConnexionException e) {
-			e.printStackTrace();
-			log.critical("Erreur critique série : Forcing non changé !");
-			return;
-		}
+		mLocomotion.setForceMovement(state);
 		this.isForcing = true;
-	}
-
-	/**
-	 * Change l'accélération en plus fluide mais plus lente
-	 */
-	public void setSmoothAcceleration(boolean state) throws SerialConnexionException
-	{
-		this.mLocomotion.setSmoothAcceleration(state);
 	}
 
 	/**
@@ -574,18 +539,17 @@ public class Robot implements Service {
 	 *
 	 * @param sensor le capteur en question
 	 * @return l'état logique du capteur
-	 * @throws SerialConnexionException
 	 */
-	public boolean getContactSensorValue(ContactSensors sensor) throws SerialConnexionException {
+	public boolean getContactSensorValue(ContactSensors sensor){
 		// si il n'y a pas de symétrie, on renvoie la valeur brute du bas niveau
 		if (!symmetry)
-			return serialWrapper.getContactSensorValue(sensor);
+			return ethWrapper.getContactSensorValue(sensor);
 		else {
 			sensor = mSensorNamesMap.getSymmetrizedContactSensorName(sensor);
 
 			/* attention si les capteurs sont en int[] il faut symétriser ce int[] */
 
-			return serialWrapper.getContactSensorValue(sensor);
+			return ethWrapper.getContactSensorValue(sensor);
 		}
 	}
 
@@ -625,121 +589,108 @@ public class Robot implements Service {
 		}
 	}
 
-    public void immobilise()
-    {
+	public void immobilise()
+	{
 		log.debug("appel de Robot.immobilise()");
-        mLocomotion.immobilise();
-    }
+		mLocomotion.immobilise();
+	}
 
 	/**
 	 * Active/désactive les capteurs
-	 * @throws SerialConnexionException
 	 */
-	public void switchSensor() throws SerialConnexionException {
-		serialWrapper.switchSensor();
+	public void switchSensor() {
+		ethWrapper.switchSensor();
 	}
 
 	public void enableRotationnalFeedbackLoop()
 	{
 		log.debug("appel de Robot.enableRotationnalFeedbackLoop()");
-		try
-		{
-			mLocomotion.enableRotationnalFeedbackLoop();
-		}
-		catch (SerialConnexionException e)
-		{
-			log.critical( e.logStack());
-		}
+		mLocomotion.enableRotationnalFeedbackLoop();
+
 	}
 
 	public void disableRotationnalFeedbackLoop()
 	{
 		log.debug("appel de Robot.disableRotationnalFeedbackLoop()");
-		try
-		{
-			mLocomotion.disableRotationnalFeedbackLoop();
-		}
-		catch (SerialConnexionException e)
-		{
-			log.critical( e.logStack());
-		}
+		mLocomotion.disableRotationnalFeedbackLoop();
+
 	}
-	
+
 	public void enableFeedbackLoop() throws SerialConnexionException
 	{
-		mLocomotion.enableFeedbackLoop();		
+		mLocomotion.enableFeedbackLoop();
 	}
 
 	public void disableFeedbackLoop() throws SerialConnexionException
 	{
 		mLocomotion.disableFeedbackLoop();
 	}
-	
+
 	/* 
 	 * GETTERS & SETTERS
 	 */
 	public void setPosition(Vec2 position)
 	{
-	    mLocomotion.setPosition(position);
+		mLocomotion.setPosition(position);
 	}
-	
+
 	public Vec2 getPosition()
 	{
-    	position = mLocomotion.getPosition();
-	    return position;
+		position = mLocomotion.getPosition();
+		return position;
 	}
 
-    /**
-     * donne la dernière position connue du robot sur la table
-     * cette methode est rapide et ne déclenche pas d'appel série
-     * @return la dernière position connue du robot
-     */
-    public Vec2 getPositionFast()
-    {
-    	position = mLocomotion.getPosition();
-        return position;
-    }
-
-    public void setOrientation(double orientation)
+	/**
+	 * donne la dernière position connue du robot sur la table
+	 * cette methode est rapide et ne déclenche pas d'appel série
+	 * @return la dernière position connue du robot
+	 */
+	public Vec2 getPositionFast()
 	{
-	    mLocomotion.setOrientation(orientation);
+		position = mLocomotion.getPosition();
+		return position;
 	}
 
-    public double getOrientation()
-    {
-    	orientation =  mLocomotion.getOrientation();
-        return orientation;
-    }
+	public void setOrientation(double orientation)
+	{
+		mLocomotion.setOrientation(orientation);
+	}
 
-    /**
-     * Donne la derniere orientation connue du robot sur la table
-     * Cette méthode est rapide et ne déclenche pas d'appel série
-     * @return la derniere orientation connue du robot
-     */
-    public double getOrientationFast()
-    {
-    	orientation = mLocomotion.getOrientationFast();
-        return orientation;
-    }
+	public double getOrientation()
+	{
+		orientation =  mLocomotion.getOrientation();
+		return orientation;
+	}
+
+	/**
+	 * Donne la derniere orientation connue du robot sur la table
+	 * Cette méthode est rapide et ne déclenche pas d'appel série
+	 * @return la derniere orientation connue du robot
+	 */
+	public double getOrientationFast()
+	{
+		orientation = mLocomotion.getOrientationFast();
+		return orientation;
+	}
 
 	public boolean setTurningStrategy(TurningStrategy turning)
 	{
-        if(!(turning == TurningStrategy.FASTEST))
-        {
+		if(!(turning == TurningStrategy.FASTEST))
+		{
 			if(symmetry)
 			{
 				mLocomotion.setTurningOrders(mTurningStrategyCorrespondenceMap.getSymmetrizedTurningStrategy(turning));
 				return true;
 			}
-            mLocomotion.setTurningOrders(turning);
-            return true;
-        }
-        return false;
+			mLocomotion.setTurningOrders(turning);
+			return true;
+		}
+		return false;
 	}
-	
+
 	public boolean setDirectionStrategy(DirectionStrategy motion)
 	{
-        if(!(motion == DirectionStrategy.FASTEST))
+		if(!(motion == DirectionStrategy.FASTEST))
 		{
 			mLocomotion.setDirectionOrders(motion);
 			return true;
@@ -749,45 +700,38 @@ public class Robot implements Service {
 
 	public void setLocomotionSpeed(Speed vitesse)
 	{
-        try
-        {
-			mLocomotion.setTranslationnalSpeed(vitesse.translationSpeed);
-	        mLocomotion.setRotationnalSpeed(vitesse.rotationSpeed);
-	        
-	        speed = vitesse;
-		} 
-        catch (SerialConnexionException e)
-        {
-			log.critical( e.logStack());
-		}
+		mLocomotion.setTranslationnalSpeed(vitesse.translationSpeed);
+		mLocomotion.setRotationnalSpeed(vitesse.rotationSpeed);
+		speed = vitesse;
+
 	}
 
-    public void setRobotRadius(int radius)
-    {
-        this.robotRay = radius;
-    }
+	public void setRobotRadius(int radius)
+	{
+		this.robotRay = radius;
+	}
 
-    public int getRobotRadius()
-    {
-        return this.robotRay;
-    }
-	
+	public int getRobotRadius()
+	{
+		return this.robotRay;
+	}
+
 
 	public Speed getLocomotionSpeed()
 	{
 		return speed;
 	}
-	
+
 	public boolean getIsRobotTurning()
 	{
 		return mLocomotion.isRobotTurning;
 	}
-	
+
 	public boolean getIsRobotMovingForward()
 	{
 		return mLocomotion.isRobotMovingForward;
 	}
-	
+
 	public boolean getIsRobotMovingBackward()
 	{
 		return mLocomotion.isRobotMovingBackward;

@@ -46,19 +46,26 @@ import java.util.Stack;
  */
 public class Container implements Service
 {
-	// liste des services déjà instanciés. Contient au moins Config et Log. Les autres services appelables seront présents quand ils auront été appelés
+	/**
+	 * Liste des services déjà instanciés. Contient au moins Config et Log.
+	 * Les autres services appelables seront présents quand ils auront été appelés
+	 */
 	private HashMap<String, Service> instanciedServices = new HashMap<String, Service>();
 
-	//liste des threads instanciés
+	/**
+	 * Liste des threads instanciés
+	 */
 	private HashMap<String, AbstractThread> instanciedThreads = new HashMap<>();
-	
 	private boolean threadsStarted = false;
 	
     /**
      * Chemin relatif vers le fichier de config
      */
     private final static String configPath = "./config/";
-	
+
+	/**
+	 * Service de Log & Config (commun à toute les classes)
+	 */
 	private Log log;
 	private Config config;
 	

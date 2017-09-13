@@ -1,6 +1,8 @@
 package robot;
 
 import container.Service;
+import enums.ActuatorOrder;
+import enums.ContactSensors;
 import enums.TurningStrategy;
 import exceptions.ConfigPropertyNotFoundException;
 import exceptions.serial.SerialConnexionException;
@@ -9,6 +11,7 @@ import utils.Config;
 import utils.Log;
 import utils.Sleep;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -32,6 +35,9 @@ public class EthWrapper implements Service {
     /** Delay pour les loops */
     private int loopDelay;
 
+    /** Etat des capteurs */
+    private boolean sensorState;
+
     /**
      * Constructeur EthWrapper
      * @param config
@@ -42,15 +48,23 @@ public class EthWrapper implements Service {
         this.log = log;
         this.config = config;
         this.eth = threadEth;
+
+        // Par défaut, les capteurs sont désactivés
+        sensorState = false;
         updateConfig();
     }
+
+
+    /*****************************
+     * LOCOMOTION & USE ACTUATOR *
+     *****************************/
+
 
     /**
      * Fait avancer le robot. Méthode non bloquante
      * @param distance distance a parcourir par le robot. Une valeur négative fera reculer le robot, une valeur positive le fera avancer.
-     * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
      */
-    public void moveLengthwise(double distance) throws SerialConnexionException
+    public void moveLengthwise(double distance)
     {
         int distanceTruncated = (int)distance;
         String chaines[] = {"d", String.format(Locale.US, "%d", distanceTruncated)};
@@ -61,9 +75,8 @@ public class EthWrapper implements Service {
      * Fait tourner le robot de maniere absolue. Méthode non bloquante
      * utilise TurningStrategy.FASTEST
      * @param angle l'angle de tour
-     * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
      */
-    public void turn(double angle) throws SerialConnexionException
+    public void turn(double angle)
     {
         turn(angle, TurningStrategy.FASTEST);
     }
@@ -71,9 +84,8 @@ public class EthWrapper implements Service {
     /**
      * Fait tourner le robot de maniere absolue. Méthode non bloquante
      * @param angle l'angle de tour
-     * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
      */
-    public void turn(double angle, TurningStrategy turning) throws SerialConnexionException
+    public void turn(double angle, TurningStrategy turning)
     {
         // tronque l'angle que l'on envoit a la série pour éviter les overflows
         float angleTruncated = (float)angle;
@@ -95,10 +107,8 @@ public class EthWrapper implements Service {
 
     /**
      * Arrête le robot
-     * @throws SerialConnexionException en cas de problème de communication avec la
-     * carte d'asservissement
      */
-    public void immobilise() throws SerialConnexionException
+    public void immobilise()
     {
         log.warning("Immobilisation du robot");
 
@@ -114,10 +124,9 @@ public class EthWrapper implements Service {
      * Regarde si le robot bouge effectivement.
      * Provoque un appel série pour avoir des information a jour. Cette méthode est demande donc un peu de temps.
      * @return true si le robot bouge
-     * @throws SerialConnexionException en cas de problème de communication avec la carte d'asservissement
      */
 
-    public boolean isRobotMoving() throws SerialConnexionException
+    public boolean isRobotMoving()
     {
         return isRobotMovingAndAbnormal()[0];
     }
@@ -126,9 +135,8 @@ public class EthWrapper implements Service {
      *  Verifie si le robot est arrivé et si c'est anormal
      *  @return Les informations sous forme d'un tableau de booleens
      *  lecture : [est ce qu'on bouge][est ce que c'est Anormal]
-     * @throws SerialConnexionException
      */
-    public boolean[] isRobotMovingAndAbnormal() throws SerialConnexionException
+    public boolean[] isRobotMovingAndAbnormal()
     {
         // on demande a la carte des information a jour
         // on envois "f" et on lis double (dans l'ordre : bouge, est anormal)
@@ -147,6 +155,237 @@ public class EthWrapper implements Service {
         return parsedInfos;
     }
 
+    /**
+     * Modifie la vitesse en translation du robot sur la table
+     * @param speed la nouvelle valeur maximum que peut prenvent prendre les pwm des moteurs lors d'une translation
+     */
+    public void setTranslationnalSpeed(float speed)
+    {
+        // envoie a la carte d'asservissement le nouveau maximum du pwm
+        String chaines[] = {"ctv", String.format(Locale.US, "%.3f", speed)};
+        eth.communicate(chaines, 0);
+    }
+
+    /**
+     * Modifie la vitesse en rotation du robot sur la table
+     * @param rotationSpeed la nouvelle valeur maximum que peut prenvent prendre les pwm des moteurs lors d'une rotation
+     */
+    public void setRotationnalSpeed(double rotationSpeed)
+    {
+        // envoie a la carte d'asservissement le nouveau maximum du pwm
+        String chaines[] = {"crv", String.format(Locale.US, "%.3f", (float)rotationSpeed)};
+        eth.communicate(chaines, 0);
+    }
+
+    /**
+     * Demande a la carte d'asservissement la position et l'orientation courrante du robot sur la table.
+     * Renvoie x, y et orientation du robot (x en mm, y en mm, et orientation en radiants)
+     * @return un tableau de 3 cases: [x, y, orientation]
+     */
+    public float[] getCurrentPositionAndOrientation()
+    {
+        // on demande a la carte des information a jour
+        // on envois "?xyo" et on lis double (dans l'ordre : abscisse, ordonnée, orientation)
+        String[] infosBuffer = eth.communicate("?xyo", 3);
+        float[] parsedInfos = new float[3];
+        for(int i = 0; i < 3; i++)
+        {
+            try{
+                parsedInfos[i] = Float.parseFloat(infosBuffer[i]);
+            } catch (NumberFormatException e)
+            {
+                log.critical("BAD POSITION RECEIVED BY LL : "+ Arrays.toString(parsedInfos));
+                return null;
+            }
+        }
+        return parsedInfos;
+    }
+
+    /**
+     * Envoie un ordre à la série. Le protocole est défini dans l'enum ActuatorOrder
+     * @param order l'ordre a envoyer
+     */
+    public void useActuator(ActuatorOrder order)
+    {
+        log.debug("Envoi consigne a la carte actionneur : " + order.toString());
+        eth.communicate(order.getSerialOrder(), 0);
+    }
+
+
+    /******************
+     * ASSERVISSEMENT *
+     ******************/
+
+
+    /**
+     * Désactive l'asservissement en vitesse du robot
+     */
+    public void disableSpeedFeedbackLoop()
+    {
+        eth.communicate("cv0", 0);
+    }
+
+    /**
+     * Active l'asservissement en vitesse du robot
+     */
+    public void enableSpeedFeedbackLoop() {
+        eth.communicate("cv1", 0);
+    }
+
+    /**
+     * Active l'asservissement en translation du robot
+     */
+    public void enableTranslationnalFeedbackLoop()
+    {
+        eth.communicate("ct1", 0);
+    }
+
+    /**
+     * Active l'asservissement en rotation du robot
+     */
+    public void enableRotationnalFeedbackLoop()
+    {
+        eth.communicate("cr1", 0);
+    }
+
+    /**
+     * Désactive l'asservissement en translation du robot
+     */
+    public void disableTranslationnalFeedbackLoop()
+    {
+        eth.communicate("ct0", 0);
+    }
+
+    /**
+     * Désactive l'asservissement en rotation du robot
+     */
+    public void disableRotationnalFeedbackLoop()
+    {
+        eth.communicate("cr0", 0);
+    }
+
+
+    /******************
+     * INITIALISATION *
+     ******************/
+
+
+    /**
+     * Ecrase la position x du robot au niveau de la carte
+     * @param x la nouvelle abscisse que le robot doit considérer avoir sur la table
+     */
+    public void setX(int x)
+    {
+        float floatX=(float)x; //On transtype car la serie veut des Floats <3
+        String chaines[] = {"cx", String.format(Locale.US, "%.3f", floatX)};
+        eth.communicate(chaines, 0);
+    }
+
+    /**
+     * Ecrase la position y du robot au niveau de la carte
+     * @param y la nouvelle ordonnée que le robot doit considérer avoir sur la table
+     */
+    public void setY(int y)
+    {
+        float floatY=(float)y;//On transtype car la serie veut des Floats
+        String chaines[] = {"cy", String.format(Locale.US, "%.3f", floatY)};
+        eth.communicate(chaines, 0);
+    }
+
+    /**
+     * Ecrase l'orientation du robot au niveau de la carte
+     * @param orientation la nouvelle orientation que le robot doit considérer avoir sur la table
+     */
+    public void setOrientation(double orientation)
+    {
+        //log.debug("setOrientation "+orientation);
+        float floatOrientation =(float) orientation; //On transtype car la serie veut des Floats (T_T)
+        String chaines[] = {"co", String.format(Locale.US, "%.3f", floatOrientation)};
+        eth.communicate(chaines, 0);
+    }
+
+
+    /**********
+     * DIVERS *
+     **********/
+
+
+    /**
+     * Demande a la carte capteurs de nous indiquer si le jumper de début de match est présent ou non
+     * @return vrai si le jumper est absent, faux sinon
+     */
+    public boolean isJumperAbsent()
+    {
+        try {
+            // demande a la carte si le jumper est présent, parse sa réponse, et si on lit 1 c'est que le jumper n'est pas/plus la
+            return Integer.parseInt(eth.communicate("j", 1)[0]) != 0;
+        }
+        catch (NumberFormatException e)
+        {
+            log.critical("réponse corrompue du jumper !");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * recupere la valeur d'un capteur de contact
+     * @param sensor le capteur dont on veut recuperer la valeur
+     * @return la valeur du capteur
+     */
+    public boolean getContactSensorValue(ContactSensors sensor)
+    {
+        String[] sensorAnswer = eth.communicate(sensor.getSerialCommunication(),1);
+        return (!sensorAnswer[0].equals("0"));
+    }
+
+    /** Active/desactive les capteurs en fonction de leur état courant
+     */
+    public void switchSensor()
+    {
+        eth.communicate("sus", 0);
+        sensorState = !sensorState;
+    }
+
+    /**
+     * Change le type de mouvement forcé/normal
+     * @param choice true pour forcer les mouvements
+     */
+    public synchronized void setForceMovement(boolean choice)
+    {
+        if(choice)
+        {
+            String chaines[] = {"efm"};
+            eth.communicate(chaines, 0);
+        }
+        else
+        {
+            String chaines[] = {"dfm"};
+            eth.communicate(chaines, 0);
+        }
+    }
+
+    /**
+     * Active l'interface de debug pour l'asserv' (si ca existe encore dans le LL)
+     * @return
+     */
+    public synchronized double[] pfdebug()
+    {
+        String chaines[] = {"pfdebug"};
+        String[] infosBuffer = eth.communicate(chaines, 5);
+        double[] parsedInfos = new double[5];
+        for(int i = 0; i < 5; i++)
+        {
+            try{
+                parsedInfos[i] = Float.parseFloat(infosBuffer[i]);
+            } catch (NumberFormatException e)
+            {
+                return null;
+            }
+        }
+        return parsedInfos;
+    }
+
     @Override
     public void updateConfig(){
         try {
@@ -154,5 +393,9 @@ public class EthWrapper implements Service {
         }catch (ConfigPropertyNotFoundException e){
             e.printStackTrace();
         }
+    }
+
+    public boolean getSensorState(){
+        return sensorState;
     }
 }
