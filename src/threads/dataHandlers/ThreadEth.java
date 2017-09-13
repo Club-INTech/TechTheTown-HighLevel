@@ -19,6 +19,7 @@
 
 package threads.dataHandlers;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import container.Service;
 import threads.AbstractThread;
 import utils.Log;
@@ -162,6 +163,18 @@ public class ThreadEth extends AbstractThread implements Service {
             standardBuffer.poll();
         }
         return response;
+    }
+
+    /**
+     * Ferme la socket !
+     */
+    public void close(){
+        try {
+            socket.close();
+        }catch (IOException e){
+            log.debug("Socket refuses to get closed !");
+            e.printStackTrace();
+        }
     }
 
     /*******************************************

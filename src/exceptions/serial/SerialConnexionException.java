@@ -39,7 +39,6 @@ public class SerialConnexionException extends Exception
 	{
 		super(m);
 	}
-
 	
 	public String logStack()
 	{
