@@ -21,8 +21,8 @@ package threads.dataHandlers;
 
 import exceptions.ConfigPropertyNotFoundException;
 import graphics.Window;
+import robot.EthWrapper;
 import robot.Robot;
-import robot.SerialWrapper;
 import smartMath.Vec2;
 import table.Table;
 import threads.AbstractThread;
@@ -58,7 +58,7 @@ public class ThreadSensor extends AbstractThread
     private Table mTable;
 
 	/** La stm avec laquelle on doit communiquer */
-	private SerialWrapper serialWrapper;
+	private EthWrapper ethWrapper;
 
     /** Buffer de valeurs */
     private ConcurrentLinkedQueue<String> valuesReceived;
@@ -180,12 +180,12 @@ public class ThreadSensor extends AbstractThread
 	 * Crée un nouveau thread de capteurs
 	 *
 	 * @param table La table a l'intérieure de laquelle le thread doit croire évoluer
-	 * @param sensorsCardWrapper La carte capteurs avec laquelle le thread va parler
+	 * @param ethWrapper La carte capteurs avec laquelle le thread va parler
 	 */
-	public ThreadSensor (Config config, Log log, Table table, Robot robot, SerialWrapper sensorsCardWrapper, ThreadSerial serial)
+	public ThreadSensor (Config config, Log log, Table table, Robot robot, EthWrapper ethWrapper, ThreadSerial serial)
 	{
 		super(config, log);
-		this.serialWrapper = sensorsCardWrapper;
+		this.ethWrapper = ethWrapper;
         this.valuesReceived = serial.getUltrasoundBuffer();
 		Thread.currentThread().setPriority(6);
 		mRobot = robot;
@@ -196,7 +196,6 @@ public class ThreadSensor extends AbstractThread
 	public void run()
 	{
 	    updateConfig();
-
         try
         {
             File file = new File("us.txt");
@@ -212,7 +211,7 @@ public class ThreadSensor extends AbstractThread
             e.printStackTrace();
         }
 
-        while(serialWrapper.isJumperAbsent())
+        while(ethWrapper.isJumperAbsent())
         {
             try {
                 Thread.sleep(100);
@@ -220,7 +219,7 @@ public class ThreadSensor extends AbstractThread
                 e.printStackTrace();
             }
         }
-        while(!serialWrapper.isJumperAbsent())
+        while(!ethWrapper.isJumperAbsent())
         {
             try {
                 Thread.sleep(100);

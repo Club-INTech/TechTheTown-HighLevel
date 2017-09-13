@@ -24,6 +24,7 @@ import enums.Speed;
 import exceptions.ContainerException;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.Hook;
+import robot.EthWrapper;
 import robot.Locomotion;
 import robot.SerialWrapper;
 import scripts.ScriptManager;
@@ -47,7 +48,7 @@ public class Main {
 	static GameState realState;
 	static ArrayList<Hook> emptyHook = new ArrayList<>();
 	static ScriptManager scriptmanager;
-	static SerialWrapper mSerialWrapper;
+	static EthWrapper mEthWrapper;
 	static Locomotion mLocomotion;
 
 
@@ -63,7 +64,7 @@ public class Main {
 			//AffichageDebug aff = container.getService(AffichageDebug.class);
 			realState = container.getService(GameState.class);
 			scriptmanager = container.getService(ScriptManager.class);
-			mSerialWrapper = container.getService(SerialWrapper.class);
+			mEthWrapper = container.getService(EthWrapper.class);
 			mLocomotion = container.getService(Locomotion.class);
 			config.updateConfig();
 
@@ -105,7 +106,7 @@ public class Main {
 		System.out.println("Robot pret pour le match, attente du retrait du jumper");
 
 		// attend l'insertion du jumper
-		while(mSerialWrapper.isJumperAbsent())
+		while(mEthWrapper.isJumperAbsent())
 		{
 			try {
 				Thread.sleep(100);
@@ -115,7 +116,7 @@ public class Main {
 		}
 
 		// puis attend son retrait
-		while(!mSerialWrapper.isJumperAbsent())
+		while(!mEthWrapper.isJumperAbsent())
 		{
 			try {
 				Thread.sleep(100);

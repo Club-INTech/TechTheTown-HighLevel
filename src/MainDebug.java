@@ -23,6 +23,7 @@ import exceptions.ContainerException;
 import exceptions.serial.SerialConnexionException;
 import graphics.AffichageDebug;
 import hook.Hook;
+import robot.EthWrapper;
 import robot.Locomotion;
 import robot.SerialWrapper;
 import scripts.ScriptManager;
@@ -49,7 +50,7 @@ public class MainDebug
     static GameState realState;
     static ArrayList<Hook> emptyHook = new ArrayList<>();
     static ScriptManager scriptmanager;
-    static SerialWrapper mSerialWrapper;
+    static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
 
 
@@ -64,7 +65,7 @@ public class MainDebug
             config = container.getService(Config.class);
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
-            mSerialWrapper = container.getService(SerialWrapper.class);
+            mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion= container.getService(Locomotion.class);
             config.updateConfig();
 
@@ -87,12 +88,8 @@ public class MainDebug
                         String[] noms = {"tick g", "tick d", "angle", "vg", "vd", "consigne transl", "consigne g", "consigne d"};
                         for(int i = 0; i < 3000; i++) {
                             double[] data;
-                            try {
-                                data = mSerialWrapper.pfdebug();
+                                data = mEthWrapper.pfdebug();
                                 aff.addData(data, noms);
-                            } catch (SerialConnexionException e) {
-                                e.printStackTrace();
-                            }
                         }
                     } catch (ContainerException | InterruptedException e) {
                         e.printStackTrace();
@@ -140,7 +137,7 @@ public class MainDebug
         System.out.println("Robot pret pour le match, attente du retrait du jumper");
 
         // attend l'insertion du jumper
-        while(mSerialWrapper.isJumperAbsent())
+        while(mEthWrapper.isJumperAbsent())
         {
             try {
                 Thread.sleep(100);
@@ -150,7 +147,7 @@ public class MainDebug
         }
 
         // puis attend son retrait
-        while(!mSerialWrapper.isJumperAbsent())
+        while(!mEthWrapper.isJumperAbsent())
         {
             try {
                 Thread.sleep(100);
