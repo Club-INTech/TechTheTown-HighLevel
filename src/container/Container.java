@@ -23,8 +23,6 @@ import enums.ThreadName;
 import exceptions.ContainerException;
 import threads.AbstractThread;
 import threads.ThreadExit;
-import threads.dataHandlers.ThreadEth;
-import threads.dataHandlers.ThreadEth;
 import utils.Config;
 import utils.Log;
 
@@ -69,11 +67,17 @@ public class Container implements Service
 	 */
 	private Log log;
 	private Config config;
-	
+
+	/**
+	 * True si un container a déjà été instancié
+	 */
 	private static boolean instanciated;
-	
+
+	/**
+	 * True si l'on veut montrer le graphe des dépendances (pour debug)
+	 */
 	private static final boolean showGraph = false;
-	private FileWriter fw;
+	private FileWriter fileWriter;
 
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
@@ -85,33 +89,25 @@ public class Container implements Service
 	{
 		// arrêt des threads
 		if(threadsStarted)
-			for(ThreadName n : ThreadName.values())
+			for(ThreadName threadName : ThreadName.values())
 			{
-				getService(n.c).interrupt();
-				getService(n.c).join(100); // on attend au plus 50ms que le thread s'arrête
+				getService(threadName.cls).interrupt();
+				getService(threadName.cls).join(100); // on attend au plus 50ms que le thread s'arrête
 			}
 		
 		threadsStarted = false;
-		
-		log.debug("Fermeture de la série");
-		/**
-		 * Mieux vaut écrire ThreadSerial.class.getSimpleName()) que "ThreadSerial",
-		 * car en cas de refactor, le premier est automatiquement ajusté
-		 */
-		if(instanciedServices.containsKey(ThreadEth.class.getSimpleName()))
-			((ThreadEth)instanciedServices.get(ThreadEth.class.getSimpleName())).close();
+		log.debug("Fermeture de l'Ethernet");
 
 		if(showGraph)
 		{
 			try {
-				fw.write("}\n");
-				fw.close();
+				fileWriter.write("}\n");
+				fileWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		// fermeture du log
+
 		log.debug("Fermeture du log");
 		log.close();
 		instanciated = false;
@@ -126,45 +122,38 @@ public class Container implements Service
 	 */
 	public Container() throws ContainerException, InterruptedException
 	{
-		/*
-		  On vérifie qu'il y ait un seul container à la fois
-		 */
+		/** On vérifie qu'il y ait un seul container à la fois */
 		if(instanciated)
 			throw new ContainerException("Un autre container existe déjà! Annulation du constructeur.");
 
 		instanciated = true;
 		
-		/*
-		  Affichage d'un petit message de bienvenue
-		 */
+		/** Affichage d'un petit message de bienvenue */
 		printMessage("intro.txt");
 		
-		/*
-		  Affiche la version du programme (dernier commit et sa branche)
-		 */
+		/** Affiche la version du programme (dernier commit et sa branche) */
 		try {
-			Process p = Runtime.getRuntime().exec("git log -1 --oneline");
-			Process p2 = Runtime.getRuntime().exec("git branch");
-			BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			BufferedReader in2 = new BufferedReader(new InputStreamReader(p2.getInputStream()));
-			String s = in.readLine();
-			int index = s.indexOf(" ");
-			in.close();
-			String s2 = in2.readLine();
+			Process process_log = Runtime.getRuntime().exec("git log -1 --oneline");
+			Process process_git = Runtime.getRuntime().exec("git branch");
+			BufferedReader input_log = new BufferedReader(new InputStreamReader(process_log.getInputStream()));
+			BufferedReader input_git = new BufferedReader(new InputStreamReader(process_git.getInputStream()));
+			String toprint_log = input_log.readLine();
+			int index = toprint_log.indexOf(" ");
+			input_log.close();
 
-			while(!s2.contains("*"))
-				s2 = in2.readLine();
+			String toprint_git = input_git.readLine();
 
-			int index2 = s2.indexOf(" ");
-			System.out.println("Version : "+s.substring(0, index)+" on "+s2.substring(index2+1)+" - ["+s.substring(index+1)+"]");
-			in2.close();
+			while(!toprint_git.contains("*"))
+				toprint_git = input_git.readLine();
+
+			int index2 = toprint_git.indexOf(" ");
+			System.out.println("Version : "+toprint_log.substring(0, index)+" on "+toprint_git.substring(index2+1)+" - ["+toprint_log.substring(index+1)+"]");
+			input_git.close();
 		} catch (IOException e1) {
 			System.out.println(e1);
 		}
 		
-		/*
-		  Infos diverses
-		 */
+		/** Infos diverses */
 		System.out.println("System : "+System.getProperty("os.name")+" "+System.getProperty("os.version")+" "+System.getProperty("os.arch"));
 		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version")+", max memory : "+Math.round(100.*Runtime.getRuntime().maxMemory()/(1024.*1024.*1024.))/100.+"G, available processors : "+Runtime.getRuntime().availableProcessors());
 		System.out.println();
@@ -172,9 +161,7 @@ public class Container implements Service
 		System.out.println("    Remember, with great power comes great current squared times resistance !");
 		System.out.println();
 
-		/*
-			La config a un statut spécial, vu qu'elle nécessite un chemin d'accès vers le fichier de config
-		 */
+		/** La config a un statut spécial, vu qu'elle nécessite un chemin d'accès vers le fichier de config */
         try
         {
 			Constructor<Config> constructeur = Config.class.getDeclaredConstructor(String.class);
@@ -192,7 +179,6 @@ public class Container implements Service
         }
 
         log = getService(Log.class);
-
         log.updateConfig();
 
 		// Le container est aussi un service
@@ -201,8 +187,8 @@ public class Container implements Service
 		if(showGraph)
 		{
 			try {
-				fw = new FileWriter(new File("dependances.dot"));
-				fw.write("digraph dependancesJava {\n");
+				fileWriter = new FileWriter(new File("dependances.dot"));
+				fileWriter.write("digraph dependancesJava {\n");
 			} catch (IOException e) {
 				log.warning(e);
 			}
@@ -225,21 +211,19 @@ public class Container implements Service
 	@SuppressWarnings("unused")
 	private synchronized <S extends Service> S getServiceDisplay(Class<? extends Service> serviceFrom, Class<S> serviceTo, Stack<String> stack) throws ContainerException, InterruptedException
 	{
-		/*
-		  On ne crée pas forcément le graphe de dépendances pour éviter une lourdeur inutile
-		 */
+		/** On ne crée pas forcément le graphe de dépendances pour éviter une lourdeur inutile */
 		if(showGraph && !serviceTo.equals(Log.class))
 		{
 			ArrayList<String> ok = new ArrayList<String>();
 
 			try {
 				if(ok.contains(serviceTo.getSimpleName()))
-					fw.write(serviceTo.getSimpleName()+" [color=grey80, style=filled];\n");
+					fileWriter.write(serviceTo.getSimpleName()+" [color=grey80, style=filled];\n");
 				else
-					fw.write(serviceTo.getSimpleName()+";\n");
+					fileWriter.write(serviceTo.getSimpleName()+";\n");
 
 				if(serviceFrom != null)
-					fw.write(serviceFrom.getSimpleName()+" -> "+serviceTo.getSimpleName()+";\n");
+					fileWriter.write(serviceFrom.getSimpleName()+" -> "+serviceTo.getSimpleName()+";\n");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -258,36 +242,29 @@ public class Container implements Service
 	public synchronized <S extends Service> S getServiceRecursif(Class<S> classe, Stack<String> stack) throws ContainerException, InterruptedException
 	{
 		try {
-			/*
-			  Si l'objet existe déjà, on le renvoie
-			 */			
+			/** Si l'objet existe déjà, on le renvoie */
 			if(instanciedServices.containsKey(classe.getSimpleName()))
 			{
 				return (S) instanciedServices.get(classe.getSimpleName());
 			}
 			
-			/*
-			  Détection de dépendances circulaires
-			 */
+			/** Détection de dépendances circulaires */
 			if(stack.contains(classe.getSimpleName()))
 			{
 				// Dépendance circulaire détectée !
 				String out = "";
-				for(String s : stack)
-					out += s + " -> ";
+				for(String stk : stack)
+					out += stk + " -> ";
 				out += classe.getSimpleName();
 				throw new ContainerException(out);
 			}
 			
 			// Pas de dépendance circulaire
-			
 			// On met à jour la pile
 			stack.push(classe.getSimpleName());
 
-			/*
-			  Récupération du constructeur et de ses paramètres
-			  On suppose qu'il n'y a chaque fois qu'un seul constructeur pour cette classe
-			 */
+			/** Récupération du constructeur et de ses paramètres
+			 * On suppose qu'il n'y a chaque fois qu'un seul constructeur pour cette classe */
 			if(classe.getConstructors().length > 1)
 			{
 				throw new ContainerException(classe.getSimpleName()+" a plusieurs constructeurs !");
@@ -296,34 +273,26 @@ public class Container implements Service
 			Constructor<S> constructeur = (Constructor<S>) classe.getDeclaredConstructors()[0];
 			Class<Service>[] param = (Class<Service>[]) constructeur.getParameterTypes();
 
-			/*
-			  On demande récursivement chacun de ses paramètres
-			 */
+			/** On demande récursivement chacun de ses paramètres */
 			Object[] paramObject = new Object[param.length];
 			for(int i = 0; i < param.length; i++)
 			{
 				paramObject[i] = getServiceDisplay(classe, param[i], stack);
 			}
 
-			/*
-			  Instanciation et sauvegarde
-			 */
+			/** Instanciation et sauvegarde */
 			constructeur.setAccessible(true); // on outrepasse les droits
 			S s = constructeur.newInstance(paramObject);
 			constructeur.setAccessible(false); // on revient à l'état d'origine !
 			instanciedServices.put(classe.getSimpleName(), (Service) s);
 
-			/*
-			  S'il s'agit d'un thread (hors ThreadSerial), on l'ajoute à la liste des threads instanciés
-			 */
-			if(s instanceof AbstractThread && !(s instanceof ThreadEth))
+			/** S'il s'agit d'un thread (hors ThreadSerial), on l'ajoute à la liste des threads instanciés */
+			if(s instanceof AbstractThread)
 			{
 				instanciedThreads.put(classe.getSimpleName(), (AbstractThread)s);
 			}
 			
-			/*
-			  Mise à jour de la config
-			 */
+			/** Mise à jour de la config */
 			if(config != null)
 			{
 				for(Method m : Service.class.getMethods())
@@ -354,23 +323,19 @@ public class Container implements Service
 		}
 	}
 
-	/**
-	 * Démarrage de tous les threads
-	 */
+	/** Démarrage de tous les threads */
 	public void startAllThreads() throws InterruptedException
 	{
-		for(ThreadName n : ThreadName.values())
+		for(ThreadName threadName : ThreadName.values())
 		{
 			try {
-				getService(n.c).start();
+				getService(threadName.cls).start();
 			} catch (ContainerException e) {
 				log.critical(e);
 			}
 		}
 
-		/*
-		  Planification du hook de fermeture
-		 */
+		/** Planification du hook de fermeture */
 		ThreadExit.makeInstance(this);
 		Runtime.getRuntime().addShutdownHook(ThreadExit.getInstance());
 		
@@ -384,9 +349,9 @@ public class Container implements Service
 	 */
 	public void startInstanciedThreads() throws InterruptedException
 	{
-		for(AbstractThread t : instanciedThreads.values())
+		for(AbstractThread thread : instanciedThreads.values())
 		{
-			t.start();
+			thread.start();
 		}
 	}
 	
@@ -408,7 +373,6 @@ public class Container implements Service
 			} catch (IOException e) {
 				System.err.println(e);
 			}
-
 	}
 
 	@Override

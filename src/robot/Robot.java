@@ -44,90 +44,56 @@ import java.util.HashMap;
  */
 public class Robot implements Service {
 
-	/**
-	 * système de log sur lequel écrire.
-	 */
+	/** Système de log sur lequel écrire. */
 	protected Log log;
 
-	/**
-	 * endroit ou lire la configuration du robot.
-	 */
+	/** Endroit ou lire la configuration du robot. */
 	protected Config config;
 
-	/**
-	 * la table est symétrisée si le robot démarre du côté x<0
-	 */
+	/** La table est symétrisée si le robot démarre du côté x<0 */
 	protected boolean symmetry;
 
-	/**
-	 * vitesse du robot sur la table.
-	 */
+	/** Vitesse du robot sur la table. */
 	protected Speed speed;
 
-	/**
-	 * la position du robot
-	 */
+	/** La position du robot */
 	protected Vec2 position;
 
-	/**
-	 * l'orientation du robot
-	 */
+	/** L'orientation du robot */
 	protected double orientation;
 
-	/**
-	 * Rayon du robot provenant du fichier de config, modélise le robot comme un cercle.
-	 * Le rayon est la distance entre le centre des roues et le point le plus éloigné du centre
-	 */
+	/** Rayon du robot provenant du fichier de config, modélise le robot comme un cercle.
+	 * Le rayon est la distance entre le centre des roues et le point le plus éloigné du centre */
 	private int robotRay;
 
-	/**
-	 * Largeur du robot
-	 */
+	/** Largeur du robot */
 	public int robotWidth;
 
-	/**
-	 * Longueur du robot
-	 */
+	/** Longueur du robot */
 	public int robotLength;
 
-	/**
-	 * Pathfinding
-	 */
+	/** Pathfinding */
 	private Pathfinding pathfinding;
 
-	/**
-	 * chemin en court par le robot, utilise par l'interface graphique
-	 */
+	/** Chemin en court par le robot, utilise par l'interface graphique */
 	public ArrayList<Vec2> cheminSuivi = new ArrayList<Vec2>();
 
-	/**
-	 * Si le robot force dans ses mouvements
-	 */
+	/** Si le robot force dans ses mouvements */
 	protected boolean isForcing = false;
 
-	/**
-	 * Protocole de communication Ethernet (et ouai !)
-	 */
+	/** Protocole de communication Ethernet (et ouai !) */
 	private EthWrapper ethWrapper;
 
-	/**
-	 * Map pour la symétrie des actionneurs
-	 */
+	/** Map pour la symétrie des actionneurs */
 	private SymmetrizedActuatorOrderMap mActuatorCorrespondenceMap = new SymmetrizedActuatorOrderMap();
 
-	/**
-	 * Map pour la symétrie de la stratégie en rotation
-	 */
+	/** Map pour la symétrie de la stratégie en rotation */
 	private SymmetrizedTurningStrategy mTurningStrategyCorrespondenceMap = new SymmetrizedTurningStrategy();
 
-	/**
-	 * Map pour la symétrie des capteurs
-	 */
+	/** Map pour la symétrie des capteurs */
 	private SymmetrizedSensorNamesMap mSensorNamesMap = new SymmetrizedSensorNamesMap();
 
-	/**
-	 * Système de locomotion à utiliser pour déplacer le robot
-	 */
+	/** Système de locomotion à utiliser pour déplacer le robot */
 	private Locomotion mLocomotion;
 
 	public HashMap<ScriptNames,Boolean> dejaFait=new HashMap<ScriptNames,Boolean>();// Doublet nom de script / déjà fait
@@ -178,11 +144,11 @@ public class Robot implements Service {
 
 	/**************
 	 * LOCOMOTION *
-	 *************/
+	 **************/
 
-	/************************
+	/*************************
 	 * APPELS AU PATHFINDING *
-	 ************************/
+	 *************************/
 
 
 	/**
@@ -495,7 +461,6 @@ public class Robot implements Service {
 	 */
 	public void moveLengthwiseTowardWall(int distance, ArrayList<Hook> hooksToConsider) throws UnableToMoveException
 	{
-
 		log.debug("appel de Robot.moveLengthwiseTowardWall(" + distance + "," + hooksToConsider + ")");
 		Speed oldSpeed = speed;
 		setLocomotionSpeed(Speed.SLOW_ALL);
@@ -504,9 +469,129 @@ public class Robot implements Service {
 	}
 
 
-	/*****************
-	 * RESTE A TRIER *
-	 ****************/
+	/********************************
+	 * ASSERV', VITESSE & STRATEGIE *
+	 ********************************/
+
+
+	/**
+	 * Active le mouvement forcé (on ignore les conditions de blocage du bas-niveau)
+	 * @param state oui/non
+	 */
+	public void setForceMovement(boolean state)
+	{
+		mLocomotion.setForceMovement(state);
+		this.isForcing = true;
+	}
+
+	/**
+	 * Active/Desactive l'asserv'
+	 */
+	public void enableRotationnalFeedbackLoop()
+	{
+		mLocomotion.enableRotationnalFeedbackLoop();
+	}
+	public void disableRotationnalFeedbackLoop()
+	{
+		mLocomotion.disableRotationnalFeedbackLoop();
+	}
+	public void enableFeedbackLoop() {
+		mLocomotion.enableFeedbackLoop();
+	}
+	public void disableFeedbackLoop() {
+		mLocomotion.disableFeedbackLoop();
+	}
+
+	/**
+	 * Change la vitesse du robot
+	 * @param vitesse
+	 */
+	public void setLocomotionSpeed(Speed vitesse)
+	{
+		mLocomotion.setTranslationnalSpeed(vitesse.translationSpeed);
+		mLocomotion.setRotationnalSpeed(vitesse.rotationSpeed);
+		speed = vitesse;
+	}
+
+	/**
+	 * Change la TurningStrategy (au plus rapide, toujours vers la droite, etc...)
+	 * @param turning
+	 * @return
+	 */
+	public boolean setTurningStrategy(TurningStrategy turning)
+	{
+		if(!(turning == TurningStrategy.FASTEST))
+		{
+			if(symmetry)
+			{
+				mLocomotion.setTurningOrders(mTurningStrategyCorrespondenceMap.getSymmetrizedTurningStrategy(turning));
+				return true;
+			}
+			mLocomotion.setTurningOrders(turning);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Change la DirectionStrategy (au plus rapide, toujours vers l'avant, etc...)
+	 * @param motion
+	 * @return
+	 */
+	public boolean setDirectionStrategy(DirectionStrategy motion)
+	{
+		if(!(motion == DirectionStrategy.FASTEST))
+		{
+			mLocomotion.setDirectionOrders(motion);
+			return true;
+		}
+		return false;
+	}
+
+
+
+	/**********
+	 * DIVERS *
+	 **********/
+
+
+	/**
+	 * Immobilise le robot
+	 */
+	public void immobilise()
+	{
+		log.debug("appel de Robot.immobilise()");
+		mLocomotion.immobilise();
+	}
+
+	/**
+	 * Coupe la connexion au LL
+	 */
+	public void closeConnexion(){
+		ethWrapper.close();
+	}
+
+	/**
+	 * Active/désactive les capteurs
+	 */
+	public void switchSensor() {
+		ethWrapper.switchSensor();
+	}
+
+	/**
+	 * Fait attendre le programme
+	 * @param duree attente en ms
+	 */
+	public void sleep(long duree) {
+		Sleep.sleep(duree);
+	}
+
+
+
+	/***********************************
+	 * GETTERS & SETTERS (du LL aussi) *
+	 ***********************************/
+
 
 	/**
 	 * Active la détection basique
@@ -522,16 +607,6 @@ public class Robot implements Service {
 	 */
 	public void setUSvalues(ArrayList<Integer> val) {
 		mLocomotion.setUSvalues(val);
-	}
-
-	/**
-	 * Active le mouvement forcé (on ignore les conditions de blocage du bas-niveau)
-	 * @param state oui/non
-	 */
-	public void setForceMovement(boolean state)
-	{
-		mLocomotion.setForceMovement(state);
-		this.isForcing = true;
 	}
 
 	/**
@@ -554,12 +629,76 @@ public class Robot implements Service {
 	}
 
 	/**
-	 * Fait attendre le programme
-	 *
-	 * @param duree attente en ms
+	 * Getters & Setters des positions
+	 * @param position
 	 */
-	public void sleep(long duree) {
-		Sleep.sleep(duree);
+	public void setPosition(Vec2 position)
+	{
+		mLocomotion.setPosition(position);
+	}
+	public Vec2 getPosition() {
+		position = mLocomotion.getPosition();
+		return position;
+	}
+	public void setOrientation(double orientation)
+	{
+		mLocomotion.setOrientation(orientation);
+	}
+	public double getOrientation()
+	{
+		orientation =  mLocomotion.getOrientation();
+		return orientation;
+	}
+
+	/**
+	 * Donne la dernière position connue du robot sur la table
+	 * cette methode est rapide et ne déclenche pas d'appel série
+	 * @return la dernière position connue du robot
+	 */
+	public Vec2 getPositionFast() {
+		position = mLocomotion.getPosition();
+		return position;
+	}
+
+	/**
+	 * Donne la derniere orientation connue du robot sur la table
+	 * Cette méthode est rapide et ne déclenche pas d'appel série
+	 * @return la derniere orientation connue du robot
+	 */
+	public double getOrientationFast()
+	{
+		orientation = mLocomotion.getOrientationFast();
+		return orientation;
+	}
+
+	public void setRobotRadius(int radius)
+	{
+		this.robotRay = radius;
+	}
+
+	public int getRobotRadius()
+	{
+		return this.robotRay;
+	}
+
+	public Speed getLocomotionSpeed()
+	{
+		return speed;
+	}
+
+	public boolean getIsRobotTurning()
+	{
+		return mLocomotion.isRobotTurning;
+	}
+
+	public boolean getIsRobotMovingForward()
+	{
+		return mLocomotion.isRobotMovingForward;
+	}
+
+	public boolean getIsRobotMovingBackward()
+	{
+		return mLocomotion.isRobotMovingBackward;
 	}
 
 	/**
@@ -588,156 +727,4 @@ public class Robot implements Service {
 			log.debug("Revoir le code : impossible de trouver la propriété " + e.getPropertyNotFound());
 		}
 	}
-
-	public void immobilise()
-	{
-		log.debug("appel de Robot.immobilise()");
-		mLocomotion.immobilise();
-	}
-
-	/**
-	 * Coupe la connexion au LL
-	 */
-	public void closeConnexion(){
-		ethWrapper.close();
-	}
-
-	/**
-	 * Active/désactive les capteurs
-	 */
-	public void switchSensor() {
-		ethWrapper.switchSensor();
-	}
-
-	public void enableRotationnalFeedbackLoop()
-	{
-		mLocomotion.enableRotationnalFeedbackLoop();
-	}
-
-	public void disableRotationnalFeedbackLoop()
-	{
-		mLocomotion.disableRotationnalFeedbackLoop();
-	}
-
-	public void enableFeedbackLoop() throws SerialConnexionException
-	{
-		mLocomotion.enableFeedbackLoop();
-	}
-
-	public void disableFeedbackLoop() throws SerialConnexionException
-	{
-		mLocomotion.disableFeedbackLoop();
-	}
-
-	/* 
-	 * GETTERS & SETTERS
-	 */
-	public void setPosition(Vec2 position)
-	{
-		mLocomotion.setPosition(position);
-	}
-
-	public Vec2 getPosition()
-	{
-		position = mLocomotion.getPosition();
-		return position;
-	}
-
-	/**
-	 * donne la dernière position connue du robot sur la table
-	 * cette methode est rapide et ne déclenche pas d'appel série
-	 * @return la dernière position connue du robot
-	 */
-	public Vec2 getPositionFast()
-	{
-		position = mLocomotion.getPosition();
-		return position;
-	}
-
-	public void setOrientation(double orientation)
-	{
-		mLocomotion.setOrientation(orientation);
-	}
-
-	public double getOrientation()
-	{
-		orientation =  mLocomotion.getOrientation();
-		return orientation;
-	}
-
-	/**
-	 * Donne la derniere orientation connue du robot sur la table
-	 * Cette méthode est rapide et ne déclenche pas d'appel série
-	 * @return la derniere orientation connue du robot
-	 */
-	public double getOrientationFast()
-	{
-		orientation = mLocomotion.getOrientationFast();
-		return orientation;
-	}
-
-	public boolean setTurningStrategy(TurningStrategy turning)
-	{
-		if(!(turning == TurningStrategy.FASTEST))
-		{
-			if(symmetry)
-			{
-				mLocomotion.setTurningOrders(mTurningStrategyCorrespondenceMap.getSymmetrizedTurningStrategy(turning));
-				return true;
-			}
-			mLocomotion.setTurningOrders(turning);
-			return true;
-		}
-		return false;
-	}
-
-	public boolean setDirectionStrategy(DirectionStrategy motion)
-	{
-		if(!(motion == DirectionStrategy.FASTEST))
-		{
-			mLocomotion.setDirectionOrders(motion);
-			return true;
-		}
-		return false;
-	}
-
-	public void setLocomotionSpeed(Speed vitesse)
-	{
-		mLocomotion.setTranslationnalSpeed(vitesse.translationSpeed);
-		mLocomotion.setRotationnalSpeed(vitesse.rotationSpeed);
-		speed = vitesse;
-
-	}
-
-	public void setRobotRadius(int radius)
-	{
-		this.robotRay = radius;
-	}
-
-	public int getRobotRadius()
-	{
-		return this.robotRay;
-	}
-
-
-	public Speed getLocomotionSpeed()
-	{
-		return speed;
-	}
-
-	public boolean getIsRobotTurning()
-	{
-		return mLocomotion.isRobotTurning;
-	}
-
-	public boolean getIsRobotMovingForward()
-	{
-		return mLocomotion.isRobotMovingForward;
-	}
-
-	public boolean getIsRobotMovingBackward()
-	{
-		return mLocomotion.isRobotMovingBackward;
-	}
-
 }
