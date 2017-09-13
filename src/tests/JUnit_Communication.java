@@ -13,11 +13,13 @@ import java.util.ArrayList;
  */
 public class JUnit_Communication extends JUnit_Test {
 
+    private ThreadEth eth;
+
     @Test
     public void testSimulator() throws Exception{
 
         String[][] ordersList = {{"?"}, {"cx", "120", "cy", "500", "co", "3.14", "?xyo"}, {"d", "100"}, {"t", "0.5"}, {"tor", "0.5"}, {"tol", "0.5"}, {"stop"}};
-        ThreadEth comm = container.getService(ThreadEth.class);
+        eth = container.getService(ThreadEth.class);
         container.startInstanciedThreads();
 
         while (true) {
@@ -29,9 +31,18 @@ public class JUnit_Communication extends JUnit_Test {
                     nb_line_resp = 0;
                 }
                 String[] message = {mess};
-                comm.communicate(message, nb_line_resp);
+                eth.communicate(message, nb_line_resp);
                 Sleep.sleep(1000);
             }
         }
+    }
+
+    @Test
+    public void testCodeuse() throws Exception{
+
+        eth = container.getService(ThreadEth.class);
+        container.startInstanciedThreads();
+        eth.communicate("cod", 0);
+        Sleep.sleep(2000);
     }
 }

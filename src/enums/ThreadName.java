@@ -21,6 +21,7 @@ package enums;
 
 import threads.AbstractThread;
 import threads.ThreadTimer;
+import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadEvents;
 import threads.dataHandlers.ThreadSensor;
 
@@ -36,15 +37,14 @@ public enum ThreadName
 	//BALISES(ThreadBalises.class),
 	EVENTS(ThreadEvents.class),
 	SENSOR(ThreadSensor.class),
-	// SERIAL(ThreadSerial.class); NE PAS DECOMMENTER ! LE THREAD SERIAL N'EST PAS UN THREAD CLASSIQUE !
+	ETHERNET(ThreadEth.class),
 	;
 
-	public Class<? extends AbstractThread> c;
+	public Class<? extends AbstractThread> cls;
 	
-	private ThreadName(Class<? extends AbstractThread> c)
+	private ThreadName(Class<? extends AbstractThread> cls)
 	{
-		this.c = c;
+		this.cls = cls;
 	}
-	
 
 }
