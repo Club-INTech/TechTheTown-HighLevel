@@ -462,7 +462,7 @@ public class SerialWrapper implements Service
     //========================================
 
     /**
-     * demande aux capteurs de fournir la distance entre le robot et le prochain obstacle
+     * Demande aux capteurs de fournir la distance entre le robot et le prochain obstacle
      * @return la distance en mm estimée par les capteurs avant un obstacle. Une valeur de 3000 est considérée infinie
      */
     public int getSensedDistance()
@@ -493,7 +493,6 @@ public class SerialWrapper implements Service
 
     /**
      * Demande a la carte capteurs de nous indiquer si le jumper de début de match est présent ou non
-     * Suuuuuuuuuuuus
      * @return vrai si le jumper est absent, faux sinon
      */
     public boolean isJumperAbsent()
@@ -518,7 +517,7 @@ public class SerialWrapper implements Service
     }
 
     /**
-     * recupere la valeur d'un capteur de contact
+     * Recupere la valeur d'un capteur de contact
      * @param sensor le capteur dont on veut recuperer la valeur
      * @return la valeur du capteur
      * @throws SerialConnexionException si erreur de connexion avec le capteur

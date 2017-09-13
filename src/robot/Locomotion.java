@@ -30,15 +30,12 @@ import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.serial.SerialConnexionException;
 import hook.Hook;
-import org.omg.IOP.ENCODING_CDR_ENCAPS;
 import smartMath.Vec2;
 import table.Table;
 import utils.Config;
 import utils.Log;
 import utils.Sleep;
 
-import java.io.IOException;
-import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
 
 /**
@@ -58,24 +55,24 @@ import java.util.ArrayList;
 public class Locomotion implements Service
 {
 
-	/** le log si on a des erreurs */
+    /** le log si on a des erreurs */
     private Log log;
-    
+
     /**la config ...*/
     private Config config;
-    
+
     /** la table sur laquelle evolue le robot*/
     private Table table;
-    
+
     /** le bas-niveau*/
-    private SerialWrapper serialWrapper;
-    
+    private EthWrapper ethWrapper;
+
     /** la longueur du robot (taille dans la direction où le robot avance)*/
     private int robotLength;
-    
+
     /**
      * rayon du cercle place devant le robot qui sert pour la detection
-     * 
+     *
      *la zone de détection d'obstacle est un disque comme suit:
      *     			          o  o
      *    			+----+ o        o		 Sens de déplacement du robot: ====>
@@ -98,57 +95,57 @@ public class Locomotion implements Service
      *                 detectionDistance
      */
     private int detectionDistance;
-    
+
     /**
      * Position "bas niveau" du robot, celle du robot
      * La vraie.
      */
     private Vec2 lowLevelPosition = new Vec2();
-    
+
     /**
      * Position "haut niveau" du robot, celle du robot
      * Celle qui commence toujours en bleu
      */
     private Vec2 highLevelPosition = new Vec2();
-    
+
     /**
      * la position visee au final par le deplacement
      */
     private Vec2 finalAim = new Vec2();
-    
+
     /**
      * orientation réelle du robot (symetrisee)
      * non connue par les classes de plus haut niveau
      */
     private double lowLevelOrientation;
-    
+
     /**
      * orientation réelle du robot non symetrisée (bleu)
      */
     private double highLevelOrientation;
-    
+
     /** Indique si la symétrie est activée (si le robot démarre du côté x<0)
      * La symétrie s'applique sur les déplacements et les actionneurs*/
     private boolean symetry;
-    
+
     /**temps d'attente entre deux boucles d'acquitement
      * Override par la config */
     private int feedbackLoopDelay = 50;
-    
+
     /**la distance dont le robot va avancer pour se dégager en cas de bloquage mécanique
      * Override par la config */
     private int distanceToDisengage = 50;
-    
+
     /**l'angle dont le robot va tourner pour se dégager en cas de bloquage mécanique
      * Override par la config */
     private double angleToDisengage;
-    
+
     /**
      * 	La distance maximale pour une correction translationnelle 
      * 	La correction ne sera effectuée que si le robot est loin de son point d'arrivée.
      */
     private final int maxLengthCorrectionThreeshold = 20;
-    
+
     /**
      * 	L'orientation maximale pour une correction rotationelle 
      * 	La correction ne sera effectuée que si le robot est assez eloigné de son orientation souhaitée.
@@ -162,11 +159,11 @@ public class Locomotion implements Service
     private final double maxRotationTurningStrategyIgnore = Math.PI/3;
 
     /**Booléen explicitant si le robot est prêt à tourner, utile pour le cercle de détection */
-	public boolean isRobotTurning=false;	
-	
-	/** nombre d'essais maximum après une BlockedException*/
+    public boolean isRobotTurning=false;
+
+    /** nombre d'essais maximum après une BlockedException*/
     private int maxRetriesIfBlocked=1;
-    
+
     /** nombre d'essais en cours après un BlockedException*/
     private int actualRetriesIfBlocked=0;
 
@@ -178,13 +175,13 @@ public class Locomotion implements Service
 
     /** Indique si le robot est en marche avant, utile pour les capteurs*/
     public boolean isRobotMovingForward;
-    
+
     /** Indique si le robot est en marche arrière, utile pour les capteurs*/
     public boolean isRobotMovingBackward;
 
     /** Donne la stratégie de rotation */
     private TurningStrategy turningStrategy = TurningStrategy.FASTEST;
-    
+
     /**Donne la stratégie de translation */
     private DirectionStrategy directionStrategy = DirectionStrategy.FASTEST;
 
@@ -223,20 +220,20 @@ public class Locomotion implements Service
      * @param log le fichier de log
      * @param config le fichier de config
      * @param table la table de jeu
-     * @param serialWrapper protocole de communication série
+     * @param ethWrapper protocole de communication série
      */
-    private Locomotion(Log log, Config config, Table table, SerialWrapper serialWrapper)
+    private Locomotion(Log log, Config config, Table table, EthWrapper ethWrapper)
     {
         this.log = log;
         this.config = config;
-        this.serialWrapper = serialWrapper;
+        this.ethWrapper = ethWrapper;
         this.table = table;
         USvalues = new ArrayList<Integer>(){{for(int i=0;i<4;i++)add(0);}};
         updateConfig();
     }
 
     /****************************
-    * GESTION DE LA TRAJECTOIRE *
+     * GESTION DE LA TRAJECTOIRE *
      ***************************/
 
 
@@ -394,25 +391,25 @@ public class Locomotion implements Service
     {
         log.debug("Tourner de "+Double.toString(angle));
 
-    	actualRetriesIfBlocked=0;
-		updateCurrentPositionAndOrientation();
+        actualRetriesIfBlocked=0;
+        updateCurrentPositionAndOrientation();
 
-    	/**
-    	 * calcul de la position visee du haut niveau
-    	 *   on vise une position eloignee mais on ne s'y deplacera pas, le robot ne fera que tourner
-    	 */
-    	Vec2 aim = highLevelPosition.plusNewVector(new Vec2(1000.0,angle));
-    	finalAim = aim;
+        /**
+         * calcul de la position visee du haut niveau
+         *   on vise une position eloignee mais on ne s'y deplacera pas, le robot ne fera que tourner
+         */
+        Vec2 aim = highLevelPosition.plusNewVector(new Vec2(1000.0,angle));
+        finalAim = aim;
 
         isRobotMovingForward=true;
-		//là il faut calculer ça donne le sens
+        //là il faut calculer ça donne le sens
 
         moveToPointHanldeExceptions(aim, hooks, true, headingToWall,1 , mustDetect);
         isRobotMovingForward=false;
 
-    	actualRetriesIfBlocked=0;
+        actualRetriesIfBlocked=0;
     }
-    
+
     /**
      * Fait avancer le robot de "distance" (en mm), et vérifie avant s'il n'y a pas d'obstacle proche sur le chemin
      * @param distance la distance dont le robot doit se deplacer
@@ -423,12 +420,12 @@ public class Locomotion implements Service
      */
     public void moveLengthwise(int distance, ArrayList<Hook> hooks, boolean wall, boolean mustDetect) throws UnableToMoveException
     {
-    	actualRetriesIfBlocked=0;
-    	
-		updateCurrentPositionAndOrientation();
+        actualRetriesIfBlocked=0;
+
+        updateCurrentPositionAndOrientation();
 
         log.debug("Avancer de "+Integer.toString(distance));
-        
+
         /**
          * aim est la visée du haut niveau, qui commence toujours à droite
          * TODO; trouver ce que veut dire ce commentaire
@@ -451,17 +448,17 @@ public class Locomotion implements Service
             log.debug ("Ennemi détecté dans le sens de marche, on attend");
             isEnemy = table.getObstacleManager().isEnnemyForwardOrBackWard(detectionDistance,highLevelPosition, aim, highLevelOrientation);
         }
-        
+
         // Pour les capteurs
         if(distance>=0)
-        	isRobotMovingForward=true;
-        else 
-        	isRobotMovingBackward=true;
-		moveToPointHanldeExceptions(aim, hooks, distance >= 0, wall, 0, mustDetect);
-		isRobotMovingForward=false;
-    	isRobotMovingBackward=false;
+            isRobotMovingForward=true;
+        else
+            isRobotMovingBackward=true;
+        moveToPointHanldeExceptions(aim, hooks, distance >= 0, wall, 0, mustDetect);
+        isRobotMovingForward=false;
+        isRobotMovingBackward=false;
 
-		actualRetriesIfBlocked=0;// on reinitialise
+        actualRetriesIfBlocked=0;// on reinitialise
     }
 
     /**
@@ -502,13 +499,8 @@ public class Locomotion implements Service
                 log.critical( e.logStack());
                 log.critical("Haut : Catch de "+e+" dans moveToPointException");
 
-                try {
-                    serialWrapper.setTranslationnalSpeed(Speed.SLOW_ALL.translationSpeed);
-                    serialWrapper.setRotationnalSpeed(Speed.SLOW_ALL.rotationSpeed);
-                }catch (SerialConnexionException e0){
-                    log.critical( e0.logStack());
-                    log.debug("On ne fait rien après ceci: Catch de "+e0+" dans moveToPointException");
-                }
+                ethWrapper.setTranslationnalSpeed(Speed.SLOW_ALL.translationSpeed);
+                ethWrapper.setRotationnalSpeed(Speed.SLOW_ALL.rotationSpeed);
 
                 // si on s'y attendait, on ne fais rien.
 
@@ -557,22 +549,22 @@ public class Locomotion implements Service
                                 }
 
                                 log.debug("On tente un moveLengthwise");
-                                serialWrapper.moveLengthwise(sens* distanceToDisengage);// On avance ou on recule conformément a ce qui devrait nous dégager
+                                ethWrapper.moveLengthwise(sens* distanceToDisengage);// On avance ou on recule conformément a ce qui devrait nous dégager
                                 while(!isMotionEnded()){
                                     Sleep.sleep(2);
                                 }
                                 log.debug("On retente le turn");
-                                serialWrapper.turn(lowLevelOrientation+angleToDisengage*turnOnly);
+                                ethWrapper.turn(lowLevelOrientation+angleToDisengage*turnOnly);
                                 while(!isMotionEnded()){
                                     Sleep.sleep(2);
                                 }
                             }
 
                             else if(isMovementForward) {
-                                serialWrapper.moveLengthwise(-distanceToDisengage);
+                                ethWrapper.moveLengthwise(-distanceToDisengage);
                             }
                             else {
-                                serialWrapper.moveLengthwise(distanceToDisengage);
+                                ethWrapper.moveLengthwise(distanceToDisengage);
                             }
 
                             while (!isMotionEnded())
@@ -584,14 +576,9 @@ public class Locomotion implements Service
                             }
                             else{
                                 doItAgain = false;
-                                serialWrapper.setTranslationnalSpeed((float)transSpeed);
-                                serialWrapper.setRotationnalSpeed((float)rotSpeed);
+                                ethWrapper.setTranslationnalSpeed((float)transSpeed);
+                                ethWrapper.setRotationnalSpeed((float)rotSpeed);
                             }
-                        }
-                        catch (SerialConnexionException e1)
-                        {
-                            log.critical( e1.logStack());
-                            log.debug("On ne fait rien après ceci: Catch de "+e1+" dans moveToPointException");
                         }
                         catch (BlockedException e1)
                         {
@@ -633,13 +620,6 @@ public class Locomotion implements Service
 
                 doItAgain = false;
             }
-            catch(SerialConnexionException e)
-            {
-                log.critical( e.logStack());
-
-                // TODO : gérer cette exception
-            }
-
         }
         while(doItAgain)
                 ;
@@ -659,7 +639,7 @@ public class Locomotion implements Service
      * @throws BlockedException si le robot a un bloquage mecanique
      * @throws UnexpectedObstacleOnPathException si le robot rencontre un obstacle inattendu sur son chemin (par les capteurs)
      */
-    private void moveToPointHandleHookAndDetectEnnemy(Vec2 aim, ArrayList<Hook> hooks, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws UnexpectedObstacleOnPathException, BlockedException, SerialConnexionException
+    private void moveToPointHandleHookAndDetectEnnemy(Vec2 aim, ArrayList<Hook> hooks, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws UnexpectedObstacleOnPathException, BlockedException
     {
         moveToPointSymmetry(aim, isMovementForward, mustDetect, turnOnly, false);
         do
@@ -811,51 +791,46 @@ public class Locomotion implements Service
             }
         }
 
-        try {
-            if (isCorrection && Math.abs(delta) > maxRotationCorrectionThreeshold) {
-                isRobotTurning = true;// prochain ordre : on tourne
+        if (isCorrection && Math.abs(delta) > maxRotationCorrectionThreeshold) {
+            isRobotTurning = true;// prochain ordre : on tourne
 
-                //On utilise la stratégie FASTEST pour les petits mouvements
-                serialWrapper.turn(angle, TurningStrategy.FASTEST);  // On ne tourne que si on est assez loin de l'orientation voulu
+            //On utilise la stratégie FASTEST pour les petits mouvements
+            ethWrapper.turn(angle, TurningStrategy.FASTEST);  // On ne tourne que si on est assez loin de l'orientation voulu
 
-                log.debug("Angle corrigé");
-            }
-            else if(!isCorrection && Math.abs(delta) < maxRotationTurningStrategyIgnore)//Si ce n'est pas une correction
-            {
-                if (Math.abs(delta) > maxRotationCorrectionThreeshold) {// on ne tourne vraiment que si l'angle souhaité est vraiment different.
-                    isRobotTurning = true;// prochain ordre : on tourne
-                }
-                serialWrapper.turn(angle, TurningStrategy.FASTEST);
-            }
-            else if (!isCorrection)// Si ca n'est pas  une correction et qu'on dépasse l'angle limite
-            {
-                if (Math.abs(delta) > maxRotationCorrectionThreeshold) {// on ne tourne vraiment que si l'angle souhaité est vraiment different.
-                    isRobotTurning = true;// prochain ordre : on tourne
-                }
-                serialWrapper.turn(angle, cTurningStrategy);
-            }
-
-            // sans virage : la première rotation est bloquante
-            if (!trajectoire_courbe)
-                // on attend la fin du mouvement
-                while (!isMotionEnded()) {
-                    if (mustDetect)
-                    {
-                        if(basicDetection)
-                            basicDetect(false, true);
-                    }
-                    Sleep.sleep(feedbackLoopDelay);
-                }
-
-            isRobotTurning = false; // fin du turn
-
-            if (!(turnOnly || isCorrection))
-                serialWrapper.moveLengthwise(distance);
-        } catch (SerialConnexionException e) {
-            log.critical("Catch de " + e + " dans moveToPointSerialOrder");
-            log.critical(e.logStack());
-            isRobotTurning = false; // Meme avec un catch, on a fini de tourner
+            log.debug("Angle corrigé");
         }
+        else if(!isCorrection && Math.abs(delta) < maxRotationTurningStrategyIgnore)//Si ce n'est pas une correction
+        {
+            if (Math.abs(delta) > maxRotationCorrectionThreeshold) {// on ne tourne vraiment que si l'angle souhaité est vraiment different.
+                isRobotTurning = true;// prochain ordre : on tourne
+            }
+            ethWrapper.turn(angle, TurningStrategy.FASTEST);
+        }
+        else if (!isCorrection)// Si ca n'est pas  une correction et qu'on dépasse l'angle limite
+        {
+            if (Math.abs(delta) > maxRotationCorrectionThreeshold) {// on ne tourne vraiment que si l'angle souhaité est vraiment different.
+                isRobotTurning = true;// prochain ordre : on tourne
+            }
+            ethWrapper.turn(angle, cTurningStrategy);
+        }
+
+        // sans virage : la première rotation est bloquante
+        if (!trajectoire_courbe)
+            // on attend la fin du mouvement
+            while (!isMotionEnded()) {
+                if (mustDetect)
+                {
+                    if(basicDetection)
+                        basicDetect(false, true);
+                }
+                Sleep.sleep(feedbackLoopDelay);
+            }
+
+        isRobotTurning = false; // fin du turn
+
+        if (!(turnOnly || isCorrection))
+            ethWrapper.moveLengthwise(distance);
+
 
     }
 
@@ -865,13 +840,13 @@ public class Locomotion implements Service
      * @param aim la point vise (non symetrisee)
      * @param isMovementForward vrai si on va en avant et faux si on va en arriere
      * @throws BlockedException si le robot a un bloquage mecanique
-     * @throws UnexpectedObstacleOnPathException 
+     * @throws UnexpectedObstacleOnPathException
      */
     private void correctAngle(Vec2 aim, boolean isMovementForward, boolean mustDetect) throws BlockedException, UnexpectedObstacleOnPathException
     {
-    	//envoi de la consigne avec turnOnly a false et a isCorrection a true (c'est bien une correction)
-    	//la correction est toujours un turnOnly, on evite les doublons d'où le turnOnly à false.
-    	moveToPointSymmetry(aim, isMovementForward, mustDetect, false, true);
+        //envoi de la consigne avec turnOnly a false et a isCorrection a true (c'est bien une correction)
+        //la correction est toujours un turnOnly, on evite les doublons d'où le turnOnly à false.
+        moveToPointSymmetry(aim, isMovementForward, mustDetect, false, true);
     }
 
 
@@ -912,7 +887,7 @@ public class Locomotion implements Service
      * test si le cercle devant (ou derriere en fonction du mouvement) est vide d'obstacle
      * @param front vrai si on veut detecter a l'avant du robot (donc si on avance en marche avant)
      * @param isTurnOnly On detecte differement si on tourne ou translate
-     * @param aim 
+     * @param aim
      * @throws UnexpectedObstacleOnPathException si obstacle sur le chemin
      */
     public void detectEnemyInDisk(boolean front, boolean isTurnOnly, Vec2 aim) throws UnexpectedObstacleOnPathException
@@ -920,20 +895,20 @@ public class Locomotion implements Service
         int signe = -1;
         if(front)
             signe = 1;
-        
+
         //rayon du cercle de detection
         int detectionRadius = robotLength/2 + detectionRay;
-        
+
         //centre du cercle de detection
-        Vec2 detectionCenter = new Vec2((int)(signe * detectionRadius * Math.cos(highLevelOrientation)), 
-        								(int)(signe * detectionRadius * Math.sin(highLevelOrientation)) ); //centre par rapport au centre de position du robot
-        	
+        Vec2 detectionCenter = new Vec2((int)(signe * detectionRadius * Math.cos(highLevelOrientation)),
+                (int)(signe * detectionRadius * Math.sin(highLevelOrientation)) ); //centre par rapport au centre de position du robot
+
         detectionCenter.plus(highLevelPosition);
 
         // si on ne tourne pas, on regarde devant nous : sinon, on regarde autour de nous
         if(isTurnOnly || isRobotTurning)
-        	detectionCenter=highLevelPosition;
-        
+            detectionCenter=highLevelPosition;
+
         if(table.getObstacleManager().isDiscObstructed(detectionCenter, detectionRay))
         {
             log.warning("Lancement de UnexpectedObstacleOnPathException dans detectEnemyInLocatedDisk");
@@ -969,10 +944,10 @@ public class Locomotion implements Service
         //log.debug(closest);
         if(closest <= distance && closest > -150)
         {
-        	log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de " 
-        			 + table.getObstacleManager().distanceToClosestEnemy(highLevelPosition) +" mm)");
-        	immobilise();
-        	throw new UnexpectedObstacleOnPathException();
+            log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de "
+                    + table.getObstacleManager().distanceToClosestEnemy(highLevelPosition) +" mm)");
+            immobilise();
+            throw new UnexpectedObstacleOnPathException();
         }
     }
 
@@ -1009,83 +984,66 @@ public class Locomotion implements Service
      */
     private boolean isMotionEnded() throws BlockedException
     {
-        try {
-            // récupérations des informations d'acquittement
-            boolean[] infos = serialWrapper.isRobotMovingAndAbnormal();
-            // 0-false : le robot ne bouge pas
 
-            //log.debug("Test deplacement : reponse "+ infos[0] +" :: "+ infos[1], this);
+        // récupérations des informations d'acquittement
+        boolean[] infos = ethWrapper.isRobotMovingAndAbnormal();
+        // 0-false : le robot ne bouge pas
 
-            if (!infos[0])//si le robot ne bouge plus
+        //log.debug("Test deplacement : reponse "+ infos[0] +" :: "+ infos[1], this);
+
+        if (!infos[0])//si le robot ne bouge plus
+        {
+            if (infos[1])//si le robot patine, il est bloqué
             {
-                if (infos[1])//si le robot patine, il est bloqué
-                {
-                    log.critical("Robot bloqué, lancement de BlockedException dans isMotionEnded");
-                    throw new BlockedException();
-                } else {
-                    return !infos[0];//On est arrivés
-                }
-            }
-            else if(isForcing && System.currentTimeMillis() > this.timeExpected)
-            {
-                log.critical("Le robot force, on l'arrête.");
-                this.immobilise();
+                log.critical("Robot bloqué, lancement de BlockedException dans isMotionEnded");
                 throw new BlockedException();
-            }
-            else {
-                return !infos[0];//toujours pas arrivé
+            } else {
+                return !infos[0];//On est arrivés
             }
         }
-        catch (SerialConnexionException e)
+        else if(isForcing && System.currentTimeMillis() > this.timeExpected)
         {
-            log.critical("Catch de "+e+" dans isMotionEnded");
-            log.critical( e.logStack());
-            return false;
+            log.critical("Le robot force, on l'arrête.");
+            this.immobilise();
+            throw new BlockedException();
+        }
+        else {
+            return !infos[0];//toujours pas arrivé
         }
     }
 
     /**
      * Met à jour position et orientation via la carte d'asservissement.
      * Donne la veritable positions du robot sur la table
-     * @throws SerialConnexionException
      */
-    
+
     private void updateCurrentPositionAndOrientation()
     {
-        try 
-        {
-            float[] infos = serialWrapper.getCurrentPositionAndOrientation();
+        float[] infos = ethWrapper.getCurrentPositionAndOrientation();
 
-            if(infos == null)
-                return;
-            
-            lowLevelPosition.setX((int)infos[0]);
-            lowLevelPosition.setY((int)infos[1]);
+        if(infos == null)
+            return;
 
-            double orientationConvention = infos[2]%(2*Math.PI);
-            if (orientationConvention > Math.PI){
-                orientationConvention -= 2*Math.PI;
-            }
-            else if(orientationConvention < -Math.PI){
-                orientationConvention += 2*Math.PI;
-            }
+        lowLevelPosition.setX((int)infos[0]);
+        lowLevelPosition.setY((int)infos[1]);
 
-            lowLevelOrientation = orientationConvention;
-            
-            highLevelPosition=lowLevelPosition.clone();
-            highLevelOrientation=lowLevelOrientation;
-            
-            if(symetry)
-            {
-            	highLevelPosition.setX( -highLevelPosition.getX());
-            	highLevelOrientation=Math.PI-highLevelOrientation;
-            }
-            
+        double orientationConvention = infos[2]%(2*Math.PI);
+        if (orientationConvention > Math.PI){
+            orientationConvention -= 2*Math.PI;
         }
-        catch(SerialConnexionException e)
+        else if(orientationConvention < -Math.PI){
+            orientationConvention += 2*Math.PI;
+        }
+
+        lowLevelOrientation = orientationConvention;
+
+        highLevelPosition=lowLevelPosition.clone();
+        highLevelOrientation=lowLevelOrientation;
+
+        if(symetry)
         {
-        	log.critical("Catch de "+e+" dans updateCurrentPositionAndOrientation");
-			log.critical( e.logStack());
+            highLevelPosition.setX( -highLevelPosition.getX());
+            highLevelOrientation=Math.PI-highLevelOrientation;
         }
     }
 
@@ -1095,23 +1053,8 @@ public class Locomotion implements Service
     public void immobilise()
     {
         log.warning("Arrêt du robot en "+lowLevelPosition);
-        try
-        {
-            serialWrapper.immobilise();
-        }
-        catch (SerialConnexionException e)
-        {
-            log.critical("Catch de "+e+" dans immobilise");
-            log.critical( e.logStack());
-        }
-    }
+        ethWrapper.immobilise();
 
-    /**
-     * Ferme la série
-     */
-    public void close()
-    {
-        serialWrapper.closeLocomotion();
     }
 
 
@@ -1123,25 +1066,17 @@ public class Locomotion implements Service
     /**
      * Met à jour la position. A ne faire qu'en début de match, ou en cas de recalage
      * @param positionWanted
-     * @throws SerialConnexionException
      */
     public void setPosition(Vec2 positionWanted)
     {
         this.lowLevelPosition = positionWanted.clone();
         this.highLevelPosition = positionWanted.clone();
         if(symetry)
-        	this.lowLevelPosition.setX(-this.lowLevelPosition.getX());// on lui met la vraie position
-		try 
-		{
-			serialWrapper.setX(this.lowLevelPosition.getX());
-	        serialWrapper.setY(this.lowLevelPosition.getY());
-		} 
-		catch (SerialConnexionException e)
-		{
-            log.critical("Catch de "+e+" dans setPosition");
-			log.critical( e.logStack());
-		}
-		Sleep.sleep(300);
+            this.lowLevelPosition.setX(-this.lowLevelPosition.getX());// on lui met la vraie position
+        ethWrapper.setX(this.lowLevelPosition.getX());
+        ethWrapper.setY(this.lowLevelPosition.getY());
+
+        Sleep.sleep(300);
     }
 
     /**
@@ -1153,16 +1088,8 @@ public class Locomotion implements Service
         this.lowLevelOrientation = orientation;
         this.highLevelOrientation = orientation;
         if(symetry)
-        	this.lowLevelOrientation = Math.PI-this.lowLevelOrientation; // la vraie orientation
-        try 
-        {
-    		serialWrapper.setOrientation(this.lowLevelOrientation);
-        }
-        catch (SerialConnexionException e) 
-        {
-            log.critical("Catch de "+e+" dans setOrientation");
-			log.critical( e.logStack());
-        }
+            this.lowLevelOrientation = Math.PI-this.lowLevelOrientation; // la vraie orientation
+        ethWrapper.setOrientation(this.lowLevelOrientation);
     }
 
     /**
@@ -1212,86 +1139,78 @@ public class Locomotion implements Service
     /** Stratégie de déplacement */
     public TurningStrategy getTurningOrders()
     {
-    	return turningStrategy;
+        return turningStrategy;
     }
-    
+
     public void setTurningOrders(TurningStrategy turning)
     {
-    	this.turningStrategy = turning;
+        this.turningStrategy = turning;
     }
-    
+
     public DirectionStrategy getDirectionStrategy()
     {
-    	return directionStrategy;
+        return directionStrategy;
     }
-    
+
     public void setDirectionOrders(DirectionStrategy motion)
     {
-    	this.directionStrategy = motion;
+        this.directionStrategy = motion;
     }
 
     /** Désactive l'asservissement en position et celui en vitesse (YOLO)
      */
-    public void disableFeedbackLoop() throws SerialConnexionException
+    public void disableFeedbackLoop()
     {
-        serialWrapper.disableRotationnalFeedbackLoop();
-        serialWrapper.disableTranslationnalFeedbackLoop();
-        serialWrapper.disableSpeedFeedbackLoop();
+        ethWrapper.disableRotationnalFeedbackLoop();
+        ethWrapper.disableTranslationnalFeedbackLoop();
+        ethWrapper.disableSpeedFeedbackLoop();
     }
 
     /** Active l'asservissement en position et celui en vitesse
      */
-    public void enableFeedbackLoop() throws SerialConnexionException
+    public void enableFeedbackLoop()
     {
-        serialWrapper.enableRotationnalFeedbackLoop();
-        serialWrapper.enableTranslationnalFeedbackLoop();
-        serialWrapper.enableSpeedFeedbackLoop();
+        ethWrapper.enableRotationnalFeedbackLoop();
+        ethWrapper.enableTranslationnalFeedbackLoop();
+        ethWrapper.enableSpeedFeedbackLoop();
     }
 
     /** Désactive l'asservissement en position
      */
     public void desasservit()
     {
-        try
-        {
-            serialWrapper.disableRotationnalFeedbackLoop();
-            serialWrapper.disableTranslationnalFeedbackLoop();
-        } catch (SerialConnexionException e)
-        {
-            log.critical("Catch de "+e+" dans desasservit");
-			log.critical( e.logStack());
-
-        }
+        ethWrapper.disableRotationnalFeedbackLoop();
+        ethWrapper.disableTranslationnalFeedbackLoop();
     }
 
     /** Activation/désactivation des différents asservissements
      */
-    public void disableRotationnalFeedbackLoop() throws SerialConnexionException
+    public void disableRotationnalFeedbackLoop()
     {
-        serialWrapper.disableRotationnalFeedbackLoop();
+        ethWrapper.disableRotationnalFeedbackLoop();
     }
 
-    public void enableRotationnalFeedbackLoop() throws SerialConnexionException
+    public void enableRotationnalFeedbackLoop()
     {
-        serialWrapper.enableRotationnalFeedbackLoop();
+        ethWrapper.enableRotationnalFeedbackLoop();
     }
 
-    public void disableTranslationalFeedbackLoop() throws SerialConnexionException
+    public void disableTranslationalFeedbackLoop()
     {
-        serialWrapper.disableTranslationnalFeedbackLoop();
+        ethWrapper.disableTranslationnalFeedbackLoop();
     }
 
     /** Vitesse de déplacement
      */
-    public void setRotationnalSpeed(double rotationSpeed) throws SerialConnexionException
+    public void setRotationnalSpeed(double rotationSpeed)
     {
-        serialWrapper.setRotationnalSpeed(rotationSpeed);
+        ethWrapper.setRotationnalSpeed(rotationSpeed);
         this.rotSpeed = rotationSpeed;
     }
 
-    public void setTranslationnalSpeed(float speed) throws SerialConnexionException
+    public void setTranslationnalSpeed(float speed)
     {
-        serialWrapper.setTranslationnalSpeed(speed);
+        ethWrapper.setTranslationnalSpeed(speed);
         this.transSpeed = speed;
     }
 
@@ -1299,21 +1218,13 @@ public class Locomotion implements Service
      * Change le type de mouvement forcé/normal
      * @param choice true pour forcer les mouvements
      */
-    public synchronized void setForceMovement(boolean choice) throws SerialConnexionException
+    public synchronized void setForceMovement(boolean choice)
     {
         if(isForcing != choice)
         {
-            serialWrapper.setForceMovement(choice);
+            ethWrapper.setForceMovement(choice);
             this.isForcing = choice;
         }
-    }
-
-    /**
-     * Change l'accélération en plus fluide mais plus lente
-     */
-    public synchronized void setSmoothAcceleration(boolean choice) throws SerialConnexionException
-    {
-        serialWrapper.setSmoothAcceleration(choice);
     }
 
     /** Active/désactive la basicDetection
@@ -1350,62 +1261,58 @@ public class Locomotion implements Service
 
 
 
+    /**************************************************
+     * 					JUNITS
+     **************************************************/
 
+    // Aller Clément, tu peux le faire !
+    // Je te laisse le carte blanche, tu fera mieux cette fois ci ^^
 
-
-	
-	/**************************************************
-	 * 					JUNITS
-	 **************************************************/
-
-	// Aller Clément, tu peux le faire !
-	// Je te laisse le carte blanche, tu fera mieux cette fois ci ^^
-	
     /**
      * FONCTION JUNIT TEST
      */
-	 @SuppressWarnings("javadoc")
-	public void JUNIT_moveToPointForwardBackward(Vec2 aim, ArrayList<Hook> hooks, boolean mur, DirectionStrategy strategy, int turnOnly, boolean mustDetect) throws UnableToMoveException
+    @SuppressWarnings("javadoc")
+    public void JUNIT_moveToPointForwardBackward(Vec2 aim, ArrayList<Hook> hooks, boolean mur, DirectionStrategy strategy, int turnOnly, boolean mustDetect) throws UnableToMoveException
     {
-		 moveToPointForwardBackward(aim, hooks, mur, strategy, turnOnly, mustDetect);
+        moveToPointForwardBackward(aim, hooks, mur, strategy, turnOnly, mustDetect);
     }
-	 
-	    
+
+
     /**
      * FONCTION JUNIT TEST
      */
-	 @SuppressWarnings("javadoc")
+    @SuppressWarnings("javadoc")
     public void JUNIT_moveToPointException(Vec2 aim, ArrayList<Hook> hooks, boolean isMovementForward, boolean headingToWall, int turnOnly, boolean mustDetect) throws UnableToMoveException
     {
 
-    	moveToPointHanldeExceptions(aim, hooks, isMovementForward, headingToWall, turnOnly, mustDetect);
+        moveToPointHanldeExceptions(aim, hooks, isMovementForward, headingToWall, turnOnly, mustDetect);
     }
-    
+
     /**
      * FONCTION POUR JUNIT. 
      */
-	 @SuppressWarnings("javadoc")
+    @SuppressWarnings("javadoc")
     public void JUNIT_moveToPointCorrectAngleAndDetectEnnemy(Vec2 aim, ArrayList<Hook> hooks, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws UnexpectedObstacleOnPathException, BlockedException, SerialConnexionException
     {
-    	moveToPointHandleHookAndDetectEnnemy(aim, hooks, isMovementForward, turnOnly, mustDetect);
-    }
-    
-    /**
-     *  POUR JUNIT
-     */
-	 @SuppressWarnings("javadoc")
-    public boolean JUNIT_isMotionEnded()
-    {
-    	return JUNIT_isMotionEnded();
+        moveToPointHandleHookAndDetectEnnemy(aim, hooks, isMovementForward, turnOnly, mustDetect);
     }
 
     /**
      *  POUR JUNIT
      */
-	 @SuppressWarnings("javadoc")
+    @SuppressWarnings("javadoc")
+    public boolean JUNIT_isMotionEnded()
+    {
+        return JUNIT_isMotionEnded();
+    }
+
+    /**
+     *  POUR JUNIT
+     */
+    @SuppressWarnings("javadoc")
     public void JUNIT_correctAngle(Vec2 aim, boolean isMovementForward, boolean mustDetect) throws BlockedException, UnexpectedObstacleOnPathException
     {
-    	correctAngle(aim, isMovementForward, mustDetect);
+        correctAngle(aim, isMovementForward, mustDetect);
     }
 
     /**
@@ -1413,25 +1320,25 @@ public class Locomotion implements Service
      */
     public void JUNIT_updateCurrentPositionAndOrientation()
     {
-    	updateCurrentPositionAndOrientation();
+        updateCurrentPositionAndOrientation();
     }
 
     /**
      *  POUR JUNIT
      */
-	 @SuppressWarnings("javadoc")
+    @SuppressWarnings("javadoc")
     public void JUNIT_moveToPointSymmetry(Vec2 aim, boolean isMovementForward, boolean mustDetect, boolean turnOnly,boolean isCorrection) throws BlockedException, UnexpectedObstacleOnPathException
     {
-    	moveToPointSymmetry(aim, isMovementForward, mustDetect, turnOnly, isCorrection);
+        moveToPointSymmetry(aim, isMovementForward, mustDetect, turnOnly, isCorrection);
     }
 
     /**
      *  POUR JUNIT
      */
-	 @SuppressWarnings("javadoc")
+    @SuppressWarnings("javadoc")
     public void JUNIT_moveToPointSerialOrder(Vec2 symmetrisedAim, Vec2 givenPosition, double angle, double distance, boolean mustDetect,boolean turnOnly, boolean isCorrection) throws BlockedException, UnexpectedObstacleOnPathException
     {
-    	moveToPointSerialOrder( symmetrisedAim, givenPosition, angle, distance, mustDetect, turnOnly,  isCorrection);
+        moveToPointSerialOrder( symmetrisedAim, givenPosition, angle, distance, mustDetect, turnOnly,  isCorrection);
     }
 
 }
