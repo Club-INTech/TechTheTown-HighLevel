@@ -182,11 +182,11 @@ public class ThreadSensor extends AbstractThread
 	 * @param table La table a l'intérieure de laquelle le thread doit croire évoluer
 	 * @param ethWrapper La carte capteurs avec laquelle le thread va parler
 	 */
-	public ThreadSensor (Config config, Log log, Table table, Robot robot, EthWrapper ethWrapper, ThreadSerial serial)
+	public ThreadSensor (Config config, Log log, Table table, Robot robot, EthWrapper ethWrapper, ThreadEth eth)
 	{
 		super(config, log);
 		this.ethWrapper = ethWrapper;
-        this.valuesReceived = serial.getUltrasoundBuffer();
+        this.valuesReceived = eth.getUltrasoundBuffer();
 		Thread.currentThread().setPriority(6);
 		mRobot = robot;
         mTable = table;
@@ -211,7 +211,7 @@ public class ThreadSensor extends AbstractThread
             e.printStackTrace();
         }
 
-        while(ethWrapper.isJumperAbsent())
+        /* while(ethWrapper.isJumperAbsent())
         {
             try {
                 Thread.sleep(100);
@@ -226,7 +226,7 @@ public class ThreadSensor extends AbstractThread
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
 		// maintenant que le jumper est retiré, le match a commencé
 		ThreadTimer.matchEnded = false;

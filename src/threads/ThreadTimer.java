@@ -22,6 +22,7 @@ package threads;
 import robot.EthWrapper;
 import robot.Robot;
 import table.Table;
+import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadSerial;
 import utils.Config;
 import utils.Log;
@@ -230,7 +231,6 @@ public class ThreadTimer extends AbstractThread
 
 		//mLocomotionCardWrapper.shutdownSTM();
 		Log.stop();
-		ThreadSerial.shutdown = true;
 
 		// et on coupe la connexion avec la carte d'asser comme ca on est sur qu'aucune partie du code ne peut faire quoi que ce soit pour faire bouger le robot
 	}

@@ -29,6 +29,7 @@ import exceptions.serial.SerialConnexionException;
 import hook.Hook;
 import org.junit.Before;
 import org.junit.Test;
+import robot.EthWrapper;
 import robot.Locomotion;
 import robot.SerialWrapper;
 import scripts.ScriptManager;
@@ -37,6 +38,7 @@ import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
+import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadSensor;
 import threads.dataHandlers.ThreadSerial;
 import utils.Config;
@@ -55,13 +57,10 @@ public class JUnit_Sensors extends JUnit_Test
 {
 
 	/** The capteurs. */
-	SerialWrapper capteurs;
-	
+	private EthWrapper capteurs;
 	private Locomotion mLocomotion;
 	private ScriptManager scriptManager;
-	
-	GameState state;
-
+	private GameState state;
 
 	/* (non-Javadoc)
 	 * @see tests.JUnit_Test#setUp()
@@ -74,7 +73,7 @@ public class JUnit_Sensors extends JUnit_Test
 		scriptManager = container.getService(ScriptManager.class);
 
 		log.debug("JUnit_ActionneursTest.setUp()");
-		capteurs = container.getService(SerialWrapper.class);
+		capteurs = container.getService(EthWrapper.class);
 		
 		config.set("capteurs_on", "true");
 				
@@ -84,8 +83,7 @@ public class JUnit_Sensors extends JUnit_Test
 		mLocomotion.setPosition(Table.entryPosition); // milieu de table
 		mLocomotion.setOrientation(Math.PI);
 
-        container.getService(ThreadInterface.class);
-        container.getService(ThreadSerial.class);
+        container.getService(ThreadEth.class);
 		container.getService(ThreadSensor.class);
         container.getService(Log.class);
         container.getService(Table.class);

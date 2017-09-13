@@ -30,6 +30,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import robot.EthWrapper;
 import robot.Locomotion;
 import robot.SerialWrapper;
 import smartMath.Vec2;
@@ -60,7 +61,7 @@ public class JUnit_Locomotion extends JUnit_Test
 
 	/** The deplacements. */
 	private Locomotion mLocomotion;
-	private SerialWrapper cardWrapper;
+	private EthWrapper cardWrapper;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
@@ -81,7 +82,7 @@ public class JUnit_Locomotion extends JUnit_Test
 		super.setUp();
 		log.debug("JUnit_DeplacementsTest.setUp()");
 		mLocomotion = container.getService(Locomotion.class);
-		cardWrapper= container.getService(SerialWrapper.class);
+		cardWrapper= container.getService(EthWrapper.class);
 		config.set("couleur", "vert");
 		mLocomotion.updateConfig();
 		mLocomotion.setPosition(new Vec2 (1381,1000));
@@ -168,6 +169,7 @@ public class JUnit_Locomotion extends JUnit_Test
 			}
 		}
 	}
+
 	/**
 	 * 
 	 * 
