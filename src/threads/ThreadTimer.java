@@ -22,8 +22,6 @@ package threads;
 import robot.EthWrapper;
 import robot.Robot;
 import table.Table;
-import threads.dataHandlers.ThreadEth;
-import threads.dataHandlers.ThreadSerial;
 import utils.Config;
 import utils.Log;
 

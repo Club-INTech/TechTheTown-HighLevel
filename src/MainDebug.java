@@ -25,7 +25,6 @@ import graphics.AffichageDebug;
 import hook.Hook;
 import robot.EthWrapper;
 import robot.Locomotion;
-import robot.SerialWrapper;
 import scripts.ScriptManager;
 import strategie.GameState;
 import table.Table;
