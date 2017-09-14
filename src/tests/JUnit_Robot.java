@@ -19,8 +19,15 @@
 
 package tests;
 
+import enums.ScriptNames;
+import hook.Hook;
 import org.junit.Before;
+import org.junit.Test;
 import robot.Robot;
+import scripts.ScriptManager;
+import strategie.GameState;
+
+import java.util.ArrayList;
 
 
 /**
@@ -30,7 +37,9 @@ public class JUnit_Robot extends JUnit_Test
 {
     
     /** The robotvrai. */
-    Robot robotReal;
+    private Robot robotReal;
+    private ScriptManager scriptManager;
+    private GameState state;
     
     /* (non-Javadoc)
      * @see tests.JUnit_Test#setUp()
@@ -39,17 +48,14 @@ public class JUnit_Robot extends JUnit_Test
     public void setUp() throws Exception {
         super.setUp();
         robotReal = container.getService(Robot.class);
+        scriptManager = container.getService(ScriptManager.class);
+        state = container.getService(GameState.class);
+
+        container.startInstanciedThreads();
     }
 
-    
-    // TODO : tester chaque action de cette facon
-    /*
     @Test
-    public void test_takefire() throws Exception
-    {
-        robotvrai.initialiser_actionneurs_deplacements();
-        Sleep.sleep(2000);
-        robotvrai.takefire(Cote.GAUCHE, Cote.GAUCHE);
+    public void testScript() throws Exception {
+        scriptManager.getScript(ScriptNames.CLOSE_DOORS).goToThenExec(0, state, new ArrayList<Hook>());
     }
-*/
 }

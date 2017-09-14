@@ -714,13 +714,6 @@ public class Robot implements Service {
 			robotWidth = Integer.parseInt(config.getProperty("largeur_robot"));
 			position = Table.entryPosition;
 			orientation = Math.PI;
-			this.dejaFait.put(ScriptNames.SCRIPTED_GO_TO_MODULEFOND,false);
-			this.dejaFait.put(ScriptNames.SCRIPTED_GO_TO_CRATERE_PRES_BASE,false);
-			this.dejaFait.put(ScriptNames.SCRIPTED_GO_TO_CRATERE_LIVRAISON_BOULES1,false);
-			this.dejaFait.put(ScriptNames.SCRIPTED_GO_TO_CRATERE_LIVRAISON_BOULES2,false);
-			this.dejaFait.put(ScriptNames.SCRIPTED_GO_TO_LIVRAISON_MODULEFOND,false);
-			this.dejaFait.put(ScriptNames.SCRIPTED_GO_TO_CRATEREFOND,false);
-			this.dejaFait.put(ScriptNames.SCRIPTED_GO_TO_MODULE_PRES_BASE,false);
 
 		} catch (ConfigPropertyNotFoundException e) {
 			log.critical(e.logStack());

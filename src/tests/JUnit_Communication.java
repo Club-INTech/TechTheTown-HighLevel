@@ -2,6 +2,7 @@ package tests;
 
 import org.junit.Before;
 import org.junit.Test;
+import robot.EthWrapper;
 import threads.ThreadSimulator;
 import threads.dataHandlers.ThreadEth;
 import utils.Sleep;
@@ -13,7 +14,9 @@ import java.util.ArrayList;
  */
 public class JUnit_Communication extends JUnit_Test {
 
+    /** Thread ou Wrapper ?*/
     private ThreadEth eth;
+    private EthWrapper ethWrapper;
 
     @Test
     public void testSimulator() throws Exception{
@@ -40,9 +43,9 @@ public class JUnit_Communication extends JUnit_Test {
     @Test
     public void testCodeuse() throws Exception{
 
-        eth = container.getService(ThreadEth.class);
+        ethWrapper = container.getService(EthWrapper.class);
         container.startInstanciedThreads();
-        eth.communicate("cod", 0);
+        ethWrapper.turn(2);
         Sleep.sleep(2000);
     }
 }

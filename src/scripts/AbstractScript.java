@@ -43,7 +43,6 @@ import java.util.ArrayList;
  */
 public abstract class AbstractScript implements Service 
 {
-	
 	/**  système de log sur lequel écrire. */
 	protected static Log log;
 	

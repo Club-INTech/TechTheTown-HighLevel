@@ -119,7 +119,6 @@ public class JUnit_Sensors extends JUnit_Test
 
 		try {
 			scriptManager.getScript(ScriptNames.INITIALISE_ROBOT).goToThenExec(1, state, new ArrayList<Hook>());
-			scriptManager.getScript(ScriptNames.CATCH_MODULE).goToThenExec(1, state, new ArrayList<Hook>());
 		}catch(Exception e){
 			e.printStackTrace();
 			log.debug("Suus, ca a fail");

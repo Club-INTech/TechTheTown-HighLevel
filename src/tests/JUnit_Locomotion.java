@@ -40,8 +40,7 @@ import java.util.ArrayList;
  * Tests unitaires pour Deplacements.
  *
  * @author pf, spraakforskaren
- * 
- * 
+ *
  * Classe test pour les déplacements vus d'en haut(-niveau)
  * Si vous voulez effectuer une série de tests, il vous faudra beaucoup de place
  * Le mieux est donc de les faire bien séparément
@@ -62,15 +61,15 @@ public class JUnit_Locomotion extends JUnit_Test
 	private Locomotion mLocomotion;
 	private EthWrapper cardWrapper;
 	
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception
-	{
+//	@BeforeClass
+//	public static void setUpBeforeClass() throws Exception
+//	{
 		// appelé avant chaque batterie de test
 		/*
 		 * tearDownAfterClass
 		 * @AfterClass apres chaque batterie de test de la meme classe JUnit
 		 */
-	}
+//	}
 
 	/* (non-Javadoc)
 	 * @see tests.JUnit_Test#setUp()
@@ -95,8 +94,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	@Test
 	public void testMoveLengthwise() 
 	{
-		try 
-		{
+		try {
 			int distance = 210;
 			while(true)
 			{
@@ -125,7 +123,6 @@ public class JUnit_Locomotion extends JUnit_Test
 			log.debug(e);
 			return;
 		}
-		
 	}	
 
 	/**
