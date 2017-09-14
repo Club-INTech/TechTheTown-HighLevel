@@ -286,7 +286,7 @@ public class Container implements Service
 			constructeur.setAccessible(false); // on revient à l'état d'origine !
 			instanciedServices.put(classe.getSimpleName(), (Service) s);
 
-			/** S'il s'agit d'un thread (hors ThreadSerial), on l'ajoute à la liste des threads instanciés */
+			/** S'il s'agit d'un thread, on l'ajoute à la liste des threads instanciés */
 			if(s instanceof AbstractThread)
 			{
 				instanciedThreads.put(classe.getSimpleName(), (AbstractThread)s);
