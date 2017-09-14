@@ -33,20 +33,26 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class ThreadEvents extends AbstractThread
 {
-
+    /** Table ! */
     Table table;
 
+    /** Et le robot... */
     Robot robot;
 
     /** Buffer de lecture des events, rempli par ThreadSerial */
     ConcurrentLinkedQueue<String> events;
 
-    public ThreadEvents(Table table, Robot robot, ThreadSerial serial)
+    /**
+     * ...
+     * @param table
+     * @param robot
+     * @param eth
+     */
+    public ThreadEvents(Table table, Robot robot, ThreadEth eth)
     {
         this.table = table;
         this.robot = robot;
-        events = serial.getEventBuffer();
-
+        events = eth.getEventBuffer();
     }
 
     @Override
@@ -54,7 +60,7 @@ public class ThreadEvents extends AbstractThread
     {
         String event = null;
         Thread.currentThread().setPriority(6);
-        while(!ThreadSerial.shutdown)
+        while(!ThreadEth.shutdown)
         {
 
             Sleep.sleep(100);

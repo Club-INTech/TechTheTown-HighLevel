@@ -62,7 +62,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private BufferedWriter outDebug;
 
     /** True pour couper la connexion (pas trouvé d'autres idées, mais la lib java.net a probablement un truc propre à proposer) */
-    private static boolean shutdown = false;
+    public static boolean shutdown = false;
 
     /** Buffers représentant les différents canaux */
     private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
@@ -170,6 +170,7 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     public void close(){
         try {
+            shutdown = true;
             socket.close();
         }catch (IOException e){
             log.debug("Socket refuses to get closed !");

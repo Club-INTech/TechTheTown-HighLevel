@@ -26,8 +26,8 @@ import exceptions.serial.SerialConnexionException;
 import hook.Hook;
 import org.junit.After;
 import org.junit.Before;
+import robot.EthWrapper;
 import robot.Robot;
-import robot.SerialWrapper;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
@@ -69,12 +69,8 @@ public abstract class JUnit_Test
 	 * le set up du match en cours (mise en place des actionneurs)
 	 * @param sensorsCard 
 	 * @param robot le robot a setuper
-	 * @throws SerialConnexionException si l'ordinateur n'arrive pas a communiquer avec les cartes
 	 */
-	
-
-	
-	public void waitMatchBegin(SerialWrapper sensorsCard, Robot robot)
+	public void waitMatchBegin(EthWrapper sensorsCard, Robot robot)
 	{
 
 		System.out.println("Robot pret pour le match, attente du retrait du jumper");

@@ -22,7 +22,7 @@ package tests;
 import hook.Hook;
 import org.junit.Before;
 import org.junit.Test;
-import robot.SerialWrapper;
+import robot.EthWrapper;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -35,7 +35,7 @@ public class JUnit_Symetry extends JUnit_Test
 	ArrayList<Hook> emptyHook;
 	GameState real_state;
 	ScriptManager scriptmanager;
-	SerialWrapper serialWrapper;
+	EthWrapper ethWrapper;
 	
 	@Before
 	public void setUp() throws Exception
@@ -43,7 +43,7 @@ public class JUnit_Symetry extends JUnit_Test
 		super.setUp();
 		real_state = container.getService(GameState.class);
 		scriptmanager = container.getService(ScriptManager.class);
-		serialWrapper = container.getService(SerialWrapper.class);
+		ethWrapper = container.getService(EthWrapper.class);
 		emptyHook = new ArrayList<Hook> ();  
 
 		// La position est setée qu'on soit jaune ou vert
