@@ -42,7 +42,7 @@ public class JUnit_Threads extends JUnit_Test {
 	@Test
 	public void test_arret() throws Exception
 	{
-/*		SerialWrapper deplacements = container.getService(SerialWrapper.class);
+/*		EthWrapper deplacements = container.getService(EthWrapper.class);
 		deplacements.setX(0);
 		deplacements.setY(1500);
 		deplacements.setOrientation(0);

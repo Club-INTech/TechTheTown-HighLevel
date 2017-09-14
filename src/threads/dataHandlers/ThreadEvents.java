@@ -39,7 +39,7 @@ public class ThreadEvents extends AbstractThread
     /** Et le robot... */
     Robot robot;
 
-    /** Buffer de lecture des events, rempli par ThreadSerial */
+    /** Buffer de lecture des events, rempli par ThreadEth */
     ConcurrentLinkedQueue<String> events;
 
     /**
