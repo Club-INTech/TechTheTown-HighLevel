@@ -236,14 +236,18 @@ public class ThreadEth extends AbstractThread implements Service {
 
                 if(inputLines[i]==null || inputLines[i].replaceAll(" ", "").equals("")|| inputLines[i].replaceAll(" ", "").equals("-"))
                 {
-                    log.critical("Reception de "+inputLines[i]+" , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " envoi du message a nouveau");
+                    log.critical("Reception de "+inputLines[i]+" , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                     if(debug)
                     {
-                        outStandart.write("Reception de "+inputLines[i]+" , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " envoi du message a nouveau");
+                        outStandart.write("Reception de "+inputLines[i]+" , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                         outStandart.newLine();
                         outStandart.flush();
                     }
-                    communicate(message, nb_line_response);
+
+                    while (inputLines[i]==null || inputLines[i].replaceAll(" ", "").equals("")|| inputLines[i].replaceAll(" ", "").equals("-")){
+                        Thread.sleep(500);
+                        inputLines[i] = waitAndGetResponse();
+                    }
                 }
 
                 if(!isAsciiExtended(inputLines[i]))
