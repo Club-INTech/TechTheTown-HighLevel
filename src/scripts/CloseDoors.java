@@ -61,13 +61,10 @@ public class CloseDoors extends AbstractScript
 	public void execute(int versionToExecute, GameState stateToConsider, ArrayList<Hook> hooksToConsider) throws ExecuteException, UnableToMoveException
 	{
 		//Les paramètres de cette version ont été déterminés expérimentalement, fonctionnels sur robot 2015
-		
 		try
 		{
-		
 			if(versionToExecute == 0 || versionToExecute == 3)
 			{
-
 				//On ralentit pour éviter de démonter les éléments de jeu "Discord-style"
 				Speed speedBeforeScriptWasCalled = stateToConsider.robot.getLocomotionSpeed();
 

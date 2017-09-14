@@ -57,6 +57,7 @@ public class ScriptManager implements Service
 		this.config = config;
 		
 		// exemple: instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(factory, config, log);
+		instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(factory, config, log);
 	}
 	
 	/**

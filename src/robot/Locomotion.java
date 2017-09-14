@@ -54,20 +54,19 @@ import java.util.ArrayList;
 
 public class Locomotion implements Service
 {
-
     /** le log si on a des erreurs */
     private Log log;
 
     /**la config ...*/
     private Config config;
 
-    /** la table sur laquelle evolue le robot*/
+    /** la table sur laquelle evolue le robot */
     private Table table;
 
-    /** le bas-niveau*/
+    /** le bas-niveau */
     private EthWrapper ethWrapper;
 
-    /** la longueur du robot (taille dans la direction où le robot avance)*/
+    /** la longueur du robot (taille dans la direction où le robot avance) */
     private int robotLength;
 
     /**
@@ -231,6 +230,7 @@ public class Locomotion implements Service
         USvalues = new ArrayList<Integer>(){{for(int i=0;i<4;i++)add(0);}};
         updateConfig();
     }
+
 
     /****************************
      * GESTION DE LA TRAJECTOIRE *
@@ -503,7 +503,6 @@ public class Locomotion implements Service
                 ethWrapper.setRotationnalSpeed(Speed.SLOW_ALL.rotationSpeed);
 
                 // si on s'y attendait, on ne fais rien.
-
                 if (!headingToWall && !isForcing) //ici on ne s'y attendait pas donc on reagit
                 {
                     if(maxRetriesIfBlocked > actualRetriesIfBlocked)
@@ -1016,7 +1015,6 @@ public class Locomotion implements Service
      * Met à jour position et orientation via la carte d'asservissement.
      * Donne la veritable positions du robot sur la table
      */
-
     private void updateCurrentPositionAndOrientation()
     {
         float[] infos = ethWrapper.getCurrentPositionAndOrientation();
@@ -1036,7 +1034,6 @@ public class Locomotion implements Service
         }
 
         lowLevelOrientation = orientationConvention;
-
         highLevelPosition=lowLevelPosition.clone();
         highLevelOrientation=lowLevelOrientation;
 
