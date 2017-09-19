@@ -19,9 +19,9 @@
 
 package threads.dataHandlers;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import container.Service;
 import threads.AbstractThread;
+import threads.ThreadSimulator;
 import utils.Log;
 
 import java.io.*;
@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ThreadEth extends AbstractThread implements Service {
 
     /** Log à utilisé */
-    Log log;
+    private Log log;
 
     /** Nom */
     public String name;
@@ -51,6 +51,10 @@ public class ThreadEth extends AbstractThread implements Service {
     private Socket socket;
     private InetSocketAddress server;
 
+    /** IP Teensy & local */
+    private String teensyAdress = "192.168.0.1";
+    private String localAdress = "127.0.0.1";
+
     /** Timeout pour l'envoie de message */
     private static final int TIMEOUT = 1000;
 
@@ -64,6 +68,9 @@ public class ThreadEth extends AbstractThread implements Service {
     /** True pour couper la connexion (pas trouvé d'autres idées, mais la lib java.net a probablement un truc propre à proposer) */
     public static boolean shutdown = false;
 
+    /** True si utilisation du simulateur LL */
+    private static boolean simulation = false;
+
     /** Buffers représentant les différents canaux */
     private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
@@ -75,7 +82,7 @@ public class ThreadEth extends AbstractThread implements Service {
     public final char[] debugHeader = {0x02, 0x20};
 
     /**
-     * Créer l'interface Ethernet !
+     * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
      * @param log
      */
     private ThreadEth(Log log){
@@ -100,7 +107,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 createInterface();
 
             } catch (IOException e) {
-                log.critical("Manque de droits pour l'output des ordres");
+                log.critical("Manque de droits pour l'output");
                 e.printStackTrace();
             }
         }
@@ -115,8 +122,13 @@ public class ThreadEth extends AbstractThread implements Service {
      * @throws IOException
      */
     private void createInterface() throws IOException{
-        server = new InetSocketAddress("192.168.0.1", 23500);
-        socket = new Socket(server.getAddress(), server.getPort());
+        if(simulation){
+            server = new InetSocketAddress(localAdress, 2009);
+        }else{
+            server = new InetSocketAddress(teensyAdress, 23500);
+        }
+        socket = new Socket();
+        socket.connect(server, 500);
         input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
@@ -168,7 +180,7 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Ferme la socket !
      */
-    public void close(){
+    public synchronized void close(){
         try {
             shutdown = true;
             socket.close();
@@ -267,6 +279,7 @@ public class ThreadEth extends AbstractThread implements Service {
         String buffer;
         Thread.currentThread().setPriority(8);
         log.debug("ThreadEth started");
+
         while(!shutdown)
         {
             try

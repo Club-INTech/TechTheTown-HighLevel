@@ -27,29 +27,19 @@ package smartMath;
 
 public class Vec2 {
 
-	/**
-	 * Abscisse x
-	 */
+	/** Abscisse x */
 	private int x;
 
-	/**
-	 * Ordonnée y
-	 */
+	/** Ordonnée y */
 	private int y;
 
-	/**
-	 * Rayon r
-	 */
+	/** Rayon r */
 	private double r;
 
-	/**
-	 * Angle a, entre -pi et pi
-	 */
+	/** Angle a, entre -pi et pi */
 	private double a;
 
-	/**
-	 * Constructeur d'un vecteur nul
-	 */
+	/** Constructeur d'un vecteur nul */
 	public Vec2() {
 		x = 0;
 		y = 0;

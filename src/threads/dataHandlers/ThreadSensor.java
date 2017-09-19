@@ -70,36 +70,24 @@ public class ThreadSensor extends AbstractThread
 	* Overide par la config */
 	private int sensorFrequency=15;
 
-    /**
-     * Temps maximal entre deux séries de valeurs (ms) : si cette série est incomplète, on la vire; cela évite les déclages
-     */
+    /** Temps maximal entre deux séries de valeurs (ms) : si cette série est incomplète, on la vire; cela évite les déclages */
     private int thresholdUSseries = 20;
 
-    /**
-     * Si l'on doit symétriser
-     */
+    /** Si l'on doit symétriser */
     private boolean symetry;
 
-    /**
-     * Rayon du robot adverse
-     */
+    /** Rayon du robot adverse */
     private int radius;
 
-    /**
-     * Permet de désactiver les capteurs de la porte que récupère du sable, évite de récupérer des fausses valeurs
-     */
+    /** Permet de désactiver les capteurs de la porte que récupère du sable, évite de récupérer des fausses valeurs */
     private static boolean modeBorgne = false;
 
-	/**
-	 * Distance maximale fiable pour les capteurs : au dela, valeurs abberentes
-	 * Override par la config
-	 */
+	/** Distance maximale fiable pour les capteurs : au dela, valeurs abberentes
+	 * Override par la config */
 	double maxSensorRange;
 
-	/**
-	 * Distance minimale à laquelle on peut se fier aux capteurs : ne pas detecter notre propre root par exemple
-     * Override par la config
-	 */
+	/** Distance minimale à laquelle on peut se fier aux capteurs : ne pas detecter notre propre root par exemple
+     * Override par la config */
 	double minSensorRangeAv;
 	double minSensorRangeAr;
 

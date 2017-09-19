@@ -1,5 +1,6 @@
 package threads;
 
+import container.Service;
 import smartMath.Vec2;
 import table.Table;
 import utils.Config;
@@ -7,7 +8,6 @@ import utils.Log;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 /**
  * Thread qui simule le LL, ou plutot la partie com du LL,
@@ -16,73 +16,103 @@ import java.util.Scanner;
  * @author rem
  */
 
-public class ThreadSimulator extends AbstractThread {
+public class ThreadSimulator extends AbstractThread implements Service {
+
+    /** Nom du Thread */
+    public String name;
 
     /** Table DIFFERENTE de celui du HL, afin de pouvoir simuler au mieux certains évènements */
     private Table LLTable;
 
-    /** Position du Robot sur la table */
+    /** Position & orientation du Robot sur la table */
     private Vec2 LLPosition;
+    private double LLorientation;
 
     /** Headers */
-    public final char[] eventHeader = {0x13, 0x37};
-    public final char[] ultrasoundHeader = {0x01, 0x10};
-    public final char[] debugHeader = {0x02, 0x20};
+    private final char[] eventHeader = {0x13, 0x37};
+    private final char[] ultrasoundHeader = {0x01, 0x10};
+    private final char[] debugHeader = {0x02, 0x20};
 
     /** Sockets */
-    public Socket socket;
+    private ServerSocket server;
+    private Socket socket;
 
     /** IO */
-    public BufferedReader input;
-    public BufferedWriter output;
+    private BufferedReader input;
+    private BufferedWriter output;
 
-    public Scanner scanner;
-    public InetSocketAddress server;
+    /** Buffers pour fichiers de debug */
+    private BufferedWriter out;
 
+    /** Shutdown... */
+    public static boolean shutdown = false;
+
+    /**
+     *
+     * @param config
+     * @param log
+     */
     public ThreadSimulator(Config config, Log log){
         super(config, log);
+        this.name = "Simulator";
+        createInterface();
+    }
+
+    /**
+     * Créer l'Interface Ethernet (socket & IO)
+     */
+    private void createInterface(){
+        try {
+            server = new ServerSocket(2009);
+            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+        }catch(IOException e){
+            log.debug("IO Exception : manque de droits pour IO");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Réponse à ?xyo
+     * @throws IOException
+     */
+    public void sendPosition() throws IOException {
+        output.write(String.format("%s", LLPosition.getX()));
+        output.flush();
+        output.write(String.format("%s", LLPosition.getY()));
+        output.flush();
+        output.write(String.format("%s", LLorientation).substring(0,8));
+        output.flush();
     }
 
     @Override
     public void run(){
-        initialization();
-        log.debug("To send :");
-        String message = "?xyo";
-        String response;
+        String buffer;
+        createInterface();
+        log.debug("ThreadSimulator started");
 
-        while (message != "stop") {
-            try {
-                log.debug("Message send : " + message);
-                output.write(message, 0, message.length());
-                output.newLine();
-                output.flush();
+        try {
+            socket = server.accept();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
-                response = input.readLine();
-                log.debug("Réponse du LL (?): "+ response);
-
-                Thread.sleep(500);
-            } catch (Exception e) {
+        while(!shutdown){
+            try{
+                log.debug("FLAG");
+                buffer = input.readLine();
+                log.debug("FLAG");
+                if (buffer == "?xyo"){
+                    sendPosition();
+                }
+            }catch (IOException e){
                 e.printStackTrace();
             }
         }
     }
 
-    public void initialization(){
-        try {
-            log.debug("Searching Teensy...");
-            scanner = new Scanner(System.in);
-            server = new InetSocketAddress("192.168.0.1", 23500);
-            socket = new Socket(server.getAddress(), server.getPort());
-            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            log.debug("Connected !");
-
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
+    @Override
     public void updateConfig(){
-
     }
 }
