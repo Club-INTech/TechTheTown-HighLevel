@@ -19,12 +19,14 @@
 
 package table.obstacles;
 
+import container.Service;
+import enums.ConfigInfoRobot;
 import exceptions.ConfigPropertyNotFoundException;
+import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
-import utils.Config;
 import utils.Log;
 
 import java.io.BufferedWriter;
@@ -41,7 +43,7 @@ import java.util.ArrayList;
  * @author pf,
  */
 
-public class ObstacleManager
+public class ObstacleManager implements Service
 {
 
 	/** système de log sur lequel écrire. */
@@ -779,21 +781,15 @@ public class ObstacleManager
 		return positionDetectionDisc;
 	}
 
+	@Override
 	public void updateConfig()
 	{
-		try
-		{
-			mRobotRadius = Integer.parseInt(config.getProperty("rayon_robot"));
-			mEnnemyRadius = Integer.parseInt(config.getProperty("rayon_robot_adverse"));
-			mRobotLenght = Integer.parseInt(config.getProperty("longueur_robot"));
-			mRobotWidth = Integer.parseInt(config.getProperty("largeur_robot"));
-			defaultLifetime = Integer.parseInt(config.getProperty("duree_peremption_obstacles"));
-			cDesFousEnFace = Boolean.parseBoolean(config.getProperty("cDesFousEnFace"));
-		}
-		catch (ConfigPropertyNotFoundException e)
-		{
-			log.debug("Revoir le code : impossible de trouver la propriété "+e.getPropertyNotFound());
-		}
+		mRobotRadius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+		mEnnemyRadius = config.getInt(ConfigInfoRobot.ENNEMY_RADIUS);
+		mRobotLenght = config.getInt(ConfigInfoRobot.ROBOT_LENGTH);
+		mRobotWidth = config.getInt(ConfigInfoRobot.ROBOT_WIDTH);
+		defaultLifetime = config.getInt(ConfigInfoRobot.PEREMP_OBST);
+		cDesFousEnFace = config.getBoolean(ConfigInfoRobot.C_DES_FOUS_EN_FACE);
 	}
 
 

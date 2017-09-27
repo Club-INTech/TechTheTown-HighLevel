@@ -20,7 +20,7 @@
 package threads;
 
 import container.Service;
-import utils.Config;
+import pfg.config.Config;
 import utils.Log;
 
 /**

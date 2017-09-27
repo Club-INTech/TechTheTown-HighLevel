@@ -34,7 +34,6 @@ import threads.dataHandlers.ThreadSensor;
 public enum ThreadName
 {
 	TIMER(ThreadTimer.class),
-	//BALISES(ThreadBalises.class),
 	EVENTS(ThreadEvents.class),
 	SENSOR(ThreadSensor.class),
 	ETHERNET(ThreadEth.class),

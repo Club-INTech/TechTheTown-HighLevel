@@ -27,6 +27,9 @@ import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import enums.ConfigInfoRobot;
+import pfg.config.Config;
+
 /**
  * Service de log, affiche à l'écran et enregistre dans des fichiers de logs des informations avec différents niveaux de couleurs.
  *
@@ -238,7 +241,7 @@ public class Log implements Service
 		try
 		{
 			// vérifie s'il faut afficher les logs a l'écran
-			printLogs = Boolean.parseBoolean(this.config.getProperty("affiche_debug"));
+			printLogs = config.getBoolean(ConfigInfoRobot.PRINT_LOG);
 		}
 		catch(Exception e)
 		{
@@ -247,7 +250,7 @@ public class Log implements Service
 		try
 		{
 			// vérifie s'il faut écrire les logs dans un fichier
-			saveLogs = Boolean.parseBoolean(this.config.getProperty("sauvegarde_fichier"));
+			saveLogs = config.getBoolean(ConfigInfoRobot.SAVE_LOG);
 			// TODO: mettre ici ouverture/fermeture de fichier si la valeur de sauvegarde_fichier change
 		}
 		catch(Exception e)

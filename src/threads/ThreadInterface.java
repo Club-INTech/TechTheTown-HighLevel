@@ -21,11 +21,11 @@ package threads;
 
 
 import graphics.Window;
+import pfg.config.Config;
 import robot.Robot;
 import scripts.ScriptManager;
 import strategie.GameState;
 import table.Table;
-import utils.Config;
 import utils.Log;
 
 

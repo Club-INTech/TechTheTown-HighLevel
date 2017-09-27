@@ -19,11 +19,12 @@
 
 package container;
 
+import enums.ConfigInfoRobot;
 import enums.ThreadName;
 import exceptions.ContainerException;
+import pfg.config.Config;
 import threads.AbstractThread;
 import threads.ThreadExit;
-import utils.Config;
 import utils.Log;
 
 import java.io.*;
@@ -158,17 +159,18 @@ public class Container implements Service
 		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version")+", max memory : "+Math.round(100.*Runtime.getRuntime().maxMemory()/(1024.*1024.*1024.))/100.+"G, available processors : "+Runtime.getRuntime().availableProcessors());
 		System.out.println();
 
-		System.out.println("    Remember, with great power comes great current squared times resistance !");
+		System.out.println("   Remember, with great power comes great current squared times resistance !");
 		System.out.println();
 
 		/** La config a un statut spécial, vu qu'elle nécessite un chemin d'accès vers le fichier de config */
         try
         {
-			Constructor<Config> constructeur = Config.class.getDeclaredConstructor(String.class);
+        	config = new Config(ConfigInfoRobot.values(), false, "config.txt");
+			/* Constructor<Config> constructeur = Config.class.getDeclaredConstructor(String.class);
 			constructeur.setAccessible(true); // on outrepasse les droits
 			config = constructeur.newInstance(configPath);
 			constructeur.setAccessible(false); // on revient à l'état d'origine !
-            instanciedServices.put(Config.class.getSimpleName(), (Service) config);
+            instanciedServices.put(Config.class.getSimpleName(), (Service) config);*/
         }
         catch (Exception e)
         {

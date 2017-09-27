@@ -2,12 +2,12 @@ package robot;
 
 import container.Service;
 import enums.ActuatorOrder;
+import enums.ConfigInfoRobot;
 import enums.ContactSensors;
 import enums.TurningStrategy;
 import exceptions.ConfigPropertyNotFoundException;
-import exceptions.serial.SerialConnexionException;
+import pfg.config.Config;
 import threads.dataHandlers.ThreadEth;
-import utils.Config;
 import utils.Log;
 import utils.Sleep;
 
@@ -395,11 +395,7 @@ public class EthWrapper implements Service {
 
     @Override
     public void updateConfig(){
-        try {
-            loopDelay = Integer.parseInt(config.getProperty("Eth_loopDelay"));
-        }catch (ConfigPropertyNotFoundException e){
-            e.printStackTrace();
-        }
+        loopDelay = config.getInt(ConfigInfoRobot.ETH_DELAY);
     }
 
     public boolean getSensorState(){

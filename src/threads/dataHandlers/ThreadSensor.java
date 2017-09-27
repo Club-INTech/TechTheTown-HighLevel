@@ -19,15 +19,17 @@
 
 package threads.dataHandlers;
 
+import enums.ConfigInfoRobot;
 import exceptions.ConfigPropertyNotFoundException;
 import graphics.Window;
+import pfg.config.Config;
+import pfg.config.ConfigInfo;
 import robot.EthWrapper;
 import robot.Robot;
 import smartMath.Vec2;
 import table.Table;
 import threads.AbstractThread;
 import threads.ThreadTimer;
-import utils.Config;
 import utils.Log;
 import utils.Sleep;
 
@@ -36,7 +38,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static smartMath.Geometry.isBetween;
@@ -633,30 +635,7 @@ public class ThreadSensor extends AbstractThread
 	@Override
 	public void updateConfig()
 	{
-		try
-		{
-			sensorFrequency = Integer.parseInt(config.getProperty("capteurs_frequence"));
-			//plus que cette distance (environ 50cm) on est beaucoup moins precis sur la position adverse (donc on ne l'ecrit pas !)
-
-			maxSensorRange = Integer.parseInt(config.getProperty("horizon_capteurs"));
-			minSensorRangeAv = Integer.parseInt(config.getProperty("portee_mini_capteurs_av"));
-			minSensorRangeAr = Integer.parseInt(config.getProperty("portee_mini_capteurs_ar"));
-			sensorPositionAngleF = Float.parseFloat(config.getProperty("angle_position_capteur_av"));
-			sensorPositionAngleB = Float.parseFloat(config.getProperty("angle_position_capteur_ar"));
-			detectionAngle = Float.parseFloat(config.getProperty("angle_detection_capteur"));
-
-            symetry = config.getProperty("couleur").replaceAll(" ","").equals("jaune");
-
-			robotLenght = Integer.parseInt(config.getProperty("longueur_robot"));
-            radius = Integer.parseInt(config.getProperty("rayon_robot_adverse"));
-
-            lifetimeForUntestedObstacle = Integer.parseInt(config.getProperty("temps_untested_obstacle"));
-
-		}
-		catch (ConfigPropertyNotFoundException e)
-		{
-    		log.debug("Revoir le code : impossible de trouver la propriété "+e.getPropertyNotFound());
-        }
+        symetry = config.getBoolean(ConfigInfoRobot.SYMETRY);
 	}
 
 	

@@ -25,10 +25,10 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.Hook;
 import hook.types.HookFactory;
+import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
-import utils.Config;
 import utils.Log;
 
 import java.util.ArrayList;

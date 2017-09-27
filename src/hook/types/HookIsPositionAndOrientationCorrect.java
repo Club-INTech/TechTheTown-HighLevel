@@ -20,9 +20,9 @@
 package hook.types;
 
 import hook.Hook;
+import pfg.config.Config;
 import smartMath.Vec2;
 import strategie.GameState;
-import utils.Config;
 import utils.Log;
 
 /**
@@ -45,8 +45,8 @@ public class HookIsPositionAndOrientationCorrect extends Hook
 	/**Tolerance en orientation qu'on accorde au robot pour activer le hook, en miliradians */ 
 	private float mTolerancyOrientation;
 	
-	public HookIsPositionAndOrientationCorrect(Config config, Log log,GameState realState,
-												Vec2 point, float orientation, float tolerancyPoint, float tolerancyOrientation) 
+	public HookIsPositionAndOrientationCorrect(Config config, Log log, GameState realState,
+											   Vec2 point, float orientation, float tolerancyPoint, float tolerancyOrientation)
 	{
 		super(config, log, realState);
 		

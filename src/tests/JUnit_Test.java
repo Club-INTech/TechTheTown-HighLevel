@@ -20,19 +20,21 @@
 package tests;
 
 import container.Container;
+import enums.ConfigInfoRobot;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.serial.SerialConnexionException;
 import hook.Hook;
 import org.junit.After;
 import org.junit.Before;
+import pfg.config.Config;
+import pfg.config.ConfigInfo;
 import robot.EthWrapper;
 import robot.Robot;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadTimer;
-import utils.Config;
 import utils.Log;
 
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ public abstract class JUnit_Test
 	public void setUp() throws Exception
 	{
 		container = new Container();
-		config = container.getService(Config.class);
+		config = new Config(ConfigInfoRobot.values(), false, "config.txt");
 		log = container.getService(Log.class);
 	}
 	

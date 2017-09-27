@@ -19,8 +19,10 @@
 
 package tests;
 
+import enums.ConfigInfoRobot;
 import org.junit.Assert;
 import org.junit.Test;
+import pfg.config.ConfigInfo;
 import robot.Robot;
 import smartMath.Vec2;
 import table.Table;
@@ -87,7 +89,7 @@ public class JUnit_Threads extends JUnit_Test {
 	@Test
 	public void test_fin_match() throws Exception
 	{
-		config.set("temps_match", "3");
+		config.override(ConfigInfoRobot.TEMPS_MATCH, 4);
 		long t1 = System.currentTimeMillis();
 		container.startAllThreads();
 		while(!ThreadTimer.matchEnded)

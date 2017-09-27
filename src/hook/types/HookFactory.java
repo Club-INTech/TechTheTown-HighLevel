@@ -20,11 +20,12 @@
 package hook.types;
 
 import container.Service;
+import enums.ConfigInfoRobot;
 import exceptions.ConfigPropertyNotFoundException;
 import hook.Hook;
+import pfg.config.Config;
 import smartMath.Vec2;
 import strategie.GameState;
-import utils.Config;
 import utils.Log;
 
 /**
@@ -68,15 +69,7 @@ public class HookFactory implements Service
 	 */
 	public void updateConfig()
 	{
-		try
-		{
-			// demande la couleur du robot pour ce match
-			color = config.getProperty("couleur");		
-		}
-		catch (ConfigPropertyNotFoundException e)
-		{
-    		log.debug("Revoir le code : impossible de trouver la propriété "+e.getPropertyNotFound());
-        }
+		color = config.getString(ConfigInfoRobot.COULEUR);
 	}
 	
 	//TODO Ajouter les nouveaux hooks

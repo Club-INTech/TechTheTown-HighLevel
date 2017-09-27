@@ -20,10 +20,10 @@
 package strategie;
 
 import container.Service;
+import pfg.config.Config;
 import robot.Robot;
 import table.Table;
 import threads.ThreadTimer;
-import utils.Config;
 import utils.Log;
 
 /**

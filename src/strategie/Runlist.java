@@ -1,12 +1,11 @@
 package strategie;
 
 import hook.Hook;
-import strategie.GameState;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import strategie.GameState;
-import utils.Config;
+
+import pfg.config.Config;
 import utils.Log;
 
 /**

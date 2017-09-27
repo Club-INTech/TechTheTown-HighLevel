@@ -19,8 +19,8 @@
 
 package hook;
 
+import pfg.config.Config;
 import strategie.GameState;
-import utils.Config;
 import utils.Log;
 
 import java.util.ArrayList;

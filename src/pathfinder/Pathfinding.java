@@ -20,18 +20,6 @@
 package pathfinder;
 
 import container.Service;
-import exceptions.Locomotion.PointInObstacleException;
-import smartMath.Circle;
-import smartMath.Geometry;
-import smartMath.Segment;
-import smartMath.Vec2;
-import table.Table;
-import table.obstacles.*;
-import utils.Config;
-import utils.Log;
-
-import java.util.ArrayList;
-import java.util.PriorityQueue;
 
 /**
  * Created by shininisan on 17/11/16.

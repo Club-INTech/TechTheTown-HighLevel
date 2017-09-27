@@ -24,14 +24,14 @@ import enums.*;
 import exceptions.ConfigPropertyNotFoundException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.serial.SerialConnexionException;
 import hook.Hook;
 import pathfinder.Pathfinding;
+import pfg.config.Config;
+import pfg.config.ConfigInfo;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Vec2;
 import table.Table;
-import utils.Config;
 import utils.Log;
 import utils.Sleep;
 
@@ -707,17 +707,11 @@ public class Robot implements Service {
 	 */
 	@Override
 	public void updateConfig() {
-		try {
-			symmetry = config.getProperty("couleur").replaceAll(" ", "").equals("jaune"); // TODO : modifier la couleur adverse
-			robotRay = Integer.parseInt(config.getProperty("rayon_robot"));
-			robotLength = Integer.parseInt(config.getProperty("longueur_robot"));
-			robotWidth = Integer.parseInt(config.getProperty("largeur_robot"));
-			position = Table.entryPosition;
-			orientation = Math.PI;
-
-		} catch (ConfigPropertyNotFoundException e) {
-			log.critical(e.logStack());
-			log.debug("Revoir le code : impossible de trouver la propriété " + e.getPropertyNotFound());
-		}
+		symmetry = config.getBoolean(ConfigInfoRobot.SYMETRY); // TODO : modifier la couleur adverse
+		robotRay = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+		robotLength = config.getInt(ConfigInfoRobot.ROBOT_LENGTH);
+		robotWidth = config.getInt(ConfigInfoRobot.ROBOT_WIDTH);
+		position = Table.entryPosition;
+		orientation = Math.PI;
 	}
 }

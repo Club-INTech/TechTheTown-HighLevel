@@ -81,7 +81,6 @@ public class JUnit_Locomotion extends JUnit_Test
 		log.debug("JUnit_DeplacementsTest.setUp()");
 		mLocomotion = container.getService(Locomotion.class);
 		cardWrapper= container.getService(EthWrapper.class);
-		config.set("couleur", "vert");
 		mLocomotion.updateConfig();
 		mLocomotion.setPosition(new Vec2 (1381,1000));
 		mLocomotion.setOrientation(Math.PI);

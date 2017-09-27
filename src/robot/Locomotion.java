@@ -30,9 +30,9 @@ import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.serial.SerialConnexionException;
 import hook.Hook;
+import pfg.config.Config;
 import smartMath.Vec2;
 import table.Table;
-import utils.Config;
 import utils.Log;
 import utils.Sleep;
 
@@ -169,13 +169,13 @@ public class Locomotion implements Service
     /** temps d'attente lorsqu'il y a un ennemie devant */
     private int timeToWaitIfEnnemy;
 
-    /** temps d'attente que l'ennemie se bouge avant de décider de faire autre chose*/
+    /** temps d'attente que l'ennemie se bouge avant de décider de faire autre chose */
     private int timeOutEnnemyMove;
 
-    /** Indique si le robot est en marche avant, utile pour les capteurs*/
+    /** Indique si le robot est en marche avant, utile pour les capteurs */
     public boolean isRobotMovingForward;
 
-    /** Indique si le robot est en marche arrière, utile pour les capteurs*/
+    /** Indique si le robot est en marche arrière, utile pour les capteurs */
     public boolean isRobotMovingBackward;
 
     /** Donne la stratégie de rotation */
@@ -1234,25 +1234,7 @@ public class Locomotion implements Service
     @Override
     public void updateConfig()
     {
-        try
-        {
-            detectionRay = Integer.parseInt(config.getProperty("rayon_detection"));
-            detectionDistance = Integer.parseInt(config.getProperty("distance_detection"));
-            distanceToDisengage = Integer.parseInt(config.getProperty("distance_degagement_robot"));
-            feedbackLoopDelay = Integer.parseInt(config.getProperty("sleep_boucle_acquittement"));
-            angleToDisengage = Double.parseDouble(config.getProperty("angle_degagement_robot"));
-            symetry = config.getProperty("couleur").replaceAll(" ","").equals("jaune");
-            robotLength = Integer.parseInt(config.getProperty("longueur_robot").replaceAll(" ",""));
-            basicDetectDistance = Integer.parseInt(config.getProperty("basic_distance").replaceAll(" ",""));
-            basicDetection = Boolean.parseBoolean(config.getProperty("basic_detection"));
-            timeToWaitIfEnnemy = Integer.parseInt(config.getProperty("duree_checkout_ennemie"));
-            timeOutEnnemyMove = Integer.parseInt(config.getProperty("duree_attente_ennemie"));
-        }
-        catch (ConfigPropertyNotFoundException e)
-        {
-            log.debug("Revoir le code : impossible de trouver la propriété "+e.getPropertyNotFound());
-            log.critical( e.logStack());
-        }
+        //TODO : remplir la config !!
     }
 
 

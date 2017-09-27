@@ -22,12 +22,12 @@ package tests;
 import exceptions.ContainerException;
 import org.junit.Assert;
 import org.junit.Test;
+import pfg.config.Config;
 import strategie.GameState;
 import table.Table;
 import tests.container.A;
 import tests.container.C;
 import tests.container.D;
-import utils.Config;
 
 /**
  * Tests unitaires pour le container
@@ -72,17 +72,4 @@ public class JUnit_Container extends JUnit_Test {
 		D d = container.getService(D.class);
 		Assert.assertTrue(d.updateConfigOk);
 	}
-
-	/**
-	 * Test vérifiant que le système de containers se comporte bien si on appelle deux fois le meme service 
-	 * @throws Exception
-	 */
-	@Test
-	public void test_doublon() throws Exception
-	{
-		Assert.assertTrue(container.getService(Config.class)
-				== container.getService(Config.class));
-		// comparaison physique entre les deux objets
-	}
-
 }
