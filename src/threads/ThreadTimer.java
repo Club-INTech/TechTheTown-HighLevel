@@ -19,10 +19,11 @@
 
 package threads;
 
+import enums.ConfigInfoRobot;
+import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Robot;
 import table.Table;
-import utils.Config;
 import utils.Log;
 
 import java.io.BufferedWriter;
@@ -261,7 +262,7 @@ public class ThreadTimer extends AbstractThread
 		// facteur 1000 car temps_match est en secondes et duree_match en ms
 		try
 		{
-			matchDuration =  Integer.parseInt(config.getProperty("temps_match").replaceAll(" ","") ) *1000;
+			matchDuration = config.getInt(ConfigInfoRobot.TEMPS_MATCH)*1000;
 		}
 		catch(Exception e)
 		{

@@ -21,10 +21,12 @@ package table;
 
 
 import container.Service;
+import enums.ConfigInfoRobot;
 import exceptions.ConfigPropertyNotFoundException;
+import pfg.config.Config;
+import pfg.config.ConfigInfo;
 import smartMath.Vec2;
 import table.obstacles.ObstacleManager;
-import utils.Config;
 import utils.Log;
 
 /* Positions :
@@ -102,12 +104,7 @@ public class Table implements Service
 	@Override
 	public void updateConfig()
 	{
-		try {
-			symetry = config.getProperty("couleur").replaceAll(" ", "").equals("jaune");
-		}catch (ConfigPropertyNotFoundException e){
-			log.debug("Revoir le code : impossible de trouver la propriété "+e.getPropertyNotFound());
-			log.critical( e.logStack());
-		}
+		symetry = config.getBoolean(ConfigInfoRobot.SYMETRY);
 		// TODO update config
 	}
 }

@@ -28,10 +28,10 @@ import exceptions.Locomotion.UnableToMoveException;
 import exceptions.serial.SerialConnexionException;
 import hook.Hook;
 import hook.types.HookFactory;
+import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
-import utils.Config;
 import utils.Log;
 
 import java.util.ArrayList;

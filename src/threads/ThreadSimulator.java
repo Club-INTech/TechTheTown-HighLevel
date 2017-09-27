@@ -1,8 +1,8 @@
 package threads;
 
+import pfg.config.Config;
 import smartMath.Vec2;
 import table.Table;
-import utils.Config;
 import utils.Log;
 
 import java.io.*;

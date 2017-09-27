@@ -224,9 +224,10 @@ public class ThreadEth extends AbstractThread implements Service {
             try {
                 if (socket != null) {
                     socket.close();
+                    Thread.sleep(1000);
                 }
             }
-            catch (IOException e1){
+            catch (Exception e1){
                 e1.printStackTrace();
             }
             e.printStackTrace();
@@ -277,9 +278,10 @@ public class ThreadEth extends AbstractThread implements Service {
             try {
                 if (socket != null) {
                     socket.close();
+                    Thread.sleep(1000);
                 }
             }
-            catch (IOException e2){
+            catch (Exception e2){
                 e1.printStackTrace();
             }
             e1.printStackTrace();
@@ -333,8 +335,9 @@ public class ThreadEth extends AbstractThread implements Service {
                 try {
                     if (socket != null) {
                         socket.close();
+                        Thread.sleep(1000);
                     }
-                }catch (IOException e1){
+                }catch (Exception e1){
                     e1.printStackTrace();
                 }
                 e.printStackTrace();

@@ -29,6 +29,7 @@ import exceptions.serial.SerialConnexionException;
 import hook.Hook;
 import org.junit.Before;
 import org.junit.Test;
+import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
@@ -36,10 +37,8 @@ import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
-import threads.ThreadInterface;
 import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadSensor;
-import utils.Config;
 import utils.Log;
 import utils.Sleep;
 
@@ -72,8 +71,6 @@ public class JUnit_Sensors extends JUnit_Test
 
 		log.debug("JUnit_ActionneursTest.setUp()");
 		capteurs = container.getService(EthWrapper.class);
-		
-		config.set("capteurs_on", "true");
 				
 		//Locomotion
 		mLocomotion = container.getService(Locomotion.class);
@@ -85,9 +82,6 @@ public class JUnit_Sensors extends JUnit_Test
 		container.getService(ThreadSensor.class);
         container.getService(Log.class);
         container.getService(Table.class);
-
-        config = container.getService(Config.class);
-        config.updateConfig();
 	}
 
 	@Test
@@ -366,19 +360,4 @@ public class JUnit_Sensors extends JUnit_Test
 			} 
     	}
 	}
-
-	/**
-	 * le thread principal ne se deplace pas mais les capterus sont ON donc on detecte les ennemis
-	 * @throws Exception
-	 */
-    //@Test
-    public void faux_test() throws Exception
-    {
-        config.set("capteurs_on", "true");
-        for(int i = 0; i < 10000; i++)
-        {
-            Sleep.sleep(100);
-        }
-    }
-
 }
