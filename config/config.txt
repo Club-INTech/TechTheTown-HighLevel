@@ -1,3 +1,4 @@
+[test]
 # CONSTANTES
 table_x                            = 3000
 table_y                            = 2000

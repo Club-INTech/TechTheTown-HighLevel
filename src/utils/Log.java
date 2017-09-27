@@ -33,7 +33,7 @@ import pfg.config.Config;
 /**
  * Service de log, affiche à l'écran et enregistre dans des fichiers de logs des informations avec différents niveaux de couleurs.
  *
- * @author pf,
+ * @author pf
  */
 
 public class Log implements Service
@@ -42,7 +42,7 @@ public class Log implements Service
 	private Config config;
 
 	/** Redirecteur de chaine de caractères vers le fichier de log. */
-	FileWriter writer = null;
+	private FileWriter writer = null;
 
 	/** Préfixe donnant la couleur en console des messages de debug */
 	private String debugPrefix 	= "Dbg - \u001B[32m";

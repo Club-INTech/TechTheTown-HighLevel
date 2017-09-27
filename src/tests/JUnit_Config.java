@@ -19,29 +19,51 @@
 
 package tests;
 
-import org.junit.Assert;
+import enums.ConfigInfoJUnit;
+import enums.ConfigInfoRobot;
+import org.junit.Before;
 import org.junit.Test;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import pfg.config.Config;
+import pfg.config.ConfigInfo;
+import threads.dataHandlers.ThreadEth;
 
 /**
  * Tests unitaires pour la configuration... juste épique.
- * @author pf
+ * @author rem
  *
  */
 
 public class JUnit_Config extends JUnit_Test {
 
+	@Before
+	public void setUp() throws Exception{
+		super.setUp();
+		config = new Config(ConfigInfoRobot.values(), false, "config.txt");
+	}
+
 	/**
 	 * Test_get.
-	 *
 	 * @throws Exception the exception
 	 */
-	//@Test
-	public void test_get() throws Exception
+	@Test
+	public void test_getDefault() throws Exception
 	{
+		int rInt;
+		double rDouble;
+		boolean rBool;
+		String rString;
+
+		rInt = config.getInt(ConfigInfoJUnit.RANDOM_INT);
+		rDouble = config.getDouble(ConfigInfoJUnit.RANDOM_DOUBLE);
+		rBool = config.getBoolean(ConfigInfoJUnit.RANDOM_BOOL);
+		rString = config.getString(ConfigInfoJUnit.RANDOM_STRING);
+
+		log.debug("Integer : " + ConfigInfoJUnit.RANDOM_INT + " - " + rInt);
+		log.debug("Double : " + ConfigInfoJUnit.RANDOM_DOUBLE + " - " + rInt);
+		log.debug("Boolean : " + ConfigInfoJUnit.RANDOM_BOOL + " - " + rInt);
+		log.debug("String : " + ConfigInfoJUnit.RANDOM_STRING + " - " + rInt);
+
+		Thread.sleep(10000);
 	}
 
 	/**
@@ -49,8 +71,8 @@ public class JUnit_Config extends JUnit_Test {
 	 *
 	 * @throws Exception the exception
 	 */
-	//@Test
-	public void test_set1() throws Exception
+	@Test
+	public void test_set() throws Exception
 	{
 	}
 
