@@ -23,6 +23,7 @@ import enums.ConfigInfoRobot;
 import enums.ThreadName;
 import exceptions.ContainerException;
 import pfg.config.Config;
+import pfg.config.ConfigInfo;
 import threads.AbstractThread;
 import threads.ThreadExit;
 import utils.Log;
@@ -46,6 +47,19 @@ import java.util.Stack;
  */
 public class Container implements Service
 {
+	// Un hack pour utiliser la lib "config" qui n'implémente pas Service avec le container
+	private class ConfigHack extends Config implements Service
+	{
+		public ConfigHack(ConfigInfo[] allConfigInfo, boolean verbose, String configfile, String... profiles)
+		{
+			super(allConfigInfo, verbose, configfile, profiles);
+		}
+
+		@Override
+		public void updateConfig()
+		{}
+	}
+	
 	/**
 	 * Liste des services déjà instanciés. Contient au moins Config et Log.
 	 * Les autres services appelables seront présents quand ils auront été appelés
@@ -164,8 +178,12 @@ public class Container implements Service
 		/** La config a un statut spécial, vu qu'elle nécessite un chemin d'accès vers le fichier de config */
         try
         {
-        	config = new Config(ConfigInfoRobot.values(), false, "config.txt", "test");
-            instanciedServices.put(Config.class.getSimpleName(), config);
+        	config = new ConfigHack(ConfigInfoRobot.values(), false, "config.txt");
+			Constructor<Config> constructeur = Config.class.getDeclaredConstructor(String.class);
+			constructeur.setAccessible(true); // on outrepasse les droits
+			config = constructeur.newInstance(configPath);
+			constructeur.setAccessible(false); // on revient à l'état d'origine !
+            instanciedServices.put(Config.class.getSimpleName(), (Service) config);
         }
         catch (Exception e)
         {
