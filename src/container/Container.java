@@ -141,7 +141,6 @@ public class Container implements Service
 			String toprint_log = input_log.readLine();
 			int index = toprint_log.indexOf(" ");
 			input_log.close();
-
 			String toprint_git = input_git.readLine();
 
 			while(!toprint_git.contains("*"))
@@ -165,12 +164,8 @@ public class Container implements Service
 		/** La config a un statut spécial, vu qu'elle nécessite un chemin d'accès vers le fichier de config */
         try
         {
-        	config = new Config(ConfigInfoRobot.values(), false, "config.txt");
-			/* Constructor<Config> constructeur = Config.class.getDeclaredConstructor(String.class);
-			constructeur.setAccessible(true); // on outrepasse les droits
-			config = constructeur.newInstance(configPath);
-			constructeur.setAccessible(false); // on revient à l'état d'origine !
-            instanciedServices.put(Config.class.getSimpleName(), (Service) config);*/
+        	config = new Config(ConfigInfoRobot.values(), false, "config.txt", "test");
+            instanciedServices.put(Config.class.getSimpleName(), config);
         }
         catch (Exception e)
         {
