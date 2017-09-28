@@ -19,7 +19,7 @@
 
 package tests;
 
-import enums.ConfigInfoJUnit;
+import enums.ConfigInfoRobot;
 import org.junit.Before;
 import org.junit.Test;
 import threads.dataHandlers.ThreadEth;
@@ -39,21 +39,13 @@ public class JUnit_Config extends JUnit_Test {
 	@Test
 	public void test_getDefault() throws Exception
 	{
-		try {
-			int rInt = config.getInt(ConfigInfoJUnit.RANDOM_INT);
-			double rDouble = config.getDouble(ConfigInfoJUnit.RANDOM_DOUBLE);
-			boolean rBool = config.getBoolean(ConfigInfoJUnit.RANDOM_BOOL);
-			String rString = config.getString(ConfigInfoJUnit.RANDOM_STRING);
+		int table_x = config.getInt(ConfigInfoRobot.TABLE_X);
+		String couleur = config.getString(ConfigInfoRobot.COULEUR);
+		boolean sym = config.getBoolean(ConfigInfoRobot.SYMETRY);
 
-			log.debug("Integer : " + ConfigInfoJUnit.RANDOM_INT + " - " + rInt);
-			log.debug("Double : " + ConfigInfoJUnit.RANDOM_DOUBLE + " - " + rDouble);
-			log.debug("Boolean : " + ConfigInfoJUnit.RANDOM_BOOL + " - " + rBool);
-			log.debug("String : " + ConfigInfoJUnit.RANDOM_STRING + " - " + rString);
+		log.debug("TABLE : " + table_x + "  Couleur : " + couleur + "  Sym : " + sym);
 
-			Thread.sleep(10000);
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+		Thread.sleep(2000);
 	}
 
 	/**

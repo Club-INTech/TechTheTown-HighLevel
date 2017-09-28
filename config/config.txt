@@ -1,56 +1,47 @@
 [test]
+# PARAMETRES POUR LOG
+PRINT_LOG                            = true
+SAVE_LOG                             = true
+
 # CONSTANTES
-table_x                            = 3000
-table_y                            = 2000
-temps_match                        = 90
-temps_reserve_funny_action         = 0
-largeur_robot                      = 380
-longueur_robot                     = 300
-rayon_robot                        = 240
-rayon_robot_adverse                = 200
-sleep_boucle_acquittement          = 50
-Eth_loopDelay                      = 100
+ROBOT_LENGTH                         = 300
+ROBOT_WIDTH                          = 380
+ROBOT_RADIUS                         = 240
+ENNEMY_RADIUS                        = 200
 
 # ETAT INITIAL DES ROBOTS
-couleur                            = bleu
-cDesFousEnFace                     = false
-config_shell                       = 1
-profondeur                         = 1
+COULEUR                              = bleu
 
 # PARAMETRES POUR LES CAPTEUR
-horizon_capteurs                   = 500
-angle_detection_capteur 	       = 0.79
-angle_position_capteur_av          = 0.01
-angle_position_capteur_ar          = 0.17
-duree_peremption_obstacles         = 5000
-capteurs_frequence                 = 10
-capteurs_temporisation_obstacles   = 100
-rayon_detection                    = 150
-distance_detection                 = 250
-capteurs_on                        = false
-basic_distance                     = 200
-portee_mini_capteurs_av            = 60
-portee_mini_capteurs_ar            = 30
-basic_detection                    = false
-temps_untested_obstacle            = 250
+# horizon_capteurs                   = 500
+# angle_detection_capteur 	       = 0.79
+# angle_position_capteur_av          = 0.01
+# angle_position_capteur_ar          = 0.17
+# duree_peremption_obstacles         = 5000
+# capteurs_frequence                 = 10
+# capteurs_temporisation_obstacles   = 100
+# rayon_detection                    = 150
+# distance_detection                 = 250
+# capteurs_on                        = false
+# basic_distance                     = 200
+# portee_mini_capteurs_av            = 60
+# portee_mini_capteurs_ar            = 30
+# basic_detection                    = false
+# temps_untested_obstacle            = 250
 # 200 homologation ; 150 match
 
-# PARAMETRES POUR LOG
-affiche_debug                      = true
-sauvegarde_fichier                 = true
-
 # PARAMETRES POUR LES DÉPLACEMENTS
-hooks_tolerance_mm                 = 20
-disque_tolerance_maj               = 100
-disque_tolerance_consigne          = 40
-trajectoire_courbe                 = false
-nb_tentatives                      = 30
-anticipation_trajectoire_courbe    = 200
-tolerance_patinage_ms              = 200
-duree_attente_ennemie              = 100000
-duree_checkout_ennemie             = 1000
-tolerance_orientation_recalage     = 0.15
+# hooks_tolerance_mm                 = 20
+# disque_tolerance_maj               = 100
+# disque_tolerance_consigne          = 40
+# trajectoire_courbe                 = false
+# nb_tentatives                      = 30
+# anticipation_trajectoire_courbe    = 200
+# tolerance_patinage_ms              = 200
+# duree_attente_ennemie              = 100000
+# duree_checkout_ennemie             = 1000
+# tolerance_orientation_recalage     = 0.15
 
 # PARAMETRES DE DEGAGEMENT EN CAS DE COLLISION
-angle_degagement_robot             = 0.4
-distance_degagement_robot          = 50
+# angle_degagement_robot             = 0.4
+# distance_degagement_robot          = 50
