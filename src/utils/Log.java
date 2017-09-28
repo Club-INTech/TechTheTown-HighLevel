@@ -72,7 +72,7 @@ public class Log implements Service
 	 *
 	 * @param config fichier de configuration pour le match.
 	 */
-	private Log(Config config)
+	public Log(Config config) //Change private
 	{
 		this.config = config;
 		updateConfig();
@@ -90,6 +90,7 @@ public class Log implements Service
 			}
 			catch(Exception e)
 			{
+				e.printStackTrace();
 				critical(e);
 			}
 		debug("Service de log démarré");
@@ -114,7 +115,7 @@ public class Log implements Service
 	 */
 	public void debug(Object message)
 	{
-			debug(message.toString());
+			writeToLog(message.toString(), debugPrefix, System.out);
 	}
 	
 	/**
@@ -180,10 +181,11 @@ public class Log implements Service
 		// trouve l'heure pour la rajouter dans le message de log
 		java.util.GregorianCalendar calendar = new GregorianCalendar();
 		String heure = calendar.get(Calendar.HOUR_OF_DAY)+"h"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
-		
-		
+
 		if((prefix.equals(debugPrefix) || printLogs) && !Log.stop)
 		{
+			// Le log doit toujours afficher la methode qu'il l'a appelé ; ici on s'arrange pour qu'il y ait toujours 3 methodes
+			// entre log.debug et getStackTrace (qui stocke les méthodes appelées sous forme de pile)
 			StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
 			logPrinter.println(heure+" "+elem.getClassName()+"."+elem.getMethodName()+":"+elem.getLineNumber()+" > "+message+resetColor);
 		}
@@ -200,14 +202,13 @@ public class Log implements Service
 	{
 		// chaque message sur sa propre ligne
 		message += "\n";
-		
 		try
 		{
 		     writer.write(message,0,message.length());
 		}
 		catch(Exception e)
 		{
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -227,7 +228,7 @@ public class Log implements Service
 			}
 			catch(Exception e)
 			{
-				System.out.println(e);
+				e.printStackTrace();
 			}
 	}
 	
@@ -244,6 +245,7 @@ public class Log implements Service
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			critical(e);
 		}
 		try
@@ -254,6 +256,7 @@ public class Log implements Service
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			critical(e);
 		}
 	}
