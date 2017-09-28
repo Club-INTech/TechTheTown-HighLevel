@@ -707,7 +707,8 @@ public class Robot implements Service {
 	 */
 	@Override
 	public void updateConfig() {
-		symmetry = config.getBoolean(ConfigInfoRobot.SYMETRY); // TODO : modifier la couleur adverse
+
+		symmetry = (config.getString(ConfigInfoRobot.COULEUR) == "orange"); // TODO : modifier la couleur adverse
 		robotRay = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
 		robotLength = config.getInt(ConfigInfoRobot.ROBOT_LENGTH);
 		robotWidth = config.getInt(ConfigInfoRobot.ROBOT_WIDTH);

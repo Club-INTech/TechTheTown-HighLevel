@@ -41,7 +41,7 @@ public class JUnit_Config extends JUnit_Test {
 	{
 		int table_x = config.getInt(ConfigInfoRobot.TABLE_X);
 		String couleur = config.getString(ConfigInfoRobot.COULEUR);
-		boolean sym = config.getBoolean(ConfigInfoRobot.SYMETRY);
+		boolean sym = (config.getString(ConfigInfoRobot.COULEUR) == "orange");
 
 		log.debug("TABLE : " + table_x + "  Couleur : " + couleur + "  Sym : " + sym);
 
