@@ -635,7 +635,7 @@ public class ThreadSensor extends AbstractThread
 	@Override
 	public void updateConfig()
 	{
-        symetry = config.getBoolean(ConfigInfoRobot.SYMETRY);
+        symetry = (config.getString(ConfigInfoRobot.COULEUR) == "orange");
 	}
 
 	

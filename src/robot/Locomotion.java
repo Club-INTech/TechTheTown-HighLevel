@@ -20,10 +20,7 @@
 package robot;
 
 import container.Service;
-import enums.DirectionStrategy;
-import enums.Speed;
-import enums.TurningStrategy;
-import enums.UnableToMoveReason;
+import enums.*;
 import exceptions.ConfigPropertyNotFoundException;
 import exceptions.Locomotion.BlockedException;
 import exceptions.Locomotion.UnableToMoveException;
@@ -1235,6 +1232,7 @@ public class Locomotion implements Service
     public void updateConfig()
     {
         //TODO : remplir la config !!
+        symetry = (config.getString(ConfigInfoRobot.COULEUR) == "orange");
     }
 
 

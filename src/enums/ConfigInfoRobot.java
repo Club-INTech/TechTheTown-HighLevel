@@ -35,8 +35,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     PEREMP_OBST(5000),
 
     /** Paramètres match !*/
-    SYMETRY(false),
-    COULEUR("bleue"),
+    COULEUR("vert"),
     C_DES_FOUS_EN_FACE(false),
 
     /** Paramètres capteurs */
