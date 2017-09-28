@@ -19,7 +19,6 @@
 
 package container;
 
-import enums.ConfigInfoJUnit;
 import enums.ConfigInfoRobot;
 import enums.ThreadName;
 import exceptions.ContainerException;
@@ -179,7 +178,7 @@ public class Container implements Service
 		/** La config a un statut spécial, vu qu'elle nécessite un chemin d'accès vers le fichier de config */
         try
         {
-        	config = new ConfigHack(ConfigInfoJUnit.values(), true, "config/config.txt", "test");
+        	config = new ConfigHack(ConfigInfoRobot.values(), true, "config/config.txt", "test");
 			/* Constructor<Config> constructeur = Config.class.getDeclaredConstructor(String.class);
 			constructeur.setAccessible(true); // on outrepasse les droits
 			config = constructeur.newInstance(configPath);
@@ -261,7 +260,6 @@ public class Container implements Service
 			/** Si l'objet existe déjà, on le renvoie */
 			if(instanciedServices.containsKey(classe.getSimpleName()))
 			{
-				System.out.println("-- SUUS 1 --" + classe.getName());
 				return (S) instanciedServices.get(classe.getSimpleName());
 			}
 			
@@ -336,7 +334,6 @@ public class Container implements Service
 				| InvocationTargetException
 				| SecurityException | InstantiationException e) {
 			e.printStackTrace();
-			System.out.println("SUUS");
 			throw new ContainerException(e.getMessage());
 		}
 	}
