@@ -22,7 +22,6 @@ package hook;
 import pfg.config.Config;
 import strategie.GameState;
 import utils.Log;
-
 import java.util.ArrayList;
 
 /**

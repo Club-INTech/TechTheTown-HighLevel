@@ -20,14 +20,12 @@
 package tests;
 
 import enums.ConfigInfoRobot;
-import org.junit.Before;
 import org.junit.Test;
 import threads.dataHandlers.ThreadEth;
 
 /**
  * Tests unitaires pour la configuration... juste épique.
  * @author rem
- *
  */
 
 public class JUnit_Config extends JUnit_Test {

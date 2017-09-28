@@ -71,11 +71,6 @@ public class Container implements Service
 	 */
 	private HashMap<String, AbstractThread> instanciedThreads = new HashMap<>();
 	private boolean threadsStarted = false;
-	
-    /**
-     * Chemin relatif vers le fichier de config
-     */
-    private final static String configPath = "./config/";
 
 	/**
 	 * Service de Log & Config (commun à toute les classes)
@@ -179,10 +174,6 @@ public class Container implements Service
         try
         {
         	config = new ConfigHack(ConfigInfoRobot.values(), true, "config/config.txt", "test");
-			/* Constructor<Config> constructeur = Config.class.getDeclaredConstructor(String.class);
-			constructeur.setAccessible(true); // on outrepasse les droits
-			config = constructeur.newInstance(configPath);
-			constructeur.setAccessible(false); // on revient à l'état d'origine !*/
             instanciedServices.put(Config.class.getSimpleName(), (Service) config);
         }
         catch (Exception e)
