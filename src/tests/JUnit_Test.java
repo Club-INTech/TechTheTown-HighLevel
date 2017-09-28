@@ -63,7 +63,7 @@ public abstract class JUnit_Test
 	public void setUp() throws Exception
 	{
 		container = new Container();
-		config = new Config(ConfigInfoRobot.values(), false, "config.txt");
+		config = container.getConfig();
 		log = container.getService(Log.class);
 	}
 	

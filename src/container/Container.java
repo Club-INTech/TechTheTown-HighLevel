@@ -19,6 +19,7 @@
 
 package container;
 
+import enums.ConfigInfoJUnit;
 import enums.ConfigInfoRobot;
 import enums.ThreadName;
 import exceptions.ContainerException;
@@ -178,11 +179,11 @@ public class Container implements Service
 		/** La config a un statut spécial, vu qu'elle nécessite un chemin d'accès vers le fichier de config */
         try
         {
-        	config = new ConfigHack(ConfigInfoRobot.values(), false, "config.txt");
-			Constructor<Config> constructeur = Config.class.getDeclaredConstructor(String.class);
+        	config = new ConfigHack(ConfigInfoJUnit.values(), true, "config/config.txt", "test");
+			/* Constructor<Config> constructeur = Config.class.getDeclaredConstructor(String.class);
 			constructeur.setAccessible(true); // on outrepasse les droits
 			config = constructeur.newInstance(configPath);
-			constructeur.setAccessible(false); // on revient à l'état d'origine !
+			constructeur.setAccessible(false); // on revient à l'état d'origine !*/
             instanciedServices.put(Config.class.getSimpleName(), (Service) config);
         }
         catch (Exception e)
@@ -193,7 +194,7 @@ public class Container implements Service
             System.exit(0);
         }
 
-        log = getService(Log.class);
+        log = getService(Log.class); // Bug
         log.updateConfig();
 
 		// Le container est aussi un service
@@ -260,6 +261,7 @@ public class Container implements Service
 			/** Si l'objet existe déjà, on le renvoie */
 			if(instanciedServices.containsKey(classe.getSimpleName()))
 			{
+				System.out.println("-- SUUS 1 --" + classe.getName());
 				return (S) instanciedServices.get(classe.getSimpleName());
 			}
 			
@@ -334,6 +336,7 @@ public class Container implements Service
 				| InvocationTargetException
 				| SecurityException | InstantiationException e) {
 			e.printStackTrace();
+			System.out.println("SUUS");
 			throw new ContainerException(e.getMessage());
 		}
 	}
@@ -388,6 +391,14 @@ public class Container implements Service
 			} catch (IOException e) {
 				System.err.println(e);
 			}
+	}
+
+	/**
+	 * Getter pour la config (son statut étant particulier...)
+	 * @return
+	 */
+	public Config getConfig(){
+		return config;
 	}
 
 	@Override
