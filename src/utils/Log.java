@@ -135,7 +135,7 @@ public class Log implements Service
 	 */
 	public void warning(Object message)
 	{
-			warning(message.toString());
+			writeToLog(message.toString(), warningPrefix, System.out);
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class Log implements Service
 	 */
 	public void critical(Object message)
 	{
-		critical(message.toString());
+		writeToLog(message.toString(), criticalPrefix, System.out);
 	}
 	
 	/**
