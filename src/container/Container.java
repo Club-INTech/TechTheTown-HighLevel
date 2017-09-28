@@ -179,7 +179,7 @@ public class Container implements Service
 		/** La config a un statut spécial, vu qu'elle nécessite un chemin d'accès vers le fichier de config */
         try
         {
-        	config = new ConfigHack(ConfigInfoJUnit.values(), true, "config/config.txt", "test");
+        	config = new ConfigHack(ConfigInfoRobot.values(), true, "config/config.txt", "test");
 			/* Constructor<Config> constructeur = Config.class.getDeclaredConstructor(String.class);
 			constructeur.setAccessible(true); // on outrepasse les droits
 			config = constructeur.newInstance(configPath);
