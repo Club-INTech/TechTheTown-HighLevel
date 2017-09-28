@@ -26,7 +26,6 @@ import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.serial.SerialConnexionException;
-import hook.Hook;
 import org.junit.Before;
 import org.junit.Test;
 import pfg.config.Config;
@@ -92,7 +91,7 @@ public class JUnit_Sensors extends JUnit_Test
 		Sleep.sleep(5000);
 		state.robot.setOrientation(-Math.PI/2);
 
-		scriptManager.getScript(ScriptNames.INITIALISE_ROBOT).goToThenExec(0, state,new ArrayList<Hook>());
+		scriptManager.getScript(ScriptNames.INITIALISE_ROBOT).goToThenExec(0, state);
 		Thread.sleep(2000);
 		log.debug ("Orientation :" + state.robot.getOrientation());
 		log.debug("Position :" + state.robot.getPosition());
@@ -112,7 +111,7 @@ public class JUnit_Sensors extends JUnit_Test
 		log.debug("Orientation :" + state.robot.getOrientation());
 
 		try {
-			scriptManager.getScript(ScriptNames.INITIALISE_ROBOT).goToThenExec(1, state, new ArrayList<Hook>());
+			scriptManager.getScript(ScriptNames.INITIALISE_ROBOT).goToThenExec(1, state);
 		}catch(Exception e){
 			e.printStackTrace();
 			log.debug("Suus, ca a fail");
@@ -125,7 +124,7 @@ public class JUnit_Sensors extends JUnit_Test
 		log.debug("Test d'évitement");
 		try 
 		{	
-			state.robot.moveLengthwiseWithoutDetection(250, new ArrayList<Hook>(), false);
+			state.robot.moveLengthwiseWithoutDetection(250, false);
 		} 
 		catch (UnableToMoveException e1)
 		{}
@@ -135,7 +134,7 @@ public class JUnit_Sensors extends JUnit_Test
 		{
 			try
 			{
-				state.robot.moveToCircle(new Circle(new Vec2(-700, 900),0),  new ArrayList<Hook>(), container.getService(Table.class));
+				state.robot.moveToCircle(new Circle(new Vec2(-700, 900),0), container.getService(Table.class));
 			}
 			catch (UnableToMoveException | ContainerException e) 
 			{
@@ -203,7 +202,7 @@ public class JUnit_Sensors extends JUnit_Test
 		
 		try 
 		{
-			state.robot.moveLengthwiseWithoutDetection(500, new ArrayList<Hook>(), false);
+			state.robot.moveLengthwiseWithoutDetection(500, false);
 			state.robot.turn(- Math.PI/2);
 		} 
 		catch (UnableToMoveException e1)
@@ -221,7 +220,7 @@ public class JUnit_Sensors extends JUnit_Test
 		
 		try 
 		{
-			state.robot.moveLengthwiseWithoutDetection(500, new ArrayList<Hook>(), false);
+			state.robot.moveLengthwiseWithoutDetection(500, false);
 		} 
 		catch (UnableToMoveException e1)
 		{
@@ -231,8 +230,8 @@ public class JUnit_Sensors extends JUnit_Test
 		{
 			try 
 			{
-				state.robot.moveLengthwiseWithoutDetection(500, new ArrayList<Hook>(), false);
-				state.robot.moveLengthwiseWithoutDetection(-500, new ArrayList<Hook>(), false);
+				state.robot.moveLengthwiseWithoutDetection(500, false);
+				state.robot.moveLengthwiseWithoutDetection(-500, false);
 			} 
 			catch (UnableToMoveException e1)
 			{
@@ -351,7 +350,7 @@ public class JUnit_Sensors extends JUnit_Test
 			{
 				x = rand.nextInt(3000)-1500;
 				y = rand.nextInt(2000);
-				state.robot.moveToLocation(new Vec2 (x,y),new ArrayList<Hook>(), state.table);
+				state.robot.moveToLocation(new Vec2 (x,y), state.table);
 			} 
 			catch (UnableToMoveException e1)
 			{
