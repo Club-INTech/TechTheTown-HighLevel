@@ -21,8 +21,6 @@ package tests;
 
 import enums.Speed;
 import exceptions.Locomotion.UnableToMoveException;
-import hook.Hook;
-import hook.types.HookFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,8 +41,6 @@ public class JUnit_Hooks extends JUnit_Test
 {
 	private GameState theRobot;
 	private ScriptManager scriptManager;
-	private HookFactory hookFactory;
-	private ArrayList<Hook> emptyHook = new ArrayList<Hook>();
 	
 	@Before
 	public void setUp() throws Exception
@@ -52,7 +48,6 @@ public class JUnit_Hooks extends JUnit_Test
 		super.setUp();
 		scriptManager = container.getService(ScriptManager.class);
 		theRobot = container.getService(GameState.class);
-		hookFactory = container.getService(HookFactory.class);
 		theRobot.robot.setOrientation(Math.PI);
 		theRobot.robot.setPosition(Table.entryPosition);
 		theRobot.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
@@ -67,7 +62,7 @@ public class JUnit_Hooks extends JUnit_Test
 		log.debug("Début de test !");
 		try 
 		{
-			theRobot.robot.moveLengthwise(500,emptyHook,false);
+			theRobot.robot.moveLengthwise(500,false);
 		}
 		catch (UnableToMoveException e) 
 		{

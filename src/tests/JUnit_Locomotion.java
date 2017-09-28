@@ -25,7 +25,6 @@ import exceptions.Locomotion.BlockedException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.serial.SerialConnexionException;
-import hook.Hook;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -97,7 +96,7 @@ public class JUnit_Locomotion extends JUnit_Test
 			int distance = 210;
 			while(true)
 			{
-				mLocomotion.moveLengthwise(distance, null, false, true);
+				mLocomotion.moveLengthwise(distance, false, true);
 				//cardWrapper.moveLengthwise(distance);
 				while(cardWrapper.isRobotMovingAndAbnormal()[0])
 				{
@@ -107,7 +106,7 @@ public class JUnit_Locomotion extends JUnit_Test
 				if(cardWrapper.isRobotMovingAndAbnormal()[1])
 					throw new Exception();
 				
-				mLocomotion.moveLengthwise(-distance, null, false, true);
+				mLocomotion.moveLengthwise(-distance, false, true);
 				while(cardWrapper.isRobotMovingAndAbnormal()[0])
 				{
 					if(cardWrapper.isRobotMovingAndAbnormal()[1])
@@ -141,7 +140,7 @@ public class JUnit_Locomotion extends JUnit_Test
 		log.debug("en position : x="+position.getX()+"; y="+position.getY());
 		try 
 		{
-			mLocomotion.moveLengthwise(2000,new ArrayList<Hook>(), false, false);
+			mLocomotion.moveLengthwise(2000, false, false);
 		} 
 		catch (UnableToMoveException e) 
 		{
@@ -154,7 +153,7 @@ public class JUnit_Locomotion extends JUnit_Test
 		{
 			try 
 			{
-				mLocomotion.followPath(path, null, DirectionStrategy.FORCE_FORWARD_MOTION);
+				mLocomotion.followPath(path, DirectionStrategy.FORCE_FORWARD_MOTION);
 				position = mLocomotion.getPosition();
 				log.debug("en position : x="+position.getX()+"; y="+position.getY()+" après le followpath");
 			} 
@@ -175,7 +174,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
 		try 
 		{
-			mLocomotion.turn(Math.PI/2, null, true, true);
+			mLocomotion.turn(Math.PI/2, true, true);
 		} 
 		catch (UnableToMoveException e) 
 		{
@@ -193,7 +192,7 @@ public class JUnit_Locomotion extends JUnit_Test
 		log.debug("en position : x="+position.getX()+"; y="+position.getY());
 		Vec2 aim = new Vec2(0,500);
 		log.debug("position de l'objectif : x="+position.getX()+"; y="+position.getY());
-		mLocomotion.JUNIT_moveToPointForwardBackward(aim, null, false, DirectionStrategy.FASTEST, 0, true);
+		mLocomotion.JUNIT_moveToPointForwardBackward(aim, false, DirectionStrategy.FASTEST, 0, true);
 		Assert.assertEquals(aim, mLocomotion.getPosition());
 	}
 	/**
@@ -207,7 +206,7 @@ public class JUnit_Locomotion extends JUnit_Test
 		log.debug("en position : x="+position.getX()+"; y="+position.getY());
 		Vec2 aim = new Vec2(0,500);
 		log.debug("position de l'objectif : x="+position.getX()+"; y="+position.getY());
-		mLocomotion.JUNIT_moveToPointException(aim, null, true, false, 0,true);
+		mLocomotion.JUNIT_moveToPointException(aim, true, false, 0,true);
 		Assert.assertEquals(aim, mLocomotion.getPosition());
 	}
 	/**
@@ -224,7 +223,7 @@ public class JUnit_Locomotion extends JUnit_Test
 		log.debug("en position : x="+position.getX()+"; y="+position.getY());
 		Vec2 aim =  new Vec2(0,500);
 		log.debug("position de l'objectif : x="+position.getX()+"; y="+position.getY());
-		mLocomotion.JUNIT_moveToPointCorrectAngleAndDetectEnnemy(aim, null, true, false, true);
+		mLocomotion.JUNIT_moveToPointCorrectAngleAndDetectEnnemy(aim, true, false, true);
 	}
 	/**
 	 * 
@@ -294,10 +293,10 @@ public class JUnit_Locomotion extends JUnit_Test
 	@Test
 	public void	testIsMotionEnded() throws BlockedException, UnableToMoveException 
 	{
-		mLocomotion.moveLengthwise(0, null, false, false);
+		mLocomotion.moveLengthwise(0, false, false);
 		boolean res1 = mLocomotion.JUNIT_isMotionEnded();
 		Assert.assertEquals(res1, false);
-		mLocomotion.moveLengthwise(1000, null, false, false);
+		mLocomotion.moveLengthwise(1000, false, false);
 		boolean res2 = mLocomotion.JUNIT_isMotionEnded();
 		Assert.assertEquals(res2, true);
 	}
@@ -318,7 +317,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	{
 		System.out.println("Placez le robot en ...");
 		System.out.println("Placez un ennemi à une distance inférieure à "+distance);
-		mLocomotion.moveLengthwise(distance+200, null, false, true);
+		mLocomotion.moveLengthwise(distance+200, false, true);
 		mLocomotion.detectEnemyAtDistance( distance, new Vec2 (0,100));
 		System.out.println("Le robot a dû s'arrêter");		
 	}
@@ -342,7 +341,7 @@ public class JUnit_Locomotion extends JUnit_Test
 	@Test
 	public void testImmobilise() throws UnableToMoveException
 	{
-		mLocomotion.moveLengthwise(200, null, false, true);
+		mLocomotion.moveLengthwise(200, false, true);
 		mLocomotion.immobilise();
 		log.debug("Le robot a dû s'arrêter");
 	

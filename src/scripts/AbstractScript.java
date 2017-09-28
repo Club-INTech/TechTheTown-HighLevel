@@ -26,8 +26,6 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.serial.SerialConnexionException;
-import hook.Hook;
-import hook.types.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
@@ -48,9 +46,6 @@ public abstract class AbstractScript implements Service
 	
 	/**  le fichier de config a partir duquel le script pourra se configurer. */
 	protected static Config config;
-	
-	/**  Factory de hooks a utiliser par les scripts. */
-	protected static HookFactory hookFactory;
 
 	/**  Liste des versions du script. */
 	protected Integer[] versions;
@@ -58,13 +53,11 @@ public abstract class AbstractScript implements Service
 	/**
 	 * Constructeur à appeller lorsqu'un script héritant de la classe AbstractScript est instancié.
 	 * Le constructeur se charge de renseigner la hookFactory, le système de config et de log.
-	 * @param hookFactory La factory a utiliser pour générer les hooks dont pourra avoir besoin le script
 	 * @param config le fichier de config a partir duquel le script pourra se configurer
 	 * @param log le système de log qu'utilisera le script
 	 */
-	protected AbstractScript(HookFactory hookFactory, Config config, Log log)
+	protected AbstractScript(Config config, Log log)
 	{
-		AbstractScript.hookFactory = hookFactory;
 		AbstractScript.config = config;
 		AbstractScript.log = log;
 	}
@@ -73,12 +66,11 @@ public abstract class AbstractScript implements Service
 	 * Va au point d'entrée du script (en utilisant le Pathfinding), puis l'exécute
 	 * @param versionToExecute la version du script
 	 * @param actualState l'état courrant du match.
-	 * @param hooksToConsider les hooks a considérer lors des déplacements vers ces scripts
 	 * @throws UnableToMoveException losrque le robot veut se déplacer et que quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws SerialConnexionException s'il y a un problème de communication avec une des cartes électroniques
 	 * @throws ExecuteException
 	 */
-	public void goToThenExec(int versionToExecute, GameState actualState, ArrayList<Hook> hooksToConsider) throws UnableToMoveException, BadVersionException, SerialConnexionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
+	public void goToThenExec(int versionToExecute, GameState actualState) throws UnableToMoveException, BadVersionException, SerialConnexionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
 		// va jusqu'au point d'entrée de la version demandée
 		log.debug("Lancement de " + this.toString() + " version " + versionToExecute);
 		try 
@@ -87,7 +79,7 @@ public abstract class AbstractScript implements Service
 
 				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getRobotRadius(), actualState.robot.getPosition()).getCenter());
 
-				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getRobotRadius(), actualState.robot.getPositionFast()), hooksToConsider, actualState.table);
+				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getRobotRadius(), actualState.robot.getPositionFast()), actualState.table);
 			}
 		}
 		catch (UnableToMoveException e)
@@ -97,7 +89,7 @@ public abstract class AbstractScript implements Service
 		}
 
 		// exécute la version demandée
-		execute(versionToExecute, actualState, hooksToConsider);
+		execute(versionToExecute, actualState);
 	}
 
 	   
@@ -105,12 +97,11 @@ public abstract class AbstractScript implements Service
 	 * Exécute le script
 	 * @param versionToExecute la version du script à exécuter
 	 * @param actualState l'état courant du match.
-	 * @param hooksToConsider les hooks à considérer lors des déplacements vers ces scripts
 	 * @throws UnableToMoveException exception levée lorsque le robot ne peut se déplacer (décor ou obstacles détectés par capteurs)
 	 * @throws SerialConnexionException s'il y a un problème de communication avec une des cartes électroniques
 	 * @throws ExecuteException
 	 */
-	public abstract void execute(int versionToExecute, GameState actualState, ArrayList<Hook> hooksToConsider) throws UnableToMoveException, ExecuteException, SerialConnexionException, BlockedActuatorException;
+	public abstract void execute(int versionToExecute, GameState actualState) throws UnableToMoveException, ExecuteException, SerialConnexionException, BlockedActuatorException;
 
 	/**
 	 * Renvoie le score que peut fournir une version d'un script.

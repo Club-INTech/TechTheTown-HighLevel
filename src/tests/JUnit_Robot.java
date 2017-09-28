@@ -20,7 +20,6 @@
 package tests;
 
 import enums.ScriptNames;
-import hook.Hook;
 import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
@@ -56,6 +55,6 @@ public class JUnit_Robot extends JUnit_Test
 
     @Test
     public void testScript() throws Exception {
-        scriptManager.getScript(ScriptNames.CLOSE_DOORS).goToThenExec(0, state, new ArrayList<Hook>());
+        scriptManager.getScript(ScriptNames.CLOSE_DOORS).goToThenExec(0, state);
     }
 }

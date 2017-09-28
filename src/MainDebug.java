@@ -22,7 +22,6 @@ import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.ContainerException;
 import graphics.AffichageDebug;
-import hook.Hook;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
@@ -47,7 +46,6 @@ public class MainDebug
     static Container container;
     static Config config;
     static GameState realState;
-    static ArrayList<Hook> emptyHook = new ArrayList<>();
     static ScriptManager scriptmanager;
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;

@@ -24,7 +24,6 @@ import enums.ScriptNames;
 import enums.Side;
 import enums.TurningStrategy;
 import exceptions.serial.SerialConnexionException;
-import hook.Hook;
 import robot.Robot;
 import scripts.ScriptManager;
 import strategie.GameState;

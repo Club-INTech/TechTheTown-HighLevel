@@ -1,10 +1,7 @@
 package strategie;
 
-import hook.Hook;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import pfg.config.Config;
 import utils.Log;
 
@@ -25,7 +22,7 @@ public class Runlist {
         return runList;
     }
 //On utilisera ici des lambdas fonctions tels que Runnable monTraitement = () -> System.out.println("bonjour"); pour chaque intruction
-    public void executeScript(String scriptToExecute, int versionToExecute, GameState stateToConsider, ArrayList<Hook> hooksToConsider) {
+    public void executeScript(String scriptToExecute, int versionToExecute, GameState stateToConsider) {
         int n = this.runList.get(scriptToExecute).get(versionToExecute).size();
        new Boucle(0,n,runList.get(scriptToExecute).get(versionToExecute),1).run();
 
