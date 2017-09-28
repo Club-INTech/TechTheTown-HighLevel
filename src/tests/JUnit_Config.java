@@ -20,11 +20,8 @@
 package tests;
 
 import enums.ConfigInfoJUnit;
-import enums.ConfigInfoRobot;
 import org.junit.Before;
 import org.junit.Test;
-import pfg.config.Config;
-import pfg.config.ConfigInfo;
 import threads.dataHandlers.ThreadEth;
 
 /**
@@ -35,12 +32,6 @@ import threads.dataHandlers.ThreadEth;
 
 public class JUnit_Config extends JUnit_Test {
 
-	@Before
-	public void setUp() throws Exception{
-		super.setUp();
-		config = new Config(ConfigInfoRobot.values(), false, "config.txt");
-	}
-
 	/**
 	 * Test_get.
 	 * @throws Exception the exception
@@ -48,22 +39,21 @@ public class JUnit_Config extends JUnit_Test {
 	@Test
 	public void test_getDefault() throws Exception
 	{
-		int rInt;
-		double rDouble;
-		boolean rBool;
-		String rString;
+		try {
+			int rInt = config.getInt(ConfigInfoJUnit.RANDOM_INT);
+			double rDouble = config.getDouble(ConfigInfoJUnit.RANDOM_DOUBLE);
+			boolean rBool = config.getBoolean(ConfigInfoJUnit.RANDOM_BOOL);
+			String rString = config.getString(ConfigInfoJUnit.RANDOM_STRING);
 
-		rInt = config.getInt(ConfigInfoJUnit.RANDOM_INT);
-		rDouble = config.getDouble(ConfigInfoJUnit.RANDOM_DOUBLE);
-		rBool = config.getBoolean(ConfigInfoJUnit.RANDOM_BOOL);
-		rString = config.getString(ConfigInfoJUnit.RANDOM_STRING);
+			log.debug("Integer : " + ConfigInfoJUnit.RANDOM_INT + " - " + rInt);
+			log.debug("Double : " + ConfigInfoJUnit.RANDOM_DOUBLE + " - " + rDouble);
+			log.debug("Boolean : " + ConfigInfoJUnit.RANDOM_BOOL + " - " + rBool);
+			log.debug("String : " + ConfigInfoJUnit.RANDOM_STRING + " - " + rString);
 
-		log.debug("Integer : " + ConfigInfoJUnit.RANDOM_INT + " - " + rInt);
-		log.debug("Double : " + ConfigInfoJUnit.RANDOM_DOUBLE + " - " + rInt);
-		log.debug("Boolean : " + ConfigInfoJUnit.RANDOM_BOOL + " - " + rInt);
-		log.debug("String : " + ConfigInfoJUnit.RANDOM_STRING + " - " + rInt);
-
-		Thread.sleep(10000);
+			Thread.sleep(10000);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	/**

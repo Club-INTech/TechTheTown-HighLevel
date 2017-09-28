@@ -75,7 +75,6 @@ public class Log implements Service
 	private Log(Config config)
 	{
 		this.config = config;
-		
 		updateConfig();
 		
 		// crée le fichier de log si on spécifie d'écrire dans un fichcier les logs du robot
