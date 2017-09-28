@@ -194,7 +194,7 @@ public class Container implements Service
             System.exit(0);
         }
 
-        log = getService(Log.class); // Bug
+        log = getService(Log.class);
         log.updateConfig();
 
 		// Le container est aussi un service
@@ -349,6 +349,7 @@ public class Container implements Service
 			try {
 				getService(threadName.cls).start();
 			} catch (ContainerException e) {
+				e.printStackTrace();
 				log.critical(e);
 			}
 		}
