@@ -21,12 +21,10 @@ package robot;
 
 import container.Service;
 import enums.*;
-import exceptions.ConfigPropertyNotFoundException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
-import pfg.config.ConfigInfo;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Vec2;

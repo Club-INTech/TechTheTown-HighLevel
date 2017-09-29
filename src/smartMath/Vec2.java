@@ -324,8 +324,17 @@ public class Vec2 {
 	/* (non-Javadoc)
  * @see java.lang.Object#toString()
  */
+	@Override
 	public String toString() {
-		return "(" + x + "," + y + ") (" + r + "," + a + ")";
+		return "(" + x + "," + y + ") (" + (float)r + "," + (float)a + ")";
+	}
+
+	/**
+	 * Lorsque l'on discute avec le LL, on signifie que c'est un vecteur comme ceci
+	 * @return
+	 */
+	public String toStringEth(){
+		return x + " " + y;
 	}
 
 	public String[] toStringTableau() {

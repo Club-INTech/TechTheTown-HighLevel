@@ -32,7 +32,6 @@ import utils.Log;
  
 public class ScriptManager implements Service
 {
-	
 	/** système de log sur lequel écrire. */
 	@SuppressWarnings("unused")
 	private Log log;
@@ -73,10 +72,6 @@ public class ScriptManager implements Service
 	/* (non-Javadoc)
 	 * @see container.Service#updateConfig()
 	 */
-
-	//LE HAUT NIVEAU C D PD
-	public void updateConfig()
-	{
-	}
-
+	@Override
+	public void updateConfig() {}
 }

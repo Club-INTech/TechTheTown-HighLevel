@@ -19,12 +19,10 @@
 
 package tests;
 
-
 import enums.DirectionStrategy;
 import exceptions.Locomotion.BlockedException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
-import exceptions.serial.SerialConnexionException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -213,10 +211,9 @@ public class JUnit_Locomotion extends JUnit_Test
 	 * 
 	 * @throws UnexpectedObstacleOnPathException
 	 * @throws BlockedException
-	 * @throws SerialConnexionException
 	 */
 	@Test
-	public void testMoveToPointCorrectAngleAndDetectEnnemy() throws UnexpectedObstacleOnPathException, BlockedException, SerialConnexionException
+	public void testMoveToPointCorrectAngleAndDetectEnnemy() throws UnexpectedObstacleOnPathException, BlockedException
 	{
 		
 		Vec2 position = mLocomotion.getPosition();
@@ -387,20 +384,18 @@ public class JUnit_Locomotion extends JUnit_Test
 	/**
 	 * Je ne vois pas où on peut tester le pwm en rotation
 	 * @param pwm
-	 * @throws SerialConnexionException
 	 */
 	@Test
-	public void testSetRotationnalSpeed(int pwm) throws SerialConnexionException
+	public void testSetRotationnalSpeed(int pwm)
 	{
 		mLocomotion.setRotationnalSpeed(pwm);
 	}
 	/**
 	 * Je vois pas où on peut vérifier le pwm en translation
 	 * @param pwm
-	 * @throws SerialConnexionException
 	 */
 	@Test
-	public void testSetTranslationnalSpeed(int pwm) throws SerialConnexionException
+	public void testSetTranslationnalSpeed(int pwm)
 	{
 		mLocomotion.setTranslationnalSpeed(pwm);
 	}

@@ -23,7 +23,6 @@ import container.Container;
 import enums.ConfigInfoRobot;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.serial.SerialConnexionException;
 import org.junit.After;
 import org.junit.Before;
 import pfg.config.Config;
@@ -100,7 +99,7 @@ public abstract class JUnit_Test
 		ThreadTimer.matchStarted = true;
 	}
 
-	public void matchSetUp(Robot robot, boolean isInitialisationQuick) throws SerialConnexionException
+	public void matchSetUp(Robot robot, boolean isInitialisationQuick)
 	{
 		//TODO init du robot
 	}

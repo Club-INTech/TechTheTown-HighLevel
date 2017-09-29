@@ -22,9 +22,7 @@ package table;
 
 import container.Service;
 import enums.ConfigInfoRobot;
-import exceptions.ConfigPropertyNotFoundException;
 import pfg.config.Config;
-import pfg.config.ConfigInfo;
 import smartMath.Vec2;
 import table.obstacles.ObstacleManager;
 import utils.Log;

@@ -20,18 +20,11 @@
 package graphics;
 
 import enums.ActuatorOrder;
-import enums.ScriptNames;
-import enums.Side;
 import enums.TurningStrategy;
-import exceptions.serial.SerialConnexionException;
-import robot.Robot;
 import scripts.ScriptManager;
 import strategie.GameState;
-
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 /**
  * Gestionnaire des actions clavier pour l'interface graphique, ajoutez vos actions aux blocks correspondants
@@ -67,7 +60,7 @@ public class Keyboard implements KeyListener {
 	boolean isCpressed;
 	int lastEvent;
 
-	void doThat() throws SerialConnexionException {
+	void doThat() {
 		if(/*isUpPressed < 15 &&*/ isUpPressedb)
 		{
 			try
@@ -143,11 +136,7 @@ public class Keyboard implements KeyListener {
 					lastEvent = e.getKeyCode();
 					break;
 			}
-			try {
-				doThat();
-			} catch (SerialConnexionException e1) {
-				e1.printStackTrace();
-			}
+			doThat();
 		}
 	}
 

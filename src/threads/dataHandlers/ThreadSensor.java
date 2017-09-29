@@ -20,10 +20,8 @@
 package threads.dataHandlers;
 
 import enums.ConfigInfoRobot;
-import exceptions.ConfigPropertyNotFoundException;
 import graphics.Window;
 import pfg.config.Config;
-import pfg.config.ConfigInfo;
 import robot.EthWrapper;
 import robot.Robot;
 import smartMath.Vec2;
@@ -38,7 +36,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static smartMath.Geometry.isBetween;
