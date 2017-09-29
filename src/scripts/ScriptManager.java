@@ -21,7 +21,7 @@ package scripts;
 
 import container.Service;
 import enums.ScriptNames;
-import hook.types.HookFactory;
+import hook.HookFactory;
 import pfg.config.Config;
 import utils.Log;
 
@@ -32,7 +32,6 @@ import utils.Log;
  
 public class ScriptManager implements Service
 {
-	
 	/** système de log sur lequel écrire. */
 	@SuppressWarnings("unused")
 	private Log log;
@@ -41,22 +40,23 @@ public class ScriptManager implements Service
 	@SuppressWarnings("unused")
 	private Config config;
 
+	private HookFactory hookFactory;
+
 	/** Map contenant l'ensemble des scripts instanciés. Permet de retrouver un script via son nom */
 	private AbstractScript[] instanciedScripts = new AbstractScript[ScriptNames.values().length];
 	
 	/**
 	 * Instancie le scriptManager
-	 * @param factory le générateur de hook a utiliser dans les scripts
 	 * @param config the config endroit ou lire la configuration du robot
 	 * @param log système de log sur lequel écrire
 	 */
-	private ScriptManager(HookFactory factory, Config config, Log log)
+	private ScriptManager(Config config, Log log, HookFactory factory)
 	{
 		this.log = log;
 		this.config = config;
 		
-		// exemple: instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(factory, config, log);
-		instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(factory, config, log);
+		// exemple: instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(config, log, factory);
+		instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(config, log, factory);
 	}
 	
 	/**
@@ -74,10 +74,6 @@ public class ScriptManager implements Service
 	/* (non-Javadoc)
 	 * @see container.Service#updateConfig()
 	 */
-
-	//LE HAUT NIVEAU C D PD
-	public void updateConfig()
-	{
-	}
-
+	@Override
+	public void updateConfig() {}
 }

@@ -26,7 +26,7 @@ package enums;
  *
  */
 
-public enum ActuatorOrder
+public enum ActuatorOrder implements MotionOrder
 {
 	// Syntaxe: NOM_METHODE("protocole_serie") Cette syntaxe suppose que l'action prends une seconde pour s'exécuter
 	// Syntaxe alternative: NOM_METHODE("protocole_serie", durée actions)

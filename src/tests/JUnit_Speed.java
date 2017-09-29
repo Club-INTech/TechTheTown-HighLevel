@@ -22,7 +22,6 @@ package tests;
 import enums.Speed;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import hook.Hook;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,8 +65,8 @@ public class JUnit_Speed extends JUnit_Test {
 			robot.setLocomotionSpeed(speed);
 			log.debug("PWM rotation : "+speed.rotationSpeed+"\nPWM translation : "+speed.translationSpeed);
 			
-			robot.moveToLocation(new Vec2(-1000,1000), new ArrayList<Hook>(), table);
-			robot.moveToLocation(new Vec2(1000, 1000), new ArrayList<Hook>(), table);
+			robot.moveToLocation(new Vec2(-1000,1000), table);
+			robot.moveToLocation(new Vec2(1000, 1000), table);
 		}
 		
 	}

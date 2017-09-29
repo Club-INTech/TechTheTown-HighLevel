@@ -21,13 +21,10 @@ package robot;
 
 import container.Service;
 import enums.*;
-import exceptions.ConfigPropertyNotFoundException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import hook.Hook;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
-import pfg.config.ConfigInfo;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Vec2;
@@ -156,26 +153,24 @@ public class Robot implements Service {
 	 * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
 	 *
 	 * @param aim le point de destination du mouvement
-	 * @param hooksToConsider les hooks déclenchables durant ce mouvement
 	 * @param table la table sur laquelle le robot se deplace
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
-	public void moveToLocation(Vec2 aim, ArrayList<Hook> hooksToConsider, Table table) throws  UnableToMoveException,PointInObstacleException
+	public void moveToLocation(Vec2 aim, Table table) throws  UnableToMoveException,PointInObstacleException
 	{
-		log.debug("Appel de Robot.moveToLocation(" + aim + "," + hooksToConsider + "," + table + ")");
+		log.debug("Appel de Robot.moveToLocation(" + aim + "," + table + ")");
 		//On crée bêtement un cercle de rayon nul pour lancer moveToCircle, sachant que la position de ce cercle est extraite pour le pathDiniDing (et après on dit qu'à INTech on code comme des porcs...)
-		moveToCircle(new Circle(aim), hooksToConsider, table);
+		moveToCircle(new Circle(aim), table);
 	}
 
 	/**
 	 * deplace le robot vers le point du cercle donnné le plus proche, en évitant les obstacles. (appel du pathfinding)
 	 * methode bloquante : l'execution ne se termine que lorsque le robot est arrive
 	 * @param aim le cercle ou l'on veut se rendre
-	 * @param hooksToConsider the hooks to consider
 	 * @param table la table sur laquelle on est sensé se déplacer
 	 * @throws UnableToMoveException lorsque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
-	public void moveToCircle(Circle aim, ArrayList<Hook> hooksToConsider, Table table) throws UnableToMoveException, PointInObstacleException {
+	public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException {
 		Vec2 aimPosition= Geometry.closestPointOnCircle(this.position,aim);
 		// TODO : Appel du followpath & Pathfinding !
 	}
@@ -183,30 +178,28 @@ public class Robot implements Service {
 	/**
 	 * Appel de locomotion sur un chemin (en général déterminé par le Pathfinding)
 	 * @param chemin
-	 * @param hooksToConsider
 	 * @throws UnableToMoveException
 	 */
 
 	@SuppressWarnings("unchecked")
-	public void followPath(ArrayList<Vec2> chemin, ArrayList<Hook> hooksToConsider) throws UnableToMoveException
+	public void followPath(ArrayList<Vec2> chemin) throws UnableToMoveException
 	{
 		cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-		mLocomotion.followPath(chemin, hooksToConsider, DirectionStrategy.getDefaultStrategy());
+		mLocomotion.followPath(chemin, DirectionStrategy.getDefaultStrategy());
 	}
 
 	/**
 	 * Appel de locomotion sur un chemin (en général déterminé par le Pathfinding), en considérant la directionStrategy
 	 * @param chemin
-	 * @param hooksToConsider
 	 * @param direction
 	 * @throws UnableToMoveException
 	 */
 
 	@SuppressWarnings("unchecked")
-	protected void followPath(ArrayList<Vec2> chemin, ArrayList<Hook> hooksToConsider, DirectionStrategy direction) throws UnableToMoveException
+	protected void followPath(ArrayList<Vec2> chemin, DirectionStrategy direction) throws UnableToMoveException
 	{
 		cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-		mLocomotion.followPath(chemin, hooksToConsider, direction);
+		mLocomotion.followPath(chemin, direction);
 	}
 
 	/**
@@ -216,29 +209,18 @@ public class Robot implements Service {
 	 */
 
 	public void goTo(Vec2 pointVise) throws UnableToMoveException {
-		goTo(pointVise, new ArrayList<Hook>(), false, true);
-	}
-
-	/**
-	 * Effectue un trajet en ligne droite jusqu'au point désiré
-	 * @param pointVise
-	 * @param hooksToConsider
-	 * @throws UnableToMoveException
-	 */
-	public void goTo(Vec2 pointVise, ArrayList<Hook> hooksToConsider) throws UnableToMoveException {
-		goTo(pointVise, hooksToConsider, false, true);
+		goTo(pointVise, false, true);
 	}
 
 	/** Effectue un mouvement en ligne droite jusqu'au point désiré.
 	 * @param pointVise
-	 * @param hooksToConsider
 	 * @param expectedWallImpact
 	 * @param isDetect
 	 * @throws UnableToMoveException
 	 */
-	public void goTo(Vec2 pointVise, ArrayList<Hook> hooksToConsider, boolean expectedWallImpact, boolean isDetect) throws UnableToMoveException {
+	public void goTo(Vec2 pointVise, boolean expectedWallImpact, boolean isDetect) throws UnableToMoveException {
 		log.debug("Appel de Robot.goTo :" + pointVise);
-		mLocomotion.goTo(pointVise, hooksToConsider, expectedWallImpact, isDetect);
+		mLocomotion.goTo(pointVise, expectedWallImpact, isDetect);
 	}
 
 
@@ -270,61 +252,46 @@ public class Robot implements Service {
 	 */
 	public void turn(double angle) throws UnableToMoveException
 	{
-		turn(angle, null, false, false);
-	}
-
-	/**
-	 * Fait tourner le robot, et permet de prendre en compte les hooks
-	 * Attention: on s'attend à ne pas percuter d'obstacle
-	 * @param angle : valeur absolue en radiant de l'orientation que le robot doit avoir après avoir tourné
-	 * @throws UnableToMoveException
-	 */
-
-	public void turn(double angle, ArrayList<Hook> hooksToConsider) throws UnableToMoveException
-	{
-		turn(angle, hooksToConsider, false, false);
+		turn(angle, false, false);
 	}
 
 	/**
 	 * Fait tourner le robot, en considérant les hooks et les éventuels calins avec le mur
 	 * @param angle
-	 * @param hooksToConsider
 	 * @param expectsWallImpact
 	 * @throws UnableToMoveException
 	 */
 
-	public void turn(double angle, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact) throws UnableToMoveException
+	public void turn(double angle, boolean expectsWallImpact) throws UnableToMoveException
 	{
-		turn(angle, hooksToConsider, expectsWallImpact,false);
+		turn(angle, expectsWallImpact,false);
 	}
 
 	/**
 	 * Fait tourner le robot, et considère si l'angle est relatif ou non
 	 * @param angle
-	 * @param hooksToConsider
 	 * @param expectsWallImpact
 	 * @param isTurnRelative
 	 * @throws UnableToMoveException
 	 */
-	public void turn(double angle, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact, boolean isTurnRelative) throws UnableToMoveException
+	public void turn(double angle, boolean expectsWallImpact, boolean isTurnRelative) throws UnableToMoveException
 	{
-		turn(angle, hooksToConsider, expectsWallImpact, isTurnRelative, true);
+		turn(angle, expectsWallImpact, isTurnRelative, true);
 	}
 
 	/**
 	 * Fait tourner le robot en considérant TOUT !
 	 * @param angle
-	 * @param hooksToConsider
 	 * @param expectsWallImpact
 	 * @param isTurnRelative
 	 * @param mustDetect
 	 * @throws UnableToMoveException
 	 */
-	public void turn(double angle, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact, boolean isTurnRelative, boolean mustDetect) throws UnableToMoveException
+	public void turn(double angle, boolean expectsWallImpact, boolean isTurnRelative, boolean mustDetect) throws UnableToMoveException
 	{
 		if(isTurnRelative)
 			angle += getOrientation();
-		mLocomotion.turn(angle, hooksToConsider, expectsWallImpact, mustDetect);
+		mLocomotion.turn(angle, expectsWallImpact, mustDetect);
 	}
 
 	/**
@@ -341,9 +308,9 @@ public class Robot implements Service {
 		log.debug("appel de Robot.turnNoSymmetry(" + angle + ")");
 		// Fais la symétrie deux fois (symétrie de symétrie, c'est l'identité)
 		if(symmetry)
-			turn(Math.PI-angle, null, false, false);
+			turn(Math.PI-angle, false, false);
 		else
-			turn(angle, null, false, false);
+			turn(angle, false, false);
 	}
 
 	/**
@@ -355,39 +322,21 @@ public class Robot implements Service {
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
 	public void moveLengthwise(int distance) throws UnableToMoveException {
-		moveLengthwise(distance, new ArrayList<Hook>(), false);
+		moveLengthwise(distance, false);
 	}
-
-
-	/**
-	 * Fait avancer le robot de la distance spécifiée. Le robot garde son orientation actuelle et va simplement avancer.
-	 * Attention, cette méthode suppose que l'on est pas sensé percuter un mur.
-	 * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
-	 *
-	 * @param distance en mm que le robot doit franchir. Si cette distance est négative, le robot va reculer. Attention, en cas de distance négative, cette méthode ne vérifie pas s'il y a un système d'évitement a l'arrère du robot
-	 * @param hooksToConsider les hooks déclenchables durant ce mouvement
-	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
-	 */
-	public void moveLengthwise(int distance, ArrayList<Hook> hooksToConsider) throws UnableToMoveException
-	{
-		log.debug("appel de Robot.moveLengthwise(" + distance + "," + hooksToConsider + ")");
-		moveLengthwise(distance, hooksToConsider, false);
-	}
-
 
 	/**
 	 * Fait avancer le robot de la distance spécifiée. Le robot garde son orientation actuelle et va simplement avancer
 	 * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
 	 *
 	 * @param distance        en mm que le robot doit franchir
-	 * @param hooksToConsider hooks a considérer lors de ce déplacement. Le hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie
 	 * @param speed           la vitesse du robot lors de son parcours
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
-	public void moveLengthwise(int distance, ArrayList<Hook> hooksToConsider, Speed speed) throws UnableToMoveException {
+	public void moveLengthwise(int distance, Speed speed) throws UnableToMoveException {
 
-		log.debug("appel de Robot.moveLengthwise(" + distance + "," + hooksToConsider + "," + speed + ")");
-		moveLengthwise(distance, hooksToConsider, false, true, speed);
+		log.debug("appel de Robot.moveLengthwise(" + distance + "," + speed + ")");
+		moveLengthwise(distance, false, true, speed);
 	}
 
 
@@ -396,13 +345,12 @@ public class Robot implements Service {
 	 * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
 	 *
 	 * @param distance          en mm que le robot doit franchir
-	 * @param hooksToConsider   hooks a considérer lors de ce déplacement. Le hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie
 	 * @param expectsWallImpact true si le robot doit s'attendre a percuter un mur au cours du déplacement. false si la route est sensée être dégagée.
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
-	public void moveLengthwise(int distance, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact) throws UnableToMoveException {
-		log.debug("appel de Robot.moveLengthwise(" + distance + "," + hooksToConsider + "," + expectsWallImpact + ")");
-		moveLengthwise(distance, hooksToConsider, expectsWallImpact, true);
+	public void moveLengthwise(int distance, boolean expectsWallImpact) throws UnableToMoveException {
+		log.debug("appel de Robot.moveLengthwise(" + distance + "," + expectsWallImpact + ")");
+		moveLengthwise(distance, expectsWallImpact, true);
 	}
 
 
@@ -411,25 +359,24 @@ public class Robot implements Service {
 	 * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
 	 *
 	 * @param distance          en mm que le robot doit franchir
-	 * @param hooksToConsider   hooks a considérer lors de ce déplacement. Le hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie
 	 * @param expectsWallImpact true si le robot doit s'attendre a percuter un mur au cours du déplacement. false si la route est sensée être dégagée.
 	 * @param mustDetect        vrai si le robot doit detecter les obstacles sur son chemin
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
-	public void moveLengthwise(int distance, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact, Boolean mustDetect) throws UnableToMoveException {
-		log.debug("appel de Robot.moveLengthwise(" + distance + "," + hooksToConsider + "," + expectsWallImpact + "," + mustDetect + ")");
+	public void moveLengthwise(int distance, boolean expectsWallImpact, Boolean mustDetect) throws UnableToMoveException {
+		log.debug("appel de Robot.moveLengthwise(" + distance + "," + expectsWallImpact + "," + mustDetect + ")");
 		Speed newSpeed = Speed.SLOW_ALL;
-		moveLengthwise(distance, hooksToConsider, expectsWallImpact, mustDetect, newSpeed);
+		moveLengthwise(distance, expectsWallImpact, mustDetect, newSpeed);
 	}
 
 
 	/**
 	 * moveLengthwise mais sans détection
 	 */
-	public void moveLengthwiseWithoutDetection(int distance, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact) throws UnableToMoveException {
-		log.debug("appel de Robot.moveLengthwiseWithoutDetection(" + distance + "," + hooksToConsider + "," + expectsWallImpact + ")");
+	public void moveLengthwiseWithoutDetection(int distance, boolean expectsWallImpact) throws UnableToMoveException {
+		log.debug("appel de Robot.moveLengthwiseWithoutDetection(" + distance + "," + expectsWallImpact + ")");
 		Speed newSpeed = Speed.SLOW_ALL;
-		moveLengthwise(distance, hooksToConsider, expectsWallImpact, false, newSpeed);
+		moveLengthwise(distance, expectsWallImpact, false, newSpeed);
 	}
 
 
@@ -438,16 +385,15 @@ public class Robot implements Service {
 	 * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
 	 *
 	 * @param distance          en mm que le robot doit franchir
-	 * @param hooksToConsider   hooks a considérer lors de ce déplacement. Le hook n'est déclenché que s'il est dans cette liste et que sa condition d'activation est remplie
 	 * @param expectsWallImpact true si le robot doit s'attendre a percuter un mur au cours du déplacement. false si la route est sensée être dégagée.
 	 * @param mustDetect        vrai si le robot doit detecter les obstacles sur son chemin
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
-	public void moveLengthwise(int distance, ArrayList<Hook> hooksToConsider, boolean expectsWallImpact, Boolean mustDetect, Speed newSpeed) throws UnableToMoveException {
-		log.debug("appel de Robot.moveLengthwise(" + distance + "," + hooksToConsider + "," + expectsWallImpact + "," + mustDetect + "," + newSpeed + ")");
+	public void moveLengthwise(int distance, boolean expectsWallImpact, Boolean mustDetect, Speed newSpeed) throws UnableToMoveException {
+		log.debug("appel de Robot.moveLengthwise(" + distance + "," + expectsWallImpact + "," + mustDetect + "," + newSpeed + ")");
 		Speed oldSpeed = speed;
 		speed = newSpeed;
-		mLocomotion.moveLengthwise(distance, hooksToConsider, expectsWallImpact, mustDetect);
+		mLocomotion.moveLengthwise(distance, expectsWallImpact, mustDetect);
 		speed = oldSpeed;
 	}
 
@@ -456,15 +402,14 @@ public class Robot implements Service {
 	 * Attention, cette méthode suppose qu'il n'y a pas de hooks a considérer, et que l'on est sensé percuter un mur. La vitesse du robor est alors réduite a Speed.INTO_WALL.
 	 * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
 	 * @param distance en mm que le robot doit franchir. Si cette distance est négative, le robot va reculer. Attention, en cas de distance négative, cette méthode ne vérifie pas s'il y a un système d'évitement a l'arrère du robot
-	 * @param hooksToConsider les hooks déclenchables durant ce mouvement
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
-	public void moveLengthwiseTowardWall(int distance, ArrayList<Hook> hooksToConsider) throws UnableToMoveException
+	public void moveLengthwiseTowardWall(int distance) throws UnableToMoveException
 	{
-		log.debug("appel de Robot.moveLengthwiseTowardWall(" + distance + "," + hooksToConsider + ")");
+		log.debug("appel de Robot.moveLengthwiseTowardWall(" + distance + ")");
 		Speed oldSpeed = speed;
 		setLocomotionSpeed(Speed.SLOW_ALL);
-		moveLengthwise(distance, hooksToConsider, true, false);
+		moveLengthwise(distance, true, false);
 		setLocomotionSpeed(oldSpeed);
 	}
 

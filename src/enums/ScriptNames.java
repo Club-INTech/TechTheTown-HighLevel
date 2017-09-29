@@ -26,7 +26,6 @@ package enums;
  */
 
 public enum ScriptNames
-
 {
     CLOSE_DOORS,
     INITIALISE_ROBOT,
