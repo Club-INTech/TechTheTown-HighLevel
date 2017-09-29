@@ -21,11 +21,9 @@ package robot;
 
 import container.Service;
 import enums.*;
-import exceptions.ConfigPropertyNotFoundException;
 import exceptions.Locomotion.BlockedException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
-import exceptions.serial.SerialConnexionException;
 import pfg.config.Config;
 import smartMath.Vec2;
 import table.Table;
@@ -1253,7 +1251,7 @@ public class Locomotion implements Service
      * FONCTION POUR JUNIT. 
      */
     @SuppressWarnings("javadoc")
-    public void JUNIT_moveToPointCorrectAngleAndDetectEnnemy(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws UnexpectedObstacleOnPathException, BlockedException, SerialConnexionException
+    public void JUNIT_moveToPointCorrectAngleAndDetectEnnemy(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws UnexpectedObstacleOnPathException, BlockedException
     {
         moveToPointDetectEnnemy(aim, isMovementForward, turnOnly, mustDetect);
     }

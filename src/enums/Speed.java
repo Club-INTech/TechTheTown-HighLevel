@@ -26,41 +26,41 @@ package enums;
  *
  */
 
-public enum Speed
+public enum Speed implements MotionOrder
 {
 	//TODO régler les valeurs de vitesse en translations et rotations avec des phases de test, décider des combinaisons de vitesses inutiles
 	
 	/** Vitesse ultra lente de translation, ultra lente en rotation */
 	ULTRA_SLOW_ALL(85,Math.PI/8),
 
-	/** vitesse lente en translation, lente en rotation*/
+	/** vitesse lente en translation, lente en rotation */
 	SLOW_ALL(300, Math.PI/3),
 	
-	/** vitesse lente en translation, normale en rotation*/
+	/** vitesse lente en translation, normale en rotation */
 	SLOW_T_MEDIUM_R(300,2*Math.PI/3),
 
 	/** Just for fishing */
 	SLOW_MEDIUM(300, 2*Math.PI/3),
 
-	/** Vitesse standard de déplacement et rotation*/
+	/** Vitesse standard de déplacement et rotation */
 	MEDIUM_ALL(500,1.6D),
 	
-	/** vitesse standard de déplacement, lente en rotation*/
+	/** vitesse standard de déplacement, lente en rotation */
 	MEDIUM_T_SLOW_R(480,Math.PI/3),
 	
-	/** vitesse rapide en translation et lente en rotation*/
+	/** vitesse rapide en translation et lente en rotation */
 	FAST_T_SLOW_R(520, 1.75D),
 
-	/** vitesse rapide en translation et moyen en rotation*/
+	/** vitesse rapide en translation et moyen en rotation */
 	FAST_T_MEDIUM_R(520, 1.8D),
 
-	/** vitesse rapide en translation et rotation*/
+	/** vitesse rapide en translation et rotation */
 	FAST_ALL(600,(Math.PI));
     
-    /** vitesse des moteurs lors d'une translation, ce sont ces valeurs qui seront envoyées à la STM*/
-    public float translationSpeed;
+    /** vitesse des moteurs lors d'une translation, ce sont ces valeurs qui seront envoyées à la STM */
+    public int translationSpeed;
 
-    /** vitesse des moteurs lors d'une rotation, ce sont ces valeurs qui seront envoyées à la STM*/
+    /** vitesse des moteurs lors d'une rotation, ce sont ces valeurs qui seront envoyées à la STM */
     public double rotationSpeed;
 
         
@@ -74,6 +74,4 @@ public enum Speed
         this.translationSpeed = translationSpeed;
         this.rotationSpeed = rotationSpeed;
     }
-
-    
 }

@@ -21,7 +21,6 @@ package table.obstacles;
 
 import container.Service;
 import enums.ConfigInfoRobot;
-import exceptions.ConfigPropertyNotFoundException;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Geometry;

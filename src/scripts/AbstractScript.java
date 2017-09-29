@@ -25,14 +25,11 @@ import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.serial.SerialConnexionException;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
-
-import java.util.ArrayList;
 
 /**
  * Classe abstraite dont héritent les différents scripts.
@@ -67,10 +64,9 @@ public abstract class AbstractScript implements Service
 	 * @param versionToExecute la version du script
 	 * @param actualState l'état courrant du match.
 	 * @throws UnableToMoveException losrque le robot veut se déplacer et que quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
-	 * @throws SerialConnexionException s'il y a un problème de communication avec une des cartes électroniques
 	 * @throws ExecuteException
 	 */
-	public void goToThenExec(int versionToExecute, GameState actualState) throws UnableToMoveException, BadVersionException, SerialConnexionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
+	public void goToThenExec(int versionToExecute, GameState actualState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
 		// va jusqu'au point d'entrée de la version demandée
 		log.debug("Lancement de " + this.toString() + " version " + versionToExecute);
 		try 
@@ -98,10 +94,9 @@ public abstract class AbstractScript implements Service
 	 * @param versionToExecute la version du script à exécuter
 	 * @param actualState l'état courant du match.
 	 * @throws UnableToMoveException exception levée lorsque le robot ne peut se déplacer (décor ou obstacles détectés par capteurs)
-	 * @throws SerialConnexionException s'il y a un problème de communication avec une des cartes électroniques
 	 * @throws ExecuteException
 	 */
-	public abstract void execute(int versionToExecute, GameState actualState) throws UnableToMoveException, ExecuteException, SerialConnexionException, BlockedActuatorException;
+	public abstract void execute(int versionToExecute, GameState actualState) throws UnableToMoveException, ExecuteException, BlockedActuatorException;
 
 	/**
 	 * Renvoie le score que peut fournir une version d'un script.
@@ -130,7 +125,6 @@ public abstract class AbstractScript implements Service
 	 * @param state : état du jeu au sein duquel il faut finaliser le script
 	 * @param e : l'exception qui a déclenché le finalize 
 	 * @throws UnableToMoveException exception levée lorsque le robot ne peut se déplacer (décor ou obstacles détectés par capteurs)
-	 * @throws SerialConnexionException s'il y a un problème de communication avec une des cartes électroniques
 	 */
 	public abstract void finalize(GameState state, Exception e) throws UnableToMoveException;
 

@@ -25,7 +25,6 @@ import exceptions.ContainerException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
-import exceptions.serial.SerialConnexionException;
 import org.junit.Before;
 import org.junit.Test;
 import pfg.config.Config;
@@ -273,7 +272,7 @@ public class JUnit_Sensors extends JUnit_Test
 	}
 	
 	//@Test
-	public void testSensorEnnemyWithoutMovement() throws InterruptedException, SerialConnexionException {
+	public void testSensorEnnemyWithoutMovement() throws InterruptedException {
 		log.debug("Test des capteurs fixe");
 		state.robot.disableFeedbackLoop();
 		while(true)
@@ -331,7 +330,7 @@ public class JUnit_Sensors extends JUnit_Test
 	
 	
    // @Test
-	public void testCapteurDeplacement() throws SerialConnexionException, PointInObstacleException {
+	public void testCapteurDeplacement() throws PointInObstacleException {
     	matchSetUp(state.robot, false);
     	try 
     	{
