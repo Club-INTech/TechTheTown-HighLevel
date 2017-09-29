@@ -24,8 +24,9 @@ import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.ContactSensors;
 import enums.TurningStrategy;
-import exceptions.ConfigPropertyNotFoundException;
+import hook.HookNames;
 import pfg.config.Config;
+import smartMath.Vec2;
 import threads.dataHandlers.ThreadEth;
 import utils.Log;
 import utils.Sleep;
@@ -321,6 +322,35 @@ public class EthWrapper implements Service {
         float floatOrientation =(float) orientation; //On transtype car la serie veut des Floats (T_T)
         String chaines[] = {"co", String.format(Locale.US, "%.3f", floatOrientation)};
         eth.communicate(chaines, 0);
+    }
+
+    /**
+     * Configure les hooks pour le LL
+     * @param id
+     * @param posTrigger
+     * @param order
+     */
+    public void configureHook(String id, Vec2 posTrigger, int tolerency, String order){
+        String message = "nh " + id + " " + posTrigger.toStringEth() + " " + tolerency + " " + order;
+        eth.communicate(message, 0);
+    }
+
+    /**
+     * Active un hook
+     * @param hook
+     */
+    public void enableHook(HookNames hook){
+        String message = "eh " + hook.getId();
+        eth.communicate(message, 0);
+    }
+
+    /**
+     * Desactive le hook
+     * @param hook
+     */
+    public void disableHook(HookNames hook){
+        String message = "dh " + hook.getId();
+        eth.communicate(message, 0);
     }
 
 
