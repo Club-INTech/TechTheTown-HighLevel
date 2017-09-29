@@ -311,8 +311,8 @@ public class EthWrapper implements Service {
      * @param posTrigger
      * @param order
      */
-    public void configureHook(String id, Vec2 posTrigger, String order){
-        String message = "nh " + id + " " + posTrigger.toStringEth() + " " + order;
+    public void configureHook(String id, Vec2 posTrigger, int tolerency, String order){
+        String message = "nh " + id + " " + posTrigger.toStringEth() + " " + tolerency + " " + order;
         eth.communicate(message, 0);
     }
 

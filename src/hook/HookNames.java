@@ -10,7 +10,7 @@ import smartMath.Vec2;
  */
 public enum HookNames {
 
-    SPEED_DOWN("01", new Vec2(50, 50), Speed.SLOW_ALL)
+    SPEED_DOWN("01", new Vec2(50, 50), 5, Speed.SLOW_ALL)
     ;
 
     /** Ordre du hook */
@@ -19,13 +19,17 @@ public enum HookNames {
     /** Position de trigger du hook */
     private Vec2 position;
 
+    /** Tolérence sur la position */
+    private int tolerency;
+
     /** Id du hook, utile pour pouvoir l'activer/désactivé manuellement*/
     private String id;
 
     /** Constructeur */
-    HookNames(String id, Vec2 position, MotionOrder order){
+    HookNames(String id, Vec2 position, int tolerency, MotionOrder order){
         this.id = id;
         this.position = position;
+        this.tolerency = tolerency;
         this.order = order;
     }
 
@@ -35,6 +39,9 @@ public enum HookNames {
     }
     public Vec2 getPosition() {
         return position;
+    }
+    public int getTolerency(){
+        return tolerency;
     }
     public String getId() {
         return id;

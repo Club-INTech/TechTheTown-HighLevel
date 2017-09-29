@@ -23,6 +23,7 @@ import enums.Speed;
 import exceptions.BadVersionException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.UnableToMoveException;
+import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
@@ -42,8 +43,8 @@ import java.util.ArrayList;
  */
 public class CloseDoors extends AbstractScript
 {
-	public CloseDoors(Config config, Log log) {
-		super(config, log);
+	public CloseDoors(Config config, Log log, HookFactory hookFactory) {
+		super(config, log, hookFactory);
 
 		versions = new Integer[]{0,1,3,4};
 		
