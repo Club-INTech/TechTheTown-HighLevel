@@ -5,6 +5,7 @@ import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.ContactSensors;
 import enums.TurningStrategy;
+import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Vec2;
 import threads.dataHandlers.ThreadEth;
@@ -312,6 +313,24 @@ public class EthWrapper implements Service {
      */
     public void configureHook(String id, Vec2 posTrigger, String order){
         String message = "nh " + id + " " + posTrigger.toStringEth() + " " + order;
+        eth.communicate(message, 0);
+    }
+
+    /**
+     * Active un hook
+     * @param hook
+     */
+    public void enableHook(HookNames hook){
+        String message = "eh " + hook.getId();
+        eth.communicate(message, 0);
+    }
+
+    /**
+     * Desactive le hook
+     * @param hook
+     */
+    public void disableHook(HookNames hook){
+        String message = "dh " + hook.getId();
         eth.communicate(message, 0);
     }
 
