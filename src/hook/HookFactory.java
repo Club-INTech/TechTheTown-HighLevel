@@ -34,22 +34,61 @@ public class HookFactory implements Service {
         this.log=log;
     }
 
-    /** Configure les hooks en paramètres (envoie toute les infos au LL) */
-    public void configureHook(HookNames... hooks) throws Exception{
+    /**
+     * Configure les hooks en paramètres (envoie toute les infos au LL)
+     */
+    public void configureHook(HookNames... hooks) {
 
         String serialOrder = "";
-
         for(HookNames hook:hooks){
+
             if (hook.getOrder() instanceof Speed){
                 serialOrder = "ctrv " + ((Speed) hook.getOrder()).translationSpeed + " " + ((Speed) hook.getOrder()).rotationSpeed;
             }
             else if (hook.getOrder() instanceof ActuatorOrder){
                 serialOrder = ((ActuatorOrder) hook.getOrder()).getSerialOrder();
             }else{
-                log.critical("Mauvaise enum; doit implémenter MotionOrder");
+                log.critical("Mauvaise enum, la méthode doit implémenter MotionOrder");
+                return;
+            }
+
+            if (configuredHook.contains(hook)){
+                log.warning("Hook déjà configuré : on ne fait rien");
+                return;
             }
             eth.configureHook(hook.getId(), hook.getPosition(), serialOrder);
+            log.debug("Hook " + hook.getClass().getName() + " : Configuré");
             configuredHook.add(hook);
+        }
+    }
+
+    /**
+     * Active les hooks en paramètres
+     * Balance un WARNING si le hook n'a pas été configuré (et ne fait rien du coup...)
+     */
+    public void enableHook(HookNames... hooks){
+        for(HookNames hook:hooks){
+            if (!configuredHook.contains(hook)){
+                log.warning("Hook " + hook.getClass().getName() + " : Non configuré ! Ne peut etre activé");
+                return;
+            }
+            eth.enableHook(hook);
+            log.debug("Hook " + hook.getClass().getName() + " : Activé");
+        }
+    }
+
+    /**
+     * Desactive les hooks en paramètres
+     * Balance un WARNING si le hook n'a pas été configuré
+     */
+    public void disableHook(HookNames... hooks){
+        for(HookNames hook:hooks){
+            if(!configuredHook.contains(hook)){
+                log.warning("Hook " + hook.getClass().getName() + " : Non configuré ! Ne peut etre désactivé");
+                return;
+            }
+            eth.disableHook(hook);
+            log.debug("Hook " + hook.getClass().getName() + " : Désactivé");
         }
     }
 

@@ -25,6 +25,7 @@ import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
@@ -46,6 +47,9 @@ public abstract class AbstractScript implements Service
 
 	/**  Liste des versions du script. */
 	protected Integer[] versions;
+
+	/** HookFactory pour gérer les hooks */
+	protected static HookFactory hookFactory;
 	
 	/**
 	 * Constructeur à appeller lorsqu'un script héritant de la classe AbstractScript est instancié.
@@ -53,10 +57,11 @@ public abstract class AbstractScript implements Service
 	 * @param config le fichier de config a partir duquel le script pourra se configurer
 	 * @param log le système de log qu'utilisera le script
 	 */
-	protected AbstractScript(Config config, Log log)
+	protected AbstractScript(Config config, Log log, HookFactory hookFactory)
 	{
 		AbstractScript.config = config;
 		AbstractScript.log = log;
+		AbstractScript.hookFactory = hookFactory;
 	}
 		
 	/**
