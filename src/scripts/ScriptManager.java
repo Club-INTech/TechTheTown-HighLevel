@@ -22,6 +22,7 @@ package scripts;
 
 import container.Service;
 import enums.ScriptNames;
+import hook.HookFactory;
 import pfg.config.Config;
 import utils.Log;
 
@@ -40,6 +41,8 @@ public class ScriptManager implements Service
 	@SuppressWarnings("unused")
 	private Config config;
 
+	private HookFactory hookFactory;
+
 	/** Map contenant l'ensemble des scripts instanciés. Permet de retrouver un script via son nom */
 	private AbstractScript[] instanciedScripts = new AbstractScript[ScriptNames.values().length];
 	
@@ -48,13 +51,13 @@ public class ScriptManager implements Service
 	 * @param config the config endroit ou lire la configuration du robot
 	 * @param log système de log sur lequel écrire
 	 */
-	private ScriptManager(Config config, Log log)
+	private ScriptManager(Config config, Log log, HookFactory factory)
 	{
 		this.log = log;
 		this.config = config;
 		
-		// exemple: instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(factory, config, log);
-		instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(config, log);
+		// exemple: instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(config, log, factory);
+		instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(config, log, factory);
 	}
 	
 	/**

@@ -43,7 +43,7 @@ public class HookFactory implements Service {
         for(HookNames hook:hooks){
 
             if (hook.getOrder() instanceof Speed){
-                serialOrder = "ctrv " + ((Speed) hook.getOrder()).translationSpeed + " " + ((Speed) hook.getOrder()).rotationSpeed;
+                serialOrder = "ctrv " + ((Speed) hook.getOrder()).translationSpeed + " " + (float) ((Speed) hook.getOrder()).rotationSpeed;
             }
             else if (hook.getOrder() instanceof ActuatorOrder){
                 serialOrder = ((ActuatorOrder) hook.getOrder()).getSerialOrder();
@@ -56,7 +56,7 @@ public class HookFactory implements Service {
                 log.warning("Hook déjà configuré : on ne fait rien");
                 return;
             }
-            eth.configureHook(hook.getId(), hook.getPosition(), serialOrder);
+            eth.configureHook(hook.getId(), hook.getPosition(), hook.getTolerency(), serialOrder);
             log.debug("Hook " + hook.getClass().getName() + " : Configuré");
             configuredHook.add(hook);
         }
