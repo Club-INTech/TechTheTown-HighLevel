@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) 2016, INTech.
+ *
+ * This file is part of INTech's HighLevel.
+ *
+ *  INTech's HighLevel is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  INTech's HighLevel is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with it.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package enums;
 
 /*
@@ -6,6 +25,7 @@ package enums;
  */
 
 import pfg.config.ConfigInfo;
+import smartMath.Vec2;
 
 /**
  * Configuration du robot : la valeur est celle par défaut; si la variable figure dans le .ini,
@@ -40,6 +60,8 @@ public enum ConfigInfoRobot implements ConfigInfo
 
     /** Paramètres capteurs */
     /** Paramètres de dégagement du robot */
+    /** Paramètres des scripts */
+    VECTEUR_EXAMPLE(new Vec2(50, 60)),
     ;
 
     private Object defaultValue;

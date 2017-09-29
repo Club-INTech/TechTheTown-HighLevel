@@ -29,7 +29,6 @@ import exceptions.serial.SerialConnexionException;
 import hook.Hook;
 import org.junit.Before;
 import org.junit.Test;
-import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;

@@ -22,7 +22,7 @@ package pathfinder;
 import container.Service;
 
 /**
- * Created by shininisan on 17/11/16.
+ * Pathfinding du robot ! Contient l'algorithme
  */
 public class Pathfinding implements Service {
 
