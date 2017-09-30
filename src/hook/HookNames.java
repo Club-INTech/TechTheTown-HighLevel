@@ -10,7 +10,7 @@ import smartMath.Vec2;
  */
 public enum HookNames {
 
-    SPEED_DOWN("01", new Vec2(50, 50), 5, Speed.SLOW_ALL)
+    SPEED_DOWN("01", new Vec2(50, 50), 5, Speed.SLOW_ALL),
     ;
 
     /** Ordre du hook */

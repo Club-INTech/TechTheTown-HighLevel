@@ -209,7 +209,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 length = m.length();
                 m += "\r\n";
                 // On envoie au LL le nombre de caractères qu'il est censé recevoir
-                output.write(length + m, 0, m.length());
+                output.write(length + " " + m, 0, m.length());
                 output.flush();
 
                 if(debug)
