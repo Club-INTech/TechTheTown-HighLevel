@@ -136,9 +136,8 @@ public class ThreadSensor extends AbstractThread
     private final double angleRB = sensorPositionAngleB - Math.PI;
 
     /**
-     * Positions relatives au centre du robot
+     * Positions relatives au centre (des roues) du robot
      */
-
     private final Vec2 positionLF = new Vec2(120, 125);
     private final Vec2 positionRF = new Vec2(120, -125);
     private final Vec2 positionLB = new Vec2(-180,80);
@@ -634,7 +633,6 @@ public class ThreadSensor extends AbstractThread
 	{
         symetry = (config.getString(ConfigInfoRobot.COULEUR) == "orange");
 	}
-
 	
 	/**
 	 *  On enleve les obstacles qu'on ne voit pas

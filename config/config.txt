@@ -1,4 +1,4 @@
-[test]
+[Basic, Simple]
 # PARAMETRES POUR LOG
 PRINT_LOG                            = true
 SAVE_LOG                             = true
@@ -14,7 +14,7 @@ COULEUR                              = bleu
 
 # PARAMETRES POUR LES CAPTEUR
 # horizon_capteurs                   = 500
-# angle_detection_capteur 	       = 0.79
+# angle_detection_capteur 	         = 0.79
 # angle_position_capteur_av          = 0.01
 # angle_position_capteur_ar          = 0.17
 # duree_peremption_obstacles         = 5000
