@@ -57,7 +57,7 @@ public class HookFactory implements Service {
      */
     public void configureHook(HookNames... hooks) {
 
-        String serialOrder = "";
+        String serialOrder;
         for(HookNames hook:hooks){
 
             if (hook.getOrder() instanceof Speed){
