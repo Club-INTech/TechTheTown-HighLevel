@@ -67,15 +67,15 @@ public class HookFactory implements Service {
                 serialOrder = ((ActuatorOrder) hook.getOrder()).getSerialOrder();
             }else{
                 log.critical("Mauvaise enum, la méthode doit implémenter MotionOrder");
-                return;
+                break;
             }
 
             if (configuredHook.contains(hook)){
                 log.warning("Hook déjà configuré : on ne fait rien");
-                return;
+                break;
             }
             eth.configureHook(hook.getId(), hook.getPosition(), hook.getTolerency(), serialOrder);
-            log.debug("Hook " + hook.getClass().getName() + " : Configuré");
+            log.debug("Hook " + hook.getDeclaringClass() + " : Configuré");
             configuredHook.add(hook);
         }
     }
@@ -87,11 +87,11 @@ public class HookFactory implements Service {
     public void enableHook(HookNames... hooks){
         for(HookNames hook:hooks){
             if (!configuredHook.contains(hook)){
-                log.warning("Hook " + hook.getClass().getName() + " : Non configuré ! Ne peut etre activé");
-                return;
+                log.warning("Hook " + hook.getDeclaringClass().getName() + " : Non configuré ! Ne peut etre activé");
+                break;
             }
             eth.enableHook(hook);
-            log.debug("Hook " + hook.getClass().getName() + " : Activé");
+            log.debug("Hook " + hook.getDeclaringClass().getName() + " : Activé");
         }
     }
 
@@ -102,11 +102,31 @@ public class HookFactory implements Service {
     public void disableHook(HookNames... hooks){
         for(HookNames hook:hooks){
             if(!configuredHook.contains(hook)){
-                log.warning("Hook " + hook.getClass().getName() + " : Non configuré ! Ne peut etre désactivé");
-                return;
+                log.warning("Hook " + hook.getDeclaringClass().getName() + " : Non configuré ! Ne peut etre désactivé");
+                break;
             }
             eth.disableHook(hook);
-            log.debug("Hook " + hook.getClass().getName() + " : Désactivé");
+            log.debug("Hook " + hook.getDeclaringClass().getName() + " : Désactivé");
+        }
+    }
+
+    /**
+     * Active tous les hooks configurés
+     */
+    public void enableConfiguredHook(){
+        for(HookNames hook:configuredHook){
+            eth.enableHook(hook);
+            log.debug("Hook " + hook.getDeclaringClass().getName() + " : Activé");
+        }
+    }
+
+    /**
+     * Désactive tous les hooks configurés
+     */
+    public void disableConfiguredHook(){
+        for(HookNames hook:configuredHook){
+            eth.disableHook(hook);
+            log.debug("Hook " + hook.getDeclaringClass().getName() + " : Désactivé");
         }
     }
 
