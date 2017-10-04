@@ -18,11 +18,11 @@
  */
 
 import container.Container;
+import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.ContainerException;
-import exceptions.serial.SerialConnexionException;
 import graphics.AffichageDebug;
-import hook.Hook;
+import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
@@ -30,7 +30,6 @@ import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
 import threads.ThreadTimer;
-import utils.Config;
 import utils.Log;
 import utils.Sleep;
 
@@ -47,7 +46,6 @@ public class MainDebug
     static Container container;
     static Config config;
     static GameState realState;
-    static ArrayList<Hook> emptyHook = new ArrayList<>();
     static ScriptManager scriptmanager;
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
@@ -61,12 +59,11 @@ public class MainDebug
         try
         {
             container = new Container();
-            config = container.getService(Config.class);
+            config = new Config(ConfigInfoRobot.values(), false, "config.txt");
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion= container.getService(Locomotion.class);
-            config.updateConfig();
 
             Thread.currentThread().setPriority(6);
 

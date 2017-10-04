@@ -1,13 +1,33 @@
+/*
+ * Copyright (c) 2016, INTech.
+ *
+ * This file is part of INTech's HighLevel.
+ *
+ *  INTech's HighLevel is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  INTech's HighLevel is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with it.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package robot;
 
 import container.Service;
 import enums.ActuatorOrder;
+import enums.ConfigInfoRobot;
 import enums.ContactSensors;
 import enums.TurningStrategy;
-import exceptions.ConfigPropertyNotFoundException;
-import exceptions.serial.SerialConnexionException;
+import hook.HookNames;
+import pfg.config.Config;
+import smartMath.Vec2;
 import threads.dataHandlers.ThreadEth;
-import utils.Config;
 import utils.Log;
 import utils.Sleep;
 
@@ -304,6 +324,35 @@ public class EthWrapper implements Service {
         eth.communicate(chaines, 0);
     }
 
+    /**
+     * Configure les hooks pour le LL
+     * @param id
+     * @param posTrigger
+     * @param order
+     */
+    public void configureHook(int id, Vec2 posTrigger, int tolerency, String order){
+        String message = "nh " + id + " " + posTrigger.toStringEth() + " " + tolerency + " " + order;
+        eth.communicate(message, 0);
+    }
+
+    /**
+     * Active un hook
+     * @param hook
+     */
+    public void enableHook(HookNames hook){
+        String message = "eh " + hook.getId();
+        eth.communicate(message, 0);
+    }
+
+    /**
+     * Desactive le hook
+     * @param hook
+     */
+    public void disableHook(HookNames hook){
+        String message = "dh " + hook.getId();
+        eth.communicate(message, 0);
+    }
+
 
     /**********
      * DIVERS *
@@ -395,11 +444,7 @@ public class EthWrapper implements Service {
 
     @Override
     public void updateConfig(){
-        try {
-            loopDelay = Integer.parseInt(config.getProperty("Eth_loopDelay"));
-        }catch (ConfigPropertyNotFoundException e){
-            e.printStackTrace();
-        }
+        loopDelay = config.getInt(ConfigInfoRobot.ETH_DELAY);
     }
 
     public boolean getSensorState(){

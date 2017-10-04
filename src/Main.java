@@ -18,21 +18,17 @@
  */
 
 import container.Container;
-import enums.DirectionStrategy;
-import enums.ScriptNames;
+import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.ContainerException;
-import exceptions.Locomotion.UnableToMoveException;
-import hook.Hook;
+import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
 import strategie.GameState;
 import table.Table;
-import threads.ThreadInterface;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadSensor;
-import utils.Config;
 
 import java.util.ArrayList;
 
@@ -45,7 +41,6 @@ public class Main {
 	static Container container;
 	static Config config;
 	static GameState realState;
-	static ArrayList<Hook> emptyHook = new ArrayList<>();
 	static ScriptManager scriptmanager;
 	static EthWrapper mEthWrapper;
 	static Locomotion mLocomotion;
@@ -57,15 +52,13 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException {
 		try {
 
-			Config.configFileName = "config.txt";
 			container = new Container();
-			config = container.getService(Config.class);
+			config = new Config(ConfigInfoRobot.values(), false, "config.txt");
 			//AffichageDebug aff = container.getService(AffichageDebug.class);
 			realState = container.getService(GameState.class);
 			scriptmanager = container.getService(ScriptManager.class);
 			mEthWrapper = container.getService(EthWrapper.class);
 			mLocomotion = container.getService(Locomotion.class);
-			config.updateConfig();
 
 			Thread.currentThread().setPriority(6);
 

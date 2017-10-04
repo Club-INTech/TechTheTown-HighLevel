@@ -20,19 +20,19 @@
 package tests;
 
 import container.Container;
+import enums.ConfigInfoRobot;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.serial.SerialConnexionException;
-import hook.Hook;
 import org.junit.After;
 import org.junit.Before;
+import pfg.config.Config;
+import pfg.config.ConfigInfo;
 import robot.EthWrapper;
 import robot.Robot;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadTimer;
-import utils.Config;
 import utils.Log;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public abstract class JUnit_Test
 	public void setUp() throws Exception
 	{
 		container = new Container();
-		config = container.getService(Config.class);
+		config = container.getConfig();
 		log = container.getService(Log.class);
 	}
 	
@@ -99,7 +99,7 @@ public abstract class JUnit_Test
 		ThreadTimer.matchStarted = true;
 	}
 
-	public void matchSetUp(Robot robot, boolean isInitialisationQuick) throws SerialConnexionException
+	public void matchSetUp(Robot robot, boolean isInitialisationQuick)
 	{
 		//TODO init du robot
 	}
@@ -111,7 +111,7 @@ public abstract class JUnit_Test
 	
 	public void returnToEntryPosition(GameState state) throws UnableToMoveException, PointInObstacleException
 	{
-		state.robot.moveToLocation(new Vec2(Table.entryPosition.getX()-120, Table.entryPosition.getY()+90),new ArrayList<Hook>(), state.table);
+		state.robot.moveToLocation(new Vec2(Table.entryPosition.getX()-120, Table.entryPosition.getY()+90), state.table);
 		state.robot.turn(Math.PI-Math.atan(9.0/12));
 		state.robot.moveLengthwise(-150);
 		state.robot.turn(Math.PI);

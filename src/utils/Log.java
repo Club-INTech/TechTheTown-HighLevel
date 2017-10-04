@@ -27,10 +27,13 @@ import java.io.PrintStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import enums.ConfigInfoRobot;
+import pfg.config.Config;
+
 /**
  * Service de log, affiche à l'écran et enregistre dans des fichiers de logs des informations avec différents niveaux de couleurs.
  *
- * @author pf,
+ * @author pf
  */
 
 public class Log implements Service
@@ -39,7 +42,7 @@ public class Log implements Service
 	private Config config;
 
 	/** Redirecteur de chaine de caractères vers le fichier de log. */
-	FileWriter writer = null;
+	private FileWriter writer = null;
 
 	/** Préfixe donnant la couleur en console des messages de debug */
 	private String debugPrefix 	= "Dbg - \u001B[32m";
@@ -72,7 +75,6 @@ public class Log implements Service
 	private Log(Config config)
 	{
 		this.config = config;
-		
 		updateConfig();
 		
 		// crée le fichier de log si on spécifie d'écrire dans un fichcier les logs du robot
@@ -88,6 +90,7 @@ public class Log implements Service
 			}
 			catch(Exception e)
 			{
+				e.printStackTrace();
 				critical(e);
 			}
 		debug("Service de log démarré");
@@ -112,7 +115,7 @@ public class Log implements Service
 	 */
 	public void debug(Object message)
 	{
-			debug(message.toString());
+			writeToLog(message.toString(), debugPrefix, System.out);
 	}
 	
 	/**
@@ -132,7 +135,7 @@ public class Log implements Service
 	 */
 	public void warning(Object message)
 	{
-			warning(message.toString());
+			writeToLog(message.toString(), warningPrefix, System.out);
 	}
 
 	/**
@@ -152,7 +155,7 @@ public class Log implements Service
 	 */
 	public void critical(Object message)
 	{
-		critical(message.toString());
+		writeToLog(message.toString(), criticalPrefix, System.out);
 	}
 	
 	/**
@@ -178,10 +181,11 @@ public class Log implements Service
 		// trouve l'heure pour la rajouter dans le message de log
 		java.util.GregorianCalendar calendar = new GregorianCalendar();
 		String heure = calendar.get(Calendar.HOUR_OF_DAY)+"h"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
-		
-		
+
 		if((prefix.equals(debugPrefix) || printLogs) && !Log.stop)
 		{
+			// Le log doit toujours afficher la methode qu'il l'a appelé ; ici on s'arrange pour qu'il y ait toujours 3 methodes
+			// entre log.debug et getStackTrace (qui stocke les méthodes appelées sous forme de pile)
 			StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
 			logPrinter.println(heure+" "+elem.getClassName()+"."+elem.getMethodName()+":"+elem.getLineNumber()+" > "+message+resetColor);
 		}
@@ -198,14 +202,13 @@ public class Log implements Service
 	{
 		// chaque message sur sa propre ligne
 		message += "\n";
-		
 		try
 		{
 		     writer.write(message,0,message.length());
 		}
 		catch(Exception e)
 		{
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -225,7 +228,7 @@ public class Log implements Service
 			}
 			catch(Exception e)
 			{
-				System.out.println(e);
+				e.printStackTrace();
 			}
 	}
 	
@@ -238,20 +241,22 @@ public class Log implements Service
 		try
 		{
 			// vérifie s'il faut afficher les logs a l'écran
-			printLogs = Boolean.parseBoolean(this.config.getProperty("affiche_debug"));
+			printLogs = config.getBoolean(ConfigInfoRobot.PRINT_LOG);
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			critical(e);
 		}
 		try
 		{
 			// vérifie s'il faut écrire les logs dans un fichier
-			saveLogs = Boolean.parseBoolean(this.config.getProperty("sauvegarde_fichier"));
+			saveLogs = config.getBoolean(ConfigInfoRobot.SAVE_LOG);
 			// TODO: mettre ici ouverture/fermeture de fichier si la valeur de sauvegarde_fichier change
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			critical(e);
 		}
 	}

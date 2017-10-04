@@ -19,11 +19,13 @@
 
 package container;
 
+import enums.ConfigInfoRobot;
 import enums.ThreadName;
 import exceptions.ContainerException;
+import pfg.config.Config;
+import pfg.config.ConfigInfo;
 import threads.AbstractThread;
 import threads.ThreadExit;
-import utils.Config;
 import utils.Log;
 
 import java.io.*;
@@ -45,6 +47,19 @@ import java.util.Stack;
  */
 public class Container implements Service
 {
+	// Un hack pour utiliser la lib "config" qui n'implémente pas Service avec le container
+	private class ConfigHack extends Config implements Service
+	{
+		public ConfigHack(ConfigInfo[] allConfigInfo, boolean verbose, String configfile, String... profiles)
+		{
+			super(allConfigInfo, verbose, configfile, profiles);
+		}
+
+		@Override
+		public void updateConfig()
+		{}
+	}
+	
 	/**
 	 * Liste des services déjà instanciés. Contient au moins Config et Log.
 	 * Les autres services appelables seront présents quand ils auront été appelés
@@ -56,11 +71,6 @@ public class Container implements Service
 	 */
 	private HashMap<String, AbstractThread> instanciedThreads = new HashMap<>();
 	private boolean threadsStarted = false;
-	
-    /**
-     * Chemin relatif vers le fichier de config
-     */
-    private final static String configPath = "./config/";
 
 	/**
 	 * Service de Log & Config (commun à toute les classes)
@@ -140,7 +150,6 @@ public class Container implements Service
 			String toprint_log = input_log.readLine();
 			int index = toprint_log.indexOf(" ");
 			input_log.close();
-
 			String toprint_git = input_git.readLine();
 
 			while(!toprint_git.contains("*"))
@@ -158,16 +167,13 @@ public class Container implements Service
 		System.out.println("Java : "+System.getProperty("java.vendor")+" "+System.getProperty("java.version")+", max memory : "+Math.round(100.*Runtime.getRuntime().maxMemory()/(1024.*1024.*1024.))/100.+"G, available processors : "+Runtime.getRuntime().availableProcessors());
 		System.out.println();
 
-		System.out.println("    Remember, with great power comes great current squared times resistance !");
+		System.out.println("   Remember, with great power comes great current squared times resistance !");
 		System.out.println();
 
 		/** La config a un statut spécial, vu qu'elle nécessite un chemin d'accès vers le fichier de config */
         try
         {
-			Constructor<Config> constructeur = Config.class.getDeclaredConstructor(String.class);
-			constructeur.setAccessible(true); // on outrepasse les droits
-			config = constructeur.newInstance(configPath);
-			constructeur.setAccessible(false); // on revient à l'état d'origine !
+        	config = new ConfigHack(ConfigInfoRobot.values(), true, "config/config.txt", "test");
             instanciedServices.put(Config.class.getSimpleName(), (Service) config);
         }
         catch (Exception e)
@@ -331,6 +337,7 @@ public class Container implements Service
 			try {
 				getService(threadName.cls).start();
 			} catch (ContainerException e) {
+				e.printStackTrace();
 				log.critical(e);
 			}
 		}
@@ -373,6 +380,14 @@ public class Container implements Service
 			} catch (IOException e) {
 				System.err.println(e);
 			}
+	}
+
+	/**
+	 * Getter pour la config (son statut étant particulier...)
+	 * @return
+	 */
+	public Config getConfig(){
+		return config;
 	}
 
 	@Override

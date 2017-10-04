@@ -23,10 +23,10 @@ import container.Service;
 import threads.AbstractThread;
 import threads.ThreadSimulator;
 import utils.Log;
-
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -209,6 +209,7 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     public synchronized String[] communicate(String[] message, int nb_line_response)
     {
+        int length;
         standardBuffer.clear();
         String inputLines[] = new String[nb_line_response];
 
@@ -217,8 +218,10 @@ public class ThreadEth extends AbstractThread implements Service {
         {
             for (String m : message)
             {
+                length = m.length();
                 m += "\r\n";
-                output.write(m, 0, m.length());
+                // On envoie au LL le nombre de caractères qu'il est censé recevoir
+                output.write(length + " " + m, 0, m.length());
                 output.flush();
 
                 if(debug)
@@ -229,9 +232,24 @@ public class ThreadEth extends AbstractThread implements Service {
                 }
             }
         }
-        catch (Exception e)
+        catch (SocketException e)
         {
-            log.critical("Ne peut pas parler a la carte " + this.name + " lancement de "+e);
+            log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
+            try {
+                if (socket != null) {
+                    socket.close();
+                    Thread.sleep(1000);
+                }
+            }
+            catch (Exception e1){
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        }
+        catch (IOException except){
+            log.debug("LL ne répond pas, on shutdown");
+            shutdown = true;
+            except.printStackTrace();
         }
 
         /* Réponse du LL (listener dans le run) */
@@ -268,8 +286,24 @@ public class ThreadEth extends AbstractThread implements Service {
                     communicate(message, nb_line_response); // On retente
                 }
             }
-        }catch (Exception e){
-            e.printStackTrace();
+        }
+        catch (SocketException e1){
+            log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
+            try {
+                if (socket != null) {
+                    socket.close();
+                    Thread.sleep(1000);
+                }
+            }
+            catch (Exception e2){
+                e1.printStackTrace();
+            }
+            e1.printStackTrace();
+        }
+        catch (Exception except2){
+            log.debug("LL ne répond pas, on shutdown");
+            shutdown = true;
+            except2.printStackTrace();
         }
         return inputLines;
     }
@@ -310,14 +344,28 @@ public class ThreadEth extends AbstractThread implements Service {
                     continue;
                 }
             }
-            catch (IOException e)
+            catch (SocketException e)
             {
+                log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
+                try {
+                    if (socket != null) {
+                        socket.close();
+                        Thread.sleep(1000);
+                    }
+                }catch (Exception e1){
+                    e1.printStackTrace();
+                }
                 e.printStackTrace();
-                log.critical("ThreadEth is shutdown, no communication until restart.");
-                return;
+            }
+            catch (Exception except){
+                log.debug("LL ne répond pas, on shutdown");
+                shutdown = true;
+                except.printStackTrace();
             }
         }
     }
+
+    /** Getters & Setters */
     ConcurrentLinkedQueue<String> getEventBuffer() {return eventBuffer;}
     ConcurrentLinkedQueue<String> getUltrasoundBuffer() {return ultrasoundBuffer;}
     ConcurrentLinkedQueue<String> getStandardBuffer() {return standardBuffer;}

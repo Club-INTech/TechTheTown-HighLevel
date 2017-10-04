@@ -19,7 +19,6 @@
 
 package tests;
 
-import hook.Hook;
 import org.junit.Before;
 import org.junit.Test;
 import robot.EthWrapper;
@@ -31,8 +30,6 @@ import java.util.ArrayList;
 
 public class JUnit_Symetry extends JUnit_Test
 {
-	
-	ArrayList<Hook> emptyHook;
 	GameState real_state;
 	ScriptManager scriptmanager;
 	EthWrapper ethWrapper;
@@ -44,7 +41,6 @@ public class JUnit_Symetry extends JUnit_Test
 		real_state = container.getService(GameState.class);
 		scriptmanager = container.getService(ScriptManager.class);
 		ethWrapper = container.getService(EthWrapper.class);
-		emptyHook = new ArrayList<Hook> ();  
 
 		// La position est setée qu'on soit jaune ou vert
 		real_state.robot.setPosition(new Vec2 (1103,1000));
@@ -81,8 +77,8 @@ public class JUnit_Symetry extends JUnit_Test
 		try 
 		{
 			real_state.robot.moveLengthwise(500);
-			real_state.robot.moveToLocation(new Vec2(-500,800), emptyHook, real_state.table);
-			real_state.robot.moveToLocation(new Vec2(-500,400), emptyHook, real_state.table);
+			real_state.robot.moveToLocation(new Vec2(-500,800), real_state.table);
+			real_state.robot.moveToLocation(new Vec2(-500,400), real_state.table);
 		}
 		catch (Exception e)
 		{
