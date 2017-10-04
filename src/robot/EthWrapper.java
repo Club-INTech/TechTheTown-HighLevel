@@ -87,7 +87,7 @@ public class EthWrapper implements Service {
     public void moveLengthwise(double distance)
     {
         int distanceTruncated = (int)distance;
-        String chaines[] = {"d", String.format(Locale.US, "%d", distanceTruncated)};
+        String chaines = "d " + String.format(Locale.US, "%d", distanceTruncated);
         eth.communicate(chaines, 0);
     }
 
@@ -110,17 +110,17 @@ public class EthWrapper implements Service {
         // tronque l'angle que l'on envoit a la série pour éviter les overflows
         float angleTruncated = (float)angle;
         if(turning == TurningStrategy.FASTEST) {
-            String chaines[] = {"t", String.format(Locale.US, "%.3f", angleTruncated)};
+            String chaines = "t " + String.format(Locale.US, "%.3f", angleTruncated);
             eth.communicate(chaines, 0);
         }
         else if(turning == TurningStrategy.RIGHT_ONLY)
         {
-            String chaines[] = {"tor", String.format(Locale.US, "%.3f", angleTruncated)};
+            String chaines = "tor " + String.format(Locale.US, "%.3f", angleTruncated);
             eth.communicate(chaines, 0);
         }
         else if(turning == TurningStrategy.LEFT_ONLY)
         {
-            String chaines[] = {"tol", String.format(Locale.US, "%.3f", angleTruncated)};
+            String chaines = "tol " + String.format(Locale.US, "%.3f", angleTruncated);
             eth.communicate(chaines, 0);
         }
     }
@@ -182,7 +182,7 @@ public class EthWrapper implements Service {
     public void setTranslationnalSpeed(float speed)
     {
         // envoie a la carte d'asservissement le nouveau maximum du pwm
-        String chaines[] = {"ctv", String.format(Locale.US, "%.3f", speed)};
+        String chaines = "ctv " + String.format(Locale.US, "%.3f", speed);
         eth.communicate(chaines, 0);
     }
 
@@ -193,7 +193,7 @@ public class EthWrapper implements Service {
     public void setRotationnalSpeed(double rotationSpeed)
     {
         // envoie a la carte d'asservissement le nouveau maximum du pwm
-        String chaines[] = {"crv", String.format(Locale.US, "%.3f", (float)rotationSpeed)};
+        String chaines = "crv " + String.format(Locale.US, "%.3f", (float)rotationSpeed);
         eth.communicate(chaines, 0);
     }
 
@@ -297,7 +297,7 @@ public class EthWrapper implements Service {
     public void setX(int x)
     {
         float floatX=(float)x; //On transtype car la serie veut des Floats <3
-        String chaines[] = {"cx", String.format(Locale.US, "%.3f", floatX)};
+        String chaines = "cx " + String.format(Locale.US, "%.3f", floatX);
         eth.communicate(chaines, 0);
     }
 
@@ -308,7 +308,7 @@ public class EthWrapper implements Service {
     public void setY(int y)
     {
         float floatY=(float)y;//On transtype car la serie veut des Floats
-        String chaines[] = {"cy", String.format(Locale.US, "%.3f", floatY)};
+        String chaines = "cy " + String.format(Locale.US, "%.3f", floatY);
         eth.communicate(chaines, 0);
     }
 
@@ -318,10 +318,16 @@ public class EthWrapper implements Service {
      */
     public void setOrientation(double orientation)
     {
-        //log.debug("setOrientation "+orientation);
         float floatOrientation =(float) orientation; //On transtype car la serie veut des Floats (T_T)
-        String chaines[] = {"co", String.format(Locale.US, "%.3f", floatOrientation)};
+        String chaines = "co " + String.format(Locale.US, "%.3f", floatOrientation);
         eth.communicate(chaines, 0);
+    }
+
+    public void setPositionAndOrientation(int x, int y, double orientation)
+    {
+        float orient = (float) orientation;
+        String message = "cxyo " + x + " " + y + " " + orient;
+        eth.communicate(message, 0);
     }
 
     /**
@@ -420,7 +426,7 @@ public class EthWrapper implements Service {
      */
     public synchronized double[] pfdebug()
     {
-        String chaines[] = {"pfdebug"};
+        String chaines = "pfdebug";
         String[] infosBuffer = eth.communicate(chaines, 5);
         double[] parsedInfos = new double[5];
         for(int i = 0; i < 5; i++)

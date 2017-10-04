@@ -48,6 +48,7 @@ public class JUnit_Hooks extends JUnit_Test
 		scriptManager = container.getService(ScriptManager.class);
 		theRobot = container.getService(GameState.class);
 		hookFactory = container.getService(HookFactory.class);
+		
 		theRobot.robot.setOrientation(Math.PI);
 		theRobot.robot.setPosition(Table.entryPosition);
 		theRobot.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);

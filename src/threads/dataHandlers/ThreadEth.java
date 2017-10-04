@@ -196,7 +196,6 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     public synchronized String[] communicate(String[] message, int nb_line_response)
     {
-        int length;
         standardBuffer.clear();
         String inputLines[] = new String[nb_line_response];
 
@@ -205,16 +204,17 @@ public class ThreadEth extends AbstractThread implements Service {
         {
             for (String m : message)
             {
-                length = m.length();
                 m += "\r\n";
                 // On envoie au LL le nombre de caractères qu'il est censé recevoir
-                output.write(length + " " + m, 0, m.length());
+                output.write(m, 0, m.length());
                 output.flush();
 
                 if(debug)
                 {
                     outStandart.write(m);
-                    outStandart.newLine();
+                    if(nb_line_response == 0){
+                        outStandart.newLine();
+                    }
                     outStandart.flush();
                 }
             }

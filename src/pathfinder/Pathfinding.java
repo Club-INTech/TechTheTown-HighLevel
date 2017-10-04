@@ -27,8 +27,7 @@ import container.Service;
 public class Pathfinding implements Service {
 
     //TODO : Bon bah... au boulot !
-    private Pathfinding() {
-    }
+    private Pathfinding() {}
 
     @Override
     public void updateConfig() {

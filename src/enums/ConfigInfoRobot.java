@@ -48,7 +48,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     /** Dimensions du robot */
     ROBOT_LENGTH(300),
     ROBOT_WIDTH(300),
-    ROBOT_RADIUS(424),
+    ROBOT_RADIUS(212),
     ENNEMY_RADIUS(400),
 
     /** Paramètres obstacles */

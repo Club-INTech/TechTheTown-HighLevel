@@ -43,9 +43,10 @@ public class JUnit_Communication extends JUnit_Test {
     @Test
     public void testCodeuse() throws Exception{
         ethWrapper = container.getService(EthWrapper.class);
+        eth = container.getService(ThreadEth.class);
         container.startInstanciedThreads();
-        ethWrapper.turn(2);
-        Sleep.sleep(20000);
+
+        eth.communicate("1 ?", 1);
     }
 
     @Test
