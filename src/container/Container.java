@@ -28,6 +28,7 @@ import threads.AbstractThread;
 import threads.ThreadExit;
 import utils.Log;
 
+import javax.net.ssl.SSLContext;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -121,7 +122,6 @@ public class Container implements Service
 		log.debug("Fermeture du log");
 		log.close();
 		instanciated = false;
-		System.out.println();
 		printMessage("outro.txt");
 	}
 	
