@@ -1,11 +1,9 @@
 package tests;
 
-import org.junit.Before;
 import org.junit.Test;
 import robot.EthWrapper;
 import threads.ThreadSimulator;
 import threads.dataHandlers.ThreadEth;
-import utils.Config;
 import utils.Sleep;
 
 import java.util.ArrayList;
@@ -23,16 +21,19 @@ public class JUnit_Communication extends JUnit_Test {
     private ThreadSimulator simulator;
 
     @Test
-    public void testSimulator() throws Exception{
+    public void testSimulator(){
 
-        simulator = container.getService(ThreadSimulator.class);
-        container.startInstanciedThreads();
-        eth = container.getService(ThreadEth.class);
-        eth.start();
+        try {
+            simulator = container.getService(ThreadSimulator.class);
+            eth = container.getService(ThreadEth.class);
+            container.startInstanciedThreads();
 
-        while (true) {
-            eth.communicate("?xyo", 3);
-            Sleep.sleep(1000);
+            while (true) {
+                eth.communicate("?xyo", 3);
+                Sleep.sleep(1000);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

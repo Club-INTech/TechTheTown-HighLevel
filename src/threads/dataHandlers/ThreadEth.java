@@ -21,7 +21,6 @@ package threads.dataHandlers;
 
 import container.Service;
 import threads.AbstractThread;
-import threads.ThreadSimulator;
 import utils.Log;
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -69,7 +68,10 @@ public class ThreadEth extends AbstractThread implements Service {
     public static boolean shutdown = false;
 
     /** True si utilisation du simulateur LL */
-    private static boolean simulation = false;
+    private static boolean simulation = true;
+
+    /** Singeproof de la connexion : l'interface ne doit etre initialisée qu'une fois */
+    private boolean interfaceCreated = false;
 
     /** Buffers représentant les différents canaux */
     private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
@@ -104,7 +106,6 @@ public class ThreadEth extends AbstractThread implements Service {
                 }
                 outStandart = new BufferedWriter(new FileWriter(file));
                 outDebug = new BufferedWriter(new FileWriter(fileDebug));
-                createInterface();
 
             } catch (IOException e) {
                 log.critical("Manque de droits pour l'output");
@@ -121,16 +122,23 @@ public class ThreadEth extends AbstractThread implements Service {
      * Initialise la connexion
      * @throws IOException
      */
-    private void createInterface() throws IOException{
-        if(simulation){
-            server = new InetSocketAddress(localAdress, 2009);
-        }else{
-            server = new InetSocketAddress(teensyAdress, 23500);
+    private void createInterface() {
+        try {
+            if (simulation) {
+                server = new InetSocketAddress(localAdress, 23500);
+            } else {
+                server = new InetSocketAddress(teensyAdress, 23500);
+            }
+            socket = new Socket();
+            socket.connect(server, 500);
+            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            interfaceCreated = true;
+
+        }catch (IOException e){
+            log.critical("Manque de droit pour l'output");
+            e.printStackTrace();
         }
-        socket = new Socket();
-        socket.connect(server, 500);
-        input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
 
     /**
@@ -218,10 +226,9 @@ public class ThreadEth extends AbstractThread implements Service {
         {
             for (String m : message)
             {
-                length = m.length();
                 m += "\r\n";
                 // On envoie au LL le nombre de caractères qu'il est censé recevoir
-                output.write(length + " " + m, 0, m.length());
+                output.write(m, 0, m.length());
                 output.flush();
 
                 if(debug)
@@ -312,6 +319,7 @@ public class ThreadEth extends AbstractThread implements Service {
     public void run(){
         String buffer;
         Thread.currentThread().setPriority(8);
+        createInterface();
         log.debug("ThreadEth started");
 
         while(!shutdown)
@@ -366,7 +374,8 @@ public class ThreadEth extends AbstractThread implements Service {
     }
 
     /** Getters & Setters */
-    ConcurrentLinkedQueue<String> getEventBuffer() {return eventBuffer;}
-    ConcurrentLinkedQueue<String> getUltrasoundBuffer() {return ultrasoundBuffer;}
-    ConcurrentLinkedQueue<String> getStandardBuffer() {return standardBuffer;}
+    public ConcurrentLinkedQueue<String> getEventBuffer() {return eventBuffer;}
+    public ConcurrentLinkedQueue<String> getUltrasoundBuffer() {return ultrasoundBuffer;}
+    public ConcurrentLinkedQueue<String> getStandardBuffer() {return standardBuffer;}
+    public boolean isInterfaceCreated(){return interfaceCreated;}
 }

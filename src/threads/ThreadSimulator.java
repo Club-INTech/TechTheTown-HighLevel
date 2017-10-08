@@ -44,8 +44,8 @@ public class ThreadSimulator extends AbstractThread implements Service {
     private Table LLTable;
 
     /** Position & orientation du Robot sur la table */
-    private Vec2 LLPosition;
-    private double LLorientation;
+    private Vec2 LLPosition = new Vec2(50, 50);
+    private double LLorientation = 8.025644862;
 
     /** Headers */
     private final char[] eventHeader = {0x13, 0x37};
@@ -54,7 +54,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
 
     /** Sockets */
     private ServerSocket server;
-    private Socket socket;
+    private Socket client;
 
     /** IO */
     private BufferedReader input;
@@ -74,7 +74,6 @@ public class ThreadSimulator extends AbstractThread implements Service {
     public ThreadSimulator(Config config, Log log){
         super(config, log);
         this.name = "Simulator";
-        createInterface();
     }
 
     /**
@@ -82,9 +81,10 @@ public class ThreadSimulator extends AbstractThread implements Service {
      */
     private void createInterface(){
         try {
-            server = new ServerSocket(2009);
-            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            server = new ServerSocket(23500);
+            client = server.accept();
+            input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 
         }catch(IOException e){
             log.debug("IO Exception : manque de droits pour IO");
@@ -111,17 +111,11 @@ public class ThreadSimulator extends AbstractThread implements Service {
         createInterface();
         log.debug("ThreadSimulator started");
 
-        try {
-            socket = server.accept();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
         while(!shutdown){
             try{
-                log.debug("FLAG");
+                log.debug("En attente ...");
                 buffer = input.readLine();
-                log.debug("FLAG");
+                log.debug("Recu bro ! " + buffer);
                 if (buffer == "?xyo"){
                     sendPosition();
                 }

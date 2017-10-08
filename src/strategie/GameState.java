@@ -73,15 +73,12 @@ public class GameState implements Service
     /* (non-Javadoc)
      * @see container.Service#updateConfig()
      */
-    
     @Override
     public void updateConfig()
     {
         table.updateConfig();
         robot.updateConfig();
     }
-    
-
     
     /**
      * temps écoulé depuis le début du match en ms

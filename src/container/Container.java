@@ -26,6 +26,8 @@ import pfg.config.Config;
 import pfg.config.ConfigInfo;
 import threads.AbstractThread;
 import threads.ThreadExit;
+import threads.ThreadSimulator;
+import threads.dataHandlers.ThreadEth;
 import utils.Log;
 
 import java.io.*;
@@ -356,9 +358,20 @@ public class Container implements Service
 	 */
 	public void startInstanciedThreads() throws InterruptedException
 	{
-		for(AbstractThread thread : instanciedThreads.values())
-		{
-			thread.start();
+		// Le Thread Simulateur doit etre démarré avant l'Eth
+		if (instanciedThreads.containsKey(ThreadSimulator.class.getSimpleName())) {
+			instanciedThreads.get(ThreadSimulator.class.getSimpleName()).start();
+		}
+
+		for (AbstractThread thread : instanciedThreads.values()) {
+			if (!(thread instanceof ThreadSimulator)) {
+				thread.start();
+			}
+		}
+
+		// On évite d'essayer de parler au LL lorsqu'on a pas de stream...
+		while (!((ThreadEth) instanciedThreads.get(ThreadEth.class.getSimpleName())).isInterfaceCreated()){
+			Thread.sleep(2);
 		}
 	}
 	
@@ -393,5 +406,4 @@ public class Container implements Service
 	@Override
 	public void updateConfig()
 	{}
-
 }
