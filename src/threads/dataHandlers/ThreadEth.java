@@ -20,6 +20,7 @@
 package threads.dataHandlers;
 
 import container.Service;
+import enums.CommunicationHeaders;
 import enums.ConfigInfoRobot;
 import threads.AbstractThread;
 import utils.Log;
@@ -134,7 +135,6 @@ public class ThreadEth extends AbstractThread implements Service {
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             interfaceCreated = true;
-            log.debug("Input : " + input + "\n Output : " + output);
 
         }catch (IOException e){
             log.critical("Manque de droit pour l'output");
@@ -335,7 +335,6 @@ public class ThreadEth extends AbstractThread implements Service {
                 buffer = input.readLine();
                 if(buffer.length()>=2 && !(buffer.replaceAll(" ", "").equals("")))
                 {
-                    log.debug("toCharArray 0 : " + buffer.toCharArray()[0] + " 1 : " + buffer.toCharArray()[1]);
                     if (buffer.toCharArray()[0] == eventHeader[0] && ((byte) buffer.toCharArray()[1]) == eventHeader[1]) {
                         eventBuffer.add(buffer);
                         continue;

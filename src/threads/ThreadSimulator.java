@@ -20,7 +20,10 @@
 package threads;
 
 import container.Service;
+import enums.CommunicationHeaders;
 import pfg.config.Config;
+import strategie.GameState;
+import strategie.LLGameState;
 import utils.Log;
 
 import java.io.*;
@@ -39,6 +42,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
     public String name;
 
     /** GameState propre au LL ?? */
+    private LLGameState state;
 
     /** Headers */
     public final char[] eventHeader = {0x13, 0x37};
@@ -64,9 +68,10 @@ public class ThreadSimulator extends AbstractThread implements Service {
      * @param config
      * @param log
      */
-    public ThreadSimulator(Config config, Log log){
+    public ThreadSimulator(Config config, Log log, LLGameState state){
         super(config, log);
         this.name = "Simulator";
+        this.state = state;
     }
 
     /**
@@ -78,7 +83,6 @@ public class ThreadSimulator extends AbstractThread implements Service {
             client = server.accept();
             input = new BufferedReader(new InputStreamReader(client.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-            log.debug("Input : " + input + " \n Output : " + output);
 
         }catch(IOException e){
             log.debug("IO Exception : manque de droits pour IO");
@@ -88,22 +92,18 @@ public class ThreadSimulator extends AbstractThread implements Service {
 
     /**
      * Fonction pour communiquer avec le HL
-     * Canaus=x : standard, event, debug ou ultrason
-     * @param canal
+     * @param header
      * @param messages
      */
-    private void communicate(String canal, String... messages){
+    private void communicate(CommunicationHeaders header, String... messages){
         try {
             for (String mess : messages) {
-                if (canal == "event"){
+                if (header == CommunicationHeaders.EVENT){
                     output.write(eventHeader[0]);
                     output.write(eventHeader[1]);
-                }else if(canal == "debug"){
+                }else if(header == CommunicationHeaders.DEBUG){
                     output.write(debugHeader[0]);
                     output.write(debugHeader[1]);
-                }else if(canal == "ultrason"){
-                    output.write(ultrasoundHeader[0]);
-                    output.write(ultrasoundHeader[1]);
                 }
                 output.write(mess);
                 output.newLine();
@@ -119,7 +119,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
      * Fonction qui centralise les requete et répond en fonction (copie du main du LL)
      */
     private void respond(String request){
-        communicate("debug", "Message recu : " + request);
+        communicate(CommunicationHeaders.DEBUG, "Message recu : " + request);
     }
 
     @Override
