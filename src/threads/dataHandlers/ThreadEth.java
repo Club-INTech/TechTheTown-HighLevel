@@ -335,7 +335,8 @@ public class ThreadEth extends AbstractThread implements Service {
                 buffer = input.readLine();
                 if(buffer.length()>=2 && !(buffer.replaceAll(" ", "").equals("")))
                 {
-                    if (buffer.toCharArray()[0] == eventHeader[0] && buffer.toCharArray()[1] == eventHeader[1]) {
+                    log.debug("toCharArray 0 : " + buffer.toCharArray()[0] + " 1 : " + buffer.toCharArray()[1]);
+                    if (buffer.toCharArray()[0] == eventHeader[0] && ((byte) buffer.toCharArray()[1]) == eventHeader[1]) {
                         eventBuffer.add(buffer);
                         continue;
                     } else if (buffer.toCharArray()[0] == ultrasoundHeader[0] && buffer.toCharArray()[1] == ultrasoundHeader[1]) {

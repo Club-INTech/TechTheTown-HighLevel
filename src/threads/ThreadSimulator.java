@@ -96,11 +96,14 @@ public class ThreadSimulator extends AbstractThread implements Service {
         try {
             for (String mess : messages) {
                 if (canal == "event"){
-                    mess = eventHeader[0] + eventHeader[1] + mess;
+                    output.write(eventHeader[0]);
+                    output.write(eventHeader[1]);
                 }else if(canal == "debug"){
-                    mess = debugHeader[0] + debugHeader[1] + mess;
+                    output.write(debugHeader[0]);
+                    output.write(debugHeader[1]);
                 }else if(canal == "ultrason"){
-                    mess = ultrasoundHeader[0] + ultrasoundHeader[1] + mess;
+                    output.write(ultrasoundHeader[0]);
+                    output.write(ultrasoundHeader[1]);
                 }
                 output.write(mess);
                 output.newLine();
@@ -116,7 +119,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
      * Fonction qui centralise les requete et répond en fonction (copie du main du LL)
      */
     private void respond(String request){
-        communicate("debug", request);
+        communicate("debug", "Message recu : " + request);
     }
 
     @Override
