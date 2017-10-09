@@ -175,7 +175,7 @@ public class Container implements Service
 		/** La config a un statut spécial, vu qu'elle nécessite un chemin d'accès vers le fichier de config */
         try
         {
-        	config = new ConfigHack(ConfigInfoRobot.values(), true, "config/config.txt", "test");
+        	config = new ConfigHack(ConfigInfoRobot.values(), true, "config/config.txt", "Basic, Simple");
             instanciedServices.put(Config.class.getSimpleName(), (Service) config);
         }
         catch (Exception e)

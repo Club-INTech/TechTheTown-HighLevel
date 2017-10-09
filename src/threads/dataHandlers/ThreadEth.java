@@ -20,6 +20,7 @@
 package threads.dataHandlers;
 
 import container.Service;
+import enums.ConfigInfoRobot;
 import threads.AbstractThread;
 import utils.Log;
 import java.io.*;
@@ -68,7 +69,7 @@ public class ThreadEth extends AbstractThread implements Service {
     public static boolean shutdown = false;
 
     /** True si utilisation du simulateur LL */
-    private static boolean simulation = true;
+    private static boolean simulation;
 
     /** Singeproof de la connexion : l'interface ne doit etre initialisée qu'une fois */
     private boolean interfaceCreated = false;
@@ -116,6 +117,7 @@ public class ThreadEth extends AbstractThread implements Service {
             this.outStandart = null;
             this.outDebug = null;
         }
+        updateConfig();
     }
 
     /**
@@ -125,15 +127,14 @@ public class ThreadEth extends AbstractThread implements Service {
     private void createInterface() {
         try {
             if (simulation) {
-                server = new InetSocketAddress(localAdress, 23500);
+                socket = new Socket(localAdress, 23500);
             } else {
-                server = new InetSocketAddress(teensyAdress, 23500);
+                socket = new Socket(teensyAdress, 23500);
             }
-            socket = new Socket();
-            socket.connect(server, 500);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             interfaceCreated = true;
+            log.debug("Input : " + input + "\n Output : " + output);
 
         }catch (IOException e){
             log.critical("Manque de droit pour l'output");
@@ -177,6 +178,11 @@ public class ThreadEth extends AbstractThread implements Service {
                 e.printStackTrace();
             }
         }
+
+        if((System.currentTimeMillis() - startTime) > TIMEOUT){
+            log.debug("Timeout dépassé");
+        }
+
         if(response == null) {
             return "";
         } else {
@@ -327,7 +333,7 @@ public class ThreadEth extends AbstractThread implements Service {
             try
             {
                 buffer = input.readLine();
-                if(buffer.length()>=2 && !(buffer.replaceAll(" ", "").equals("")/*|| buffer.replaceAll(" ", "").equals("-")*/))
+                if(buffer.length()>=2 && !(buffer.replaceAll(" ", "").equals("")))
                 {
                     if (buffer.toCharArray()[0] == eventHeader[0] && buffer.toCharArray()[1] == eventHeader[1]) {
                         eventBuffer.add(buffer);
@@ -346,13 +352,13 @@ public class ThreadEth extends AbstractThread implements Service {
                         continue;
                     }
                 }
-                else if (!(buffer.replaceAll(" ", "").equals("")/*|| buffer.replaceAll(" ", "").equals("-")*/))
+                else if (!(buffer.replaceAll(" ", "").equals("")))
                 {
                     standardBuffer.add(buffer);
                     continue;
                 }
             }
-            catch (SocketException e)
+            catch (SocketException se)
             {
                 log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
                 try {
@@ -360,15 +366,15 @@ public class ThreadEth extends AbstractThread implements Service {
                         socket.close();
                         Thread.sleep(1000);
                     }
-                }catch (Exception e1){
-                    e1.printStackTrace();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-                e.printStackTrace();
+                se.printStackTrace();
             }
-            catch (Exception except){
+            catch (IOException ioe) {
                 log.debug("LL ne répond pas, on shutdown");
                 shutdown = true;
-                except.printStackTrace();
+                ioe.printStackTrace();
             }
         }
     }
@@ -378,4 +384,9 @@ public class ThreadEth extends AbstractThread implements Service {
     public ConcurrentLinkedQueue<String> getUltrasoundBuffer() {return ultrasoundBuffer;}
     public ConcurrentLinkedQueue<String> getStandardBuffer() {return standardBuffer;}
     public boolean isInterfaceCreated(){return interfaceCreated;}
+
+    @Override
+    public void updateConfig(){
+        simulation = config.getBoolean(ConfigInfoRobot.SIMULATION);
+    }
 }

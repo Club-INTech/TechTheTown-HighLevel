@@ -21,8 +21,6 @@ package threads;
 
 import container.Service;
 import pfg.config.Config;
-import smartMath.Vec2;
-import table.Table;
 import utils.Log;
 
 import java.io.*;
@@ -40,17 +38,12 @@ public class ThreadSimulator extends AbstractThread implements Service {
     /** Nom du Thread */
     public String name;
 
-    /** Table DIFFERENTE de celui du HL, afin de pouvoir simuler au mieux certains évènements */
-    private Table LLTable;
-
-    /** Position & orientation du Robot sur la table */
-    private Vec2 LLPosition = new Vec2(50, 50);
-    private double LLorientation = 8.025644862;
+    /** GameState propre au LL ?? */
 
     /** Headers */
-    private final char[] eventHeader = {0x13, 0x37};
-    private final char[] ultrasoundHeader = {0x01, 0x10};
-    private final char[] debugHeader = {0x02, 0x20};
+    public final char[] eventHeader = {0x13, 0x37};
+    public final char[] ultrasoundHeader = {0x01, 0x10};
+    public final char[] debugHeader = {0x02, 0x20};
 
     /** Sockets */
     private ServerSocket server;
@@ -85,6 +78,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
             client = server.accept();
             input = new BufferedReader(new InputStreamReader(client.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+            log.debug("Input : " + input + " \n Output : " + output);
 
         }catch(IOException e){
             log.debug("IO Exception : manque de droits pour IO");
@@ -93,16 +87,36 @@ public class ThreadSimulator extends AbstractThread implements Service {
     }
 
     /**
-     * Réponse à ?xyo
-     * @throws IOException
+     * Fonction pour communiquer avec le HL
+     * Canaus=x : standard, event, debug ou ultrason
+     * @param canal
+     * @param messages
      */
-    public void sendPosition() throws IOException {
-        output.write(String.format("%s", LLPosition.getX()));
-        output.flush();
-        output.write(String.format("%s", LLPosition.getY()));
-        output.flush();
-        output.write(String.format("%s", LLorientation).substring(0,8));
-        output.flush();
+    private void communicate(String canal, String... messages){
+        try {
+            for (String mess : messages) {
+                if (canal == "event"){
+                    mess = eventHeader[0] + eventHeader[1] + mess;
+                }else if(canal == "debug"){
+                    mess = debugHeader[0] + debugHeader[1] + mess;
+                }else if(canal == "ultrason"){
+                    mess = ultrasoundHeader[0] + ultrasoundHeader[1] + mess;
+                }
+                output.write(mess);
+                output.newLine();
+                output.flush();
+            }
+        }catch (IOException e){
+            log.debug("Manque de droits pour l'output ??");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Fonction qui centralise les requete et répond en fonction (copie du main du LL)
+     */
+    private void respond(String request){
+        communicate("debug", request);
     }
 
     @Override
@@ -113,12 +127,8 @@ public class ThreadSimulator extends AbstractThread implements Service {
 
         while(!shutdown){
             try{
-                log.debug("En attente ...");
                 buffer = input.readLine();
-                log.debug("Recu bro ! " + buffer);
-                if (buffer == "?xyo"){
-                    sendPosition();
-                }
+                respond(buffer);
             }catch (IOException e){
                 e.printStackTrace();
             }

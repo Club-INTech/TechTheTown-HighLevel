@@ -62,6 +62,9 @@ public enum ConfigInfoRobot implements ConfigInfo
     /** Paramètres de dégagement du robot */
     /** Paramètres des scripts */
     VECTEUR_EXAMPLE(new Vec2(50, 60)),
+
+    /** Paramètre simulation */
+    SIMULATION(false),
     ;
 
     private Object defaultValue;

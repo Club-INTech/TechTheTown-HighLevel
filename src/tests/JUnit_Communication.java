@@ -27,11 +27,12 @@ public class JUnit_Communication extends JUnit_Test {
             simulator = container.getService(ThreadSimulator.class);
             eth = container.getService(ThreadEth.class);
             container.startInstanciedThreads();
+            String mess = "?xyo";
 
-            while (true) {
-                eth.communicate("?xyo", 3);
-                Sleep.sleep(1000);
-            }
+            log.debug("Envoie de : " + mess + " au Simu...");
+            eth.communicate(mess, 3);
+            Sleep.sleep(1000);
+
         }catch (Exception e){
             e.printStackTrace();
         }

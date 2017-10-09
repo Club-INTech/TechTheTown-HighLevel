@@ -11,6 +11,7 @@ ENNEMY_RADIUS                        = 200
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = bleu
+SIMULATION                           = true
 
 # PARAMETRES POUR LES CAPTEUR
 # horizon_capteurs                   = 500
