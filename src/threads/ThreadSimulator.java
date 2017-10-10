@@ -20,11 +20,10 @@
 package threads;
 
 import container.Service;
-import enums.ActuatorOrder;
 import enums.CommunicationHeaders;
+import enums.TurningStrategy;
 import pfg.config.Config;
-import strategie.GameState;
-import strategie.LLGameState;
+import strategie.GameStateSimulator;
 import utils.Log;
 
 import java.io.*;
@@ -43,7 +42,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
     public String name;
 
     /** GameState propre au LL ?? */
-    private LLGameState state;
+    private GameStateSimulator state;
 
     /** Sockets */
     private ServerSocket server;
@@ -60,11 +59,11 @@ public class ThreadSimulator extends AbstractThread implements Service {
     public static boolean shutdown = false;
 
     /**
-     *
+     * Constructeur du Simulateur ! Tout s'instancie automatiquement à partir du moment où l'on instancie un ThreadSimulator
      * @param config
      * @param log
      */
-    public ThreadSimulator(Config config, Log log, LLGameState state){
+    public ThreadSimulator(Config config, Log log, GameStateSimulator state){
         super(config, log);
         this.name = "Simulator";
         this.state = state;
@@ -101,7 +100,6 @@ public class ThreadSimulator extends AbstractThread implements Service {
                 output.write(mess);
                 output.newLine();
                 output.flush();
-                log.debug("Envoyé : " + mess);
             }
         }catch (IOException e){
             log.debug("Manque de droits pour l'output ??");
@@ -119,63 +117,56 @@ public class ThreadSimulator extends AbstractThread implements Service {
         communicate(CommunicationHeaders.DEBUG, "Message recu : " + request);
         messages = request.split(" ");
         head = messages[0];
-        log.debug("Head : " + head);
 
-        /** INITIALISATION */
-        if(head.equals("cx")){
+        try {
+            /** INITIALISATION */
+            if (head.equals("cx")) {
 
-        }
-        else if(head.equals("cy")){
+            } else if (head.equals("cy")) {
 
-        }
-        else if(head.equals("co")){
+            } else if (head.equals("co")) {
 
-        }
-        else if(head.equals("nh")){
+            } else if (head.equals("nh")) {
 
-        }
-        else if(head.equals("eh")){
+            } else if (head.equals("eh")) {
 
-        }
-        else if(head.equals("dh")){
+            } else if (head.equals("dh")) {
 
-        }
+            }
 
-        /** LOCOMOTION */
-        else if(head.equals("d")){
+            /** LOCOMOTION */
+            else if (head.equals("d")) {
+                float distance = Float.parseFloat(messages[1]);
+                state.moveLengthwise(distance);
+            } else if (head.equals("t")) {
+                state.turn(Float.parseFloat(messages[1]), TurningStrategy.FASTEST);
+            } else if (head.equals("tor")) {
+                state.turn(Float.parseFloat(messages[1]), TurningStrategy.RIGHT_ONLY);
+            } else if (head.equals("tol")) {
+                state.turn(Float.parseFloat(messages[1]), TurningStrategy.LEFT_ONLY);
+            } else if (head.equals("stop")) {
 
-        }
-        else if(head.equals("t")){
+            } else if (head.equals("f")) {
 
-        }
-        else if(head.equals("tor")){
+            } else if (head.equals("ctv")) {
 
-        }
-        else if(head.equals("tol")){
+            } else if (head.equals("crv")) {
 
-        }
-        else if(head.equals("stop")){
+            } else if (head.equals("?xyo")) {
+                communicate(null, String.format("%s",state.getPosition().getX()),
+                        String.format("%s",state.getPosition().getY()),
+                        String.format("%s", state.getOrientation()));
+            }
 
-        }
-        else if(head.equals("f")){
+            /** ACTIONNEURS */
+            //TODO A remplir ? (faire le liens avec ActuatorOrder ??)
 
-        }
-        else if(head.equals("ctv")){
-
-        }
-        else if(head.equals("crv")){
-
-        }
-        else if(head.equals("?xyo")){
-            log.debug("Wouh !");
-            communicate(null, "50", "50", "3.141");
-        }
-
-        /** ACTIONNEURS */
-        //TODO A remplir ? (faire le liens avec ActuatorOrder ??)
-
-        else if(head=="cv0" || head=="cv1" || head=="ct0" || head=="ct1" || head=="cr0" || head=="cr1" || head=="efm" || head=="dfm" || head=="sus" ){
-            communicate(CommunicationHeaders.DEBUG, "Mode Simu : balec");
+            else if (head == "cv0" || head == "cv1" || head == "ct0" || head == "ct1" || head == "cr0" || head == "cr1" || head == "efm" || head == "dfm" || head == "sus") {
+                communicate(CommunicationHeaders.DEBUG, "Mode Simu : balec");
+            }
+        }catch (InterruptedException e){
+            log.debug("Gestion MultiThread fail...");
+            e.printStackTrace();
         }
     }
 

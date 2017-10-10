@@ -27,11 +27,15 @@ public class JUnit_Communication extends JUnit_Test {
             simulator = container.getService(ThreadSimulator.class);
             eth = container.getService(ThreadEth.class);
             container.startInstanciedThreads();
-            String mess = "?xyo";
+            String mess = "t 3.12";
 
             log.debug("Envoie de : " + mess + " au Simu...");
-            eth.communicate(3, mess);
-            Sleep.sleep(1000);
+            eth.communicate(0, mess);
+            Sleep.sleep(5000);
+            mess = "t -2.1";
+            log.debug("Envoie de : " + mess + " au Simu...");
+            eth.communicate(0, mess);
+            Sleep.sleep(5000);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -40,9 +44,14 @@ public class JUnit_Communication extends JUnit_Test {
 
     @Test
     public void testCodeuse() throws Exception{
-        ethWrapper = container.getService(EthWrapper.class);
-        container.startInstanciedThreads();
-        ethWrapper.turn(2);
+        // ethWrapper = container.getService(EthWrapper.class);
+        // container.startInstanciedThreads();
+        // ethWrapper.turn(2);
+        double a = Math.PI + 0.2;
+        double b = -Math.PI + 0.2;
+        double c = 2*Math.PI + 0.2;
+
+        log.debug("Angle a : "+ a%Math.PI + "Angle b : " + b%Math.PI + "Angle c : " + c%Math.PI);
         Sleep.sleep(20000);
     }
 

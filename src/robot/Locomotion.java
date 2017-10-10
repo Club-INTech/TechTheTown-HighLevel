@@ -316,7 +316,6 @@ public class Locomotion implements Service
         }
 
         log.debug("Arrivés en "+aim+" vraie position : "+lowLevelPosition);
-
         actualRetriesIfBlocked=0;// on reinitialise
     }
 

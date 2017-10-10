@@ -50,7 +50,7 @@ public class GameState implements Service
     /** Temps écoulé depuis le début du match en ms */
     private long timeEllapsed;
     
-	/** points marqués depus le debut du match */
+	/** points marqués depuis le debut du match */
     public int obtainedPoints;
 
     /**

@@ -93,12 +93,8 @@ public class Robot implements Service {
 	/** Système de locomotion à utiliser pour déplacer le robot */
 	private Locomotion mLocomotion;
 
-	public HashMap<ScriptNames,Boolean> dejaFait=new HashMap<ScriptNames,Boolean>();// Doublet nom de script / déjà fait
-
-
 	/**
 	 * Constructeur
-	 *
 	 * @param deplacements  système de locomotion
 	 * @param config        fichier de config
 	 * @param log           fichier de log
