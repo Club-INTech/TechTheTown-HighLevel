@@ -11,8 +11,8 @@ public enum CommunicationHeaders {
     ;
 
     /** Le seul contenu de cette enum... */
-    private char firstHeader;
-    private char secondHeader;
+    public char firstHeader;
+    public char secondHeader;
 
     /**
      * Constructeur

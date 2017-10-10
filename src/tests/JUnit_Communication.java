@@ -30,7 +30,7 @@ public class JUnit_Communication extends JUnit_Test {
             String mess = "?xyo";
 
             log.debug("Envoie de : " + mess + " au Simu...");
-            eth.communicate(mess, 3);
+            eth.communicate(3, mess);
             Sleep.sleep(1000);
 
         }catch (Exception e){
@@ -52,7 +52,7 @@ public class JUnit_Communication extends JUnit_Test {
         container.startInstanciedThreads();
 
         for (int i = 0; i<1001; i++){
-            eth.communicate(String.format("%s", i), 1);
+            eth.communicate(1, String.format("%s", i));
             Sleep.sleep(200);
         }
     }

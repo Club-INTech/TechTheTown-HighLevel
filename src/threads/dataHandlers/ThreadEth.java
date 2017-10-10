@@ -80,11 +80,6 @@ public class ThreadEth extends AbstractThread implements Service {
     private ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
 
-    /** Headers */
-    public final char[] eventHeader = {0x13, 0x37};
-    public final char[] ultrasoundHeader = {0x01, 0x10};
-    public final char[] debugHeader = {0x02, 0x20};
-
     /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
      * @param log
@@ -179,10 +174,6 @@ public class ThreadEth extends AbstractThread implements Service {
             }
         }
 
-        if((System.currentTimeMillis() - startTime) > TIMEOUT){
-            log.debug("Timeout dépassé");
-        }
-
         if(response == null) {
             return "";
         } else {
@@ -208,22 +199,14 @@ public class ThreadEth extends AbstractThread implements Service {
      * FONCTION COMMUNICATION & RUN (LISTENER) *
      *******************************************/
 
-    /**
-     * Envoie de message au LL & réception
-     * @return LL response
-     */
-    public synchronized String[] communicate(String message, int nb_line_response){
-        String[] mess = {message};
-        return communicate(mess, nb_line_response);
-    }
 
     /**
      * Fonction pour envoyer un message au LL
      * @return LL response
      */
-    public synchronized String[] communicate(String[] message, int nb_line_response)
+    public synchronized String[] communicate(int nb_line_response, String... message)
     {
-        int length;
+        int tries = 0;
         standardBuffer.clear();
         String inputLines[] = new String[nb_line_response];
 
@@ -277,7 +260,7 @@ public class ThreadEth extends AbstractThread implements Service {
                     outStandart.flush();
                 }
 
-                if(inputLines[i]==null || inputLines[i].replaceAll(" ", "").equals("")|| inputLines[i].replaceAll(" ", "").equals("-"))
+                if(inputLines[i]==null || inputLines[i].replaceAll(" ", "").equals(""))
                 {
                     log.critical("Reception de "+inputLines[i]+" , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                     if(debug)
@@ -287,16 +270,21 @@ public class ThreadEth extends AbstractThread implements Service {
                         outStandart.flush();
                     }
 
-                    while (inputLines[i]==null || inputLines[i].replaceAll(" ", "").equals("")|| inputLines[i].replaceAll(" ", "").equals("-")){
-                        Thread.sleep(500);
+                    while ((inputLines[i]==null || inputLines[i].replaceAll(" ", "").equals("")) && tries < 5){
+                        Thread.sleep(200);
+                        tries += 1;
                         inputLines[i] = waitAndGetResponse();
+                    }
+
+                    if(tries == 5){
+                        throw new SocketException("Pas de réponse...");
                     }
                 }
 
                 if(!isAsciiExtended(inputLines[i]))
                 {
                     log.critical("Reception de "+inputLines[i]+" (non Ascii) , en réponse à "+ message[0].replaceAll("\r", "").replaceAll("\n", "") + " envoi du message a nouveau");
-                    communicate(message, nb_line_response); // On retente
+                    communicate(nb_line_response, message); // On retente
                 }
             }
         }
@@ -305,7 +293,9 @@ public class ThreadEth extends AbstractThread implements Service {
             try {
                 if (socket != null) {
                     socket.close();
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
+                    createInterface();
+                    communicate(nb_line_response, message);
                 }
             }
             catch (Exception e2){
@@ -335,13 +325,14 @@ public class ThreadEth extends AbstractThread implements Service {
                 buffer = input.readLine();
                 if(buffer.length()>=2 && !(buffer.replaceAll(" ", "").equals("")))
                 {
-                    if (buffer.toCharArray()[0] == eventHeader[0] && ((byte) buffer.toCharArray()[1]) == eventHeader[1]) {
+                    char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
+                    if (CommunicationHeaders.EVENT.firstHeader == headers[0] && CommunicationHeaders.EVENT.secondHeader == headers[1]) {
                         eventBuffer.add(buffer);
                         continue;
-                    } else if (buffer.toCharArray()[0] == ultrasoundHeader[0] && buffer.toCharArray()[1] == ultrasoundHeader[1]) {
+                    } else if (CommunicationHeaders.ULTRASON.firstHeader == headers[0] && CommunicationHeaders.ULTRASON.secondHeader == headers[1]) {
                         ultrasoundBuffer.add(buffer);
                         continue;
-                    } else if (buffer.toCharArray()[0] == debugHeader[0] && buffer.toCharArray()[1] == debugHeader[1]) {
+                    } else if (CommunicationHeaders.DEBUG.firstHeader == headers[0] && CommunicationHeaders.DEBUG.secondHeader == headers[1]) {
                         outDebug.write(buffer.substring(2));
                         outDebug.newLine();
                         outDebug.flush();

@@ -39,7 +39,7 @@ public enum ActuatorOrder implements MotionOrder
  *		   *|__________________|*
  */
 
-	DEPLACAMENT("d"),     //déplacement avant ou arrière sans asserv
+	DEPLACEMENT("d"),     //déplacement avant ou arrière sans asserv
 	ROT_ABS("t"),         //rotation (angle absolu) sans asserv
 	ROT_REL_RAD("t3"),    //rotation (angle relatif en radian) sans asserv
 	ROT_REL_DEG("r"),     //rotation (angle relatif en degré) sans asserv

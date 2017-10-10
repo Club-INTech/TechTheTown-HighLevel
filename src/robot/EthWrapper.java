@@ -87,8 +87,7 @@ public class EthWrapper implements Service {
     public void moveLengthwise(double distance)
     {
         int distanceTruncated = (int)distance;
-        String chaines[] = {"d", String.format(Locale.US, "%d", distanceTruncated)};
-        eth.communicate(chaines, 0);
+        eth.communicate(0, "d", String.format(Locale.US, "%d", distanceTruncated));
     }
 
     /**
@@ -110,18 +109,15 @@ public class EthWrapper implements Service {
         // tronque l'angle que l'on envoit a la série pour éviter les overflows
         float angleTruncated = (float)angle;
         if(turning == TurningStrategy.FASTEST) {
-            String chaines[] = {"t", String.format(Locale.US, "%.3f", angleTruncated)};
-            eth.communicate(chaines, 0);
+            eth.communicate(0, "t", String.format(Locale.US, "%.3f", angleTruncated));
         }
         else if(turning == TurningStrategy.RIGHT_ONLY)
         {
-            String chaines[] = {"tor", String.format(Locale.US, "%.3f", angleTruncated)};
-            eth.communicate(chaines, 0);
+            eth.communicate(0, "tor", String.format(Locale.US, "%.3f", angleTruncated));
         }
         else if(turning == TurningStrategy.LEFT_ONLY)
         {
-            String chaines[] = {"tol", String.format(Locale.US, "%.3f", angleTruncated)};
-            eth.communicate(chaines, 0);
+            eth.communicate(0, "tol", String.format(Locale.US, "%.3f", angleTruncated));
         }
     }
 
@@ -131,8 +127,7 @@ public class EthWrapper implements Service {
     public void immobilise()
     {
         log.warning("Immobilisation du robot");
-
-        eth.communicate("stop", 0);// On s'asservit sur la position actuelle
+        eth.communicate(0, "stop");// On s'asservit sur la position actuelle
         while(isRobotMoving())
         {
             Sleep.sleep(loopDelay); // On attend d'etre arreté
@@ -160,7 +155,7 @@ public class EthWrapper implements Service {
     {
         // on demande a la carte des information a jour
         // on envois "f" et on lis double (dans l'ordre : bouge, est anormal)
-        String[] infosBuffer = eth.communicate("f", 2);
+        String[] infosBuffer = eth.communicate(2, "f");
         boolean[] parsedInfos = new boolean[2];
         for(int i = 0; i < 2; i++)
         {
@@ -182,8 +177,7 @@ public class EthWrapper implements Service {
     public void setTranslationnalSpeed(float speed)
     {
         // envoie a la carte d'asservissement le nouveau maximum du pwm
-        String chaines[] = {"ctv", String.format(Locale.US, "%.3f", speed)};
-        eth.communicate(chaines, 0);
+        eth.communicate(0, "ctv", String.format(Locale.US, "%.3f", speed));
     }
 
     /**
@@ -193,8 +187,7 @@ public class EthWrapper implements Service {
     public void setRotationnalSpeed(double rotationSpeed)
     {
         // envoie a la carte d'asservissement le nouveau maximum du pwm
-        String chaines[] = {"crv", String.format(Locale.US, "%.3f", (float)rotationSpeed)};
-        eth.communicate(chaines, 0);
+        eth.communicate(0, "crv", String.format(Locale.US, "%.3f", (float)rotationSpeed));
     }
 
     /**
@@ -206,7 +199,7 @@ public class EthWrapper implements Service {
     {
         // on demande a la carte des information a jour
         // on envois "?xyo" et on lis double (dans l'ordre : abscisse, ordonnée, orientation)
-        String[] infosBuffer = eth.communicate("?xyo", 3);
+        String[] infosBuffer = eth.communicate(3, "?xyo");
         float[] parsedInfos = new float[3];
         for(int i = 0; i < 3; i++)
         {
@@ -228,7 +221,7 @@ public class EthWrapper implements Service {
     public void useActuator(ActuatorOrder order)
     {
         log.debug("Envoi consigne a la carte actionneur : " + order.toString());
-        eth.communicate(order.getSerialOrder(), 0);
+        eth.communicate(0, order.getSerialOrder());
     }
 
 
@@ -242,14 +235,14 @@ public class EthWrapper implements Service {
      */
     public void disableSpeedFeedbackLoop()
     {
-        eth.communicate("cv0", 0);
+        eth.communicate(0, "cv0");
     }
 
     /**
      * Active l'asservissement en vitesse du robot
      */
     public void enableSpeedFeedbackLoop() {
-        eth.communicate("cv1", 0);
+        eth.communicate(0, "cv1");
     }
 
     /**
@@ -257,7 +250,7 @@ public class EthWrapper implements Service {
      */
     public void enableTranslationnalFeedbackLoop()
     {
-        eth.communicate("ct1", 0);
+        eth.communicate(0, "ct1");
     }
 
     /**
@@ -265,7 +258,7 @@ public class EthWrapper implements Service {
      */
     public void enableRotationnalFeedbackLoop()
     {
-        eth.communicate("cr1", 0);
+        eth.communicate(0, "cr1");
     }
 
     /**
@@ -273,7 +266,7 @@ public class EthWrapper implements Service {
      */
     public void disableTranslationnalFeedbackLoop()
     {
-        eth.communicate("ct0", 0);
+        eth.communicate(0, "ct0");
     }
 
     /**
@@ -281,7 +274,7 @@ public class EthWrapper implements Service {
      */
     public void disableRotationnalFeedbackLoop()
     {
-        eth.communicate("cr0", 0);
+        eth.communicate(0, "cr0");
     }
 
 
@@ -297,8 +290,7 @@ public class EthWrapper implements Service {
     public void setX(int x)
     {
         float floatX=(float)x; //On transtype car la serie veut des Floats <3
-        String chaines[] = {"cx", String.format(Locale.US, "%.3f", floatX)};
-        eth.communicate(chaines, 0);
+        eth.communicate(0, "cx", String.format(Locale.US, "%.3f", floatX));
     }
 
     /**
@@ -308,8 +300,7 @@ public class EthWrapper implements Service {
     public void setY(int y)
     {
         float floatY=(float)y;//On transtype car la serie veut des Floats
-        String chaines[] = {"cy", String.format(Locale.US, "%.3f", floatY)};
-        eth.communicate(chaines, 0);
+        eth.communicate(0, "cy", String.format(Locale.US, "%.3f", floatY));
     }
 
     /**
@@ -320,8 +311,7 @@ public class EthWrapper implements Service {
     {
         //log.debug("setOrientation "+orientation);
         float floatOrientation =(float) orientation; //On transtype car la serie veut des Floats (T_T)
-        String chaines[] = {"co", String.format(Locale.US, "%.3f", floatOrientation)};
-        eth.communicate(chaines, 0);
+        eth.communicate(0, "co", String.format(Locale.US, "%.3f", floatOrientation));
     }
 
     /**
@@ -332,7 +322,7 @@ public class EthWrapper implements Service {
      */
     public void configureHook(int id, Vec2 posTrigger, int tolerency, String order){
         String message = "nh " + id + " " + posTrigger.toStringEth() + " " + tolerency + " " + order;
-        eth.communicate(message, 0);
+        eth.communicate(0, message);
     }
 
     /**
@@ -341,7 +331,7 @@ public class EthWrapper implements Service {
      */
     public void enableHook(HookNames hook){
         String message = "eh " + hook.getId();
-        eth.communicate(message, 0);
+        eth.communicate(0, message);
     }
 
     /**
@@ -350,7 +340,7 @@ public class EthWrapper implements Service {
      */
     public void disableHook(HookNames hook){
         String message = "dh " + hook.getId();
-        eth.communicate(message, 0);
+        eth.communicate(0, message);
     }
 
 
@@ -367,7 +357,7 @@ public class EthWrapper implements Service {
     {
         try {
             // demande a la carte si le jumper est présent, parse sa réponse, et si on lit 1 c'est que le jumper n'est pas/plus la
-            return Integer.parseInt(eth.communicate("j", 1)[0]) != 0;
+            return Integer.parseInt(eth.communicate(1, "j")[0]) != 0;
         }
         catch (NumberFormatException e)
         {
@@ -384,7 +374,7 @@ public class EthWrapper implements Service {
      */
     public boolean getContactSensorValue(ContactSensors sensor)
     {
-        String[] sensorAnswer = eth.communicate(sensor.getSerialCommunication(),1);
+        String[] sensorAnswer = eth.communicate(1, sensor.getSerialCommunication());
         return (!sensorAnswer[0].equals("0"));
     }
 
@@ -392,7 +382,7 @@ public class EthWrapper implements Service {
      */
     public void switchSensor()
     {
-        eth.communicate("sus", 0);
+        eth.communicate(0, "sus");
         sensorState = !sensorState;
     }
 
@@ -402,15 +392,11 @@ public class EthWrapper implements Service {
      */
     public synchronized void setForceMovement(boolean choice)
     {
-        if(choice)
-        {
-            String chaines[] = {"efm"};
-            eth.communicate(chaines, 0);
+        if(choice){
+            eth.communicate(0, "efm");
         }
-        else
-        {
-            String chaines[] = {"dfm"};
-            eth.communicate(chaines, 0);
+        else{
+            eth.communicate(0, "dfm");
         }
     }
 
@@ -420,8 +406,7 @@ public class EthWrapper implements Service {
      */
     public synchronized double[] pfdebug()
     {
-        String chaines[] = {"pfdebug"};
-        String[] infosBuffer = eth.communicate(chaines, 5);
+        String[] infosBuffer = eth.communicate(5, "pfdebug");
         double[] parsedInfos = new double[5];
         for(int i = 0; i < 5; i++)
         {

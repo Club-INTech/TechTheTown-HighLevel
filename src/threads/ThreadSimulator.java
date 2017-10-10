@@ -20,6 +20,7 @@
 package threads;
 
 import container.Service;
+import enums.ActuatorOrder;
 import enums.CommunicationHeaders;
 import pfg.config.Config;
 import strategie.GameState;
@@ -43,11 +44,6 @@ public class ThreadSimulator extends AbstractThread implements Service {
 
     /** GameState propre au LL ?? */
     private LLGameState state;
-
-    /** Headers */
-    public final char[] eventHeader = {0x13, 0x37};
-    public final char[] ultrasoundHeader = {0x01, 0x10};
-    public final char[] debugHeader = {0x02, 0x20};
 
     /** Sockets */
     private ServerSocket server;
@@ -98,16 +94,14 @@ public class ThreadSimulator extends AbstractThread implements Service {
     private void communicate(CommunicationHeaders header, String... messages){
         try {
             for (String mess : messages) {
-                if (header == CommunicationHeaders.EVENT){
-                    output.write(eventHeader[0]);
-                    output.write(eventHeader[1]);
-                }else if(header == CommunicationHeaders.DEBUG){
-                    output.write(debugHeader[0]);
-                    output.write(debugHeader[1]);
+                if(header != null){
+                    output.write(header.firstHeader);
+                    output.write(header.secondHeader);
                 }
                 output.write(mess);
                 output.newLine();
                 output.flush();
+                log.debug("Envoyé : " + mess);
             }
         }catch (IOException e){
             log.debug("Manque de droits pour l'output ??");
@@ -119,7 +113,70 @@ public class ThreadSimulator extends AbstractThread implements Service {
      * Fonction qui centralise les requete et répond en fonction (copie du main du LL)
      */
     private void respond(String request){
+        String[] messages;
+        String head;
+
         communicate(CommunicationHeaders.DEBUG, "Message recu : " + request);
+        messages = request.split(" ");
+        head = messages[0];
+        log.debug("Head : " + head);
+
+        /** INITIALISATION */
+        if(head.equals("cx")){
+
+        }
+        else if(head.equals("cy")){
+
+        }
+        else if(head.equals("co")){
+
+        }
+        else if(head.equals("nh")){
+
+        }
+        else if(head.equals("eh")){
+
+        }
+        else if(head.equals("dh")){
+
+        }
+
+        /** LOCOMOTION */
+        else if(head.equals("d")){
+
+        }
+        else if(head.equals("t")){
+
+        }
+        else if(head.equals("tor")){
+
+        }
+        else if(head.equals("tol")){
+
+        }
+        else if(head.equals("stop")){
+
+        }
+        else if(head.equals("f")){
+
+        }
+        else if(head.equals("ctv")){
+
+        }
+        else if(head.equals("crv")){
+
+        }
+        else if(head.equals("?xyo")){
+            log.debug("Wouh !");
+            communicate(null, "50", "50", "3.141");
+        }
+
+        /** ACTIONNEURS */
+        //TODO A remplir ? (faire le liens avec ActuatorOrder ??)
+
+        else if(head=="cv0" || head=="cv1" || head=="ct0" || head=="ct1" || head=="cr0" || head=="cr1" || head=="efm" || head=="dfm" || head=="sus" ){
+            communicate(CommunicationHeaders.DEBUG, "Mode Simu : balec");
+        }
     }
 
     @Override
