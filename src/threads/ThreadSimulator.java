@@ -20,10 +20,12 @@
 package threads;
 
 import container.Service;
+import enums.ActuatorOrder;
 import enums.CommunicationHeaders;
 import enums.TurningStrategy;
 import pfg.config.Config;
 import strategie.GameStateSimulator;
+import tests.container.A;
 import utils.Log;
 
 import java.io.*;
@@ -94,8 +96,8 @@ public class ThreadSimulator extends AbstractThread implements Service {
         try {
             for (String mess : messages) {
                 if(header != null){
-                    output.write(header.firstHeader);
-                    output.write(header.secondHeader);
+                    output.write(header.getFirstHeader());
+                    output.write(header.getSecondHeader());
                 }
                 output.write(mess);
                 output.newLine();
@@ -120,39 +122,54 @@ public class ThreadSimulator extends AbstractThread implements Service {
 
         try {
             /** INITIALISATION */
-            if (head.equals("cx")) {
+            if (head.equals(ActuatorOrder.SET_X.getSerialOrder())) {
 
-            } else if (head.equals("cy")) {
+            }
+            else if (head.equals(ActuatorOrder.SET_Y.getSerialOrder())) {
 
-            } else if (head.equals("co")) {
+            }
+            else if (head.equals(ActuatorOrder.SET_ORIENTATION.getSerialOrder())) {
 
-            } else if (head.equals("nh")) {
+            }
+            else if (head.equals(ActuatorOrder.SET_POSITION.getSerialOrder())){
 
-            } else if (head.equals("eh")) {
+            }
+            else if (head.equals(ActuatorOrder.INITIALISE_HOOK.getSerialOrder())) {
 
-            } else if (head.equals("dh")) {
+            }
+            else if (head.equals(ActuatorOrder.ENABLE_HOOK.getSerialOrder())) {
+
+            }
+            else if (head.equals(ActuatorOrder.DISABLE_HOOK.getSerialOrder())) {
 
             }
 
             /** LOCOMOTION */
-            else if (head.equals("d")) {
-                float distance = Float.parseFloat(messages[1]);
-                state.moveLengthwise(distance);
-            } else if (head.equals("t")) {
+            else if (head.equals(ActuatorOrder.MOVE_LENTGHWISE.getSerialOrder())) {
+                state.moveLengthwise(Float.parseFloat(messages[1]));
+            }
+            else if (head.equals(ActuatorOrder.TURN.getSerialOrder())) {
                 state.turn(Float.parseFloat(messages[1]), TurningStrategy.FASTEST);
-            } else if (head.equals("tor")) {
+            }
+            else if (head.equals(ActuatorOrder.TURN_RIGHT_ONLY.getSerialOrder())) {
                 state.turn(Float.parseFloat(messages[1]), TurningStrategy.RIGHT_ONLY);
-            } else if (head.equals("tol")) {
+            }
+            else if (head.equals(ActuatorOrder.TURN_LEFT_ONLY.getSerialOrder())) {
                 state.turn(Float.parseFloat(messages[1]), TurningStrategy.LEFT_ONLY);
-            } else if (head.equals("stop")) {
+            }
+            else if (head.equals(ActuatorOrder.STOP.getSerialOrder())) {
 
-            } else if (head.equals("f")) {
+            }
+            else if (head.equals(ActuatorOrder.IS_ROBOT_MOVING.getSerialOrder())) {
 
-            } else if (head.equals("ctv")) {
+            }
+            else if (head.equals(ActuatorOrder.SET_TRANSLATION_SPEED.getSerialOrder())) {
 
-            } else if (head.equals("crv")) {
+            }
+            else if (head.equals(ActuatorOrder.SET_ROTATIONNAL_SPEED.getSerialOrder())) {
 
-            } else if (head.equals("?xyo")) {
+            }
+            else if (head.equals(ActuatorOrder.SEND_POSITION.getSerialOrder())) {
                 communicate(null, String.format("%s",state.getPosition().getX()),
                         String.format("%s",state.getPosition().getY()),
                         String.format("%s", state.getOrientation()));
@@ -161,7 +178,8 @@ public class ThreadSimulator extends AbstractThread implements Service {
             /** ACTIONNEURS */
             //TODO A remplir ? (faire le liens avec ActuatorOrder ??)
 
-            else if (head == "cv0" || head == "cv1" || head == "ct0" || head == "ct1" || head == "cr0" || head == "cr1" || head == "efm" || head == "dfm" || head == "sus") {
+            else {
+                //TODO condition à compléter
                 communicate(CommunicationHeaders.DEBUG, "Mode Simu : balec");
             }
         }catch (InterruptedException e){

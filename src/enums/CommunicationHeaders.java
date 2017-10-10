@@ -11,8 +11,8 @@ public enum CommunicationHeaders {
     ;
 
     /** Le seul contenu de cette enum... */
-    public char firstHeader;
-    public char secondHeader;
+    private char firstHeader;
+    private char secondHeader;
 
     /**
      * Constructeur
@@ -22,5 +22,13 @@ public enum CommunicationHeaders {
     CommunicationHeaders(char firstHeader, char secHeader){
         this.firstHeader = firstHeader;
         this.secondHeader = secHeader;
+    }
+
+    /** Getters */
+    public char getFirstHeader() {
+        return firstHeader;
+    }
+    public char getSecondHeader() {
+        return secondHeader;
     }
 }

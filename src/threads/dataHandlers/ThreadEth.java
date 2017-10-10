@@ -206,27 +206,30 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     public synchronized String[] communicate(int nb_line_response, String... message)
     {
+        String mess = "";
         int tries = 0;
         standardBuffer.clear();
         String inputLines[] = new String[nb_line_response];
 
+        for (String m : message){
+            mess += m + " ";
+        }
+
         /* Envoie de l'ordre */
         try
         {
-            for (String m : message)
-            {
-                m += "\r\n";
-                // On envoie au LL le nombre de caractères qu'il est censé recevoir
-                output.write(m, 0, m.length());
-                output.flush();
+            mess += "\r\n";
+            // On envoie au LL le nombre de caractères qu'il est censé recevoir
+            output.write(mess, 0, mess.length());
+            output.flush();
 
-                if(debug)
-                {
-                    outStandart.write(m);
-                    outStandart.newLine();
-                    outStandart.flush();
-                }
+            if(debug)
+            {
+                outStandart.write(mess);
+                outStandart.newLine();
+                outStandart.flush();
             }
+
         }
         catch (SocketException e)
         {
@@ -326,13 +329,13 @@ public class ThreadEth extends AbstractThread implements Service {
                 if(buffer.length()>=2 && !(buffer.replaceAll(" ", "").equals("")))
                 {
                     char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
-                    if (CommunicationHeaders.EVENT.firstHeader == headers[0] && CommunicationHeaders.EVENT.secondHeader == headers[1]) {
+                    if (CommunicationHeaders.EVENT.getFirstHeader() == headers[0] && CommunicationHeaders.EVENT.getSecondHeader() == headers[1]) {
                         eventBuffer.add(buffer);
                         continue;
-                    } else if (CommunicationHeaders.ULTRASON.firstHeader == headers[0] && CommunicationHeaders.ULTRASON.secondHeader == headers[1]) {
+                    } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
                         ultrasoundBuffer.add(buffer);
                         continue;
-                    } else if (CommunicationHeaders.DEBUG.firstHeader == headers[0] && CommunicationHeaders.DEBUG.secondHeader == headers[1]) {
+                    } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
                         outDebug.write(buffer.substring(2));
                         outDebug.newLine();
                         outDebug.flush();

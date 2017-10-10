@@ -33,29 +33,38 @@ public enum ActuatorOrder implements MotionOrder
 	// exemple : MOVE_FORWARD("av")
 
 
-/*			 __________________
- * 		   *|                  |*
- *		   *|  TESTS DE BASE   |*
- *		   *|__________________|*
+/*			 _________________
+ * 		   *|                 |*
+ *		   *|  DEPLACEMENTS   |*
+ *		   *|_________________|*
  */
 
-	DEPLACEMENT("d"),     //déplacement avant ou arrière sans asserv
-	ROT_ABS("t"),         //rotation (angle absolu) sans asserv
-	ROT_REL_RAD("t3"),    //rotation (angle relatif en radian) sans asserv
-	ROT_REL_DEG("r"),     //rotation (angle relatif en degré) sans asserv
-	//TRAJ_COURBE("dc"),  //trajectoire courbe : déplacement + rotation
-	STOP("stop"),         //arrêt
+	MOVE_LENTGHWISE("d"),
+	TURN("t"),
+	TURN_RIGHT_ONLY("tor"),
+	TURN_LEFT_ONLY("tol"),
+	STOP("stop"),
+	IS_ROBOT_MOVING("f"),
+	SEND_POSITION("?xyo"),
 
-
-/*			 __________________
- * 		   *|                  |*
- *		   *|   AUTRES TESTS   |*
- *		   *|__________________|*
+/*			 ____________________
+ * 		   *|                    |*
+ *		   *|   INITIALISATION   |*
+ *		   *|____________________|*
  */
 
-	//ACTIVER_MOUV_FORCE("efm"),
-	//DESACTIVER_MOUV_FORCE("dfm"),
+	ENABLE_FORCE_MOVEMENT("efm"),
+	DISABLE_FORCE_MOVEMENT("dfm"),
+	SET_TRANSLATION_SPEED("ctv"),
+	SET_ROTATIONNAL_SPEED("crv"),
+	SET_X("cx"),
+	SET_Y("cy"),
+	SET_ORIENTATION("co"),
+	SET_POSITION("cxyo"),
 
+	INITIALISE_HOOK("nh"),
+	ENABLE_HOOK("eh"),
+	DISABLE_HOOK("dh"),
 
 /*			 _____________________
  * 		   *|                     |*
@@ -63,13 +72,13 @@ public enum ActuatorOrder implements MotionOrder
  *		   *|_____________________|*
  */
 
-	NO_ASSERV_TRANS("ct0"),
-	ASSERV_TRANS("ct1"),
-	NO_ASSERV_ROT("cr0"),
-	ASSERV_ROT("cr1"),
-	NO_ASSERV_V("cv0"),
-	ASSERV_V("cv1"),
-
+	NO_ASSERV_TRANSLATION("ct0"),
+	ASSERV_TRANSLATION("ct1"),
+	NO_ASSERV_ROTATION("cr0"),
+	ASSERV_ROTATION("cr1"),
+	NO_ASSERV_SPEED("cv0"),
+	ASSERV_SPEED("cv1"),
+	DEBUG("pfdebug"),
 
 /*			 _______________________
  * 		   *|                       |*
@@ -93,10 +102,10 @@ public enum ActuatorOrder implements MotionOrder
  */
 
 	//lire distance donnée par les capteurs US ,  en millimètres
-	DIST_US_ARD("usard"), //Distance capteur Arrière droit
-	DIST_US_ARG("usarg"), //Distance capteur Arrière gauche
-	DIST_US_AVD("usavd"), //Distance capteur Avant droit
-	DIST_US_AVG("usavg"), //Distance capteur Avant gauche
+	DIST_US_BACK_RIGHT("usard"),
+	DIST_US_BACK_LEFT("usarg"),
+	DIST_US_FRONT_RIGHT("usavd"),
+	DIST_US_FRONT_LEFT("usavg"),
 
 
 /*			 _____________________
@@ -106,7 +115,7 @@ public enum ActuatorOrder implements MotionOrder
  */
 
     //état jumper (0='en place', 1='retiré')
-    ETAT_JUMPER("j"),
+    JUMPER_STATE("j"),
 
     //états contacteurs (0='non appuyé', 1='appuyé')
     ETAT_CONTACTEUR1("c1"),				//vaut 1 si l'ascenseur est en position haute

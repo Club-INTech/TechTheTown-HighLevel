@@ -1,11 +1,9 @@
 package strategie;
 
 import container.Service;
-import enums.DirectionStrategy;
 import enums.Speed;
 import enums.TurningStrategy;
 import pfg.config.Config;
-import smartMath.Geometry;
 import smartMath.Vec2;
 import table.Table;
 import utils.Log;
