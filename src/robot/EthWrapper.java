@@ -290,7 +290,7 @@ public class EthWrapper implements Service {
         float floatX = (float)x;
         float floatY = (float)y;
         float floatO = (float)orientation;
-        eth.communicate(0, ActuatorOrder.SET_POSITION.getSerialOrder(), String.format("%x",floatX), String.format("%y",floatY), String.format("%o",floatO));
+        eth.communicate(0, ActuatorOrder.SET_POSITION.getSerialOrder(), String.format("%s",floatX), String.format("%s",floatY), String.format("%s",floatO));
     }
 
     /**

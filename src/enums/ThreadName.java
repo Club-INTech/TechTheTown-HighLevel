@@ -19,6 +19,7 @@
 
 package enums;
 
+import simulator.ThreadSimulator;
 import threads.AbstractThread;
 import simulator.ThreadSimulatorMotion;
 import threads.ThreadTimer;
@@ -38,7 +39,8 @@ public enum ThreadName
 	EVENTS(ThreadEvents.class),
 	SENSOR(ThreadSensor.class),
 	ETHERNET(ThreadEth.class),
-	SIMULATOR(ThreadSimulatorMotion.class),
+	SIMULATOR(ThreadSimulator.class),
+	SIMULATOR_MOTION(ThreadSimulatorMotion.class),
 	;
 
 	public Class<? extends AbstractThread> cls;

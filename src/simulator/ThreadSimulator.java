@@ -34,7 +34,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
     private BufferedWriter output;
 
     /** Pile de comm avec le ThreadSimulatorMotion */
-    private ConcurrentLinkedQueue<String> motionOrderBuffer;
+    private ConcurrentLinkedQueue<String> motionOrderBuffer = new ConcurrentLinkedQueue<>();
 
     /** Buffers pour fichiers de debug */
     private BufferedWriter out;
@@ -115,26 +115,27 @@ public class ThreadSimulator extends AbstractThread implements Service {
 
         /** SETTINGS */
         else if (head.equals(ActuatorOrder.SET_X.getSerialOrder())) {
-            Vec2 newPos = new Vec2(Integer.parseInt(messages[1]), state.getPosition().getY());
+            Vec2 newPos = new Vec2((int) Float.parseFloat(messages[1]), state.getPosition().getY());
             state.setPosition(newPos);
         }
         else if (head.equals(ActuatorOrder.SET_Y.getSerialOrder())) {
-            Vec2 newPos = new Vec2(state.getPosition().getX(), Integer.parseInt(messages[1]));
+            Vec2 newPos = new Vec2(state.getPosition().getX(), (int) Float.parseFloat(messages[1]));
             state.setPosition(newPos);
         }
         else if (head.equals(ActuatorOrder.SET_ORIENTATION.getSerialOrder())) {
             state.setOrientation(Float.parseFloat(messages[1]));
         }
         else if (head.equals(ActuatorOrder.SET_POSITION.getSerialOrder())){
-            state.setPosition(new Vec2(Integer.parseInt(messages[1]), Integer.parseInt(messages[2])));
+            state.setPosition(new Vec2((int) Float.parseFloat(messages[1]), (int) Float.parseFloat(messages[2])));
             state.setOrientation(Float.parseFloat(messages[3]));
         }
         else if (head.equals(ActuatorOrder.SET_TRANSLATION_SPEED.getSerialOrder())) {
-
+            state.setTranslationSpeed((int) Float.parseFloat(messages[1]));
         }
         else if (head.equals(ActuatorOrder.SET_ROTATIONNAL_SPEED.getSerialOrder())) {
-
+            state.setRotationnalSpeed(Float.parseFloat(messages[1]));
         }
+        //TODO Système des hooks
         else if (head.equals(ActuatorOrder.INITIALISE_HOOK.getSerialOrder())) {
 
         }
@@ -158,7 +159,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
         }
         else {
             //TODO condition à compléter
-            communicate(CommunicationHeaders.DEBUG, "Mode Simu : balec");
+            communicate(CommunicationHeaders.DEBUG, "Mode Simu : balec' frère...");
         }
     }
 
@@ -171,7 +172,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
     public void run(){
         String buffer;
         createInterface();
-        log.debug("ThreadSimulatorMotion started");
+        log.debug("ThreadSimulator started");
 
         while(!shutdown){
             try{

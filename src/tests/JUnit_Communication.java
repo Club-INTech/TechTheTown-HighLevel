@@ -1,10 +1,16 @@
 package tests;
 
+import enums.ActuatorOrder;
+import enums.Speed;
 import org.junit.Test;
 import robot.EthWrapper;
+import robot.Locomotion;
+import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import threads.dataHandlers.ThreadEth;
 import utils.Sleep;
+
+import java.util.HashMap;
 
 /**
  * Test de Comm
@@ -16,24 +22,55 @@ public class JUnit_Communication extends JUnit_Test {
     private EthWrapper ethWrapper;
 
     /** Thread de simulation du LL */
-    private ThreadSimulatorMotion simulator;
+    private ThreadSimulator simulator;
+    private ThreadSimulatorMotion motion;
+
+    /** Locomotion */
+    private Locomotion locomotion;
 
     @Test
     public void testSimulator(){
 
-        try {
-            simulator = container.getService(ThreadSimulatorMotion.class);
-            eth = container.getService(ThreadEth.class);
-            container.startInstanciedThreads();
-            String mess = "t 3.12";
+        long start;
+        int signe = 1;
 
-            log.debug("Envoie de : " + mess + " au Simu...");
-            eth.communicate(0, mess);
-            Sleep.sleep(5000);
-            mess = "t -2.1";
-            log.debug("Envoie de : " + mess + " au Simu...");
-            eth.communicate(0, mess);
-            Sleep.sleep(5000);
+        try {
+            simulator = container.getService(ThreadSimulator.class);
+            motion = container.getService(ThreadSimulatorMotion.class);
+            ethWrapper = container.getService(EthWrapper.class);
+            locomotion = container.getService(Locomotion.class);
+
+            container.startInstanciedThreads();
+
+            ethWrapper.setPositionAndOrientation(200, 300, 2.215);
+            Thread.sleep(100);
+            ethWrapper.getCurrentPositionAndOrientation();
+            ethWrapper.setX(400);
+            Thread.sleep(100);
+            ethWrapper.getCurrentPositionAndOrientation();
+            ethWrapper.setY(400);
+            Thread.sleep(100);
+            ethWrapper.getCurrentPositionAndOrientation();
+            ethWrapper.setOrientation(1.57);
+            Thread.sleep(100);
+            ethWrapper.getCurrentPositionAndOrientation();
+
+            for (Speed speed : Speed.values()){
+                ethWrapper.setTranslationnalSpeed(speed.translationSpeed);
+                ethWrapper.setRotationnalSpeed(speed.rotationSpeed);
+                signe = - signe;
+
+                start = System.currentTimeMillis();
+                locomotion.moveLengthwise(500, false, true);
+                log.debug("Vitesse Translation : " + speed.translationSpeed);
+                log.debug("Temps : " + (System.currentTimeMillis() - start));
+
+                locomotion.turn(signe*Math.PI/2, false, true);
+                log.debug("Vitesse Rotation : " + speed.rotationSpeed);
+                log.debug("Temps : " + (System.currentTimeMillis() - start));
+
+                Thread.sleep(1000);
+            }
 
         }catch (Exception e){
             e.printStackTrace();
@@ -42,9 +79,6 @@ public class JUnit_Communication extends JUnit_Test {
 
     @Test
     public void testCodeuse() throws Exception{
-        // ethWrapper = container.getService(EthWrapper.class);
-        // container.startInstanciedThreads();
-        // ethWrapper.turn(2);
         double a = Math.PI + 0.2;
         double b = -Math.PI + 0.2;
         double c = 2*Math.PI + 0.2;

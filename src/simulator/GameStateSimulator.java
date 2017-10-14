@@ -1,7 +1,6 @@
 package simulator;
 
 import container.Service;
-import enums.Speed;
 import enums.TurningStrategy;
 import pfg.config.Config;
 import smartMath.Vec2;
@@ -25,7 +24,8 @@ public class GameStateSimulator implements Service {
     private float orientation = 0;
 
     /** Vitesse du robot */
-    private Speed speed = Speed.MEDIUM_ALL;
+    private int translationSpeed = 500;
+    private float rotationnalSpeed = (float) (2*Math.PI/3);
 
     /** Dimensions du robot */
     private int robotRay;
@@ -37,7 +37,7 @@ public class GameStateSimulator implements Service {
 
     /** Le premier booléen indique si le robot bouge, le second si cela est attendue ou non */
     private boolean isRobotMoving;
-    private boolean isMoveNormal;
+    private boolean isMoveAbnormal;
 
     /** Temps à attendre entre chaque loop d'update de la position (en ms) */
     private final int moveDelay = 50;
@@ -62,10 +62,10 @@ public class GameStateSimulator implements Service {
 
         int done = 0;
         Vec2 finalAim = position.plusNewVector(new Vec2(distance, orientation));
-        float distanceLoop = (float) speed.translationSpeed * moveDelay/(float)1000;
+        float distanceLoop = (float) translationSpeed * moveDelay/(float)1000;
 
         this.setRobotMoving(true);
-        this.setMoveNormal(true);
+        this.setMoveAbnormal(false);
         while (done < distance && !mustStop) {
             Thread.sleep(moveDelay);
             position.plus(new Vec2(distanceLoop, orientation));
@@ -83,7 +83,9 @@ public class GameStateSimulator implements Service {
 
         float done = 0;
         float angleToTurn = orientationAim - orientation;
-        float angleStep = (float) speed.rotationSpeed*moveDelay/1000;
+        float angleStep = rotationnalSpeed*moveDelay/1000;
+        log.debug("AngleToTurn : " + angleToTurn);
+        log.debug("AngleStep : " + angleStep);
 
         if (strat == TurningStrategy.RIGHT_ONLY && orientation > orientationAim){
             angleToTurn = (float) (2 * Math.PI - Math.abs(angleToTurn));
@@ -101,7 +103,7 @@ public class GameStateSimulator implements Service {
         }
 
         this.setRobotMoving(true);
-        this.setMoveNormal(true);
+        this.setMoveAbnormal(false);
         while (done < angleToTurn && !mustStop){
             Thread.sleep(moveDelay);
             orientation = moduloPI(orientation + angleStep);
@@ -132,19 +134,29 @@ public class GameStateSimulator implements Service {
     }
 
     /** Getters & Setters */
+    /** Position */
     public synchronized Vec2 getPosition() {
         return position;
     }
     public synchronized float getOrientation() {
         return orientation;
     }
-    public void setPosition(Vec2 position) {
+    public synchronized void setPosition(Vec2 position) {
         this.position = position;
     }
-    public void setOrientation(float orientation) {
+    public synchronized void setOrientation(float orientation) {
         this.orientation = orientation;
     }
 
+    /** Vitesses */
+    public void setTranslationSpeed(int translationSpeed) {
+        this.translationSpeed = translationSpeed;
+    }
+    public void setRotationnalSpeed(float rotationnalSpeed) {
+        this.rotationnalSpeed = rotationnalSpeed;
+    }
+
+    /** Motion Infos */
     public synchronized boolean isMustStop() {
         return mustStop;
     }
@@ -158,10 +170,10 @@ public class GameStateSimulator implements Service {
         isRobotMoving = robotMoving;
     }
     public synchronized int isMoveNormal() {
-        return (isMoveNormal) ? 1:0;
+        return (isMoveAbnormal) ? 1:0;
     }
-    public synchronized void setMoveNormal(boolean moveNormal) {
-        isMoveNormal = moveNormal;
+    public synchronized void setMoveAbnormal(boolean moveAbnormal) {
+        isMoveAbnormal = moveAbnormal;
     }
 
     @Override

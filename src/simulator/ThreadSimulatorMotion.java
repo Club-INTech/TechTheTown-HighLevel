@@ -20,6 +20,8 @@
 package simulator;
 
 import container.Service;
+import enums.ActuatorOrder;
+import enums.TurningStrategy;
 import pfg.config.Config;
 import threads.AbstractThread;
 import utils.Log;
@@ -61,17 +63,48 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
     /**
      * Fonction qui centralise les requete et répond en fonction (copie du main du LL)
      */
-    private void respond(String request){
+    private void move(String order){
+        String messages[];
+        String head;
 
+        messages = order.split(" ");
+        head = messages[0];
+
+        try {
+            if (head.equals(ActuatorOrder.MOVE_LENTGHWISE.getSerialOrder())) {
+                state.moveLengthwise(Float.parseFloat(messages[1]));
+            } else if (head.equals(ActuatorOrder.TURN.getSerialOrder())) {
+                state.turn(Float.parseFloat(messages[1]), TurningStrategy.FASTEST);
+            } else if (head.equals(ActuatorOrder.TURN_LEFT_ONLY.getSerialOrder())) {
+                state.turn(Float.parseFloat(messages[1]), TurningStrategy.LEFT_ONLY);
+            } else if (head.equals(ActuatorOrder.TURN_RIGHT_ONLY.getSerialOrder())) {
+                state.turn(Float.parseFloat(messages[1]), TurningStrategy.RIGHT_ONLY);
+            } else {
+                log.warning("Ordre Inconnue : " + head);
+            }
+        }catch (InterruptedException e){
+            log.critical("Mauvaise gestion du Multi-Threading...");
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void run(){
-        String buffer;
+        String order;
         log.debug("ThreadSimulatorMotion started");
 
         while(!shutdown){
-
+            try{
+                if(orders.peek() != null){
+                    order = orders.poll();
+                    move(order);
+                }else{
+                    Thread.sleep(50);
+                }
+            }catch (InterruptedException e){
+                log.critical("Mauvaise gestion du multi-Threading");
+                e.printStackTrace();
+            }
         }
     }
 
