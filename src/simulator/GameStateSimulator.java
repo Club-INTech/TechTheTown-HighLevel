@@ -1,4 +1,4 @@
-package strategie;
+package simulator;
 
 import container.Service;
 import enums.Speed;
@@ -32,6 +32,13 @@ public class GameStateSimulator implements Service {
     private int robotWidth;
     private int robotLength;
 
+    /** True si le robot doit s'arreter */
+    private boolean mustStop;
+
+    /** Le premier booléen indique si le robot bouge, le second si cela est attendue ou non */
+    private boolean isRobotMoving;
+    private boolean isMoveNormal;
+
     /** Temps à attendre entre chaque loop d'update de la position (en ms) */
     private final int moveDelay = 50;
 
@@ -57,12 +64,18 @@ public class GameStateSimulator implements Service {
         Vec2 finalAim = position.plusNewVector(new Vec2(distance, orientation));
         float distanceLoop = (float) speed.translationSpeed * moveDelay/(float)1000;
 
-        while (done < distance) {
+        this.setRobotMoving(true);
+        this.setMoveNormal(true);
+        while (done < distance && !mustStop) {
             Thread.sleep(moveDelay);
             position.plus(new Vec2(distanceLoop, orientation));
             done += distanceLoop;
         }
-        position = finalAim;
+        this.setRobotMoving(false);
+
+        if(!mustStop) {
+            position = finalAim;
+        }
     }
 
     /** Update l'orientation du robot */
@@ -87,17 +100,23 @@ public class GameStateSimulator implements Service {
             angleToTurn = Math.min(Math.abs(angleToTurn), Math.abs((float)(2*Math.PI - Math.abs(angleToTurn))));
         }
 
-        while (done < angleToTurn){
+        this.setRobotMoving(true);
+        this.setMoveNormal(true);
+        while (done < angleToTurn && !mustStop){
             Thread.sleep(moveDelay);
             orientation = moduloPI(orientation + angleStep);
             done+=angleStep;
         }
-        orientation = orientationAim;
+        this.setRobotMoving(false);
+
+        if(!mustStop) {
+            orientation = orientationAim;
+        }
     }
 
     /**
      * Modulo PI
-     * WARNING, non singeproof
+     * WARNING: non singeproof
      * @param angle
      * @return
      */
@@ -111,12 +130,38 @@ public class GameStateSimulator implements Service {
             return angle;
         }
     }
+
     /** Getters & Setters */
-    public Vec2 getPosition() {
+    public synchronized Vec2 getPosition() {
         return position;
     }
-    public float getOrientation() {
+    public synchronized float getOrientation() {
         return orientation;
+    }
+    public void setPosition(Vec2 position) {
+        this.position = position;
+    }
+    public void setOrientation(float orientation) {
+        this.orientation = orientation;
+    }
+
+    public synchronized boolean isMustStop() {
+        return mustStop;
+    }
+    public synchronized void setMustStop(boolean mustStop) {
+        this.mustStop = mustStop;
+    }
+    public synchronized int isRobotMoving() {
+        return (isRobotMoving) ? 1:0;
+    }
+    public synchronized void setRobotMoving(boolean robotMoving) {
+        isRobotMoving = robotMoving;
+    }
+    public synchronized int isMoveNormal() {
+        return (isMoveNormal) ? 1:0;
+    }
+    public synchronized void setMoveNormal(boolean moveNormal) {
+        isMoveNormal = moveNormal;
     }
 
     @Override

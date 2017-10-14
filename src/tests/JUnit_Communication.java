@@ -2,11 +2,9 @@ package tests;
 
 import org.junit.Test;
 import robot.EthWrapper;
-import threads.ThreadSimulator;
+import simulator.ThreadSimulatorMotion;
 import threads.dataHandlers.ThreadEth;
 import utils.Sleep;
-
-import java.util.ArrayList;
 
 /**
  * Test de Comm
@@ -18,13 +16,13 @@ public class JUnit_Communication extends JUnit_Test {
     private EthWrapper ethWrapper;
 
     /** Thread de simulation du LL */
-    private ThreadSimulator simulator;
+    private ThreadSimulatorMotion simulator;
 
     @Test
     public void testSimulator(){
 
         try {
-            simulator = container.getService(ThreadSimulator.class);
+            simulator = container.getService(ThreadSimulatorMotion.class);
             eth = container.getService(ThreadEth.class);
             container.startInstanciedThreads();
             String mess = "t 3.12";

@@ -26,7 +26,7 @@ import pfg.config.Config;
 import pfg.config.ConfigInfo;
 import threads.AbstractThread;
 import threads.ThreadExit;
-import threads.ThreadSimulator;
+import simulator.ThreadSimulatorMotion;
 import threads.dataHandlers.ThreadEth;
 import utils.Log;
 
@@ -359,12 +359,12 @@ public class Container implements Service
 	public void startInstanciedThreads() throws InterruptedException
 	{
 		// Le Thread Simulateur doit etre démarré avant l'Eth
-		if (instanciedThreads.containsKey(ThreadSimulator.class.getSimpleName())) {
-			instanciedThreads.get(ThreadSimulator.class.getSimpleName()).start();
+		if (instanciedThreads.containsKey(ThreadSimulatorMotion.class.getSimpleName())) {
+			instanciedThreads.get(ThreadSimulatorMotion.class.getSimpleName()).start();
 		}
 
 		for (AbstractThread thread : instanciedThreads.values()) {
-			if (!(thread instanceof ThreadSimulator)) {
+			if (!(thread instanceof ThreadSimulatorMotion)) {
 				thread.start();
 			}
 		}
