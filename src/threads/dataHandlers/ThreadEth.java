@@ -63,7 +63,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private boolean debug = true;
 
     /** Buffer pour fichiers de debug */
-    private BufferedWriter outStandart;
+    private BufferedWriter outStandard;
     private BufferedWriter outDebug;
 
     /** True pour couper la connexion (pas trouvé d'autres idées, mais la lib java.net a probablement un truc propre à proposer) */
@@ -101,7 +101,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 {
                     file.createNewFile();
                 }
-                outStandart = new BufferedWriter(new FileWriter(file));
+                outStandard = new BufferedWriter(new FileWriter(file));
                 outDebug = new BufferedWriter(new FileWriter(fileDebug));
 
             } catch (IOException e) {
@@ -110,7 +110,7 @@ public class ThreadEth extends AbstractThread implements Service {
             }
         }
         else{
-            this.outStandart = null;
+            this.outStandard = null;
             this.outDebug = null;
         }
         updateConfig();
@@ -225,9 +225,9 @@ public class ThreadEth extends AbstractThread implements Service {
 
             if(debug)
             {
-                outStandart.write(mess);
-                outStandart.newLine();
-                outStandart.flush();
+                outStandard.write(mess);
+                outStandard.newLine();
+                outStandard.flush();
             }
 
         }
@@ -258,9 +258,9 @@ public class ThreadEth extends AbstractThread implements Service {
                 inputLines[i] = waitAndGetResponse();
 
                 if(debug) {
-                    outStandart.write("\t" + inputLines[i]);
-                    outStandart.newLine();
-                    outStandart.flush();
+                    outStandard.write("\t" + inputLines[i]);
+                    outStandard.newLine();
+                    outStandard.flush();
                 }
 
                 if(inputLines[i]==null || inputLines[i].replaceAll(" ", "").equals(""))
@@ -268,9 +268,9 @@ public class ThreadEth extends AbstractThread implements Service {
                     log.critical("Reception de "+inputLines[i]+" , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                     if(debug)
                     {
-                        outStandart.write("Reception de "+inputLines[i]+" , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
-                        outStandart.newLine();
-                        outStandart.flush();
+                        outStandard.write("Reception de "+inputLines[i]+" , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                        outStandard.newLine();
+                        outStandard.flush();
                     }
 
                     while ((inputLines[i]==null || inputLines[i].replaceAll(" ", "").equals("")) && tries < 5){
@@ -289,6 +289,10 @@ public class ThreadEth extends AbstractThread implements Service {
                     log.critical("Reception de "+inputLines[i]+" (non Ascii) , en réponse à "+ message[0].replaceAll("\r", "").replaceAll("\n", "") + " envoi du message a nouveau");
                     communicate(nb_line_response, message); // On retente
                 }
+            }
+            if (nb_line_response != 0) {
+                outStandard.newLine();
+                outStandard.flush();
             }
         }
         catch (SocketException e1){

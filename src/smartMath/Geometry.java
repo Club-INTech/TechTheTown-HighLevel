@@ -28,17 +28,20 @@ package smartMath;
 public class Geometry
 {
 	/**
-	 * calcule le "vrai" modulo (entre 0 et module) contairement a % qui calcule entre -module et module
-	 * @param number le nombre dont on veut calculer le modulo
-	 * @param module le module pour le modulo
+	 * Calcul le moduloSpec entre -modul et +module
+	 * @param number le nombre dont on veut calculer le moduloSpec
+	 * @param module le module pour le moduloSpec
 	 * @return number [module]
 	 */
-	public static double modulo(double number, double module)
+	public static double moduloSpec(double number, double module)
 	{
-		double modulo = number%module;
-		if (modulo<0)
-			modulo += module;
-		return modulo;
+		number = number%(2*module);
+		if (number > module){
+			number -= 2*module;
+		}else if(number < -module){
+			number += 2*module;
+		}
+		return number;
 	}
 	
 	/**

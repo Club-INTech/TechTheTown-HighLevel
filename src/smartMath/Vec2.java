@@ -67,8 +67,14 @@ public class Vec2 {
 	 * @param requestedA angle
 	 */
 	public Vec2(double requestedR, double requestedA) {
-		r = requestedR;
-		a = requestedA;
+		if (requestedR < 0){
+			r = Math.abs(requestedR);
+			a = Geometry.moduloSpec(requestedA + Math.PI, Math.PI);
+		}
+		else{
+			r = requestedR;
+			a = requestedA;
+		}
 		x = (int) (r * Math.cos(a));
 		y = (int) (r * Math.sin(a));
 	}

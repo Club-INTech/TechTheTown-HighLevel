@@ -3,6 +3,7 @@ package simulator;
 import container.Service;
 import enums.TurningStrategy;
 import pfg.config.Config;
+import smartMath.Geometry;
 import smartMath.Vec2;
 import table.Table;
 import utils.Log;
@@ -66,7 +67,8 @@ public class GameStateSimulator implements Service {
 
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
-        while (done < distance && !mustStop) {
+
+        while (done < Math.abs(distance) && !mustStop) {
             Thread.sleep(moveDelay);
             position.plus(new Vec2(distanceLoop, orientation));
             done += distanceLoop;
@@ -84,8 +86,6 @@ public class GameStateSimulator implements Service {
         float done = 0;
         float angleToTurn = orientationAim - orientation;
         float angleStep = rotationnalSpeed*moveDelay/1000;
-        log.debug("AngleToTurn : " + angleToTurn);
-        log.debug("AngleStep : " + angleStep);
 
         if (strat == TurningStrategy.RIGHT_ONLY && orientation > orientationAim){
             angleToTurn = (float) (2 * Math.PI - Math.abs(angleToTurn));
@@ -104,32 +104,16 @@ public class GameStateSimulator implements Service {
 
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
+
         while (done < angleToTurn && !mustStop){
             Thread.sleep(moveDelay);
-            orientation = moduloPI(orientation + angleStep);
-            done+=angleStep;
+            orientation = (float) Geometry.moduloSpec((double)(orientation + angleStep), Math.PI);
+            done+=Math.abs(angleStep);
         }
         this.setRobotMoving(false);
 
         if(!mustStop) {
             orientation = orientationAim;
-        }
-    }
-
-    /**
-     * Modulo PI
-     * WARNING: non singeproof
-     * @param angle
-     * @return
-     */
-    private float moduloPI(float angle){
-        if(angle > Math.PI){
-            return (angle - 2*(float)Math.PI);
-        }
-        else if(angle < -Math.PI){
-            return (angle + 2*(float)Math.PI);
-        }else{
-            return angle;
         }
     }
 

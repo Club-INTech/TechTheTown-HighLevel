@@ -744,7 +744,7 @@ public class Locomotion implements Service
 
 
         if(cTurningStrategy == TurningStrategy.FASTEST) {
-            // Ce code fait juste un modulo 2*pi, avec un résultat entre -PI et +PI
+            // Ce code fait juste un moduloSpec 2*pi, avec un résultat entre -PI et +PI
             if (delta > Math.PI)
                 delta -= 2 * Math.PI;
             else if (delta < -Math.PI)
@@ -780,8 +780,8 @@ public class Locomotion implements Service
         {
             if (Math.abs(delta) > maxRotationCorrectionThreeshold) {// on ne tourne vraiment que si l'angle souhaité est vraiment different.
                 isRobotTurning = true;// prochain ordre : on tourne
+                ethWrapper.turn(angle, TurningStrategy.FASTEST);
             }
-            ethWrapper.turn(angle, TurningStrategy.FASTEST);
         }
         else if (!isCorrection)// Si ca n'est pas  une correction et qu'on dépasse l'angle limite
         {
