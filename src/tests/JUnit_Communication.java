@@ -7,6 +7,7 @@ import robot.EthWrapper;
 import robot.Locomotion;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
+import threads.ThreadInterface;
 import threads.dataHandlers.ThreadEth;
 import utils.Sleep;
 
@@ -42,13 +43,13 @@ public class JUnit_Communication extends JUnit_Test {
 
             container.startInstanciedThreads();
 
-            ethWrapper.setPositionAndOrientation(200, 300, 2.215);
+            ethWrapper.setPositionAndOrientation(200, 500, 2.215);
             Thread.sleep(100);
             ethWrapper.getCurrentPositionAndOrientation();
-            ethWrapper.setX(400);
+            ethWrapper.setX(0);
             Thread.sleep(100);
             ethWrapper.getCurrentPositionAndOrientation();
-            ethWrapper.setY(400);
+            ethWrapper.setY(500);
             Thread.sleep(100);
             ethWrapper.getCurrentPositionAndOrientation();
             ethWrapper.setOrientation(1.57);

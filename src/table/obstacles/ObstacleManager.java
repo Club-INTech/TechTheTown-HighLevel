@@ -151,25 +151,30 @@ public class ObstacleManager implements Service
 	public void initObstacle (){
 
 		//Les différents obstacles fixés sur la table
+		//TODO initialiser tout les obstacles de la table
 
 		// zones de départ
-		mRectangles.add(new ObstacleRectangular(new Vec2(-1145, 370), 710 + 2*mRobotRadius, 20 + 2*mRobotRadius));
-		mRectangles.add(new ObstacleRectangular(new Vec2(1145, 370), 710 + 2*mRobotRadius, 20 + 2*mRobotRadius)); // x 350, y 360 => centre 965, 300
+		//mRectangles.add(new ObstacleRectangular(new Vec2(-1145, 370), 710 + 2*mRobotRadius, 20 + 2*mRobotRadius));
+		//mRectangles.add(new ObstacleRectangular(new Vec2(1145, 370), 710 + 2*mRobotRadius, 20 + 2*mRobotRadius)); // x 350, y 360 => centre 965, 300
 		//mRectangles.add(new ObstacleRectangular(new Vec2(-1145, 371), 710 + 2*mRobotRadius, 22 + 2*mRobotRadius));
 		//mRectangles.add(new ObstacleRectangular(new Vec2(1145, 371), 710 + 2*mRobotRadius, 22 + 2*mRobotRadius));
 
 
 		//fusées
+		/*
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-350, 40), 40 + mRobotRadius))); // 350, 40, 40 / 1460, 1350, 40
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(350, 40), 40 + mRobotRadius)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1460, 1350), 40 + mRobotRadius)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1460, 1350), 40 + mRobotRadius)));
+		*/
 
 		//cratères
+		/*
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-850, 540), 135 + mRobotRadius, -Math.PI/6, 2*Math.PI/3, true)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(850, 540), 135 + mRobotRadius,Math.PI/3, 7*Math.PI/6, true)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1500, 2000), 550 + mRobotRadius, -Math.PI/2, -Math.PI/4,true)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1500, 2000), 550 + mRobotRadius, -3*Math.PI/4, -Math.PI/2, true)));
+		*/
 
 		//pose module côté
 		mRectangles.add(new ObstacleRectangular(new Vec2(-1446, 870), 108 + 2*mRobotRadius, 500 + 2*mRobotRadius)); //-1446, 678, 108, 472
@@ -628,9 +633,9 @@ public class ObstacleManager implements Service
 		{
 			ObstacleRectangular obstacleRectangular = (ObstacleRectangular)obstacle;
 			return pos.getX()<(obstacleRectangular.position.getX()-(obstacleRectangular.sizeX/2))
-					|| pos.getX()>(obstacleRectangular.position.getX()+(obstacleRectangular.sizeX/2))
-					|| pos.getY()<(obstacleRectangular.position.getY()-(obstacleRectangular.sizeY/2))
-					|| pos.getY()>(obstacleRectangular.position.getY()+(obstacleRectangular.sizeY/2));
+					&& pos.getX()>(obstacleRectangular.position.getX()+(obstacleRectangular.sizeX/2))
+					&& pos.getY()<(obstacleRectangular.position.getY()-(obstacleRectangular.sizeY/2))
+					&& pos.getY()>(obstacleRectangular.position.getY()+(obstacleRectangular.sizeY/2));
 		}
 		else
 			throw new IllegalArgumentException();
@@ -657,6 +662,15 @@ public class ObstacleManager implements Service
     	boolean IDontKnow = false;
         return IDontKnow;
     }
+
+	/**
+	 * True si le robot est dans la table
+	 * @param position
+	 * @return
+	 */
+	public boolean isRobotInTable(Vec2 position){
+    	return ((Math.abs(position.getX())+mRobotRadius) < 1500 && (Math.abs(position.getY() - 1000)+mRobotRadius) < 1000);
+	}
 
 
 	/*********************
@@ -806,12 +820,21 @@ public class ObstacleManager implements Service
     public synchronized boolean isObstructed(Vec2 position)
     {
     	boolean isObstructed = false;
-    	for(int i=0; i<mMobileObstacles.size(); i++)
-    		isObstructed=isPositionInObstacle(position, mMobileObstacles.get(i));
-    	for(int i = 0; i< mCircularObstacle.size(); i++)
-    		isObstructed=isPositionInObstacle(position, mCircularObstacle.get(i));
-    	for(int i=0; i<mRectangles.size(); i++)
-    		isObstructed=isPositionInObstacle(position, mRectangles.get(i));
+    	for(int i=0; i<mMobileObstacles.size(); i++){
+			if (isPositionInObstacle(position, mMobileObstacles.get(i))) {
+				return true;
+			}
+		}
+    	for(int i = 0; i< mCircularObstacle.size(); i++) {
+			if (isPositionInObstacle(position, mCircularObstacle.get(i))) {
+				return true;
+			}
+		}
+    	for(int i=0; i<mRectangles.size(); i++){
+    		if (isPositionInObstacle(position, mRectangles.get(i))){
+    			return true;
+			}
+		}
         return isObstructed;
     }
     

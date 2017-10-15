@@ -152,7 +152,8 @@ public class ThreadSimulator extends AbstractThread implements Service {
                 head.equals(ActuatorOrder.TURN_RIGHT_ONLY.getSerialOrder()) ||
                 head.equals(ActuatorOrder.TURN_LEFT_ONLY.getSerialOrder())) {
 
-                motionOrderBuffer.add(request);
+            state.setMustStop(false);
+            motionOrderBuffer.add(request);
         }
         else if (head.equals(ActuatorOrder.STOP.getSerialOrder())) {
             state.setMustStop(true);

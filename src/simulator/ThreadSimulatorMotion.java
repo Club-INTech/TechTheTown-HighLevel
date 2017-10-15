@@ -22,6 +22,7 @@ package simulator;
 import container.Service;
 import enums.ActuatorOrder;
 import enums.TurningStrategy;
+import exceptions.Locomotion.UnableToMoveException;
 import pfg.config.Config;
 import threads.AbstractThread;
 import utils.Log;
@@ -42,6 +43,9 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
     /** GameState propre au LL ?? */
     private GameStateSimulator state;
 
+    /** Thread simulator qui sert d'interface de communication */
+    private ThreadSimulator simulator;
+
     /** Ordre de mouvement du HL */
     private ConcurrentLinkedQueue<String> orders;
 
@@ -57,13 +61,14 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
         super(config, log);
         this.name = "simulator";
         this.state = state;
+        this.simulator = sim;
         this.orders = sim.getMotionOrderBuffer();
     }
 
     /**
      * Fonction qui centralise les requete et répond en fonction (copie du main du LL)
      */
-    private void move(String order){
+    private void move(String order) throws InterruptedException{
         String messages[];
         String head;
 
@@ -82,8 +87,8 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
             } else {
                 log.warning("Ordre Inconnue : " + head);
             }
-        }catch (InterruptedException e){
-            log.critical("Mauvaise gestion du Multi-Threading...");
+        }catch (UnableToMoveException e){
+            log.critical("SIMULATOR : Robot dans un obstacle (théorique)");
             e.printStackTrace();
         }
     }
@@ -103,6 +108,7 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
                 }
             }catch (InterruptedException e){
                 log.critical("Mauvaise gestion du multi-Threading");
+                shutdown = true;
                 e.printStackTrace();
             }
         }

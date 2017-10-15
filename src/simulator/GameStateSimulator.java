@@ -2,6 +2,8 @@ package simulator;
 
 import container.Service;
 import enums.TurningStrategy;
+import enums.UnableToMoveReason;
+import exceptions.Locomotion.UnableToMoveException;
 import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.Vec2;
@@ -59,7 +61,7 @@ public class GameStateSimulator implements Service {
     }
 
     /** Update la position du robot */
-    public void moveLengthwise(float distance) throws InterruptedException{
+    public void moveLengthwise(float distance) throws InterruptedException, UnableToMoveException{
 
         int done = 0;
         Vec2 finalAim = position.plusNewVector(new Vec2(distance, orientation));
@@ -68,20 +70,24 @@ public class GameStateSimulator implements Service {
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
 
-        while (done < Math.abs(distance) && !mustStop) {
+        while (done < Math.abs(distance) && !this.isMustStop()) {
             Thread.sleep(moveDelay);
             position.plus(new Vec2(distanceLoop, orientation));
             done += distanceLoop;
+
+            if(table.getObstacleManager().isObstructed(position) || !table.getObstacleManager().isRobotInTable(position)){
+                throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
+            }
         }
         this.setRobotMoving(false);
 
-        if(!mustStop) {
+        if(!this.isMustStop()) {
             position = finalAim;
         }
     }
 
     /** Update l'orientation du robot */
-    public void turn(float orientationAim, TurningStrategy strat) throws InterruptedException{
+    public void turn(float orientationAim, TurningStrategy strat) throws InterruptedException, UnableToMoveException{
 
         float done = 0;
         float angleToTurn = orientationAim - orientation;
@@ -105,14 +111,14 @@ public class GameStateSimulator implements Service {
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
 
-        while (done < angleToTurn && !mustStop){
+        while (done < angleToTurn && !this.isMustStop()){
             Thread.sleep(moveDelay);
             orientation = (float) Geometry.moduloSpec((double)(orientation + angleStep), Math.PI);
             done+=Math.abs(angleStep);
         }
         this.setRobotMoving(false);
 
-        if(!mustStop) {
+        if(!this.isMustStop()) {
             orientation = orientationAim;
         }
     }
