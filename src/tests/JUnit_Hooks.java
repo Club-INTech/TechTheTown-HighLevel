@@ -40,6 +40,7 @@ public class JUnit_Hooks extends JUnit_Test
 	private GameState theRobot;
 	private ScriptManager scriptManager;
 	private HookFactory hookFactory;
+	private ThreadEth eth;
 	
 	@Before
 	public void setUp() throws Exception
@@ -48,6 +49,9 @@ public class JUnit_Hooks extends JUnit_Test
 		scriptManager = container.getService(ScriptManager.class);
 		theRobot = container.getService(GameState.class);
 		hookFactory = container.getService(HookFactory.class);
+		eth = container.getService(ThreadEth.class);
+		container.startInstanciedThreads();
+
 		theRobot.robot.setOrientation(Math.PI);
 		theRobot.robot.setPosition(Table.entryPosition);
 		theRobot.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
@@ -59,6 +63,7 @@ public class JUnit_Hooks extends JUnit_Test
 		hookFactory.enableHook(HookNames.SPEED_DOWN);
 		Thread.sleep(5000);
 		hookFactory.disableHook(HookNames.SPEED_DOWN);
+		eth.communicate("suus", 0);
 	}
 
 	@Test

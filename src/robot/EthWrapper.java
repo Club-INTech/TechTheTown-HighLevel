@@ -319,7 +319,6 @@ public class EthWrapper implements Service {
      */
     public void setOrientation(double orientation)
     {
-        //log.debug("setOrientation "+orientation);
         float floatOrientation =(float) orientation; //On transtype car la serie veut des Floats (T_T)
         eth.communicate(0, ActuatorOrder.SET_ORIENTATION.getSerialOrder(), String.format(Locale.US, "%.3f", floatOrientation));
     }
