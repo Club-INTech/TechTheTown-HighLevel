@@ -1,17 +1,14 @@
 package tests;
 
-import enums.ActuatorOrder;
 import enums.Speed;
 import org.junit.Test;
 import robot.EthWrapper;
 import robot.Locomotion;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
-import threads.ThreadInterface;
+import smartMath.Vec2;
 import threads.dataHandlers.ThreadEth;
 import utils.Sleep;
-
-import java.util.HashMap;
 
 /**
  * Test de Comm
@@ -84,8 +81,12 @@ public class JUnit_Communication extends JUnit_Test {
         double b = -Math.PI + 0.2;
         double c = 2*Math.PI + 0.2;
 
-        log.debug("Angle a : "+ a%Math.PI + "Angle b : " + b%Math.PI + "Angle c : " + c%Math.PI);
-        Sleep.sleep(20000);
+        Vec2 vec = new Vec2(50,58);
+        Vec2 vecplus = vec.plusNewVector(new Vec2(98, 25));
+
+        for (int i=0; i<10; i+=2){
+            System.out.println(i);
+        }
     }
 
     @Test

@@ -21,7 +21,6 @@
 
 package graphics;
 
-import robot.Robot;
 import scripts.ScriptManager;
 import strategie.GameState;
 import table.Table;
