@@ -44,6 +44,39 @@ import java.util.ArrayList;
  * TODO OPTIONNEL faire une gestion complète des trajectoires courbes
  * https://goo.gl/7HU589
  *
+ * Petit plan de Locomotion :
+ *
+ *                  | followPath(path, directionStrategy)                       |
+ *                  |    Gère l'appel au Pathfinding                            |
+ *
+ *
+ *                  | followPath(path, directionStrategy, mustDetect)           |
+ *                  |    Gère la transcription path => goTo (point par point)   |
+ *
+ *
+ *                  | goTo(Visé, WallImpact, mustDetect)                        |
+ *                  |    Gère la transcription moveToPoint => Lengthwise & turn |
+ *                  | en prenant en compte la DirectionStrategy                 |
+ *
+ *
+ *                  | moveLengthwise(distance, wallImpact, mustDetect)          |       &&       | turn(angle, wallImpact, mustDetect)      |
+ *                  |    Check la position de l'ennemie avant d'avancer, et     |                |    Gère la turningStrategy ??            |
+ *                  | attend si besoin est                                      |
+ *
+ *
+ *                  | moveHandleException(aim, moveForward, wallImpact,  |
+ *                  |                            turnOnly, mustDetect)          |
+ *                  |    Gère les exceptions : Collisions avec les obstacles &  |
+ *                  | barrage de l'adversaire                                   |
+ *
+ *
+ *                  | moveHandleSymetry(aim, moveForward, turnOnly ??)          |
+ *                  |    Gère la symétrie : le HL fait comme s'il était toujours|
+ *                  | en vert; les mouvements sont symétrisé à ce niveau        |
+ *
+ *
+ *                  | moveSerialOrder(aim, ??)                                  |
+ *                  |    On discute avec la série !                             |
  */
 
 public class Locomotion implements Service
@@ -71,10 +104,10 @@ public class Locomotion implements Service
      *    			+----+ o        o		 Sens de déplacement du robot: ====>
      *    robot ->	|    |o          o
      *    			|    |o          o  <- Zone de vérification (ce disque est tangent au robot)
-     *    			+----+ o        o 
+     *    			+----+ o        o
      *   			          o  o
      */
-    private int detectionRay;
+    private int  detectionRay;
 
     /** Distance de detection : rectangle de détection :
      *
