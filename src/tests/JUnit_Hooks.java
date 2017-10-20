@@ -63,7 +63,7 @@ public class JUnit_Hooks extends JUnit_Test
 		hookFactory.enableHook(HookNames.SPEED_DOWN);
 		Thread.sleep(5000);
 		hookFactory.disableHook(HookNames.SPEED_DOWN);
-		eth.communicate("suus", 0);
+		eth.communicate(0,"suus");
 	}
 
 	@Test

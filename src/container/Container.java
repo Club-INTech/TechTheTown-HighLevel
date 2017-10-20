@@ -30,7 +30,6 @@ import simulator.ThreadSimulatorMotion;
 import threads.dataHandlers.ThreadEth;
 import utils.Log;
 
-import javax.net.ssl.SSLContext;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
