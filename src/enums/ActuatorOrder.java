@@ -57,6 +57,8 @@ public enum ActuatorOrder implements MotionOrder
 	DISABLE_FORCE_MOVEMENT("dfm"),
 	SET_TRANSLATION_SPEED("ctv"),
 	SET_ROTATIONNAL_SPEED("crv"),
+	SET_SPEED("ctrv"),
+
 	SET_X("cx"),
 	SET_Y("cy"),
 	SET_ORIENTATION("co"),

@@ -20,10 +20,7 @@
 package robot;
 
 import container.Service;
-import enums.ActuatorOrder;
-import enums.ConfigInfoRobot;
-import enums.ContactSensors;
-import enums.TurningStrategy;
+import enums.*;
 import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Vec2;
@@ -176,7 +173,6 @@ public class EthWrapper implements Service {
      */
     public void setTranslationnalSpeed(float speed)
     {
-        // envoie a la carte d'asservissement le nouveau maximum du pwm
         eth.communicate(0, ActuatorOrder.SET_TRANSLATION_SPEED.getSerialOrder(), String.format(Locale.US, "%.3f", speed));
     }
 
@@ -186,8 +182,15 @@ public class EthWrapper implements Service {
      */
     public void setRotationnalSpeed(double rotationSpeed)
     {
-        // envoie a la carte d'asservissement le nouveau maximum du pwm
         eth.communicate(0, ActuatorOrder.SET_ROTATIONNAL_SPEED.getSerialOrder(), String.format(Locale.US, "%.3f", (float)rotationSpeed));
+    }
+
+    /**
+     * Modifie les vitesses de translation et de rotation du robot
+     * @param speed
+     */
+    public void setBothSpeed(Speed speed){
+        eth.communicate(0, ActuatorOrder.SET_SPEED.getSerialOrder(), String.format(Locale.US, "%.3f", speed.translationSpeed), String.format(Locale.US, "%.3f", speed.rotationSpeed));
     }
 
     /**
