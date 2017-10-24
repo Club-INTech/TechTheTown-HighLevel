@@ -83,7 +83,6 @@ public class Table implements Service
 
 	public void initialise() // initialise la table du debut du jeu
 	{
-
 		if(symetry)
 		{
 			entryPosition = new Vec2(560, 176);

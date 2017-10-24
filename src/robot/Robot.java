@@ -216,7 +216,7 @@ public class Robot implements Service {
 	 */
 	public void goTo(Vec2 pointVise, boolean expectedWallImpact, boolean isDetect) throws UnableToMoveException {
 		log.debug("Appel de Robot.goTo :" + pointVise);
-		mLocomotion.goTo(pointVise, expectedWallImpact, isDetect);
+		mLocomotion.moveToPoint(pointVise, expectedWallImpact, isDetect);
 	}
 
 
