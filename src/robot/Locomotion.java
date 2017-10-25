@@ -37,8 +37,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Entre Deplacement (appels à la série) et RobotVrai (déplacements haut niveau), Locomotion
- * s'occupe de la position, de la symétrie, des hooks, des trajectoires courbes et des blocages.
- * Structure, du bas au haut niveau: symétrie, hook, trajectoire courbe et blocage.
+ * s'occupe de la position, de la symétrie, des trajectoires courbes et des blocages.
+ * Structure, du bas au haut niveau: symétrie, trajectoire courbe et blocage.
  * Les méthodes "non-bloquantes" se finissent alors que le robot roule encore.
  * (les méthodes non-bloquantes s'exécutent très rapidement)
  * Les méthodes "bloquantes" se finissent alors que le robot est arrêté.
@@ -46,40 +46,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  * TODO OPTIONNEL faire une gestion complète des trajectoires courbes
  * https://goo.gl/7HU589
- *
- * Petit plan de Locomotion :
- *
- *                  | followPath(path, directionStrategy)                       |
- *                  |    Gère l'appel au Pathfinding                            |
- *
- *
- *                  | followPath(path, directionStrategy, mustDetect)           |
- *                  |    Gère la transcription path => goTo (point par point)   |
- *
- *
- *                  | goTo(Visé, WallImpact, mustDetect)                        |
- *                  |    Gère la transcription moveToPoint => Lengthwise & turn |
- *                  | en prenant en compte la DirectionStrategy                 |
- *
- *
- *                  | moveLengthwise(distance, wallImpact, mustDetect)          |       &&       | turn(angle, wallImpact, mustDetect)      |
- *                  |    Check la position de l'ennemie avant d'avancer, et     |                |    Gère la turningStrategy ??            |
- *                  | attend si besoin est                                      |
- *
- *
- *                  | moveHandleException(aim, moveForward, wallImpact,  |
- *                  |                            turnOnly, mustDetect)          |
- *                  |    Gère les exceptions : Collisions avec les obstacles &  |
- *                  | barrage de l'adversaire                                   |
- *
- *
- *                  | moveHandleSymetry(aim, moveForward, turnOnly ??)          |
- *                  |    Gère la symétrie : le HL fait comme s'il était toujours|
- *                  | en vert; les mouvements sont symétrisé à ce niveau        |
- *
- *
- *                  | moveSerialOrder(aim, ??)                                  |
- *                  |    On discute avec la série !                             |
  *
  * TODO : Le isMotionEnded() a changé ! detection de robot bloqué à passer en LL
  */
@@ -97,6 +63,65 @@ public class Locomotion implements Service
 
     /** le bas-niveau */
     private EthWrapper ethWrapper;
+
+    /*******************
+     *   DEPLACEMENT   *
+     *******************/
+
+    /** Position "bas niveau" du robot, celle du robot
+     * La vraie. */
+    private Vec2 lowLevelPosition = new Vec2();
+
+    /** Position "haut niveau" du robot, celle du robot
+     * Celle côté vert */
+    private Vec2 highLevelPosition = new Vec2();
+
+    /** Position visee au final par le deplacement */
+    private Vec2 finalAim = new Vec2();
+
+    /** Orientation réelle du robot (symetrisee)
+     * non connue par les classes de plus haut niveau */
+    private double lowLevelOrientation;
+
+    /** Orientation réelle du robot non symetrisée (vert) */
+    private double highLevelOrientation;
+
+    /** Indique si la symétrie est activée (si le robot démarre du côté x<0)
+     * La symétrie s'applique sur les déplacements et les actionneurs */
+    private boolean symetry;
+
+    /** Indique si le robot est en marche avant, utile pour les capteurs */
+    public boolean isRobotMovingForward;
+
+    /** Indique si le robot est en marche arrière, utile pour les capteurs */
+    public boolean isRobotMovingBackward;
+
+    /** Donne la stratégie de rotation */
+    private TurningStrategy turningStrategy = TurningStrategy.FASTEST;
+
+    /** Donne la stratégie de translation */
+    private DirectionStrategy directionStrategy = DirectionStrategy.FASTEST;
+
+    /** Vitesse de translation */
+    private double transSpeed = Speed.MEDIUM_ALL.translationSpeed;
+
+    /** Vitesse de rotation */
+    private double rotSpeed = Speed.MEDIUM_ALL.rotationSpeed;
+
+    /** Si le robot est censé forcer le mouvement */
+    private boolean isForcing= false;
+
+    /*****************
+     *   DETECTION   *
+     *****************/
+
+    /** Valeur limite de détection pour le mode basique
+     * Override par la config */
+    private int basicDetectDistance;
+
+    /** Si la détection basique est activée ou non
+     * Override par la config */
+    private boolean basicDetection;
 
     /**
      * rayon du cercle autour du robot pour savoir s'il peut tourner (detectionRay légèrement supérieur à celui du robot)
@@ -125,48 +150,26 @@ public class Locomotion implements Service
      */
     private int detectionDistance;
 
-    /**
-     * Position "bas niveau" du robot, celle du robot
-     * La vraie.
-     */
-    private Vec2 lowLevelPosition = new Vec2();
+    /** Temps d'attente lorsqu'il y a un ennemie devant */
+    private int ennemyLoopDelay;
 
-    /**
-     * Position "haut niveau" du robot, celle du robot
-     * Celle qui commence toujours en bleu
-     */
-    private Vec2 highLevelPosition = new Vec2();
-
-    /**
-     * Position visee au final par le deplacement
-     */
-    private Vec2 finalAim = new Vec2();
-
-    /**
-     * Orientation réelle du robot (symetrisee)
-     * non connue par les classes de plus haut niveau
-     */
-    private double lowLevelOrientation;
-
-    /**
-     * Orientation réelle du robot non symetrisée (bleu)
-     */
-    private double highLevelOrientation;
-
-    /** Indique si la symétrie est activée (si le robot démarre du côté x<0)
-     * La symétrie s'applique sur les déplacements et les actionneurs*/
-    private boolean symetry;
+    /** Temps d'attente que l'ennemie se bouge avant de décider de faire autre chose */
+    private int ennemyTimeout;
 
     /** Temps d'attente entre deux boucles d'acquitement
      * Override par la config */
     private int feedbackLoopDelay;
 
+    /** Valeurs des ultrasons filtrés par le LL pour la détection basique */
+    private ArrayList<Integer> USvalues;
+
+    /*************************
+     *   BLOCAGE MECANIQUE   *
+     *************************/
+
     /** La distance dont le robot va avancer pour se dégager en cas de bloquage mécanique
      * Override par la config */
     private int distanceToDisengage;
-
-    /** Booléen explicitant si le robot est prêt à tourner, utile pour le cercle de détection */
-    public boolean isRobotTurning=false;
 
     /** Nombre d'essais maximum après une BlockedException
      * Override par la config */
@@ -175,52 +178,11 @@ public class Locomotion implements Service
     /** Nombre d'essais en cours après un BlockedException */
     private int actualRetriesIfBlocked = 0;
 
-    /** Temps d'attente lorsqu'il y a un ennemie devant */
-    private int ennemyLoopDelay;
-
-    /** Temps d'attente que l'ennemie se bouge avant de décider de faire autre chose */
-    private int ennemyTimeout;
-
-    /** Indique si le robot est en marche avant, utile pour les capteurs */
-    public boolean isRobotMovingForward;
-
-    /** Indique si le robot est en marche arrière, utile pour les capteurs */
-    public boolean isRobotMovingBackward;
-
-    /** Donne la stratégie de rotation */
-    private TurningStrategy turningStrategy = TurningStrategy.FASTEST;
-
-    /** Donne la stratégie de translation */
-    private DirectionStrategy directionStrategy = DirectionStrategy.FASTEST;
-
-    /** Si le robot est censé forcer le mouvement */
-    private boolean isForcing= false;
-
     /** Temps prévu de fin de mouvement */
     private long timeExpected = 0;
 
-    /** Vitesse de translation */
-    private double transSpeed = Speed.MEDIUM_ALL.translationSpeed;
-
-    /** Vitesse de rotation */
-    private double rotSpeed = Speed.MEDIUM_ALL.rotationSpeed;
-
-    /** Valeurs des ultrasons filtrés par le LL pour la détection basique */
-    private ArrayList<Integer> USvalues;
-
     /** Visée des unableToMove (n'existe que lorsque le LL ne peut pas bouger) */
     private ConcurrentLinkedQueue<Vec2> unableToMoveAim;
-
-    /**
-     * Valeur limite de détection pour le mode basique
-     * Override par la config
-     */
-    private int basicDetectDistance;
-
-    /** Si la détection basique est activée ou non
-     * Override par la config
-     */
-    private boolean basicDetection;
 
     /**
      * Constructeur de Locomotion
@@ -249,22 +211,20 @@ public class Locomotion implements Service
     /**
      * Suit un chemin en ligne brisee
      * @param path le chemin a suivre (un arraylist de Vec2 qui sont les point de rotation du robot)
-     * @param directionstrategy ce que la strategie choisit comme optimal (en avant, en arriere, au plus rapide)
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    public void followPath(ArrayList<Vec2> path, DirectionStrategy directionstrategy) throws UnableToMoveException
+    public void followPath(ArrayList<Vec2> path) throws UnableToMoveException
     {
-        followPath(path, directionstrategy, true);// par defaut, on detecte
+        followPath(path, true);// par defaut, on detecte
     }
 
     /**
      * Suit un chemin en ligne brisee
      * @param path le chemin a suivre (un arraylist de Vec2 qui sont les point de rotation du robot)
-     * @param directionstrategy ce que la strategie choisit comme optimal (en avant, en arriere, au plus rapide)
      * @param mustDetect true si on veut detecter, false sinon.
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    public void followPath(ArrayList<Vec2> path, DirectionStrategy directionstrategy, boolean mustDetect) throws UnableToMoveException
+    public void followPath(ArrayList<Vec2> path, boolean mustDetect) throws UnableToMoveException
     {
         updateCurrentPositionAndOrientation();
 
@@ -274,7 +234,7 @@ public class Locomotion implements Service
         {
             Vec2 aim = path.get(i);
             finalAim = aim;
-            moveToPoint(aim, false, true);
+            moveToPoint(aim, false, mustDetect);
         }
     }
 
@@ -936,10 +896,9 @@ public class Locomotion implements Service
 
 
     /**************************************************
-     * 					JUNITS
+     * 					JUNITS                        *
      **************************************************/
 
     // Aller Clément, tu peux le faire !
     // Je te laisse le carte blanche, tu fera mieux cette fois ci ^^ (2013-2014 !)
-
 }

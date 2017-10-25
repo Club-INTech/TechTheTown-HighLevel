@@ -181,7 +181,7 @@ public class Robot implements Service {
 	public void followPath(ArrayList<Vec2> chemin) throws UnableToMoveException
 	{
 		cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-		mLocomotion.followPath(chemin, DirectionStrategy.getDefaultStrategy());
+		mLocomotion.followPath(chemin);
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class Robot implements Service {
 	protected void followPath(ArrayList<Vec2> chemin, DirectionStrategy direction) throws UnableToMoveException
 	{
 		cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-		mLocomotion.followPath(chemin, direction);
+		mLocomotion.followPath(chemin);
 	}
 
 	/**
@@ -625,11 +625,6 @@ public class Robot implements Service {
 	public Speed getLocomotionSpeed()
 	{
 		return speed;
-	}
-
-	public boolean getIsRobotTurning()
-	{
-		return mLocomotion.isRobotTurning;
 	}
 
 	public boolean getIsRobotMovingForward()
