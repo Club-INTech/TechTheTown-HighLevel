@@ -322,7 +322,9 @@ public class Vec2 {
  */
 	@Override
 	public String toString() {
-		return "(" + x + "," + y + ") (" + (float)r + "," + (float)a + ")";
+		String rs = String.format("%s", r).substring(0, 6);
+		String os = String.format("%s", a).substring(0,6);
+		return String.format("(%s , %s) (%s , %s)", x,y,rs,os);
 	}
 
 	/**
