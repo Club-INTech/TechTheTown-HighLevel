@@ -87,7 +87,8 @@ public class Locomotion implements Service
     private double highLevelOrientation;
 
     /** Indique si la symétrie est activée (si le robot démarre du côté x<0)
-     * La symétrie s'applique sur les déplacements et les actionneurs */
+     * La symétrie s'applique sur les déplacements et les actionneurs
+     * Override par la config */
     private boolean symetry;
 
     /** Indique si le robot est en marche avant, utile pour les capteurs */
@@ -124,9 +125,8 @@ public class Locomotion implements Service
     private boolean basicDetection;
 
     /**
-     * rayon du cercle autour du robot pour savoir s'il peut tourner (detectionRay légèrement supérieur à celui du robot)
-     *
-     *la zone de détection d'obstacle est un disque comme suit:
+     * Rayon du cercle autour du robot pour savoir s'il peut tourner (detectionRay légèrement supérieur à celui du robot)
+     * La zone de détection d'obstacle est un disque comme suit:
      *
      *     	            o    o
      *               o  +----+  o
@@ -134,6 +134,8 @@ public class Locomotion implements Service
      *              o   |    |   o
      *               o  +----+	o
      *   	            o    o
+     *
+     * Override par la config
      */
     private int  detectionRay;
 
@@ -147,13 +149,17 @@ public class Locomotion implements Service
      *                +-----------+
      *                    <------->
      *                 detectionDistance
+     *
+     * Override par la config
      */
     private int detectionDistance;
 
-    /** Temps d'attente lorsqu'il y a un ennemie devant */
+    /** Temps d'attente lorsqu'il y a un ennemie devant
+     * Override par la config */
     private int ennemyLoopDelay;
 
-    /** Temps d'attente que l'ennemie se bouge avant de décider de faire autre chose */
+    /** Temps d'attente que l'ennemie se bouge avant de décider de faire autre chose
+     * Override par la config */
     private int ennemyTimeout;
 
     /** Temps d'attente entre deux boucles d'acquitement
