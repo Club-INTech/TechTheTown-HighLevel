@@ -59,7 +59,7 @@ public class MainDebug
         try
         {
             container = new Container();
-            config = new Config(ConfigInfoRobot.values(), false, "config.txt");
+            config = container.getConfig();
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
