@@ -8,6 +8,7 @@ public enum CommunicationHeaders {
     EVENT((char) 0x13, (char) 0x37),
     ULTRASON((char) 0x01, (char) 0x10),
     DEBUG((char) 0x02, (char) 0x20),
+    POSITION((char) 0x03, (char) 0x30),
     ;
 
     /** Le seul contenu de cette enum... */

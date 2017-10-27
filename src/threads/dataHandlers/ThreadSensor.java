@@ -500,49 +500,16 @@ public class ThreadSensor extends AbstractThread
 	{
         try
 		{
-            ArrayList<String> r = new ArrayList<>();
+            String[] valuesSReceived;
             ArrayList<Integer> res = new ArrayList<>();
-            byte count=0;
-            long timeBetween;
-            String toKeep;
-            long timeToKeep;
 
-            ArrayList<Long> sensorTime = new ArrayList<Long>(4);
-
-            while(count < 4)
-            {
-                // On attend tant que l'on a pas reçu 4 valeurs
-                if(valuesReceived.peek() != null)
-                {
-                    sensorTime.add(System.currentTimeMillis());
-                    r.add(valuesReceived.poll());
-
-                    if (count !=0){
-                        timeBetween = sensorTime.get(count) - sensorTime.get(count-1);
-                        try{
-                            // Si l'on a attendu trop longtemps entre 2 valeurs, c'est que la dernière fait partie d'une nouvelle série et
-                            // que la série actuelle est incomplète; on clear cette série de valeurs et on prend la suivante
-                            if (timeBetween > thresholdUSseries) {
-
-                                toKeep = r.get(count);
-                                timeToKeep = sensorTime.get(count);
-                                r.clear();
-                                sensorTime.clear();
-                                r.add(toKeep);
-                                sensorTime.add(timeToKeep);
-                                count = 0;
-                            }
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                    count++;
-                }
-                else
-                    Sleep.sleep(5);
+            while(valuesReceived.peek() == null){
+                Thread.sleep(5);
             }
 
-            for(String s : r) {
+            valuesSReceived = valuesReceived.poll().split(" ");
+
+            for(String s : valuesSReceived) {
                 res.add(Integer.parseInt(s.substring(2)));
             }
 

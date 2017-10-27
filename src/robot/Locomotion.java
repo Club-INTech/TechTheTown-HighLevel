@@ -187,8 +187,8 @@ public class Locomotion implements Service
     /** Temps prévu de fin de mouvement */
     private long timeExpected = 0;
 
-    /** Visée des unableToMove (n'existe que lorsque le LL ne peut pas bouger) */
-    private ConcurrentLinkedQueue<Vec2> unableToMoveAim;
+    /** UnableToMove Reason */
+    private ConcurrentLinkedQueue<String> unableToMoveEvent;
 
     /**
      * Constructeur de Locomotion
@@ -204,7 +204,7 @@ public class Locomotion implements Service
         this.ethWrapper = ethWrapper;
         this.table = table;
         USvalues = new ArrayList<Integer>(){{for(int i=0;i<4;i++)add(0);}};
-        unableToMoveAim = thEvent.getUnableToMoveEvent();
+        unableToMoveEvent = thEvent.getUnableToMoveEvent();
         updateConfig();
     }
 
@@ -490,8 +490,14 @@ public class Locomotion implements Service
         {
             updateCurrentPositionAndOrientation();
 
-            if(unableToMoveAim.peek() != null){
-                // Si on a une unableToMove !
+            if(unableToMoveEvent.peek() != null){
+                String unableToMoveReason = unableToMoveEvent.poll();
+                if(unableToMoveReason == UnableToMoveReason.PHYSICALLY_BLOCKED.getSerialOrder()){
+                    throw new BlockedException();
+                }
+                else if(unableToMoveReason == UnableToMoveReason.OBSTACLE_DETECTED.getSerialOrder() && mustDetect && basicDetection){
+                    throw new UnexpectedObstacleOnPathException();
+                }
             }
 
             /** TODO A adapté à l'année en cours */
@@ -678,21 +684,23 @@ public class Locomotion implements Service
      */
     private void updateCurrentPositionAndOrientation()
     {
-        float[] infos = ethWrapper.getCurrentPositionAndOrientation();
+        if(ethWrapper.getPositionBuffer().peekLast() != null){
 
-        if(infos == null)
+            String[] infos = ethWrapper.getPositionBuffer().pollLast().split(" ");
+            lowLevelPosition.setX(Integer.parseInt(infos[0]));
+            lowLevelPosition.setY(Integer.parseInt(infos[1]));
+            lowLevelOrientation = Double.parseDouble(infos[2]);
+
+            highLevelPosition = lowLevelPosition.clone();
+            highLevelOrientation=Geometry.moduloSpec(lowLevelOrientation, Math.PI);
+
+            if(symetry){
+                highLevelPosition.setX(-highLevelPosition.getX());
+                highLevelOrientation=Geometry.moduloSpec(Math.PI-highLevelOrientation, Math.PI);
+            }
+            ethWrapper.getPositionBuffer().clear();
+        }else {
             return;
-
-        lowLevelPosition.setX((int)infos[0]);
-        lowLevelPosition.setY((int)infos[1]);
-
-        highLevelPosition=lowLevelPosition.clone();
-        highLevelOrientation=Geometry.moduloSpec(lowLevelOrientation, Math.PI);
-
-        if(symetry)
-        {
-            highLevelPosition.setX( -highLevelPosition.getX());
-            highLevelOrientation=Geometry.moduloSpec(Math.PI-highLevelOrientation, Math.PI);
         }
     }
 

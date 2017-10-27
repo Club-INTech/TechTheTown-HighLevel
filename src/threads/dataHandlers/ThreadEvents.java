@@ -21,14 +21,9 @@ package threads.dataHandlers;
 
 import enums.EventType;
 import pfg.config.Config;
-import robot.Robot;
-import smartMath.Vec2;
-import table.Table;
 import threads.AbstractThread;
 import utils.Log;
-import utils.Sleep;
 
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -45,7 +40,7 @@ public class ThreadEvents extends AbstractThread
     private ConcurrentLinkedQueue<String> events;
 
     /** Buffer d'envoie des events */
-    private ConcurrentLinkedQueue<Vec2> unableToMoveEvent = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
 
     /**
      *
@@ -63,36 +58,29 @@ public class ThreadEvents extends AbstractThread
     @Override
     public void run()
     {
-        String event = null;
+        String event;
         Thread.currentThread().setPriority(6);
         while(!ThreadEth.shutdown)
         {
-            Sleep.sleep(100);
+            try {
+                if (events.peek() != null) {
+                    event = events.poll();
+                    String[] message = event.split(" ");
 
-            if(events.peek() != null) {
-                event = events.poll();
-                String[] message = event.split(" ");
-
-                if(message[0].equals(EventType.BLOCKED.getEventId())){
-                    log.critical("Event du LL : UnableToMove");
-                    unableToMoveEvent.add(new Vec2(Integer.parseInt(message[1]), Integer.parseInt(message[2])));
+                    if (message[0].equals(EventType.BLOCKED.getEventId())) {
+                        log.critical("Event du LL : UnableToMove");
+                        unableToMoveEvent.add(message[1]);
+                    }
+                } else {
+                    Thread.sleep(100);
                 }
+            }catch (InterruptedException e){
+                e.getStackTrace();
             }
-
-            if(event == null)
-                continue;
-
-            //==========
-
-            // TODO Events et réactions
-
-            //==========
-
-            event = null;
         }
     }
 
-    public ConcurrentLinkedQueue<Vec2> getUnableToMoveEvent() {
+    public ConcurrentLinkedQueue<String> getUnableToMoveEvent() {
         return unableToMoveEvent;
     }
 }

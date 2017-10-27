@@ -30,6 +30,8 @@ import utils.Sleep;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Prototype de wrapper pour Ethernet incluant toutes les méthodes. Diffère des différents CardWrapper car tout y
@@ -443,5 +445,8 @@ public class EthWrapper implements Service {
 
     public boolean getSensorState(){
         return sensorState;
+    }
+    public ConcurrentLinkedDeque<String> getPositionBuffer(){
+        return this.eth.getPositionBuffer();
     }
 }

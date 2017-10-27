@@ -25,6 +25,19 @@ package enums;
  */
 public enum UnableToMoveReason
 {
-	OBSTACLE_DETECTED, // obstacle vu par les capteurs
-	PHYSICALLY_BLOCKED, // blocage physique (bord de table, décor...)
+	OBSTACLE_DETECTED("o"), // obstacle vu par les capteurs
+	PHYSICALLY_BLOCKED("p"), // blocage physique (bord de table, décor...)
+	;
+
+	/** Ce que le LL envoie pour spécifier l'UnableToMoveException */
+	private String serialOrder;
+
+	/** Constructeur */
+	UnableToMoveReason(String serialOrder){
+		this.serialOrder = serialOrder;
+	}
+
+	public String getSerialOrder() {
+		return serialOrder;
+	}
 }

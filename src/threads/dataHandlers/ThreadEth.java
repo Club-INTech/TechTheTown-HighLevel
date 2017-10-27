@@ -28,6 +28,7 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -79,6 +80,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedDeque<String> positionBuffer = new ConcurrentLinkedDeque<>();
 
     /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
@@ -339,6 +341,9 @@ public class ThreadEth extends AbstractThread implements Service {
                     } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
                         ultrasoundBuffer.add(buffer);
                         continue;
+                    } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
+                        positionBuffer.add(buffer);
+                        continue;
                     } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
                         outDebug.write(buffer.substring(2));
                         outDebug.newLine();
@@ -381,6 +386,10 @@ public class ThreadEth extends AbstractThread implements Service {
     public ConcurrentLinkedQueue<String> getEventBuffer() {return eventBuffer;}
     public ConcurrentLinkedQueue<String> getUltrasoundBuffer() {return ultrasoundBuffer;}
     public ConcurrentLinkedQueue<String> getStandardBuffer() {return standardBuffer;}
+    public ConcurrentLinkedDeque<String> getPositionBuffer() {
+        return positionBuffer;
+    }
+
     public boolean isInterfaceCreated(){return interfaceCreated;}
 
     @Override
