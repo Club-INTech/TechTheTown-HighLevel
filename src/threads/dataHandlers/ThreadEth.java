@@ -22,13 +22,13 @@ package threads.dataHandlers;
 import container.Service;
 import enums.CommunicationHeaders;
 import enums.ConfigInfoRobot;
+import smartMath.XYO;
 import threads.AbstractThread;
 import utils.Log;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -80,7 +80,8 @@ public class ThreadEth extends AbstractThread implements Service {
     private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedDeque<String> positionBuffer = new ConcurrentLinkedDeque<>();
+    private XYO positionAndOrientation;
+    private String splitString = " ";
 
     /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
@@ -342,7 +343,9 @@ public class ThreadEth extends AbstractThread implements Service {
                         ultrasoundBuffer.add(buffer);
                         continue;
                     } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
-                        positionBuffer.add(buffer);
+                        synchronized (this.positionAndOrientation){
+                            positionAndOrientation = new XYO(buffer, splitString);
+                        }
                         continue;
                     } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
                         outDebug.write(buffer.substring(2));
@@ -386,8 +389,10 @@ public class ThreadEth extends AbstractThread implements Service {
     public ConcurrentLinkedQueue<String> getEventBuffer() {return eventBuffer;}
     public ConcurrentLinkedQueue<String> getUltrasoundBuffer() {return ultrasoundBuffer;}
     public ConcurrentLinkedQueue<String> getStandardBuffer() {return standardBuffer;}
-    public ConcurrentLinkedDeque<String> getPositionBuffer() {
-        return positionBuffer;
+    public XYO getPositionAndOrientation() {
+        synchronized (positionAndOrientation) {
+            return positionAndOrientation;
+        }
     }
 
     public boolean isInterfaceCreated(){return interfaceCreated;}

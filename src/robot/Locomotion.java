@@ -684,24 +684,7 @@ public class Locomotion implements Service
      */
     private void updateCurrentPositionAndOrientation()
     {
-        if(ethWrapper.getPositionBuffer().peekLast() != null){
-
-            String[] infos = ethWrapper.getPositionBuffer().pollLast().split(" ");
-            lowLevelPosition.setX(Integer.parseInt(infos[0]));
-            lowLevelPosition.setY(Integer.parseInt(infos[1]));
-            lowLevelOrientation = Double.parseDouble(infos[2]);
-
-            highLevelPosition = lowLevelPosition.clone();
-            highLevelOrientation=Geometry.moduloSpec(lowLevelOrientation, Math.PI);
-
-            if(symetry){
-                highLevelPosition.setX(-highLevelPosition.getX());
-                highLevelOrientation=Geometry.moduloSpec(Math.PI-highLevelOrientation, Math.PI);
-            }
-            ethWrapper.getPositionBuffer().clear();
-        }else {
-            return;
-        }
+        
     }
 
     /**

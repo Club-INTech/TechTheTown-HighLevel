@@ -24,6 +24,7 @@ import enums.*;
 import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Vec2;
+import smartMath.XYO;
 import threads.dataHandlers.ThreadEth;
 import utils.Log;
 import utils.Sleep;
@@ -359,6 +360,12 @@ public class EthWrapper implements Service {
      * DIVERS *
      **********/
 
+    /**
+     * Met à jour l'orientaton et la position du robot
+     */
+    public XYO updatePositionAndOrientation(){
+        return eth.getPositionAndOrientation();
+    }
 
     /**
      * Demande a la carte capteurs de nous indiquer si le jumper de début de match est présent ou non
@@ -442,11 +449,7 @@ public class EthWrapper implements Service {
     public void updateConfig(){
         loopDelay = config.getInt(ConfigInfoRobot.ETH_DELAY);
     }
-
     public boolean getSensorState(){
         return sensorState;
-    }
-    public ConcurrentLinkedDeque<String> getPositionBuffer(){
-        return this.eth.getPositionBuffer();
     }
 }
