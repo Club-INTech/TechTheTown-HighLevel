@@ -686,6 +686,7 @@ public class Locomotion implements Service
     private void updateCurrentPositionAndOrientation()
     {
         XYO positionAndOrientation = ethWrapper.updatePositionAndOrientation();
+
         lowLevelPosition = positionAndOrientation.getPosition();
         lowLevelOrientation = Geometry.moduloSpec(positionAndOrientation.getOrientation()-Math.PI, Math.PI);
 
@@ -703,7 +704,6 @@ public class Locomotion implements Service
     {
         log.warning("Arrêt du robot en "+lowLevelPosition);
         ethWrapper.immobilise();
-
     }
 
 
@@ -734,16 +734,6 @@ public class Locomotion implements Service
     public Vec2 getPosition()
     {
         updateCurrentPositionAndOrientation();
-        Vec2 out = highLevelPosition.clone();
-        return out;
-    }
-
-    /**
-     * Pour les Thread ayant régulierement besoin de la position, on utilise un Fast pour éviter de flood la série
-     * @return la dernière position connue de Locomotion
-     */
-    public Vec2 getPositionFast()
-    {
         Vec2 out = highLevelPosition.clone();
         return out;
     }

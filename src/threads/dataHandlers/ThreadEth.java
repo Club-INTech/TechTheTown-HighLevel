@@ -22,7 +22,9 @@ package threads.dataHandlers;
 import container.Service;
 import enums.CommunicationHeaders;
 import enums.ConfigInfoRobot;
+import pfg.config.Config;
 import smartMath.XYO;
+import table.Table;
 import threads.AbstractThread;
 import utils.Log;
 import java.io.*;
@@ -36,9 +38,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author rem
  */
 public class ThreadEth extends AbstractThread implements Service {
-
-    /** Log à utilisé */
-    private Log log;
 
     /** Nom */
     public String name;
@@ -80,16 +79,17 @@ public class ThreadEth extends AbstractThread implements Service {
     private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
-    private XYO positionAndOrientation;
+
+    /** Le "canal" position & orientation */
+    private XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
     private String splitString = " ";
 
     /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
      * @param log
      */
-    private ThreadEth(Log log){
-        super();
-        this.log = log;
+    private ThreadEth(Log log, Config config){
+        super(config, log);
         this.name = "Teensy";
         if(debug){
             try
@@ -394,7 +394,6 @@ public class ThreadEth extends AbstractThread implements Service {
             return positionAndOrientation;
         }
     }
-
     public boolean isInterfaceCreated(){return interfaceCreated;}
 
     @Override

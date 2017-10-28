@@ -20,16 +20,15 @@
 package threads.dataHandlers;
 
 import enums.ConfigInfoRobot;
-import graphics.Window;
 import pfg.config.Config;
 import robot.EthWrapper;
-import robot.Robot;
+import smartMath.Geometry;
 import smartMath.Vec2;
+import smartMath.XYO;
 import table.Table;
 import threads.AbstractThread;
 import threads.ThreadTimer;
 import utils.Log;
-import utils.Sleep;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -44,15 +43,12 @@ import static smartMath.Geometry.square;
 /**
  * Thread qui ajoute en continu les obstacles détectés par les capteurs,
  * Et enleve ceux qui ont disparu, de meme que verifie les capteurs de contact
- *
+ * TODO Compléter la config, sinon NPE
  * @author pf, Krissprolls, discord
  */
 
 public class ThreadSensor extends AbstractThread
 {
-	/** Le robot */
-	private Robot mRobot;
-
     /** La table */
     private Table mTable;
 
@@ -61,27 +57,21 @@ public class ThreadSensor extends AbstractThread
 
     /** Buffer de valeurs */
     private ConcurrentLinkedQueue<String> valuesReceived;
-	
-	/** interface graphique */
-	public Window window;
-	
-	/** fréquence de mise a jour des valeurs renvoyés par les capteurs. Valeurs par défaut de 5 fois par seconde s'il y a un problème de config
-	* Overide par la config */
-	private int sensorFrequency=15;
-
-    /** Temps maximal entre deux séries de valeurs (ms) : si cette série est incomplète, on la vire; cela évite les déclages */
-    private int thresholdUSseries = 20;
 
     /** Si l'on doit symétriser */
     private boolean symetry;
 
+    /*********************
+     * INFOS DES SENSORS *
+     *********************/
+
     /** Rayon du robot adverse */
-    private int radius;
+    private int enRadius;
 
-    /** Permet de désactiver les capteurs de la porte que récupère du sable, évite de récupérer des fausses valeurs */
-    private static boolean modeBorgne = false;
+    /** Position du robot */
+    private XYO robotPosAndOr;
 
-	/** Distance maximale fiable pour les capteurs : au dela, valeurs abberentes
+    /** Distance maximale fiable pour les capteurs : au dela, valeurs abberentes
 	 * Override par la config */
 	double maxSensorRange;
 
@@ -89,10 +79,6 @@ public class ThreadSensor extends AbstractThread
      * Override par la config */
 	double minSensorRangeAv;
 	double minSensorRangeAr;
-
-    private BufferedWriter out;
-
-    private final boolean debug = true;
 	
 	/**
 	 *  Angle de visibilité qu'a le capteur 
@@ -131,139 +117,41 @@ public class ThreadSensor extends AbstractThread
     private final Vec2 positionLB = new Vec2(-180,80);
     private final Vec2 positionRB = new Vec2(-180,-80);
 
-    /**
-     * Delai d'attente avant de lancer le thread
-     * Pour éviter de détecter la main du lanceur
-     */
+    /*****************
+     * INFOS & DEBUG *
+     ****************/
+
+    /** Delai d'attente avant de lancer le thread
+     * Pour éviter de détecter la main du lanceur */
     private static boolean delay = true;
 
-    /**
-     * Valeurs des capteurs US {avant-gauche, avant-droit, arrière gauche, arrière-droit}
-     */
+    /** Valeurs des capteurs US {avant-gauche, avant-droit, arrière gauche, arrière-droit} */
     ArrayList<Integer> USvalues = new ArrayList<Integer>(4);
 
-    /**
-     * Valeurs de capteurs modifiées pour la suppression d'obstacle
+    /** Valeurs de capteurs modifiées pour la suppression d'obstacle
      * Ainsi si l'un des capteurs nous indique 4km, c'est sûrement qu'il n'y a rien devant lui
      * On sépare ce qui sert à détecter de ce qui sert à ne pas détecter (oui c'est trop méta pour toi...)
-     * PS : Si il indique 4 km, y'a un pb hein...
-     */
+     * PS : Si il indique 4 km, y'a un pb hein... */
     ArrayList<Integer> USvaluesForDeletion = new ArrayList<>();
 
-	/**
-	 * Largeur du robot recuperée sur la config
-	 */
-	int robotWidth;
-	
-	/**
-	 * 	Longueur du robot recuperée sur la config
-	 */
-	int robotLenght;
+    /** Fichier de debug pour le placement d'obstacles */
+    private BufferedWriter out;
+    private final boolean debug = true;
 
     /**
 	 * Crée un nouveau thread de capteurs
-	 *
 	 * @param table La table a l'intérieure de laquelle le thread doit croire évoluer
-	 * @param ethWrapper La carte capteurs avec laquelle le thread va parler
 	 */
-	public ThreadSensor (Config config, Log log, Table table, Robot robot, EthWrapper ethWrapper, ThreadEth eth)
+	public ThreadSensor (Config config, Log log, Table table, EthWrapper ethWrapper, ThreadEth eth)
 	{
 		super(config, log);
-		this.ethWrapper = ethWrapper;
         this.valuesReceived = eth.getUltrasoundBuffer();
+        this.mTable = table;
+        this.ethWrapper = ethWrapper;
 		Thread.currentThread().setPriority(6);
-		mRobot = robot;
-        mTable = table;
 	}
-	
-	@Override
-	public void run()
-	{
-	    updateConfig();
-        try
-        {
-            File file = new File("us.txt");
 
-            if (!file.exists()) {
-                //file.delete();
-                file.createNewFile();
-            }
-
-            out = new BufferedWriter(new FileWriter(file));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        /* while(ethWrapper.isJumperAbsent())
-        {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        while(!ethWrapper.isJumperAbsent())
-        {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }*/
-
-		// maintenant que le jumper est retiré, le match a commencé
-		ThreadTimer.matchEnded = false;
-
-        if(ThreadSensor.delay)
-        {
-            try
-            {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-		
-		// boucle principale, celle qui dure tout le match
-		// log.debug("Activation des capteurs");
-		while(!ThreadTimer.matchEnded)
-		{
-
-			// on s'arrete si le ThreadManager le demande
-			if(stopThreads)
-			{
-				log.debug("Stop du thread capteurs");
-				return;
-			}
-            //long time = System.currentTimeMillis();
-
-			getDistances();
-            
-            if( !USvalues.contains(-1)) // si on n'a pas spammé
-			{
-				// On enleve les obstacles qu'on sait absents de la table : si le robot ennemi a bougé,
-				// On l'enleve de notre memoire
-                mRobot.getPositionFast();
-                removeObstacle();
-
-                for(int i=0 ; i<USvalues.size(); i++)
-                {
-                    if(USvalues.get(i) != 0)
-                        USvalues.set(i, USvalues.get(i)/*+radius/2*/);
-                }
-
-				//ajout d'obstacles mobiles dans l'obstacleManager
-				addObstacle();
-			}
-		}
-        log.debug("Fin du thread de capteurs");
-		
-	}
-	
-	/**
-	 * ajoute les obstacles a l'obstacleManager
-	 */
+	/** Ajoute les obstacles a l'obstacleManager */
 	private void addObstacle() {
         try {
 
@@ -285,29 +173,26 @@ public class ThreadSensor extends AbstractThread
                 addBackObstacleSingle(USvalues.get(2) != 0);
             }
 
-        }catch(Exception e){
+        }catch(IOException e){
             e.printStackTrace();
         }
     }
 
-    /**
-     * Ajoute un obstacle en face du robot, avec les deux capteurs ayant détecté quelque chose
-     * Convention: la droite du robot est l'orientation 0 (on travaille dans le repère du robot, et on garde les memes conventions que pour la table)
-     */
-
+    /** Ajoute un obstacle en face du robot, avec les deux capteurs ayant détecté quelque chose
+     * Convention: la droite du robot est l'orientation 0 (on travaille dans le repère du robot, et on garde les memes conventions que pour la table) */
     private void addFrontObstacleBoth() {
 
         // On résoud l'équation du second degrée afin de trouver les deux points d'intersections des deux cercles
         // On joue sur le rayon du robot adverse pour etre sur d'avoir des solutions
         double robotX;
         double robotY;
-        double b, c, delta;
+        double b, delta;
         int R1, R2;
         Vec2 vec = new Vec2();
         boolean isValue = true;
 
-        R1 = USvalues.get(0) + (int) (radius*0.8);
-        R2 = USvalues.get(1) + (int) (radius*0.8);
+        R1 = USvalues.get(0) + (int) (enRadius*0.8);
+        R2 = USvalues.get(1) + (int) (enRadius*0.8);
         robotY = ((square(R1) - square(R2))/(double)(4*positionRF.getY()));
         Integer Y = new Integer((int) robotY);
 
@@ -328,38 +213,23 @@ public class ThreadSensor extends AbstractThread
         }
 
          if (isValue) {
-             try{
-                 out.write("Position calculée (référentiel du robot :" + vec);
-                 out.newLine();
-                 vec = changeRef(vec);
-                 out.write("Position calculée (référentiel de la table) :" + vec);
-                 out.newLine();
-                 out.write("Position du robot :" + mRobot.getPositionFast());
-                 out.newLine();
-                 out.newLine();
-                 out.flush();
-             }catch(Exception e){
-                 e.printStackTrace();
-             }
-
-             mTable.getObstacleManager().addObstacle(vec, radius, lifetimeForUntestedObstacle);
+             printDebug(vec);
+             mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius, lifetimeForUntestedObstacle);
          }
     }
-    /**
-     * Ajoute un obstacle derrière le robot, avec les deux capteurs ayant détecté quelque chose
-     */
+    /** Ajoute un obstacle derrière le robot, avec les deux capteurs ayant détecté quelque chose */
     private void addBackObstacleBoth()
     {
         // De meme que le front, seule la selection de la bonne solution change
         double robotX;
         double robotY;
-        double b, c, delta;
+        double b, delta;
         int R1, R2;
         Vec2 vec = new Vec2();
         boolean isValue = true;
 
-        R1 = USvalues.get(2) + (int)(radius*0.8);
-        R2 = USvalues.get(3) + (int)(radius*0.8);
+        R1 = USvalues.get(2) + (int)(enRadius*0.8);
+        R2 = USvalues.get(3) + (int)(enRadius*0.8);
         robotY = ((square(R1) - square(R2))/(double)(4*positionRF.getY()));
         Integer Y = new Integer((int) robotY);
 
@@ -380,28 +250,13 @@ public class ThreadSensor extends AbstractThread
         }
 
         if (isValue) {
-            try {
-                out.write("Position calculée (référentiel du robot) :" + vec);
-                out.newLine();
-                vec = changeRef(vec);
-                out.write("Position calculée (référentiel de la table) :" + vec);
-                out.newLine();
-                out.write("Position du robot :" + mRobot.getPositionFast());
-                out.newLine();
-                out.newLine();
-                out.flush();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            mTable.getObstacleManager().addObstacle(vec, radius, lifetimeForUntestedObstacle);
+            this.printDebug(vec);
+            mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius, lifetimeForUntestedObstacle);
         }
     }
 
-    /**
-     * Ajoute un obstacle devant le robot, avec un seul capteur ayant détecté quelque chose
-     * @param isLeft si c'est le capteur gauche
-     */
+    /** Ajoute un obstacle devant le robot, avec un seul capteur ayant détecté quelque chose
+     * @param isLeft si c'est le capteur gauche */
     private void addFrontObstacleSingle(boolean isLeft)
     {
         // On modélise les arcs de cercle detecté par l'un des capteurs, puis on prend le point le plus à l'exterieur
@@ -416,35 +271,20 @@ public class ThreadSensor extends AbstractThread
             // à longue distance (>1m au vue des dimensions), l'ennemie est en réalité de l'autre coté
             Vec2 posDetect = new Vec2(USFL, angleLF + detectionAngle/2);
             double angleEn = angleRF + detectionAngle/2;
-            posEn = posDetect.plusNewVector(new Vec2(radius*0.8, angleEn)).plusNewVector(positionLF);
+            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(positionLF);
         }
         else{
             Vec2 posDetect = new Vec2(USFR, angleRF - detectionAngle/2);
             double angleEn = angleLF - detectionAngle/2;
-            posEn = posDetect.plusNewVector(new Vec2(radius*0.8, angleEn)).plusNewVector(positionRF);
+            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(positionRF);
         }
 
-        try{
-            out.write("Position calculée (référentiel du robot) :" + posEn);
-            out.newLine();
-            posEn = changeRef(posEn);
-            out.write("Position calculée (référentiel de la table) :" + posEn);
-            out.newLine();
-            out.write("Position du robot :" + mRobot.getPositionFast());
-            out.newLine();
-            out.newLine();
-            out.flush();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
-        mTable.getObstacleManager().addObstacle(posEn, radius, lifetimeForUntestedObstacle);
+        this.printDebug(posEn);
+        mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius, lifetimeForUntestedObstacle);
     }
 
-    /**
-     * Ajoute un obstacle derrière le robot, avec un seul capteur ayant détecté quelque chose
-     * @param isLeft si c'est le capteur gauche
-     */
+    /** Ajoute un obstacle derrière le robot, avec un seul capteur ayant détecté quelque chose
+     * @param isLeft si c'est le capteur gauche */
     private void addBackObstacleSingle(boolean isLeft) {
         // De meme qu'avec le front
 
@@ -455,51 +295,62 @@ public class ThreadSensor extends AbstractThread
         if (isLeft){
             Vec2 posDetect = new Vec2(USBL,angleLB - detectionAngle/2);
             double angleEn = angleRB - detectionAngle/2;
-            posEn = posDetect.plusNewVector(new Vec2(radius*0.8, angleEn)).plusNewVector(positionLB);
+            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(positionLB);
         }
         else{
             Vec2 posDetect = new Vec2(USBF,angleRB + detectionAngle/2);
             double angleEn = angleLB + detectionAngle/2;
-            posEn = posDetect.plusNewVector(new Vec2(radius*0.8, angleEn)).plusNewVector(positionRB);
+            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(positionRB);
         }
 
-        try{
-            out.write("Position calculée (référentiel du robot) :" + posEn);
+        this.printDebug(posEn);
+        mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius, lifetimeForUntestedObstacle);
+    }
+
+    /** P'tite methode pour print le debug des capteurs
+     * @param obPositionRobotRef la position de l'obstacle dans le réferentiel du robot */
+    private void printDebug(Vec2 obPositionRobotRef){
+        try {
+            out.write("Position calculée (référentiel du robot) :" + obPositionRobotRef);
             out.newLine();
-            posEn = changeRef(posEn);
-            out.write("Position calculée (référentiel de la table) :" + posEn);
+            obPositionRobotRef = changeRef(obPositionRobotRef);
+            out.write("Position calculée (référentiel de la table) :" + obPositionRobotRef);
             out.newLine();
-            out.write("Position du robot :" + mRobot.getPositionFast());
+            out.write("Position du robot :" + robotPosAndOr.getPosition());
             out.newLine();
             out.newLine();
             out.flush();
-        }catch(Exception e){
+        } catch (IOException e) {
             e.printStackTrace();
+            log.debug("IOException sur le Debug...");
         }
-
-        mTable.getObstacleManager().addObstacle(posEn, radius, lifetimeForUntestedObstacle);
     }
 
-
-    /**
-     * Passe du référentiel du robot à celui de la table
-     * @param pos la position relative dont on cherche les coordonées absolues
-     */
+    /** Passe du référentiel du robot à celui de la table
+     * @param pos la position relative dont on cherche les coordonées absolues */
     private Vec2 changeRef(Vec2 pos)
     {
-        pos.setA(pos.getA()+mRobot.getOrientationFast());
-        return pos.plusNewVector(mRobot.getPositionFast());
+        pos.setA(Geometry.moduloSpec(pos.getA()+robotPosAndOr.getPosition().getA(), Math.PI));
+        return pos.plusNewVector(robotPosAndOr.getPosition());
     }
 
-	/**
-	 * Recupere la distance lue par les ultrasons 
-	 * @return la distance selon les ultrasons
-	 */
+    /**
+     *  On enleve les obstacles qu'on ne voit pas
+     */
+    private void removeOutDatedObstacle()
+    {
+        mTable.getObstacleManager().removeOutdatedObstacles();
+    }
+
+	/** Recupere la distance lue par les ultrasons
+	 * @return la distance selon les ultrasons */
 	@SuppressWarnings("unchecked")
-    public void getDistances()
+    public void getSensorInfos()
 	{
         try
 		{
+		    robotPosAndOr = ethWrapper.updatePositionAndOrientation();
+
             String[] valuesSReceived;
             ArrayList<Integer> res = new ArrayList<>();
 
@@ -544,11 +395,6 @@ public class ThreadSensor extends AbstractThread
                 USvalues.set(3, temp);
             }
 
-            if(modeBorgne)
-                USvalues.set(1, 0);
-
-            mRobot.setUSvalues((ArrayList<Integer>) USvalues.clone());
-
             USvaluesForDeletion.clear();
             for(int i=0 ; i<4 ; i++)
             {
@@ -573,42 +419,92 @@ public class ThreadSensor extends AbstractThread
                     USvalues.set(i, 0);
                     USvaluesForDeletion.set(i, 0);
                 }
-                else if(i == 1 && modeBorgne)
-                {
-                    USvaluesForDeletion.set(i, 0);
-                }
             }
 		}
-		catch(Exception e)
-        {}
+		catch(InterruptedException e) {
+            e.printStackTrace();
+        }
 	}
 
-	@Override
+    @Override
+    public void run()
+    {
+        /** Initialisation : fichiers de debug, temps d'attente,...*/
+
+        updateConfig();
+        try
+        {
+            File file = new File("us.txt");
+
+            if (!file.exists()) {
+                //file.delete();
+                file.createNewFile();
+            }
+            out = new BufferedWriter(new FileWriter(file));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /* while(ethWrapper.isJumperAbsent())
+        {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        while(!ethWrapper.isJumperAbsent())
+        {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }*/
+
+        // maintenant que le jumper est retiré, le match a commencé
+        ThreadTimer.matchEnded = false;
+
+        if(ThreadSensor.delay)
+        {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        /** Boucle principale, celle qui dure tout le match */
+
+        while(!ThreadTimer.matchEnded)
+        {
+            // on s'arrete si le ThreadManager le demande
+            if(stopThreads)
+            {
+                log.debug("Stop du thread capteurs");
+                return;
+            }
+
+            this.getSensorInfos();
+
+            if( !USvalues.contains(-1)) // si on n'a pas spammé
+            {
+                this.removeOutDatedObstacle();
+                this.addObstacle();
+            }
+        }
+        log.debug("Fin du thread de capteurs");
+
+    }
+
+    @Override
 	public void updateConfig()
 	{
         symetry = (config.getString(ConfigInfoRobot.COULEUR) == "orange");
+        enRadius = config.getInt(ConfigInfoRobot.ROBOT_EN_RADIUS);
+        maxSensorRange = config.getInt(ConfigInfoRobot.MAX_SENSOR_RANGE);
+        minSensorRangeAv = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGEAV);
+        minSensorRangeAr = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGEAR);
 	}
-	
-	/**
-	 *  On enleve les obstacles qu'on ne voit pas
-	 */
-	private void removeObstacle()
-	{
-	    mTable.getObstacleManager().removeOutdatedObstacles();
-	}
-
-    /**
-     * Active/desactive le mode borgne
-     * @param value oui/non
-     */
-    public static void modeBorgne(boolean value)
-    {
-        ThreadSensor.modeBorgne = value;
-    }
-
-    public static void noDelay()
-    {
-        ThreadSensor.delay = false;
-    }
-
 }
