@@ -88,7 +88,7 @@ public class Container implements Service
 	/**
 	 * True si l'on veut montrer le graphe des dépendances (pour debug)
 	 */
-	private static final boolean showGraph = false;
+	private static final boolean showGraph = true;
 	private FileWriter fileWriter;
 
 	/**
@@ -185,11 +185,6 @@ public class Container implements Service
             System.exit(0);
         }
 
-        log = getService(Log.class);
-        log.updateConfig();
-
-		// Le container est aussi un service
-		instanciedServices.put(getClass().getSimpleName(), this);
 
 		if(showGraph)
 		{
@@ -200,6 +195,13 @@ public class Container implements Service
 				log.warning(e);
 			}
 		}
+
+        log = getService(Log.class);
+        log.updateConfig();
+
+		// Le container est aussi un service
+		instanciedServices.put(getClass().getSimpleName(), this);
+
 	}
 	
 	/**

@@ -27,6 +27,7 @@ import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.Vec2;
+import smartMath.XYO;
 import table.Table;
 import threads.dataHandlers.ThreadEvents;
 import utils.Log;
@@ -684,7 +685,15 @@ public class Locomotion implements Service
      */
     private void updateCurrentPositionAndOrientation()
     {
-        
+        XYO positionAndOrientation = ethWrapper.updatePositionAndOrientation();
+        lowLevelPosition = positionAndOrientation.getPosition();
+        lowLevelOrientation = Geometry.moduloSpec(positionAndOrientation.getOrientation()-Math.PI, Math.PI);
+
+        if(symetry){
+            highLevelPosition = lowLevelPosition.clone();
+            highLevelPosition.setX(-highLevelPosition.getX());
+            highLevelOrientation = Geometry.moduloSpec(lowLevelOrientation-Math.PI, Math.PI);
+        }
     }
 
     /**

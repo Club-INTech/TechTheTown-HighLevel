@@ -55,6 +55,6 @@ public class JUnit_Robot extends JUnit_Test
 
     @Test
     public void testScript() throws Exception {
-        scriptManager.getScript(ScriptNames.CLOSE_DOORS).goToThenExec(0, state);
+        Thread.sleep(5000);
     }
 }
