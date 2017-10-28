@@ -1,0 +1,19 @@
+digraph dependancesJava {
+Config;
+Log -> Config;
+Robot;
+Locomotion;
+Robot -> Locomotion;
+Config;
+Locomotion -> Config;
+Table;
+Locomotion -> Table;
+Config;
+Table -> Config;
+EthWrapper;
+Locomotion -> EthWrapper;
+Config;
+EthWrapper -> Config;
+ThreadEth;
+EthWrapper -> ThreadEth;
+}
