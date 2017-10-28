@@ -22,9 +22,13 @@ package tests;
 import enums.ScriptNames;
 import org.junit.Before;
 import org.junit.Test;
+import robot.EthWrapper;
 import robot.Robot;
 import scripts.ScriptManager;
+import simulator.ThreadSimulator;
+import simulator.ThreadSimulatorMotion;
 import strategie.GameState;
+import threads.dataHandlers.ThreadSensor;
 
 import java.util.ArrayList;
 
@@ -44,17 +48,21 @@ public class JUnit_Robot extends JUnit_Test
      * @see tests.JUnit_Test#setUp()
      */
     @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        robotReal = container.getService(Robot.class);
-        scriptManager = container.getService(ScriptManager.class);
-        state = container.getService(GameState.class);
-
-        container.startInstanciedThreads();
+    public void setUp() {
+        try {
+            super.setUp();
+            ThreadSensor thSensor = container.getService(ThreadSensor.class);
+            ThreadSimulatorMotion simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+            container.startInstanciedThreads();
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("AH !");
+        }
     }
 
     @Test
     public void testScript() throws Exception {
-        scriptManager.getScript(ScriptNames.CLOSE_DOORS).goToThenExec(0, state);
+        robotReal = container.getService(Robot.class);
+        Thread.sleep(500);
     }
 }

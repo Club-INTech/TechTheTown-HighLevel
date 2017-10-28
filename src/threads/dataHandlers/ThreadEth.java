@@ -22,6 +22,7 @@ package threads.dataHandlers;
 import container.Service;
 import enums.CommunicationHeaders;
 import enums.ConfigInfoRobot;
+import pfg.config.Config;
 import threads.AbstractThread;
 import utils.Log;
 import java.io.*;
@@ -38,6 +39,7 @@ public class ThreadEth extends AbstractThread implements Service {
 
     /** Log à utilisé */
     private Log log;
+    private Config config;
 
     /** Nom */
     public String name;
@@ -82,11 +84,11 @@ public class ThreadEth extends AbstractThread implements Service {
 
     /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
-     * @param log
      */
-    private ThreadEth(Log log){
+    private ThreadEth(Log log, Config config){
         super();
         this.log = log;
+        this.config = config;
         this.name = "Teensy";
         if(debug){
             try
