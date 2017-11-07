@@ -25,8 +25,6 @@ import container.Service;
  * Pathfinding du robot ! Contient l'algorithme
  */
 public class Pathfinding implements Service {
-
-    //TODO : Bon bah... au boulot !
     private Pathfinding() {}
 
     @Override

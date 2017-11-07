@@ -110,7 +110,7 @@ public class ObstacleManager implements Service
         this.log = log;
         this.config = config;
         
-        //creation des listes qui contiendrons les differents types d'obstacles
+        //creation des listes qui contiendront les differents types d'obstacles
         mMobileObstacles = new ArrayList<ObstacleProximity>();
         mCircularObstacle = new ArrayList<ObstacleCircular>();
         mLines = new ArrayList<Segment>();
@@ -126,7 +126,6 @@ public class ObstacleManager implements Service
       	mLines.add(new Segment(new Vec2(1500 - mRobotRadius, 0 + mRobotRadius), new Vec2(1500 - mRobotRadius, 2000 - mRobotRadius)));
       	mLines.add(new Segment(new Vec2(1500 - mRobotRadius, 2000 - mRobotRadius), new Vec2(-1500 + mRobotRadius, 2000 - mRobotRadius)));
       	mLines.add(new Segment(new Vec2(-1500 + mRobotRadius, 2000 - mRobotRadius), new Vec2(-1500 + mRobotRadius, 0 + mRobotRadius)));
-
 		try {
 			File file = new File("debugDetect.txt");
 
@@ -176,13 +175,20 @@ public class ObstacleManager implements Service
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1500, 2000), 550 + mRobotRadius, -3*Math.PI/4, -Math.PI/2, true)));
 		*/
 
-		//pose module côté
-		mRectangles.add(new ObstacleRectangular(new Vec2(-1446, 870), 108 + 2*mRobotRadius, 500 + 2*mRobotRadius)); //-1446, 678, 108, 472
-		mRectangles.add(new ObstacleRectangular(new Vec2(1446, 870), 108 + 2*mRobotRadius, 500 + 2*mRobotRadius));
 
-		//base lunaire
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(0, 2000), 815 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		mRectangles.add(new ObstacleRectangular(new Vec2(1300, 325), 400 + 2*mRobotRadius, 650 + 2*mRobotRadius)); //-1446, 678, 108, 472
+		mRectangles.add(new ObstacleRectangular(new Vec2(-1300, 325),  400 + 2*mRobotRadius, 650 + 2*mRobotRadius));
+        mRectangles.add(new ObstacleRectangular(new Vec2(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
+
+
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1200, 1190), 297 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(400, 1500), 297 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-400, 1500), 297 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1200, 1190), 297 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-650, 540), 297 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(650, 540), 297 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
 	}
+
 
 	/**
 	 * Ajoute un obstacle sur la table a la position spécifiée, du rayon specifie (de type obstacleProximity)
