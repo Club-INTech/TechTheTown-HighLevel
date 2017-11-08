@@ -30,4 +30,5 @@ public class Pathfinding implements Service {
     @Override
     public void updateConfig() {
     }
+
 }
