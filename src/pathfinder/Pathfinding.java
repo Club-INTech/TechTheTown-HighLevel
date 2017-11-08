@@ -20,6 +20,8 @@
 package pathfinder;
 
 import container.Service;
+import smartMath.Vec2;
+
 
 /**
  * Pathfinding du robot ! Contient l'algorithme
@@ -30,4 +32,21 @@ public class Pathfinding implements Service {
     @Override
     public void updateConfig() {
     }
+
+    private class Noeud{
+        protected Vec2 position;
+        int heuristique;
+
+
+        private Noeud( Vec2 position, int heuristique ){
+            this.position=position;
+            this.heuristique=heuristique;
+
+
+        }
+
+    }
+
+    Noeud noeud_depart = new Noeud( new Vec2( 1200, 400),0);
+    
 }

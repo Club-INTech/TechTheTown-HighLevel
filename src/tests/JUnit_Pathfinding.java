@@ -20,6 +20,7 @@
 package tests;
 
 import exceptions.ContainerException;
+import graphics.Window;
 import org.junit.Test;
 import smartMath.Vec2;
 import table.Table;
@@ -55,5 +56,10 @@ public class JUnit_Pathfinding extends JUnit_Test{
         System.out.println("Position de départ du robot : " + Table.entryPosition);
         // Mais la facon "normale" fonctionne aussi :
         System.out.println("Position de départ : " + table.entryPosition);
+
+
+        Window window=new Window(table);
+        Thread.sleep(200000);
     }
 }
+
