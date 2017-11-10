@@ -73,7 +73,7 @@ public class Pathfinding implements Service {
         nodeRobot.heuristique=0;
         noeud.add(nodeRobot);
         noeud.add(nodeArrivee);
-        if robot.getposition.getX()=nodeArrivee.position.getX(){
+        if robot.getPosition().getX()==nodeArrivee.position.getX(){
             if obstacleManager.isEnnemyInCone()=false{
 
 

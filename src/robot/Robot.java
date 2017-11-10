@@ -100,7 +100,7 @@ public class Robot implements Service {
 	 * @param log           fichier de log
 	 * @param ethWrapper protocole communication série
 	 */
-	private Robot(Locomotion deplacements, Config config, Log log, EthWrapper ethWrapper, Pathfinding pathfinding) {
+	public Robot(Locomotion deplacements, Config config, Log log, EthWrapper ethWrapper, Pathfinding pathfinding) {
 
 		this.config = config;
 		this.log = log;
