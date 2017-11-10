@@ -38,6 +38,7 @@ public class Pathfinding implements Service {
     private ObstacleManager obstacleManager;
     private ArrayList<ObstacleCircular> listCircu;
     private Vec2 tabposition[]=new Vec2[10];
+    private Noeud nodeRobot;
     private ArrayList<Noeud> noeud;
     private int distanceobsnodeX;
     private int distanceobsnodeY;
@@ -68,7 +69,9 @@ public class Pathfinding implements Service {
     }
     public void findmeaway(Noeud nodeArrivee) {
         Robot robot=new Robot();
-        noeud.add(robot.getPosition());
+        nodeRobot.position=robot.getPosition();
+        nodeRobot.heuristique=0;
+        noeud.add(nodeRobot);
         noeud.add(nodeArrivee);
         if robot.getposition.getX()=nodeArrivee.position.getX(){
             if obstacleManager.isEnnemyInCone()=false{
