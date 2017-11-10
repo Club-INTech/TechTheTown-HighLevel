@@ -19,6 +19,7 @@
 
 package table.obstacles;
 
+import pathfinder.Noeud;
 import smartMath.Circle;
 import smartMath.Segment;
 import smartMath.Vec2;
@@ -118,4 +119,6 @@ public class ObstacleCircular extends Obstacle
 	{
 		System.out.println("Obstacle en memoire");
 	}
+
+
 }
