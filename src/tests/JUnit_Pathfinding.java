@@ -59,7 +59,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
 
         Window window=new Window(table);
-        Thread.sleep(200000);
+        Thread.sleep(20000);
     }
 }
 

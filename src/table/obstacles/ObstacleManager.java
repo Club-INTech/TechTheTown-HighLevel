@@ -187,7 +187,11 @@ public class ObstacleManager implements Service
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1200, 1190), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-650, 540), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(650, 540), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
-	}
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 1500,840), 105 + mRobotRadius,-9*Math.PI/10,-Math.PI/10,true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -1500, 840), 105 + mRobotRadius, -9*Math.PI/10,-Math.PI/10,true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 890,2000), 105 + mRobotRadius,-9*Math.PI/10,-Math.PI/10,true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -890, 2000), 105 + mRobotRadius, -9*Math.PI/10,-Math.PI/10,true)));
+			}
 
 
 	/**
