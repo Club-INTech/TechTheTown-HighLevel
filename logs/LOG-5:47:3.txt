@@ -1,6 +1,0 @@
-Dbg - [32m17h47:3,677 Service de log démarré
-Dbg - [32m17h47:3,681 WARN : Table does not contain updateConfig method
-Dbg - [32m17h50:23,864 Fermeture de l'Ethernet
-Dbg - [32m17h50:23,865 Fermeture du log
-Warn - [30m17h50:23,865 Fin du log
-Dbg - [32m17h50:23,866 Sauvegarde du fichier de logs
