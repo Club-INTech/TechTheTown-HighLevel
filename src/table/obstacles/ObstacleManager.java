@@ -55,7 +55,8 @@ public class ObstacleManager implements Service
     private ArrayList<ObstacleProximity> mMobileObstacles;
 
     /** Ensemble des obstacles circulaires */
-    private ArrayList<ObstacleCircular> mCircularObstacle;
+    public ArrayList<ObstacleCircular> mCircularObstacle;
+
 
     /** Ensemble des obstacles mobiles/temporaires a tester pour les placer sur la table */
 	private ArrayList<ObstacleProximity> mUntestedMobileObstacles;
@@ -64,7 +65,7 @@ public class ObstacleManager implements Service
     private ArrayList<Segment> mLines;
 
 	/** Les obstacles rectangulaires de la table */
-	private ArrayList<ObstacleRectangular> mRectangles;
+	public ArrayList<ObstacleRectangular> mRectangles;
 
 	/** Rayon de notre robot */
 	public int mRobotRadius;
