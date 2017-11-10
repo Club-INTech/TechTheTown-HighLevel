@@ -33,6 +33,7 @@ import java.util.ArrayList;
 
 /**
  * Pathfinding du robot ! Contient l'algorithme
+ * @author Yousra, Sam
  */
 public class Pathfinding implements Service {
     private ObstacleManager obstacleManager;
