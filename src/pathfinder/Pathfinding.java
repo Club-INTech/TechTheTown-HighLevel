@@ -123,12 +123,31 @@ public class Pathfinding implements Service {
 
     public void int_aretes(){
         float distance;
+        double delta;
+        float xa;
+        float xb;
+        float ya;
+        float yb;
+        float xc;
+        float yc;
+        float dx;
+        float dy;
 
         for(Noeud noeud1 : nodes){
 
             for(Noeud noeud2 : nodes) {
                 distance = (float) Math.sqrt(noeud1.position.getX() * noeud2.position.getX() + noeud1.position.getY() * noeud2.position.getY());
-
+                for(ObstacleCircular obstaclecircular :listCircu){
+                    xa = noeud1.position.getX();
+                    xb = noeud2.position.getX();
+                    ya = noeud1.position.getY();
+                    yb = noeud2.position.getY();
+                    xc = obstaclecircular.getCircle().getCenter().getX();
+                    yc = obstaclecircular.getCircle().getCenter().getY();
+                    dx = xb - xa;
+                    dy = yb - ya;
+                    delta = Math.pow(2*(dx*(xa-xc)+dy*(ya-yc)),2) - 4 * (Math.pow((xb-xa),2) + Math.pow((yb-ya),2)) * (Math.pow((xa-xc),2) + Math.pow((ya-yc),2)-obstaclecircular.getRadius()*obstaclecircular.getRadius());
+                }
 
             }
         }
