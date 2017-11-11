@@ -122,6 +122,8 @@ public class Pathfinding implements Service {
         }
 
     public void int_aretes(){
+        ArrayList<Arete> aretes;
+        aretes = new ArrayList<Arete>();
         float distance;
         double delta;
         float xa;
@@ -147,6 +149,10 @@ public class Pathfinding implements Service {
                     dx = xb - xa;
                     dy = yb - ya;
                     delta = Math.pow(2*(dx*(xa-xc)+dy*(ya-yc)),2) - 4 * (Math.pow((xb-xa),2) + Math.pow((yb-ya),2)) * (Math.pow((xa-xc),2) + Math.pow((ya-yc),2)-obstaclecircular.getRadius()*obstaclecircular.getRadius());
+                    if (delta < 0) {
+                        aretes.add( new Arete(noeud1,noeud2));
+                    }
+
                 }
 
             }
