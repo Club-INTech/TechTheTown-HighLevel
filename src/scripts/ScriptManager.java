@@ -22,7 +22,6 @@ package scripts;
 import container.Service;
 import enums.ScriptNames;
 import hook.HookFactory;
-import pfg.config.Config;
 import utils.Log;
 
 /**

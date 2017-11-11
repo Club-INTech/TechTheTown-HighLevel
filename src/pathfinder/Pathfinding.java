@@ -42,6 +42,8 @@ public class Pathfinding implements Service {
     private double b1;
     private double a2;
     private double b2;
+    private int centreCercleX;
+    private int centreCercleY;
 
 
     private Pathfinding() {
@@ -74,9 +76,7 @@ public class Pathfinding implements Service {
         tabposition.get(5).setY(listCircu.get(2).getPosition().getY()+listCircu.get(2).getRadius()- 264);
         nodes.get(5).position = tabposition.get(5);
         tabposition.get(6).setX(listCircu.get(3).getPosition().getX());
-        a1=(nodes.get(4).position.getY()-nodes.get(5).position.getY())/(nodes.get(4).position.getX()-nodes.get(5).position.getX());
-        b1=nodes.get(4).position.getY()-a1*nodes.get(4).position.getX();
-        tabposition.get(6).setY(listCircu.get(3).getPosition().getY()+listCircu.get(3).getRadius()+(int)(distanceajouteeY(listCircu.get(3).getPosition().getX(), listCircu.get(3).getPosition().getY()+listCircu.get(3).getRadius(), a1,b1)));
+        tabposition.get(6).setY(alineate(nodes.get(4).position.getX(),nodes.get(4).position.getY(),listCircu.get(3).getPosition().getX(),listCircu.get(3).getPosition().getY()+264).getY());
         nodes.get(6).position = tabposition.get(6);
         tabposition.get(7).setX(listCircu.get(4).getPosition().getX());
         tabposition.get(7).setY(listCircu.get(4).getPosition().getY()+listCircu.get(4).getRadius()+ 264);
@@ -90,29 +90,37 @@ public class Pathfinding implements Service {
         tabposition.get(10).setX(listCircu.get(5).getPosition().getX()+listCircu.get(5).getRadius()- 264);
         tabposition.get(10).setY(listCircu.get(5).getPosition().getY());
         nodes.get(10).position = tabposition.get(9);
-        a2=(nodes.get(1).position.getY()-nodes.get(3).position.getY())/(nodes.get(1).position.getX()-nodes.get(3).position.getX());
-        b2=nodes.get(1).position.getY()-a2*nodes.get(1).position.getX();
         tabposition.get(11).setX(listCircu.get(5).getPosition().getX());
-        tabposition.get(11).setY(listCircu.get(5).getPosition().getY()+listCircu.get(5).getRadius()+(int)(distanceajouteeY(listCircu.get(5).getPosition().getX(), listCircu.get(5).getPosition().getY()+listCircu.get(5).getRadius(), a2,b2)));
+        tabposition.get(11).setY(alineate(nodes.get(1).position.getX(),nodes.get(1).position.getY(),listCircu.get(5).getPosition().getX(),listCircu.get(3).getPosition().getY()+264).getY());
         nodes.get(11).position = tabposition.get(11);
-        tabposition.get(12).setX(listCircu.get(6).getPosition().getX()+listCircu.get(6).getRadius()- (int)distanceajouteeX(listCircu.get(6).getPosition().getX(), listCircu.get(6).getPosition().getY()+listCircu.get(6).getRadius(), a2,b2));
+        tabposition.get(12).setX(alineate(nodes.get(1).position.getX(),nodes.get(1).position.getY(),listCircu.get(6).getPosition().getX(),listCircu.get(6).getPosition().getY()+264).getX());
         tabposition.get(12).setY(listCircu.get(6).getPosition().getY());
         nodes.get(12).position = tabposition.get(12);
-        tabposition.get(13).setX((listCircu.get(5).getPosition().getX() + listCircu.get(5).getRadius()) - (int) distanceajouteeX(listCircu.get(5).getPosition().getX(), listCircu.get(5).getPosition().getY() + listCircu.get(5).getRadius(), a2, b2));
+        tabposition.get(13).setX(alineate(nodes.get(4).position.getX(),nodes.get(4).position.getY(),listCircu.get(5).getPosition().getX()-264,listCircu.get(5).getPosition().getY()).getX());
         tabposition.get(13).setY(listCircu.get(5).getPosition().getY());
         nodes.get(13).position = tabposition.get(12);
     }
 
-        private double distanceajouteeY(double x, double y ,double a , double b) {
-            while (a * x + b != y)
-                x = x + 1;
-            return y;
+        private Vec2 alineate(int xdepart, int ydepart,int xPointoalinate, int yPointoalinate ){
+            Vec2 position = new Vec2();
+            double r=Math.sqrt((Math.pow(xPointoalinate-xdepart,2))-Math.pow(yPointoalinate-ydepart,2));
+            double r1 = 0;
+            double teta=Math.atan(ydepart/xdepart)-Math.atan(yPointoalinate/xPointoalinate);
+            while ((Math.abs(r-r1)>Math.pow(10,-3)) && (Math.pow(r,2) != ((Math.pow(xPointoalinate-xdepart,2)+Math.pow(yPointoalinate-ydepart,2)))));
+                r1=r1+1;
+
+            xPointoalinate=(int)(r*Math.cos(teta));
+            yPointoalinate=(int)(r*Math.sin(teta));
+            position.setX(xPointoalinate);
+            position.setY(yPointoalinate);
+            return position;
+
+
+
+
+
         }
-        private double distanceajouteeX(double x, double y, double a, double b) {
-            while (a * x + b != y)
-                y = y + 1;
-            return x;
-        }
+
 
     public void int_aretes(){
         float distance;
