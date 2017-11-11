@@ -20,17 +20,10 @@
 package pathfinder;
 
 import container.Service;
-import pfg.config.Config;
-import robot.EthWrapper;
-import robot.Locomotion;
-import robot.Robot;
 import smartMath.Vec2;
-import table.Table;
-import table.obstacles.Obstacle;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleManager;
-import table.obstacles.ObstacleRectangular;
-import utils.Log;
+
 
 
 import java.util.ArrayList;
