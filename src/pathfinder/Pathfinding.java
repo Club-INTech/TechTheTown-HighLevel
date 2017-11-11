@@ -121,7 +121,18 @@ public class Pathfinding implements Service {
             return x;
         }
 
+    public void int_aretes(){
+        float distance;
 
+        for(Noeud noeud1 : nodes){
+
+            for(Noeud noeud2 : nodes) {
+                distance = (float) Math.sqrt(noeud1.position.getX() * noeud2.position.getX() + noeud1.position.getY() * noeud2.position.getY());
+
+
+            }
+        }
+    }
 
 
 
