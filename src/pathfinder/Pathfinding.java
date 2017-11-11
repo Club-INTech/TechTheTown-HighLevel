@@ -106,8 +106,7 @@ public class Pathfinding implements Service {
         double r1 = 0;
         double teta = Math.atan(ydepart / xdepart) - Math.atan(yPointoalinate / xPointoalinate);
         while ((Math.abs(r - r1) > Math.pow(10, -3)) && (Math.pow(r, 2) != ((Math.pow(xPointoalinate - xdepart, 2) + Math.pow(yPointoalinate - ydepart, 2)))))
-            ;
-        r1 = r1 + 1;
+            r1 = r1 + 1;
 
         xPointoalinate = (int) (r * Math.cos(teta));
         yPointoalinate = (int) (r * Math.sin(teta));
