@@ -147,7 +147,7 @@ public class Pathfinding implements Service {
                     dy = yb - ya;
                     delta = Math.pow(2 * (dx * (xa - xc) + dy * (ya - yc)), 2) - 4 * (Math.pow((xb - xa), 2) + Math.pow((yb - ya), 2)) * (Math.pow((xa - xc), 2) + Math.pow((ya - yc), 2) - obstaclecircular.getRadius() * obstaclecircular.getRadius());
                     if (delta < 0) {
-                        aretes.add(new Arete(noeud1, noeud2));
+                        aretes.add(new Arete(noeud1, noeud2, distance));
                     }
 
                 }
