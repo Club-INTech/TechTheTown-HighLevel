@@ -22,6 +22,7 @@ package tests;
 import exceptions.ContainerException;
 import graphics.Window;
 import org.junit.Test;
+import pathfinder.Pathfinding;
 import smartMath.Vec2;
 import table.Table;
 import table.obstacles.ObstacleManager;
@@ -45,6 +46,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
         /** Instanciation des variables */
         table = container.getService(Table.class);
+        Pathfinding pathfinding = container.getService(Pathfinding.class);
         obstacleManager = table.getObstacleManager(); // Grâce au container, le champ ObstacleManager de votre table est déjà instancié !
         // Mais... pour commencer instancier vos variables à la main :
         Vec2 example = new Vec2(50, 40);
@@ -59,6 +61,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
 
         Window window=new Window(table);
+
         Thread.sleep(20000);
     }
 }

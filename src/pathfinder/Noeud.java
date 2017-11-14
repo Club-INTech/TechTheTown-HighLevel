@@ -12,7 +12,5 @@ public class Noeud {
         this.position = position;
         this.heuristique = heuristique;
     }
-    public ArrayList<Noeud> createnodes{
 
-    }
 }
