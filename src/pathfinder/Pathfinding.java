@@ -37,12 +37,7 @@ public class Pathfinding implements Service {
     private ArrayList<ObstacleCircular> listCircu;
     private ArrayList<Vec2> tabposition;
     private ArrayList<Noeud> nodes;
-    private double a1;
-    private double b1;
-    private double a2;
-    private double b2;
-    private int centreCercleX;
-    private int centreCercleY;
+
 
 
     private Pathfinding() {

@@ -2,6 +2,8 @@ package pathfinder;
 
 import smartMath.Vec2;
 
+import java.util.ArrayList;
+
 public class Noeud {
     public Vec2 position;
     int heuristique;
@@ -10,5 +12,7 @@ public class Noeud {
         this.position = position;
         this.heuristique = heuristique;
     }
-    /*public boolean isMobile(){}*/
+    public ArrayList<Noeud> createnodes{
+
+    }
 }

@@ -1,6 +1,9 @@
 package pathfinder;
 
 import smartMath.Vec2;
+import tests.container.A;
+
+import java.util.ArrayList;
 
 public class Arete {
     public Noeud noeud1;
