@@ -1,5 +1,7 @@
 package pathfinder;
 
+import smartMath.Geometry;
+import smartMath.Segment;
 import smartMath.Vec2;
 import sun.font.TrueTypeFont;
 import table.obstacles.ObstacleCircular;
@@ -13,53 +15,14 @@ import java.util.ArrayList;
 
 
 public class Graphe {
-    private ObstacleManager obstacleManager;
     private ArrayList<ObstacleCircular> listCircu;
     private ArrayList<ObstacleRectangular> listRectangu;
-    private ArrayList<Vec2> tabposition;
+    private ObstacleManager obstacleManager;
     private ArrayList<Noeud> nodes;
 
 
-    public void int_aretes() {
-        ArrayList<Arete> aretes;
-        aretes = new ArrayList<Arete>();
-        float distance;
-        double delta;
-        float xa;
-        float xb;
-        float ya;
-        float yb;
-        float xc;
-        float yc;
-        float dx;
-        float dy;
+    private ArrayList<Noeud> createNodes() {
 
-        for (Noeud noeud1 : nodes) {
-
-            for (Noeud noeud2 : nodes) {
-                distance = (float) Math.sqrt(noeud1.position.getX() * noeud2.position.getX() + noeud1.position.getY() * noeud2.position.getY());
-                for (ObstacleCircular obstaclecircular : listCircu) {
-                    xa = noeud1.position.getX();
-                    xb = noeud2.position.getX();
-                    ya = noeud1.position.getY();
-                    yb = noeud2.position.getY();
-                    xc = obstaclecircular.getCircle().getCenter().getX();
-                    yc = obstaclecircular.getCircle().getCenter().getY();
-                    dx = xb - xa;
-                    dy = yb - ya;
-                    delta = Math.pow(2 * (dx * (xa - xc) + dy * (ya - yc)), 2) - 4 * (Math.pow((xb - xa), 2) + Math.pow((yb - ya), 2)) * (Math.pow((xa - xc), 2) + Math.pow((ya - yc), 2) - obstaclecircular.getRadius() * obstaclecircular.getRadius());
-                    if (delta < 0) {
-                        aretes.add(new Arete(noeud1, noeud2, distance));
-                    }
-
-                }
-
-            }
-        }
-    }
-
-
-    public ArrayList<Noeud> createNodes() {
         int pasX = 300;
         int pasY = 200;
         int x = -1500;
@@ -75,7 +38,8 @@ public class Graphe {
             }
         }
 
-        return nodesInObstacles(nodes);
+        nodes =nodesInObstacles(nodes);
+        return nodes;
     }
 
     private ArrayList<Noeud> nodesInObstacles(ArrayList<Noeud> nodes) {
@@ -125,23 +89,70 @@ public class Graphe {
         return nodes;
     }
 
+    public void createAretes(){
+        ArrayList<Noeud> nodes=createNodes();
+        int n=nodes.size();
+        for(int i=0; i<n;i++){
+            for(int j=1;j<n;i++){
+                Segment segment=new Segment(nodes.get(i).position,nodes.get(j).position);
+                for(int k=0;k<Noeud.listCircu.size();k++){
+                    if(!Geometry.intersects(segment,Noeud.listCircu.get(k).getCircle())){
+                        double cost=Segment.squaredLength(nodes.get(i).position,nodes.get(j).position);
+                        new Arete(nodes.get(i),nodes.get(j),cost);
+                    }
+
+                }
 
 
-    private Vec2 alineate(int xdepart, int ydepart,int xPointoalinate,int yPointoalinate) {
-        Vec2 position = new Vec2();
-        double r = Math.sqrt((Math.pow(xPointoalinate - xdepart, 2)) - Math.pow(yPointoalinate - ydepart, 2));
-        double r1 = 0;
-        double teta = Math.atan(ydepart / xdepart) - Math.atan(yPointoalinate / xPointoalinate);
-        while ((Math.abs(r - r1) > Math.pow(10, -3)) && (Math.pow(r, 2) != ((Math.pow(xPointoalinate - xdepart, 2) + Math.pow(yPointoalinate - ydepart, 2)))))
-            r1 = r1 + 1;
 
-        xPointoalinate = (int) (r * Math.cos(teta));
-        yPointoalinate = (int) (r * Math.sin(teta));
-        position.setX(xPointoalinate);
-        position.setY(yPointoalinate);
-        return position;
+
+            }
+
+        }
 
 
     }
+
+    /*public void int_aretes() {
+        ArrayList<Arete> aretes;
+        aretes = new ArrayList<Arete>();
+        float distance;
+        double delta;
+        float xa;
+        float xb;
+        float ya;
+        float yb;
+        float xc;
+        float yc;
+        float dx;
+        float dy;
+
+        for (Noeud noeud1 : nodes) {
+
+            for (Noeud noeud2 : nodes) {
+                distance = (float) Math.sqrt(noeud1.position.getX() * noeud2.position.getX() + noeud1.position.getY() * noeud2.position.getY());
+                for (ObstacleCircular obstaclecircular : listCircu) {
+                    xa = noeud1.position.getX();
+                    xb = noeud2.position.getX();
+                    ya = noeud1.position.getY();
+                    yb = noeud2.position.getY();
+                    xc = obstaclecircular.getCircle().getCenter().getX();
+                    yc = obstaclecircular.getCircle().getCenter().getY();
+                    dx = xb - xa;
+                    dy = yb - ya;
+                    delta = Math.pow(2 * (dx * (xa - xc) + dy * (ya - yc)), 2) - 4 * (Math.pow((xb - xa), 2) + Math.pow((yb - ya), 2)) * (Math.pow((xa - xc), 2) + Math.pow((ya - yc), 2) - obstaclecircular.getRadius() * obstaclecircular.getRadius());
+                    if (delta < 0) {
+                        aretes.add(new Arete(noeud1, noeud2, distance));
+                    }
+
+                }
+
+            }
+        }
+    }
+*/
+
+
+
 
 }

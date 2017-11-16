@@ -21,6 +21,7 @@ package pathfinder;
 
 import container.Service;
 import pfg.config.Config;
+import smartMath.Geometry;
 import smartMath.Vec2;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleManager;
@@ -36,13 +37,29 @@ import java.util.ArrayList;
 public class Pathfinding implements Service {
     Log logn;
     Config config;
+    private Graphe graphe;
+    private ArrayList<Noeud> nodes=Noeud.createNodes();
 
 
-    private Pathfinding(Log logn, Config config) {
+    private Pathfinding(Log logn, Config config){
+
     }
 
     @Override
     public void updateConfig() {
+    }
+    public ArrayList<Vec2> findmeaway(Vec2 positiondepart,Vec2 positionarrivee){
+        ArrayList<Vec2> cheminasuivre= new ArrayList<Vec2>();
+        nodes.add(new Noeud(positiondepart,0));
+        nodes.add(new Noeud(positionarrivee,0));
+        cheminasuivre.add(positiondepart);
+        Noeud noeud=Noeud.closestNode(positionarrivee);
+
+
+
+
+
+
 
 
     }
