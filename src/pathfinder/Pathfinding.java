@@ -38,7 +38,7 @@ public class Pathfinding implements Service {
     Log logn;
     Config config;
     private Graphe graphe;
-    private ArrayList<Noeud> nodes=Noeud.createNodes();
+
 
 
     private Pathfinding(Log logn, Config config){
@@ -48,21 +48,7 @@ public class Pathfinding implements Service {
     @Override
     public void updateConfig() {
     }
-    public ArrayList<Vec2> findmeaway(Vec2 positiondepart,Vec2 positionarrivee){
-        ArrayList<Vec2> cheminasuivre= new ArrayList<Vec2>();
-        nodes.add(new Noeud(positiondepart,0));
-        nodes.add(new Noeud(positionarrivee,0));
-        cheminasuivre.add(positiondepart);
-        Noeud noeud=Noeud.closestNode(positionarrivee);
 
-
-
-
-
-
-
-
-    }
 
 
 }

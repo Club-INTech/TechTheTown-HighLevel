@@ -2,7 +2,6 @@ package pathfinder;
 
 import smartMath.Vec2;
 import table.obstacles.ObstacleCircular;
-import table.obstacles.ObstacleManager;
 import table.obstacles.ObstacleRectangular;
 
 import java.util.ArrayList;
