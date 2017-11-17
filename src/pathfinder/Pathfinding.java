@@ -23,12 +23,16 @@ import container.Service;
 import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.Vec2;
+import sun.font.TrueTypeFont;
+import sun.security.util.Length;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleManager;
 import utils.Log;
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Pathfinding du robot ! Contient l'algorithme
@@ -49,6 +53,27 @@ public class Pathfinding implements Service {
     public void updateConfig() {
     }
 
+    public ArrayList<Vec2> findmyway (Vec2 positiondepart, Vec2 positionarrive){
+        ArrayList<Noeud> openList;
+        ArrayList<Noeud> closeList;
+       // ArrayList<Arete> aretes = graphe.createAretes();
+        ArrayList<Noeud> nodes = graphe.createNodes();
+        HashMap<Noeud,ArrayList<Arete>> nodesbones = graphe.nodesbones;
+        Noeud noeuddepart = new Noeud(positiondepart, 0);
+        Noeud noeudarrive = new Noeud(positionarrive, 1);
+
+
+    }
+
+
+    public boolean NodeInList(ArrayList<Noeud> lst, Noeud node){
+        for(int i = 0; i < lst.size(); i++ ){
+            if (lst.get(i)==node){
+                return true;
+            }
+        }
+        return false;
+    }
 
 
 }

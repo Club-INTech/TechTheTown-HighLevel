@@ -10,18 +10,19 @@ import table.obstacles.ObstacleRectangular;
 import tests.container.A;
 
 import java.util.ArrayList;
-
-
+import java.util.HashMap;
 
 
 public class Graphe {
     private ArrayList<ObstacleCircular> listCircu;
     private ArrayList<ObstacleRectangular> listRectangu;
     private ObstacleManager obstacleManager;
-    private ArrayList<Noeud> nodes;
+    public ArrayList<Noeud> nodes;
+    //dictionnaire contenant les arêtes associées à chaque noeud
+    public HashMap<Noeud, ArrayList<Arete>> nodesbones;
 
 
-    private ArrayList<Noeud> createNodes() {
+    public ArrayList<Noeud> createNodes() {
 
         int pasX = 300;
         int pasY = 200;
@@ -89,8 +90,13 @@ public class Graphe {
         return nodes;
     }
 
+
+
     public void createAretes(){
         ArrayList<Noeud> nodes=createNodes();
+        nodesbones=new HashMap<>();
+        ArrayList<Arete> listaretes=new ArrayList<>();
+        Arete arete;
         int n=nodes.size();
         for(int i=0; i<n;i++){
             for(int j=1;j<n;i++){
@@ -98,7 +104,9 @@ public class Graphe {
                 for(int k=0;k<Noeud.listCircu.size();k++){
                     if(!Geometry.intersects(segment,Noeud.listCircu.get(k).getCircle())){
                         double cost=Segment.squaredLength(nodes.get(i).position,nodes.get(j).position);
-                        new Arete(nodes.get(i),nodes.get(j),cost);
+                        arete = new Arete(nodes.get(i),nodes.get(j),cost);
+                        listaretes.add(arete);
+                        nodesbones.put(nodes.get(i),listaretes);
                     }
 
                 }
