@@ -23,6 +23,7 @@ import container.Service;
 import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.Vec2;
+import sun.nio.cs.ArrayEncoder;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleManager;
 import utils.Log;
@@ -49,49 +50,53 @@ public class Pathfinding implements Service {
     @Override
     public void updateConfig() {
     }
-    //Cette méthode retourne le noeud le plus proche à une position
+    /*Cette méthode retourne le noeud le plus proche à un noeud en prenant l'arete avec
+    le moindre cout
+     */
     public Noeud closestNode(Noeud node) {
-        int r = 1;
-        int x0 = node.position.getX();
-        int y0 = node.position.getY();
-        int n = graphe.nodes.size();
-        Vec2 position0=new Vec2();
-        position0.setX(0);
-        position0.setY(0);
-        Noeud nodetoreturn=new Noeud(position0,0);
+        ArrayList<Arete> aretelist = graphe.nodesbones.get(node);
+        int n = aretelist.size();
+        double min=aretelist.get(0).cout;
+        int indicemin=0;
         for (int i = 0; i < n; i++) {
-            int x = graphe.nodes.get(i).position.getX();
-            int y = graphe.nodes.get(i).position.getY();
-            if (Math.pow(x - x0, 2) + Math.pow(y - y0, 2) < Math.pow(r, 2)) {
-                nodetoreturn=graphe.nodes.get(i);
+            if(aretelist.get(i).cout<min){
+                min=aretelist.get(i).cout;
+                indicemin=i;
             }
         }
-        return nodetoreturn;
-
+        return aretelist.get(indicemin).noeud2;
     }
 
 
 
-
+    /*la méthode findmeaway appelle la méthode précédente pour trouver les noeuds de proche
+    en proche puis améliore le chemin à l'aide de nodesbones
+    */
 
     public ArrayList<Vec2> findmeaway(Vec2 positiondepart, Vec2 positionarrivee){
-        graphe=new Graphe();
-        int n=graphe.nodes.size();
-        graphe.createAretes();
         HashMap<Noeud,ArrayList<Arete>> nodesbones =graphe.nodesbones;
         ArrayList<Noeud> nodes=graphe.createNodes();
         Noeud noeudepart=new Noeud(positiondepart,0);
         nodes.add(noeudepart);
+        Noeud noeudarrivee=new Noeud(positionarrivee,0);
+        nodes.add(noeudarrivee);
         ArrayList<Noeud> nodestofollow=new ArrayList<>();
         ArrayList<Vec2> pathtofollow=new ArrayList<>();
         nodestofollow.add(noeudepart);
-        for(int i=0;i<n;i++){
+        graphe=new Graphe();
+        int n=graphe.nodes.size();
+        graphe.createAretes();
+        //Trouver un chemin initial en utilisant la méthode précedente
+        for(int i=0;i<n;i++) {
             nodestofollow.add(closestNode(nodestofollow.get(i)));
-            if(!graphe.aretebetweentwonodes(nodestofollow.get(i-1),nodestofollow.get(i))){
-                nodestofollow.remove(i);
-            }
             pathtofollow.add(nodestofollow.get(i).position);
         }
+        /*Améliorer le chemin trouvé en utilisant nodesbones
+          Le chemin trouvé contient forcément le chemin optimal, à l'aide du dictionnaire
+          nodesbones, pour chaque noeud on a la liste de toutes les aretes qui lui sont
+          reliées, donc si on trouve un noeud dans le chemin trouvé mais qui est déjà relié à
+          noeud avant on supprime tous les noeuds between ces deux
+         */
         int m=nodestofollow.size();
         ArrayList<Arete> aretelist=new ArrayList<>();
         for(int i=0; i<m;i++) {
@@ -109,6 +114,7 @@ public class Pathfinding implements Service {
         }
         return pathtofollow;
     }
+    //test pour savoir si un noeud est relié à un autre
     private boolean contain(ArrayList<Arete> aretelist,Noeud node){
         int n=aretelist.size();
         for(int i=0;i<n;i++){
