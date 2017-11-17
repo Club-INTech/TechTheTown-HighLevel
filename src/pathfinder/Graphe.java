@@ -10,19 +10,21 @@ import table.obstacles.ObstacleRectangular;
 import tests.container.A;
 
 import java.util.ArrayList;
-
-
+import java.util.HashMap;
 
 
 public class Graphe {
-    private ArrayList<ObstacleCircular> listCircu;
-    private ArrayList<ObstacleRectangular> listRectangu;
+    static ArrayList<ObstacleCircular> listCircu;
+    static ArrayList<ObstacleRectangular> listRectangu;
     private ObstacleManager obstacleManager;
-    private ArrayList<Noeud> nodes;
+    public ArrayList<Noeud> nodes;
+    //dictionnaire contenant les arêtes associées à chaque noeud
+    public HashMap<Noeud,ArrayList<Arete>> nodesbones;
 
 
-    private ArrayList<Noeud> createNodes() {
 
+
+    public ArrayList<Noeud> createNodes() {
         int pasX = 300;
         int pasY = 200;
         int x = -1500;
@@ -91,14 +93,22 @@ public class Graphe {
 
     public void createAretes(){
         ArrayList<Noeud> nodes=createNodes();
+        nodesbones=new HashMap<>();
+        ArrayList<Arete> listaretes=new ArrayList<>();
+        Arete arete;
+
+
         int n=nodes.size();
         for(int i=0; i<n;i++){
             for(int j=1;j<n;i++){
                 Segment segment=new Segment(nodes.get(i).position,nodes.get(j).position);
-                for(int k=0;k<Noeud.listCircu.size();k++){
-                    if(!Geometry.intersects(segment,Noeud.listCircu.get(k).getCircle())){
+                for(int k=0;k<listCircu.size();k++){
+                    if(!Geometry.intersects(segment,listCircu.get(k).getCircle())){
                         double cost=Segment.squaredLength(nodes.get(i).position,nodes.get(j).position);
-                        new Arete(nodes.get(i),nodes.get(j),cost);
+                        arete = new Arete(nodes.get(i),nodes.get(j),cost);
+                        listaretes.add(arete);
+                        nodesbones.put(nodes.get(i),listaretes);
+
                     }
 
                 }
@@ -113,44 +123,18 @@ public class Graphe {
 
     }
 
-    /*public void int_aretes() {
-        ArrayList<Arete> aretes;
-        aretes = new ArrayList<Arete>();
-        float distance;
-        double delta;
-        float xa;
-        float xb;
-        float ya;
-        float yb;
-        float xc;
-        float yc;
-        float dx;
-        float dy;
-
-        for (Noeud noeud1 : nodes) {
-
-            for (Noeud noeud2 : nodes) {
-                distance = (float) Math.sqrt(noeud1.position.getX() * noeud2.position.getX() + noeud1.position.getY() * noeud2.position.getY());
-                for (ObstacleCircular obstaclecircular : listCircu) {
-                    xa = noeud1.position.getX();
-                    xb = noeud2.position.getX();
-                    ya = noeud1.position.getY();
-                    yb = noeud2.position.getY();
-                    xc = obstaclecircular.getCircle().getCenter().getX();
-                    yc = obstaclecircular.getCircle().getCenter().getY();
-                    dx = xb - xa;
-                    dy = yb - ya;
-                    delta = Math.pow(2 * (dx * (xa - xc) + dy * (ya - yc)), 2) - 4 * (Math.pow((xb - xa), 2) + Math.pow((yb - ya), 2)) * (Math.pow((xa - xc), 2) + Math.pow((ya - yc), 2) - obstaclecircular.getRadius() * obstaclecircular.getRadius());
-                    if (delta < 0) {
-                        aretes.add(new Arete(noeud1, noeud2, distance));
-                    }
-
-                }
-
+    public boolean aretebetweentwonodes(Noeud noeud1,Noeud noeud2){
+        ArrayList<Arete> aretelist=nodesbones.get(noeud1);
+        int n=aretelist.size();
+        for(int i=0;i<n;i++){
+            if(aretelist.get(i).noeud2==noeud2){
+                return true;
             }
         }
+        return false;
+
+
     }
-*/
 
 
 

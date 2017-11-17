@@ -29,6 +29,7 @@ import utils.Log;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Pathfinding du robot ! Contient l'algorithme
@@ -47,6 +48,75 @@ public class Pathfinding implements Service {
 
     @Override
     public void updateConfig() {
+    }
+    //Cette méthode retourne le noeud le plus proche à une position
+    public Noeud closestNode(Noeud node) {
+        int r = 1;
+        int x0 = node.position.getX();
+        int y0 = node.position.getY();
+        int n = graphe.nodes.size();
+        Vec2 position0=new Vec2();
+        position0.setX(0);
+        position0.setY(0);
+        Noeud nodetoreturn=new Noeud(position0,0);
+        for (int i = 0; i < n; i++) {
+            int x = graphe.nodes.get(i).position.getX();
+            int y = graphe.nodes.get(i).position.getY();
+            if (Math.pow(x - x0, 2) + Math.pow(y - y0, 2) < Math.pow(r, 2)) {
+                nodetoreturn=graphe.nodes.get(i);
+            }
+        }
+        return nodetoreturn;
+
+    }
+
+
+
+
+
+    public ArrayList<Vec2> findmeaway(Vec2 positiondepart, Vec2 positionarrivee){
+        graphe=new Graphe();
+        int n=graphe.nodes.size();
+        graphe.createAretes();
+        HashMap<Noeud,ArrayList<Arete>> nodesbones =graphe.nodesbones;
+        ArrayList<Noeud> nodes=graphe.createNodes();
+        Noeud noeudepart=new Noeud(positiondepart,0);
+        nodes.add(noeudepart);
+        ArrayList<Noeud> nodestofollow=new ArrayList<>();
+        ArrayList<Vec2> pathtofollow=new ArrayList<>();
+        nodestofollow.add(noeudepart);
+        for(int i=0;i<n;i++){
+            nodestofollow.add(closestNode(nodestofollow.get(i)));
+            if(!graphe.aretebetweentwonodes(nodestofollow.get(i-1),nodestofollow.get(i))){
+                nodestofollow.remove(i);
+            }
+            pathtofollow.add(nodestofollow.get(i).position);
+        }
+        int m=nodestofollow.size();
+        ArrayList<Arete> aretelist=new ArrayList<>();
+        for(int i=0; i<m;i++) {
+            aretelist = nodesbones.get(nodestofollow.get(i));
+            for(int j=0;j<m;j++){
+                if(contain(aretelist,nodestofollow.get(j))){
+                    int ind=j;
+                }
+            for(int k=j;j>=i;j--){
+                    nodestofollow.remove(k);
+                    pathtofollow.remove(nodestofollow.get(k).position);
+            }
+
+            }
+        }
+        return pathtofollow;
+    }
+    private boolean contain(ArrayList<Arete> aretelist,Noeud node){
+        int n=aretelist.size();
+        for(int i=0;i<n;i++){
+            if(aretelist.get(i).noeud2==node){
+                return true;
+            }
+        }
+        return false;
     }
 
 
