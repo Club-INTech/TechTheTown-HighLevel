@@ -19,9 +19,12 @@ public class Graphe {
     private ObstacleManager obstacleManager;
     public ArrayList<Noeud> nodes;
     //dictionnaire contenant les arêtes associées à chaque noeud
-    public HashMap<Noeud, ArrayList<Arete>> nodesbones;
+    public HashMap<Noeud,ArrayList<Arete>> nodesbones;
 
 
+    /*Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
+    là où il y'a des obstacles
+     */
     public ArrayList<Noeud> createNodes() {
         HashMap<Noeud, ArrayList<Arete>> nodesbones;
         int pasX = 300;
@@ -42,6 +45,7 @@ public class Graphe {
         nodes = nodesInObstacles(nodes);
         return nodes;
     }
+    //Méthode pour tester si les noeuds rencontrent des obstacles
 
     private ArrayList<Noeud> nodesInObstacles(ArrayList<Noeud> nodes) {
         listCircu = obstacleManager.getmCircularObstacle();
@@ -89,6 +93,12 @@ public class Graphe {
         }
         return nodes;
     }
+    /*Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
+    l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
+    ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
+    déja un chemin à suivre, à chaque noeud, on associe une liste d'arete qui lui est propre
+    donc implicitement une liste de noeuds, le tout stocké dans un dictionnaire
+     */
 
 
 
@@ -123,15 +133,7 @@ public class Graphe {
 
     }
 
-    public boolean aretebetweentwonodes(Noeud noeud1,Noeud noeud2){
-        ArrayList<Arete> aretelist=nodesbones.get(noeud1);
-        int n=aretelist.size();
-        for(int i=0;i<n;i++){
-            if(aretelist.get(i).noeud2==noeud2){
-                return true;
-            }
-        }
-        return false;
+
 
 
     }
@@ -139,4 +141,4 @@ public class Graphe {
 
 
 
-}
+
