@@ -22,10 +22,14 @@
 package graphics;
 
 import scripts.ScriptManager;
+import smartMath.Segment;
+import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
+import tests.container.A;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 /**
  * Interface graphique pour faciliter le debugage HL
@@ -51,7 +55,6 @@ public class Window extends JFrame
 	 */
 	public Window(Table table, GameState state, ScriptManager scriptManager)
 	{
-		this.setVisible(true);
 		this.setTitle("Interface - Full");
 	    this.setSize(1300, 635);
 	    this.setLocationRelativeTo(null);
@@ -65,6 +68,8 @@ public class Window extends JFrame
 	    
 	    keyboard = new Keyboard(state, scriptManager);
 	    addKeyListener(keyboard);
+
+	    this.setVisible(true);
 	}
 
 	/** Construit l'interface de debug du pathfinding : ce dernier contient la table, sur laquelle est présente le graph,
@@ -73,7 +78,6 @@ public class Window extends JFrame
 	 */
 	public Window(Table table)
 	{
-		this.setVisible(true);
 		this.setTitle("Interface - Pathfinding");
 		this.setSize(1300, 635);
 		this.setLocationRelativeTo(null);
@@ -84,8 +88,20 @@ public class Window extends JFrame
 
 		mouse = new Mouse(tablePanel);
 		addMouseListener(mouse);
+
+		this.setVisible(true);
 	}
-	
+
+	/** Permet d'afficher les aretes/le chemin */
+	public void setArete(ArrayList<Segment> aretes){
+		tablePanel.setAretes(aretes);
+		repaint();
+	}
+	public void setPath(ArrayList<Vec2> path){
+		tablePanel.setPath(path);
+		repaint();
+	}
+
 	/** Getters */
 	public TablePanel getPanel()
 	{

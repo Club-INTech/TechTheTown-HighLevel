@@ -46,10 +46,11 @@ public class JUnit_Graphics extends JUnit_Test
 		path.add(new Vec2(200, 400));
 		path.add(new Vec2(300, 500));
 
+		Thread.sleep(500);
 		win = new Window(table);
 		Thread.sleep(5000);
-		win.getPanel().setAretes(ridges);
-		win.getPanel().setPath(path);
+		win.setArete(ridges);
+		win.setPath(path);
 		Thread.sleep(5000);
 	}
 }

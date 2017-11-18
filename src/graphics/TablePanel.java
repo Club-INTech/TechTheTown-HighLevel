@@ -30,8 +30,11 @@ import table.obstacles.ObstacleProximity;
 import table.obstacles.ObstacleRectangular;
 import tests.container.A;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -56,6 +59,9 @@ public class TablePanel extends JPanel
 	/** Pour de l'affichage dynamique lorsque l'on test avec le robot */
 	private boolean isRobotPresent = true;
 
+	/** Image de background */
+	private Image tableBackground;
+
 	/** Couleurs */
 	private Color obstacleColor = new Color(180, 50, 50, 100);
 	private Color adverseColor = new Color(180, 120, 50, 100);
@@ -75,6 +81,12 @@ public class TablePanel extends JPanel
 		aretes = new ArrayList<>();
 		this.table = table;
 		this.robot = robot;
+
+		try{
+			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
+		}catch (IOException e){
+			e.printStackTrace();
+		}
 	}
 
 	/** Construit un panel pour l'interface pathfinding
@@ -87,6 +99,12 @@ public class TablePanel extends JPanel
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
+
+		try{
+			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
+		}catch (IOException e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -96,6 +114,9 @@ public class TablePanel extends JPanel
 		Vec2 upLeftCorner;
 		Vec2 pathNode1;
 		Vec2 pathNode2;
+
+		// Background
+		graphics.drawImage(tableBackground,0, 0, 900, 600, this);
 
 		// Bords de la table
 		graphics.setColor(Color.BLACK);
@@ -183,10 +204,13 @@ public class TablePanel extends JPanel
 	/** Setters */
 	public void setPath(ArrayList<Vec2> path) {
 		this.path = path;
-		repaint();
+		removeAll();
+		revalidate();
 	}
 	public void setAretes(ArrayList<Segment> aretes) {
 		this.aretes = aretes;
+		removeAll();
+		revalidate();
 	}
 
 	/** Getters */
