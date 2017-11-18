@@ -29,6 +29,7 @@ import table.Table;
 import tests.container.A;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -47,6 +48,9 @@ public class Window extends JFrame
 	private Mouse mouse;
 	private Keyboard keyboard;
 
+	/** Couleur de fond */
+	private Color backgroundColor = new Color(25, 20, 30);
+
 	/** Construit toute l'interface : cette dernière contient la table (avec robot et chemin), ainsi que l'état du robot
 	 * (action executée, état de certaines variables, ...)
 	 * @param table
@@ -56,9 +60,10 @@ public class Window extends JFrame
 	public Window(Table table, GameState state, ScriptManager scriptManager)
 	{
 		this.setTitle("Interface - Full");
-	    this.setSize(1300, 635);
+	    this.setSize(1300, 935);
 	    this.setLocationRelativeTo(null);
 	    this.setResizable(false);
+	    this.setBackground(backgroundColor);
 	    
 	    tablePanel = new TablePanel(table, state.robot);
 	    this.setContentPane(tablePanel);
@@ -79,9 +84,10 @@ public class Window extends JFrame
 	public Window(Table table)
 	{
 		this.setTitle("Interface - Pathfinding");
-		this.setSize(1300, 635);
+		this.setSize(1300, 935);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
+		this.setBackground(backgroundColor);
 
 		tablePanel = new TablePanel(table);
 		this.setContentPane(tablePanel);

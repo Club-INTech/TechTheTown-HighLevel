@@ -110,6 +110,7 @@ public class TablePanel extends JPanel
 	@Override
 	public void paintComponent(Graphics graphics)
 	{
+		/** La table */
 		int wideDisplay = (int)(table.getObstacleManager().getRobotRadius()*0.3);
 		Vec2 upLeftCorner;
 		Vec2 pathNode1;
@@ -192,6 +193,11 @@ public class TablePanel extends JPanel
 				graphics.drawLine(pathNode1.getX(), pathNode1.getY(), pathNode2.getX(), pathNode2.getY());
 			}
 		}
+
+		/** Infos diverses */
+		graphics.setColor(Color.DARK_GRAY);
+		graphics.fillRoundRect(920, 20, 360, 580, 20, 20);
+		graphics.fillRoundRect(20, 620, 1260, 260, 20, 20);
 	}
 
 	/** Conversion en coordonnées d'affichage
