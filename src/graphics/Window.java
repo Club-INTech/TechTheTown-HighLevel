@@ -22,90 +22,103 @@
 package graphics;
 
 import scripts.ScriptManager;
+import smartMath.Segment;
+import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
+import tests.container.A;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
- * interface graphique de debugage
- * @author Etienne
- *
+ * Interface graphique pour faciliter le debugage HL
+ * @author Etienne, rem
  */
 public class Window extends JFrame
 {
 	/** numéro de serialisation	 */
 	private static final long serialVersionUID = -3140220993568124763L;
 
-	private TablePanel mPanel;
-	private SensorPanel mSensorPanel;
-	private Mouse mMouse;
-	private Keyboard mKeyboard;
-	
-	public Window(Table table, GameState mRobot, ScriptManager scriptManager)
+	/** Panels : sert à définir ce que l'on dessine sur la fenêtre */
+	private TablePanel tablePanel;
+
+	/** Mouse Listener & Keyboard Listener */
+	private Mouse mouse;
+	private Keyboard keyboard;
+
+	/** Couleur de fond */
+	private Color backgroundColor = new Color(25, 20, 30);
+
+	/** Construit toute l'interface : cette dernière contient la table (avec robot et chemin), ainsi que l'état du robot
+	 * (action executée, état de certaines variables, ...)
+	 * @param table
+	 * @param state
+	 * @param scriptManager
+	 */
+	public Window(Table table, GameState state, ScriptManager scriptManager)
 	{
-		this.setVisible(true);
-		this.setTitle("Table");
-	    this.setSize(600, 400);
+		this.setTitle("Interface - Full");
+	    this.setSize(1300, 935);
 	    this.setLocationRelativeTo(null);
+	    this.setResizable(false);
+	    this.setBackground(backgroundColor);
 	    
-	    mPanel = new TablePanel(table, mRobot.robot);
-	    this.setContentPane(mPanel);
+	    tablePanel = new TablePanel(table, state.robot);
+	    this.setContentPane(tablePanel);
 	    
-	    mMouse = new Mouse(mPanel);
-	    addMouseListener(mMouse);
+	    mouse = new Mouse(tablePanel);
+	    addMouseListener(mouse);
 	    
-	    mKeyboard = new Keyboard(mRobot, scriptManager);
-	    addKeyListener(mKeyboard);
+	    keyboard = new Keyboard(state, scriptManager);
+	    addKeyListener(keyboard);
+
+	    this.setVisible(true);
 	}
 
+	/** Construit l'interface de debug du pathfinding : ce dernier contient la table, sur laquelle est présente le graph,
+	 * un mouse Listener permettant de tester le pathfinding de manière interactive, ainsi que quelques infos de debug
+	 * @param table
+	 */
 	public Window(Table table)
 	{
-		this.setVisible(true);
-		this.setTitle("table");
-		this.setSize(600, 400);
+		this.setTitle("Interface - Pathfinding");
+		this.setSize(1300, 935);
 		this.setLocationRelativeTo(null);
+		this.setResizable(false);
+		this.setBackground(backgroundColor);
 
-		mPanel = new TablePanel(table);
-		this.setContentPane(mPanel);
+		tablePanel = new TablePanel(table);
+		this.setContentPane(tablePanel);
 
-		mMouse = new Mouse(mPanel);
-		addMouseListener(mMouse);
+		mouse = new Mouse(tablePanel);
+		addMouseListener(mouse);
 
-	}
-	
-	public Window()
-	{
 		this.setVisible(true);
-		this.setTitle("sensorValues");
-	    this.setSize(1200, 800);
-	    this.setLocationRelativeTo(null);
-	    
-	    mSensorPanel = new SensorPanel();
-	    this.setContentPane(mSensorPanel);
 	}
-	
-	/**
-	 * 
-	 * @return le panneau
-	 */
+
+	/** Permet d'afficher les aretes/le chemin */
+	public void setArete(ArrayList<Segment> aretes){
+		tablePanel.setAretes(aretes);
+		repaint();
+	}
+	public void setPath(ArrayList<Vec2> path){
+		tablePanel.setPath(path);
+		repaint();
+	}
+
+	/** Getters */
 	public TablePanel getPanel()
 	{
-		return mPanel;
+		return tablePanel;
 	}
-	
-	public void drawInt(int value1, int value2, int value3, int value4)
-	{
-		mSensorPanel.drawInteger(new Integer(value1), new Integer(value2), new Integer(value3), new Integer(value4));
-	}
-	
 	public Mouse getMouse()
 	{
-		return mMouse;
+		return mouse;
 	}
-
 	public Keyboard getKeyboard()
 	{
-		return mKeyboard;
+		return keyboard;
 	}
 }
