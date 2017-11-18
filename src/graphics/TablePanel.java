@@ -68,8 +68,8 @@ public class TablePanel extends JPanel
 	private Color unconfirmedColor = new Color(220, 220, 50, 100);
 	private Color robotColor = new Color(50, 180, 50, 100);
 	private Color teamColor = new Color(50, 80, 50, 220);
-	private Color pathColor = new Color(50, 80, 120);
-	private Color graphColor = new Color(80, 40, 60);
+	private Color pathColor = new Color(60, 0, 80);
+	private Color graphColor = new Color(50, 80, 120, 200);
 
 	/** Construit un panel pour du l'interface full
 	 * @param table
@@ -191,6 +191,8 @@ public class TablePanel extends JPanel
 				pathNode1 = changeRefToDisplay(ridge.getA());
 				pathNode2 = changeRefToDisplay(ridge.getB());
 				graphics.drawLine(pathNode1.getX(), pathNode1.getY(), pathNode2.getX(), pathNode2.getY());
+				graphics.fillOval(pathNode1.getX() - 4, pathNode1.getY() - 4, 8, 8);
+				graphics.fillOval(pathNode2.getX() - 4, pathNode2.getY() - 4, 8, 8);
 			}
 		}
 
