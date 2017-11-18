@@ -19,70 +19,37 @@
 
 package tests;
 
-import exceptions.ContainerException;
 import graphics.Window;
-import org.junit.Before;
 import org.junit.Test;
+import smartMath.Segment;
 import smartMath.Vec2;
 import table.Table;
-import utils.Sleep;
-
 import java.util.ArrayList;
 
 public class JUnit_Graphics extends JUnit_Test
 {
+	/** La JFrame à tester */
 	private Window win;
-	
-    @Before
-    public void setUp() throws Exception
-    {
-        super.setUp();
-    	//
-    	//win = new Window((Table)container.getService(ServiceNames.TABLE)/*, (Robot)container.getService(ServiceNames.ROBOT)*/);
-    }
-    
-    //test de l'intersection de deux segments
-    //@Test
-    public void testPanel() throws InterruptedException
-    {
-    	ArrayList<Vec2> path = new ArrayList<Vec2>();
-    	path.add(new Vec2(0, 100));
-    	path.add(new Vec2(0, 1900));
-    	path.add(new Vec2(-1400, 1900));
-    	path.add(new Vec2(-1400, 100));
-    	win.getPanel().drawArrayList(path);
-    	Thread.sleep(5000);
-    }
-    
-    //@Test
-    public void testSensorPanel() throws InterruptedException
-    {
-    	win = new Window();
-    	for(int i = 10; i < 10000; i += 10)
-    	{
-    		win.drawInt((int)(10*Math.cos((double)i/10)), (int)(20*Math.cos((double)i/20)), (int)(30*Math.cos((double)i/40)), (int)(40*Math.cos((double)i/80)));
-    		Sleep.sleep(200);
-    	}
-    }
 
-    @Test
-	public void showTable()
-	{
-		try {
+	/** La table */
+	private Table table;
 
-			win = new Window((Table) container.getService(Table.class));
+	/** Test du debug pathfinding */
+	@Test
+	public void testWinTable() throws Exception {
+		table = container.getService(Table.class);
+		ArrayList<Segment> ridges = new ArrayList<>();
+		ArrayList<Vec2> path = new ArrayList<>();
 
-			win.getPanel().repaint();
+		ridges.add(new Segment(new Vec2(-300, 200), new Vec2(1000, 800)));
+		path.add(new Vec2(100, 100));
+		path.add(new Vec2(200, 400));
+		path.add(new Vec2(300, 500));
 
-			while(true)
-			{
-				Thread.sleep(500);
-			}
-
-
-		} catch (ContainerException | InterruptedException e) {
-			e.printStackTrace();
-		}
-
+		win = new Window(table);
+		Thread.sleep(5000);
+		win.getPanel().setAretes(ridges);
+		win.getPanel().setPath(path);
+		Thread.sleep(5000);
 	}
 }
