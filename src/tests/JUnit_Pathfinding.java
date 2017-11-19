@@ -22,6 +22,7 @@ package tests;
 import exceptions.ContainerException;
 import graphics.Window;
 import org.junit.Test;
+import pathfinder.Graphe;
 import pathfinder.Pathfinding;
 import smartMath.Vec2;
 import table.Table;
@@ -61,6 +62,12 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
 
         Window window=new Window(table);
+        Graphe graphe=new Graphe();
+        window.setArete(graphe.getNodesbones());
+
+
+
+
 
         Thread.sleep(20000);
     }

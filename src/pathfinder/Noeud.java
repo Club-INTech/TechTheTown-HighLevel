@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Noeud {
     public Vec2 position;
-    int heuristique;
+    public int heuristique;
 
 
     public Noeud(Vec2 position, int heuristique) {

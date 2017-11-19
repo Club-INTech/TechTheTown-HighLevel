@@ -21,6 +21,9 @@
 
 package graphics;
 
+import org.jfree.chart.axis.SegmentedTimeline;
+import pathfinder.Arete;
+import pathfinder.Noeud;
 import scripts.ScriptManager;
 import smartMath.Segment;
 import smartMath.Vec2;
@@ -30,7 +33,7 @@ import tests.container.A;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Interface graphique pour faciliter le debugage HL
@@ -99,7 +102,13 @@ public class Window extends JFrame
 	}
 
 	/** Permet d'afficher les aretes/le chemin */
-	public void setArete(ArrayList<Segment> aretes){
+	public void setArete(HashMap<Noeud,ArrayList<Arete>> nodesbones){
+		HashSet<Arete> aretes=new HashSet<>();
+		Collection<ArrayList<Arete>> listaretes=nodesbones.values();
+		for(ArrayList<Arete> boneslist:listaretes){
+			aretes.addAll(boneslist);
+		}
+		System.out.println(aretes.size());
 		tablePanel.setAretes(aretes);
 		repaint();
 	}

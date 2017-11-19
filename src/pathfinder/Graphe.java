@@ -17,14 +17,19 @@ public class Graphe {
     static ArrayList<ObstacleCircular> listCircu;
     static ArrayList<ObstacleRectangular> listRectangu;
     private ObstacleManager obstacleManager;
-    public ArrayList<Noeud> nodes;
+    private ArrayList<Noeud> nodes;
     //dictionnaire contenant les arêtes associées à chaque noeud
-    public HashMap<Noeud,ArrayList<Arete>> nodesbones;
+    private HashMap<Noeud,ArrayList<Arete>> nodesbones;
 
 
     /*Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
     là où il y'a des obstacles
      */
+    public Graphe(){
+        this.nodes=new ArrayList<Noeud>();
+        this.nodes=createNodes();
+        this.nodesbones=createAretes();
+    }
 
     public ArrayList<Noeud> createNodes() {
         int pasX = 300;
@@ -47,7 +52,7 @@ public class Graphe {
     }
     //Méthode pour tester si les noeuds rencontrent des obstacles
 
-    private ArrayList<Noeud> nodesInObstacles(ArrayList<Noeud> nodes) {
+    public ArrayList<Noeud> nodesInObstacles(ArrayList<Noeud> nodes) {
         listCircu = obstacleManager.getmCircularObstacle();
         listRectangu = obstacleManager.getRectangles();
         int n = listCircu.size();
@@ -100,7 +105,7 @@ public class Graphe {
     donc implicitement une liste de noeuds, le tout stocké dans un dictionnaire
      */
 
-    public void createAretes(){
+    public HashMap<Noeud,ArrayList<Arete>> createAretes(){
         ArrayList<Noeud> nodes=createNodes();
         nodesbones=new HashMap<>();
         ArrayList<Arete> listaretes=new ArrayList<>();
@@ -128,14 +133,19 @@ public class Graphe {
             }
 
         }
+    return nodesbones;
 
 
     }
 
-
-
-
+    public ArrayList<Noeud> getNodes() {
+        return nodes;
     }
+
+    public HashMap<Noeud, ArrayList<Arete>> getNodesbones() {
+        return nodesbones;
+    }
+}
 
 
 

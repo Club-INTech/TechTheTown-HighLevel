@@ -21,10 +21,12 @@ package tests;
 
 import graphics.Window;
 import org.junit.Test;
+import pathfinder.Arete;
 import smartMath.Segment;
 import smartMath.Vec2;
 import table.Table;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class JUnit_Graphics extends JUnit_Test
 {
@@ -38,18 +40,14 @@ public class JUnit_Graphics extends JUnit_Test
 	@Test
 	public void testWinTable() throws Exception {
 		table = container.getService(Table.class);
-		ArrayList<Segment> ridges = new ArrayList<>();
+		HashSet<Arete> ridges = new HashSet<Arete>();
 		ArrayList<Vec2> path = new ArrayList<>();
 
-		ridges.add(new Segment(new Vec2(-300, 200), new Vec2(1000, 800)));
-		path.add(new Vec2(100, 100));
-		path.add(new Vec2(200, 400));
-		path.add(new Vec2(300, 500));
+
 
 		Thread.sleep(500);
 		win = new Window(table);
 		Thread.sleep(5000);
-		win.setArete(ridges);
 		win.setPath(path);
 		Thread.sleep(5000);
 	}

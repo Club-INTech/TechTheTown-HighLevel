@@ -21,6 +21,8 @@
 
 package graphics;
 
+import pathfinder.Arete;
+import pathfinder.Noeud;
 import robot.Robot;
 import smartMath.Segment;
 import smartMath.Vec2;
@@ -36,6 +38,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * panneau sur lequel est dessine la table
@@ -49,7 +53,7 @@ public class TablePanel extends JPanel
 
 	/** Champs pour l'interface Pathfinding : n'ayant pas de robot instancié, on récupère en brut les données */
 	private ArrayList<Vec2> path;
-	private ArrayList<Segment> aretes;
+	private HashSet<Arete> aretes;
 	public static boolean showGraph = false;
 
 	/** Table & robot */
@@ -78,7 +82,7 @@ public class TablePanel extends JPanel
 	public TablePanel(Table table, Robot robot)
 	{
 		path = new ArrayList<>();
-		aretes = new ArrayList<>();
+		aretes = new HashSet<>();
 		this.table = table;
 		this.robot = robot;
 
@@ -95,7 +99,7 @@ public class TablePanel extends JPanel
 	public TablePanel(Table table)
 	{
 		path = new ArrayList<>();
-		aretes = new ArrayList<>();
+		aretes = new HashSet<>();
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
@@ -187,9 +191,9 @@ public class TablePanel extends JPanel
 		// Le graphe
 		if(showGraph){
 			graphics.setColor(graphColor);
-			for (Segment ridge : aretes){
-				pathNode1 = changeRefToDisplay(ridge.getA());
-				pathNode2 = changeRefToDisplay(ridge.getB());
+			for (Arete ridge : aretes){
+				pathNode1 = changeRefToDisplay(ridge.noeud1.position);
+				pathNode2 = changeRefToDisplay(ridge.noeud2.position);
 				graphics.drawLine(pathNode1.getX(), pathNode1.getY(), pathNode2.getX(), pathNode2.getY());
 				graphics.fillOval(pathNode1.getX() - 4, pathNode1.getY() - 4, 8, 8);
 				graphics.fillOval(pathNode2.getX() - 4, pathNode2.getY() - 4, 8, 8);
@@ -215,7 +219,7 @@ public class TablePanel extends JPanel
 		removeAll();
 		revalidate();
 	}
-	public void setAretes(ArrayList<Segment> aretes) {
+	public void setAretes(HashSet<Arete> aretes) {
 		this.aretes = aretes;
 		removeAll();
 		revalidate();
