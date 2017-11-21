@@ -108,10 +108,10 @@ public class Pathfinding implements Service {
                 if(contain(aretelist,nodestofollow.get(j))){
                     int ind=j;
                 }
-            for(int k=j;j>=i;j--){
+                for(int k=j;j>=i;j--){
                     nodestofollow.remove(k);
                     pathtofollow.remove(nodestofollow.get(k).position);
-            }
+                }
 
             }
         }
@@ -128,20 +128,13 @@ public class Pathfinding implements Service {
         return false;
     }
 
-    public ArrayList<Vec2> findmyway (Vec2 positiondepart, Vec2 positionarrive){
-        ArrayList<Noeud> openList;
-        ArrayList<Noeud> closeList;
-       // ArrayList<Arete> aretes = graphe.createAretes();
-        ArrayList<Noeud> nodes = graphe.createNodes();
-        HashMap<Noeud,ArrayList<Arete>> nodesbones = graphe.nodesbones;
-        Noeud noeuddepart = new Noeud(positiondepart, 0);
-        Noeud noeudarrive = new Noeud(positionarrive, 1);
 
 
 
-    }
 
+/*
 
+    //test de présence d'un noeau dans une liste
     public boolean NodeInList(ArrayList<Noeud> lst, Noeud node){
         for(int i = 0; i < lst.size(); i++ ){
             if (lst.get(i)==node){
@@ -151,7 +144,15 @@ public class Pathfinding implements Service {
         return false;
     }
 
+    //rajoute dans une liste les voisins d'un noeud
+    public void OpenList(Noeud node, ArrayList<Noeud> list, ArrayList areteliste){
+        for(int i; i<areteliste.size();i++){
+            if(node == areteliste.get(i).noeud1){
 
+            }
+        }
+    }
+*/
 }
 
 
