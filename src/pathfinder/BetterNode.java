@@ -5,12 +5,12 @@ public class BetterNode {
     //methode comparant la qualité de deux noeuds
 
     public int BetterNode(Noeud noeud1, Noeud noeud2, Noeud noeudarrive){
-        noeud1.heuristique = (int) noeud1.position.distance(noeudarrive.position);
-        noeud2.heuristique = (int) noeud2.position.distance(noeudarrive.position);
-        if(noeud1.heuristique>noeud2.heuristique){
+        noeud1.setHeuristique( (int) noeud1.getPosition().distance(noeudarrive.getPosition()));
+        noeud2.setHeuristique( (int) noeud2.getPosition().distance(noeudarrive.getPosition()));
+        if(noeud1.getHeuristique()>noeud2.getHeuristique()){
             return 1;
         }
-        else if(noeud1.heuristique<noeud2.heuristique){
+        else if(noeud1.getHeuristique()<noeud2.getHeuristique()){
             return -1;
         }
         else{

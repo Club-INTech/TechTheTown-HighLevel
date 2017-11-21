@@ -17,7 +17,24 @@ public class Noeud {
     }
 
 
-    /*private Vec2 alineate(int xdepart, int ydepart,int xPointoalinate,int yPointoalinate) {
+    public Vec2 getPosition() {
+        return position;
+    }
+
+    public int getHeuristique(){
+        return heuristique;
+    }
+
+    public void setPosition(Vec2 position) {
+        this.position = position;
+    }
+
+    public void setHeuristique(int heuristique) {
+        this.heuristique = heuristique;
+    }
+}
+
+/*private Vec2 alineate(int xdepart, int ydepart,int xPointoalinate,int yPointoalinate) {
         Vec2 position = new Vec2();
         double r = Math.sqrt((Math.pow(xPointoalinate - xdepart, 2)) - Math.pow(yPointoalinate - ydepart, 2));
         double r1 = 0;
@@ -33,10 +50,3 @@ public class Noeud {
 
 
     }*/
-
-    public Vec2 getPosition() {
-        return position;
-    }
-
-}
-
