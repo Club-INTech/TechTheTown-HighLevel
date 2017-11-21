@@ -149,15 +149,6 @@ public class Pathfinding implements Service {
 
 /*
 
-    //test de présence d'un noeau dans une liste
-    public boolean NodeInList(ArrayList<Noeud> lst, Noeud node){
-        for(int i = 0; i < lst.size(); i++ ){
-            if (lst.get(i)==node){
-                return true;
-            }
-        }
-        return false;
-    }
 
     //rajoute dans une liste les voisins d'un noeud
     public void OpenList(Noeud node, ArrayList<Noeud> list, ArrayList areteliste){
