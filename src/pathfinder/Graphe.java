@@ -34,13 +34,10 @@ public class Graphe {
         listRectangu = table.getObstacleManager().getRectangles();
         this.table=table;
         this.nodes=new ArrayList<Noeud>();
-        System.out.println("haha");
         this.nodes=createNodes();
         long time1=System.currentTimeMillis();
-        System.out.println("je suis là");
         this.nodesbones=new HashMap<>();
         this.nodesbones=createAretes();
-        System.out.println("Coucou");
         long time2=System.currentTimeMillis()-time1;
         System.out.println("Time to create graph (ms): "+time2);
 
@@ -55,7 +52,6 @@ public class Graphe {
         int y;
         int n = listCircu.size();
         int m = listRectangu.size();
-        System.out.println("listRectangu" + m);
         ArrayList<Noeud> node = new ArrayList<>();
         ArrayList<Noeud> nodesToKeep = new ArrayList<>();
         for (int i = 1; i < 3000 / pasX; i++) {
@@ -70,7 +66,6 @@ public class Graphe {
         }
 
         int k = node.size();
-        System.out.println("nodesize" + k);
         boolean toKeep;
         for (int i = 0; i < k; i++) {
             int xNoeud = node.get(i).getPosition().getX();
@@ -115,58 +110,9 @@ public class Graphe {
             //}
 
        // }
-        System.out.println("taille de nodesTokeep"+nodesToKeep.size());
         return nodesToKeep;
     }
 
-    //Méthode pour tester si les noeuds rencontrent des obstacles
-
-    /*private ArrayList<Noeud> nodesInObstacles(ArrayList<Noeud> noeuds) {
-        int n = listCircu.size();
-        int m = listRectangu.size();
-        int k = noeuds.size();
-        ArrayList<Noeud> noeudstoremove=new ArrayList<>();
-        /*for (int i = 0; i < k; i++) {
-            for (int j = 0; j < m; j++) {
-                int xObstaclerectan = listRectangu.get(j).getPosition().getX();
-                int yObstaclerectan = listRectangu.get(j).getPosition().getY();
-                int dx = listRectangu.get(j).getSizeX() / 2;
-                int dy = listRectangu.get(j).getSizeY() / 2;
-                int x1 = xObstaclerectan + dx;
-                int x2 = xObstaclerectan - dx;
-                int y1 = yObstaclerectan + dy;
-                int y2 = yObstaclerectan - dy;
-                if (noeuds.get(i).position.getX()<x1 && noeuds.get(i).position.getX()<x2 && noeuds.get(i).position.getY()<y1 && noeuds.get(i).position.getY()<y2){
-                    noeuds.remove(i);
-                }
-            }
-        }
-        System.out.println("listCircu"+listCircu.size());
-        for (int i = 0; i < k; i++) {
-            int xNoeud = noeuds.get(i).getPosition().getX();
-            int yNoeud = noeuds.get(i).getPosition().getY();
-            for (int j = 0; j < n; j++) {
-                int xcentreObstacleCircu = listCircu.get(j).getPosition().getX();
-                int ycentreObstacleCircu = listCircu.get(j).getPosition().getY();
-                int rayonObstacleCircu = listCircu.get(j).getRadius();
-                System.out.println("xNoeud"+xNoeud);
-                System.out.println("yNoeud"+yNoeud);
-
-                //int distanceDeSecurite=264;
-                if (Math.pow(xNoeud - xcentreObstacleCircu, 2) + Math.pow(yNoeud - ycentreObstacleCircu, 2) <= Math.pow(rayonObstacleCircu, 2)) {
-                    noeudstoremove.add(nodes.get(i));
-                    System.out.println("coucouuuuuuuuu");
-                }
-                //test pour savoir si les noeuds se trouvent à côté des obstacles circulaires
-                /*if (Math.pow(xNoeud - xcentreObstacleCircu, 2) + Math.pow(yNoeud - ycentreObstacleCircu, 2) < Math.pow(rayonObstacleCircu + distanceDeSecurite, 2)) {
-                    nodes.get(i).heuristique = 1;
-                }
-
-            }
-        System.out.println("le nombre de noeuds à supprimer"+noeudstoremove.size());
-        return noeuds;
-        }
-        */
     /**Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
     l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
     ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
@@ -201,7 +147,6 @@ public class Graphe {
             }
 
         }
-    System.out.println("l"+l);
     return nodesbones;
 
 

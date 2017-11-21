@@ -69,9 +69,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
 
         Window window=new Window(table);
-        System.out.println("je suis par là");
         Graphe graphe=new Graphe(table);
-        System.out.println("oui");
         window.setArete(graphe.getNodesbones());
 
 
