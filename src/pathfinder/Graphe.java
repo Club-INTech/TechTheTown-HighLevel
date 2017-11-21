@@ -4,6 +4,7 @@ import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
 import sun.font.TrueTypeFont;
+import table.Table;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleManager;
 import table.obstacles.ObstacleRectangular;
@@ -14,51 +15,66 @@ import java.util.HashMap;
 
 
 public class Graphe {
-    static ArrayList<ObstacleCircular> listCircu;
-    static ArrayList<ObstacleRectangular> listRectangu;
-    private ObstacleManager obstacleManager;
+    private ArrayList<ObstacleCircular> listCircu;
+    private ArrayList<ObstacleRectangular> listRectangu;
+    private Table table;
     private ArrayList<Noeud> nodes;
     //dictionnaire contenant les arêtes associées à chaque noeud
     private HashMap<Noeud,ArrayList<Arete>> nodesbones;
 
 
-    /*Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
+    /**Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
     là où il y'a des obstacles
      */
-    public Graphe(){
+    public Graphe(Table table){
+        this.listCircu=new ArrayList<>();
+        this.listCircu = table.getObstacleManager().getmCircularObstacle();
+        this.listRectangu=new ArrayList<>();
+        this.table=table;
         this.nodes=new ArrayList<Noeud>();
+        System.out.println("haha");
         this.nodes=createNodes();
+        long time1=System.currentTimeMillis();
+        System.out.println("je suis là");
+        this.nodesbones=new HashMap<>();
         this.nodesbones=createAretes();
+        System.out.println("Coucou");
+        long time2=System.currentTimeMillis()-time1;
+        System.out.println("Time to create graph (ms): "+time2);
+
     }
 
     public ArrayList<Noeud> createNodes() {
-        int pasX = 300;
-        int pasY = 200;
-        int x = -1500;
-        int y = 0;
-        Vec2 nodeposition = new Vec2();
-        for (int i = 0; i < pasX * 3000; i++) {
-            for (int j = 0; j < pasY * 1500; i++) {
-                x = x + pasX * i;
-                y = y + pasY * j;
+        int pasX = 500;
+        int pasY = 400;
+        int xdebut = -1500;
+        int ydebut = 0;
+        int x;
+        int y;
+        for (int i = 0; i <= 3000/pasX; i++) {
+            x = i*pasX+xdebut;
+            for (int j = 0; j <=2000/pasY; j++) {
+                Vec2 nodeposition = new Vec2();
                 nodeposition.setX(x);
+                y = j*pasY+ydebut ;
                 nodeposition.setY(y);
                 nodes.add(new Noeud(nodeposition, 0));
             }
         }
 
         nodes =nodesInObstacles(nodes);
+        System.out.println("la taille de nodes"+nodes.size());
         return nodes;
     }
     //Méthode pour tester si les noeuds rencontrent des obstacles
 
-    public ArrayList<Noeud> nodesInObstacles(ArrayList<Noeud> nodes) {
-        listCircu = obstacleManager.getmCircularObstacle();
-        listRectangu = obstacleManager.getRectangles();
+    public ArrayList<Noeud> nodesInObstacles(ArrayList<Noeud> noeuds) {
+        listRectangu = table.getObstacleManager().getRectangles();
         int n = listCircu.size();
         int m = listRectangu.size();
-        int k = nodes.size();
-        for (int i = 0; i < k; i++) {
+        int k = noeuds.size();
+        ArrayList<Noeud> noeudstoremove=new ArrayList<>();
+        /*for (int i = 0; i < k; i++) {
             for (int j = 0; j < m; i++) {
                 int xObstaclerectan = listRectangu.get(j).getPosition().getX();
                 int yObstaclerectan = listRectangu.get(j).getPosition().getY();
@@ -69,36 +85,39 @@ public class Graphe {
                 int y1 = yObstaclerectan + dy;
                 int y2 = yObstaclerectan - dy;
                 if (nodes.get(i).position.getX() < x1 && nodes.get(i).position.getX() < x2 && nodes.get(i).position.getY() < y1 && nodes.get(i).position.getY() < y2) {
-                    nodes.remove(i);
+                    nodes.remove(nodes.get(i));
                 }
-
-
             }
-        }
+        }*/
+        System.out.println("listCircu"+listCircu.size());
         for (int i = 0; i < k; i++) {
-            for (int j = 0; i < n; i++) {
+            int xNoeud = noeuds.get(i).position.getX();
+            int yNoeud = noeuds.get(i).position.getY();
+            for (int j = 0; j < n; j++) {
                 int xcentreObstacleCircu = listCircu.get(j).getPosition().getX();
                 int ycentreObstacleCircu = listCircu.get(j).getPosition().getY();
                 int rayonObstacleCircu = listCircu.get(j).getRadius();
-                int xNoeud = nodes.get(i).position.getX();
-                int yNoeud = nodes.get(i).position.getY();
-                int distanceDeSecurite=264;
-                if (Math.pow(xNoeud - xcentreObstacleCircu, 2) + Math.pow(yNoeud - ycentreObstacleCircu, 2) < Math.pow(rayonObstacleCircu, 2)) {
-                    nodes.remove(i);
+                System.out.println("xNoeud"+xNoeud);
+                System.out.println("yNoeud"+yNoeud);
+
+                //int distanceDeSecurite=264;
+                if (Math.pow(xNoeud - xcentreObstacleCircu, 2) + Math.pow(yNoeud - ycentreObstacleCircu, 2) <= Math.pow(rayonObstacleCircu, 2)) {
+                    noeudstoremove.add(nodes.get(i));
+                    System.out.println("coucouuuuuuuuu");
                 }
                 //test pour savoir si les noeuds se trouvent à côté des obstacles circulaires
-                if (Math.pow(xNoeud - xcentreObstacleCircu, 2) + Math.pow(yNoeud - ycentreObstacleCircu, 2) < Math.pow(rayonObstacleCircu + distanceDeSecurite, 2)) {
+                /*if (Math.pow(xNoeud - xcentreObstacleCircu, 2) + Math.pow(yNoeud - ycentreObstacleCircu, 2) < Math.pow(rayonObstacleCircu + distanceDeSecurite, 2)) {
                     nodes.get(i).heuristique = 1;
                 }
-
+                */
 
             }
 
-
         }
-        return nodes;
+        System.out.println("le nombre de noeuds à supprimer"+noeudstoremove.size());
+        return noeuds;
     }
-    /*Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
+    /**Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
     l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
     ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
     déja un chemin à suivre, à chaque noeud, on associe une liste d'arete qui lui est propre
@@ -106,33 +125,33 @@ public class Graphe {
      */
 
     public HashMap<Noeud,ArrayList<Arete>> createAretes(){
-        ArrayList<Noeud> nodes=createNodes();
-        nodesbones=new HashMap<>();
         ArrayList<Arete> listaretes=new ArrayList<>();
         Arete arete;
 
-
+        int l=0;
         int n=nodes.size();
-        for(int i=0; i<n;i++){
-            for(int j=1;j<n;i++){
+        for(int i=0; i<n-1;i++){
+            for(int j=i+1;j<n;j++){
                 Segment segment=new Segment(nodes.get(i).position,nodes.get(j).position);
+                boolean isIntersection=false;
                 for(int k=0;k<listCircu.size();k++){
-                    if(!Geometry.intersects(segment,listCircu.get(k).getCircle())){
-                        double cost=Segment.squaredLength(nodes.get(i).position,nodes.get(j).position);
-                        arete = new Arete(nodes.get(i),nodes.get(j),cost);
-                        listaretes.add(arete);
-                        nodesbones.put(nodes.get(i),listaretes);
-
-                    }
-
+                    if(Geometry.intersects(segment,listCircu.get(k).getCircle())){
+                        isIntersection=true;
+                        }
                 }
-
-
+                if (!isIntersection) {
+                    double cost = Segment.squaredLength(nodes.get(i).position, nodes.get(j).position);
+                    arete = new Arete(nodes.get(i), nodes.get(j), cost);
+                    l=l+1;
+                    listaretes.add(arete);
+                    nodesbones.put(nodes.get(i), listaretes);
+                }
 
 
             }
 
         }
+    System.out.println("l"+l);
     return nodesbones;
 
 

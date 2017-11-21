@@ -45,10 +45,10 @@ public class JUnit_Graphics extends JUnit_Test
 
 
 
-		Thread.sleep(500);
+		//Thread.sleep(500);
 		win = new Window(table);
-		Thread.sleep(5000);
+		//Thread.sleep(5000);
 		win.setPath(path);
-		Thread.sleep(5000);
+		//Thread.sleep(5000);
 	}
 }

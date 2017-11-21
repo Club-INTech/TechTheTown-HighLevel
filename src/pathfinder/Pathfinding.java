@@ -24,6 +24,7 @@ import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.Vec2;
 import sun.nio.cs.ArrayEncoder;
+import table.Table;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleManager;
 import utils.Log;
@@ -40,6 +41,7 @@ public class Pathfinding implements Service {
     Log logn;
     Config config;
     private Graphe graphe;
+
 
 
 
@@ -77,7 +79,8 @@ public class Pathfinding implements Service {
     */
 
     public ArrayList<Vec2> findmeaway(Vec2 positiondepart, Vec2 positionarrivee) {
-        graphe = new Graphe();
+        Table table=new Table(logn,config);
+        graphe = new Graphe(table);
         ArrayList<Noeud> nodes = graphe.getNodes();
         HashMap<Noeud, ArrayList<Arete>> nodesbones = graphe.getNodesbones();
         Noeud noeudepart = new Noeud(positiondepart, 0);
