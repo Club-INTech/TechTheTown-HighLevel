@@ -73,7 +73,6 @@ public class JUnit_Pathfinding extends JUnit_Test{
         Graphe graphe=new Graphe(table);
         System.out.println("oui");
         window.setArete(graphe.getNodesbones());
-        //pathfinding.findmeaway(example,example2);
 
 
 

@@ -192,8 +192,8 @@ public class TablePanel extends JPanel
 		if(showGraph){
 			graphics.setColor(graphColor);
 			for (Arete ridge : aretes){
-				pathNode1 = changeRefToDisplay(ridge.noeud1.position);
-				pathNode2 = changeRefToDisplay(ridge.noeud2.position);
+				pathNode1 = changeRefToDisplay(ridge.noeud1.getPosition());
+				pathNode2 = changeRefToDisplay(ridge.noeud2.getPosition());
 				graphics.drawLine(pathNode1.getX(), pathNode1.getY(), pathNode2.getX(), pathNode2.getY());
 				graphics.fillOval(pathNode1.getX() - 4, pathNode1.getY() - 4, 8, 8);
 				graphics.fillOval(pathNode2.getX() - 4, pathNode2.getY() - 4, 8, 8);

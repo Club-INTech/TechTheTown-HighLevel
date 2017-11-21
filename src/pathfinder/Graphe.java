@@ -12,6 +12,7 @@ import tests.container.A;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 
 public class Graphe {
@@ -30,6 +31,7 @@ public class Graphe {
         this.listCircu=new ArrayList<>();
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu=new ArrayList<>();
+        listRectangu = table.getObstacleManager().getRectangles();
         this.table=table;
         this.nodes=new ArrayList<Noeud>();
         System.out.println("haha");
@@ -51,31 +53,81 @@ public class Graphe {
         int ydebut = 0;
         int x;
         int y;
-        for (int i = 0; i <= 3000/pasX; i++) {
-            x = i*pasX+xdebut;
-            for (int j = 0; j <=2000/pasY; j++) {
+        int n = listCircu.size();
+        int m = listRectangu.size();
+        System.out.println("listRectangu" + m);
+        ArrayList<Noeud> node = new ArrayList<>();
+        ArrayList<Noeud> nodesToKeep = new ArrayList<>();
+        for (int i = 1; i < 3000 / pasX; i++) {
+            x = i * pasX + xdebut;
+            for (int j = 1; j < 2000 / pasY; j++) {
                 Vec2 nodeposition = new Vec2();
                 nodeposition.setX(x);
-                y = j*pasY+ydebut ;
+                y = j * pasY + ydebut;
                 nodeposition.setY(y);
-                nodes.add(new Noeud(nodeposition, 0));
+                node.add(new Noeud(nodeposition, 0));
             }
         }
 
-        nodes =nodesInObstacles(nodes);
-        System.out.println("la taille de nodes"+nodes.size());
-        return nodes;
+        int k = node.size();
+        System.out.println("nodesize" + k);
+        boolean toKeep;
+        for (int i = 0; i < k; i++) {
+            int xNoeud = node.get(i).getPosition().getX();
+            int yNoeud = node.get(i).getPosition().getY();
+            toKeep=true;
+            for (int j = 0; j < m; j++) {
+                int xObstaclerectan =listRectangu.get(j).getPosition().getX();
+                int yObstaclerectan = listRectangu.get(j).getPosition().getY();
+                int dx = listRectangu.get(j).getSizeX() / 2;
+                int dy = listRectangu.get(j).getSizeY() / 2;
+                int x1 = xObstaclerectan + dx;
+                int x2 = xObstaclerectan - dx;
+                int y1 = yObstaclerectan + dy;
+                int y2 = yObstaclerectan - dy;
+                if ((xNoeud <= x1) && (xNoeud >=x2) && (yNoeud <=y1) && (yNoeud >=y2)){
+                    toKeep=false;
+                }
+            }
+            if (toKeep){
+                nodesToKeep.add(node.get(i));
+            }
+        }
+        /*for (int i = 0; i < k; i++) {
+            int xNoeud = node.get(i).getPosition().getX();
+            int yNoeud = node.get(i).getPosition().getY();
+            for (int j = 0; j < n; j++) {
+                int xcentreObstacleCircu = listCircu.get(j).getPosition().getX();
+                int ycentreObstacleCircu = listCircu.get(j).getPosition().getY();
+                int rayonObstacleCircu = listCircu.get(j).getRadius();
+
+                if (Math.pow(xNoeud - xcentreObstacleCircu, 2) + Math.pow(yNoeud - ycentreObstacleCircu, 2) <= Math.pow(rayonObstacleCircu, 2)) {
+                    nodestoremove.add(node.get(i));
+                    System.out.println("coucouuuuuuuuu");
+                }
+                //int distanceDeSecurite=264;
+                //test pour savoir si les noeuds se trouvent à côté des obstacles circulaires
+                /*if (Math.pow(xNoeud - xcentreObstacleCircu, 2) + Math.pow(yNoeud - ycentreObstacleCircu, 2) < Math.pow(rayonObstacleCircu + distanceDeSecurite, 2)) {
+                    nodes.get(i).heuristique = 1;
+                }
+                */
+
+            //}
+
+       // }
+        System.out.println("taille de nodesTokeep"+nodesToKeep.size());
+        return nodesToKeep;
     }
+
     //Méthode pour tester si les noeuds rencontrent des obstacles
 
-    public ArrayList<Noeud> nodesInObstacles(ArrayList<Noeud> noeuds) {
-        listRectangu = table.getObstacleManager().getRectangles();
+    /*private ArrayList<Noeud> nodesInObstacles(ArrayList<Noeud> noeuds) {
         int n = listCircu.size();
         int m = listRectangu.size();
         int k = noeuds.size();
         ArrayList<Noeud> noeudstoremove=new ArrayList<>();
         /*for (int i = 0; i < k; i++) {
-            for (int j = 0; j < m; i++) {
+            for (int j = 0; j < m; j++) {
                 int xObstaclerectan = listRectangu.get(j).getPosition().getX();
                 int yObstaclerectan = listRectangu.get(j).getPosition().getY();
                 int dx = listRectangu.get(j).getSizeX() / 2;
@@ -84,15 +136,15 @@ public class Graphe {
                 int x2 = xObstaclerectan - dx;
                 int y1 = yObstaclerectan + dy;
                 int y2 = yObstaclerectan - dy;
-                if (nodes.get(i).position.getX() < x1 && nodes.get(i).position.getX() < x2 && nodes.get(i).position.getY() < y1 && nodes.get(i).position.getY() < y2) {
-                    nodes.remove(nodes.get(i));
+                if (noeuds.get(i).position.getX()<x1 && noeuds.get(i).position.getX()<x2 && noeuds.get(i).position.getY()<y1 && noeuds.get(i).position.getY()<y2){
+                    noeuds.remove(i);
                 }
             }
-        }*/
+        }
         System.out.println("listCircu"+listCircu.size());
         for (int i = 0; i < k; i++) {
-            int xNoeud = noeuds.get(i).position.getX();
-            int yNoeud = noeuds.get(i).position.getY();
+            int xNoeud = noeuds.get(i).getPosition().getX();
+            int yNoeud = noeuds.get(i).getPosition().getY();
             for (int j = 0; j < n; j++) {
                 int xcentreObstacleCircu = listCircu.get(j).getPosition().getX();
                 int ycentreObstacleCircu = listCircu.get(j).getPosition().getY();
@@ -109,14 +161,12 @@ public class Graphe {
                 /*if (Math.pow(xNoeud - xcentreObstacleCircu, 2) + Math.pow(yNoeud - ycentreObstacleCircu, 2) < Math.pow(rayonObstacleCircu + distanceDeSecurite, 2)) {
                     nodes.get(i).heuristique = 1;
                 }
-                */
 
             }
-
-        }
         System.out.println("le nombre de noeuds à supprimer"+noeudstoremove.size());
         return noeuds;
-    }
+        }
+        */
     /**Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
     l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
     ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
@@ -132,7 +182,7 @@ public class Graphe {
         int n=nodes.size();
         for(int i=0; i<n-1;i++){
             for(int j=i+1;j<n;j++){
-                Segment segment=new Segment(nodes.get(i).position,nodes.get(j).position);
+                Segment segment=new Segment(nodes.get(i).getPosition(),nodes.get(j).getPosition());
                 boolean isIntersection=false;
                 for(int k=0;k<listCircu.size();k++){
                     if(Geometry.intersects(segment,listCircu.get(k).getCircle())){
@@ -140,7 +190,7 @@ public class Graphe {
                         }
                 }
                 if (!isIntersection) {
-                    double cost = Segment.squaredLength(nodes.get(i).position, nodes.get(j).position);
+                    double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                     arete = new Arete(nodes.get(i), nodes.get(j), cost);
                     l=l+1;
                     listaretes.add(arete);

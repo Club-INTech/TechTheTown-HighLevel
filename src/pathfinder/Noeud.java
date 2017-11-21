@@ -7,8 +7,8 @@ import table.obstacles.ObstacleRectangular;
 import java.util.ArrayList;
 
 public class Noeud {
-    public Vec2 position;
-    public int heuristique;
+    private Vec2 position;
+    private int heuristique;
 
 
     public Noeud(Vec2 position, int heuristique) {
@@ -33,6 +33,10 @@ public class Noeud {
 
 
     }*/
+
+    public Vec2 getPosition() {
+        return position;
+    }
 
 }
 

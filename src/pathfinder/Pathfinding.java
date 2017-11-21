@@ -97,7 +97,7 @@ public class Pathfinding implements Service {
          */
         for (int i = 0; i < n; i++) {
             nodestofollow.add(closestNode(nodestofollow.get(i)));
-            pathtofollow.add(nodestofollow.get(i).position);
+            pathtofollow.add(nodestofollow.get(i).getPosition());
         }
         /*Améliorer le chemin trouvé en utilisant nodesbones
           Le chemin trouvé contient forcément le chemin optimal, à l'aide du dictionnaire
@@ -113,7 +113,7 @@ public class Pathfinding implements Service {
                 if (contain(aretelist, nodestofollow.get(j))) {
                     for (int k = j; k >= i; k--) {
                         nodestofollow.remove(k);
-                        pathtofollow.remove(nodestofollow.get(k).position);
+                        pathtofollow.remove(nodestofollow.get(k).getPosition());
                     }
 
                 }
