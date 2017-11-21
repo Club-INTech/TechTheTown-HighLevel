@@ -45,13 +45,13 @@ public abstract class JUnit_Test
 
 	/** The container. */
 	protected Container container;
-	
+
 	/** The config. */
 	protected Config config;
-	
+
 	/** The log. */
 	protected Log log;
-	
+
 	/**
 	 * Sets the up.
 	 *
@@ -64,17 +64,17 @@ public abstract class JUnit_Test
 		config = container.getConfig();
 		log = container.getService(Log.class);
 	}
-	
+
 	/**
 	 * le set up du match en cours (mise en place des actionneurs)
-	 * @param sensorsCard 
+	 * @param sensorsCard
 	 * @param robot le robot a setuper
 	 */
 	public void waitMatchBegin(EthWrapper sensorsCard, Robot robot)
 	{
 
 		System.out.println("Robot pret pour le match, attente du retrait du jumper");
-		
+
 		// attends que le jumper soit retiré du robot
 
 		while(sensorsCard.isJumperAbsent())
@@ -108,7 +108,7 @@ public abstract class JUnit_Test
 	{
 		robot.setPosition(Table.entryPosition);
 	}
-	
+
 	public void returnToEntryPosition(GameState state) throws UnableToMoveException, PointInObstacleException
 	{
 		state.robot.moveToLocation(new Vec2(Table.entryPosition.getX()-120, Table.entryPosition.getY()+90), state.table);
@@ -116,7 +116,7 @@ public abstract class JUnit_Test
 		state.robot.moveLengthwise(-150);
 		state.robot.turn(Math.PI);
 	}
-	
+
 
 	/**
 	 * Tear down.
@@ -124,7 +124,7 @@ public abstract class JUnit_Test
 	 * @throws Exception the exception
 	 */
 	@After
-	public void tearDown() throws Exception 
+	public void tearDown() throws Exception
 	{
 		container.destructor();
 		try {

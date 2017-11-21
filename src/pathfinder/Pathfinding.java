@@ -26,6 +26,7 @@ import smartMath.Vec2;
 import sun.font.TrueTypeFont;
 import sun.security.util.Length;
 import sun.nio.cs.ArrayEncoder;
+import table.Table;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleManager;
 import utils.Log;
@@ -46,18 +47,22 @@ public class Pathfinding implements Service {
 
 
 
+
     private Pathfinding(Log logn, Config config){
+        this.logn=logn;
+        this.config=config;
 
     }
 
     @Override
     public void updateConfig() {
     }
-    /*Cette méthode retourne le noeud le plus proche à un noeud en prenant l'arete avec
+
+    /**Cette méthode retourne le noeud le plus proche à un noeud en prenant l'arete avec
     le moindre cout
      */
     public Noeud closestNode(Noeud node) {
-        ArrayList<Arete> aretelist = graphe.nodesbones.get(node);
+        ArrayList<Arete> aretelist = graphe.getNodesbones().get(node);
         int n = aretelist.size();
         double min=aretelist.get(0).cout;
         int indicemin=0;
@@ -72,27 +77,30 @@ public class Pathfinding implements Service {
 
 
 
-    /*la méthode findmeaway appelle la méthode précédente pour trouver les noeuds de proche
-    en proche puis améliore le chemin à l'aide de nodesbones
+    /**la méthode findmeaway appelle la méthode précédente pour trouver les noeuds de proche
+    en proche puis améliore le chemin à l'aide du dictionnaire nodesbones
     */
 
-    public ArrayList<Vec2> findmeaway(Vec2 positiondepart, Vec2 positionarrivee){
-        HashMap<Noeud,ArrayList<Arete>> nodesbones =graphe.nodesbones;
-        ArrayList<Noeud> nodes=graphe.createNodes();
-        Noeud noeudepart=new Noeud(positiondepart,0);
+        public ArrayList<Vec2> findmeaway(Vec2 positiondepart, Vec2 positionarrivee) {
+        Table table=new Table(logn,config);
+        graphe = new Graphe(table);
+        ArrayList<Noeud> nodes = graphe.getNodes();
+        HashMap<Noeud, ArrayList<Arete>> nodesbones = graphe.getNodesbones();
+        Noeud noeudepart = new Noeud(positiondepart, 0);
         nodes.add(noeudepart);
-        Noeud noeudarrivee=new Noeud(positionarrivee,0);
+        Noeud noeudarrivee = new Noeud(positionarrivee, 0);
         nodes.add(noeudarrivee);
-        ArrayList<Noeud> nodestofollow=new ArrayList<>();
-        ArrayList<Vec2> pathtofollow=new ArrayList<>();
+        ArrayList<Noeud> nodestofollow = new ArrayList<>();
+        ArrayList<Vec2> pathtofollow = new ArrayList<>();
+        // la liste pathtofollow contient les vecteurs associés aux noeuds dans nodestofollow
         nodestofollow.add(noeudepart);
-        graphe=new Graphe();
-        int n=graphe.nodes.size();
-        graphe.createAretes();
-        //Trouver un chemin initial en utilisant la méthode précedente
-        for(int i=0;i<n;i++) {
+        int n = graphe.getNodes().size();
+        /*Trouver un chemin initial en utilisant la méthode précedente:trouver les noeuds
+        les plus proches de proche en proche
+         */
+        for (int i = 0; i < n; i++) {
             nodestofollow.add(closestNode(nodestofollow.get(i)));
-            pathtofollow.add(nodestofollow.get(i).position);
+            pathtofollow.add(nodestofollow.get(i).getPosition());
         }
         /*Améliorer le chemin trouvé en utilisant nodesbones
           Le chemin trouvé contient forcément le chemin optimal, à l'aide du dictionnaire
@@ -100,9 +108,9 @@ public class Pathfinding implements Service {
           reliées, donc si on trouve un noeud dans le chemin trouvé mais qui est déjà relié à
           noeud avant on supprime tous les noeuds between ces deux
          */
-        int m=nodestofollow.size();
-        ArrayList<Arete> aretelist=new ArrayList<>();
-        for(int i=0; i<m;i++) {
+        int m = nodestofollow.size();
+        ArrayList<Arete> aretelist = new ArrayList<>();
+        for (int i = 0; i < m; i++) {
             aretelist = nodesbones.get(nodestofollow.get(i));
             for(int j=0;j<m;j++){
                 if(contain(aretelist,nodestofollow.get(j))){
@@ -110,9 +118,16 @@ public class Pathfinding implements Service {
                 }
                 for(int k=j;j>=i;j--){
                     nodestofollow.remove(k);
-                    pathtofollow.remove(nodestofollow.get(k).position);
-                }
+                    pathtofollow.remove(nodestofollow.get(k).getPosition());
+                }}
+            for (int j = 0; j < m; j++) {
+                if (contain(aretelist, nodestofollow.get(j))) {
+                    for (int k = j; k >= i; k--) {
+                        nodestofollow.remove(k);
+                        pathtofollow.remove(nodestofollow.get(k).getPosition());
+                    }
 
+                }
             }
         }
         return pathtofollow;

@@ -19,70 +19,36 @@
 
 package tests;
 
-import exceptions.ContainerException;
 import graphics.Window;
-import org.junit.Before;
 import org.junit.Test;
+import pathfinder.Arete;
+import smartMath.Segment;
 import smartMath.Vec2;
 import table.Table;
-import utils.Sleep;
-
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class JUnit_Graphics extends JUnit_Test
 {
+	/** La JFrame à tester */
 	private Window win;
-	
-    @Before
-    public void setUp() throws Exception
-    {
-        super.setUp();
-    	//
-    	//win = new Window((Table)container.getService(ServiceNames.TABLE)/*, (Robot)container.getService(ServiceNames.ROBOT)*/);
-    }
-    
-    //test de l'intersection de deux segments
-    //@Test
-    public void testPanel() throws InterruptedException
-    {
-    	ArrayList<Vec2> path = new ArrayList<Vec2>();
-    	path.add(new Vec2(0, 100));
-    	path.add(new Vec2(0, 1900));
-    	path.add(new Vec2(-1400, 1900));
-    	path.add(new Vec2(-1400, 100));
-    	win.getPanel().drawArrayList(path);
-    	Thread.sleep(5000);
-    }
-    
-    //@Test
-    public void testSensorPanel() throws InterruptedException
-    {
-    	win = new Window();
-    	for(int i = 10; i < 10000; i += 10)
-    	{
-    		win.drawInt((int)(10*Math.cos((double)i/10)), (int)(20*Math.cos((double)i/20)), (int)(30*Math.cos((double)i/40)), (int)(40*Math.cos((double)i/80)));
-    		Sleep.sleep(200);
-    	}
-    }
 
-    @Test
-	public void showTable()
-	{
-		try {
+	/** La table */
+	private Table table;
 
-			win = new Window((Table) container.getService(Table.class));
-
-			win.getPanel().repaint();
-
-			while(true)
-			{
-				Thread.sleep(500);
-			}
+	/** Test du debug pathfinding */
+	@Test
+	public void testWinTable() throws Exception {
+		table = container.getService(Table.class);
+		HashSet<Arete> ridges = new HashSet<Arete>();
+		ArrayList<Vec2> path = new ArrayList<>();
 
 
-		} catch (ContainerException | InterruptedException e) {
-			e.printStackTrace();
-		}
 
+		//Thread.sleep(500);
+		win = new Window(table);
+		//Thread.sleep(5000);
+		win.setPath(path);
+		//Thread.sleep(5000);
 	}
 }

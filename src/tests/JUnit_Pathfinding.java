@@ -22,10 +22,16 @@ package tests;
 import exceptions.ContainerException;
 import graphics.Window;
 import org.junit.Test;
+import pathfinder.Arete;
+import pathfinder.Graphe;
+import pathfinder.Noeud;
 import pathfinder.Pathfinding;
 import smartMath.Vec2;
 import table.Table;
 import table.obstacles.ObstacleManager;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Tests Unitaires pour le pathfinding : utiliser ce JUnit pour faire des petits tests de java
@@ -50,6 +56,8 @@ public class JUnit_Pathfinding extends JUnit_Test{
         obstacleManager = table.getObstacleManager(); // Grâce au container, le champ ObstacleManager de votre table est déjà instancié !
         // Mais... pour commencer instancier vos variables à la main :
         Vec2 example = new Vec2(50, 40);
+        Vec2 example2=new Vec2(600,1600);
+
 
         // Whatever you want... Le debug pour le moment c'est mettre des 'System.out.println()' qui affiche ce que
         // vous voulez dans la console lors de l'execution; par exemple :
@@ -61,6 +69,16 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
 
         Window window=new Window(table);
+        Graphe graphe=new Graphe(table);
+        window.setArete(graphe.getNodesbones());
+
+
+
+
+
+
+
+
 
         Thread.sleep(20000);
     }

@@ -153,30 +153,6 @@ public class ObstacleManager implements Service
 		//Les différents obstacles fixés sur la table
 		//TODO initialiser tout les obstacles de la table
 
-		// zones de départ
-		//mRectangles.add(new ObstacleRectangular(new Vec2(-1145, 370), 710 + 2*mRobotRadius, 20 + 2*mRobotRadius));
-		//mRectangles.add(new ObstacleRectangular(new Vec2(1145, 370), 710 + 2*mRobotRadius, 20 + 2*mRobotRadius)); // x 350, y 360 => centre 965, 300
-		//mRectangles.add(new ObstacleRectangular(new Vec2(-1145, 371), 710 + 2*mRobotRadius, 22 + 2*mRobotRadius));
-		//mRectangles.add(new ObstacleRectangular(new Vec2(1145, 371), 710 + 2*mRobotRadius, 22 + 2*mRobotRadius));
-
-
-		//fusées
-		/*
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-350, 40), 40 + mRobotRadius))); // 350, 40, 40 / 1460, 1350, 40
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(350, 40), 40 + mRobotRadius)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1460, 1350), 40 + mRobotRadius)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1460, 1350), 40 + mRobotRadius)));
-		*/
-
-		//cratères
-		/*
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-850, 540), 135 + mRobotRadius, -Math.PI/6, 2*Math.PI/3, true)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(850, 540), 135 + mRobotRadius,Math.PI/3, 7*Math.PI/6, true)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1500, 2000), 550 + mRobotRadius, -Math.PI/2, -Math.PI/4,true)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1500, 2000), 550 + mRobotRadius, -3*Math.PI/4, -Math.PI/2, true)));
-		*/
-
-
 		//mRectangles.add(new ObstacleRectangular(new Vec2(1300, 325), 400 + 2*mRobotRadius, 650 + 2*mRobotRadius)); //-1446, 678, 108, 472
 		mRectangles.add(new ObstacleRectangular(new Vec2(-1300, 325),  400 + 2*mRobotRadius, 650 + 2*mRobotRadius));
         mRectangles.add(new ObstacleRectangular(new Vec2(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
@@ -194,8 +170,7 @@ public class ObstacleManager implements Service
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -1500, 840), 105 + mRobotRadius, -9*Math.PI/10,-Math.PI/10,true)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 890,2000), 105 + mRobotRadius,-9*Math.PI/10,-Math.PI/10,true)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -890, 2000), 105 + mRobotRadius, -9*Math.PI/10,-Math.PI/10,true)));
-			}
-
+	}
 
 	/**
 	 * Ajoute un obstacle sur la table a la position spécifiée, du rayon specifie (de type obstacleProximity)

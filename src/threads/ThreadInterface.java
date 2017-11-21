@@ -53,7 +53,7 @@ public class ThreadInterface extends AbstractThread
     public void run() {
         while(true)
         {
-            win.getPanel().drawArrayList(robot.cheminSuivi);
+            win.getPanel().setPath(robot.cheminSuivi);
             win.getPanel().repaint();
             try {
                 Thread.sleep(100);

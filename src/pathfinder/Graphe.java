@@ -4,6 +4,7 @@ import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
 import sun.font.TrueTypeFont;
+import table.Table;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleManager;
 import table.obstacles.ObstacleRectangular;
@@ -11,51 +12,67 @@ import tests.container.A;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 
 public class Graphe {
-    static ArrayList<ObstacleCircular> listCircu;
-    static ArrayList<ObstacleRectangular> listRectangu;
-    private ObstacleManager obstacleManager;
-    public ArrayList<Noeud> nodes;
+    private ArrayList<ObstacleCircular> listCircu;
+    private ArrayList<ObstacleRectangular> listRectangu;
+    private Table table;
+    private ArrayList<Noeud> nodes;
     //dictionnaire contenant les arêtes associées à chaque noeud
-    public HashMap<Noeud,ArrayList<Arete>> nodesbones;
+    private HashMap<Noeud,ArrayList<Arete>> nodesbones;
 
 
-    /*Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
+    /**Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
     là où il y'a des obstacles
      */
-    public ArrayList<Noeud> createNodes() {
-        HashMap<Noeud, ArrayList<Arete>> nodesbones;
-        int pasX = 300;
-        int pasY = 200;
-        int x = -1500;
-        int y = 0;
-        Vec2 nodeposition = new Vec2();
-        for (int i = 0; i < pasX * 3000; i++) {
-            for (int j = 0; j < pasY * 1500; i++) {
-                x = x + pasX * i;
-                y = y + pasY * j;
-                nodeposition.setX(x);
-                nodeposition.setY(y);
-                nodes.add(new Noeud(nodeposition, 0));
-            }
-        }
 
-        nodes = nodesInObstacles(nodes);
-        return nodes;
+    public Graphe(Table table){
+        this.listCircu=new ArrayList<>();
+        this.listCircu = table.getObstacleManager().getmCircularObstacle();
+        this.listRectangu=new ArrayList<>();
+        listRectangu = table.getObstacleManager().getRectangles();
+        this.table=table;
+        this.nodes=new ArrayList<Noeud>();
+        this.nodes=createNodes();
+        long time1=System.currentTimeMillis();
+        this.nodesbones=new HashMap<>();
+        this.nodesbones=createAretes();
+        long time2=System.currentTimeMillis()-time1;
+        System.out.println("Time to create graph (ms): "+time2);
+
     }
-    //Méthode pour tester si les noeuds rencontrent des obstacles
 
-    private ArrayList<Noeud> nodesInObstacles(ArrayList<Noeud> nodes) {
-        listCircu = obstacleManager.getmCircularObstacle();
-        listRectangu = obstacleManager.getRectangles();
+    public ArrayList<Noeud> createNodes() {
+        int pasX = 500;
+        int pasY = 400;
+        int xdebut = -1500;
+        int ydebut = 0;
+        int x;
+        int y;
         int n = listCircu.size();
         int m = listRectangu.size();
+        ArrayList<Noeud> node = new ArrayList<>();
+        ArrayList<Noeud> nodesToKeep = new ArrayList<>();
+        for (int i = 1; i < 3000 / pasX; i++) {
+            x = i * pasX + xdebut;
+            for (int j = 1; j < 2000 / pasY; j++) {
+                Vec2 nodeposition = new Vec2();
+                nodeposition.setX(x);
+                y = j * pasY + ydebut;
+                nodeposition.setY(y);
+                node.add(new Noeud(nodeposition, 0));
+            }
+        }
         int k = nodes.size();
+        boolean toKeep;
         for (int i = 0; i < k; i++) {
-            for (int j = 0; j < m; i++) {
-                int xObstaclerectan = listRectangu.get(j).getPosition().getX();
+            int xNoeud = node.get(i).getPosition().getX();
+            int yNoeud = node.get(i).getPosition().getY();
+            toKeep=true;
+            for (int j = 0; j < m; j++) {
+                int xObstaclerectan =listRectangu.get(j).getPosition().getX();
                 int yObstaclerectan = listRectangu.get(j).getPosition().getY();
                 int dx = listRectangu.get(j).getSizeX() / 2;
                 int dy = listRectangu.get(j).getSizeY() / 2;
@@ -63,37 +80,19 @@ public class Graphe {
                 int x2 = xObstaclerectan - dx;
                 int y1 = yObstaclerectan + dy;
                 int y2 = yObstaclerectan - dy;
-                if (nodes.get(i).position.getX() < x1 && nodes.get(i).position.getX() < x2 && nodes.get(i).position.getY() < y1 && nodes.get(i).position.getY() < y2) {
-                    nodes.remove(i);
+                if ((xNoeud <= x1) && (xNoeud >=x2) && (yNoeud <=y1) && (yNoeud >=y2)){
+                    toKeep=false;
                 }
-
-
+            }
+            if (toKeep){
+                nodesToKeep.add(node.get(i));
             }
         }
-        for (int i = 0; i < k; i++) {
-            for (int j = 0; i < n; i++) {
-                int xcentreObstacleCircu = listCircu.get(j).getPosition().getX();
-                int ycentreObstacleCircu = listCircu.get(j).getPosition().getY();
-                int rayonObstacleCircu = listCircu.get(j).getRadius();
-                int xNoeud = nodes.get(i).position.getX();
-                int yNoeud = nodes.get(i).position.getY();
-                int distanceDeSecurite=264;
-                if (Math.pow(xNoeud - xcentreObstacleCircu, 2) + Math.pow(yNoeud - ycentreObstacleCircu, 2) < Math.pow(rayonObstacleCircu, 2)) {
-                    nodes.remove(i);
-                }
-                //test pour savoir si les noeuds se trouvent à côté des obstacles circulaires
-                if (Math.pow(xNoeud - xcentreObstacleCircu, 2) + Math.pow(yNoeud - ycentreObstacleCircu, 2) < Math.pow(rayonObstacleCircu + distanceDeSecurite, 2)) {
-                    nodes.get(i).heuristique = 1;
-                }
 
-
-            }
-
-
-        }
-        return nodes;
+        return nodesToKeep;
     }
-    /*Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
+
+    /**Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
     l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
     ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
     déja un chemin à suivre, à chaque noeud, on associe une liste d'arete qui lui est propre
@@ -101,42 +100,43 @@ public class Graphe {
      */
 
 
-
-    public void createAretes(){
-        ArrayList<Noeud> nodes=createNodes();
-        nodesbones=new HashMap<>();
+    public HashMap<Noeud,ArrayList<Arete>> createAretes(){
         ArrayList<Arete> listaretes=new ArrayList<>();
         Arete arete;
-
         int n=nodes.size();
-        for(int i=0; i<n;i++){
-            for(int j=1;j<n;i++){
-                Segment segment=new Segment(nodes.get(i).position,nodes.get(j).position);
+        for(int i=0; i<n-1;i++){
+            for(int j=i+1;j<n;j++){
+                Segment segment=new Segment(nodes.get(i).getPosition(),nodes.get(j).getPosition());
+                boolean isIntersection=false;
                 for(int k=0;k<listCircu.size();k++){
-                    if(!Geometry.intersects(segment,listCircu.get(k).getCircle())){
-                        double cost=Segment.squaredLength(nodes.get(i).position,nodes.get(j).position);
-                        arete = new Arete(nodes.get(i),nodes.get(j),cost);
-                        listaretes.add(arete);
-                        nodesbones.put(nodes.get(i),listaretes);
-
-                    }
-
+                    if(Geometry.intersects(segment,listCircu.get(k).getCircle())){
+                        isIntersection=true;
+                        }
                 }
-
-
+                if (!isIntersection) {
+                    double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
+                    arete = new Arete(nodes.get(i), nodes.get(j), cost);
+                    listaretes.add(arete);
+                    nodesbones.put(nodes.get(i), listaretes);
+                }
 
 
             }
 
         }
+    return nodesbones;
 
 
     }
 
-
-
-
+    public ArrayList<Noeud> getNodes() {
+        return nodes;
     }
+
+    public HashMap<Noeud, ArrayList<Arete>> getNodesbones() {
+        return nodesbones;
+    }
+}
 
 
 

@@ -185,12 +185,6 @@ public class Container implements Service
             System.exit(0);
         }
 
-        log = getService(Log.class);
-        log.updateConfig();
-
-		// Le container est aussi un service
-		instanciedServices.put(getClass().getSimpleName(), this);
-
 		if(showGraph)
 		{
 			try {
@@ -200,6 +194,12 @@ public class Container implements Service
 				log.warning(e);
 			}
 		}
+
+        log = getService(Log.class);
+        log.updateConfig();
+
+		// Le container est aussi un service
+		instanciedServices.put(getClass().getSimpleName(), this);
 	}
 	
 	/**
