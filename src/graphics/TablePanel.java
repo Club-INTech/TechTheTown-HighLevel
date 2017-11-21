@@ -50,6 +50,7 @@ public class TablePanel extends JPanel
 	/** Champs pour l'interface Pathfinding : n'ayant pas de robot instancié, on récupère en brut les données */
 	private ArrayList<Vec2> path;
 	private ArrayList<Segment> aretes;
+	private ArrayList<Vec2> clics;
 	public static boolean showGraph = false;
 
 	/** Table & robot */
@@ -79,6 +80,7 @@ public class TablePanel extends JPanel
 	{
 		path = new ArrayList<>();
 		aretes = new ArrayList<>();
+		clics = new ArrayList<>();
 		this.table = table;
 		this.robot = robot;
 
@@ -96,6 +98,7 @@ public class TablePanel extends JPanel
 	{
 		path = new ArrayList<>();
 		aretes = new ArrayList<>();
+		clics = new ArrayList<>();
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
@@ -110,7 +113,7 @@ public class TablePanel extends JPanel
 	@Override
 	public void paintComponent(Graphics graphics)
 	{
-		/** La table */
+		// La table
 		int wideDisplay = (int)(table.getObstacleManager().getRobotRadius()*0.3);
 		Vec2 upLeftCorner;
 		Vec2 pathNode1;
@@ -196,10 +199,16 @@ public class TablePanel extends JPanel
 			}
 		}
 
-		/** Infos diverses */
+		// Print les clics et leur position
+		for (Vec2 clic : clics){
+			Vec2 clicDisplay = changeRefToDisplay(clic);
+			graphics.fillOval(clicDisplay.getX() - 4, clicDisplay.getY() - 4, 8, 8);
+		}
+
+		// Infos diverses
 		graphics.setColor(Color.DARK_GRAY);
 		graphics.fillRoundRect(920, 20, 360, 580, 20, 20);
-		graphics.fillRoundRect(20, 620, 1260, 260, 20, 20);
+		graphics.fillRoundRect(20, 620, 1260, 275, 20, 20);
 	}
 
 	/** Conversion en coordonnées d'affichage
@@ -217,6 +226,11 @@ public class TablePanel extends JPanel
 	}
 	public void setAretes(ArrayList<Segment> aretes) {
 		this.aretes = aretes;
+		removeAll();
+		revalidate();
+	}
+	public void setClics(ArrayList<Vec2> clics) {
+		this.clics = clics;
 		removeAll();
 		revalidate();
 	}

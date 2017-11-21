@@ -38,19 +38,13 @@ public class JUnit_Graphics extends JUnit_Test
 	@Test
 	public void testWinTable() throws Exception {
 		table = container.getService(Table.class);
-		ArrayList<Segment> ridges = new ArrayList<>();
-		ArrayList<Vec2> path = new ArrayList<>();
+		ArrayList<Vec2> clics = new ArrayList<>();
 
-		ridges.add(new Segment(new Vec2(-300, 200), new Vec2(1000, 800)));
-		path.add(new Vec2(100, 100));
-		path.add(new Vec2(200, 400));
-		path.add(new Vec2(300, 500));
-
-		Thread.sleep(500);
 		win = new Window(table);
-		Thread.sleep(5000);
-		win.setArete(ridges);
-		win.setPath(path);
-		Thread.sleep(5000);
+
+		while(true) {
+			clics = win.waitLRClic();
+			Thread.sleep(100);
+		}
 	}
 }
