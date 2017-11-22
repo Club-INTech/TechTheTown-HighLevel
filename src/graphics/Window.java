@@ -104,6 +104,7 @@ public class Window extends JFrame
 		ArrayList<Vec2> clics = new ArrayList<>();
 		while(mouse.getLeftClicPosition() == null || mouse.getRightClicPosition() == null){
 			Thread.sleep(100);
+			// TODO Mettre une vérification de la position du clic : accès à Table par le tablePanel
 		}
 		clics.add(mouse.getLeftClicPosition().clone());
 		clics.add(mouse.getRightClicPosition().clone());

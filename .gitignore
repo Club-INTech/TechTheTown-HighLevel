@@ -295,6 +295,7 @@ xcuserdata/
 # Debug files
 *.dSYM/
 *.su
+*.txt
 ### C++ template
 # Compiled Object files
 *.slo
