@@ -45,7 +45,7 @@ public class Graphe {
     }
 
     public ArrayList<Noeud> createNodes() {
-        int pasX = 300;
+        int pasX = 200;
         int pasY = 300;
         int xdebut = -1500;
         int ydebut = 0;
@@ -99,25 +99,6 @@ public class Graphe {
                 nodesToKeep.add(node.get(i));
             }
         }
-        /*boolean tokeep;
-        for (int i = 0; i < k; i++) {
-            int xNoeud = node.get(i).getPosition().getX();
-            int yNoeud = node.get(i).getPosition().getY();
-            tokeep = true;
-            for (int j = 0; j < n; j++) {
-                int xObstaclecircu = listCircu.get(j).getPosition().getX();
-                int yObstacleCircu = listCircu.get(j).getPosition().getY();
-                int r = listCircu.get(j).getRadius();
-                if (Math.pow((xNoeud-xObstaclecircu),2)+Math.pow((yNoeud-yObstacleCircu),2)<=Math.pow(r+1,2)){
-                    tokeep = false;
-                }
-            }
-            if (tokeep) {
-                nodesToKeep.add(node.get(i));
-            }
-        }*/
-
-
 
         listRectangu.removeAll(listRectangu2);
         System.out.println("oui" + nodesToKeep.size());
