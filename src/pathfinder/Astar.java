@@ -57,7 +57,7 @@ public class Astar implements Service {
 
         while(!NodeInList(closeList,noeudarrive)){
             noeudcourant = closeList.get(p);
-            noeudvoisin = NoeudVoisin(noeudcourant, nodesbones.get(noeudcourant));
+           // noeudvoisin = NoeudVoisin(noeudcourant, nodesbones.get(noeudcourant));
             for (int i = 0; i < noeudvoisin.size(); i++) {
 
                 if(NodeInList(closeList, noeudvoisin.get(i))){

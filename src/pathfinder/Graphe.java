@@ -45,8 +45,8 @@ public class Graphe {
     }
 
     public ArrayList<Noeud> createNodes() {
-        int pasX = 500;
-        int pasY = 400;
+        int pasX = 300;
+        int pasY = 200;
         int xdebut = -1500;
         int ydebut = 0;
         int x;
@@ -65,7 +65,7 @@ public class Graphe {
                 node.add(new Noeud(nodeposition, 0));
             }
         }
-        int k = nodes.size();
+        int k = node.size();
         boolean toKeep;
         for (int i = 0; i < k; i++) {
             int xNoeud = node.get(i).getPosition().getX();
