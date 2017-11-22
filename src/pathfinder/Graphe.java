@@ -46,13 +46,13 @@ public class Graphe {
 
     public ArrayList<Noeud> createNodes() {
         int pasX = 300;
-        int pasY = 200;
+        int pasY = 300;
         int xdebut = -1500;
         int ydebut = 0;
         int x;
         int y;
         int n = listCircu.size();
-        int m = listRectangu.size();
+        int m;
         ArrayList<Noeud> node = new ArrayList<>();
         ArrayList<Noeud> nodesToKeep = new ArrayList<>();
         for (int i = 1; i < 3000 / pasX; i++) {
@@ -67,12 +67,23 @@ public class Graphe {
         }
         int k = node.size();
         boolean toKeep;
+        ArrayList<ObstacleRectangular> listRectangu2 = new ArrayList<>();
+        Vec2 position0 = new Vec2();
+        for (int i = 0; i < n; i++) {
+            ObstacleRectangular obsrectangu = new ObstacleRectangular(position0, 0, 0);
+            obsrectangu.setPosition(listCircu.get(i).getPosition());
+            obsrectangu.changeDim(listCircu.get(i).getRadius() * 2, listCircu.get(i).getRadius() * 2);
+            listRectangu2.add(obsrectangu);
+        }
+        listRectangu.addAll(listRectangu2);
+
+        m = listRectangu.size();
         for (int i = 0; i < k; i++) {
             int xNoeud = node.get(i).getPosition().getX();
             int yNoeud = node.get(i).getPosition().getY();
-            toKeep=true;
+            toKeep = true;
             for (int j = 0; j < m; j++) {
-                int xObstaclerectan =listRectangu.get(j).getPosition().getX();
+                int xObstaclerectan = listRectangu.get(j).getPosition().getX();
                 int yObstaclerectan = listRectangu.get(j).getPosition().getY();
                 int dx = listRectangu.get(j).getSizeX() / 2;
                 int dy = listRectangu.get(j).getSizeY() / 2;
@@ -80,16 +91,38 @@ public class Graphe {
                 int x2 = xObstaclerectan - dx;
                 int y1 = yObstaclerectan + dy;
                 int y2 = yObstaclerectan - dy;
-                if ((xNoeud <= x1) && (xNoeud >=x2) && (yNoeud <=y1) && (yNoeud >=y2)){
-                    toKeep=false;
+                if ((xNoeud <= x1) && (xNoeud >= x2) && (yNoeud <= y1) && (yNoeud >= y2)) {
+                    toKeep = false;
                 }
             }
-            if (toKeep){
+            if (toKeep) {
                 nodesToKeep.add(node.get(i));
             }
         }
+        /*boolean tokeep;
+        for (int i = 0; i < k; i++) {
+            int xNoeud = node.get(i).getPosition().getX();
+            int yNoeud = node.get(i).getPosition().getY();
+            tokeep = true;
+            for (int j = 0; j < n; j++) {
+                int xObstaclecircu = listCircu.get(j).getPosition().getX();
+                int yObstacleCircu = listCircu.get(j).getPosition().getY();
+                int r = listCircu.get(j).getRadius();
+                if (Math.pow((xNoeud-xObstaclecircu),2)+Math.pow((yNoeud-yObstacleCircu),2)<=Math.pow(r+1,2)){
+                    tokeep = false;
+                }
+            }
+            if (tokeep) {
+                nodesToKeep.add(node.get(i));
+            }
+        }*/
 
+
+
+        listRectangu.removeAll(listRectangu2);
+        System.out.println("oui" + nodesToKeep.size());
         return nodesToKeep;
+
     }
 
     /**Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
