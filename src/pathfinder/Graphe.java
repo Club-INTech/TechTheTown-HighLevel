@@ -38,7 +38,7 @@ public class Graphe {
         this.nodes=createNodes();
         long time1=System.currentTimeMillis();
         this.nodesbones=new HashMap<>();
-        this.nodesbones=createAretes();
+        this.nodesbones=createAretes(nodes);
         long time2=System.currentTimeMillis()-time1;
         System.out.println("Time to create graph (ms): "+time2);
 
@@ -114,7 +114,7 @@ public class Graphe {
      */
 
 
-    public HashMap<Noeud,ArrayList<Arete>> createAretes(){
+    public HashMap<Noeud,ArrayList<Arete>> createAretes(ArrayList<Noeud>nodes){
         ArrayList<Arete> listaretes=new ArrayList<>();
         Arete arete;
         int n=nodes.size();

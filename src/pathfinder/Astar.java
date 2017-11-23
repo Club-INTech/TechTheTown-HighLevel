@@ -41,7 +41,7 @@ public class Astar implements Service {
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         nodes.add(noeuddepart);
         nodes.add(noeudarrive);
-        graphe.createAretes();
+        graphe.createAretes(nodes);
         HashMap<Noeud,ArrayList<Arete>> nodesbones = graphe.getNodesbones();
         int p = 0;  //dernier élément ajouté à closelist
         int betternode = 0;
