@@ -38,7 +38,7 @@ public class Graphe {
         this.nodes=createNodes();
         long time1=System.currentTimeMillis();
         this.nodesbones=new HashMap<>();
-        this.nodesbones=createAretes();
+        this.nodesbones=createAretes(nodes);
         long time2=System.currentTimeMillis()-time1;
         System.out.println("Time to create graph (ms): "+time2);
 
@@ -114,11 +114,12 @@ public class Graphe {
      */
 
 
-    public HashMap<Noeud,ArrayList<Arete>> createAretes(){
-        ArrayList<Arete> listaretes=new ArrayList<>();
+    public HashMap<Noeud,ArrayList<Arete>> createAretes(ArrayList<Noeud>nodes){
+
         Arete arete;
         int n=nodes.size();
         for(int i=0; i<n-1;i++){
+            ArrayList<Arete> listaretes=new ArrayList<>();
             for(int j=i+1;j<n;j++){
                 Segment segment=new Segment(nodes.get(i).getPosition(),nodes.get(j).getPosition());
                 boolean isIntersection=false;
@@ -131,13 +132,14 @@ public class Graphe {
                     double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                     arete = new Arete(nodes.get(i), nodes.get(j), cost);
                     listaretes.add(arete);
-                    nodesbones.put(nodes.get(i), listaretes);
+
                 }
 
 
             }
-
+            nodesbones.put(nodes.get(i), listaretes);
         }
+
     return nodesbones;
 
 

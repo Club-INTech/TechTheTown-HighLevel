@@ -42,7 +42,7 @@ public class Astar implements Service {
         nodes.add(noeuddepart);
         nodes.add(noeudarrive);
        // graphe.createAretes();
-        graphe.createAretesV2();
+        graphe.createAretesV2(nodes);
         HashMap<Noeud,ArrayList<Arete>> nodesbones = graphe.getNodesbones();
         int p = 0;  //dernier élément ajouté à closelist
         int betternode = 0;

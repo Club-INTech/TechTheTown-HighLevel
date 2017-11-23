@@ -207,6 +207,7 @@ public class TablePanel extends JPanel
 		for (Vec2 clic : clics){
 			Vec2 clicDisplay = changeRefToDisplay(clic);
 			graphics.fillOval(clicDisplay.getX() - 4, clicDisplay.getY() - 4, 8, 8);
+			graphics.drawString(clic.toStringInterface(), clicDisplay.getX() - 30, clicDisplay.getY() + 20);
 		}
 
 		// Infos diverses
