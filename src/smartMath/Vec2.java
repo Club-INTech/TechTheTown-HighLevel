@@ -329,12 +329,19 @@ public class Vec2 {
 
 	/**
 	 * Lorsque l'on discute avec le LL, on signifie que c'est un vecteur comme ceci
-	 * @return
 	 */
 	public String toStringEth(){
 		return x + " " + y;
 	}
 
+	/**
+	 * Pour l'interface, on n'affiche que les coordonnées cartésiennes
+	 */
+	public String toStringInterface(){
+		return "(" + x + "," + y + ")";
+	}
+
+	/** Commentaire ? */
 	public String[] toStringTableau() {
 		String TableauVec[] = {"(" + x + ")", "(" + y + ")", "(" + r + ")", "(" + a + ")"};
 		return TableauVec;
