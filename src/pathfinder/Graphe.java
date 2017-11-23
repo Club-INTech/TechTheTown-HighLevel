@@ -62,7 +62,7 @@ public class Graphe {
                 nodeposition.setX(x);
                 y = j * pasY + ydebut;
                 nodeposition.setY(y);
-                node.add(new Noeud(nodeposition, 0));
+                node.add(new Noeud(nodeposition, 0, new ArrayList<Noeud>()));
             }
         }
         int k = node.size();
@@ -151,11 +151,12 @@ public class Graphe {
         return nodesbones;
     }
 
-    public HashMap<Noeud,ArrayList<Arete>> createAretesV2(){
-        ArrayList<Arete> listaretes=new ArrayList<>();
-        Arete arete;
-        int n=nodes.size();
+    public void createAretesV2(ArrayList<Noeud> nodes){
+        //ArrayList<Arete> listaretes=new ArrayList<>();
+        //Arete arete;
+        int n=this.nodes.size();
         for(int i=0; i<n-1;i++){
+            ArrayList<Noeud> voisins = new ArrayList<Noeud>();
             for(int j=i+1;j<n;j++){
                 Segment segment=new Segment(nodes.get(i).getPosition(),nodes.get(j).getPosition());
                 boolean isIntersection=false;
@@ -165,19 +166,15 @@ public class Graphe {
                     }
                 }
                 if (!isIntersection) {
-                    double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
-                    arete = new Arete(nodes.get(i), nodes.get(j), cost);
-                    listaretes.add(arete);
-                    nodesbones.put(nodes.get(i), listaretes);
+                    voisins.add(nodes.get(j));
+                    //double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
+                    //arete = new Arete(nodes.get(i), nodes.get(j), cost);
+                    //listaretes.add(arete);
+                    //nodesbones.put(nodes.get(i), listaretes);
                 }
-
-
             }
-
+            nodes.get(i).setVoisins(voisins);
         }
-        return nodesbones;
-
-
     }
 
 }

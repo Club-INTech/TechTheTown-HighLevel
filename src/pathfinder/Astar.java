@@ -32,8 +32,8 @@ public class Astar implements Service {
 
     public ArrayList<Vec2> Findmyway (Vec2 positiondepart, Vec2 positionarrive){
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
-        Noeud noeuddepart = new Noeud(positiondepart, 0);
-        Noeud noeudarrive = new Noeud(positionarrive, 0);
+        Noeud noeuddepart = new Noeud(positiondepart, 0, new ArrayList<Noeud>());
+        Noeud noeudarrive = new Noeud(positionarrive, 0, new ArrayList<Noeud>());
         Noeud noeudcourant;
         ArrayList<Noeud> nodes = graphe.createNodes();
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
@@ -41,7 +41,8 @@ public class Astar implements Service {
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         nodes.add(noeuddepart);
         nodes.add(noeudarrive);
-        graphe.createAretes();
+       // graphe.createAretes();
+        graphe.createAretesV2();
         HashMap<Noeud,ArrayList<Arete>> nodesbones = graphe.getNodesbones();
         int p = 0;  //dernier élément ajouté à closelist
         int betternode = 0;
@@ -58,7 +59,8 @@ public class Astar implements Service {
         while(!NodeInList(closeList,noeudarrive)){
             noeudcourant = closeList.get(p);
             System.out.println(nodesbones.get(noeudcourant));
-            noeudvoisin = NoeudVoisin(noeudcourant, nodesbones.get(noeudcourant));
+            noeudvoisin = noeudcourant.getVoisins();
+            //noeudvoisin = NoeudVoisin(noeudcourant, nodesbones.get(noeudcourant));
             for (int i = 0; i < noeudvoisin.size(); i++) {
 
                 if(NodeInList(closeList, noeudvoisin.get(i))){

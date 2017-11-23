@@ -86,9 +86,9 @@ public class Pathfinding implements Service {
         graphe = new Graphe(table);
         ArrayList<Noeud> nodes = graphe.getNodes();
         HashMap<Noeud, ArrayList<Arete>> nodesbones = graphe.getNodesbones();
-        Noeud noeudepart = new Noeud(positiondepart, 0);
+        Noeud noeudepart = new Noeud(positiondepart, 0, new ArrayList<Noeud>());
         nodes.add(noeudepart);
-        Noeud noeudarrivee = new Noeud(positionarrivee, 0);
+        Noeud noeudarrivee = new Noeud(positionarrivee, 0, new ArrayList<Noeud>());
         nodes.add(noeudarrivee);
         ArrayList<Noeud> nodestofollow = new ArrayList<>();
         ArrayList<Vec2> pathtofollow = new ArrayList<>();
