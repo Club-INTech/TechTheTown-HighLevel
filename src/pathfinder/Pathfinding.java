@@ -91,18 +91,20 @@ public class Pathfinding implements Service {
         nodes.add(noeudarrivee);
         graphe.createAretes(nodes);
         HashMap<Noeud, ArrayList<Arete>> nodesbones = graphe.getNodesbones();
-
         ArrayList<Noeud> nodestofollow = new ArrayList<>();
         ArrayList<Vec2> pathtofollow = new ArrayList<>();
         // la liste pathtofollow contient les vecteurs associés aux noeuds dans nodestofollow
         nodestofollow.add(noeudepart);
         int n = graphe.getNodes().size();
+        ArrayList<Arete> aretelist;
         /*Trouver un chemin initial en utilisant la méthode précedente:trouver les noeuds
         les plus proches de proche en proche
          */
         for (int i = 0; i < n; i++) {
             nodestofollow.add(closestNode(nodestofollow.get(i)));
-            pathtofollow.add(nodestofollow.get(i).getPosition());
+            if(nodestofollow.get(i)==noeudarrivee){
+                break;
+            }
         }
         /*Améliorer le chemin trouvé en utilisant nodesbones
           Le chemin trouvé contient forcément le chemin optimal, à l'aide du dictionnaire
@@ -110,27 +112,29 @@ public class Pathfinding implements Service {
           reliées, donc si on trouve un noeud dans le chemin trouvé mais qui est déjà relié à
           noeud avant on supprime tous les noeuds between ces deux
          */
+
         int m = nodestofollow.size();
-        ArrayList<Arete> aretelist = new ArrayList<>();
+        ArrayList<Noeud> nodesTokeep=new ArrayList<>();
+        boolean toadd;
         for (int i = 0; i < m; i++) {
             aretelist = nodesbones.get(nodestofollow.get(i));
-            for(int j=0;j<m;j++){
+            toadd=false;
+            for(int j=i;j<m;j++){
                 if(contain(aretelist,nodestofollow.get(j))){
-                    int ind=j;
+                nodesTokeep.add(nodestofollow.get(i));
+                nodesTokeep.add(nodestofollow.get(j));
+                toadd=true;
                 }
-                for(int k=j;j>=i;j--){
-                    nodestofollow.remove(k);
-                    pathtofollow.remove(nodestofollow.get(k).getPosition());
-                }}
-            for (int j = 0; j < m; j++) {
-                if (contain(aretelist, nodestofollow.get(j))) {
-                    for (int k = j; k >= i; k--) {
-                        nodestofollow.remove(k);
-                        pathtofollow.remove(nodestofollow.get(k).getPosition());
-                    }
 
-                }
             }
+            if(!toadd){
+                nodesTokeep.add(nodestofollow.get(i));
+            }
+        }
+        int l=nodesTokeep.size();
+        for(int i=0;i<l;i++){
+            pathtofollow.get(i).setX(nodesTokeep.get(i).getPosition().getX());
+            pathtofollow.get(i).setY(nodesTokeep.get(i).getPosition().getY());
         }
         return pathtofollow;
     }
