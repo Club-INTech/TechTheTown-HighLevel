@@ -153,14 +153,14 @@ public class Graphe {
         return nodesbones;
     }
 
-    public void createAretesV2(ArrayList<Noeud> nodes){
+    public void createAretesV2(ArrayList<Noeud> noeuds){
         //ArrayList<Arete> listaretes=new ArrayList<>();
         //Arete arete;
-        int n=this.nodes.size();
+        int n=noeuds.size();
         for(int i=0; i<n-1;i++){
             ArrayList<Noeud> voisins = new ArrayList<Noeud>();
             for(int j=i+1;j<n;j++){
-                Segment segment=new Segment(nodes.get(i).getPosition(),nodes.get(j).getPosition());
+                Segment segment=new Segment(noeuds.get(i).getPosition(),noeuds.get(j).getPosition());
                 boolean isIntersection=false;
                 for(int k=0;k<listCircu.size();k++){
                     if(Geometry.intersects(segment,listCircu.get(k).getCircle())){
@@ -168,14 +168,14 @@ public class Graphe {
                     }
                 }
                 if (!isIntersection) {
-                    voisins.add(nodes.get(j));
+                    voisins.add(noeuds.get(j));
                     //double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                     //arete = new Arete(nodes.get(i), nodes.get(j), cost);
                     //listaretes.add(arete);
                     //nodesbones.put(nodes.get(i), listaretes);
                 }
             }
-            nodes.get(i).setVoisins(voisins);
+            noeuds.get(i).setVoisins(voisins);
         }
     }
 

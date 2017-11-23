@@ -39,16 +39,16 @@ public class Astar implements Service {
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Noeud> noeudvoisin = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
-        nodes.add(noeuddepart);
+        nodes.add(0,noeuddepart);
         nodes.add(noeudarrive);
        // graphe.createAretes();
         graphe.createAretesV2(nodes);
-        HashMap<Noeud,ArrayList<Arete>> nodesbones = graphe.getNodesbones();
+        //HashMap<Noeud,ArrayList<Arete>> nodesbones = graphe.getNodesbones();
         int p = 0;  //dernier élément ajouté à closelist
         int betternode = 0;
         boolean better = false;
-
-
+      //  noeuddepart.setVoisins(nodes.get(nodes.size() - 2).getVoisins());
+      //  noeudarrive.setVoisins(nodes.get(nodes.size() - 1).getVoisins());
         //FinalPath.add(noeudcourant.getPosition());
         //noeud1.setHeuristique( (int) noeud1.getPosition().distance(noeudarrive.getPosition()));
         //ArrayList<Arete> areteliste = graphe.getNodesbones().get(noeuddepart);
@@ -58,7 +58,6 @@ public class Astar implements Service {
 
         while(!NodeInList(closeList,noeudarrive)){
             noeudcourant = closeList.get(p);
-            System.out.println(nodesbones.get(noeudcourant));
             noeudvoisin = noeudcourant.getVoisins();
             //noeudvoisin = NoeudVoisin(noeudcourant, nodesbones.get(noeudcourant));
             for (int i = 0; i < noeudvoisin.size(); i++) {
@@ -140,7 +139,7 @@ public class Astar implements Service {
     public double distance(Noeud noeud, ArrayList<Noeud> lst){
         double distance = 0;
         lst.add(noeud);
-        for(int i=0; i<lst.size();i++){
+        for(int i=0; i<lst.size() - 1;i++){
             distance += lst.get(i).getPosition().distance(lst.get(i+1).getPosition());
         }
 
