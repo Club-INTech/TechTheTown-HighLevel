@@ -17,9 +17,9 @@ public class Astar implements Service {
 
     }
 
-    Log log;
-    Config config;
-    Graphe graphe;
+    private Log log;
+    private Config config;
+    private Graphe graphe;
 
     public Astar(Log log, Config config, Graphe graphe) {
         this.log = log;
@@ -30,7 +30,7 @@ public class Astar implements Service {
     }
 
 
-    public ArrayList<Vec2> findmyway (Vec2 positiondepart, Vec2 positionarrive){
+    public ArrayList<Vec2> Findmyway (Vec2 positiondepart, Vec2 positionarrive){
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
         Noeud noeuddepart = new Noeud(positiondepart, 0);
         Noeud noeudarrive = new Noeud(positionarrive, 0);
@@ -57,6 +57,7 @@ public class Astar implements Service {
 
         while(!NodeInList(closeList,noeudarrive)){
             noeudcourant = closeList.get(p);
+            System.out.println(nodesbones.get(noeudcourant));
             noeudvoisin = NoeudVoisin(noeudcourant, nodesbones.get(noeudcourant));
             for (int i = 0; i < noeudvoisin.size(); i++) {
 
@@ -144,9 +145,15 @@ public class Astar implements Service {
         return distance;
     }
 
+    /**
+     * Méthode fournissant la liste des voisins d'un noeud
+     * @param noeud
+     * @param lst
+     * @return
+     */
     public ArrayList<Noeud> NoeudVoisin(Noeud noeud, ArrayList<Arete> lst){
         ArrayList<Noeud> nodes = new ArrayList<Noeud>();
-        for(int i = 0; i<lst.size();i++){
+        for(int i = 0; i<lst.size() - 1; i++){
             nodes.add(lst.get(i).noeud2);
         }
         return nodes;

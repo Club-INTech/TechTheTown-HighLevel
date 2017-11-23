@@ -150,6 +150,36 @@ public class Graphe {
     public HashMap<Noeud, ArrayList<Arete>> getNodesbones() {
         return nodesbones;
     }
+
+    public HashMap<Noeud,ArrayList<Arete>> createAretesV2(){
+        ArrayList<Arete> listaretes=new ArrayList<>();
+        Arete arete;
+        int n=nodes.size();
+        for(int i=0; i<n-1;i++){
+            for(int j=i+1;j<n;j++){
+                Segment segment=new Segment(nodes.get(i).getPosition(),nodes.get(j).getPosition());
+                boolean isIntersection=false;
+                for(int k=0;k<listCircu.size();k++){
+                    if(Geometry.intersects(segment,listCircu.get(k).getCircle())){
+                        isIntersection=true;
+                    }
+                }
+                if (!isIntersection) {
+                    double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
+                    arete = new Arete(nodes.get(i), nodes.get(j), cost);
+                    listaretes.add(arete);
+                    nodesbones.put(nodes.get(i), listaretes);
+                }
+
+
+            }
+
+        }
+        return nodesbones;
+
+
+    }
+
 }
 
 
