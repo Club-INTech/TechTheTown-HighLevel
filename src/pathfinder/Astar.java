@@ -57,7 +57,7 @@ public class Astar implements Service {
 
         while(!NodeInList(closeList,noeudarrive)){
             noeudcourant = closeList.get(p);
-           //noeudvoisin = NoeudVoisin(noeudcourant, nodesbones.get(noeudcourant));
+            noeudvoisin = NoeudVoisin(noeudcourant, nodesbones.get(noeudcourant));
             for (int i = 0; i < noeudvoisin.size(); i++) {
 
                 if(NodeInList(closeList, noeudvoisin.get(i))){
@@ -144,5 +144,12 @@ public class Astar implements Service {
         return distance;
     }
 
+    public ArrayList<Noeud> NoeudVoisin(Noeud noeud, ArrayList<Arete> lst){
+        ArrayList<Noeud> nodes = new ArrayList<Noeud>();
+        for(int i = 0; i<lst.size();i++){
+            nodes.add(lst.get(i).noeud2);
+        }
+        return nodes;
+    }
 
 }

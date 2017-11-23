@@ -20,54 +20,55 @@
 package graphics;
 
 import smartMath.Vec2;
-
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
- * gestion de la souris
- * @author Etienne
- *
+ * Gestion de la souris
+ * @author Etienne, rem
  */
 public class Mouse implements MouseListener
 {
-	private Vec2 mRightClickPosition;
-	private Vec2 mMiddleClickPosition;
-	private Vec2 mLeftClickPosition;
-	private boolean mHasClicked;
-	private TablePanel mPanel;
-	private boolean mHasClickedRight;
-	
+	/** Position des clics */
+	private Vec2 rightClicPosition;
+	private Vec2 middleClicPosition;
+	private Vec2 leftClicPosition;
+
+	/** Panel */
+	private TablePanel panel;
+
+	/** Constructeur... */
 	public Mouse(TablePanel pan)
 	{
-		mPanel = pan;
-		mHasClicked = false;
-		mHasClickedRight = false;
-		mRightClickPosition = new Vec2(0, 0);
-		mMiddleClickPosition = new Vec2(0, 0);
-		mLeftClickPosition = new Vec2(0, 0);
+		panel = pan;
+		rightClicPosition = null;
+		middleClicPosition = null;
+		leftClicPosition = null;
 	}
 	
     @Override
     public void mousePressed(MouseEvent e)
     {
-    	mHasClicked = true;
         if (e.getButton()==MouseEvent.BUTTON1)
         {
-        	mLeftClickPosition.setX((e.getX()/* - 8*/) * 3000 / mPanel.getWidth() - 1500); // mettre 0 au lieu de 8 sous linux
-        	mLeftClickPosition.setY((-e.getY() + 31) * 2000 / mPanel.getHeight() + 2000); // mettre 0 au lieu de 31 sous windows
+        	leftClicPosition = new Vec2();
+        	leftClicPosition.setX(e.getX());
+        	leftClicPosition.setY(e.getY());
+        	changeRefToTable(leftClicPosition);
         }
         if (e.getButton()==MouseEvent.BUTTON2)
         {
-        	mMiddleClickPosition.setX((e.getX()/* - 8*/) * 3000 / mPanel.getWidth() - 1500); // mettre 0 au lieu de 8 sous linux
-        	mMiddleClickPosition.setY((-e.getY() + 31) * 2000 / mPanel.getHeight() + 2000); // mettre 0 au lieu de 31 sous windows
+			middleClicPosition = new Vec2();
+			middleClicPosition.setX(e.getX());
+			middleClicPosition.setY(e.getY());
+			changeRefToTable(middleClicPosition);
         }
         if (e.getButton()==MouseEvent.BUTTON3)
         {
-        	mRightClickPosition.setX((e.getX()/* - 8*/) * 3000 / mPanel.getWidth() - 1500); // mettre 0 au lieu de 8 sous linux
-        	mRightClickPosition.setY((-e.getY() + 31) * 2000 / mPanel.getHeight() + 2000); // mettre 0 au lieu de 31 sous windows
-			mHasClickedRight = true;
-
+        	rightClicPosition = new Vec2();
+			rightClicPosition.setX(e.getX());
+			rightClicPosition.setY(e.getY());
+			changeRefToTable(rightClicPosition);
         }
     }
 
@@ -82,46 +83,29 @@ public class Mouse implements MouseListener
 
     @Override
     public void mouseExited(MouseEvent e) {}
-    
-	public Vec2 getRightClickPosition()
-	{
-		return mRightClickPosition;
-	}
-	
-	public Vec2 getMiddleClickPosition()
-	{
-		return mMiddleClickPosition;
-	}
-	
-	public Vec2 getLeftClickPosition()
-	{
-		return mLeftClickPosition;
-	}
-	
-	public boolean hasClicked()
-	{
-		if(mHasClicked)
-		{
-			mHasClicked = false;
-            mHasClickedRight = false;
-			return true;
-		}
-		return false;
+
+    /** Change de référentiel (display -> table)
+	 * @param position */
+    private void changeRefToTable(Vec2 position){
+		position.setX((int)(position.getX()*10/3.0) - 1500);
+		position.setY((int)(-position.getY()*40/13.0) + 2000);
 	}
 
-	public boolean hasClickedRight()
-	{
-		if(mHasClickedRight)
-		{
-			mHasClickedRight = false;
-			return true;
-		}
-		return false;
+	/** Set les clics à 0 */
+	public void resetClics(){
+		rightClicPosition = null;
+		leftClicPosition = null;
+		middleClicPosition = null;
 	}
 
-    public void resetHasClicked()
-    {
-        mHasClicked = false;
-    }
-
+	/** Getters */
+	public Vec2 getRightClicPosition() {
+		return rightClicPosition;
+	}
+	public Vec2 getMiddleClicPosition() {
+		return middleClicPosition;
+	}
+	public Vec2 getLeftClicPosition() {
+		return leftClicPosition;
+	}
 }

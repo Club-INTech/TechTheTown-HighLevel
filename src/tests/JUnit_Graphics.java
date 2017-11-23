@@ -40,15 +40,14 @@ public class JUnit_Graphics extends JUnit_Test
 	@Test
 	public void testWinTable() throws Exception {
 		table = container.getService(Table.class);
-		HashSet<Arete> ridges = new HashSet<Arete>();
-		ArrayList<Vec2> path = new ArrayList<>();
 
+		ArrayList<Vec2> clics = new ArrayList<>();
 
-
-		//Thread.sleep(500);
 		win = new Window(table);
-		//Thread.sleep(5000);
-		win.setPath(path);
-		//Thread.sleep(5000);
+
+		while(true) {
+			clics = win.waitLRClic();
+			Thread.sleep(100);
+		}
 	}
 }

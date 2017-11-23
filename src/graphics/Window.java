@@ -63,7 +63,7 @@ public class Window extends JFrame
 	public Window(Table table, GameState state, ScriptManager scriptManager)
 	{
 		this.setTitle("Interface - Full");
-	    this.setSize(1300, 935);
+	    this.setSize(1300, 950);
 	    this.setLocationRelativeTo(null);
 	    this.setResizable(false);
 	    this.setBackground(backgroundColor);
@@ -87,7 +87,7 @@ public class Window extends JFrame
 	public Window(Table table)
 	{
 		this.setTitle("Interface - Pathfinding");
-		this.setSize(1300, 935);
+		this.setSize(1300, 950);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setBackground(backgroundColor);
@@ -99,6 +99,22 @@ public class Window extends JFrame
 		addMouseListener(mouse);
 
 		this.setVisible(true);
+	}
+
+	/** Attend que l'on clic droit et gauche et renvoie les positions des clics (gauche puis droit) */
+	public ArrayList<Vec2> waitLRClic() throws InterruptedException{
+		mouse.resetClics();
+		ArrayList<Vec2> clics = new ArrayList<>();
+		while(mouse.getLeftClicPosition() == null || mouse.getRightClicPosition() == null){
+			Thread.sleep(100);
+			// TODO Mettre une vérification de la position du clic : accès à Table par le tablePanel
+		}
+		clics.add(mouse.getLeftClicPosition().clone());
+		clics.add(mouse.getRightClicPosition().clone());
+		tablePanel.setClics(clics);
+		repaint();
+		mouse.resetClics();
+		return clics;
 	}
 
 	/** Permet d'afficher les aretes/le chemin */
