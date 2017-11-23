@@ -3,17 +3,20 @@ package pathfinder;
 import smartMath.Vec2;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleRectangular;
+import tests.container.A;
 
 import java.util.ArrayList;
 
 public class Noeud {
     private Vec2 position;
     private int heuristique;
+    private ArrayList<Noeud> voisins;
 
-
-    public Noeud(Vec2 position, int heuristique) {
+    /** Constructeur*/
+    public Noeud(Vec2 position, int heuristique, ArrayList<Noeud> voisins) {
         this.position = position;
         this.heuristique = heuristique;
+        this.voisins = voisins;
     }
 
 
@@ -25,6 +28,10 @@ public class Noeud {
         return heuristique;
     }
 
+    public ArrayList<Noeud> getVoisins() {
+        return voisins;
+    }
+
     public void setPosition(Vec2 position) {
         this.position = position;
     }
@@ -32,6 +39,9 @@ public class Noeud {
     public void setHeuristique(int heuristique) {
         this.heuristique = heuristique;
     }
+
+    public void setVoisins(ArrayList<Noeud> voisins){ this.voisins = voisins; }
+
 }
 
 /*private Vec2 alineate(int xdepart, int ydepart,int xPointoalinate,int yPointoalinate) {
