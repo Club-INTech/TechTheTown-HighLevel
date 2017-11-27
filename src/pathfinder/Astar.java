@@ -7,7 +7,6 @@ import table.Table;
 import utils.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.PriorityQueue;
 
 public class Astar implements Service {
@@ -30,7 +29,7 @@ public class Astar implements Service {
     }
 
 
-    public ArrayList<Vec2> Findmyway (Vec2 positiondepart, Vec2 positionarrive){
+    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive){
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
         Noeud noeuddepart = new Noeud(positiondepart, 0, new ArrayList<Noeud>());
         Noeud noeudarrive = new Noeud(positionarrive, 0, new ArrayList<Noeud>());
@@ -39,7 +38,7 @@ public class Astar implements Service {
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Noeud> noeudvoisin = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
-        nodes.add(0,noeuddepart);
+        nodes.add(0, noeuddepart);
         nodes.add(noeudarrive);
        // graphe.createAretes();
         graphe.createAretesV2(nodes);
@@ -56,17 +55,17 @@ public class Astar implements Service {
 
         closeList.add(noeuddepart);
 
-        while(!NodeInList(closeList,noeudarrive)){
+        while(!nodeInList(closeList,noeudarrive) && openList.size() != 0){
             noeudcourant = closeList.get(p);
             noeudvoisin = noeudcourant.getVoisins();
             //noeudvoisin = NoeudVoisin(noeudcourant, nodesbones.get(noeudcourant));
             for (int i = 0; i < noeudvoisin.size(); i++) {
 
-                if(NodeInList(closeList, noeudvoisin.get(i))){
+                if(nodeInList(closeList, noeudvoisin.get(i))){
 
                 }
 
-                else if(!NodeInQueue(openList, noeudvoisin.get(i))){
+                else if(!nodeInQueue(openList, noeudvoisin.get(i))){
                     noeudvoisin.get(i).setHeuristique( (int) noeudvoisin.get(i).getPosition().distance(noeudarrive.getPosition()));
                     openList.add(noeudvoisin.get(i));
                 }
@@ -78,10 +77,11 @@ public class Astar implements Service {
                 }
             }
             if(better){
-                closeList.set(betternode, noeudvoisin.get(betternode));
+           //     closeList.set(betternode, noeudvoisin.get(betternode));
+                closeList.set(closeList.size()-1, noeudvoisin.get(betternode));
             }
             else {
-                closeList.add(openList.remove());
+                closeList.add(openList.poll());
 
             }
             better = false;
@@ -108,7 +108,7 @@ public class Astar implements Service {
      * @return
      */
 
-    public boolean NodeInList(ArrayList<Noeud> lst, Noeud node){
+    public boolean nodeInList(ArrayList<Noeud> lst, Noeud node){
         for(int i = 0; i < lst.size(); i++ ){
             if (lst.get(i)==node){
                 return true;
@@ -117,7 +117,7 @@ public class Astar implements Service {
         return false;
     }
 
-    public boolean NodeInQueue(PriorityQueue<Noeud> lst, Noeud node){
+    public boolean nodeInQueue(PriorityQueue<Noeud> lst, Noeud node){
         for(int i = 0; i < lst.size(); i++ ){
             if (lst.element()==node){
                 return true;
@@ -152,7 +152,7 @@ public class Astar implements Service {
      * @param lst
      * @return
      */
-    public ArrayList<Noeud> NoeudVoisin(Noeud noeud, ArrayList<Arete> lst){
+    public ArrayList<Noeud> noeudVoisin(Noeud noeud, ArrayList<Arete> lst){
         ArrayList<Noeud> nodes = new ArrayList<Noeud>();
         for(int i = 0; i<lst.size() - 1; i++){
             nodes.add(lst.get(i).noeud2);

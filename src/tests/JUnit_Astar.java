@@ -68,18 +68,17 @@ public class JUnit_Astar extends JUnit_Test{
 
         Window window=new Window(table);
         Graphe graphe=new Graphe(table);
-        ArrayList<Vec2> path =  new Astar(log, config, graphe).Findmyway(example,example2);
+        Astar pf = new Astar(log, config, graphe);
+        ArrayList<Vec2> path =  new ArrayList<>();
         window.setArete(graphe.getNodesbones());
         window.setPath(path);
+        ArrayList<Vec2> clics = new ArrayList<>();
 
-
-
-
-
-
-
-
-        Thread.sleep(20000);
+        while(true) {
+            clics = window.waitLRClic();
+            path = pf.findmyway(clics.get(0), clics.get(1));
+            window.setPath(path);
+        }
     }
 }
 
