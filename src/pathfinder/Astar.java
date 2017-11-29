@@ -31,8 +31,8 @@ public class Astar implements Service {
 
     public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive){
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
-        Noeud noeuddepart = new Noeud(positiondepart, 0, new ArrayList<Noeud>());
-        Noeud noeudarrive = new Noeud(positionarrive, 0, new ArrayList<Noeud>());
+        Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
+        Noeud noeudarrive = new Noeud(positionarrive, 0, 0, new ArrayList<Noeud>());
         Noeud noeudcourant;
         ArrayList<Noeud> nodes = graphe.createNodes();
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
@@ -40,24 +40,26 @@ public class Astar implements Service {
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         nodes.add(0, noeuddepart);
         nodes.add(noeudarrive);
-       // graphe.createAretes();
         graphe.createAretesV2(nodes);
+        // graphe.createAretes();
         //HashMap<Noeud,ArrayList<Arete>> nodesbones = graphe.getNodesbones();
-        int p = 0;  //dernier élément ajouté à closelist
-        int betternode = 0;
-        boolean better = false;
-      //  noeuddepart.setVoisins(nodes.get(nodes.size() - 2).getVoisins());
-      //  noeudarrive.setVoisins(nodes.get(nodes.size() - 1).getVoisins());
+        //  noeuddepart.setVoisins(nodes.get(nodes.size() - 2).getVoisins());
+        //  noeudarrive.setVoisins(nodes.get(nodes.size() - 1).getVoisins());
         //FinalPath.add(noeudcourant.getPosition());
         //noeud1.setHeuristique( (int) noeud1.getPosition().distance(noeudarrive.getPosition()));
         //ArrayList<Arete> areteliste = graphe.getNodesbones().get(noeuddepart);
         //nodesbones.get(noeudarrive);
+        int p = 0;  //dernier élément ajouté à closelist
+        int betternode = 0;
+        boolean better = false;
 
+        openList.add(noeuddepart);
         closeList.add(noeuddepart);
+        noeudcourant=noeuddepart;
+        noeudvoisin = noeudcourant.getVoisins();
 
         while(!nodeInList(closeList,noeudarrive) && openList.size() != 0){
-            noeudcourant = closeList.get(p);
-            noeudvoisin = noeudcourant.getVoisins();
+
             //noeudvoisin = NoeudVoisin(noeudcourant, nodesbones.get(noeudcourant));
             for (int i = 0; i < noeudvoisin.size(); i++) {
 
@@ -65,15 +67,16 @@ public class Astar implements Service {
 
                 }
 
-                else if(!nodeInQueue(openList, noeudvoisin.get(i))){
-                    noeudvoisin.get(i).setHeuristique( (int) noeudvoisin.get(i).getPosition().distance(noeudarrive.getPosition()));
-                    openList.add(noeudvoisin.get(i));
+                else if(nodeInQueue(openList, noeudvoisin.get(i))){
+
+                    if (distance(noeudcourant, closeList) > distance(noeudvoisin.get(i), closeList));
+                    better = true;
+                    betternode=i;
                 }
 
                 else{
-                    if (distance(noeudcourant, closeList) > distance(noeudvoisin.get(i), closeList));
-                        better = true;
-                        betternode=i;
+                    noeudvoisin.get(i).setHeuristique( (int) noeudvoisin.get(i).getPosition().distance(noeudarrive.getPosition()));
+                    openList.add(noeudvoisin.get(i));
                 }
             }
             if(better){
@@ -86,9 +89,11 @@ public class Astar implements Service {
             }
             better = false;
             p++;
+            noeudcourant = closeList.get(p);
+            noeudvoisin = noeudcourant.getVoisins();
 
         }
-
+        // fabrique le chemain à partir de la closeList
         for(int i=0; i<closeList.size();i++) {
             finalPath.add(closeList.get(i).getPosition());
         }

@@ -10,12 +10,14 @@ import java.util.ArrayList;
 public class Noeud {
     private Vec2 position;
     private int heuristique;
+    private int cout;
     private ArrayList<Noeud> voisins;
 
     /** Constructeur*/
-    public Noeud(Vec2 position, int heuristique, ArrayList<Noeud> voisins) {
+    public Noeud(Vec2 position, int heuristique, int cout, ArrayList<Noeud> voisins) {
         this.position = position;
         this.heuristique = heuristique;
+        this.cout = cout;
         this.voisins = voisins;
     }
 
@@ -32,6 +34,10 @@ public class Noeud {
         return voisins;
     }
 
+    public int getCout() {
+        return cout;
+    }
+
     public void setPosition(Vec2 position) {
         this.position = position;
     }
@@ -42,6 +48,9 @@ public class Noeud {
 
     public void setVoisins(ArrayList<Noeud> voisins){ this.voisins = voisins; }
 
+    public void setCout(int cout) {
+        this.cout = cout;
+    }
 }
 
 /*private Vec2 alineate(int xdepart, int ydepart,int xPointoalinate,int yPointoalinate) {
