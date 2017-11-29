@@ -49,49 +49,45 @@ public class Astar implements Service {
         //noeud1.setHeuristique( (int) noeud1.getPosition().distance(noeudarrive.getPosition()));
         //ArrayList<Arete> areteliste = graphe.getNodesbones().get(noeuddepart);
         //nodesbones.get(noeudarrive);
-        int p = 0;  //dernier élément ajouté à closelist
         int betternode = 0;
         boolean better = false;
 
         openList.add(noeuddepart);
-        closeList.add(noeuddepart);
-        noeudcourant=noeuddepart;
-        noeudvoisin = noeudcourant.getVoisins();
 
         while(!nodeInList(closeList,noeudarrive) && openList.size() != 0){
 
-            //noeudvoisin = NoeudVoisin(noeudcourant, nodesbones.get(noeudcourant));
-            for (int i = 0; i < noeudvoisin.size(); i++) {
+            if(better){
+                closeList.set(closeList.size()-1, noeudvoisin.get(betternode));
+                better=false;
+                noeudcourant=closeList.get(closeList.size()-1);
+            }
+            else{
+                noeudcourant = openList.poll();
+                closeList.add(noeudcourant);
+            }
+            noeudvoisin =noeudcourant.getVoisins();
+            int i = 0;
+            while ( i < noeudvoisin.size() && better==false) {
 
                 if(nodeInList(closeList, noeudvoisin.get(i))){
 
                 }
 
                 else if(nodeInQueue(openList, noeudvoisin.get(i))){
+                    if(noeudvoisin.get(i).getCout()>noeudcourant.getCout()+(noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))){
+                        better=true;
+                    }
+                    else { noeudvoisin.get(i).setCout(noeudcourant.getCout() +  (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))); }
 
-                    if (distance(noeudcourant, closeList) > distance(noeudvoisin.get(i), closeList));
-                    better = true;
-                    betternode=i;
                 }
 
                 else{
-                    noeudvoisin.get(i).setHeuristique( (int) noeudvoisin.get(i).getPosition().distance(noeudarrive.getPosition()));
+                    noeudvoisin.get(i).setHeuristique( noeudvoisin.get(i).getPosition().distance(noeudarrive.getPosition()));
+                    noeudvoisin.get(i).setCout(noeudcourant.getCout() +  (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
                     openList.add(noeudvoisin.get(i));
                 }
+                i++;
             }
-            if(better){
-           //     closeList.set(betternode, noeudvoisin.get(betternode));
-                closeList.set(closeList.size()-1, noeudvoisin.get(betternode));
-            }
-            else {
-                closeList.add(openList.poll());
-
-            }
-            better = false;
-            p++;
-            noeudcourant = closeList.get(p);
-            noeudvoisin = noeudcourant.getVoisins();
-
         }
         // fabrique le chemain à partir de la closeList
         for(int i=0; i<closeList.size();i++) {

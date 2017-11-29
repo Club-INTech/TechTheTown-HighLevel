@@ -83,8 +83,8 @@ public class Pathfinding implements Service {
 
         public ArrayList<Vec2> findmeaway(Vec2 positiondepart, Vec2 positionarrivee) {
         Table table=new Table(logn,config);
-        Noeud noeudepart = new Noeud(positiondepart, 0, new ArrayList<Noeud>());
-        Noeud noeudarrivee = new Noeud(positionarrivee, 0, new ArrayList<Noeud>());
+        Noeud noeudepart = new Noeud(positiondepart, 0, 0,new ArrayList<Noeud>());
+        Noeud noeudarrivee = new Noeud(positionarrivee, 0, 0, new ArrayList<Noeud>());
         graphe = new Graphe(table);
         ArrayList<Noeud> nodes = graphe.getNodes();
         HashMap<Noeud, ArrayList<Arete>> nodesbones = graphe.getNodesbones();

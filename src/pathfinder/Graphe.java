@@ -62,7 +62,7 @@ public class Graphe {
                 nodeposition.setX(x);
                 y = j * pasY + ydebut;
                 nodeposition.setY(y);
-                node.add(new Noeud(nodeposition, 0, new ArrayList<Noeud>()));
+                node.add(new Noeud(nodeposition, 0, 0, new ArrayList<Noeud>()));
             }
         }
         int k = node.size();

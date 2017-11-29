@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class Noeud {
     private Vec2 position;
-    private int heuristique;
-    private int cout;
+    private double heuristique;
+    private double cout;
     private ArrayList<Noeud> voisins;
 
     /** Constructeur*/
@@ -26,7 +26,7 @@ public class Noeud {
         return position;
     }
 
-    public int getHeuristique(){
+    public double getHeuristique(){
         return heuristique;
     }
 
@@ -34,7 +34,7 @@ public class Noeud {
         return voisins;
     }
 
-    public int getCout() {
+    public double getCout() {
         return cout;
     }
 
@@ -42,13 +42,13 @@ public class Noeud {
         this.position = position;
     }
 
-    public void setHeuristique(int heuristique) {
+    public void setHeuristique(double heuristique) {
         this.heuristique = heuristique;
     }
 
     public void setVoisins(ArrayList<Noeud> voisins){ this.voisins = voisins; }
 
-    public void setCout(int cout) {
+    public void setCout(double cout) {
         this.cout = cout;
     }
 }
