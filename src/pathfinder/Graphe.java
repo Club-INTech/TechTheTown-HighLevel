@@ -118,9 +118,9 @@ public class Graphe {
         Arete arete;
         ArrayList<Arete> boneslist=new ArrayList<>();
         int n=nodes.size();
-        ArrayList<Noeud> voisins = new ArrayList<>();
         for(int i=0; i<n;i++){
             ArrayList<Arete> listaretes=new ArrayList<>();
+            ArrayList<Noeud> voisins = new ArrayList<>();
             for(int j=i+1;j<n;j++){
                 Segment segment=new Segment(nodes.get(i).getPosition(),nodes.get(j).getPosition());
                 boolean isIntersection=false;
