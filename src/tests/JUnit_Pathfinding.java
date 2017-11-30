@@ -70,7 +70,21 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
         Window window=new Window(table);
         Graphe graphe=new Graphe(table);
-        window.setArete(graphe.getNodesbones());
+        ArrayList<Vec2> path=new ArrayList<>();
+        window.setNode(graphe.getNodes());
+        window.setArete(graphe.getBoneslist());
+        window.setPath(path);
+        ArrayList<Vec2> clics=new ArrayList<>();
+
+
+       // pathfinding.findmeaway(example,example2);
+
+
+        /*while(true){
+            clics=window.waitLRClic();
+            path=pathfinding.findmeaway(clics.get(0),clics.get(1));
+            window.setPath(path);
+        }*/
 
 
 
@@ -80,7 +94,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
 
 
-        Thread.sleep(20000);
+        Thread.sleep(600000);
     }
 }
 

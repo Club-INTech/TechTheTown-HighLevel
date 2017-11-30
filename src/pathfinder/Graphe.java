@@ -11,8 +11,8 @@ import table.obstacles.ObstacleRectangular;
 import tests.container.A;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+
+
 
 
 public class Graphe {
@@ -20,8 +20,8 @@ public class Graphe {
     private ArrayList<ObstacleRectangular> listRectangu;
     private Table table;
     private ArrayList<Noeud> nodes;
+    private ArrayList<Arete> boneslist;
     //dictionnaire contenant les arêtes associées à chaque noeud
-    private HashMap<Noeud,ArrayList<Arete>> nodesbones;
 
 
     /**Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
@@ -37,16 +37,16 @@ public class Graphe {
         this.nodes=new ArrayList<Noeud>();
         this.nodes=createNodes();
         long time1=System.currentTimeMillis();
-        this.nodesbones=new HashMap<>();
-        this.nodesbones=createAretes(nodes);
+        this.boneslist=new ArrayList<>();
+        this.boneslist=createAretes(nodes);
         long time2=System.currentTimeMillis()-time1;
         System.out.println("Time to create graph (ms): "+time2);
 
     }
 
     public ArrayList<Noeud> createNodes() {
-        int pasX = 200;
-        int pasY = 300;
+        int pasX = 300;
+        int pasY = 200;
         int xdebut = -1500;
         int ydebut = 0;
         int x;
@@ -55,7 +55,7 @@ public class Graphe {
         int m;
         ArrayList<Noeud> node = new ArrayList<>();
         ArrayList<Noeud> nodesToKeep = new ArrayList<>();
-        for (int i = 1; i < 3000 / pasX; i++) {
+        for (int i = 1; i < 3000 / pasX-1; i++) {
             x = i * pasX + xdebut;
             for (int j = 1; j < 2000 / pasY; j++) {
                 Vec2 nodeposition = new Vec2();
@@ -114,11 +114,11 @@ public class Graphe {
      */
 
 
-    public HashMap<Noeud,ArrayList<Arete>> createAretes(ArrayList<Noeud>nodes){
-
+    public ArrayList<Arete> createAretes(ArrayList<Noeud>nodes){
         Arete arete;
+        ArrayList<Arete> boneslist=new ArrayList<>();
         int n=nodes.size();
-        for(int i=0; i<n-1;i++){
+        for(int i=0; i<n;i++){
             ArrayList<Arete> listaretes=new ArrayList<>();
             for(int j=i+1;j<n;j++){
                 Segment segment=new Segment(nodes.get(i).getPosition(),nodes.get(j).getPosition());
@@ -130,6 +130,7 @@ public class Graphe {
                 }
                 if (!isIntersection) {
                     double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
+                    cost=Math.sqrt(cost);
                     arete = new Arete(nodes.get(i), nodes.get(j), cost);
                     listaretes.add(arete);
 
@@ -137,22 +138,43 @@ public class Graphe {
 
 
             }
-            nodesbones.put(nodes.get(i), listaretes);
+            boneslist.addAll(listaretes);
+            System.out.println(boneslist.size());
+
         }
 
-    return nodesbones;
 
-
+    return boneslist;
     }
+
+
+
 
     public ArrayList<Noeud> getNodes() {
         return nodes;
     }
 
-    public HashMap<Noeud, ArrayList<Arete>> getNodesbones() {
-        return nodesbones;
+    public ArrayList<Arete> getBoneslist() {
+        return boneslist;
     }
 
+    public ArrayList<Arete> removeDoublons(ArrayList<Arete> areteslist){
+        int n=areteslist.size();
+        ArrayList<Arete> aretesToreturn=new ArrayList<>();
+        for(int i=0;i<n;i++){
+            Boolean toadd=true;
+            for(int k=0;k<n;k++){
+                if((areteslist.get(i).equals(areteslist.get(k)))){
+                    toadd=false;
+                }
+            }
+        if(toadd){
+            aretesToreturn.add(aretesToreturn.get(i));
+            }
+
+        }
+    return aretesToreturn;
+}
 }
 
 

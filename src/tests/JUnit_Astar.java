@@ -65,7 +65,7 @@ public class JUnit_Astar extends JUnit_Test{
 
         Window window=new Window(table);
         Graphe graphe=new Graphe(table);
-        window.setArete(graphe.getNodesbones());
+        window.setArete(graphe.getBoneslist());
 
 
 

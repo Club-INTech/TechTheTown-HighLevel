@@ -46,11 +46,9 @@ public class Pathfinding implements Service {
     private Graphe graphe;
 
 
-
-
-    private Pathfinding(Log logn, Config config){
-        this.logn=logn;
-        this.config=config;
+    private Pathfinding(Log logn, Config config) {
+        this.logn = logn;
+        this.config = config;
 
     }
 
@@ -58,22 +56,26 @@ public class Pathfinding implements Service {
     public void updateConfig() {
     }
 
-    /**Cette méthode retourne le noeud le plus proche à un noeud en prenant l'arete avec
-    le moindre cout
+    /**
+     * Cette méthode retourne le noeud le plus proche à un noeud en prenant l'arete avec
+     * le moindre cout
      */
     public Noeud closestNode(Noeud node) {
-        ArrayList<Arete> aretelist = graphe.getNodesbones().get(node);
-        int n = aretelist.size();
-        double min=aretelist.get(0).cout;
-        int indicemin=0;
+        ArrayList<Arete> areteslist = graphe.getBoneslist();
+        int n = areteslist.size();
+        double min = areteslist.get(0).cout;
+        int indicemin = 0;
         for (int i = 0; i < n; i++) {
-            if(aretelist.get(i).cout<min){
-                min=aretelist.get(i).cout;
-                indicemin=i;
+            if (areteslist.get(i).noeud1.equals(node)) {
+                if (areteslist.get(i).cout < min) {
+                    min = areteslist.get(i).cout;
+                    indicemin = i;
+                }
             }
         }
-        return aretelist.get(indicemin).noeud2;
+        return areteslist.get(indicemin).noeud2;
     }
+}
 
 
 
@@ -81,26 +83,26 @@ public class Pathfinding implements Service {
     en proche puis améliore le chemin à l'aide du dictionnaire nodesbones
     */
 
-        public ArrayList<Vec2> findmeaway(Vec2 positiondepart, Vec2 positionarrivee) {
+        /*public ArrayList<Vec2> findmeaway(Vec2 positiondepart, Vec2 positionarrivee) {
         Table table=new Table(logn,config);
+        graphe = new Graphe(table);
         Noeud noeudepart = new Noeud(positiondepart, 0);
         Noeud noeudarrivee = new Noeud(positionarrivee, 0);
-        graphe = new Graphe(table);
         ArrayList<Noeud> nodes = graphe.getNodes();
-        nodes.add(noeudepart);
+        nodes.add(0,noeudepart);
         nodes.add(noeudarrivee);
         graphe.createAretes(nodes);
-        HashMap<Noeud, ArrayList<Arete>> nodesbones = graphe.getNodesbones();
         ArrayList<Noeud> nodestofollow = new ArrayList<>();
         ArrayList<Vec2> pathtofollow = new ArrayList<>();
+        ArrayList<Noeud> nodesTokeep=new ArrayList<>();
         // la liste pathtofollow contient les vecteurs associés aux noeuds dans nodestofollow
-        nodestofollow.add(noeudepart);
+        nodestofollow.add(0,noeudepart);
         int n = graphe.getNodes().size();
         ArrayList<Arete> aretelist;
         /*Trouver un chemin initial en utilisant la méthode précedente:trouver les noeuds
         les plus proches de proche en proche
          */
-        for (int i = 0; i < n; i++) {
+        /*for (int i = 0; i < n; i++) {
             nodestofollow.add(closestNode(nodestofollow.get(i)));
             if(nodestofollow.get(i)==noeudarrivee){
                 break;
@@ -113,26 +115,26 @@ public class Pathfinding implements Service {
           noeud avant on supprime tous les noeuds between ces deux
          */
 
-        int m = nodestofollow.size();
-        ArrayList<Noeud> nodesTokeep=new ArrayList<>();
+        /*int m = nodestofollow.size();
+
         boolean toadd;
         for (int i = 0; i < m; i++) {
-            aretelist = nodesbones.get(nodestofollow.get(i));
+            //aretelist = graphe.getBoneslist().get(nodestofollow.get(i));
             toadd=false;
             for(int j=i;j<m;j++){
-                if(contain(aretelist,nodestofollow.get(j))){
+                //if(contain(aretelist,nodestofollow.get(j))){
                 nodesTokeep.add(nodestofollow.get(i));
                 nodesTokeep.add(nodestofollow.get(j));
                 toadd=true;
                 }
 
             }
-            if(!toadd){
-                nodesTokeep.add(nodestofollow.get(i));
-            }
-        }
-        int l=nodesTokeep.size();
-        for(int i=0;i<l;i++){
+            //if(!toadd){
+                //nodesTokeep.add(nodestofollow.get(i));
+            //}
+        //}
+        //int l=nodesTokeep.size();
+        /*for(int i=0;i<l;i++){
             pathtofollow.get(i).setX(nodesTokeep.get(i).getPosition().getX());
             pathtofollow.get(i).setY(nodesTokeep.get(i).getPosition().getY());
         }
@@ -165,7 +167,7 @@ public class Pathfinding implements Service {
         }
     }
 */
-}
+//}
 
 
 

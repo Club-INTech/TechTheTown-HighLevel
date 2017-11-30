@@ -13,11 +13,30 @@ public class Arete {
     public Noeud noeud2;
     public double cout;
 
-    public Arete(Noeud noeud1, Noeud noeud2, double cout){
+    public Arete(Noeud noeud1, Noeud noeud2, double cout) {
         this.noeud1 = noeud1;
         this.noeud2 = noeud2;
         this.cout = cout;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Arete) {
+            if (this.noeud1.equals(((Arete) object).noeud1)) {
+                if (this.noeud2.equals(((Arete) object).noeud2)) {
+                    if (this.cout == ((Arete) object).cout) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
 
+        }
+        return false;
+
+
+    }
 }

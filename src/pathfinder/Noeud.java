@@ -15,6 +15,16 @@ public class Noeud {
         this.position = position;
         this.heuristique = heuristique;
     }
+    @Override
+    public boolean equals(Object object){
+        if(object instanceof Noeud){
+            if(this.position.equals(((Noeud) object).position) && (this.heuristique==((Noeud) object).heuristique)){
+                return true;
+            }
+        return false;
+        }
+        return false;
+    }
 
 
     public Vec2 getPosition() {

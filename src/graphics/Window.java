@@ -67,7 +67,7 @@ public class Window extends JFrame
 	    this.setLocationRelativeTo(null);
 	    this.setResizable(false);
 	    this.setBackground(backgroundColor);
-	    
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    tablePanel = new TablePanel(table, state.robot);
 	    this.setContentPane(tablePanel);
 	    
@@ -91,7 +91,8 @@ public class Window extends JFrame
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setBackground(backgroundColor);
-
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		tablePanel = new TablePanel(table);
 		this.setContentPane(tablePanel);
 
@@ -118,18 +119,16 @@ public class Window extends JFrame
 	}
 
 	/** Permet d'afficher les aretes/le chemin */
-	public void setArete(HashMap<Noeud,ArrayList<Arete>> nodesbones){
-		HashSet<Arete> aretes=new HashSet<>();
-		Collection<ArrayList<Arete>> listaretes=nodesbones.values();
-		for(ArrayList<Arete> boneslist:listaretes){
-			aretes.addAll(boneslist);
-		}
-		System.out.println(aretes.size());
+	public void setArete(ArrayList<Arete> aretes){
 		tablePanel.setAretes(aretes);
 		repaint();
 	}
 	public void setPath(ArrayList<Vec2> path){
 		tablePanel.setPath(path);
+		repaint();
+	}
+	public void setNode(ArrayList<Noeud> nodes){
+		tablePanel.setNodes(nodes);
 		repaint();
 	}
 

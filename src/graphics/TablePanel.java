@@ -53,8 +53,9 @@ public class TablePanel extends JPanel
 
 	/** Champs pour l'interface Pathfinding : n'ayant pas de robot instancié, on récupère en brut les données */
 	private ArrayList<Vec2> path;
-	private HashSet<Arete> aretes;
+	private ArrayList<Arete> aretes;
 	private ArrayList<Vec2> clics;
+	private ArrayList<Noeud> nodes;
 	public static boolean showGraph = false;
 
 	/** Table & robot */
@@ -83,8 +84,9 @@ public class TablePanel extends JPanel
 	public TablePanel(Table table, Robot robot)
 	{
 		path = new ArrayList<>();
-		aretes = new HashSet<>();
+		aretes = new ArrayList<>();
 		clics = new ArrayList<>();
+		nodes=new ArrayList<>();
 		this.table = table;
 		this.robot = robot;
 
@@ -101,8 +103,9 @@ public class TablePanel extends JPanel
 	public TablePanel(Table table)
 	{
 		path = new ArrayList<>();
-		aretes = new HashSet<>();
+		aretes = new ArrayList<>();
 		clics = new ArrayList<>();
+		nodes=new ArrayList<>();
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
@@ -122,6 +125,8 @@ public class TablePanel extends JPanel
 		Vec2 upLeftCorner;
 		Vec2 pathNode1;
 		Vec2 pathNode2;
+		Vec2 pathNode3;
+
 
 		// Background
 		graphics.drawImage(tableBackground,0, 0, 900, 600, this);
@@ -194,6 +199,11 @@ public class TablePanel extends JPanel
 		// Le graphe
 		if(showGraph){
 			graphics.setColor(graphColor);
+			for(Noeud noeud : nodes){
+				pathNode3=changeRefToDisplay(noeud.getPosition());
+				graphics.fillOval(pathNode3.getX()-4,pathNode3.getY()-4,8,8);
+
+			}
 			for (Arete ridge : aretes){
 				pathNode1 = changeRefToDisplay(ridge.noeud1.getPosition());
 				pathNode2 = changeRefToDisplay(ridge.noeud2.getPosition());
@@ -201,6 +211,7 @@ public class TablePanel extends JPanel
 				graphics.fillOval(pathNode1.getX() - 4, pathNode1.getY() - 4, 8, 8);
 				graphics.fillOval(pathNode2.getX() - 4, pathNode2.getY() - 4, 8, 8);
 			}
+
 		}
 
 		// Print les clics et leur position
@@ -229,13 +240,18 @@ public class TablePanel extends JPanel
 		removeAll();
 		revalidate();
 	}
-	public void setAretes(HashSet<Arete> aretes) {
+	public void setAretes(ArrayList<Arete> aretes) {
 		this.aretes = aretes;
 		removeAll();
 		revalidate();
 	}
 	public void setClics(ArrayList<Vec2> clics) {
 		this.clics = clics;
+		removeAll();
+		revalidate();
+	}
+	public void setNodes(ArrayList<Noeud> nodes){
+		this.nodes=nodes;
 		removeAll();
 		revalidate();
 	}
