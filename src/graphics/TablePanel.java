@@ -74,7 +74,7 @@ public class TablePanel extends JPanel
 	private Color unconfirmedColor = new Color(220, 220, 50, 100);
 	private Color robotColor = new Color(50, 180, 50, 100);
 	private Color teamColor = new Color(50, 80, 50, 220);
-	private Color pathColor = new Color(60, 0, 80);
+	private Color pathColor = new Color(200, 0, 80);
 	private Color graphColor = new Color(50, 80, 120, 200);
 
 	/** Construit un panel pour du l'interface full

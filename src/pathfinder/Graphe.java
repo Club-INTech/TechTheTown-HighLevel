@@ -62,7 +62,7 @@ public class Graphe {
                 nodeposition.setX(x);
                 y = j * pasY + ydebut;
                 nodeposition.setY(y);
-                node.add(new Noeud(nodeposition, 0));
+                node.add(new Noeud(nodeposition, 0, 0, new ArrayList<Noeud>()));
             }
         }
         int k = node.size();
@@ -158,6 +158,7 @@ public class Graphe {
         return boneslist;
     }
 
+
     public ArrayList<Arete> removeDoublons(ArrayList<Arete> areteslist){
         int n=areteslist.size();
         ArrayList<Arete> aretesToreturn=new ArrayList<>();
@@ -175,6 +176,34 @@ public class Graphe {
         }
     return aretesToreturn;
 }
+
+    public void createAretesV2(ArrayList<Noeud> noeuds){
+        //ArrayList<Arete> listaretes=new ArrayList<>();
+        //Arete arete;
+        int n=noeuds.size();
+        for(int i=0; i<n-1;i++){
+            ArrayList<Noeud> voisins = new ArrayList<Noeud>();
+            for(int j=i+1;j<n;j++){
+                Segment segment=new Segment(noeuds.get(i).getPosition(),noeuds.get(j).getPosition());
+                boolean isIntersection=false;
+                for(int k=0;k<listCircu.size();k++){
+                    if(Geometry.intersects(segment,listCircu.get(k).getCircle())){
+                        isIntersection=true;
+                    }
+                }
+                if (!isIntersection) {
+                    voisins.add(noeuds.get(j));
+                    //double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
+                    //arete = new Arete(nodes.get(i), nodes.get(j), cost);
+                    //listaretes.add(arete);
+                    //nodesbones.put(nodes.get(i), listaretes);
+                }
+            }
+            noeuds.get(i).setVoisins(voisins);
+        }
+    }
+
+
 }
 
 

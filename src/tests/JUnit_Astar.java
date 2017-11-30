@@ -22,11 +22,14 @@ package tests;
 import exceptions.ContainerException;
 import graphics.Window;
 import org.junit.Test;
+import pathfinder.Astar;
 import pathfinder.Graphe;
 import pathfinder.Pathfinding;
 import smartMath.Vec2;
 import table.Table;
 import table.obstacles.ObstacleManager;
+
+import java.util.ArrayList;
 
 /**
  * Tests Unitaires pour le pathfinding : utiliser ce JUnit pour faire des petits tests de java
@@ -51,7 +54,7 @@ public class JUnit_Astar extends JUnit_Test{
         obstacleManager = table.getObstacleManager(); // Grâce au container, le champ ObstacleManager de votre table est déjà instancié !
         // Mais... pour commencer instancier vos variables à la main :
         Vec2 example = new Vec2(50, 40);
-        Vec2 example2=new Vec2(600,1600);
+        Vec2 example2= new Vec2(600,1600);
 
 
         // Whatever you want... Le debug pour le moment c'est mettre des 'System.out.println()' qui affiche ce que
@@ -76,6 +79,19 @@ public class JUnit_Astar extends JUnit_Test{
 
 
         Thread.sleep(20000);
+
+        Astar pf = new Astar(log, config, graphe);
+        ArrayList<Vec2> path =  new ArrayList<>();
+        //window.setArete(graphe.getNodesbones());
+        window.setPath(path);
+        ArrayList<Vec2> clics = new ArrayList<>();
+
+        while(true) {
+            clics = window.waitLRClic();
+            path = pf.findmyway(clics.get(0), clics.get(1));
+            window.setPath(path);
+        }
+
     }
 }
 
