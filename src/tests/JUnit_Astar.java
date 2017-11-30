@@ -78,7 +78,7 @@ public class JUnit_Astar extends JUnit_Test{
 
 
 
-        Thread.sleep(20000);
+       // Thread.sleep(20000);
 
         Astar pf = new Astar(log, config, graphe);
         ArrayList<Vec2> path =  new ArrayList<>();

@@ -118,6 +118,7 @@ public class Graphe {
         Arete arete;
         ArrayList<Arete> boneslist=new ArrayList<>();
         int n=nodes.size();
+        ArrayList<Noeud> voisins = new ArrayList<>();
         for(int i=0; i<n;i++){
             ArrayList<Arete> listaretes=new ArrayList<>();
             for(int j=i+1;j<n;j++){
@@ -133,11 +134,10 @@ public class Graphe {
                     cost=Math.sqrt(cost);
                     arete = new Arete(nodes.get(i), nodes.get(j), cost);
                     listaretes.add(arete);
-
+                    voisins.add(nodes.get(j));
                 }
-
-
             }
+            nodes.get(i).setVoisins(voisins);
             boneslist.addAll(listaretes);
             System.out.println(boneslist.size());
 
