@@ -28,6 +28,15 @@ public class Astar implements Service {
         this.graphe = graphe;
     }
 
+    /**
+     *
+     * Methode renvoyant une liste de vecteurs qui contient le chemain le plus rapide
+     * entre les deux positions entrées.
+     *
+     * @param positiondepart
+     * @param positionarrive
+     * @return
+     */
 
     public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive){
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
@@ -40,22 +49,10 @@ public class Astar implements Service {
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         nodes.add(0, noeuddepart);
         nodes.add(noeudarrive);
-        int p = 0;  //dernier élément ajouté à closelist
         int betternode = 0;
         boolean better = false;
         graphe.createAretes(nodes);
-
-        //HashMap<Noeud,ArrayList<Arete>> nodesbones = graphe.getNodesbones();
-        //  noeuddepart.setVoisins(nodes.get(nodes.size() - 2).getVoisins());
-        //  noeudarrive.setVoisins(nodes.get(nodes.size() - 1).getVoisins());
-        //FinalPath.add(noeudcourant.getPosition());
-        //noeud1.setHeuristique( (int) noeud1.getPosition().distance(noeudarrive.getPosition()));
-        //ArrayList<Arete> areteliste = graphe.getNodesbones().get(noeuddepart);
-        //nodesbones.get(noeudarrive);
         openList.add(noeuddepart);
-
-        //noeudcourant = closeList.get(p);
-        //noeudvoisin = NoeudVoisin(noeudcourant,nodesbones.get(noeudcourant));
 
         while(!nodeInList(closeList,noeudarrive) && openList.size() != 0){
 

@@ -4,7 +4,10 @@ import java.util.Comparator;
 
 public class BetterNode implements Comparator<Noeud> {
 
-    //methode comparant la qualité de deux noeuds
+    /**
+     *     Methode comparant la qualité de deux noeuds.
+     *     Peut être appelé pour trier une PriorityQueue.
+     */
 
     @Override
     public int compare(Noeud noeud1, Noeud noeud2){

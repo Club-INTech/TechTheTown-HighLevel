@@ -110,7 +110,10 @@ public class Graphe {
     l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
     ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
     déja un chemin à suivre, à chaque noeud, on associe une liste d'arete qui lui est propre
-    donc implicitement une liste de noeuds, le tout stocké dans un dictionnaire
+    donc implicitement une liste de noeuds, le tout stocké dans un dictionnaire.
+
+     Maj. Cette méthode permet également le compléter pour chaque noeud du graphe
+     le champ contenant la liste de ses noeuds voisins.
      */
 
 
