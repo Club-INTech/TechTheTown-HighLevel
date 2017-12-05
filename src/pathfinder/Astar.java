@@ -74,15 +74,22 @@ public class Astar implements Service {
 
                 if (nodeInList(closeList, noeudvoisin.get(i))) {
 
-                } else if (noeudvoisin.get(i).getCout() > noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
-                    if(better && noeudvoisin.get(i).getHeuristique() + noeudvoisin.get(i).getCout() < noeudvoisin.get(i).getHeuristique() + noeudvoisin.get(betternode).getCout()){
-                        betternode=i;
+                }
+                else if (nodeInQueue(openList, noeudvoisin.get(i))){
+                    if (noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
+                        if(better && noeudvoisin.get(i).getHeuristique() + noeudvoisin.get(i).getCout() < noeudvoisin.get(betternode).getHeuristique() + noeudvoisin.get(betternode).getCout()){
+                            betternode=i;
+                        }
+                        else{
+                            better = true;
+                            betternode=i;
+                        }
                     }
-                    else{
-                        better = true;
-                        betternode=i;
+                    else {
+                        noeudvoisin.get(i).setCout(noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
                     }
                 }
+
                 else {
                     noeudvoisin.get(i).setHeuristique(noeudvoisin.get(i).getPosition().distance(noeudarrive.getPosition()));
                     noeudvoisin.get(i).setCout(noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
