@@ -75,8 +75,8 @@ public class Astar implements Service {
                 if (nodeInList(closeList, noeudvoisin.get(i))) {
 
                 }
-                else if (nodeInQueue(openList, noeudvoisin.get(i))){
-                    if ( Arete.traceArete(noeudcourant,noeudvoisin.get(i),aretes) && noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
+                else if (graphe.traceArete(noeudcourant,noeudvoisin.get(i)) && nodeInQueue(openList, noeudvoisin.get(i))){
+                    if (noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
                         if(better && noeudvoisin.get(i).getHeuristique() + noeudvoisin.get(i).getCout() < noeudvoisin.get(betternode).getHeuristique() + noeudvoisin.get(betternode).getCout()){
                             betternode=i;
                         }
@@ -104,7 +104,6 @@ public class Astar implements Service {
         for(int i=0; i<closeList.size();i++) {
             finalPath.add(closeList.get(i).getPosition());
         }
-        finalPath=betterPath(finalPath,aretes);
         return finalPath;
 
     }
