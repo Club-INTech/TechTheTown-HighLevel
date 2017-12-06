@@ -12,6 +12,7 @@ public class Noeud {
     private double heuristique;
     private double cout;
     private ArrayList<Noeud> voisins;
+    private Noeud   pred;
 
     /** Constructeur*/
     public Noeud(Vec2 position, int heuristique, int cout, ArrayList<Noeud> voisins) {
@@ -48,6 +49,8 @@ public class Noeud {
         return cout;
     }
 
+    public Noeud getPred() {       return pred;    }
+
     public void setPosition(Vec2 position) {
         this.position = position;
     }
@@ -61,6 +64,8 @@ public class Noeud {
     public void setCout(double cout) {
         this.cout = cout;
     }
+
+    public void setPred(Noeud pred) {        this.pred = pred;    }
 }
 
 /*private Vec2 alineate(int xdepart, int ydepart,int xPointoalinate,int yPointoalinate) {
