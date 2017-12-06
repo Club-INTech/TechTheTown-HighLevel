@@ -5,7 +5,7 @@ package enums;
  */
 public enum CommunicationHeaders {
 
-    EVENT((char) 0x13, (char) 0x37),
+    EVENT((char) 0x13, (char) 0x17),
     ULTRASON((char) 0x01, (char) 0x10),
     DEBUG((char) 0x02, (char) 0x20),
     ;
