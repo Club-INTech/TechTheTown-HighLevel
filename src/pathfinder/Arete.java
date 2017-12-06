@@ -39,7 +39,7 @@ public class Arete {
 
 
     }
-    public boolean traceArete(Noeud noeud1, Noeud noeud2,ArrayList<Arete> listAretes ){
+    public static boolean traceArete(Noeud noeud1, Noeud noeud2,ArrayList<Arete> listAretes ){
         int n=listAretes.size();
         for(int i=0;i<n;i++){
             if(listAretes.get(i).noeud1.equals(noeud1) &&listAretes.get(i).noeud2.equals(noeud2) ){
