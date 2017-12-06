@@ -68,13 +68,11 @@ public class JUnit_Pathfinding extends JUnit_Test{
         Window window=new Window(table);
         Graphe graphe=new Graphe(table);
         ArrayList<Vec2> path=new ArrayList<>();
-        window.setNode(graphe.getNodes());
-        window.setArete(graphe.getBoneslist());
+        //window.setNode(graphe.getNodes());
+        //window.setArete(graphe.getBoneslist());
         window.setPath(path);
         ArrayList<Vec2> clics=new ArrayList<>();
         Astar pf = new Astar(log, config, graphe);
-        //ArrayList<Vec2> path =  new ArrayList<>();
-        //window.setArete(graphe.getNodesbones());
         window.setPath(path);
         //ArrayList<Vec2> clics = new ArrayList<>();
 

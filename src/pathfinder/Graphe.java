@@ -45,8 +45,8 @@ public class Graphe {
     }
 
     public ArrayList<Noeud> createNodes() {
-        int pasX = 300;
-        int pasY = 200;
+        int pasX = 400;
+        int pasY = 300;
         int xdebut = -1500;
         int ydebut = 0;
         int x;
@@ -62,7 +62,7 @@ public class Graphe {
                 nodeposition.setX(x);
                 y = j * pasY + ydebut;
                 nodeposition.setY(y);
-                node.add(new Noeud(nodeposition, 0, 0, new ArrayList<Noeud>()));
+                node.add(new Noeud(nodeposition, 999999999, 0, new ArrayList<Noeud>()));
             }
         }
         int k = node.size();
@@ -171,6 +171,10 @@ public class Graphe {
         }
         return true;
 
+    }
+    public void clear(Graphe graphe){
+        graphe.nodes=null;
+        graphe.boneslist=null;
     }
 
 

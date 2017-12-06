@@ -55,8 +55,6 @@ public class Astar implements Service {
         openList.add(noeuddepart);
 
         while(!nodeInList(closeList,noeudarrive) && openList.size() != 0){
-
-
             if(better){
                 closeList.set(closeList.size()-1, noeudvoisin.get(betternode));
                 better=false;
@@ -70,7 +68,7 @@ public class Astar implements Service {
 
             int i = 0;
 
-            while ( i < noeudvoisin.size() && better==false) {
+            while ( i < noeudvoisin.size()) {
 
                 if (nodeInList(closeList, noeudvoisin.get(i))) {
 
@@ -81,11 +79,8 @@ public class Astar implements Service {
                             betternode=i;
                         }
                         else{
+                            better=true;
                             betternode=i;
-                            if(graphe.traceArete(noeudcourant,noeudvoisin.get(betternode))){
-                                better=true;
-                            }
-
                         }
                     }
                     else {

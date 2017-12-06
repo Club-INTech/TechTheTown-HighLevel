@@ -22,6 +22,7 @@ package pathfinder;
 import container.Service;
 import pfg.config.Config;
 import smartMath.Geometry;
+import smartMath.Segment;
 import smartMath.Vec2;
 import sun.font.TrueTypeFont;
 import sun.security.util.Length;
@@ -44,7 +45,7 @@ public class Pathfinding implements Service {
     Log logn;
     Config config;
     private Graphe graphe;
-
+    Table table=new Table(logn,config);
 
     private Pathfinding(Log logn, Config config) {
         this.logn = logn;
@@ -61,19 +62,41 @@ public class Pathfinding implements Service {
      * le moindre cout
      */
     public Noeud closestNode(Noeud node) {
-        ArrayList<Arete> areteslist = graphe.getBoneslist();
-        int n = areteslist.size();
-        double min = areteslist.get(0).cout;
+        ArrayList<Noeud> voisins=node.getVoisins();
+        int n = voisins.size();
+        double cost = Segment.squaredLength(node.getPosition(), voisins.get(0).getPosition());
+        cost=Math.sqrt(cost);
+        Arete arete=new Arete(node,voisins.get(0),cost);
+        double min = arete.cout;
         int indicemin = 0;
+        ArrayList<Arete> areteListVoi
         for (int i = 0; i < n; i++) {
-            if (areteslist.get(i).noeud1.equals(node)) {
-                if (areteslist.get(i).cout < min) {
-                    min = areteslist.get(i).cout;
-                    indicemin = i;
-                }
-            }
+            if(voisins.get(i).)
         }
         return areteslist.get(indicemin).noeud2;
+    }
+    public ArrayList<Vec2> findmeaway(Vec2 positionDepart, Vec2 positionArrivee){
+        graphe = new Graphe(table);
+        Noeud noeudepart = new Noeud(positionDepart, 0,0,new ArrayList<>());
+        Noeud noeudarrivee = new Noeud(positionArrivee, 0,0,new ArrayList<>());
+        ArrayList<Noeud> nodes = graphe.getNodes();
+        nodes.add(0,noeudepart);
+        nodes.add(noeudarrivee);
+        graphe.createAretes(nodes);
+        ArrayList<Noeud> openlist=new ArrayList<>();
+        ArrayList<Noeud> nodesTofollow=new ArrayList<>();
+        nodesTofollow.add(noeudepart);
+        ArrayList<Vec2> pathTofollow=new ArrayList<>();
+        int n=pathTofollow.size();
+        for(int i=0;i<n;i++){
+          nodesTofollow.add(closestNode(nodesTofollow.get(i)));
+          n=nodesTofollow.size();
+        }
+        n=nodesTofollow.size();
+        for(int i=0;i<n;i++){
+            pathTofollow.add(nodesTofollow.get(i).getPosition());
+        }
+        return pathTofollow;
     }
 }
 
