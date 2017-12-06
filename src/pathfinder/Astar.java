@@ -121,7 +121,7 @@ public class Astar implements Service {
 
     public boolean nodeInList( ArrayList<Noeud> lst, Noeud node){
         for(int i = 0; i < lst.size(); i++ ){
-            if (lst.get(i)==node){
+            if (lst.get(i).equals(node)){
                 return true;
             }
         }
@@ -130,7 +130,7 @@ public class Astar implements Service {
 
     public boolean nodeInQueue(PriorityQueue<Noeud> lst, Noeud node){
         for(int i = 0; i < lst.size(); i++ ){
-            if (lst.element()==node){
+            if (lst.element().equals(node)){
                 return true;
             }
         }

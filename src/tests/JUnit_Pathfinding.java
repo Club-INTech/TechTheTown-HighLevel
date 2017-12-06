@@ -22,10 +22,7 @@ package tests;
 import exceptions.ContainerException;
 import graphics.Window;
 import org.junit.Test;
-import pathfinder.Arete;
-import pathfinder.Graphe;
-import pathfinder.Noeud;
-import pathfinder.Pathfinding;
+import pathfinder.*;
 import smartMath.Vec2;
 import table.Table;
 import table.obstacles.ObstacleManager;
@@ -75,6 +72,17 @@ public class JUnit_Pathfinding extends JUnit_Test{
         window.setArete(graphe.getBoneslist());
         window.setPath(path);
         ArrayList<Vec2> clics=new ArrayList<>();
+        Astar pf = new Astar(log, config, graphe);
+        //ArrayList<Vec2> path =  new ArrayList<>();
+        //window.setArete(graphe.getNodesbones());
+        window.setPath(path);
+        //ArrayList<Vec2> clics = new ArrayList<>();
+
+        while(true) {
+            clics = window.waitLRClic();
+            path = pf.findmyway(clics.get(0), clics.get(1));
+            window.setPath(path);
+        }
 
 
        // pathfinding.findmeaway(example,example2);
@@ -94,7 +102,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
 
 
-        Thread.sleep(600000);
+        //Thread.sleep(600000);
     }
 }
 

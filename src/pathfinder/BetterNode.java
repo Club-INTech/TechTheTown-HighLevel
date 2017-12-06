@@ -6,7 +6,7 @@ public class BetterNode implements Comparator<Noeud> {
 
     /**
      *     Methode comparant la qualité de deux noeuds.
-     *     Peut être appelé pour trier une PriorityQueue.
+     *     Peut être appelée pour trier une PriorityQueue.
      */
 
     @Override
