@@ -83,7 +83,6 @@ public class JUnit_Astar extends JUnit_Test{
             clics = window.waitLRClic();
             path = pf.findmyway(clics.get(0), clics.get(1));
             window.setPath(path);
-            System.out.println("ah");
         }
 
     }

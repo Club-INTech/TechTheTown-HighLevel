@@ -161,6 +161,18 @@ public class Graphe {
         return boneslist;
     }
 
+    public boolean traceArete(Noeud noeud1, Noeud noeud2){
+        Segment segment=new Segment(noeud1.getPosition(),noeud2.getPosition());
+        int n=listCircu.size();
+        for(int i=0;i<n;i++){
+            if(Geometry.intersects(segment,listCircu.get(i).getCircle())){
+                return false;
+            }
+        }
+        return true;
+
+    }
+
 
     public ArrayList<Arete> removeDoublons(ArrayList<Arete> areteslist){
         int n=areteslist.size();
