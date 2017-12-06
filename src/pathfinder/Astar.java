@@ -104,6 +104,7 @@ public class Astar implements Service {
         for(int i=0; i<closeList.size();i++) {
             finalPath.add(closeList.get(i).getPosition());
         }
+        finalPath=betterPath(finalPath,aretes);
         return finalPath;
 
     }
@@ -169,6 +170,17 @@ public class Astar implements Service {
             nodes.add(lst.get(i).noeud2);
         }
         return nodes;
+    }
+    public ArrayList<Vec2> betterPath(ArrayList<Vec2> path,ArrayList<Arete> areteslist){
+        int n=path.size();
+        ArrayList<Vec2> betterpath=path;
+        for(int i =0;i<n-1;i++){
+            if(!(Arete.traceArete2(path.get(i),path.get(i+1),areteslist))){
+                betterpath.addAll(i,findmyway(path.get(i),path.get(i+1)));
+            }
+        }
+        return betterpath;
+
     }
 
 }
