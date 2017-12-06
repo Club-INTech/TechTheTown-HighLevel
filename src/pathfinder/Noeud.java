@@ -1,5 +1,6 @@
 package pathfinder;
 
+import smartMath.Segment;
 import smartMath.Vec2;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleRectangular;
@@ -60,6 +61,19 @@ public class Noeud {
 
     public void setCout(double cout) {
         this.cout = cout;
+    }
+    public ArrayList<Arete> aretelistVoisins(Noeud noeud){
+        int n =noeud.getVoisins().size();
+        double cost;
+        Arete arete;
+        ArrayList<Arete> aretelisteVoisins=new ArrayList<>();
+        for(int i=0;i<n;i++){
+            cost = Segment.squaredLength(noeud.getPosition(), noeud.getVoisins().get(i).getPosition());
+            cost=Math.sqrt(cost);
+            arete=new Arete(noeud,noeud.getVoisins().get(i),cost);
+            aretelisteVoisins.add(arete);
+        }
+        return aretelisteVoisins;
     }
 }
 
