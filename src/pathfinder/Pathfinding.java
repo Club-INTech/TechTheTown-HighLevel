@@ -69,7 +69,7 @@ public class Pathfinding implements Service {
         Arete arete=new Arete(node,voisins.get(0),cost);
         double min = arete.cout;
         int indicemin = 0;
-        ArrayList<Arete> areteListVoi
+        ArrayList<Arete> aretelistVoisins=node
         for (int i = 0; i < n; i++) {
             if(voisins.get(i).)
         }
