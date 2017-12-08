@@ -51,22 +51,29 @@ public class Graphe implements Service{
 
     }
 
+    /**
+     *
+     * Méthode testant la présence d'un noeud dans un obstacle.
+     *
+     * @param noeud
+     * @param graphe
+     * @return
+     */
+
     public static boolean nodeInObstacle(Noeud noeud, Graphe graphe) {
-        int mRobotRadius=210;
+        int mRobotRadius=210;   //à modifier
         int n = graphe.listCircu.size();
-        int m;
         ArrayList<ObstacleRectangular> listRectangu2 = new ArrayList<>();
         Vec2 position0 = new Vec2();
-        for (int i = 0; i < n; i++) {
-            ObstacleRectangular obsrectangu = new ObstacleRectangular(position0, 0, 0);
-            obsrectangu.setPosition(graphe.listCircu.get(i).getPosition());
-            obsrectangu.changeDim(graphe.listCircu.get(i).getRadius() * 2,       graphe.listCircu.get(i).getRadius() * 2);
-            listRectangu2.add(obsrectangu);
-        }
-        graphe.listRectangu.addAll(listRectangu2);
-        m = graphe.listRectangu.size();
         int xNoeud = noeud.getPosition().getX();
         int yNoeud = noeud.getPosition().getY();
+        for (int i = 0; i < n; i++) {
+            if ( noeud.getPosition().distance(graphe.listCircu.get(i).getPosition())<graphe.listCircu.get(i).getRadius() ){
+                return true;
+            }
+        }
+        int m = graphe.listRectangu.size();
+
         for (int j = 0; j < m; j++) {
             int xObstaclerectan = graphe.listRectangu.get(j).getPosition().getX();
             int yObstaclerectan = graphe.listRectangu.get(j).getPosition().getY();
@@ -80,7 +87,7 @@ public class Graphe implements Service{
                 return true;
             }
         }
-        graphe.listRectangu.removeAll(listRectangu2);
+
         if(xNoeud< - 1500 + mRobotRadius || xNoeud>1500-mRobotRadius || yNoeud<mRobotRadius || yNoeud>2000-mRobotRadius){
             return true;
         }
