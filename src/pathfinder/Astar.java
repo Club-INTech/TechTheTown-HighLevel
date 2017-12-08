@@ -51,9 +51,10 @@ public class Astar implements Service {
         nodes.add(0, noeuddepart);
         nodes.add(noeudarrive);
 
-        if( noeuddepart.getVoisins() == null){
+        if( ! Graphe.nodeInObstacle(noeuddepart,graphe) || ! Graphe.nodeInObstacle(noeudarrive,graphe)){
             System.out.println("Obstacle !!!");
-            return null;
+            finalPath.add(noeuddepart.getPosition());
+            return finalPath;
         }
         else {
             ArrayList aretes = graphe.createAretes(nodes);
@@ -74,7 +75,8 @@ public class Astar implements Service {
                     } else if (nodeInQueue(openList, noeudvoisin.get(i))) {
                         if (nodeInList(noeudvoisin.get(i).getPred().getVoisins(), noeudvoisin.get(i)) && noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
                             noeudvoisin.get(i).setPred(noeudcourant.getPred());
-                        } else {
+                        }
+                        else {
                             noeudvoisin.get(i).setCout(noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
                         }
                     } else {
