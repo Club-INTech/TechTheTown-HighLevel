@@ -1,5 +1,6 @@
 package pathfinder;
 
+import container.Service;
 import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
@@ -15,7 +16,13 @@ import java.util.ArrayList;
 
 
 
-public class Graphe {
+public class Graphe implements Service{
+
+    @Override
+    public void updateConfig() {
+
+    }
+
     private ArrayList<ObstacleCircular> listCircu;
     private ArrayList<ObstacleRectangular> listRectangu;
     private Table table;
@@ -45,12 +52,7 @@ public class Graphe {
     }
 
     public static boolean nodeInObstacle(Noeud noeud, Graphe graphe) {
-        int pasX = 300;
-        int pasY = 200;
-        int xdebut = -1500;
-        int ydebut = 0;
-        int x;
-        int y;
+        int mRobotRadius=210;
         int n = graphe.listCircu.size();
         int m;
         ArrayList<ObstacleRectangular> listRectangu2 = new ArrayList<>();
@@ -75,11 +77,14 @@ public class Graphe {
             int y1 = yObstaclerectan + dy;
             int y2 = yObstaclerectan - dy;
             if ((xNoeud <= x1) && (xNoeud >= x2) && (yNoeud <= y1) && (yNoeud >= y2)) {
-                return false;
+                return true;
             }
         }
         graphe.listRectangu.removeAll(listRectangu2);
-        return true;
+        if(xNoeud< - 1500 + mRobotRadius || xNoeud>1500-mRobotRadius || yNoeud<mRobotRadius || yNoeud>2000-mRobotRadius){
+            return true;
+        }
+        return false;
     }
 
 

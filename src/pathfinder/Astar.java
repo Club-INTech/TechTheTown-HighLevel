@@ -51,7 +51,7 @@ public class Astar implements Service {
         nodes.add(0, noeuddepart);
         nodes.add(noeudarrive);
 
-        if( ! Graphe.nodeInObstacle(noeuddepart,graphe) || ! Graphe.nodeInObstacle(noeudarrive,graphe)){
+        if(  Graphe.nodeInObstacle(noeuddepart,graphe) ||  Graphe.nodeInObstacle(noeudarrive,graphe)){
             System.out.println("Obstacle !!!");
             finalPath.add(noeuddepart.getPosition());
             return finalPath;
