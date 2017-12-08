@@ -1,5 +1,6 @@
 package pathfinder;
 
+import container.Service;
 import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
@@ -15,7 +16,13 @@ import java.util.ArrayList;
 
 
 
-public class Graphe {
+public class Graphe implements Service{
+
+    @Override
+    public void updateConfig() {
+
+    }
+
     private ArrayList<ObstacleCircular> listCircu;
     private ArrayList<ObstacleRectangular> listRectangu;
     private Table table;
@@ -25,7 +32,7 @@ public class Graphe {
 
 
     /**Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
-    là où il y'a des obstacles
+     là où il y'a des obstacles
      */
 
     public Graphe(Table table){
@@ -44,9 +51,46 @@ public class Graphe {
 
     }
 
+    public static boolean nodeInObstacle(Noeud noeud, Graphe graphe) {
+        int mRobotRadius=210;
+        int n = graphe.listCircu.size();
+        int m;
+        ArrayList<ObstacleRectangular> listRectangu2 = new ArrayList<>();
+        Vec2 position0 = new Vec2();
+        for (int i = 0; i < n; i++) {
+            ObstacleRectangular obsrectangu = new ObstacleRectangular(position0, 0, 0);
+            obsrectangu.setPosition(graphe.listCircu.get(i).getPosition());
+            obsrectangu.changeDim(graphe.listCircu.get(i).getRadius() * 2,       graphe.listCircu.get(i).getRadius() * 2);
+            listRectangu2.add(obsrectangu);
+        }
+        graphe.listRectangu.addAll(listRectangu2);
+        m = graphe.listRectangu.size();
+        int xNoeud = noeud.getPosition().getX();
+        int yNoeud = noeud.getPosition().getY();
+        for (int j = 0; j < m; j++) {
+            int xObstaclerectan = graphe.listRectangu.get(j).getPosition().getX();
+            int yObstaclerectan = graphe.listRectangu.get(j).getPosition().getY();
+            int dx = graphe.listRectangu.get(j).getSizeX() / 2;
+            int dy = graphe.listRectangu.get(j).getSizeY() / 2;
+            int x1 = xObstaclerectan + dx;
+            int x2 = xObstaclerectan - dx;
+            int y1 = yObstaclerectan + dy;
+            int y2 = yObstaclerectan - dy;
+            if ((xNoeud <= x1) && (xNoeud >= x2) && (yNoeud <= y1) && (yNoeud >= y2)) {
+                return true;
+            }
+        }
+        graphe.listRectangu.removeAll(listRectangu2);
+        if(xNoeud< - 1500 + mRobotRadius || xNoeud>1500-mRobotRadius || yNoeud<mRobotRadius || yNoeud>2000-mRobotRadius){
+            return true;
+        }
+        return false;
+    }
+
+
     public ArrayList<Noeud> createNodes() {
-        int pasX = 400;
-        int pasY = 300;
+        int pasX = 200;
+        int pasY = 200;
         int xdebut = -1500;
         int ydebut = 0;
         int x;
@@ -107,10 +151,10 @@ public class Graphe {
     }
 
     /**Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
-    l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
-    ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
-    déja un chemin à suivre, à chaque noeud, on associe une liste d'arete qui lui est propre
-    donc implicitement une liste de noeuds, le tout stocké dans un dictionnaire.
+     l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
+     ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
+     déja un chemin à suivre, à chaque noeud, on associe une liste d'arete qui lui est propre
+     donc implicitement une liste de noeuds, le tout stocké dans un dictionnaire.
 
      Maj. Cette méthode permet également le compléter pour chaque noeud du graphe
      le champ contenant la liste de ses noeuds voisins.
@@ -130,7 +174,7 @@ public class Graphe {
                 for(int k=0;k<listCircu.size();k++){
                     if(Geometry.intersects(segment,listCircu.get(k).getCircle())){
                         isIntersection=true;
-                        }
+                    }
                 }
                 if (!isIntersection) {
                     double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
@@ -147,7 +191,7 @@ public class Graphe {
         }
 
 
-    return boneslist;
+        return boneslist;
     }
 
 
@@ -188,13 +232,13 @@ public class Graphe {
                     toadd=false;
                 }
             }
-        if(toadd){
-            aretesToreturn.add(aretesToreturn.get(i));
+            if(toadd){
+                aretesToreturn.add(aretesToreturn.get(i));
             }
 
         }
-    return aretesToreturn;
-}
+        return aretesToreturn;
+    }
 
     public void createAretesV2(ArrayList<Noeud> noeuds){
         //ArrayList<Arete> listaretes=new ArrayList<>();

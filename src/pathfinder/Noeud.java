@@ -13,6 +13,7 @@ public class Noeud {
     private double heuristique;
     private double cout;
     private ArrayList<Noeud> voisins;
+    private Noeud   pred;
 
     /** Constructeur*/
     public Noeud(Vec2 position, int heuristique, int cout, ArrayList<Noeud> voisins) {
@@ -49,6 +50,8 @@ public class Noeud {
         return cout;
     }
 
+    public Noeud getPred() {       return pred;    }
+
     public void setPosition(Vec2 position) {
         this.position = position;
     }
@@ -62,19 +65,8 @@ public class Noeud {
     public void setCout(double cout) {
         this.cout = cout;
     }
-    public ArrayList<Arete> aretelistVoisins(Noeud noeud){
-        int n =noeud.getVoisins().size();
-        double cost;
-        Arete arete;
-        ArrayList<Arete> aretelisteVoisins=new ArrayList<>();
-        for(int i=0;i<n;i++){
-            cost = Segment.squaredLength(noeud.getPosition(), noeud.getVoisins().get(i).getPosition());
-            cost=Math.sqrt(cost);
-            arete=new Arete(noeud,noeud.getVoisins().get(i),cost);
-            aretelisteVoisins.add(arete);
-        }
-        return aretelisteVoisins;
-    }
+
+    public void setPred(Noeud pred) {        this.pred = pred;    }
 }
 
 /*private Vec2 alineate(int xdepart, int ydepart,int xPointoalinate,int yPointoalinate) {

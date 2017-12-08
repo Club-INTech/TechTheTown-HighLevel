@@ -50,7 +50,7 @@ public class JUnit_Astar extends JUnit_Test{
 
         /** Instanciation des variables */
         table = container.getService(Table.class);
-        Pathfinding pathfinding = container.getService(Pathfinding.class);
+        //Pathfinding pathfinding = container.getService(Pathfinding.class);
         obstacleManager = table.getObstacleManager(); // Grâce au container, le champ ObstacleManager de votre table est déjà instancié !
         // Mais... pour commencer instancier vos variables à la main :
         Vec2 example = new Vec2(50, 40);
@@ -69,13 +69,6 @@ public class JUnit_Astar extends JUnit_Test{
         Window window=new Window(table);
         Graphe graphe=new Graphe(table);
         window.setArete(graphe.getBoneslist());
-
-
-
-
-
-
-
 
 
        // Thread.sleep(20000);
