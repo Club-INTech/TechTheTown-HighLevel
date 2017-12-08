@@ -91,6 +91,11 @@ public class Astar implements Service {
                     i++;
                 }
             }
+            // pas de chemain trouvé.
+            if(!nodeInList(closeList, noeudarrive) && openList.size() == 0){
+                System.out.println("No way found");
+            }
+
             // fabrique le chemain à partir de la closeList
             finalList.add(noeudarrive);
             while (noeuddepart != finalList.get(finalList.size() - 1)) {

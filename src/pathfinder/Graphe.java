@@ -152,7 +152,6 @@ public class Graphe implements Service{
         }
 
         listRectangu.removeAll(listRectangu2);
-        System.out.println("oui" + nodesToKeep.size());
         return nodesToKeep;
 
     }
@@ -193,8 +192,6 @@ public class Graphe implements Service{
             }
             nodes.get(i).setVoisins(voisins);
             boneslist.addAll(listaretes);
-            System.out.println(boneslist.size());
-
         }
 
 
