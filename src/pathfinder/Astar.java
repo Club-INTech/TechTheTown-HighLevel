@@ -51,53 +51,51 @@ public class Astar implements Service {
         nodes.add(0, noeuddepart);
         nodes.add(noeudarrive);
 
-        int betternode = 0;
-        boolean better = false;
+        if( noeuddepart.getVoisins() == null){
+            System.out.println("Obstacle !!!");
+            return null;
+        }
+        else {
+            ArrayList aretes = graphe.createAretes(nodes);
+            openList.add(noeuddepart);
 
-        ArrayList aretes = graphe.createAretes(nodes);
-        openList.add(noeuddepart);
+            while (!nodeInList(closeList, noeudarrive) && openList.size() != 0) {
 
-        while(!nodeInList(closeList,noeudarrive) && openList.size() != 0){
+                noeudcourant = openList.poll();
+                closeList.add(noeudcourant);
+                noeudvoisin = noeudcourant.getVoisins();
 
-            noeudcourant = openList.poll();
-            closeList.add(noeudcourant);
-            noeudvoisin =noeudcourant.getVoisins();
+                int i = 0;
 
-            int i = 0;
+                while (i < noeudvoisin.size()) {
 
-            while ( i < noeudvoisin.size() ) {
+                    if (nodeInList(closeList, noeudvoisin.get(i))) {
 
-                if (nodeInList(closeList, noeudvoisin.get(i))) {
-
-                }
-                else if (nodeInQueue(openList, noeudvoisin.get(i))){
-                    if (noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
-                        noeudvoisin.get(i).setPred(noeudcourant.getPred());
-                    }
-                    else {
+                    } else if (nodeInQueue(openList, noeudvoisin.get(i))) {
+                        if (nodeInList(noeudvoisin.get(i).getPred().getVoisins(), noeudvoisin.get(i)) && noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
+                            noeudvoisin.get(i).setPred(noeudcourant.getPred());
+                        } else {
+                            noeudvoisin.get(i).setCout(noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
+                        }
+                    } else {
+                        noeudvoisin.get(i).setHeuristique(noeudvoisin.get(i).getPosition().distance(noeudarrive.getPosition()));
                         noeudvoisin.get(i).setCout(noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
+                        openList.add(noeudvoisin.get(i));
+                        noeudvoisin.get(i).setPred(noeudcourant);
                     }
+                    i++;
                 }
-
-                else {
-                    noeudvoisin.get(i).setHeuristique(noeudvoisin.get(i).getPosition().distance(noeudarrive.getPosition()));
-                    noeudvoisin.get(i).setCout(noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
-                    openList.add(noeudvoisin.get(i));
-                    noeudvoisin.get(i).setPred(noeudcourant);
-                }
-                i++;
             }
+            // fabrique le chemain à partir de la closeList
+            finalList.add(noeudarrive);
+            while (noeuddepart != finalList.get(finalList.size() - 1)) {
+                finalList.add(finalList.get(finalList.size() - 1).getPred());
+            }
+            for (int i = 0; i < finalList.size(); i++) {
+                finalPath.add(finalList.get(i).getPosition());
+            }
+            return finalPath;
         }
-        // fabrique le chemain à partir de la closeList
-        finalList.add(noeudarrive);
-        while ( noeuddepart != finalList.get(finalList.size()-1) ) {
-            finalList.add( finalList.get(finalList.size()-1).getPred());
-        }
-        for ( int i = 0 ; i<finalList.size();i++){
-            finalPath.add(finalList.get(i).getPosition());
-        }
-        return finalPath;
-
     }
 
 
