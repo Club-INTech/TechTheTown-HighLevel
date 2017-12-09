@@ -141,6 +141,15 @@ public class Astar implements Service {
         return false;
     }
 
+    /**
+     *
+     * Méthode qui teste la présence d'un noeud dans une PriorityQueue
+     *
+     * @param lst
+     * @param node
+     * @return
+     */
+
     public boolean nodeInQueue(PriorityQueue<Noeud> lst, Noeud node){
         for(int i = 0; i < lst.size(); i++ ){
             if (lst.element().equals(node)){
@@ -148,38 +157,6 @@ public class Astar implements Service {
             }
         }
         return false;
-    }
-
-    /**
-     * Methode qui renvoit la distance parcourue pour arriver à un noeud
-     *
-     * @param noeud
-     * @param lst
-     * @return
-     */
-
-    public double distance(Noeud noeud, ArrayList<Noeud> lst){
-        double distance = 0;
-        lst.add(noeud);
-        for(int i=0; i<lst.size() - 1;i++){
-            distance += lst.get(i).getPosition().distance(lst.get(i+1).getPosition());
-        }
-
-        return distance;
-    }
-
-    /**
-     * Méthode fournissant la liste des voisins d'un noeud
-     * @param noeud
-     * @param lst
-     * @return
-     */
-    public ArrayList<Noeud> noeudVoisin(Noeud noeud, ArrayList<Arete> lst){
-        ArrayList<Noeud> nodes = new ArrayList<Noeud>();
-        for(int i = 0; i<lst.size() - 1; i++){
-            nodes.add(lst.get(i).noeud2);
-        }
-        return nodes;
     }
 
 
