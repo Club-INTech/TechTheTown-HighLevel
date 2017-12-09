@@ -1,6 +1,9 @@
 package pathfinder;
 
 import container.Service;
+import enums.ConfigInfoRobot;
+import pfg.config.Config;
+import pfg.config.ConfigInfo;
 import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
@@ -10,6 +13,7 @@ import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleManager;
 import table.obstacles.ObstacleRectangular;
 import tests.container.A;
+import utils.Log;
 
 import java.util.ArrayList;
 
@@ -22,6 +26,9 @@ public class Graphe implements Service{
     public void updateConfig() {
 
     }
+
+    private Log log;
+    private Config config;
 
     private ArrayList<ObstacleCircular> listCircu;
     private ArrayList<ObstacleRectangular> listRectangu;
@@ -61,7 +68,7 @@ public class Graphe implements Service{
      */
 
     public static boolean nodeInObstacle(Noeud noeud, Graphe graphe) {
-        int mRobotRadius=210;   //à modifier
+        int mRobotRadius= 210; // graphe.config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         int n = graphe.listCircu.size();
         ArrayList<ObstacleRectangular> listRectangu2 = new ArrayList<>();
         Vec2 position0 = new Vec2();

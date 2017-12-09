@@ -75,7 +75,7 @@ public class Astar implements Service {
                     if (nodeInList(closeList, noeudvoisin.get(i))) {
 
                     } else if (nodeInQueue(openList, noeudvoisin.get(i))) {
-                        if (nodeInList(noeudvoisin.get(i).getPred().getVoisins(), noeudvoisin.get(i)) && noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
+                        if ( nodePred(noeudvoisin.get(i), noeuddepart)&& noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
                             noeudvoisin.get(i).setPred(noeudcourant.getPred());
                         }
 
@@ -94,11 +94,13 @@ public class Astar implements Service {
             // pas de chemain trouvé.
             if(!nodeInList(closeList, noeudarrive) && openList.size() == 0){
                 System.out.println("No way found");
+                finalPath.add(noeuddepart.getPosition());
+                return finalPath;
             }
 
             // fabrique le chemain à partir de la closeList
             finalList.add(noeudarrive);
-            while (noeuddepart != finalList.get(finalList.size() - 1)) {
+            while (noeuddepart != finalList.get(finalList.size() - 1) ) {
                 finalList.add(finalList.get(finalList.size() - 1).getPred());
             }
             for (int i = 0; i < finalList.size(); i++) {
@@ -137,7 +139,24 @@ public class Astar implements Service {
         return false;
     }
 
-    //
+    /**
+     * Méthode testant si tout les prédécesseurs sont dans la liste des voisins.
+     * @param noeud
+     * @return
+     */
+
+    public boolean nodePred(Noeud noeud, Noeud noeuddepart){
+        Noeud pred = noeud;
+        while(pred != noeuddepart){
+            if(! nodeInList(pred.getPred().getVoisins(), pred)){
+                return false;
+            }
+            pred = pred.getPred();
+        }
+        return true;
+
+    }
+
 
     /**
      * Methode qui renvoit la distance parcourue pour arriver à un noeud
