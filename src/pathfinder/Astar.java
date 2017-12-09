@@ -58,7 +58,11 @@ public class Astar implements Service {
         ObstacleManager obstacleManager =  new ObstacleManager(log,config);
 
 
-        if(obstacleManager.isObstructed(noeuddepart.getPosition()) ||  obstacleManager.isObstructed(noeudarrive.getPosition())){
+        if(        obstacleManager.isObstructed(noeuddepart.getPosition())
+                || ! obstacleManager.isRobotInTable(noeuddepart.getPosition())
+                || obstacleManager.isObstructed(noeudarrive.getPosition())
+                || ! obstacleManager.isRobotInTable(noeudarrive.getPosition())){
+
             ArrayList<ObstacleCircular> obsCircu=obstacleManager.getmCircularObstacle();
             System.out.println("ObsCircu"+obsCircu.size());
             ArrayList<ObstacleRectangular> obsRectang=obstacleManager.getRectangles();
