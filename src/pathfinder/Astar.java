@@ -2,7 +2,6 @@ package pathfinder;
 
 import container.Service;
 import exceptions.NoPathFound;
-import exceptions.NodeInObstacleException;
 import pfg.config.Config;
 import smartMath.Vec2;
 import table.Table;
@@ -79,12 +78,9 @@ public class Astar implements Service {
                     if (nodeInList(closeList, noeudvoisin.get(i))) {
 
                     } else if (nodeInQueue(openList, noeudvoisin.get(i))) {
-                           if (  noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
-
-                        //   if ( nodePred(noeudvoisin.get(i), noeuddepart)&& noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
-                            noeudvoisin.get(i).setPred(noeudcourant.getPred());
+                        if (noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
+                            noeudvoisin.get(i).setPred(noeudvoisin.get(i).getPred());
                         }
-
                         else {
                             noeudvoisin.get(i).setCout(noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
                         }
@@ -143,25 +139,6 @@ public class Astar implements Service {
         }
         return false;
     }
-
-    /**
-     * Méthode testant si tout les prédécesseurs sont dans la liste des voisins.
-     * @param noeud
-     * @return
-     */
-
-    public boolean nodePred(Noeud noeud, Noeud noeuddepart){
-        Noeud pred = noeud;
-        while(pred != noeuddepart){
-            if(! nodeInList(pred.getPred().getVoisins(), pred)){
-                return false;
-            }
-            pred = pred.getPred();
-        }
-        return true;
-
-    }
-
 
     /**
      * Methode qui renvoit la distance parcourue pour arriver à un noeud

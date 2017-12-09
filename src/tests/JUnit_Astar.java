@@ -70,7 +70,8 @@ public class JUnit_Astar extends JUnit_Test{
 
         Window window=new Window(table);
         Graphe graphe=new Graphe(table);
-       // window.setArete(graphe.getBoneslist());
+
+        window.setArete(graphe.getBoneslist());
 
 
        // Thread.sleep(20000);
