@@ -620,10 +620,10 @@ public class ObstacleManager implements Service
 		if(obstacle instanceof ObstacleRectangular)
 		{
 			ObstacleRectangular obstacleRectangular = (ObstacleRectangular)obstacle;
-			return pos.getX()<(obstacleRectangular.position.getX()-(obstacleRectangular.sizeX/2))
-					&& pos.getX()>(obstacleRectangular.position.getX()+(obstacleRectangular.sizeX/2))
-					&& pos.getY()<(obstacleRectangular.position.getY()-(obstacleRectangular.sizeY/2))
-					&& pos.getY()>(obstacleRectangular.position.getY()+(obstacleRectangular.sizeY/2));
+			return pos.getX()<(obstacleRectangular.position.getX()+(obstacleRectangular.sizeX/2))
+					&& pos.getX()>(obstacleRectangular.position.getX()-(obstacleRectangular.sizeX/2))
+					&& pos.getY()<(obstacleRectangular.position.getY()+(obstacleRectangular.sizeY/2))
+					&& pos.getY()>(obstacleRectangular.position.getY()-(obstacleRectangular.sizeY/2));
 		}
 		else
 			throw new IllegalArgumentException();

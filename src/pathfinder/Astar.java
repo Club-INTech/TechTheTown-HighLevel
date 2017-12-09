@@ -6,7 +6,9 @@ import pfg.config.Config;
 import smartMath.Vec2;
 import table.Table;
 import table.obstacles.Obstacle;
+import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleManager;
+import table.obstacles.ObstacleRectangular;
 import utils.Log;
 
 import java.util.ArrayList;
@@ -57,6 +59,10 @@ public class Astar implements Service {
 
 
         if(obstacleManager.isObstructed(noeuddepart.getPosition()) ||  obstacleManager.isObstructed(noeudarrive.getPosition())){
+            ArrayList<ObstacleCircular> obsCircu=obstacleManager.getmCircularObstacle();
+            System.out.println("ObsCircu"+obsCircu.size());
+            ArrayList<ObstacleRectangular> obsRectang=obstacleManager.getRectangles();
+            System.out.println("ObsRectan"+obsRectang.size());
             System.out.println("Obstacle !!!");
             throw new NoPathFound(true,false);
         }
