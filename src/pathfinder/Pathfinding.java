@@ -20,6 +20,7 @@
 package pathfinder;
 
 import container.Service;
+import exceptions.NoPathFound;
 import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.Segment;
@@ -62,6 +63,8 @@ public class Pathfinding implements Service {
      * Cette méthode retourne le noeud le plus proche à un noeud en prenant l'arete avec
      * le moindre cout
      */
+
+
 }
 
 

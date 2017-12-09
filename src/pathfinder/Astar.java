@@ -35,7 +35,7 @@ public class Astar implements Service {
 
     /**
      *
-     * Methode renvoyant une liste de vecteurs qui contient le chemain le plus rapide
+     * Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemain le plus rapide
      * entre les deux positions entrées.
      *
      * @param positiondepart
@@ -44,6 +44,7 @@ public class Astar implements Service {
      */
 
     public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws NoPathFound{
+        long time1=System.currentTimeMillis();
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
         Noeud noeudarrive = new Noeud(positionarrive, 0, 0, new ArrayList<Noeud>());
@@ -63,11 +64,6 @@ public class Astar implements Service {
                 || obstacleManager.isObstructed(noeudarrive.getPosition())
                 || ! obstacleManager.isRobotInTable(noeudarrive.getPosition())){
 
-            ArrayList<ObstacleCircular> obsCircu=obstacleManager.getmCircularObstacle();
-            System.out.println("ObsCircu"+obsCircu.size());
-            ArrayList<ObstacleRectangular> obsRectang=obstacleManager.getRectangles();
-            System.out.println("ObsRectan"+obsRectang.size());
-            System.out.println("Obstacle !!!");
             throw new NoPathFound(true,false);
         }
         else {
@@ -117,10 +113,55 @@ public class Astar implements Service {
             for (int i = 0; i < finalList.size(); i++) {
                 finalPath.add(finalList.get(i).getPosition());
             }
+            long time2=System.currentTimeMillis()-time1;
+            System.out.println("Time to execute (ms): "+time2);
             return finalPath;
         }
     }
 
+    public ArrayList<Vec2> findmywayD(Vec2 positiondepart, Vec2 positionarrive) throws NoPathFound  {
+        long time1=System.currentTimeMillis();
+        Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
+        Noeud noeudarrive = new Noeud(positionarrive, 999999999, -1, new ArrayList<Noeud>());
+        ArrayList<Noeud> nodes = graphe.createNodes();
+        ArrayList<Noeud> noeudvoisin = new ArrayList<Noeud>();
+        ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
+        ArrayList<Noeud> finalList = new ArrayList<>();
+        nodes.add(0, noeuddepart);
+        nodes.add(noeudarrive);
+        ObstacleManager obstacleManager =  new ObstacleManager(log,config);
+        ArrayList aretes = graphe.createAretes(nodes);
+
+        Noeud noeudcourant;
+        PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
+        openList.addAll(nodes);
+
+        while(! openList.isEmpty()){
+            noeudcourant=openList.poll();
+            for (Noeud voisin: noeudcourant.getVoisins()
+                    ) {
+                if(voisin.getCout()>noeudcourant.getCout()+voisin.getPosition().distance(noeudcourant.getPosition())) {
+                    voisin.setHeuristique(0);
+                    voisin.setCout(noeudcourant.getCout() + voisin.getPosition().distance(noeudcourant.getPosition()));
+                    voisin.setPred(noeudcourant);
+                }
+            }
+        }
+
+        noeudcourant=noeudarrive;
+        while (!noeudcourant.equals(noeuddepart)){
+            finalList.add(noeudcourant);
+            noeudcourant.getPred();
+        }
+
+        for (int i = 0; i < finalList.size(); i++) {
+            finalPath.add(finalList.get(i).getPosition());
+        }
+
+        long time2=System.currentTimeMillis()-time1;
+        System.out.println("Time to execute (ms): "+time2);
+        return finalPath;
+    }
 
 
     /**
