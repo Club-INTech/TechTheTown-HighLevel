@@ -76,6 +76,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
         window.setPath(path);
         //ArrayList<Vec2> clics = new ArrayList<>();
 
+
         while(true) {
             clics = window.waitLRClic();
             path = pf.findmyway(clics.get(0), clics.get(1));

@@ -68,7 +68,7 @@ public class JUnit_Astar extends JUnit_Test{
 
         Window window=new Window(table);
         Graphe graphe=new Graphe(table);
-        window.setArete(graphe.getBoneslist());
+        //window.setArete(graphe.getBoneslist());
 
 
        // Thread.sleep(20000);
@@ -78,7 +78,6 @@ public class JUnit_Astar extends JUnit_Test{
         //window.setArete(graphe.getNodesbones());
         window.setPath(path);
         ArrayList<Vec2> clics = new ArrayList<>();
-
         while(true) {
             clics = window.waitLRClic();
             path = pf.findmyway(clics.get(0), clics.get(1));
