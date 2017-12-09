@@ -1,9 +1,13 @@
 package pathfinder;
 
 import container.Service;
+import exceptions.NoPathFound;
+import exceptions.NodeInObstacleException;
 import pfg.config.Config;
 import smartMath.Vec2;
 import table.Table;
+import table.obstacles.Obstacle;
+import table.obstacles.ObstacleManager;
 import utils.Log;
 
 import java.util.ArrayList;
@@ -38,7 +42,7 @@ public class Astar implements Service {
      * @return
      */
 
-    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive){
+    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws NoPathFound{
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
         Noeud noeudarrive = new Noeud(positionarrive, 0, 0, new ArrayList<Noeud>());
@@ -50,12 +54,12 @@ public class Astar implements Service {
         ArrayList<Noeud> finalList = new ArrayList<>();
         nodes.add(0, noeuddepart);
         nodes.add(noeudarrive);
+        ObstacleManager obstacleManager =  new ObstacleManager(log,config);
 
 
-        if(  Graphe.nodeInObstacle(noeuddepart,graphe) ||  Graphe.nodeInObstacle(noeudarrive,graphe)){
+        if(obstacleManager.isObstructed(noeuddepart.getPosition()) ||  obstacleManager.isObstructed(noeudarrive.getPosition())){
             System.out.println("Obstacle !!!");
-            finalPath.add(noeuddepart.getPosition());
-            return finalPath;
+            throw new NoPathFound(true,false);
         }
         else {
             ArrayList aretes = graphe.createAretes(nodes);
@@ -75,7 +79,9 @@ public class Astar implements Service {
                     if (nodeInList(closeList, noeudvoisin.get(i))) {
 
                     } else if (nodeInQueue(openList, noeudvoisin.get(i))) {
-                        if ( nodePred(noeudvoisin.get(i), noeuddepart)&& noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
+                           if (  noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
+
+                        //   if ( nodePred(noeudvoisin.get(i), noeuddepart)&& noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
                             noeudvoisin.get(i).setPred(noeudcourant.getPred());
                         }
 
@@ -94,8 +100,7 @@ public class Astar implements Service {
             // pas de chemain trouvé.
             if(!nodeInList(closeList, noeudarrive) && openList.size() == 0){
                 System.out.println("No way found");
-                finalPath.add(noeuddepart.getPosition());
-                return finalPath;
+                throw new NoPathFound(false,true);
             }
 
             // fabrique le chemain à partir de la closeList
@@ -189,16 +194,6 @@ public class Astar implements Service {
         }
         return nodes;
     }
-    public ArrayList<Vec2> betterPath(ArrayList<Vec2> path,ArrayList<Arete> areteslist){
-        int n=path.size();
-        ArrayList<Vec2> betterpath=path;
-        for(int i =0;i<n-1;i++){
-            if(!(Arete.traceArete2(path.get(i),path.get(i+1),areteslist))){
-                betterpath.addAll(i,findmyway(path.get(i),path.get(i+1)));
-            }
-        }
-        return betterpath;
 
-    }
 
 }

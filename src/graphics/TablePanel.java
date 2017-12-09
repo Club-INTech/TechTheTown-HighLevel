@@ -231,7 +231,7 @@ public class TablePanel extends JPanel
 	 * @param vec
 	 */
 	private Vec2 changeRefToDisplay(Vec2 vec){
-		return new Vec2(new Integer((int)((vec.getX() + 1500)*0.3)),new Integer((int)((2000 - vec.getY())*0.3)));
+		return new Vec2(new Integer((int)((vec.getX() + 1500)*0.3)),new Integer((int)((2000 - vec.getY())*0.3)-5));
 	}
 
 	/** Setters */
