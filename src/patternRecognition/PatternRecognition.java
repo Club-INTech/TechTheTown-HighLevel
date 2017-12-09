@@ -8,14 +8,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-
-
+/** Classe permettant de faire la reconnaissance de patterns
+ * @author Nayht
+ */
 public class PatternRecognition {
 
     //////////////////////////////////// GLOBAL VARIABLES DEFINITION /////////////////////////////////////////////
 
     //Défini l'objet mediansList pour qu'il soit accessible sans être retourné
-    public static int[][] mediansList = new int[3][3];
+    private static int[][] mediansList = new int[3][3];
     //mediansList est composé de la médiane en R, en G et en B, pour chacune des 3 couleurs de la photo
     //Donc, si on nomme les couleurs 1, 2 et 3, on a :
     //mediansList={{R1,G1,B1},{R2,G2,B2},{R3,G3,B3}}
@@ -26,7 +27,7 @@ public class PatternRecognition {
     /**Fonction de normalisation d'une liste de doubles
      * @param list liste de doubles à normaliser
      * @return renvoie une liste normalisée*/
-    public static double[] normalizeDoubleList(double[] list){
+    private static double[] normalizeDoubleList(double[] list){
         //On calcule la somme des valeurs de tous les éléments de la liste d'entrée
         double sumAllValues=0;
         int length=list.length;
@@ -55,7 +56,7 @@ public class PatternRecognition {
      * x est l'abscisse,
      * y est l'ordonnée,
      * 0,1 ou 2, si on veut R, G ou B**/
-    public static int[][][] createColorMatrix(String pathname) {
+    private static int[][][] createColorMatrix(String pathname) {
         int[][][] colorMatrix;
         BufferedImage picture;
         try {
@@ -109,7 +110,7 @@ public class PatternRecognition {
      * @param posRGB choix de la couleur à déterminer : 0, 1 ou 2 pour R, G ou B
      * @return renvoie la valeur (int) médiane de R, G ou B de la couleur choisie
      */
-    public static int getMedianValue(int[][][] colorMatrix, int xstart, int ystart, int xend, int yend, int posRGB) {
+    private static int getMedianValue(int[][][] colorMatrix, int xstart, int ystart, int xend, int yend, int posRGB) {
         int width = xend - xstart;
         int height = yend - ystart;
         int[] listAllPoints = new int[width*height];
@@ -139,7 +140,7 @@ public class PatternRecognition {
      * @param yend ordonnée de B (cf graphique docstring)
      * @return renvoie la liste de valeurs (int[3]) R,G et B de la couleur choisie
      */
-    public static int[] getRGBMedianValues(int[][][] colorMatrix, int xstart, int ystart, int xend, int yend){
+    private static int[] getRGBMedianValues(int[][][] colorMatrix, int xstart, int ystart, int xend, int yend){
         int[] mediansList= new int[3];
         for (int i=0; i<3; i++){
             mediansList[i]=getMedianValue(colorMatrix, xstart, ystart, xend, yend, i);
@@ -154,7 +155,7 @@ public class PatternRecognition {
      * @param color RGB correspondant à une couleur prédéfinie
      * @return renvoie l'inverse de la distance quadratique (double) entre les 2 couleurs
      */
-    public static double computeInverseDistanceToSingleColor(int[] RGBToEvaluate, int[] color){
+    private static double computeInverseDistanceToSingleColor(int[] RGBToEvaluate, int[] color){
         double distance = 0;
         for (int i=0; i<3; i++){
             distance+=Math.pow(RGBToEvaluate[i]-color[i],2);
@@ -173,7 +174,7 @@ public class PatternRecognition {
      * @param RGBToEvaluate RGB correspondant à la couleur à évaluer, ie couleur dont la distance doit être calculée
      * @return renvoie la liste (double[5]) de l'inverse des distances quadratiques entre la couleur à évaluer et toutes les autres couleus des cubes
      */
-    public static double[] computeInverseDistanceToAllColors(int[] RGBToEvaluate){
+    private static double[] computeInverseDistanceToAllColors(int[] RGBToEvaluate){
         double[] inverseDistances=new double[5];
         for (int idColor=0; idColor<5; idColor++){
             int[] color=Colors.getRGBFromID(idColor);
@@ -186,7 +187,7 @@ public class PatternRecognition {
      * @param RGBToEvaluate RGB correspondant à la oculeur à évaluer, ie couleur dont la distance doit être calculée
      * @return renvoie la liste (double[]) des probabilités que la couleur à évaluer corresponde à celles prédéfinies
      */
-    public static double[] computeProbabilitiesColors(int[] RGBToEvaluate){
+    private static double[] computeProbabilitiesColors(int[] RGBToEvaluate){
         double[] inverseDistances=computeInverseDistanceToAllColors(RGBToEvaluate);
         double[] normalizedInverseDistances = normalizeDoubleList(inverseDistances);
 
@@ -205,7 +206,7 @@ public class PatternRecognition {
      * @param patternID ID du pattern à évaluer
      * @return renvoie la probabilité (double) que les couleurs de la photo correspondent au pattern choisi
      */
-    public static double compareThreeRGBsToPattern(int[][] RGBs, int patternID){
+    private static double compareThreeRGBsToPattern(int[][] RGBs, int patternID){
         Colors[] pattern= Patterns.getPatternFromID(patternID);
         double finalProbability = 1;
         for (int i=0; i<3; i++){
@@ -221,7 +222,7 @@ public class PatternRecognition {
      * @param RGBs valeurs de RGB des 3 couleurs de la photo
      * @return renvoie la liste (double[nbPatterns=10]) des probabilités que les couleurs de la photo correspondent à un des pattern
      */
-    public static double[] compareThreeRGBsToAllPatterns(int[][] RGBs){
+    private static double[] compareThreeRGBsToAllPatterns(int[][] RGBs){
         int nbPatterns=10;
         double[] probabilitiesList= new double[nbPatterns];
         for (int i=0; i<nbPatterns; i++){
@@ -241,7 +242,7 @@ public class PatternRecognition {
      * @return renvoe la liste normalisée des probabilités que la pattern pris en photo soit un des patterns de la liste
      * (correspondance entre les indices de la liste renvoyée et l'ID des patterns)
      */
-    public static double[] encapsulationThreeFourFive(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends) {
+    private static double[] encapsulationThreeFourFive(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends) {
         int[] medianFirstColor = getRGBMedianValues(colorMatrix, xstarts[0], ystarts[0], xends[0], yends[0]);
         int[] medianSecondColor = getRGBMedianValues(colorMatrix, xstarts[1], ystarts[1], xends[1], yends[1]);
         int[] medianThirdColor = getRGBMedianValues(colorMatrix, xstarts[2], ystarts[2], xends[2], yends[2]);
@@ -260,7 +261,7 @@ public class PatternRecognition {
      * @param probabilitiesList liste normalisée de probabilités que le pattern pris en photo corresponde aux patterns prédéfinis
      * @return renvoie la liste des indices des patterns plausibles
      */
-    public static ArrayList<Integer> selectBestProbabilities(double[] probabilitiesList){
+    private static ArrayList<Integer> selectBestProbabilities(double[] probabilitiesList){
         int length=probabilitiesList.length;
         double bestProba=0;
         for (int i=0; i<length; i++){
@@ -282,7 +283,7 @@ public class PatternRecognition {
      * @param selectedProbabilitiesIndice id des patterns plausibles
      * @return indice (int) du pattern sélectionné
      */
-    public static int discriminateLastIndice(double[] probabilitiesList, ArrayList<Integer> selectedProbabilitiesIndice){
+    private static int discriminateLastIndice(double[] probabilitiesList, ArrayList<Integer> selectedProbabilitiesIndice){
         //Si des conflits de patterns se présentent, on peut calibrer la luminosité et le contraste de l'image en fonction de la zone au dessus des patterns sur la table de la coupe
         //OU si conflits de patterns, on peut augmenter la luminosité et le contraste de +30 +30 (valeurs de gimp, en % ?)
         double max=0;
@@ -303,7 +304,7 @@ public class PatternRecognition {
      * @param mediansList liste médiane (définie au début de la classe), contenant la médiane en R, G et B, pour chacune des 3 couleurs de la photo
      * @return renvoie l'indice finalement choisi
      */
-    public static int computeFinalIndice(double[] probabilitiesList, int[][]mediansList) {
+    private static int computeFinalIndice(double[] probabilitiesList, int[][]mediansList) {
         ArrayList selectionnedProbabilitiesIndice = selectBestProbabilities(probabilitiesList);
         System.out.println(selectionnedProbabilitiesIndice.toString());
         int finalIndice = 10;
@@ -339,7 +340,10 @@ public class PatternRecognition {
 
     //////////////////////////////////// MAIN /////////////////////////////////////////////
 
-    public static void main(String[] args) {
+    /**Méthode permettant de faire la reconnaissance de pattenrs
+     * @return l'id du pattern (int de 0 à 9, bornes comprises)
+     */
+    public static int analysePattern() {
         //ZONE DE TEST DU MAIN
 
         //String pathToImage = "Patterns.jpg";
@@ -406,5 +410,6 @@ public class PatternRecognition {
             System.out.println(probabilitiesList[i]);
         }
         System.out.println("Victory "+finalIndice);
+        return finalIndice;
     }
 }
