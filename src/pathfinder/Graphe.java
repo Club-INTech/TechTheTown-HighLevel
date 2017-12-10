@@ -203,8 +203,29 @@ public class Graphe implements Service{
         return boneslist;
     }
 
+    /** Méthode ajoutant un au graphe. Cela consiste à remplir le champ de ses noeuds voisins.     */
 
+    public void addNodeInGraphe(Noeud noeud){
+        ArrayList<Noeud> voisins = new ArrayList<>();
 
+        for(int j=0;j<nodes.size();j++){
+
+            Segment segment=new Segment(noeud.getPosition(),nodes.get(j).getPosition());
+            boolean isIntersection=false;
+
+            for(int k=0;k<listCircu.size();k++){
+
+                if(Geometry.intersects(segment,listCircu.get(k).getCircle())){
+                    isIntersection=true;
+                }
+            }
+            if (!isIntersection) {
+
+                voisins.add(nodes.get(j));
+            }
+        }
+        noeud.setVoisins(voisins);
+    }
 
 
     public ArrayList<Noeud> getNodes() {
