@@ -80,6 +80,8 @@ public class JUnit_Astar extends JUnit_Test{
         ArrayList<Vec2> path =  new ArrayList<>();
         window.setPath(path);
         ArrayList<Vec2> clics = new ArrayList<>();
+        pf.initGraphe();
+
         while(true) {
 
             try {

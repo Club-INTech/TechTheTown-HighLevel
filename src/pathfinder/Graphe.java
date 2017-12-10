@@ -222,9 +222,13 @@ public class Graphe implements Service{
             if (!isIntersection) {
 
                 voisins.add(nodes.get(j));
+                ArrayList<Noeud> noeuds= nodes.get(j).getVoisins();
+                noeuds.add(noeud);
+                nodes.get(j).setVoisins(noeuds);
             }
         }
         noeud.setVoisins(voisins);
+        nodes.add(noeud);
     }
 
 

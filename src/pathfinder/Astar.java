@@ -35,6 +35,14 @@ public class Astar implements Service {
         obstacleManager=table.getObstacleManager();
     }
 
+    /** Méthode initialisant le graghe, à appeler au début du match.        */
+
+    public void initGraphe(){
+        graphe.createNodes();
+        graphe.createAretes(graphe.getNodes());
+    }
+
+
     /** Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemain le plus rapide
      * entre les deux positions entrées.
      *
@@ -49,13 +57,10 @@ public class Astar implements Service {
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
         Noeud noeudarrive = new Noeud(positionarrive, 0, 0, new ArrayList<Noeud>());
         Noeud noeudcourant;
-        ArrayList<Noeud> nodes = graphe.createNodes();
+        ArrayList<Noeud> nodes = graphe.getNodes();
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
-        ArrayList<Noeud> noeudvoisin = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
-        nodes.add(0, noeuddepart);
-        nodes.add(noeudarrive);
         ObstacleManager obstacleManager =  table.getObstacleManager();
 
 
@@ -67,7 +72,8 @@ public class Astar implements Service {
             throw new NoPathFound(true,false);
         }
         else {
-            ArrayList aretes = graphe.createAretes(nodes);
+            graphe.addNodeInGraphe(noeudarrive);
+            graphe.addNodeInGraphe(noeuddepart);
             openList.add(noeuddepart);
 
             while (! closeList.contains(noeudarrive) && !openList.isEmpty()) {
