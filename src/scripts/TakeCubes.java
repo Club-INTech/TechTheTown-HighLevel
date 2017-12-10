@@ -75,36 +75,33 @@ public class TakeCubes extends AbstractScript {
             int xEntry=650-(rayonRobot+d);
             int yEntry=540;
             Vec2 position=new Vec2(xEntry,yEntry);
-            return new Circle(position);;
+            return new Circle(position);
         }
         if (version == 2) {
             int xEntry=1200-(rayonRobot+d);
             int yEntry=1190;
             Vec2 position=new Vec2(xEntry,yEntry);
-            return new Circle(position); ;
+            return new Circle(position);
         }
         if (version == 3) {
             int xEntry=400-(rayonRobot+d);
             int yEntry=1500;
             Vec2 position=new Vec2(xEntry,yEntry);
-            return new Circle(position);;
+            return new Circle(position);
         }
         if (version == 4) {
-            int xEntry=650;
-            int yEntry=540;
+            int xEntry=-1200+(rayonRobot+d);
+            int yEntry=1190;
             Vec2 position=new Vec2(xEntry,yEntry);
-            return new Circle(position); ;
+            return new Circle(position);
         }
         if (version == 5) {
-            int xEntry=650;
-            int yEntry=540;
+            int xEntry=-400+(rayonRobot+d);
+            int yEntry=1500;
             Vec2 position=new Vec2(xEntry,yEntry);
-            return new Circle(position);  ;
+            return new Circle(position);
         }
-    Vec2 position=new Vec2();
-    Circle circle=new Circle(position,0);
 
-    return circle;
     }
 
     @Override
