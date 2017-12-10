@@ -35,9 +35,7 @@ public class Astar implements Service {
         obstacleManager=table.getObstacleManager();
     }
 
-    /**
-     *
-     * Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemain le plus rapide
+    /** Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemain le plus rapide
      * entre les deux positions entrées.
      *
      * @param positiondepart
@@ -78,6 +76,7 @@ public class Astar implements Service {
                 closeList.add(noeudcourant);
 
                 for (Noeud voisin: noeudcourant.getVoisins()) {
+
                     if (closeList.contains(voisin)) {
                         if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()))) {
                             closeList.remove(voisin);
@@ -109,7 +108,7 @@ public class Astar implements Service {
             throw new NoPathFound(false,true);
         }
 
-        // fabrique le chemain à partir de la closeList
+        // fabrique le chemain en partant du noeud d'arrivé
         finalList.add(noeudarrive);
         while (noeuddepart != finalList.get(finalList.size() - 1) ) {
             finalList.add(finalList.get(finalList.size() - 1).getPred());
@@ -123,6 +122,14 @@ public class Astar implements Service {
     }
 
 
+
+    /** Methode basée sur l'algorithme Dijkstra renvoyant une liste de vecteurs qui contient le chemain le plus rapide
+     * entre les deux positions entrées.
+     *
+     * @param positiondepart
+     * @param positionarrive
+     * @return
+     */
     public ArrayList<Vec2> findmywayD(Vec2 positiondepart, Vec2 positionarrive) throws NoPathFound  {
         long time1=System.currentTimeMillis();
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());

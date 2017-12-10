@@ -35,7 +35,6 @@ public class Graphe implements Service{
     private Table table;
     private ArrayList<Noeud> nodes;
     private ArrayList<Arete> boneslist;
-    //dictionnaire contenant les arêtes associées à chaque noeud
 
 
     /**Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
@@ -58,14 +57,10 @@ public class Graphe implements Service{
 
     }
 
-    /**
-     *
-     * Méthode testant la présence d'un noeud dans un obstacle.
-     *
-     * @param noeud
-     * @param graphe
-     * @return
+    /** Méthode testant la présence d'un noeud dans un obstacle.
+
      */
+
 
     public static boolean nodeInObstacle(Noeud noeud, Graphe graphe) {
         int mRobotRadius= 210; // graphe.config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
@@ -101,6 +96,9 @@ public class Graphe implements Service{
         return false;
     }
 
+    /** Méthode générant dans noeuds sur la table
+
+     */
 
     public ArrayList<Noeud> createNodes() {
         int pasX = 200;
@@ -208,6 +206,7 @@ public class Graphe implements Service{
 
 
 
+
     public ArrayList<Noeud> getNodes() {
         return nodes;
     }
@@ -250,35 +249,7 @@ public class Graphe implements Service{
         }
         return aretesToreturn;
     }
-
-    public void createAretesV2(ArrayList<Noeud> noeuds){
-        //ArrayList<Arete> listaretes=new ArrayList<>();
-        //Arete arete;
-        int n=noeuds.size();
-        for(int i=0; i<n-1;i++){
-            ArrayList<Noeud> voisins = new ArrayList<Noeud>();
-            for(int j=i+1;j<n;j++){
-                Segment segment=new Segment(noeuds.get(i).getPosition(),noeuds.get(j).getPosition());
-                boolean isIntersection=false;
-                for(int k=0;k<listCircu.size();k++){
-                    if(Geometry.intersects(segment,listCircu.get(k).getCircle())){
-                        isIntersection=true;
-                    }
-                }
-                if (!isIntersection) {
-                    voisins.add(noeuds.get(j));
-                    //double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
-                    //arete = new Arete(nodes.get(i), nodes.get(j), cost);
-                    //listaretes.add(arete);
-                    //nodesbones.put(nodes.get(i), listaretes);
-                }
-            }
-            noeuds.get(i).setVoisins(voisins);
-        }
     }
-
-
-}
 
 
 
