@@ -76,7 +76,7 @@ public class JUnit_Astar extends JUnit_Test{
 
        // Thread.sleep(20000);
 
-        Astar pf = new Astar(log, config, graphe);
+        Astar pf = new Astar(log, config, table);
         ArrayList<Vec2> path =  new ArrayList<>();
         window.setPath(path);
         ArrayList<Vec2> clics = new ArrayList<>();
@@ -85,7 +85,7 @@ public class JUnit_Astar extends JUnit_Test{
 
             try {
                 clics = window.waitLRClic();
-                path = pf.findmywayD(clics.get(0), clics.get(1));
+                path = pf.findmyway(clics.get(0), clics.get(1));
                 window.setPath(path);
             }
             catch (NoPathFound e) {

@@ -73,7 +73,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
         //window.setArete(graphe.getBoneslist());
         window.setPath(path);
         ArrayList<Vec2> clics=new ArrayList<>();
-        Astar pf = new Astar(log, config, graphe);
+        Astar pf = new Astar(log, config, table);
         window.setPath(path);
         //ArrayList<Vec2> clics = new ArrayList<>();
 

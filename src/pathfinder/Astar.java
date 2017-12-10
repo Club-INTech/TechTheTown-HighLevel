@@ -24,13 +24,15 @@ public class Astar implements Service {
     private Log log;
     private Config config;
     private Graphe graphe;
+    private Table table;
+    private ObstacleManager obstacleManager;
 
-    public Astar(Log log, Config config, Graphe graphe) {
+    public Astar(Log log, Config config, Table table) {
         this.log = log;
         this.config = config;
-        Table table = new Table(log, config);
+        this.table = table;
         graphe = new Graphe(table);
-        this.graphe = graphe;
+        obstacleManager=table.getObstacleManager();
     }
 
     /**
@@ -56,7 +58,7 @@ public class Astar implements Service {
         ArrayList<Noeud> finalList = new ArrayList<>();
         nodes.add(0, noeuddepart);
         nodes.add(noeudarrive);
-        ObstacleManager obstacleManager =  new ObstacleManager(log,config);
+        ObstacleManager obstacleManager =  table.getObstacleManager();
 
 
         if(        obstacleManager.isObstructed(noeuddepart.getPosition())
@@ -70,54 +72,56 @@ public class Astar implements Service {
             ArrayList aretes = graphe.createAretes(nodes);
             openList.add(noeuddepart);
 
-            while (!nodeInList(closeList, noeudarrive) && openList.size() != 0) {
+            while (! closeList.contains(noeudarrive) && !openList.isEmpty()) {
 
                 noeudcourant = openList.poll();
                 closeList.add(noeudcourant);
-                noeudvoisin = noeudcourant.getVoisins();
 
-                int i = 0;
-
-
-                while (i < noeudvoisin.size()) {
-
-                    if (nodeInList(closeList, noeudvoisin.get(i))) {
-
-                    } else if (nodeInQueue(openList, noeudvoisin.get(i))) {
-                        if (noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
-                            noeudvoisin.get(i).setPred(noeudvoisin.get(i).getPred());
+                for (Noeud voisin: noeudcourant.getVoisins()) {
+                    if (closeList.contains(voisin)) {
+                        if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()))) {
+                            closeList.remove(voisin);
+                            openList.add(voisin);
+                            voisin.setPred(noeudcourant);
+                            voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         }
-                        else {
-                            noeudvoisin.get(i).setCout(noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
+                      }
+
+                    else if(openList.contains(voisin)) {
+                        if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()))) {
+                            voisin.setPred(voisin.getPred());
+                            voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         }
-                    } else {
-                        noeudvoisin.get(i).setHeuristique(noeudvoisin.get(i).getPosition().distance(noeudarrive.getPosition()));
-                        noeudvoisin.get(i).setCout(noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
-                        openList.add(noeudvoisin.get(i));
-                        noeudvoisin.get(i).setPred(noeudcourant);
                     }
-                    i++;
+                    else {
+                        voisin.setHeuristique(voisin.getPosition().distance(noeudarrive.getPosition()));
+                        voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
+                        openList.add(voisin);
+                        voisin.setPred(noeudcourant);
+                    }
                 }
-            }
-            // pas de chemain trouvé.
-            if(!nodeInList(closeList, noeudarrive) && openList.size() == 0){
-                System.out.println("No way found");
-                throw new NoPathFound(false,true);
-            }
 
-            // fabrique le chemain à partir de la closeList
-            finalList.add(noeudarrive);
-            while (noeuddepart != finalList.get(finalList.size() - 1) ) {
-                finalList.add(finalList.get(finalList.size() - 1).getPred());
             }
-            for (int i = 0; i < finalList.size(); i++) {
-                finalPath.add(finalList.get(i).getPosition());
-            }
-            long time2=System.currentTimeMillis()-time1;
-            System.out.println("Time to execute (ms): "+time2);
-            return finalPath;
         }
+        // pas de chemain trouvé.
+        if(! closeList.contains(noeudarrive) && openList.isEmpty()){
+            System.out.println("No way found");
+            throw new NoPathFound(false,true);
+        }
+
+        // fabrique le chemain à partir de la closeList
+        finalList.add(noeudarrive);
+        while (noeuddepart != finalList.get(finalList.size() - 1) ) {
+            finalList.add(finalList.get(finalList.size() - 1).getPred());
+        }
+        for (int i = 0; i < finalList.size(); i++) {
+            finalPath.add(finalList.get(i).getPosition());
+        }
+        long time2=System.currentTimeMillis()-time1;
+        System.out.println("Time to execute (ms): "+time2);
+        return finalPath;
     }
+
 
     public ArrayList<Vec2> findmywayD(Vec2 positiondepart, Vec2 positionarrive) throws NoPathFound  {
         long time1=System.currentTimeMillis();
@@ -162,43 +166,5 @@ public class Astar implements Service {
         System.out.println("Time to execute (ms): "+time2);
         return finalPath;
     }
-
-
-    /**
-     *
-     * Méthode qui teste la présence d'un noeud dans une liste
-     *
-     * @param lst
-     * @param node
-     * @return
-     */
-
-    public boolean nodeInList( ArrayList<Noeud> lst, Noeud node){
-        for(int i = 0; i < lst.size(); i++ ){
-            if (lst.get(i).equals(node)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     *
-     * Méthode qui teste la présence d'un noeud dans une PriorityQueue
-     *
-     * @param lst
-     * @param node
-     * @return
-     */
-
-    public boolean nodeInQueue(PriorityQueue<Noeud> lst, Noeud node){
-        for(int i = 0; i < lst.size(); i++ ){
-            if (lst.element().equals(node)){
-                return true;
-            }
-        }
-        return false;
-    }
-
 
 }
