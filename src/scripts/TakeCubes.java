@@ -60,54 +60,66 @@ public class TakeCubes extends AbstractScript {
 
         }
     }
-
+    /**attention à l'appel de cette méthode, get la bonne version*/
     @Override
     public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
         int d=160; //distance entre le robot et l'amas de cubes pour faire descendre le bras
         int rayonRobot=config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        if (version == 0) {
-            int xEntry=650;
-            int yEntry=540;
-            Vec2 position=new Vec2(xEntry,yEntry);
-            return new Circle(position);
+        try{
+            if (version == 0) {
+                int xEntry=650;
+                int yEntry=540;
+                Vec2 position=new Vec2(xEntry,yEntry);
+                return new Circle(position);
+            }
+            else {
+                if (version == 1) {
+                    int xEntry = 650 - (rayonRobot + d);
+                    int yEntry = 540;
+                    Vec2 position = new Vec2(xEntry, yEntry);
+                    return new Circle(position);
+                }
+                else{
+                    if (version == 2) {
+                        int xEntry = 1200 - (rayonRobot + d);
+                        int yEntry = 1190;
+                        Vec2 position = new Vec2(xEntry, yEntry);
+                        return new Circle(position);
+                    }
+                    else{
+                        if (version == 3) {
+                            int xEntry = 400 - (rayonRobot + d);
+                            int yEntry = 1500;
+                            Vec2 position = new Vec2(xEntry, yEntry);
+                            return new Circle(position);
+                        }
+                        else{
+                            if (version == 4) {
+                                int xEntry = -1200 + (rayonRobot + d);
+                                int yEntry = 1190;
+                                Vec2 position = new Vec2(xEntry, yEntry);
+                                return new Circle(position);
+                            }
+                            else {
+                                if (version == 5) {
+                                    int xEntry = -400 + (rayonRobot + d);
+                                    int yEntry = 1500;
+                                    Vec2 position = new Vec2(xEntry, yEntry);
+                                    return new Circle(position);
+                                }
+                            }}}}}
         }
-        if (version == 1) {
-            int xEntry=650-(rayonRobot+d);
-            int yEntry=540;
-            Vec2 position=new Vec2(xEntry,yEntry);
-            return new Circle(position);
-        }
-        if (version == 2) {
-            int xEntry=1200-(rayonRobot+d);
-            int yEntry=1190;
-            Vec2 position=new Vec2(xEntry,yEntry);
-            return new Circle(position);
-        }
-        if (version == 3) {
-            int xEntry=400-(rayonRobot+d);
-            int yEntry=1500;
-            Vec2 position=new Vec2(xEntry,yEntry);
-            return new Circle(position);
-        }
-        if (version == 4) {
-            int xEntry=-1200+(rayonRobot+d);
-            int yEntry=1190;
-            Vec2 position=new Vec2(xEntry,yEntry);
-            return new Circle(position);
-        }
-        if (version == 5) {
-            int xEntry=-400+(rayonRobot+d);
-            int yEntry=1500;
-            Vec2 position=new Vec2(xEntry,yEntry);
-            return new Circle(position);
-        }
+    catch(Exception e){
 
     }
-
-    @Override
-    public void goToThenExec(int versionToExecute, GameState actualState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
-
+        System.out.println("Version invalide");
+        Vec2 position=new Vec2();
+        return new Circle(position);
     }
+
+
+
+
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
         return 0;

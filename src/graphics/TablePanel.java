@@ -75,7 +75,7 @@ public class TablePanel extends JPanel
 	private Color robotColor = new Color(50, 180, 50, 100);
 	private Color teamColor = new Color(50, 80, 50, 220);
 	private Color pathColor = new Color(200, 0, 80);
-	private Color graphColor = new Color(50, 80, 120, 100);
+	private Color graphColor = new Color(50, 80, 120, 50);
 
 	/** Construit un panel pour du l'interface full
 	 * @param table
@@ -231,7 +231,7 @@ public class TablePanel extends JPanel
 	 * @param vec
 	 */
 	private Vec2 changeRefToDisplay(Vec2 vec){
-		return new Vec2(new Integer((int)((vec.getX() + 1500)*0.3)),new Integer((int)((2000 - vec.getY())*0.3)));
+		return new Vec2(new Integer((int)((vec.getX() + 1500)*0.3)),new Integer((int)((2000 - vec.getY())*0.3)-5));
 	}
 
 	/** Setters */

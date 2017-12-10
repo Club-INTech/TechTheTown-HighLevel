@@ -1,9 +1,14 @@
 package pathfinder;
 
 import container.Service;
+import exceptions.NoPathFound;
 import pfg.config.Config;
 import smartMath.Vec2;
 import table.Table;
+import table.obstacles.Obstacle;
+import table.obstacles.ObstacleCircular;
+import table.obstacles.ObstacleManager;
+import table.obstacles.ObstacleRectangular;
 import utils.Log;
 
 import java.util.ArrayList;
@@ -19,18 +24,20 @@ public class Astar implements Service {
     private Log log;
     private Config config;
     private Graphe graphe;
+    private Table table;
+    private ObstacleManager obstacleManager;
 
-    public Astar(Log log, Config config, Graphe graphe) {
+    public Astar(Log log, Config config, Table table) {
         this.log = log;
         this.config = config;
-        Table table = new Table(log, config);
+        this.table = table;
         graphe = new Graphe(table);
-        this.graphe = graphe;
+        obstacleManager=table.getObstacleManager();
     }
 
     /**
      *
-     * Methode renvoyant une liste de vecteurs qui contient le chemain le plus rapide
+     * Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemain le plus rapide
      * entre les deux positions entrées.
      *
      * @param positiondepart
@@ -38,7 +45,8 @@ public class Astar implements Service {
      * @return
      */
 
-    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive){
+    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws NoPathFound{
+        long time1=System.currentTimeMillis();
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
         Noeud noeudarrive = new Noeud(positionarrive, 0, 0, new ArrayList<Noeud>());
@@ -50,155 +58,113 @@ public class Astar implements Service {
         ArrayList<Noeud> finalList = new ArrayList<>();
         nodes.add(0, noeuddepart);
         nodes.add(noeudarrive);
+        ObstacleManager obstacleManager =  table.getObstacleManager();
 
 
-        if(  Graphe.nodeInObstacle(noeuddepart,graphe) ||  Graphe.nodeInObstacle(noeudarrive,graphe)){
-            System.out.println("Obstacle !!!");
-            finalPath.add(noeuddepart.getPosition());
-            return finalPath;
+        if(        obstacleManager.isObstructed(noeuddepart.getPosition())
+                || ! obstacleManager.isRobotInTable(noeuddepart.getPosition())
+                || obstacleManager.isObstructed(noeudarrive.getPosition())
+                || ! obstacleManager.isRobotInTable(noeudarrive.getPosition())){
+
+            throw new NoPathFound(true,false);
         }
         else {
             ArrayList aretes = graphe.createAretes(nodes);
             openList.add(noeuddepart);
 
-            while (!nodeInList(closeList, noeudarrive) && openList.size() != 0) {
+            while (! closeList.contains(noeudarrive) && !openList.isEmpty()) {
 
                 noeudcourant = openList.poll();
                 closeList.add(noeudcourant);
-                noeudvoisin = noeudcourant.getVoisins();
 
-                int i = 0;
-
-
-                while (i < noeudvoisin.size()) {
-
-                    if (nodeInList(closeList, noeudvoisin.get(i))) {
-
-                    } else if (nodeInQueue(openList, noeudvoisin.get(i))) {
-                        if ( nodePred(noeudvoisin.get(i), noeuddepart)&& noeudvoisin.get(i).getCout() < noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition()))) {
-                            noeudvoisin.get(i).setPred(noeudcourant.getPred());
+                for (Noeud voisin: noeudcourant.getVoisins()) {
+                    if (closeList.contains(voisin)) {
+                        if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()))) {
+                            closeList.remove(voisin);
+                            openList.add(voisin);
+                            voisin.setPred(noeudcourant);
+                            voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         }
+                      }
 
-                        else {
-                            noeudvoisin.get(i).setCout(noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
+                    else if(openList.contains(voisin)) {
+                        if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()))) {
+                            voisin.setPred(voisin.getPred());
+                            voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         }
-                    } else {
-                        noeudvoisin.get(i).setHeuristique(noeudvoisin.get(i).getPosition().distance(noeudarrive.getPosition()));
-                        noeudvoisin.get(i).setCout(noeudcourant.getCout() + (noeudvoisin.get(i).getPosition().distance(noeudcourant.getPosition())));
-                        openList.add(noeudvoisin.get(i));
-                        noeudvoisin.get(i).setPred(noeudcourant);
                     }
-                    i++;
+                    else {
+                        voisin.setHeuristique(voisin.getPosition().distance(noeudarrive.getPosition()));
+                        voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
+                        openList.add(voisin);
+                        voisin.setPred(noeudcourant);
+                    }
+                }
+
+            }
+        }
+        // pas de chemain trouvé.
+        if(! closeList.contains(noeudarrive) && openList.isEmpty()){
+            System.out.println("No way found");
+            throw new NoPathFound(false,true);
+        }
+
+        // fabrique le chemain à partir de la closeList
+        finalList.add(noeudarrive);
+        while (noeuddepart != finalList.get(finalList.size() - 1) ) {
+            finalList.add(finalList.get(finalList.size() - 1).getPred());
+        }
+        for (int i = 0; i < finalList.size(); i++) {
+            finalPath.add(finalList.get(i).getPosition());
+        }
+        long time2=System.currentTimeMillis()-time1;
+        System.out.println("Time to execute (ms): "+time2);
+        return finalPath;
+    }
+
+
+    public ArrayList<Vec2> findmywayD(Vec2 positiondepart, Vec2 positionarrive) throws NoPathFound  {
+        long time1=System.currentTimeMillis();
+        Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
+        Noeud noeudarrive = new Noeud(positionarrive, 999999999, -1, new ArrayList<Noeud>());
+        ArrayList<Noeud> nodes = graphe.createNodes();
+        ArrayList<Noeud> noeudvoisin = new ArrayList<Noeud>();
+        ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
+        ArrayList<Noeud> finalList = new ArrayList<>();
+        nodes.add(0, noeuddepart);
+        nodes.add(noeudarrive);
+        ObstacleManager obstacleManager =  new ObstacleManager(log,config);
+        ArrayList aretes = graphe.createAretes(nodes);
+
+        Noeud noeudcourant;
+        PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
+        openList.addAll(nodes);
+
+        while(! openList.isEmpty()){
+            noeudcourant=openList.poll();
+            for (Noeud voisin: noeudcourant.getVoisins()
+                    ) {
+                if(voisin.getCout()>noeudcourant.getCout()+voisin.getPosition().distance(noeudcourant.getPosition())) {
+                    voisin.setHeuristique(0);
+                    voisin.setCout(noeudcourant.getCout() + voisin.getPosition().distance(noeudcourant.getPosition()));
+                    voisin.setPred(noeudcourant);
                 }
             }
-            // pas de chemain trouvé.
-            if(!nodeInList(closeList, noeudarrive) && openList.size() == 0){
-                System.out.println("No way found");
-                finalPath.add(noeuddepart.getPosition());
-                return finalPath;
-            }
-
-            // fabrique le chemain à partir de la closeList
-            finalList.add(noeudarrive);
-            while (noeuddepart != finalList.get(finalList.size() - 1) ) {
-                finalList.add(finalList.get(finalList.size() - 1).getPred());
-            }
-            for (int i = 0; i < finalList.size(); i++) {
-                finalPath.add(finalList.get(i).getPosition());
-            }
-            return finalPath;
-        }
-    }
-
-
-
-    /**
-     *
-     * Méthode qui teste la présence d'un noeud dans une liste
-     *
-     * @param lst
-     * @param node
-     * @return
-     */
-
-    public boolean nodeInList( ArrayList<Noeud> lst, Noeud node){
-        for(int i = 0; i < lst.size(); i++ ){
-            if (lst.get(i).equals(node)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean nodeInQueue(PriorityQueue<Noeud> lst, Noeud node){
-        for(int i = 0; i < lst.size(); i++ ){
-            if (lst.element().equals(node)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Méthode testant si tout les prédécesseurs sont dans la liste des voisins.
-     * @param noeud
-     * @return
-     */
-
-    public boolean nodePred(Noeud noeud, Noeud noeuddepart){
-        Noeud pred = noeud;
-        while(pred != noeuddepart){
-            if(! nodeInList(pred.getPred().getVoisins(), pred)){
-                return false;
-            }
-            pred = pred.getPred();
-        }
-        return true;
-
-    }
-
-
-    /**
-     * Methode qui renvoit la distance parcourue pour arriver à un noeud
-     *
-     * @param noeud
-     * @param lst
-     * @return
-     */
-
-    public double distance(Noeud noeud, ArrayList<Noeud> lst){
-        double distance = 0;
-        lst.add(noeud);
-        for(int i=0; i<lst.size() - 1;i++){
-            distance += lst.get(i).getPosition().distance(lst.get(i+1).getPosition());
         }
 
-        return distance;
-    }
-
-    /**
-     * Méthode fournissant la liste des voisins d'un noeud
-     * @param noeud
-     * @param lst
-     * @return
-     */
-    public ArrayList<Noeud> noeudVoisin(Noeud noeud, ArrayList<Arete> lst){
-        ArrayList<Noeud> nodes = new ArrayList<Noeud>();
-        for(int i = 0; i<lst.size() - 1; i++){
-            nodes.add(lst.get(i).noeud2);
+        noeudcourant=noeudarrive;
+        while (!noeudcourant.equals(noeuddepart)){
+            finalList.add(noeudcourant);
+            noeudcourant.getPred();
         }
-        return nodes;
-    }
-    public ArrayList<Vec2> betterPath(ArrayList<Vec2> path,ArrayList<Arete> areteslist){
-        int n=path.size();
-        ArrayList<Vec2> betterpath=path;
-        for(int i =0;i<n-1;i++){
-            if(!(Arete.traceArete2(path.get(i),path.get(i+1),areteslist))){
-                betterpath.addAll(i,findmyway(path.get(i),path.get(i+1)));
-            }
-        }
-        return betterpath;
 
+        for (int i = 0; i < finalList.size(); i++) {
+            finalPath.add(finalList.get(i).getPosition());
+        }
+
+        long time2=System.currentTimeMillis()-time1;
+        System.out.println("Time to execute (ms): "+time2);
+        return finalPath;
     }
 
 }

@@ -120,7 +120,7 @@ public class Graphe implements Service{
                 nodeposition.setX(x);
                 y = j * pasY + ydebut;
                 nodeposition.setY(y);
-                node.add(new Noeud(nodeposition, 999999999, 0, new ArrayList<Noeud>()));
+                node.add(new Noeud(nodeposition, 999999999, -1, new ArrayList<Noeud>()));
             }
         }
         int k = node.size();

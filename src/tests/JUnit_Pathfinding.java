@@ -20,6 +20,7 @@
 package tests;
 
 import exceptions.ContainerException;
+import exceptions.NoPathFound;
 import graphics.Window;
 import org.junit.Test;
 import pathfinder.*;
@@ -72,19 +73,30 @@ public class JUnit_Pathfinding extends JUnit_Test{
         //window.setArete(graphe.getBoneslist());
         window.setPath(path);
         ArrayList<Vec2> clics=new ArrayList<>();
-        Astar pf = new Astar(log, config, graphe);
+        Astar pf = new Astar(log, config, table);
         window.setPath(path);
         //ArrayList<Vec2> clics = new ArrayList<>();
 
 
         while(true) {
-            clics = window.waitLRClic();
-            path = pf.findmyway(clics.get(0), clics.get(1));
-            window.setPath(path);
+            try {
+                clics = window.waitLRClic();
+                path = pf.findmyway(clics.get(0), clics.get(1));
+                window.setPath(path);
+            }
+            catch (NoPathFound e) {
+                if (e.isNodeInObstacle()){
+                    System.out.println("Obstacle!!");
+                }
+                if(e.isNoPathFound()){
+                    System.out.println("No way found !!");
+                }
+                e.printStackTrace();
+            }
         }
 
 
-       // pathfinding.findmeaway(example,example2);
+        // pathfinding.findmeaway(example,example2);
 
 
         /*while(true){
