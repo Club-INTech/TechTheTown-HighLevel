@@ -42,27 +42,27 @@ public class TakeCubes extends AbstractScript {
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
         ObstacleManager obstacleManager = new ObstacleManager(log, config);
         int l=127; //longueur d'un cube (a verifier)
+        /**Les version toexecute seront :
+         * soit (0,1,...5) (les 6 positions d'entrée possibles si la reconnaissance de couleur
+         * renvoit 0
+         * soit(10,11,...15) (les 6 positions si la reconnaissance de couleur renvoit1)
+         * etc etc (ça dépend du résultat du test de reconnaissance de couleur)
+         */
         /**Cas où c'est le pattern 0 qui est retourné par le code de reconnaissance de couleur*/
-        if (versionToExecute == 0) {
-            //ajouter ordre prendCube
+        if (versionToExecute == 0 || versionToExecute==1 || versionToExecute==2) {
+            //to do : ajouter ordre prendCube
             // stateToConsider.robot.useActuator(prendCube,true);
-            //Envoyer l'ordre de prendre un cube (à définir avec le bas niveau): le bas niveau activera tous les actionneurs pour cela
+            //to do :Envoyer l'ordre de prendre un cube (à définir avec le bas niveau): le bas niveau activera tous les actionneurs pour cela
             stateToConsider.robot.turn(-Math.PI/2);
             stateToConsider.robot.moveLengthwise(l);
             stateToConsider.robot.turn(Math.PI/2);
-            //Envoyer une autre fois l'ordre de prendre un cube
+            //to do :Envoyer une autre fois l'ordre de prendre un cube
             stateToConsider.robot.turn(Math.PI/2);
             stateToConsider.robot.moveLengthwise(l);
             stateToConsider.robot.turn(-Math.PI/2);
             stateToConsider.robot.moveLengthwise(l);
-            //Envoyer une autre fois l'ordre de prendre un cube
-            //le quatrième ?
-        }
-        if (versionToExecute == 1) {
-
-        }
-        if (versionToExecute == 2) {
-
+            //to do :Envoyer une autre fois l'ordre de prendre un cube
+            //le quatrième cube?
         }
         if (versionToExecute == 3) {
 
