@@ -109,6 +109,18 @@ public class TakeCubes extends AbstractScript {
             //to do : envoyer l'ordre de prendre un cube
             //quatrièmle cube ?
         }
+        if (versionToExecute==40 ||versionToExecute==41 || versionToExecute==42 ||versionToExecute==43
+                || versionToExecute==44 ||versionToExecute==45){
+            //on inverse l'odre : ca demandera moins de mouvements vu la position d'entrée choisie
+            //to do : envoyer l'ordre de prendre un cube
+            stateToConsider.robot.moveLengthwise(l);
+            //to do : envoyer l'ordre de prendre un cube
+            stateToConsider.robot.turn(Math.PI/2);
+            stateToConsider.robot.moveLengthwise(l);
+            stateToConsider.robot.turn(-Math.PI/2);
+            //to do : envoyer l'ordre de prendre un cube
+            //quatrième cube ?
+        }
 
     }
 
