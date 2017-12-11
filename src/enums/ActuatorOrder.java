@@ -67,7 +67,10 @@ public enum ActuatorOrder implements MotionOrder
 	INITIALISE_HOOK("nh"),
 	ENABLE_HOOK("eh"),
 	DISABLE_HOOK("dh"),
-
+	BAISSE_LE_BRAS("blb"),
+	ACTIVE_LA_POMPE("alp"),
+	RELEVE_LE_BRAS("rlb"),
+	DESACTIVE_LA_POMPE("dlp"),
 /*			 _____________________
  * 		   *|                     |*
  *		   *|   ASSERVISSEMENTS   |*
