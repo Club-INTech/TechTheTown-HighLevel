@@ -43,6 +43,7 @@ public class TakeCubes extends AbstractScript {
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
         ObstacleManager obstacleManager = new ObstacleManager(log, config);
         stateToConsider.robot.turn(Math.PI);
+        stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE,true);
         /*connaitre l'orientation du robot ?? ici le robot est supposé orienté devant le premier cube
         à prendre
          */
