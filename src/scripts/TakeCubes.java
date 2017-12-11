@@ -41,6 +41,9 @@ public class TakeCubes extends AbstractScript {
     @Override
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
         ObstacleManager obstacleManager = new ObstacleManager(log, config);
+        /*connaitre l'orientation du robot ?? ici le robot est supposé orienté devant le premier cube
+        à prendre
+         */
         int l=127; //longueur d'un cube (a verifier)
         /**Les version toexecute seront :
          * soit (0,1,...5) (les 6 positions d'entrée possibles si la reconnaissance de couleur
@@ -64,6 +67,20 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.moveLengthwise(l);
             //to do :Envoyer une autre fois l'ordre de prendre un cube
             //le quatrième cube?
+        }
+        if (versionToExecute==10 ||versionToExecute==11 || versionToExecute==12 ||versionToExecute==13
+                || versionToExecute==14 ||versionToExecute==15){
+            stateToConsider.robot.moveLengthwise(l);
+            //to do : envoyer l'ordre de prendre un cube
+            stateToConsider.robot.turn(-Math.PI/2);
+            stateToConsider.robot.moveLengthwise(l);
+            stateToConsider.robot.turn(Math.PI/2);
+            //to do : envoyer l'ordre de prendre un cube
+            stateToConsider.robot.turn(Math.PI/2);
+            stateToConsider.robot.moveLengthwise(2*l);
+            stateToConsider.robot.turn(-Math.PI/2);
+            //to do :envoyer l'ordre de prendre un cube
+            //le quatrième cube ?
         }
 
     }
