@@ -49,7 +49,8 @@ public class TakeCubes extends AbstractScript {
          * etc etc (ça dépend du résultat du test de reconnaissance de couleur)
          */
         /**Cas où c'est le pattern 0 qui est retourné par le code de reconnaissance de couleur*/
-        if (versionToExecute == 0 || versionToExecute==1 || versionToExecute==2) {
+        if (versionToExecute==0 ||versionToExecute==1 || versionToExecute==2 ||versionToExecute==3
+                || versionToExecute==4 ||versionToExecute==5) {
             //to do : ajouter ordre prendCube
             // stateToConsider.robot.useActuator(prendCube,true);
             //to do :Envoyer l'ordre de prendre un cube (à définir avec le bas niveau): le bas niveau activera tous les actionneurs pour cela
@@ -64,15 +65,7 @@ public class TakeCubes extends AbstractScript {
             //to do :Envoyer une autre fois l'ordre de prendre un cube
             //le quatrième cube?
         }
-        if (versionToExecute == 3) {
 
-        }
-        if (versionToExecute == 4) {
-
-        }
-        if (versionToExecute == 5) {
-
-        }
     }
 
     /**
