@@ -133,6 +133,27 @@ public class TakeCubes extends AbstractScript {
             //to do : envoyer l'ordre de prendre un cube
             //quatrième cube ?
         }
+        if (versionToExecute==60 ||versionToExecute==61 || versionToExecute==62 ||versionToExecute==63
+                || versionToExecute==64 ||versionToExecute==65){
+            stateToConsider.robot.turn(Math.PI/2);
+            stateToConsider.robot.moveLengthwise(l);
+            stateToConsider.robot.turn(-Math.PI/2);
+            //to do : envoyer l'ordre de prendre un cube
+            stateToConsider.robot.turn(-Math.PI/2);
+            stateToConsider.robot.moveLengthwise(l);
+            stateToConsider.robot.turn(Math.PI/2);
+            //to do : envoyer l'ordre de prendre un cube
+            stateToConsider.robot.turn(-Math.PI/2);
+            stateToConsider.robot.moveLengthwise(l);
+            stateToConsider.robot.turn(Math.PI/2);
+            //to do : envoyer l'ordre de prendre un cube
+            // 4 ème cube ?
+
+
+
+
+
+        }
 
     }
 
