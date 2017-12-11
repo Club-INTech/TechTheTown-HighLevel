@@ -52,6 +52,10 @@ public class TakeCubes extends AbstractScript {
          * etc etc (ça dépend du résultat du test de reconnaissance de couleur)
          */
         /**Cas où c'est le pattern 0 qui est retourné par le code de reconnaissance de couleur*/
+
+        /**
+         * Ici c'est la version (orange,noir,vert)
+         */
         if (versionToExecute==0 ||versionToExecute==1 || versionToExecute==2 ||versionToExecute==3
                 || versionToExecute==4 ||versionToExecute==5) {
             //to do : ajouter ordre prendCube
@@ -68,6 +72,7 @@ public class TakeCubes extends AbstractScript {
             //to do :Envoyer une autre fois l'ordre de prendre un cube
             //le quatrième cube?
         }
+        /**ici c'est la version (jaune, noir,bleu)*/
         if (versionToExecute==10 ||versionToExecute==11 || versionToExecute==12 ||versionToExecute==13
                 || versionToExecute==14 ||versionToExecute==15){
             stateToConsider.robot.moveLengthwise(l);
@@ -82,6 +87,7 @@ public class TakeCubes extends AbstractScript {
             //to do :envoyer l'ordre de prendre un cube
             //le quatrième cube ?
         }
+        /**(Bleu,Vert,Orange)*/
         if (versionToExecute==20 ||versionToExecute==21 || versionToExecute==22 ||versionToExecute==23
                 || versionToExecute==24 ||versionToExecute==25) {
             //On prend le cube orange d'abord (on peut inverser l'ordre)
@@ -96,6 +102,7 @@ public class TakeCubes extends AbstractScript {
             // quatrième cube ?
 
         }
+        /**(jaune,vert,noir)*/
         if (versionToExecute==30 ||versionToExecute==31 || versionToExecute==32 ||versionToExecute==33
                 || versionToExecute==34 ||versionToExecute==35){
             stateToConsider.robot.moveLengthwise(l);
@@ -109,6 +116,7 @@ public class TakeCubes extends AbstractScript {
             //to do : envoyer l'ordre de prendre un cube
             //quatrièmle cube ?
         }
+        /**(bleu,jaune,orange)*/
         if (versionToExecute==40 ||versionToExecute==41 || versionToExecute==42 ||versionToExecute==43
                 || versionToExecute==44 ||versionToExecute==45){
             //on inverse l'odre : ca demandera moins de mouvements vu la position d'entrée choisie
@@ -121,6 +129,7 @@ public class TakeCubes extends AbstractScript {
             //to do : envoyer l'ordre de prendre un cube
             //quatrième cube ?
         }
+        /**(vert,jaune,bleu)*/
         if (versionToExecute==50 ||versionToExecute==51 || versionToExecute==52 ||versionToExecute==53
                 || versionToExecute==54 ||versionToExecute==55){
             stateToConsider.robot.moveLengthwise(2*l);
@@ -133,6 +142,7 @@ public class TakeCubes extends AbstractScript {
             //to do : envoyer l'ordre de prendre un cube
             //quatrième cube ?
         }
+        /**(bleu,orange,noir)*/
         if (versionToExecute==60 ||versionToExecute==61 || versionToExecute==62 ||versionToExecute==63
                 || versionToExecute==64 ||versionToExecute==65){
             stateToConsider.robot.turn(Math.PI/2);
@@ -149,10 +159,18 @@ public class TakeCubes extends AbstractScript {
             //to do : envoyer l'ordre de prendre un cube
             // 4 ème cube ?
 
-
-
-
-
+        }
+        /**(vert,orange,jaune)*/
+        if (versionToExecute==70 ||versionToExecute==71 || versionToExecute==72 ||versionToExecute==73
+                || versionToExecute==74 ||versionToExecute==75){
+            //on inverse l'ordre
+            stateToConsider.robot.moveLengthwise(l);
+            //to do : envoyer l'ordre de prendre un cube
+            stateToConsider.robot.moveLengthwise(-l);
+            //to do : envoyer l'ordre de prendre un cube
+            stateToConsider.robot.moveLengthwise(2*l);
+            //to do : envoyer l'ordre de prendre un cube
+            //4 ème ?
         }
 
     }
