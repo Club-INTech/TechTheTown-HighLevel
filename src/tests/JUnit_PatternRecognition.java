@@ -23,25 +23,25 @@ public class JUnit_PatternRecognition extends JUnit_Test {
         //int[][] positionsColorsOnImage={{979,1210,1450},{1700,1700,1700},{1119,1350,1580},{1847,1847,1847}};// Pattern 8 WORKS NORMAL/LIT /0.88
         //int[][] positionsColorsOnImage={{979,1210,1450},{1980,1980,1980},{1119,1350,1850},{2133,2133,2133}}; //Pattern 9 WORKS LIT faux/0.81
 
-        String pathToImage = "ImageRaspberryPi3+30+30.png";
+        String pathToImage = "ImageRaspberryPi5.png";
 
-
+        /*
         //ImageRaspberryPi3.png
         int[][] posVert={{1381,903},{1428,951}};
         int[][] posNoir={{1313,687},{1357,758}};
         int[][] posBleu={{1399,679},{1441,738}};
         int[][] posJaune={{1464,866},{1509,918}};
         int[][] posOrange={{1552,832},{1591,879}};
+        */
 
 
-        /*
         //ImageRaspberryPi5.png
         int[][] posVert={{966,405},{999,455}};
         int[][] posNoir={{892,173},{933,265}};
         int[][] posBleu={{967,202},{1004,277}};
         int[][] posJaune={{1047,397},{1083,445}};
         int[][] posOrange={{1125,386},{1155,421}};
-        */
+
 
         //Changer les tests de patterns ICI
         //Si on souhaite mettre le pattern YWGNBK, alors on écrit : pat={posYellow,posGreen,posBlack}
@@ -53,15 +53,15 @@ public class JUnit_PatternRecognition extends JUnit_Test {
         //int[][][] pat={posNoir,posJaune,posOrange};
         //int[][][] pat={posVert,posJaune,posBleu};
         //int[][][] pat={posBleu,posOrange,posNoir};
-        //int[][][] pat={posVert,posOrange,posJaune};
+        int[][][] pat={posVert,posOrange,posJaune};
         //int[][][] pat={posNoir,posBleu,posVert};
-        int[][][] pat={posOrange,posBleu,posJaune};
+        //int[][][] pat={posOrange,posBleu,posJaune};
 
 
         //Ghetto, mais ne pas toucher tant qu'on est en test
         int[][] positionsColorsOnImage={{pat[0][0][0],pat[1][0][0],pat[2][0][0]},{pat[0][0][1],pat[1][0][1],pat[2][0][1]},{pat[0][1][0],pat[1][1][0],pat[2][1][0]},{pat[0][1][1],pat[1][1][1],pat[2][1][1]}};
 
-        boolean debug=false;
+        boolean debug=true;
         PatternRecognition.setDebugPatternRecognition(debug);
 
         int victoryPattern=PatternRecognition.analysePattern(pathToImage, pat, positionsColorsOnImage);

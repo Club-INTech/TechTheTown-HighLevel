@@ -10,22 +10,22 @@ public enum Colors {
     BLUE(2,"blue", new int[]{0,124,176}),
     BLACK(3,"black", new int[]{14,14,16}),
     GREEN(4,"green", new int[]{97,153,59});*/
-    /*
+
     //Couleurs calibrées par rapport à la photo ImageRaspberry1.png
     ORANGE(0,"orange", new int[]{252, 88, 46}),
     YELLOW(1,"yellow", new int[]{254,221,0}),
     BLUE(2,"blue", new int[]{38,109,150}),
     BLACK(3,"black", new int[]{66,68,26}),
     GREEN(4,"green", new int[]{142,196,45});
-    */
 
-    //Couleurs calibrées par rapport à la photo ImageRaspberry5.png
+    /*
+    //Couleurs RGB calibrées par rapport à la photo ImageRaspberry5.png
     ORANGE(0,"orange", new int[]{170, 40, 11}),
     YELLOW(1,"yellow", new int[]{229,149,0}),
     BLUE(2,"blue", new int[]{0,51,90}),
     BLACK(3,"black", new int[]{9,15,0}),
     GREEN(4,"green", new int[]{84,129,7});
-
+    */
 
     private int[] RGB;      //int[3] R,G et B, calibrés
     private String name;    //nom de la couleur
