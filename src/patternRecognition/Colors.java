@@ -73,4 +73,15 @@ public enum Colors {
         }
         return RGB;
     }
+
+    public static String getNameFromID(int id){
+        String name="";
+        for (Colors color : Colors.values()){
+            if (Objects.equals(id, color.id)){
+                name=color.name;
+                break;
+            }
+        }
+        return name;
+    }
 }
