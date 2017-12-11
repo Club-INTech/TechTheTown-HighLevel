@@ -16,6 +16,8 @@ import table.obstacles.Obstacle;
 import table.obstacles.ObstacleManager;
 import utils.Log;
 
+import java.util.ArrayList;
+
 public class TakeCubes extends AbstractScript {
     public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
@@ -39,10 +41,22 @@ public class TakeCubes extends AbstractScript {
     @Override
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
         ObstacleManager obstacleManager = new ObstacleManager(log, config);
+        int l=127; //longueur d'un cube (a verifier)
         /**Cas où c'est le pattern 0 qui est retourné par le code de reconnaissance de couleur*/
         if (versionToExecute == 0) {
-
-
+            //ajouter ordre prendCube
+            // stateToConsider.robot.useActuator(prendCube,true);
+            //Envoyer l'ordre de prendre un cube (à définir avec le bas niveau): le bas niveau activera tous les actionneurs pour cela
+            stateToConsider.robot.turn(-Math.PI/2);
+            stateToConsider.robot.moveLengthwise(l);
+            stateToConsider.robot.turn(Math.PI/2);
+            //Envoyer une autre fois l'ordre de prendre un cube
+            stateToConsider.robot.turn(Math.PI/2);
+            stateToConsider.robot.moveLengthwise(l);
+            stateToConsider.robot.turn(-Math.PI/2);
+            stateToConsider.robot.moveLengthwise(l);
+            //Envoyer une autre fois l'ordre de prendre un cube
+            //le quatrième ?
         }
         if (versionToExecute == 1) {
 
@@ -60,82 +74,85 @@ public class TakeCubes extends AbstractScript {
 
         }
     }
-    /**attention à l'appel de cette méthode, get la bonne version*/
+
+    /**
+     * attention à l'appel de cette méthode, get la bonne version : ici version c'est une position d'entrée
+     * parmi les 6 possibles
+     */
     @Override
     public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
-        int d=160; //distance entre le robot et l'amas de cubes pour faire descendre le bras
-        int rayonRobot=config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        try{
+        int d = 160; //distance entre le robot et l'amas de cubes pour faire descendre le bras
+        int rayonRobot = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+        try {
             if (version == 0) {
-                int xEntry=650;
-                int yEntry=540;
-                Vec2 position=new Vec2(xEntry,yEntry);
+                int xEntry = 650;
+                int yEntry = 540;
+                Vec2 position = new Vec2(xEntry, yEntry);
                 return new Circle(position);
-            }
-            else {
+            } else {
                 if (version == 1) {
                     int xEntry = 650 - (rayonRobot + d);
                     int yEntry = 540;
                     Vec2 position = new Vec2(xEntry, yEntry);
                     return new Circle(position);
-                }
-                else{
+                } else {
                     if (version == 2) {
                         int xEntry = 1200 - (rayonRobot + d);
                         int yEntry = 1190;
                         Vec2 position = new Vec2(xEntry, yEntry);
                         return new Circle(position);
-                    }
-                    else{
+                    } else {
                         if (version == 3) {
                             int xEntry = 400 - (rayonRobot + d);
                             int yEntry = 1500;
                             Vec2 position = new Vec2(xEntry, yEntry);
                             return new Circle(position);
-                        }
-                        else{
+                        } else {
                             if (version == 4) {
                                 int xEntry = -1200 + (rayonRobot + d);
                                 int yEntry = 1190;
                                 Vec2 position = new Vec2(xEntry, yEntry);
                                 return new Circle(position);
-                            }
-                            else {
+                            } else {
                                 if (version == 5) {
                                     int xEntry = -400 + (rayonRobot + d);
                                     int yEntry = 1500;
                                     Vec2 position = new Vec2(xEntry, yEntry);
                                     return new Circle(position);
                                 }
-                            }}}}}
-        }
-    catch(Exception e){
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
 
-    }
+        }
         System.out.println("Version invalide");
-        Vec2 position=new Vec2();
+        Vec2 position = new Vec2();
         return new Circle(position);
     }
-
-
 
 
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
         return 0;
     }
+
     @Override
     public void finalize(GameState state, Exception e) throws UnableToMoveException {
 
     }
+
     @Override
-    public Integer[][] getVersion2(GameState stateToConsider){
+    public Integer[][] getVersion2(GameState stateToConsider) {
         return versions2;
-}
+    }
+
     @Override
-    public Integer[] getVersion(GameState stateToConsider){
+    public Integer[] getVersion(GameState stateToConsider) {
         return new Integer[]{};
 
 
-}
+    }
 }

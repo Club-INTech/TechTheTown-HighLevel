@@ -29,6 +29,7 @@ import table.Table;
 import table.obstacles.ObstacleManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
