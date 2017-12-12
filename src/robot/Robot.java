@@ -250,7 +250,11 @@ public class Robot implements Service {
 	{
 		turn(angle, false, false);
 	}
-
+	/**Comme turn sauf que les angles sont relatifs, tourne par exemple de Pi/2 à partir de sa position**/
+	public void tourne(double angle) throws UnableToMoveException
+	{
+		turn(angle, false, true);
+	}
 	/**
 	 * Fait tourner le robot, en considérant les hooks et les éventuels calins avec le mur
 	 * @param angle

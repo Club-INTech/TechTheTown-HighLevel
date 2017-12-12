@@ -44,9 +44,7 @@ public class TakeCubes extends AbstractScript {
         ObstacleManager obstacleManager = new ObstacleManager(log, config);
         stateToConsider.robot.turn(Math.PI);
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE,true);
-        graphe.config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        int l=stateToConsider.
-        int l=127; //longueur d'un cube (a verifier)
+        int l=stateToConsider.table.getConfig().getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         /**Les version toexecute seront :
          * soit (0,1,...5) (les 6 positions d'entrée possibles si la reconnaissance de couleur
          * renvoit 0
@@ -65,7 +63,7 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
-            stateToConsider.robot.turn(-Math.PI/2);
+            stateToConsider.robot.tourne(-Math.PI/2); //fait tourner le robot relativement
             stateToConsider.robot.moveLengthwise(l);
             stateToConsider.robot.turn(Math.PI/2);
             //Envoyer une autre fois l'ordre de prendre un cube
