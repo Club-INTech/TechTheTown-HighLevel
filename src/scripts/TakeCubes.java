@@ -44,9 +44,6 @@ public class TakeCubes extends AbstractScript {
         ObstacleManager obstacleManager = new ObstacleManager(log, config);
         stateToConsider.robot.turn(Math.PI);
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE,true);
-        /*connaitre l'orientation du robot ?? ici le robot est supposé orienté devant le premier cube
-        à prendre
-         */
         int l=127; //longueur d'un cube (a verifier)
         /**Les version toexecute seront :
          * soit (0,1,...5) (les 6 positions d'entrée possibles si la reconnaissance de couleur
