@@ -44,6 +44,8 @@ public class TakeCubes extends AbstractScript {
         ObstacleManager obstacleManager = new ObstacleManager(log, config);
         stateToConsider.robot.turn(Math.PI);
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE,true);
+        graphe.config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+        int l=stateToConsider.
         int l=127; //longueur d'un cube (a verifier)
         /**Les version toexecute seront :
          * soit (0,1,...5) (les 6 positions d'entrée possibles si la reconnaissance de couleur
