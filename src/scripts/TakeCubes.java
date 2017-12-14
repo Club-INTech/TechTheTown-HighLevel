@@ -20,6 +20,7 @@ import utils.Log;
 import java.util.ArrayList;
 
 public class TakeCubes extends AbstractScript {
+
     public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
         /**Les versions de TakeCubes dépendent du pattern
@@ -41,10 +42,9 @@ public class TakeCubes extends AbstractScript {
     //Il faut faire appel au code de reconnaissance de couleur
     @Override
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
-        ObstacleManager obstacleManager = new ObstacleManager(log, config);
         stateToConsider.robot.turn(Math.PI);
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE,true);
-        int l=stateToConsider.table.getConfig().getInt(ConfigInfoRobot.LONGUEUR_CUBE);
+        int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         /**Les version toexecute seront :
          * soit (0,1,...5) (les 6 positions d'entrée possibles si la reconnaissance de couleur
          * renvoit 0
@@ -333,7 +333,6 @@ public class TakeCubes extends AbstractScript {
     public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
         int d = 160; //distance entre le robot et l'amas de cubes pour faire descendre le bras
         int rayonRobot = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        try {
             if (version == 0) {
                 int xEntry = 650;
                 int yEntry = 540;
@@ -375,12 +374,8 @@ public class TakeCubes extends AbstractScript {
                     }
                 }
             }
-        } catch (Exception e) {
-
-        }
-        System.out.println("Version invalide");
-        Vec2 position = new Vec2();
-        return new Circle(position);
+        log.debug("erreur : mauvaise version de script")
+        throw new BadVersionException();
     }
 
 
@@ -402,7 +397,6 @@ public class TakeCubes extends AbstractScript {
     @Override
     public Integer[] getVersion(GameState stateToConsider) {
         return new Integer[]{};
-
-
     }
+
 }

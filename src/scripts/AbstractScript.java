@@ -171,8 +171,13 @@ public abstract class AbstractScript implements Service
 	/* (non-Javadoc)
 	 * @see container.Service#updateConfig()
 	 */
-	public void updateConfig()
-	{}
+
+	public static Config getConfig() {
+		return config;
+	}
+
+	public void updateConfig() {
+	}
 	
 	/** Getter utilisé par l'IA
 	 * @param stateToConsider état de jeu actuel
