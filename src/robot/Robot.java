@@ -251,7 +251,7 @@ public class Robot implements Service {
 		turn(angle, false, false);
 	}
 	/**Comme turn sauf que les angles sont relatifs, tourne par exemple de Pi/2 à partir de sa position**/
-	public void tourne(double angle) throws UnableToMoveException
+	public void turnRelatively(double angle) throws UnableToMoveException
 	{
 		turn(angle, false, true);
 	}

@@ -14,12 +14,18 @@ public class DeposeCubes extends AbstractScript{
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory){
         super(config, log, hookFactory);
+        /**6  versions pour les 6 blocs de cubes :
+         *  quand on va prendre 4 cubes (pour l'instant 4 le 5 ème à venir ^^) , ilfaudra déposer la
+         *  tour construite à partir d'un bloc dans la zone de construction, comme on est très forts,
+         *  on va prendre les six, et du coup, six positions d'entrées donc six versions*/
         versions = new Integer[]{0,1,2,3,4,5};
     }
     @Override
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
     }
     public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
+        /**mesures à effectuer*/
+
         try {
             if (version == 0) {
                 int xEntry =;
