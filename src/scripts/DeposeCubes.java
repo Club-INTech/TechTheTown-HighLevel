@@ -22,55 +22,80 @@ public class DeposeCubes extends AbstractScript{
     }
     @Override
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
+        // d est la distance avec laquelle on recule (mesures à effectuer)
+        int d=120;
+        stateToConsider.robot.turn(-Math.PI/2);
+        if (versionToExecute==0 ||versionToExecute==1 || versionToExecute==2 ||versionToExecute==3
+                || versionToExecute==4 ||versionToExecute==5) {
+            stateToConsider.robot.moveLengthwise(-d);
+        }
     }
     public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
-        /**mesures à effectuer*/
-
-        try {
+        /**mesures à effectuer pour initialiser xEntry et yEntry*/
             if (version == 0) {
-                int xEntry =;
-                int yEntry =;
+                int xEntry=0;
+                int yEntry=0;
                 Vec2 position = new Vec2(xEntry, yEntry);
                 return new Circle(position);
-            } else {
+            }
+            else {
                 if (version == 1) {
-                    int xEntry = ;
-                    int yEntry =;
+                    int xEntry=0 ;
+                    int yEntry=0 ;
                     Vec2 position = new Vec2(xEntry, yEntry);
                     return new Circle(position);
                 } else {
                     if (version == 2) {
-                        int xEntry = ;
-                        int yEntry = ;
+                        int xEntry=0 ;
+                        int yEntry=0 ;
                         Vec2 position = new Vec2(xEntry, yEntry);
                         return new Circle(position);
                     } else {
                         if (version == 3) {
-                            int xEntry =;
-                            int yEntry = ;
+                            int xEntry=0 ;
+                            int yEntry=0 ;
                             Vec2 position = new Vec2(xEntry, yEntry);
                             return new Circle(position);
                         } else {
                             if (version == 4) {
-                                int xEntry = ;
-                                int yEntry = ;
+                                int xEntry=0 ;
+                                int yEntry=0 ;
                                 Vec2 position = new Vec2(xEntry, yEntry);
                                 return new Circle(position);
                             } else {
                                 if (version == 5) {
-                                    int xEntry =;
-                                    int yEntry =;
+                                    int xEntry=0 ;
+                                    int yEntry=0 ;
                                     Vec2 position = new Vec2(xEntry, yEntry);
                                     return new Circle(position);
+                                }
+                                else{
+                                    log.critical("Version invalide");
+                                    throw new BadVersionException();
                                 }
                             }
                         }
                     }
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.critical("Version invalide");
-        }
     }
+    @Override
+    public int remainingScoreOfVersion(int version, final GameState state) {
+        return 0;
+    }
+
+    @Override
+    public void finalize(GameState state, Exception e) throws UnableToMoveException {
+
+    }
+
+    @Override
+    public Integer[] getVersion(GameState stateToConsider) {
+        return versions;
+    }
+    @Override
+    public Integer[][] getVersion2(GameState stateToConsider) {
+        return new Integer[][]{};
+    }
+
 }
