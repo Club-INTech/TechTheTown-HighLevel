@@ -1,6 +1,9 @@
 package pathfinder;
 
 import container.Service;
+import enums.UnableToMoveReason;
+import exceptions.Locomotion.PointInObstacleException;
+import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import pfg.config.Config;
 import smartMath.Vec2;
@@ -57,7 +60,7 @@ public class Pathfinding implements Service {
      * @return
      */
 
-    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws NoPathFound{
+    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws PointInObstacleException, UnableToMoveException{
         long time1=System.currentTimeMillis();
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
@@ -74,8 +77,14 @@ public class Pathfinding implements Service {
                 || ! obstacleManager.isRobotInTable(noeuddepart.getPosition())
                 || obstacleManager.isObstructed(noeudarrive.getPosition())
                 || ! obstacleManager.isRobotInTable(noeudarrive.getPosition())){
-
-            throw new NoPathFound(true,false);
+            //exception départ ou arrivée dans un obstacle/
+            //throw new NoPathFound(true,false);
+            if (obstacleManager.isObstructed(noeuddepart.getPosition()) || ! obstacleManager.isRobotInTable(noeuddepart.getPosition())){
+                throw new PointInObstacleException(noeuddepart.getPosition());
+            }
+            else{
+                throw new PointInObstacleException(noeudarrive.getPosition());
+            }
         }
         else {
             graphe.addNodeInGraphe(noeudarrive);
@@ -117,7 +126,8 @@ public class Pathfinding implements Service {
         // pas de chemain trouvé.
         if(! closeList.contains(noeudarrive) && openList.isEmpty()){
             System.out.println("No way found");
-            throw new NoPathFound(false,true);
+            //throw new NoPathFound(false,true);
+            throw new UnableToMoveException(noeudarrive.getPosition(), UnableToMoveReason.NO_WAY_FOUND);
         }
 
         // fabrique le chemain en partant du noeud d'arrivé

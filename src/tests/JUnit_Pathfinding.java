@@ -20,6 +20,8 @@
 package tests;
 
 import exceptions.ContainerException;
+import exceptions.Locomotion.PointInObstacleException;
+import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import graphics.Window;
 import org.junit.Test;
@@ -72,7 +74,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
 
 
-       // Thread.sleep(20000);
+        // Thread.sleep(20000);
 
         Pathfinding pf = new Pathfinding(log, config, table);
         ArrayList<Vec2> path =  new ArrayList<>();
@@ -87,13 +89,15 @@ public class JUnit_Pathfinding extends JUnit_Test{
                 path = pf.findmyway(clics.get(0), clics.get(1));
                 window.setPath(path);
             }
-            catch (NoPathFound e) {
-                if (e.isNodeInObstacle()){
-                    System.out.println("Obstacle!!");
-                }
-                if(e.isNoPathFound()){
-                    System.out.println("No way found !!");
-                }
+            catch (PointInObstacleException e) {
+
+                System.out.println("Obstacle!!");
+                e.printStackTrace();
+            }
+            catch (UnableToMoveException e){
+
+                System.out.println("No way found !!");
+
                 e.printStackTrace();
             }
         }
