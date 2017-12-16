@@ -23,14 +23,13 @@ import exceptions.ContainerException;
 import exceptions.NoPathFound;
 import graphics.Window;
 import org.junit.Test;
-import pathfinder.*;
+import pathfinder.Pathfinding;
+import pathfinder.Graphe;
 import smartMath.Vec2;
 import table.Table;
 import table.obstacles.ObstacleManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 /**
  * Tests Unitaires pour le pathfinding : utiliser ce JUnit pour faire des petits tests de java
@@ -51,11 +50,11 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
         /** Instanciation des variables */
         table = container.getService(Table.class);
-        Pathfinding pathfinding = container.getService(Pathfinding.class);
+        //Pathfinding pathfinding = container.getService(Pathfinding.class);
         obstacleManager = table.getObstacleManager(); // Grâce au container, le champ ObstacleManager de votre table est déjà instancié !
         // Mais... pour commencer instancier vos variables à la main :
         Vec2 example = new Vec2(50, 40);
-        Vec2 example2=new Vec2(600,1600);
+        Vec2 example2= new Vec2(600,1600);
 
 
         // Whatever you want... Le debug pour le moment c'est mettre des 'System.out.println()' qui affiche ce que
@@ -69,17 +68,20 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
         Window window=new Window(table);
         Graphe graphe=new Graphe(table);
-        ArrayList<Vec2> path=new ArrayList<>();
-        //window.setNode(graphe.getNodes());
-        //window.setArete(graphe.getBoneslist());
-        window.setPath(path);
-        ArrayList<Vec2> clics=new ArrayList<>();
-        Astar pf = new Astar(log, config, table);
-        window.setPath(path);
-        //ArrayList<Vec2> clics = new ArrayList<>();
+        window.setArete(graphe.getBoneslist());
 
+
+
+       // Thread.sleep(20000);
+
+        Pathfinding pf = new Pathfinding(log, config, table);
+        ArrayList<Vec2> path =  new ArrayList<>();
+        window.setPath(path);
+        ArrayList<Vec2> clics = new ArrayList<>();
+        pf.initGraphe();
 
         while(true) {
+
             try {
                 clics = window.waitLRClic();
                 path = pf.findmyway(clics.get(0), clics.get(1));
@@ -96,25 +98,6 @@ public class JUnit_Pathfinding extends JUnit_Test{
             }
         }
 
-
-        // pathfinding.findmeaway(example,example2);
-
-
-        /*while(true){
-            clics=window.waitLRClic();
-            path=pathfinding.findmeaway(clics.get(0),clics.get(1));
-            window.setPath(path);
-        }*/
-
-
-
-
-
-
-
-
-
-        //Thread.sleep(600000);
     }
 }
 
