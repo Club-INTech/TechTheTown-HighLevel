@@ -13,6 +13,13 @@ import java.util.ArrayList;
  */
 public class PatternRecognition {
 
+    private static boolean debug = false;
+    private static boolean alreadyPrintedColorMatchingProba=false;
+
+    public static void setDebugPatternRecognition(boolean value){
+        debug=value;
+    }
+
     //////////////////////////////////// GLOBAL VARIABLES DEFINITION /////////////////////////////////////////////
 
     //Défini l'objet mediansList pour qu'il soit accessible sans être retourné
@@ -98,6 +105,8 @@ public class PatternRecognition {
      *  -------------------------
      *  |A                      |
      *  |                       |
+     *  |                       |
+     *  |                       |
      *  |                      B|
      *  -------------------------
      *  A de coordonnées (xstart, ystart)
@@ -120,7 +129,6 @@ public class PatternRecognition {
         java.util.Arrays.sort(listAllPoints);
         int len_list=listAllPoints.length;
         int medianValue=listAllPoints[len_list/2];
-        System.out.println(medianValue);
         return medianValue;
     }
 
@@ -144,6 +152,12 @@ public class PatternRecognition {
         int[] mediansList= new int[3];
         for (int i=0; i<3; i++){
             mediansList[i]=getMedianValue(colorMatrix, xstart, ystart, xend, yend, i);
+            if (debug==true) {
+                System.out.println("posRGB:"+i+" MedianValue:"+mediansList[i]);
+            }
+        }
+        if (debug==true){
+            System.out.println("");
         }
         return mediansList;
     }
@@ -191,11 +205,12 @@ public class PatternRecognition {
         double[] inverseDistances=computeInverseDistanceToAllColors(RGBToEvaluate);
         double[] normalizedInverseDistances = normalizeDoubleList(inverseDistances);
 
-        for (int i=0; i<normalizedInverseDistances.length; i++) {
-            System.out.println(normalizedInverseDistances[i]);
+        if (debug==true && alreadyPrintedColorMatchingProba==false) {
+            for (int i = 0; i < normalizedInverseDistances.length; i++) {
+                System.out.println("Proba corresponde a la couleur "+Colors.getNameFromID(i)+":\t"+normalizedInverseDistances[i]);
+            }
+            System.out.println("");
         }
-        System.out.println("");
-
         return normalizedInverseDistances;
     }
 
@@ -211,9 +226,21 @@ public class PatternRecognition {
         double finalProbability = 1;
         for (int i=0; i<3; i++){
             int colorID=pattern[i].getID();
+            if (debug==true && alreadyPrintedColorMatchingProba==false){
+                if (i==0) {
+                    System.out.println("First color :");
+                }
+                else if (i==1){
+                    System.out.println("Second color :");
+                }
+                else if (i==2){
+                    System.out.println("Third color :");
+                }
+            }
             double[] tempProbabilities=computeProbabilitiesColors(RGBs[i]);
             finalProbability*=tempProbabilities[colorID];
         }
+        alreadyPrintedColorMatchingProba=true;
         return finalProbability;
     }
 
@@ -243,8 +270,17 @@ public class PatternRecognition {
      * (correspondance entre les indices de la liste renvoyée et l'ID des patterns)
      */
     private static double[] encapsulationThreeFourFive(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends) {
+        if (debug==true){
+            System.out.println("First color");
+        }
         int[] medianFirstColor = getRGBMedianValues(colorMatrix, xstarts[0], ystarts[0], xends[0], yends[0]);
+        if (debug==true){
+            System.out.println("Second color");
+        }
         int[] medianSecondColor = getRGBMedianValues(colorMatrix, xstarts[1], ystarts[1], xends[1], yends[1]);
+        if (debug==true){
+            System.out.println("Third color");
+        }
         int[] medianThirdColor = getRGBMedianValues(colorMatrix, xstarts[2], ystarts[2], xends[2], yends[2]);
         int[][] mediansListTemp = {medianFirstColor, medianSecondColor, medianThirdColor};
         for (int i=0; i<3; i++) {
@@ -255,7 +291,7 @@ public class PatternRecognition {
         return normalizedList;
     }
 
-    //////////////////////////////////// DISCRIMINATION IN CASE OF CONFLICT /////////////////////////////////////////////
+    //////////////////////////////////// DISCRIMINATION /////////////////////////////////////////////
 
     /**Fonction permettant de déterminer les patterns qui sont viables au vu de la liste de probabilités
      * @param probabilitiesList liste normalisée de probabilités que le pattern pris en photo corresponde aux patterns prédéfinis
@@ -278,14 +314,97 @@ public class PatternRecognition {
         return selectionnedProbabilitiesIndice;
     }
 
+    //////////////////////////////////// DISCRIMINATION IN CASE OF CONFLICT /////////////////////////////////////////////
+    private static int[] convertHSBtoRGB(float hue, float saturation, float brightness){
+        int r = 0, g = 0, b = 0;
+        if (saturation == 0) {
+            r = g = b = (int) (brightness * 255.0f + 0.5f);
+        } else {
+            float h = (hue - (float) Math.floor(hue)) * 6.0f;
+            float f = h - (float) java.lang.Math.floor(h);
+            float p = brightness * (1.0f - saturation);
+            float q = brightness * (1.0f - saturation * f);
+            float t = brightness * (1.0f - (saturation * (1.0f - f)));
+            switch ((int) h) {
+                case 0:
+                    r = (int) (brightness * 255.0f + 0.5f);
+                    g = (int) (t * 255.0f + 0.5f);
+                    b = (int) (p * 255.0f + 0.5f);
+                    break;
+                case 1:
+                    r = (int) (q * 255.0f + 0.5f);
+                    g = (int) (brightness * 255.0f + 0.5f);
+                    b = (int) (p * 255.0f + 0.5f);
+                    break;
+                case 2:
+                    r = (int) (p * 255.0f + 0.5f);
+                    g = (int) (brightness * 255.0f + 0.5f);
+                    b = (int) (t * 255.0f + 0.5f);
+                    break;
+                case 3:
+                    r = (int) (p * 255.0f + 0.5f);
+                    g = (int) (q * 255.0f + 0.5f);
+                    b = (int) (brightness * 255.0f + 0.5f);
+                    break;
+                case 4:
+                    r = (int) (t * 255.0f + 0.5f);
+                    g = (int) (p * 255.0f + 0.5f);
+                    b = (int) (brightness * 255.0f + 0.5f);
+                    break;
+                case 5:
+                    r = (int) (brightness * 255.0f + 0.5f);
+                    g = (int) (p * 255.0f + 0.5f);
+                    b = (int) (q * 255.0f + 0.5f);
+                    break;
+            }
+        }
+        int[] RGB={r,g,b};
+        return RGB;
+    }
+
+    private static float[] convertRGBtoHSB(int R, int G, int B){
+        float[] HSB = new float[3];
+        Color.RGBtoHSB(R,G,B,HSB);
+        return HSB;
+    }
+
+    private static int[][][] lightUpSector(int[][][] colorMatrixLitUp, int xstart, int ystart, int xend, int yend){
+        for (int x=xstart; x<xend; x++){
+            for (int y=ystart; y<yend; y++){
+                    int[] RGB = colorMatrixLitUp[x][y];
+                    float[] HSB=convertRGBtoHSB(RGB[0],RGB[1],RGB[2]);
+
+                    //Improve saturation
+                    HSB[1]*=1.30;
+                    if (HSB[1]>1){
+                        HSB[1]=1;
+                    }
+                    //Improve brightness
+                    HSB[2]*=1.30;
+                    if (HSB[2]>1){
+                        HSB[2]=1;
+                    }
+                    RGB=convertHSBtoRGB(HSB[0],HSB[1],HSB[2]);
+                colorMatrixLitUp[x][y]=RGB;
+            }
+        }
+        return colorMatrixLitUp;
+    }
+
+    private static int[][][] lightUpColors(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends){
+        int[][][] colorMatrixLitUp=colorMatrix.clone();
+        for (int i=0; i<xstarts.length; i++){
+            colorMatrixLitUp=lightUpSector(colorMatrixLitUp, xstarts[i], ystarts[i], xends[i], yends[i]);
+        }
+        return colorMatrixLitUp;
+    }
+
     /**Discrimine le meilleur indice en cas de conflit de patterns (mode de discrimination : prend le plus probable)
      * @param probabilitiesList liste des probabilités qu'un pattern connu soit identifié
      * @param selectedProbabilitiesIndice id des patterns plausibles
      * @return indice (int) du pattern sélectionné
      */
-    private static int discriminateLastIndice(double[] probabilitiesList, ArrayList<Integer> selectedProbabilitiesIndice){
-        //Si des conflits de patterns se présentent, on peut calibrer la luminosité et le contraste de l'image en fonction de la zone au dessus des patterns sur la table de la coupe
-        //OU si conflits de patterns, on peut augmenter la luminosité et le contraste de +30 +30 (valeurs de gimp, en % ?)
+    private static int getMostProbablePattern(double[] probabilitiesList, ArrayList<Integer> selectedProbabilitiesIndice){
         double max=0;
         int indiceMax=0;
         for (int i=0; i<selectedProbabilitiesIndice.size(); i++){
@@ -301,17 +420,31 @@ public class PatternRecognition {
 
     /**Fontion permettant de déterminer le pattern identifié. Surtout utile en cas de conflits (et quand les fonctions de conflit auront un bon facteur discriminant)
      * @param probabilitiesList liste normalisées des probabilités de correspondance du pattern de la photo à un des patterns prédéfinis
-     * @param mediansList liste médiane (définie au début de la classe), contenant la médiane en R, G et B, pour chacune des 3 couleurs de la photo
+     * @param colorMatrix matrice de couleur réalisée à partir de la photo prise
+     * @param positionsColorsOnImage positions des couleurs à analyser sur la photo
      * @return renvoie l'indice finalement choisi
      */
-    private static int computeFinalIndice(double[] probabilitiesList, int[][]mediansList) {
+    private static int computeFinalIndice(double[] probabilitiesList, int[][][] colorMatrix, int[][] positionsColorsOnImage) {
         ArrayList selectionnedProbabilitiesIndice = selectBestProbabilities(probabilitiesList);
         System.out.println(selectionnedProbabilitiesIndice.toString());
         int finalIndice = 10;
-        if (selectionnedProbabilitiesIndice.size() > 1) {
-            finalIndice = discriminateLastIndice(probabilitiesList, selectionnedProbabilitiesIndice);
+        if (debug==true) {
+            for (int i = 0; i < 10; i++) {
+                System.out.println(probabilitiesList[i]);
+            }
+        }
+        if (selectionnedProbabilitiesIndice.size() == 1) {
+            finalIndice = getMostProbablePattern(probabilitiesList, selectionnedProbabilitiesIndice);
         } else {
-            finalIndice = (Integer) selectionnedProbabilitiesIndice.get(0);
+            System.out.println("////////////// Lighting up the color matrix ////////////////");
+            int[][][] colorMatrixLitUp=lightUpColors(colorMatrix,positionsColorsOnImage[0],positionsColorsOnImage[1],positionsColorsOnImage[2],positionsColorsOnImage[3]);
+            double[] probabilitiesListLitUp = encapsulationThreeFourFive(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
+            finalIndice = getMostProbablePattern(probabilitiesListLitUp, selectionnedProbabilitiesIndice);
+            if (debug==true) {
+                for (int i = 0; i < 10; i++) {
+                    System.out.println(probabilitiesListLitUp[i]);
+                }
+            }
         }
         return finalIndice;
     }
@@ -327,89 +460,25 @@ public class PatternRecognition {
     // 5) Déterminer le pattern ayant la probabilité la plus grande
     // 5.5) Si doute, détermination plus précise
 
-    //AVANCEMENT :
-    // 1) Fait et testé ( int[][][] colorMatrix <== createColorMatrix(String pathToImage) )
-    // 2) Non fait
-    // 2.5) Non fait
-    // 3) Fait ( int[] medianFirst/Second/ThirdColor <== getRGBMedianValues(int[][][] colorMatrix, int xstart, int ystart, int xend, int yend) )
-    // 4) Fait ( double[] probabilitiesList <== compareThreeRGBsToAllPatterns(int[][] RGBs) )
-    // 5) Fait ( String[] colorNames <== selectBestProbability(double[] probabilitiesList) )
-
     //GIMP TRAITEMENT :
-    //Ajout Luminosité/Contraste : indices 50/50
+    //Ajout Luminosité/Contraste : indices 30/30
 
     //////////////////////////////////// MAIN /////////////////////////////////////////////
 
     /**Méthode permettant de faire la reconnaissance de pattenrs
      * @return l'id du pattern (int de 0 à 9, bornes comprises)
      */
-    public static int analysePattern() {
-        //ZONE DE TEST DU MAIN
-
-        //String pathToImage = "Patterns.jpg";
-        //String pathToImage = "PatternsLitUp.jpg";
-
-        //Test positions for Patterns
-        //int[][] positionsColorsOnImage={{253,481,717},{840,835,846},{402,603,861},{991,999,993}}; //Pattern 0 WORKS NORMAL/LIT 0.97/0.99
-        //int[][] positionsColorsOnImage={{253,492,718},{1130,1130,1130},{400,633,862},{1275,1275,1275}}; //Pattern 1 WORKS LIT faux/0.94
-        //int[][] positionsColorsOnImage={{255,489,717},{1408,1408,1408},{398,629,852},{1553,1553,1553}}; //Pattern 2 WORKS LIT DISCRIMINATION
-        //int[][] positionsColorsOnImage={{254,490,714},{1687,1687,1687},{394,628,861},{1840,1840,1840}}; //Pattern 3 WORKS NORMAL/LIT /0.99
-        //int[][] positionsColorsOnImage={{254,490,714},{1975,1975,1975},{394,624,855},{2133,2133,2133}}; //Pattern 4 WORKS NORMAL/LIT /0.99
-        //int[][] positionsColorsOnImage={{972,1209,1449},{838,832,832},{1117,1354,1582},{987,987,987}}; //Pattern 5 WORKS LIT faux/0.93
-        //int[][] positionsColorsOnImage={{972,1210,1450},{1126,1126,1126},{1119,1350,1580},{1272,1272,1272}}; //Pattern 6 WORKS NORMAL/LIT /0.99
-        //int[][] positionsColorsOnImage={{979,1210,1450},{1409,1409,1409},{1119,1350,1580},{1558,1558,1558}}; //Pattern 7 WORKS NORMAL/LIT /0.99
-        //int[][] positionsColorsOnImage={{979,1210,1450},{1700,1700,1700},{1119,1350,1580},{1847,1847,1847}};// Pattern 8 WORKS NORMAL/LIT /0.88
-        //int[][] positionsColorsOnImage={{979,1210,1450},{1980,1980,1980},{1119,1350,1850},{2133,2133,2133}}; //Pattern 9 WORKS LIT faux/0.81
-
-        String pathToImage = "ImageRaspberryPi3+30+30.png";
-
-
-        //ImageRaspberryPi3.png
-        int[][] posVert={{1381,903},{1428,951}};
-        int[][] posNoir={{1313,687},{1357,758}};
-        int[][] posBleu={{1399,679},{1441,738}};
-        int[][] posJaune={{1464,866},{1509,918}};
-        int[][] posOrange={{1552,832},{1591,879}};
-
-
-        /*
-        //ImageRaspberryPi5.png
-        int[][] posVert={{966,405},{999,455}};
-        int[][] posNoir={{892,173},{933,265}};
-        int[][] posBleu={{967,202},{1004,277}};
-        int[][] posJaune={{1047,397},{1083,445}};
-        int[][] posOrange={{1125,386},{1155,421}};
-        */
-
-        //Changer les tests de patterns ICI
-        //Si on souhaite mettre le pattern YWGNBK, alors on écrit : pat={posYellow,posGreen,posBlack}
-        //(terminologie des noms des patterns dans la classe Patterns.java)
-        //int[][][] pat={posOrange,posNoir,posVert};
-        //int[][][] pat={posJaune,posNoir,posBleu};
-        //int[][][] pat={posBleu,posVert,posOrange};
-        //int[][][] pat={posJaune,posVert,posNoir};
-        //int[][][] pat={posNoir,posJaune,posOrange};
-        //int[][][] pat={posVert,posJaune,posBleu};
-        //int[][][] pat={posBleu,posOrange,posNoir};
-        //int[][][] pat={posVert,posOrange,posJaune};
-        //int[][][] pat={posNoir,posBleu,posVert};
-        int[][][] pat={posOrange,posBleu,posJaune};
-
-
-        //Ghetto, mais ne pas toucher tant qu'on est en test
-        int[][] positionsColorsOnImage={{pat[0][0][0],pat[1][0][0],pat[2][0][0]},{pat[0][0][1],pat[1][0][1],pat[2][0][1]},{pat[0][1][0],pat[1][1][0],pat[2][1][0]},{pat[0][1][1],pat[1][1][1],pat[2][1][1]}};
-
-
+    public static int analysePattern(String pathToImage, int[][][] pat, int[][] positionsColorsOnImage) {
         //CALIBRER SUR UNE IMAGE SOMBRE
         //PARTIE A NE PAS TOUCHER DU MAIN
         int[][][] colorMatrix = createColorMatrix(pathToImage);
         double[] probabilitiesList = encapsulationThreeFourFive(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
+        int finalIndice=computeFinalIndice(probabilitiesList,colorMatrix,positionsColorsOnImage);
 
-        int finalIndice=computeFinalIndice(probabilitiesList,mediansList);
-        for (int i = 0; i<10; i++) {
-            System.out.println(probabilitiesList[i]);
+        //Debug
+        if (debug==true){
+            System.out.println("Pattern recognized : "+finalIndice);
         }
-        System.out.println("Victory "+finalIndice);
         return finalIndice;
     }
 }
