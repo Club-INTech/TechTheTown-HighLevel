@@ -21,6 +21,8 @@
 
 package graphics;
 
+import pathfinder.Arete;
+import pathfinder.Noeud;
 import robot.Robot;
 import smartMath.Segment;
 import smartMath.Vec2;
@@ -36,6 +38,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * panneau sur lequel est dessine la table
@@ -49,8 +53,9 @@ public class TablePanel extends JPanel
 
 	/** Champs pour l'interface Pathfinding : n'ayant pas de robot instancié, on récupère en brut les données */
 	private ArrayList<Vec2> path;
-	private ArrayList<Segment> aretes;
+	private ArrayList<Arete> aretes;
 	private ArrayList<Vec2> clics;
+	private ArrayList<Noeud> nodes;
 	public static boolean showGraph = false;
 
 	/** Table & robot */
@@ -69,8 +74,8 @@ public class TablePanel extends JPanel
 	private Color unconfirmedColor = new Color(220, 220, 50, 100);
 	private Color robotColor = new Color(50, 180, 50, 100);
 	private Color teamColor = new Color(50, 80, 50, 220);
-	private Color pathColor = new Color(60, 0, 80);
-	private Color graphColor = new Color(50, 80, 120, 200);
+	private Color pathColor = new Color(200, 0, 80);
+	private Color graphColor = new Color(50, 80, 120, 50);
 
 	/** Construit un panel pour du l'interface full
 	 * @param table
@@ -81,6 +86,7 @@ public class TablePanel extends JPanel
 		path = new ArrayList<>();
 		aretes = new ArrayList<>();
 		clics = new ArrayList<>();
+		nodes=new ArrayList<>();
 		this.table = table;
 		this.robot = robot;
 
@@ -99,6 +105,7 @@ public class TablePanel extends JPanel
 		path = new ArrayList<>();
 		aretes = new ArrayList<>();
 		clics = new ArrayList<>();
+		nodes=new ArrayList<>();
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
@@ -118,6 +125,8 @@ public class TablePanel extends JPanel
 		Vec2 upLeftCorner;
 		Vec2 pathNode1;
 		Vec2 pathNode2;
+		Vec2 pathNode3;
+
 
 		// Background
 		graphics.drawImage(tableBackground,0, 0, 900, 600, this);
@@ -190,19 +199,26 @@ public class TablePanel extends JPanel
 		// Le graphe
 		if(showGraph){
 			graphics.setColor(graphColor);
-			for (Segment ridge : aretes){
-				pathNode1 = changeRefToDisplay(ridge.getA());
-				pathNode2 = changeRefToDisplay(ridge.getB());
+			for(Noeud noeud : nodes){
+				pathNode3=changeRefToDisplay(noeud.getPosition());
+				graphics.fillOval(pathNode3.getX()-4,pathNode3.getY()-4,8,8);
+
+			}
+			for (Arete ridge : aretes){
+				pathNode1 = changeRefToDisplay(ridge.noeud1.getPosition());
+				pathNode2 = changeRefToDisplay(ridge.noeud2.getPosition());
 				graphics.drawLine(pathNode1.getX(), pathNode1.getY(), pathNode2.getX(), pathNode2.getY());
 				graphics.fillOval(pathNode1.getX() - 4, pathNode1.getY() - 4, 8, 8);
 				graphics.fillOval(pathNode2.getX() - 4, pathNode2.getY() - 4, 8, 8);
 			}
+
 		}
 
 		// Print les clics et leur position
 		for (Vec2 clic : clics){
 			Vec2 clicDisplay = changeRefToDisplay(clic);
 			graphics.fillOval(clicDisplay.getX() - 4, clicDisplay.getY() - 4, 8, 8);
+			graphics.drawString(clic.toStringInterface(), clicDisplay.getX() - 30, clicDisplay.getY() + 20);
 		}
 
 		// Infos diverses
@@ -215,7 +231,7 @@ public class TablePanel extends JPanel
 	 * @param vec
 	 */
 	private Vec2 changeRefToDisplay(Vec2 vec){
-		return new Vec2(new Integer((int)((vec.getX() + 1500)*0.3)),new Integer((int)((2000 - vec.getY())*0.3)));
+		return new Vec2(new Integer((int)((vec.getX() + 1500)*0.3)),new Integer((int)((2000 - vec.getY())*0.3)-5));
 	}
 
 	/** Setters */
@@ -224,13 +240,18 @@ public class TablePanel extends JPanel
 		removeAll();
 		revalidate();
 	}
-	public void setAretes(ArrayList<Segment> aretes) {
+	public void setAretes(ArrayList<Arete> aretes) {
 		this.aretes = aretes;
 		removeAll();
 		revalidate();
 	}
 	public void setClics(ArrayList<Vec2> clics) {
 		this.clics = clics;
+		removeAll();
+		revalidate();
+	}
+	public void setNodes(ArrayList<Noeud> nodes){
+		this.nodes=nodes;
 		removeAll();
 		revalidate();
 	}

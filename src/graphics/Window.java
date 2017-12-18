@@ -21,6 +21,9 @@
 
 package graphics;
 
+import org.jfree.chart.axis.SegmentedTimeline;
+import pathfinder.Arete;
+import pathfinder.Noeud;
 import scripts.ScriptManager;
 import smartMath.Segment;
 import smartMath.Vec2;
@@ -30,7 +33,7 @@ import tests.container.A;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Interface graphique pour faciliter le debugage HL
@@ -64,7 +67,7 @@ public class Window extends JFrame
 	    this.setLocationRelativeTo(null);
 	    this.setResizable(false);
 	    this.setBackground(backgroundColor);
-	    
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    tablePanel = new TablePanel(table, state.robot);
 	    this.setContentPane(tablePanel);
 	    
@@ -88,7 +91,8 @@ public class Window extends JFrame
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setBackground(backgroundColor);
-
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		tablePanel = new TablePanel(table);
 		this.setContentPane(tablePanel);
 
@@ -115,12 +119,16 @@ public class Window extends JFrame
 	}
 
 	/** Permet d'afficher les aretes/le chemin */
-	public void setArete(ArrayList<Segment> aretes){
+	public void setArete(ArrayList<Arete> aretes){
 		tablePanel.setAretes(aretes);
 		repaint();
 	}
 	public void setPath(ArrayList<Vec2> path){
 		tablePanel.setPath(path);
+		repaint();
+	}
+	public void setNode(ArrayList<Noeud> nodes){
+		tablePanel.setNodes(nodes);
 		repaint();
 	}
 

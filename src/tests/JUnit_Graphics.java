@@ -21,10 +21,12 @@ package tests;
 
 import graphics.Window;
 import org.junit.Test;
+import pathfinder.Arete;
 import smartMath.Segment;
 import smartMath.Vec2;
 import table.Table;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class JUnit_Graphics extends JUnit_Test
 {
@@ -38,6 +40,7 @@ public class JUnit_Graphics extends JUnit_Test
 	@Test
 	public void testWinTable() throws Exception {
 		table = container.getService(Table.class);
+
 		ArrayList<Vec2> clics = new ArrayList<>();
 
 		win = new Window(table);

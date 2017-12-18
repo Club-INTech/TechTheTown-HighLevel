@@ -105,5 +105,9 @@ public class Table implements Service
 		symetry = (config.getString(ConfigInfoRobot.COULEUR) == "orange");
 		// TODO update config
 	}
+
+	public Config getConfig() {
+		return config;
+	}
 }
 

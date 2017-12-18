@@ -19,6 +19,8 @@
 
 package enums;
 
+//import scripts.TakeCubes;
+
 /**
  * Protocole des actionneurs.
  * contient pour chaque actionneur le nom des consignes java, la chaine à transmetttre à la carte actionneurs et la durée que cette action prend
@@ -65,7 +67,12 @@ public enum ActuatorOrder implements MotionOrder
 	INITIALISE_HOOK("nh"),
 	ENABLE_HOOK("eh"),
 	DISABLE_HOOK("dh"),
-
+	BAISSE_LE_BRAS("blb"),
+	ACTIVE_LA_POMPE("alp"),
+	RELEVE_LE_BRAS("rlb"),
+	DESACTIVE_LA_POMPE("dlp"),
+	FERME_LA_PORTE("flp"),
+	OUVRE_LA_PORTE("olp"),
 /*			 _____________________
  * 		   *|                     |*
  *		   *|   ASSERVISSEMENTS   |*
@@ -126,9 +133,9 @@ public enum ActuatorOrder implements MotionOrder
  *		  *|					|*
  * 		  *|	 ACTIONNEURS    |*
  * 		  *|____________________|*
+ *
  */
 	// TODO : Ajouter les ordres & ajuster les WaitForCompletion (durée des ordres)
-
 	/**
 	 *  chaine de caractère envoyée au travers de la liaison série
 	 */
