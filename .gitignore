@@ -103,6 +103,7 @@ proguard/
 captures/
 
 # Intellij
+.iml
 .idea/workspace.xml
 
 # Keystore files
@@ -182,7 +183,6 @@ flycheck_*.el
 
 # IntelliJ
 /out/
-*.iml
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
