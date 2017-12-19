@@ -24,7 +24,7 @@ public class DeposeCubes extends AbstractScript{
     @Override
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
         // d est la distance avec laquelle on recule (mesures à effectuer)
-        int d=120;
+        int d=60;
         stateToConsider.robot.turn(-Math.PI/2);
         if (versionToExecute==0 ||versionToExecute==1 || versionToExecute==2 ||versionToExecute==3
                 || versionToExecute==4 ||versionToExecute==5) {
