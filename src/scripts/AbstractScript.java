@@ -172,9 +172,6 @@ public abstract class AbstractScript implements Service
 	 * @see container.Service#updateConfig()
 	 */
 
-	public static Config getConfig() {
-		return config;
-	}
 
 	public void updateConfig() {
 	}
