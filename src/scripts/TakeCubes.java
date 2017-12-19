@@ -80,6 +80,7 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+            //prendre un cube
             stateToConsider.robot.moveLengthwise(-l);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
@@ -115,6 +116,7 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.moveLengthwise(-l);
             stateToConsider.robot.turnRelatively(Math.PI/2);
             stateToConsider.robot.moveLengthwise(l);
+            //prendre un cube
             stateToConsider.robot.turnRelatively(-Math.PI/2);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
@@ -146,8 +148,12 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
-            // quatrième cube ?
-
+            stateToConsider.robot.moveLengthwise(l);
+            //prendre un cube
+            stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
         }
         /**(jaune,vert,noir)*/
         if (versionToExecute==30 ||versionToExecute==31 || versionToExecute==32 ||versionToExecute==33
