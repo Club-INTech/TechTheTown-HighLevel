@@ -1,5 +1,6 @@
 package scripts;
 
+import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import exceptions.BadVersionException;
 import exceptions.ExecuteException;
@@ -28,6 +29,7 @@ public class DeposeCubes extends AbstractScript{
         stateToConsider.robot.turn(-Math.PI/2);
         if (versionToExecute==0 ||versionToExecute==1 || versionToExecute==2 ||versionToExecute==3
                 || versionToExecute==4 ||versionToExecute==5) {
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE,true);
             stateToConsider.robot.moveLengthwise(-d);
         }
     }
