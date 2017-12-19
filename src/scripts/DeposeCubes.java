@@ -1,5 +1,6 @@
 package scripts;
 
+import enums.ConfigInfoRobot;
 import exceptions.BadVersionException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.UnableToMoveException;
@@ -31,41 +32,44 @@ public class DeposeCubes extends AbstractScript{
         }
     }
     public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
-        /**mesures à effectuer pour initialiser xEntry et yEntry*/
+        int r = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+        int cte=150;
+        int dimporte=60;
+        /**mesures à effectuer pour yEntry*/
             if (version == 0) {
-                int xEntry=0;
-                int yEntry=0;
+                int xEntry=630;
+                int yEntry=r+cte+dimporte;
                 Vec2 position = new Vec2(xEntry, yEntry);
                 return new Circle(position);
             }
             else {
                 if (version == 1) {
-                    int xEntry=0 ;
-                    int yEntry=0 ;
+                    int xEntry=698 ;
+                    int yEntry=r+cte+dimporte ;
                     Vec2 position = new Vec2(xEntry, yEntry);
                     return new Circle(position);
                 } else {
                     if (version == 2) {
-                        int xEntry=0 ;
-                        int yEntry=0 ;
+                        int xEntry=766 ;
+                        int yEntry=r+cte+dimporte ;
                         Vec2 position = new Vec2(xEntry, yEntry);
                         return new Circle(position);
                     } else {
                         if (version == 3) {
-                            int xEntry=0 ;
-                            int yEntry=0 ;
+                            int xEntry=834 ;
+                            int yEntry=r+cte+dimporte;
                             Vec2 position = new Vec2(xEntry, yEntry);
                             return new Circle(position);
                         } else {
                             if (version == 4) {
-                                int xEntry=0 ;
-                                int yEntry=0 ;
+                                int xEntry=902 ;
+                                int yEntry=r+cte+dimporte ;
                                 Vec2 position = new Vec2(xEntry, yEntry);
                                 return new Circle(position);
                             } else {
                                 if (version == 5) {
-                                    int xEntry=0 ;
-                                    int yEntry=0 ;
+                                    int xEntry=970 ;
+                                    int yEntry=r+cte+dimporte ;
                                     Vec2 position = new Vec2(xEntry, yEntry);
                                     return new Circle(position);
                                 }
