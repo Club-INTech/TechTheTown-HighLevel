@@ -80,7 +80,12 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
-            //le quatrième cube?
+            stateToConsider.robot.moveLengthwise(-l);
+            stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+
         }
         /**ici c'est la version (jaune, noir,bleu)*/
         if (versionToExecute==10 ||versionToExecute==11 || versionToExecute==12 ||versionToExecute==13
@@ -326,44 +331,43 @@ public class TakeCubes extends AbstractScript {
     }
 
     /**
-     * attention à l'appel de cette méthode, get la bonne version : ici version c'est une position d'entrée
-     * parmi les 6 possibles
+     * les cubes sont numérotés de la façon suivant le sens trigonométrique
      */
     @Override
-    public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
+    public Circle entryPosition(int numtasdecubeaprendre, int ray, Vec2 robotPosition) throws BadVersionException {
         int d = 160; //distance entre le robot et l'amas de cubes pour faire descendre le bras
         int rayonRobot = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-            if (version == 0) {
+            if (numtasdecubeaprendre== 0) {
                 int xEntry = 650;
                 int yEntry = 540;
                 Vec2 position = new Vec2(xEntry, yEntry);
                 return new Circle(position);
             } else {
-                if (version == 1) {
+                if (numtasdecubeaprendre== 1) {
                     int xEntry = 650 - (rayonRobot + d);
                     int yEntry = 540;
                     Vec2 position = new Vec2(xEntry, yEntry);
                     return new Circle(position);
                 } else {
-                    if (version == 2) {
+                    if (numtasdecubeaprendre == 2) {
                         int xEntry = 1200 - (rayonRobot + d);
                         int yEntry = 1190;
                         Vec2 position = new Vec2(xEntry, yEntry);
                         return new Circle(position);
                     } else {
-                        if (version == 3) {
+                        if (numtasdecubeaprendre == 3) {
                             int xEntry = 400 - (rayonRobot + d);
                             int yEntry = 1500;
                             Vec2 position = new Vec2(xEntry, yEntry);
                             return new Circle(position);
                         } else {
-                            if (version == 4) {
+                            if (numtasdecubeaprendre == 4) {
                                 int xEntry = -1200 + (rayonRobot + d);
                                 int yEntry = 1190;
                                 Vec2 position = new Vec2(xEntry, yEntry);
                                 return new Circle(position);
                             } else {
-                                if (version == 5) {
+                                if (numtasdecubeaprendre == 5) {
                                     int xEntry = -400 + (rayonRobot + d);
                                     int yEntry = 1500;
                                     Vec2 position = new Vec2(xEntry, yEntry);
