@@ -377,7 +377,13 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
-            //4 ème cube ?
+            stateToConsider.robot.moveLengthwise(l);
+            stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+
+
         }
 
     }
