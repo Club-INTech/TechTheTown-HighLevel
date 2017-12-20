@@ -82,6 +82,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
         ArrayList<Vec2> clics = new ArrayList<>();
         pf.initGraphe();
 
+
         while(true) {
 
             try {
