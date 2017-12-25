@@ -19,7 +19,9 @@ public class DeposeCubes extends AbstractScript{
         /**6  versions pour les 6 blocs de cubes :
          *  quand on va prendre 4 cubes (pour l'instant 4 le 5 ème à venir ^^) , ilfaudra déposer la
          *  tour construite à partir d'un bloc dans la zone de construction, comme on est très forts,
-         *  on va prendre les six, et du coup, six positions d'entrées donc six versions*/
+         *  on va prendre les six, et du coup, six positions d'entrées donc six versions, pour les
+         *  trois premières verisons, on ne fait qu'ouvrir la porte et reculer, pour les trois autres
+         *  versions, il faudra pousser la tour de cubes, et puis ouvrir la porte et reculer*/
         versions = new Integer[]{0,1,2,3,4,5};
     }
     @Override

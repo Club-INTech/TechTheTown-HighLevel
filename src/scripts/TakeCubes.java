@@ -441,6 +441,7 @@ public class TakeCubes extends AbstractScript {
     }
 
 
+
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
         return 0;
