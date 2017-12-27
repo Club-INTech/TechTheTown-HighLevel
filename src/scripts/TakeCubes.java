@@ -387,6 +387,12 @@ public class TakeCubes extends AbstractScript {
         }
 
     }
+    public void takethiscube(GameState stateToConsider){
+        stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
+        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
+        stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
+        stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+    }
 
     /**
      * les cubes sont numérotés de la façon suivant le sens trigonométrique

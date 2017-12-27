@@ -87,6 +87,7 @@ public class DeposeCubes extends AbstractScript{
                 }
             }
     }
+
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
         return 0;
