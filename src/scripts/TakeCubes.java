@@ -225,35 +225,18 @@ public class TakeCubes extends AbstractScript {
         /**(orange,bleu,jaune)*/
         if (versionToExecute==90 ||versionToExecute==91 || versionToExecute==92 ||versionToExecute==93
                 || versionToExecute==94 ||versionToExecute==95){
-            //envoyer l'ordre de prendre un cube
-            stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
-            stateToConsider.robot.turnRelatively(Math.PI/2);
+            //prend le cube orange
+            takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(l);
-            stateToConsider.robot.turnRelatively(-Math.PI/2);
+            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            //prend le cube bleu
+            takethiscube(stateToConsider);
+            stateToConsider.robot.turnRelatively(Math.PI/12);
+            //prend le cube jaune
+            takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(l);
-            //envoyer l'ordre de prendre un cube
-            stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
-            stateToConsider.robot.turnRelatively(-Math.PI/2);
-            stateToConsider.robot.moveLengthwise(l);
-            stateToConsider.robot.turnRelatively(Math.PI/2);
-            //envoyer l'ordre de prendre un cube
-            stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
-            stateToConsider.robot.moveLengthwise(l);
-            stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
-
-
+            //prend le cube vert
+            takethiscube(stateToConsider);
         }
 
     }
