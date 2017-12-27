@@ -67,14 +67,15 @@ public enum ActuatorOrder implements MotionOrder
 	INITIALISE_HOOK("nh"),
 	ENABLE_HOOK("eh"),
 	DISABLE_HOOK("dh"),
-	BAISSE_LE_BRAS("blb"),
-	ACTIVE_LA_POMPE("alp"),
-	RELEVE_LE_BRAS("rlb"),
-	DESACTIVE_LA_POMPE("dlp"),
-	FERME_LA_PORTE("flp"),
-	OUVRE_LA_PORTE("olp"),
-	ACTIVE_LE_BRAS_LATERAL("albl"),
 
+	BAISSE_LE_BRAS("blb",1500),
+	ACTIVE_LA_POMPE("alp",100),
+	RELEVE_LE_BRAS("rlb",1500),
+	DESACTIVE_LA_POMPE("dlp",100),
+	FERME_LA_PORTE("flp",1000),
+	OUVRE_LA_PORTE("olp"),
+	TILT_LA_PORTE("tlp"),
+	ACTIVE_LE_BRAS_LATERAL("albl"),
 
 /*			 _____________________
  * 		   *|                     |*
