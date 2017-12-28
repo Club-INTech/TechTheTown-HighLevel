@@ -18,11 +18,12 @@ public class DeposeCubes extends AbstractScript{
     public DeposeCubes(Config config, Log log, HookFactory hookFactory){
         super(config, log, hookFactory);
         /**6  versions pour les 6 blocs de cubes :
-         *  quand on va prendre 4 cubes (pour l'instant 4 le 5 ème à venir ^^) , ilfaudra déposer la
+         *  quand on va prendre 4 cubes (pour l'instant 4 le 5 ème à venir ^^) , il faudra déposer la
          *  tour construite à partir d'un bloc dans la zone de construction, comme on est très forts,
-         *  on va prendre les six, et du coup, six positions d'entrées donc six versions, pour les
-         *  trois premières verisons, on ne fait qu'ouvrir la porte et reculer, pour les trois autres
-         *  versions, il faudra pousser la tour de cubes, et puis ouvrir la porte et reculer*/
+         *  on va prendre les six, pour les trois premières versions, on ne fait qu'ouvrir la porte
+         *  et reculer, pour les trois autres versions, on se positionne aux mêmes positions d'entrée
+         *  que les trois premières car la zone de construction est petite, il faudra donc pousser
+         *  la tour de cubes, puis ouvrir la porte et finalement reculer*/
         versions = new Integer[]{0,1,2,3,4,5};
     }
     @Override
