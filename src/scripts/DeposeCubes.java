@@ -27,7 +27,7 @@ public class DeposeCubes extends AbstractScript{
     @Override
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
         // d est la distance avec laquelle on recule (mesures à effectuer)
-        int d=60;
+        int d=950;
         stateToConsider.robot.turn(-Math.PI/2);
         if (versionToExecute==0 ||versionToExecute==1 || versionToExecute==2 ||versionToExecute==3
                 || versionToExecute==4 ||versionToExecute==5) {
@@ -37,56 +37,38 @@ public class DeposeCubes extends AbstractScript{
     }
     public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
         int r = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        int cte=150;
-        int dimporte=60;
-        /**mesures à effectuer pour yEntry*/
-            if (version == 0) {
+        int yconstructionzone=150;
+        int d=20; //distance à mesurer pour pénétrer dans la zone de construction (c'est plus beau)
+        /**mesures à effectuer pour yconstructionzone*/
+            if (version == 0 || version==3)  {
                 int xEntry=630;
-                int yEntry=r+cte+dimporte;
+                int yEntry=r+yconstructionzone+d;
                 Vec2 position = new Vec2(xEntry, yEntry);
                 return new Circle(position);
             }
             else {
-                if (version == 1) {
-                    int xEntry=698 ;
-                    int yEntry=r+cte+dimporte ;
+                if (version == 1 || version==4) {
+                    int xEntry=630+r ;
+                    int yEntry=r+yconstructionzone+d ;
                     Vec2 position = new Vec2(xEntry, yEntry);
                     return new Circle(position);
                 } else {
-                    if (version == 2) {
-                        int xEntry=766 ;
-                        int yEntry=r+cte+dimporte ;
+                    if (version == 2 || version==5) {
+                        int xEntry=630+2*r;
+                        int yEntry=r+yconstructionzone+d ;
                         Vec2 position = new Vec2(xEntry, yEntry);
                         return new Circle(position);
-                    } else {
-                        if (version == 3) {
-                            int xEntry=834 ;
-                            int yEntry=r+cte+dimporte;
-                            Vec2 position = new Vec2(xEntry, yEntry);
-                            return new Circle(position);
-                        } else {
-                            if (version == 4) {
-                                int xEntry=902 ;
-                                int yEntry=r+cte+dimporte ;
-                                Vec2 position = new Vec2(xEntry, yEntry);
-                                return new Circle(position);
-                            } else {
-                                if (version == 5) {
-                                    int xEntry=970 ;
-                                    int yEntry=r+cte+dimporte ;
-                                    Vec2 position = new Vec2(xEntry, yEntry);
-                                    return new Circle(position);
-                                }
-                                else{
-                                    log.critical("Version invalide");
-                                    throw new BadVersionException();
-                                }
-                            }
-                        }
+                    }
+                    else{
+                        log.critical("Version invalide");
+                        throw new BadVersionException();
                     }
                 }
             }
     }
+
+
+
 
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
