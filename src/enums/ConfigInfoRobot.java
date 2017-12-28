@@ -53,7 +53,7 @@ public enum ConfigInfoRobot implements ConfigInfo
 
 
     /**Les cubes*/
-    LONGUEUR_CUBE (99),
+    LONGUEUR_CUBE (58),
 
     /** Paramètres obstacles */
     PEREMP_OBST(5000),

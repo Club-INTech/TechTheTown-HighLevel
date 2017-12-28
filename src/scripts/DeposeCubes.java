@@ -2,6 +2,7 @@ package scripts;
 
 import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
+import enums.Speed;
 import exceptions.BadVersionException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.UnableToMoveException;
@@ -26,13 +27,28 @@ public class DeposeCubes extends AbstractScript{
     }
     @Override
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
-        // d est la distance avec laquelle on recule (mesures à effectuer)
+        /* d est la distance avec laquelle on recule : on recule d'une distance au moins égale à la dimension
+        de la porte pour pouvoir la fermer à nouveau
+         */
         int d=950;
+        int d2=20; //c'est la même distance que d dans entryPosition
         stateToConsider.robot.turn(-Math.PI/2);
-        if (versionToExecute==0 ||versionToExecute==1 || versionToExecute==2 ||versionToExecute==3
-                || versionToExecute==4 ||versionToExecute==5) {
+        if (versionToExecute==0 ||versionToExecute==1 || versionToExecute==2){
             stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE,true);
-            stateToConsider.robot.moveLengthwise(-d);
+            stateToConsider.robot.moveLengthwise(-d-d2);
+        }
+        /*il s'agit des cubes pris de la zone adverse, comme la zone de construction est assez petite, on
+        devrait plutot pousser les tours déjà faites
+         */
+        else{
+            int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
+            stateToConsider.robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
+            stateToConsider.robot.moveLengthwise(l);//on pousse la tour déjà faite
+            stateToConsider.robot.moveLengthwise(-l);//on retourne à notre position d'entrée
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE,true);
+            stateToConsider.robot.moveLengthwise(-d-d2);
+
+
         }
     }
     public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
