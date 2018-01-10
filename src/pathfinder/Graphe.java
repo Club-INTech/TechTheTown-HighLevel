@@ -41,7 +41,7 @@ public class Graphe implements Service{
      là où il y'a des obstacles
      */
 
-    public Graphe(Table table){
+    public Graphe(Table table, Config config, Log log){
         this.listCircu=new ArrayList<>();
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu=new ArrayList<>();
@@ -53,6 +53,8 @@ public class Graphe implements Service{
         this.boneslist=new ArrayList<>();
         this.boneslist=createAretes(nodes);
         long time2=System.currentTimeMillis()-time1;
+        this.log = log;
+        this.config = config;
         System.out.println("Time to create graph (ms): "+time2);
 
     }
@@ -62,8 +64,8 @@ public class Graphe implements Service{
      */
 
 
-    public static boolean nodeInObstacle(Noeud noeud, Graphe graphe) {
-        int mRobotRadius= 210; // graphe.config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+    public boolean nodeInObstacle(Noeud noeud, Graphe graphe) {
+        int mRobotRadius = this.config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         int n = graphe.listCircu.size();
         ArrayList<ObstacleRectangular> listRectangu2 = new ArrayList<>();
         Vec2 position0 = new Vec2();

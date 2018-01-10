@@ -40,7 +40,7 @@ public class Pathfinding implements Service {
         this.log = log;
         this.config = config;
         this.table = table;
-        graphe = new Graphe(table);
+        graphe = new Graphe(table, config, log);
         obstacleManager=table.getObstacleManager();
     }
 

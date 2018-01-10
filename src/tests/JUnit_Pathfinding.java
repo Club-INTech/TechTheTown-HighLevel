@@ -61,15 +61,15 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
         // Whatever you want... Le debug pour le moment c'est mettre des 'System.out.println()' qui affiche ce que
         // vous voulez dans la console lors de l'execution; par exemple :
-        System.out.println("\nAh ! : " + example);
+//        System.out.println("\nAh ! : " + example);
         // ou (petite subtilité : entryposition est un champ static, lié à la classe Table; c'est pour cela que l'on y accède via Table.entryposition)
-        System.out.println("Position de départ du robot : " + Table.entryPosition);
+//        System.out.println("Position de départ du robot : " + Table.entryPosition);
         // Mais la facon "normale" fonctionne aussi :
-        System.out.println("Position de départ : " + table.entryPosition);
+  //      System.out.println("Position de départ : " + table.entryPosition);
 
 
         Window window=new Window(table);
-        Graphe graphe=new Graphe(table);
+        Graphe graphe=new Graphe(table, config, log);
         window.setArete(graphe.getBoneslist());
 
 
