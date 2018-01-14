@@ -191,6 +191,9 @@ public class Locomotion implements Service
     /** UnableToMove Reason */
     private ConcurrentLinkedQueue<String> unableToMoveEvent;
 
+    /** Le robot bouge */
+    private Boolean isMoving;
+
     /**
      * Constructeur de Locomotion
      * @param log le fichier de log
@@ -204,8 +207,9 @@ public class Locomotion implements Service
         this.config = config;
         this.ethWrapper = ethWrapper;
         this.table = table;
-        USvalues = new ArrayList<Integer>(){{for(int i=0;i<4;i++)add(0);}};
-        unableToMoveEvent = thEvent.getUnableToMoveEvent();
+        this.USvalues = new ArrayList<Integer>(){{for(int i=0;i<4;i++)add(0);}};
+        this.unableToMoveEvent = thEvent.getUnableToMoveEvent();
+        this.isMoving = thEvent.getIsMovingEvent();
         updateConfig();
     }
 
@@ -256,6 +260,10 @@ public class Locomotion implements Service
 
     public void moveToPoint(Vec2 pointVise, boolean expectedWallImpact, boolean mustDetect) throws UnableToMoveException
     {
+        synchronized (this.isMoving) {
+            this.isMoving = true;
+        }
+
         Vec2 move = pointVise.minusNewVector(highLevelPosition);
         int moveR = (int) move.getR();
         double moveA = move.getA();
@@ -300,6 +308,9 @@ public class Locomotion implements Service
      */
     public void turn(double angle, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException
     {
+        synchronized (this.isMoving) {
+            this.isMoving = true;
+        }
         log.debug("Tourner de "+Double.toString(angle));
 
         actualRetriesIfBlocked=0;
@@ -327,6 +338,9 @@ public class Locomotion implements Service
      */
     public void moveLengthwise(int distance, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException
     {
+        synchronized (this.isMoving) {
+            this.isMoving = true;
+        }
         log.debug("Avancer de "+Integer.toString(distance));
 
         actualRetriesIfBlocked=0;
@@ -521,8 +535,7 @@ public class Locomotion implements Service
                 e.printStackTrace();
             }
         }
-        while(!isMotionEnded())
-                ;
+        while(isMoving);
     }
 
     /**

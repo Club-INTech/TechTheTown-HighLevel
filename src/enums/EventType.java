@@ -27,6 +27,7 @@ package enums;
 public enum EventType {
 
     BLOCKED("Ah!"),
+    STOPPEDMOVING("stopped moving"),
     ;
 
     /** Id de l'event, qui diffère en fonction du type d'event */

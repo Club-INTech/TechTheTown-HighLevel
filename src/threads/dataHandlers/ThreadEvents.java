@@ -26,6 +26,7 @@ import utils.Log;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+
 /**
  *  Gestionnaire des events LL
  *  @author discord, rem
@@ -41,6 +42,9 @@ public class ThreadEvents extends AbstractThread
 
     /** Buffer d'envoie des events */
     private ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
+
+    /** Le robot bouge */
+    private Boolean isMoving;
 
     /**
      *
@@ -71,6 +75,13 @@ public class ThreadEvents extends AbstractThread
                         log.critical("Event du LL : UnableToMove");
                         unableToMoveEvent.add(message[1]);
                     }
+                    else if (message[0].equals(EventType.STOPPEDMOVING.getEventId())){
+                        log.debug("Arret du robot");
+                        synchronized (this.isMoving) {
+                            this.isMoving = false;
+                        }
+
+                    }
                 } else {
                     Thread.sleep(100);
                 }
@@ -83,4 +94,6 @@ public class ThreadEvents extends AbstractThread
     public ConcurrentLinkedQueue<String> getUnableToMoveEvent() {
         return unableToMoveEvent;
     }
+    public boolean getIsMovingEvent() { return isMoving; }
+    public void setIsMoving(boolean value){ this.isMoving=value; }
 }
