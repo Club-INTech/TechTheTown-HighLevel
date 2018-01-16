@@ -105,6 +105,8 @@ public abstract class AbstractScript implements Service
 	 */
 	public abstract void execute(int versionToExecute, GameState actualState) throws UnableToMoveException, ExecuteException, BlockedActuatorException;
 
+	public void execute(int versionToExecute, GameState actualState, boolean shift, Long alpha) throws UnableToMoveException, ExecuteException, BlockedActuatorException{};
+
 	/**
 	 * Renvoie le score que peut fournir une version d'un script.
 	 * Si l'exécution du script ne rapporte aucun point étant donné le gamestate fourni, renvoie 0.
