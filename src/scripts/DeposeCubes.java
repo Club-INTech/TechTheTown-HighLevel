@@ -23,7 +23,7 @@ public class DeposeCubes extends AbstractScript{
          *  on va prendre les six, pour les trois premières versions, on ne fait qu'ouvrir la porte
          *  et reculer, pour les trois autres versions, on se positionne aux mêmes positions d'entrée
          *  que les trois premières car la zone de construction est petite, il faudra donc pousser
-         *  la tour de cubes, puis ouvrir la porte et finalement reculer*/
+         *  la tour de cubes, puis ouvrir la porte et finalement git pyreculer*/
         versions = new Integer[]{0,1,2,3,4,5};
     }
     @Override

@@ -52,7 +52,7 @@ public class TakeCubes extends AbstractScript {
 
     //méthode prenant en compte les dépassements
 
-    public void execute(int versionToExecute, GameState stateToConsider, Boolean shift, Long alpha) throws ExecuteException, UnableToMoveException {
+    public void execute(int versionToExecute, GameState stateToConsider, Long alpha) throws ExecuteException, UnableToMoveException {
         stateToConsider.robot.turn(Math.PI);
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE,true);
         int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
