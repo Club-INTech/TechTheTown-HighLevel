@@ -52,11 +52,12 @@ public class TakeCubes extends AbstractScript {
 
     //méthode prenant en compte les dépassements
 
-    public void execute(int versionToExecute, GameState stateToConsider, Long alpha) throws ExecuteException, UnableToMoveException {
+    public void execute(int versionToExecute, GameState stateToConsider, double alpha, double beta) throws ExecuteException, UnableToMoveException {
         stateToConsider.robot.turn(Math.PI);
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE,true);
         int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
-        int d=Math.toIntExact(alpha);
+        int d=-(int)Math.round(l*alpha);//dépassement translation(alpha=2,5%)
+        int drotation=(int)Math.round(Math.PI/12*beta);//dépassement rotation(beta=4,5%)
         /**Les version toexecute seront :
          * soit (0,1,...5) (les 6 positions d'entrée possibles si la reconnaissance de couleur
          * renvoit 0
@@ -74,11 +75,11 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(l+d);
             //test permettant de corriger les erreurs de dépassements
-            stateToConsider.robot.turnRelatively(Math.PI/12); //fait tourner le robot relativement
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation); //fait tourner le robot relativement
             //prend le cube noir
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(l+d);
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube vert
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(-l-d);
@@ -92,14 +93,14 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.moveLengthwise(l+d);
             //prendre le cube jaune
             takethiscube(stateToConsider);
-            stateToConsider.robot.turnRelatively(Math.PI/12);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             //prendre le cube noir
             takethiscube(stateToConsider);
-            stateToConsider.robot.turnRelatively(-Math.PI/6);
+            stateToConsider.robot.turnRelatively(-Math.PI/6+2*drotation);
             // prendre le cube bleu
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(-l-d);
-            stateToConsider.robot.turnRelatively(Math.PI/12);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             //prendre le cube orange
             takethiscube(stateToConsider);
         }
@@ -113,10 +114,10 @@ public class TakeCubes extends AbstractScript {
             // prendre le cube vert
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(-l-d);
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prendre le cube bleu
             takethiscube(stateToConsider);
-            stateToConsider.robot.turnRelatively(Math.PI/12);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             //prendre le cube jaune
             takethiscube(stateToConsider);
 
@@ -131,11 +132,11 @@ public class TakeCubes extends AbstractScript {
             //prend le cube vert
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(-l-d);
-            stateToConsider.robot.turnRelatively(Math.PI/12);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             // prend le cube noir
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(-l-d);
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube orange
             takethiscube(stateToConsider);
         }
@@ -148,10 +149,10 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.moveLengthwise(l+d);
             // prendre le cube jaune
             takethiscube(stateToConsider);
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
             takethiscube(stateToConsider);
-            stateToConsider.robot.turnRelatively(-Math.PI/6);
+            stateToConsider.robot.turnRelatively(-Math.PI/6+2*drotation);
             //prend le cube noir
             takethiscube(stateToConsider);
         }
@@ -164,10 +165,10 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.moveLengthwise(-l-d);
             //prend le cube jaune
             takethiscube(stateToConsider);
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
             takethiscube(stateToConsider);
-            stateToConsider.robot.turnRelatively(Math.PI/6);
+            stateToConsider.robot.turnRelatively(Math.PI/6-2*drotation);
             //prend le cube noir
             takethiscube(stateToConsider);
         }
@@ -175,18 +176,18 @@ public class TakeCubes extends AbstractScript {
         if (versionToExecute==60 ||versionToExecute==61 || versionToExecute==62 ||versionToExecute==63
                 || versionToExecute==64 ||versionToExecute==65){
             stateToConsider.robot.moveLengthwise(l+d);
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(-l-d);
-            stateToConsider.robot.turnRelatively(Math.PI/12);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             //prend le cube orange
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(l+d);
-            stateToConsider.robot.turnRelatively(Math.PI/12);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             //prend le cube noir
             takethiscube(stateToConsider);
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube jaune
             takethiscube(stateToConsider);
         }
@@ -204,7 +205,7 @@ public class TakeCubes extends AbstractScript {
             //prend le cube vert
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(-l-d);
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
             takethiscube(stateToConsider);
         }
@@ -216,13 +217,13 @@ public class TakeCubes extends AbstractScript {
             //prend le cube vert
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(-l-d);
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
             takethiscube(stateToConsider);
-            stateToConsider.robot.turnRelatively(Math.PI/6);
+            stateToConsider.robot.turnRelatively(Math.PI/6-2*drotation);
             //prend le cube noir
             takethiscube(stateToConsider);
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube jaune
             takethiscube(stateToConsider);
         }
@@ -232,10 +233,10 @@ public class TakeCubes extends AbstractScript {
             //prend le cube orange
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(l+d);
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
             takethiscube(stateToConsider);
-            stateToConsider.robot.turnRelatively(Math.PI/12);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             //prend le cube jaune
             takethiscube(stateToConsider);
             stateToConsider.robot.moveLengthwise(l+d);
