@@ -286,11 +286,11 @@ public class ThreadEth extends AbstractThread implements Service {
                     }
                 }
 
-                if(!isAsciiExtended(inputLines[i]))
+            /*    if(!isAsciiExtended(inputLines[i]))
                 {
                     log.critical("Reception de "+inputLines[i]+" (non Ascii) , en réponse à "+ message[0].replaceAll("\r", "").replaceAll("\n", "") + " envoi du message a nouveau");
                     communicate(nb_line_response, message); // On retente
-                }
+                }   */
             }
             if (nb_line_response != 0) {
                 outStandard.newLine();
