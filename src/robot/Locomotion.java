@@ -315,7 +315,7 @@ public class Locomotion implements Service
             isRobotMovingBackward = false;
         }
 
-        log.debug("Arrivés en "+aim+" vraie position : "+lowLevelPosition);
+        log.debug("Arrivés en "+aim.toStringInterface()+" vraie position : "+lowLevelPosition.toStringInterface());
         actualRetriesIfBlocked=0;// on reinitialise
     }
 

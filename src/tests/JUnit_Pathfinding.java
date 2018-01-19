@@ -24,10 +24,14 @@ import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import graphics.Window;
+import hook.HookFactory;
 import org.junit.Test;
 import pathfinder.Pathfinding;
 import pathfinder.Graphe;
+import robot.Robot;
+import scripts.ScriptManager;
 import smartMath.Vec2;
+import strategie.GameState;
 import table.Table;
 import table.obstacles.ObstacleManager;
 
@@ -42,6 +46,10 @@ public class JUnit_Pathfinding extends JUnit_Test{
     /** Spécification des variables */
     private Table table;
     private ObstacleManager obstacleManager;
+    private Robot robotReal;
+    private ScriptManager scriptManager;
+    private GameState state;
+    private HookFactory hookFactory;
 
     /**
      * Méthode pour un test : ce sont les instruction executées par IntelliJ lorque vous lancer le test (clique
@@ -72,22 +80,29 @@ public class JUnit_Pathfinding extends JUnit_Test{
         Graphe graphe=new Graphe(table, config, log);
         window.setArete(graphe.getBoneslist());
 
-
+        robotReal = container.getService(Robot.class);
+        state=container.getService(GameState.class);
+        container.startInstanciedThreads();
 
         // Thread.sleep(20000);
 
         Pathfinding pf = new Pathfinding(log, config, table);
         ArrayList<Vec2> path =  new ArrayList<>();
         window.setPath(path);
-        ArrayList<Vec2> clics = new ArrayList<>();
+        Vec2 clic = new Vec2();
         pf.initGraphe();
 
 
         while(true) {
 
             try {
-                clics = window.waitLRClic();
-                path = pf.findmyway(clics.get(0), clics.get(1));
+                clic = window.waitLClic();
+                robotReal.setPosition(new Vec2(0,500));
+                robotReal.setOrientation(Math.PI/2);
+                path = pf.findmyway(robotReal.getPosition(), clic);
+
+                robotReal.followPath(path);
+
                 window.setPath(path);
             }
             catch (PointInObstacleException e) {

@@ -118,6 +118,21 @@ public class Window extends JFrame
 		return clics;
 	}
 
+	/** Attend que l'on clic gauche et renvoie la position des clics (gauche puis droit) */
+	public Vec2 waitLClic() throws InterruptedException{
+		mouse.resetClics();
+		ArrayList<Vec2> clics = new ArrayList<>();
+		while(mouse.getLeftClicPosition() == null ){
+			Thread.sleep(100);
+			// TODO Mettre une vérification de la position du clic : accès à Table par le tablePanel
+		}
+		clics.add(mouse.getLeftClicPosition().clone());
+		tablePanel.setClics(new ArrayList<Vec2>(clics));
+		repaint();
+		mouse.resetClics();
+		return clics.get(0);
+	}
+
 	/** Permet d'afficher les aretes/le chemin */
 	public void setArete(ArrayList<Arete> aretes){
 		tablePanel.setAretes(aretes);
