@@ -63,7 +63,9 @@ public class JUnit_Robot extends JUnit_Test
 
     @Test
     public void testScript() throws Exception {
+        robotReal.setOrientation(0);
         robotReal.moveLengthwise(100);
+        robotReal.turn(Math.PI);
         Thread.sleep(5000);
     }
 }
