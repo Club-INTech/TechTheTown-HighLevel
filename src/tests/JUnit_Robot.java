@@ -55,6 +55,7 @@ public class JUnit_Robot extends JUnit_Test
 
     @Test
     public void testScript() throws Exception {
+        robotReal.moveLengthwise(100);
         Thread.sleep(5000);
     }
 }
