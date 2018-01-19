@@ -45,7 +45,8 @@ public class JUnit_TakeCubes extends JUnit_Test {
             TakeCubes takeCubes = new TakeCubes(config,log,hookFactory);
 
             robotReal.setOrientation(Math.PI);
-            takeCubes.execute(0,state,0,0);
+//            takeCubes.execute(0,state,0.025,0.045);
+            takeCubes.execute(0,state,-0.025,0);
 
             Thread.sleep(500);
         }catch (Exception e){
