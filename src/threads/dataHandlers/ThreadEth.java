@@ -151,7 +151,7 @@ public class ThreadEth extends AbstractThread implements Service {
     {
         for (int i = 0; i < inputLines.length(); i++)
         {
-            if (inputLines.charAt(i) > 259)
+            if (inputLines.charAt(i) > 128)
             {
                 log.critical(inputLines+" n'est pas ASCII");
                 return false;

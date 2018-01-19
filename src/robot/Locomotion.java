@@ -207,7 +207,9 @@ public class Locomotion implements Service
         this.config = config;
         this.ethWrapper = ethWrapper;
         this.table = table;
-        this.USvalues = new ArrayList<Integer>(){{for(int i=0;i<4;i++)add(0);}};
+        this.USvalues = new ArrayList<Integer>() {{
+            for (int i = 0; i < 4; i++) add(0);
+        }};
         this.unableToMoveEvent = thEvent.getUnableToMoveEvent();
         this.isMoving = thEvent.getIsMovingEvent();
         updateConfig();
