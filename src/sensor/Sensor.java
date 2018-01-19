@@ -21,7 +21,7 @@ public class Sensor{
         this.detectionWideness=detectionWideness;
         this.maximalValidDetectionDistance=maximalValidDetectionDistance;
         this.detectedDistance=0;
-        this.precision=0;
+        this.precision=precision;
         this.robotSize=Double.parseDouble(ConfigInfoRobot.ROBOT_RADIUS.getDefaultValue().toString());
     }
 
@@ -32,7 +32,26 @@ public class Sensor{
         this.detectedDistance=detectedDistance;
     }
 
-    int getID(){
+    public int getID(){
         return this.id;
+    }
+
+    public double getDetectedDistance() { return this.detectedDistance; }
+
+    public int getIntDetectedDistance() {
+        Double a = this.detectedDistance;
+        return a.intValue();
+    }
+
+    public String getStringDetectedDistance(){
+        Double a = this.detectedDistance;
+        return a.toString();
+    }
+
+    //En cas de symétrie
+    public void switchValues(Sensor s2){
+        double temp=this.detectedDistance;
+        this.detectedDistance=s2.getDetectedDistance();
+        s2.setDetectedDistance(temp);
     }
 }

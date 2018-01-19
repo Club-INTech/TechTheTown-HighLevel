@@ -63,6 +63,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     MAX_SENSOR_RANGE(800),
     MIN_SENSOR_RANGEAV(30),
     MIN_SENSOR_RANGEAR(30),
+    MIN_SENSOR_RANGE(30),
     // TODO à complété j'ai la flemme...
 
     /** Paramètres Locomotion */

@@ -22,6 +22,7 @@ package threads.dataHandlers;
 import enums.ConfigInfoRobot;
 import pfg.config.Config;
 import robot.EthWrapper;
+import sensor.Sensor;
 import smartMath.Geometry;
 import smartMath.Vec2;
 import smartMath.XYO;
@@ -79,7 +80,7 @@ public class ThreadSensor extends AbstractThread
      * Override par la config */
 	double minSensorRangeAv;
 	double minSensorRangeAr;
-	
+    double minSensorRange;
 	/**
 	 *  Angle de visibilité qu'a le capteur 
 	 * Override par la config
@@ -125,6 +126,9 @@ public class ThreadSensor extends AbstractThread
      * Pour éviter de détecter la main du lanceur */
     private static boolean delay = true;
 
+    /** Array de sensor */
+    ArrayList<Sensor> sensorsArray = new ArrayList<Sensor>(4);
+
     /** Valeurs des capteurs US {avant-gauche, avant-droit, arrière gauche, arrière-droit} */
     ArrayList<Integer> USvalues = new ArrayList<Integer>(4);
 
@@ -155,23 +159,57 @@ public class ThreadSensor extends AbstractThread
 	private void addObstacle() {
         try {
 
-            if (USvalues.get(0) != 0 && USvalues.get(1) != 0) {
-                out.write("FrontBoth ");
-                addFrontObstacleBoth();
+            /**Schéma du robot :
+             *
+             *           Front
+             *
+             *   \     /      \     /
+             *    \   /        \   /
+             *     \ /          \ /
+             *      0------------1
+             *      |            |
+             *      |    Robot   |
+             *      |    poney   |
+             *      |            |
+             *      |            |
+             *      |            |
+             *      2------------3
+             *     / \          / \
+             *    /   \        /   \
+             *   /     \      /     \
+             *
+             *           Back
+             */
 
-            } else if ((USvalues.get(0) != 0 || USvalues.get(1) != 0)) {
-                out.write("FrontSingle ");
-                addFrontObstacleSingle(USvalues.get(0) != 0);
+            if (sensorsArray.get(0).getDetectedDistance() != 0){
+                if (sensorsArray.get(1).getDetectedDistance() != 0) {
+                    out.write("Detection:Sensor0And1 ");
+                    addFrontObstacleBoth();
+                }
+                else {
+                    out.write("Detection:Sensor0 ");
+                    addFrontObstacleSingle(true);
+                }
+            }
+            else if (sensorsArray.get(1).getDetectedDistance() != 0){
+                out.write("Detection:Sensor1 ");
+                addBackObstacleSingle(false);
+            }
+            if (sensorsArray.get(2).getDetectedDistance() != 0){
+                if (sensorsArray.get(3).getDetectedDistance() != 0){
+                    out.write("Detection:Sensor2And3 ");
+                    addBackObstacleBoth();
+                }
+                else{
+                    out.write("Detection:Sensor2 ");
+                    addBackObstacleSingle(true);
+                }
+            }
+            else if (sensorsArray.get(3).getDetectedDistance() != 0){
+                out.write("Detection:Sensor3 ");
+                addBackObstacleSingle(false);
             }
 
-            if (USvalues.get(2) != 0 && USvalues.get(3) != 0) {
-                out.write("BackBoth ");
-                addBackObstacleBoth();
-
-            } else if ((USvalues.get(2) != 0 || USvalues.get(3) != 0)) {
-                out.write("BackSingle ");
-                addBackObstacleSingle(USvalues.get(2) != 0);
-            }
 
         }catch(IOException e){
             e.printStackTrace();
@@ -352,7 +390,7 @@ public class ThreadSensor extends AbstractThread
 		    robotPosAndOr = ethWrapper.updatePositionAndOrientation();
 
             String[] valuesSReceived;
-            ArrayList<Integer> res = new ArrayList<>();
+            ArrayList<Integer> res = new ArrayList<Integer>();
 
             while(valuesReceived.peek() == null){
                 Thread.sleep(5);
@@ -360,8 +398,16 @@ public class ThreadSensor extends AbstractThread
 
             valuesSReceived = valuesReceived.poll().split(" ");
 
-            for(String s : valuesSReceived) {
-                res.add(Integer.parseInt(s.substring(2)));
+            int nbSensors=sensorsArray.size();
+
+            for(int i=0; i<nbSensors; i++) {
+
+                int distance=Integer.parseInt(valuesSReceived[i].substring(2));
+                //Old method
+                //res.add(distance);
+
+                //Préparation du novueau code
+                sensorsArray.get(i).setDetectedDistance(distance);
             }
 
             USvalues = res;
@@ -369,17 +415,12 @@ public class ThreadSensor extends AbstractThread
             if(this.debug)
             {
                try {
-                    out.write(USvalues.get(0).toString());
-                    out.newLine();
-                    out.write(USvalues.get(1).toString());
-                    out.newLine();
-                    out.write(USvalues.get(2).toString());
-                    out.newLine();
-                    out.write(USvalues.get(3).toString());
-                    out.newLine();
-                    out.newLine();
-                    out.flush();
-
+                   for (int i=0; i<nbSensors; i++) {
+                       out.write(sensorsArray.get(i).getStringDetectedDistance());
+                       out.newLine();
+                   }
+                   out.newLine();
+                   out.flush();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -387,25 +428,27 @@ public class ThreadSensor extends AbstractThread
 
             if(symetry) //Inversion gauche/droite pour symétriser
             {
+                //Old method
+                /*
                 int temp = USvalues.get(0);
                 USvalues.set(0, USvalues.get(1));
                 USvalues.set(1, temp);
                 temp = USvalues.get(2);
                 USvalues.set(2, USvalues.get(3));
-                USvalues.set(3, temp);
+                */
+
+                //Préparation du novueau code
+                sensorsArray.get(0).switchValues(sensorsArray.get(1));
+                sensorsArray.get(2).switchValues(sensorsArray.get(3));
             }
 
-            USvaluesForDeletion.clear();
-            for(int i=0 ; i<4 ; i++)
-            {
-                USvaluesForDeletion.add((int)(USvalues.get(i).intValue()*0.8));
-            }
-
-            for(int i=0 ; i<USvalues.size() ; i++)
+            for(int i=0 ; i<nbSensors ; i++)
             {
                 // On met tout les capteurs qui detectent un objet trop proche du robot ou à plus de maxSensorRange a 0
                 // TODO : a passer en traitement de bas niveau ? Non, ce traitement peut dépendre de la façon dont on calcule la position adverse
-                if ( USvalues.get(i) > maxSensorRange)
+
+                //Old method
+                /*if ( USvalues.get(i) > maxSensorRange)
                 {
                     USvalues.set(i, 0);
                     USvaluesForDeletion.set(i, (int)(maxSensorRange*0.9));
@@ -418,6 +461,14 @@ public class ThreadSensor extends AbstractThread
                 else if(i>=2 && USvalues.get(i) < minSensorRangeAr){
                     USvalues.set(i, 0);
                     USvaluesForDeletion.set(i, 0);
+                }*/
+
+                if ( sensorsArray.get(i).getDetectedDistance() > maxSensorRange)
+                {
+                    sensorsArray.get(i).setDetectedDistance(0);
+                }
+                else if(sensorsArray.get(i).getDetectedDistance() < minSensorRange) {
+                    sensorsArray.get(i).setDetectedDistance(0);
                 }
             }
 		}
@@ -485,14 +536,10 @@ public class ThreadSensor extends AbstractThread
                 log.debug("Stop du thread capteurs");
                 return;
             }
-
             this.getSensorInfos();
 
-            if( !USvalues.contains(-1)) // si on n'a pas spammé
-            {
-                this.removeOutDatedObstacle();
-                this.addObstacle();
-            }
+            this.removeOutDatedObstacle();
+            this.addObstacle();
         }
         log.debug("Fin du thread de capteurs");
 
@@ -506,5 +553,6 @@ public class ThreadSensor extends AbstractThread
         maxSensorRange = config.getInt(ConfigInfoRobot.MAX_SENSOR_RANGE);
         minSensorRangeAv = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGEAV);
         minSensorRangeAr = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGEAR);
+        minSensorRange = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGE);
 	}
 }
