@@ -47,7 +47,7 @@ public class ThreadEvents extends AbstractThread
     private Boolean isMoving;
 
     /**
-     *
+     * Constructeur
      * @param config
      * @param log
      * @param eth
@@ -57,6 +57,7 @@ public class ThreadEvents extends AbstractThread
         this.config = config;
         this.log = log;
         events = eth.getEventBuffer();
+        this.isMoving =false;
     }
 
     @Override

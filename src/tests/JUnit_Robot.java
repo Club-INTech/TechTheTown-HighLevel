@@ -24,6 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
 import scripts.ScriptManager;
+import simulator.ThreadSimulator;
+import simulator.ThreadSimulatorMotion;
 import strategie.GameState;
 
 import java.util.ArrayList;
@@ -34,23 +36,29 @@ import java.util.ArrayList;
  */
 public class JUnit_Robot extends JUnit_Test
 {
-    
     /** The robotvrai. */
     private Robot robotReal;
     private ScriptManager scriptManager;
     private GameState state;
+    private ThreadSimulator simulator;
+    private ThreadSimulatorMotion simulatorMotion;
     
     /* (non-Javadoc)
      * @see tests.JUnit_Test#setUp()
      */
     @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        robotReal = container.getService(Robot.class);
-        scriptManager = container.getService(ScriptManager.class);
-        state = container.getService(GameState.class);
+    public void setUp() {
+        try {
+            super.setUp();
+            robotReal = container.getService(Robot.class);
+            scriptManager = container.getService(ScriptManager.class);
+            state = container.getService(GameState.class);
+            simulator = container.getService(ThreadSimulator.class);
 
-        container.startInstanciedThreads();
+            container.startInstanciedThreads();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Test
