@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static smartMath.Geometry.isBetween;
-import static smartMath.Geometry.square;
 
 /**
  * Thread qui ajoute en continu les obstacles détectés par les capteurs,

@@ -68,7 +68,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     SENSOR_POSITION_ANGLE_BACK(1),
     SENSOR_ANGLE_WIDENESS(30),
     UNCERTAINTY(1),
-    // TODO à complété j'ai la flemme...
+    // TODO à compléter
 
     /** Paramètres Locomotion */
     BASIC_DETECTION_DISTANCE(100),
