@@ -1,8 +1,6 @@
 package tests;
 
 import org.junit.Test;
-import patternRecognition.shootPicture.ShootStill;
-import patternRecognition.shootPicture.ShootBufferedStill;
 
 public class JUnit_TakePicture extends JUnit_Test {
 
