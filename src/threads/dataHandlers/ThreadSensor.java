@@ -51,8 +51,8 @@ import static smartMath.Geometry.square;
 public class ThreadSensor extends AbstractThread
 {
     /** Array de sensor */
-    ArrayList<Sensor> sensorsArray = new ArrayList<Sensor>(4);
-    int nbSensors=sensorsArray.size();
+    public ArrayList<Sensor> sensorsArray = new ArrayList<Sensor>(4);
+    private int nbSensors=sensorsArray.size();
 
     /** La table */
     private Table mTable;
@@ -78,16 +78,16 @@ public class ThreadSensor extends AbstractThread
 
     /** Distance maximale fiable pour les capteurs : au dela, valeurs abberentes
 	 * Override par la config */
-	double maxSensorRange;
+	private double maxSensorRange;
 
 	/** Distance minimale à laquelle on peut se fier aux capteurs : ne pas detecter notre propre root par exemple
      * Override par la config */
-	double minSensorRangeAv;
-	double minSensorRangeAr;
-    double minSensorRange;
+	private double minSensorRangeAv;
+	private double minSensorRangeAr;
+    private double minSensorRange;
 
     /** Incertitude sur la mesure*/
-    double uncertainty;
+    private double uncertainty;
 
 	/**
 	 *  Angle de visibilité qu'a le capteur 
@@ -103,10 +103,10 @@ public class ThreadSensor extends AbstractThread
 	 * 		  Robot			o : capteur
 	 * 
 	 */
-	double detectionAngle;
-	double sensorPositionAngleF;
-	double sensorPositionAngleB;
-	int lifetimeForUntestedObstacle = 200;
+	private double detectionAngle;
+	private double sensorPositionAngleF;
+	private double sensorPositionAngleB;
+	private int lifetimeForUntestedObstacle = 200;
 
 
     /*****************
@@ -142,13 +142,10 @@ public class ThreadSensor extends AbstractThread
         this.mTable = table;
         this.ethWrapper = ethWrapper;
 		Thread.currentThread().setPriority(6);
-        for (int i=0; i<this.nbSensors; i++){
-            //TODO Mettre les bonnes valeurs relatives au centre du robot
-            sensorsArray.set(i,new Sensor(i,120,125,this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty));
-            sensorsArray.set(i,new Sensor(i,120,-125,-this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty));
-            sensorsArray.set(i,new Sensor(i,-120,125,-this.sensorPositionAngleB+Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty));
-            sensorsArray.set(i,new Sensor(i,-120,-125,this.sensorPositionAngleB-Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty));
-        }
+        sensorsArray.set(0,new Sensor(0,120,125,this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty));
+        sensorsArray.set(1,new Sensor(1,120,-125,-this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty));
+        sensorsArray.set(2,new Sensor(2,-120,125,-this.sensorPositionAngleB+Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty));
+        sensorsArray.set(3,new Sensor(3,-120,-125,this.sensorPositionAngleB-Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty));
 	}
 	/** Ajoute les obstacles a l'obstacleManager */
 	private void addObstacle() {
@@ -301,13 +298,13 @@ public class ThreadSensor extends AbstractThread
         if (isLeft){
             // On choisit le point à l'extrémité de l'arc à coté du capteur pour la position de l'ennemie: à courte distance, la position est réaliste,
             // à longue distance (>1m au vue des dimensions), l'ennemie est en réalité de l'autre coté
-            Vec2 posDetect = new Vec2(USFL, angleLF + detectionAngle/2);
-            double angleEn = angleRF + detectionAngle/2;
+            Vec2 posDetect = new Vec2(USFL, sensorsArray.get(0).getDetectionAnglePosition() + detectionAngle/2); //sensor avant gauche
+            double angleEn = sensorsArray.get(1).getDetectionAnglePosition() + detectionAngle/2;    //sensor avant droit
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorsArray.get(0).getVecteur());     //sensor avant gauche
         }
         else{
-            Vec2 posDetect = new Vec2(USFR, angleRF - detectionAngle/2);
-            double angleEn = angleLF - detectionAngle/2;
+            Vec2 posDetect = new Vec2(USFR, sensorsArray.get(1).getDetectionAnglePosition() - detectionAngle/2); //sensor avant droit
+            double angleEn = sensorsArray.get(0).getDetectionAnglePosition() - detectionAngle/2; //sensor avant gauche
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorsArray.get(1).getVecteur());     //sensor avant droit
         }
 
@@ -325,13 +322,13 @@ public class ThreadSensor extends AbstractThread
         Double USBF = sensorsArray.get(3).getDetectedDistance();
 
         if (isLeft){
-            Vec2 posDetect = new Vec2(USBL,angleLB - detectionAngle/2);
-            double angleEn = angleRB - detectionAngle/2;
+            Vec2 posDetect = new Vec2(USBL,sensorsArray.get(2).getDetectionAnglePosition() - detectionAngle/2);     //sensor arrière gauche
+            double angleEn = sensorsArray.get(3).getDetectionAnglePosition() - detectionAngle/2;            //sensor arrière droit
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorsArray.get(2).getVecteur());     //sensor arrière gauche
         }
         else{
-            Vec2 posDetect = new Vec2(USBF,angleRB + detectionAngle/2);
-            double angleEn = angleLB + detectionAngle/2;
+            Vec2 posDetect = new Vec2(USBF,sensorsArray.get(3).getDetectionAnglePosition() + detectionAngle/2);     //sensor arrière droit
+            double angleEn = sensorsArray.get(2).getDetectionAnglePosition() + detectionAngle/2;            //sensor arrière gauche
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorsArray.get(3).getVecteur());     //sensor arrière droit
         }
 
@@ -421,16 +418,6 @@ public class ThreadSensor extends AbstractThread
 
             if(symetry) //Inversion gauche/droite pour symétriser
             {
-                //Old method
-                /*
-                int temp = USvalues.get(0);
-                USvalues.set(0, USvalues.get(1));
-                USvalues.set(1, temp);
-                temp = USvalues.get(2);
-                USvalues.set(2, USvalues.get(3));
-                */
-
-                //Préparation du novueau code
                 sensorsArray.get(0).switchValues(sensorsArray.get(1));
                 sensorsArray.get(2).switchValues(sensorsArray.get(3));
             }
@@ -439,22 +426,6 @@ public class ThreadSensor extends AbstractThread
             {
                 // On met tout les capteurs qui detectent un objet trop proche du robot ou à plus de maxSensorRange a 0
                 // TODO : a passer en traitement de bas niveau ? Non, ce traitement peut dépendre de la façon dont on calcule la position adverse
-
-                //Old method
-                /*if ( USvalues.get(i) > maxSensorRange)
-                {
-                    USvalues.set(i, 0);
-                    USvaluesForDeletion.set(i, (int)(maxSensorRange*0.9));
-                }
-                else if(i<2 && USvalues.get(i) < minSensorRangeAv)
-                {
-                    USvalues.set(i, 0);
-                    USvaluesForDeletion.set(i, 0);
-                }
-                else if(i>=2 && USvalues.get(i) < minSensorRangeAr){
-                    USvalues.set(i, 0);
-                    USvaluesForDeletion.set(i, 0);
-                }*/
 
                 if ( sensorsArray.get(i).getDetectedDistance() > maxSensorRange)
                 {
@@ -549,5 +520,6 @@ public class ThreadSensor extends AbstractThread
         this.minSensorRange = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGE);
         this.sensorPositionAngleF = config.getInt(ConfigInfoRobot.SENSOR_POSITION_ANGLE_FRONT);
         this.sensorPositionAngleB = config.getInt(ConfigInfoRobot.SENSOR_POSITION_ANGLE_BACK);
+        this.detectionAngle = config.getInt(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS);
 	}
 }

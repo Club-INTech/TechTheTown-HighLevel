@@ -86,6 +86,8 @@ public class Sensor{
     }
     public Vec2 getVecteur(){ return this.vecteur; }
 
+    public double getDetectionAnglePosition(){ return this.detectionAnglePosition; }
+
     public double getDetectedDistance() { return this.detectedDistance; }
 
     public int getIntDetectedDistance() {
