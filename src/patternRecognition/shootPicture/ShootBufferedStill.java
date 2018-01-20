@@ -50,7 +50,7 @@ public class ShootBufferedStill {
 				.setBrightness(70)
 				.setContrast(100);
 		try {
-			BufferedImage buffImg = piCamera.takeBufferedStill(2000, 2000); // Take image and store in BufferedImage
+			BufferedImage buffImg = piCamera.takeBufferedStill(2592, 1944); // Take image and store in BufferedImage
 			File saveFile = new File(imageName); // Create file to save image to
 			ImageIO.write(buffImg, encoding, saveFile); // Save image to file
 			//System.out.println("New PNG image saved to:\n\t" + saveFile.getAbsolutePath()); // Print out location of image

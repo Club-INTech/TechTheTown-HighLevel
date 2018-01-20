@@ -55,7 +55,7 @@ public class ShootStill {
 		//		String name=Integer.toString(i)+Integer.toString(j)+".png";
 				try {
 					String imageNameAndEncoding=imageName+"."+encoding;
-					File image = piCamera.takeStill(imageNameAndEncoding, 2000, 2000);
+					File image = piCamera.takeStill(imageNameAndEncoding, 2592, 1944);
 					//System.out.println("New PNG image saved to:\n\t" + image.getAbsolutePath());
 				} catch (IOException e) {
 					System.out.println("L'image n'a pas pu etre prise (erreur2)");
@@ -66,7 +66,6 @@ public class ShootStill {
 				}
 			//}
 		//}
-
 	}
 	
 }
