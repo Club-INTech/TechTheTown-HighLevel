@@ -86,6 +86,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private BufferedWriter outDebug;
     private BufferedWriter outPosion;
     private BufferedWriter outEvent;
+    private BufferedWriter fullDebug;
 
     /**
      * True pour couper la connexion (pas trouvé d'autres idées, mais la lib java.net a probablement un truc propre à proposer)
@@ -130,6 +131,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 File fileDebug = new File("debugLL.txt");
                 File position = new File("debugPosition.txt");
                 File event = new File("debugEvent.txt");
+                File fulldebug = new File("fullDebug.txt");
                 if (!file.exists()) {
                     file.createNewFile();
                 }
@@ -142,6 +144,9 @@ public class ThreadEth extends AbstractThread implements Service {
                 if (!event.exists()) {
                     event.createNewFile();
                 }
+                if (!fulldebug.exists()) {
+                    fulldebug.createNewFile();
+                }
                 outStandard = new BufferedWriter(new FileWriter(file));
                 outStandard.newLine();
                 outDebug = new BufferedWriter(new FileWriter(fileDebug));
@@ -150,6 +155,8 @@ public class ThreadEth extends AbstractThread implements Service {
                 outPosion.newLine();
                 outEvent = new BufferedWriter(new FileWriter(event));
                 outEvent.newLine();
+                fullDebug = new BufferedWriter(new FileWriter(fulldebug));
+                fullDebug.newLine();
 
             } catch (IOException e) {
                 log.critical("Manque de droits pour l'output");
@@ -362,6 +369,9 @@ public class ThreadEth extends AbstractThread implements Service {
                 buffer = input.readLine();
                 if (buffer.length() >= 2 && !(buffer.replaceAll(" ", "").equals(""))) {
                     char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
+                    fullDebug.write(buffer);
+                    fullDebug.newLine();
+                    fullDebug.flush();
                     if (CommunicationHeaders.EVENT.getFirstHeader() == headers[0] && CommunicationHeaders.EVENT.getSecondHeader() == headers[1]) {
                         eventBuffer.add(buffer);
                         outEvent.write(buffer);
