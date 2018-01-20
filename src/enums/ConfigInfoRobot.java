@@ -64,6 +64,9 @@ public enum ConfigInfoRobot implements ConfigInfo
     MIN_SENSOR_RANGEAV(30),
     MIN_SENSOR_RANGEAR(30),
     MIN_SENSOR_RANGE(30),
+    SENSOR_POSITION_ANGLE_FRONT(30),
+    SENSOR_POSITION_ANGLE_BACK(30),
+    UNCERTAINTY(1),
     // TODO à complété j'ai la flemme...
 
     /** Paramètres Locomotion */
