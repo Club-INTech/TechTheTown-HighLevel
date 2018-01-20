@@ -47,6 +47,8 @@ public abstract class AbstractScript implements Service
 
 	/**  Liste des versions du script. */
 	protected Integer[] versions;
+	/**  tableau de 2 dimensions des versions du script. */
+	protected Integer[][] versions2;
 
 	/** HookFactory pour gérer les hooks */
 	protected static HookFactory hookFactory;
@@ -71,7 +73,7 @@ public abstract class AbstractScript implements Service
 	 * @throws UnableToMoveException losrque le robot veut se déplacer et que quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws ExecuteException
 	 */
-	public void goToThenExec(int versionToExecute, GameState actualState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
+	public void goToThenExec(int versionToExecute,GameState actualState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
 		// va jusqu'au point d'entrée de la version demandée
 		log.debug("Lancement de " + this.toString() + " version " + versionToExecute);
 		try 
@@ -102,6 +104,11 @@ public abstract class AbstractScript implements Service
 	 * @throws ExecuteException
 	 */
 	public abstract void execute(int versionToExecute, GameState actualState) throws UnableToMoveException, ExecuteException, BlockedActuatorException;
+
+	/**alpha et beta représentent respectivement les dépassements de translation et de rotation respectivement
+	 * en attendant qu'on ait un asservissement propre
+	 */
+	public void execute(int versionToExecute, GameState actualState,double alpha, double beta) throws UnableToMoveException, ExecuteException, BlockedActuatorException{};
 
 	/**
 	 * Renvoie le score que peut fournir une version d'un script.
@@ -169,12 +176,15 @@ public abstract class AbstractScript implements Service
 	/* (non-Javadoc)
 	 * @see container.Service#updateConfig()
 	 */
-	public void updateConfig()
-	{}
+
+
+	public void updateConfig() {
+	}
 	
 	/** Getter utilisé par l'IA
 	 * @param stateToConsider état de jeu actuel
 	 * @return les versions possibles du script*/
 	abstract public Integer[] getVersion(GameState stateToConsider);
+	abstract public Integer[][] getVersion2(GameState stateToConsider);
 
 }

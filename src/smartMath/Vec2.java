@@ -322,17 +322,26 @@ public class Vec2 {
  */
 	@Override
 	public String toString() {
-		return "(" + x + "," + y + ") (" + (float)r + "," + (float)a + ")";
+		String rs = String.format("%s", Math.round(r*10000)/10000);//.substring(0,6);
+		String os = String.format("%s", Math.round(a*10000)/10000);//.substring(0,6);
+		return String.format("(%s , %s) (%s , %s)", x,y,rs,os);
 	}
 
 	/**
 	 * Lorsque l'on discute avec le LL, on signifie que c'est un vecteur comme ceci
-	 * @return
 	 */
 	public String toStringEth(){
 		return x + " " + y;
 	}
 
+	/**
+	 * Pour l'interface, on n'affiche que les coordonnées cartésiennes
+	 */
+	public String toStringInterface(){
+		return "(" + x + "," + y + ")";
+	}
+
+	/** Commentaire ? */
 	public String[] toStringTableau() {
 		String TableauVec[] = {"(" + x + ")", "(" + y + ")", "(" + r + ")", "(" + a + ")"};
 		return TableauVec;

@@ -55,6 +55,10 @@ public enum ConfigInfoRobot implements ConfigInfo
     ROBOT_RADIUS(212),
     ENNEMY_RADIUS(400),
 
+
+    /**Les cubes*/
+    LONGUEUR_CUBE (58),
+
     /** Paramètres obstacles */
     PEREMP_OBST(5000),
 

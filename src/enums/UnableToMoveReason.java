@@ -27,6 +27,7 @@ public enum UnableToMoveReason
 {
 	OBSTACLE_DETECTED("o"), // obstacle vu par les capteurs
 	PHYSICALLY_BLOCKED("p"), // blocage physique (bord de table, décor...)
+	NO_WAY_FOUND() // le pathfinding ne trouve pas de chemin vers cette destination
 	;
 
 	/** Ce que le LL envoie pour spécifier l'UnableToMoveException */
@@ -36,6 +37,10 @@ public enum UnableToMoveReason
 	UnableToMoveReason(String serialOrder){
 		this.serialOrder = serialOrder;
 	}
+	UnableToMoveReason(){
+		this.serialOrder = null;
+	}
+
 
 	public String getSerialOrder() {
 		return serialOrder;
