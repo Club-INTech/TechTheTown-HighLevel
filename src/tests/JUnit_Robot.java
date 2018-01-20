@@ -26,6 +26,7 @@ import robot.Robot;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
+import smartMath.Vec2;
 import strategie.GameState;
 
 import java.util.ArrayList;
@@ -63,7 +64,12 @@ public class JUnit_Robot extends JUnit_Test
 
     @Test
     public void testScript() throws Exception {
-        robotReal.setOrientation(0);
+        robotReal.setOrientation(Math.PI/2);
+        robotReal.setPosition(new Vec2(0,50));
+        ArrayList<Vec2> path = new ArrayList<>();
+        path.add(new Vec2(0,50));
+        path.add(new Vec2(10,70));
+        robotReal.followPath(path);
         robotReal.moveLengthwise(100);
         robotReal.turn(Math.PI);
         Thread.sleep(5000);
