@@ -75,7 +75,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
      * @param header
      * @param messages
      */
-    private void communicate(CommunicationHeaders header, String... messages){
+    public void communicate(CommunicationHeaders header, String... messages){
         try {
             for (String mess : messages) {
                 if(header != null){

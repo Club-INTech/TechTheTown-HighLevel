@@ -63,6 +63,7 @@ public class JUnit_Robot extends JUnit_Test
             robotReal = container.getService(Robot.class);
             scriptManager = container.getService(ScriptManager.class);
             state = container.getService(GameState.class);
+            simulatorMotion = container.getService(ThreadSimulatorMotion.class);
             simulator = container.getService(ThreadSimulator.class);
 
             container.startInstanciedThreads();
