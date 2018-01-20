@@ -143,9 +143,13 @@ public class ThreadEth extends AbstractThread implements Service {
                     event.createNewFile();
                 }
                 outStandard = new BufferedWriter(new FileWriter(file));
+                outStandard.newLine();
                 outDebug = new BufferedWriter(new FileWriter(fileDebug));
+                outDebug.newLine();
                 outPosion = new BufferedWriter(new FileWriter(position));
+                outPosion.newLine();
                 outEvent = new BufferedWriter(new FileWriter(event));
+                outEvent.newLine();
 
             } catch (IOException e) {
                 log.critical("Manque de droits pour l'output");
