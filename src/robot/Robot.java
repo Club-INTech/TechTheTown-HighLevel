@@ -94,9 +94,6 @@ public class Robot implements Service {
 	/** Système de locomotion à utiliser pour déplacer le robot */
 	private Locomotion mLocomotion;
 
-	/** */
-	private volatile Boolean isMoving;
-
 	/**
 	 * Constructeur
 	 * @param deplacements  système de locomotion
@@ -113,7 +110,6 @@ public class Robot implements Service {
 		this.mLocomotion = deplacements;
 		updateConfig();
 		speed = Speed.SLOW_ALL;
-		this.isMoving = deplacements.getIsMovingObject();
 	}
 
 
