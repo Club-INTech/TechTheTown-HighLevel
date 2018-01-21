@@ -57,7 +57,7 @@ public class ThreadEvents extends AbstractThread
         this.config = config;
         this.log = log;
         events = eth.getEventBuffer();
-        this.isMoving =false;
+        this.isMoving = false;
     }
 
     @Override
@@ -81,7 +81,6 @@ public class ThreadEvents extends AbstractThread
                         synchronized (this.isMoving) {
                             this.isMoving = false;
                         }
-
                     }
                 } else {
                     Thread.sleep(100);
