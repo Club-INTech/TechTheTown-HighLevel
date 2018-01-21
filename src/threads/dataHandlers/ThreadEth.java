@@ -84,7 +84,7 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     private BufferedWriter outStandard;
     private BufferedWriter outDebug;
-    private BufferedWriter outPosion;
+    private BufferedWriter outPosition;
     private BufferedWriter outEvent;
 
     /**
@@ -146,8 +146,8 @@ public class ThreadEth extends AbstractThread implements Service {
                 outStandard.newLine();
                 outDebug = new BufferedWriter(new FileWriter(fileDebug));
                 outDebug.newLine();
-                outPosion = new BufferedWriter(new FileWriter(position));
-                outPosion.newLine();
+                outPosition = new BufferedWriter(new FileWriter(position));
+                outPosition.newLine();
                 outEvent = new BufferedWriter(new FileWriter(event));
                 outEvent.newLine();
 
@@ -375,9 +375,9 @@ public class ThreadEth extends AbstractThread implements Service {
                     } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                         synchronized (this.positionAndOrientation) {
                             positionAndOrientation = new XYO(infosFromBuffer, splitString);
-                            outPosion.write(infosFromBuffer);
-                            outPosion.newLine();
-                            outPosion.flush();
+                            outPosition.write(infosFromBuffer);
+                            outPosition.newLine();
+                            outPosition.flush();
                         }
                         continue;
                     } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {

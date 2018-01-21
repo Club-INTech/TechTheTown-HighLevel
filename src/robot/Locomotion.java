@@ -192,7 +192,10 @@ public class Locomotion implements Service
     private ConcurrentLinkedQueue<String> unableToMoveEvent;
 
     /** Le robot bouge */
-    private volatile Boolean isMoving;
+    private Boolean isMoving;
+
+    /** ThreadEvent */
+    private ThreadEvents thEvent;
 
     /**
      * Constructeur de Locomotion
@@ -211,7 +214,7 @@ public class Locomotion implements Service
             for (int i = 0; i < 4; i++) add(0);
         }};
         this.unableToMoveEvent = thEvent.getUnableToMoveEvent();
-        this.isMoving = thEvent.getIsMovingObject();
+        this.thEvent = thEvent;
         updateConfig();
     }
 
@@ -262,6 +265,10 @@ public class Locomotion implements Service
 
     public void moveToPoint(Vec2 pointVise, boolean expectedWallImpact, boolean mustDetect) throws UnableToMoveException
     {
+        synchronized (thEvent.isMoving) {
+            thEvent.isMoving = true;
+            log.debug("isMoving variable has been defined to True");
+        }
         Vec2 move = pointVise.minusNewVector(highLevelPosition);
         int moveR = (int) move.getR();
         double moveA = move.getA();
@@ -306,6 +313,10 @@ public class Locomotion implements Service
      */
     public void turn(double angle, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException
     {
+        synchronized (thEvent.isMoving) {
+            thEvent.isMoving = true;
+            log.debug("isMoving variable has been defined to True");
+        }
         log.debug("Tourner de "+Double.toString(angle));
 
         actualRetriesIfBlocked=0;
@@ -333,8 +344,9 @@ public class Locomotion implements Service
      */
     public void moveLengthwise(int distance, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException
     {
-        synchronized (this.isMoving) {
-            this.isMoving = true;
+        synchronized (thEvent.isMoving) {
+            thEvent.isMoving = true;
+            log.debug("isMoving variable has been defined to True");
         }
         log.debug("Avancer de "+Integer.toString(distance));
 
@@ -528,9 +540,8 @@ public class Locomotion implements Service
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println(this.isMoving.booleanValue());
         }
-        while(this.isMoving.booleanValue());
+        while(thEvent.isMoving.booleanValue());
     }
 
     /**
@@ -712,8 +723,9 @@ public class Locomotion implements Service
     {
         log.warning("Arrêt du robot en "+lowLevelPosition);
         ethWrapper.immobilise();
-        synchronized (this.isMoving) {
-            this.isMoving = false;
+        synchronized (thEvent.isMoving) {
+            thEvent.isMoving = false;
+            log.debug("isMoving variable has been defined to FALSE in Locomotion");
         }
     }
 
@@ -878,10 +890,6 @@ public class Locomotion implements Service
     public void setBasicDetection(boolean basicDetection)
     {
         this.basicDetection = basicDetection;
-    }
-
-    public Boolean getIsMovingObject(){
-        return this.isMoving;
     }
 
 
