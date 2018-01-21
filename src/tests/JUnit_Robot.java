@@ -66,8 +66,8 @@ public class JUnit_Robot extends JUnit_Test {
             scriptManager = container.getService(ScriptManager.class);
             state = container.getService(GameState.class);
             table = container.getService(Table.class);
-            //    simulatorMotion = container.getService(ThreadSimulatorMotion.class);
-            //  simulator = container.getService(ThreadSimulator.class);
+            simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+            simulator = container.getService(ThreadSimulator.class);
 
             container.startInstanciedThreads();
 
@@ -85,8 +85,7 @@ public class JUnit_Robot extends JUnit_Test {
 
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
             robotReal.setOrientation(Math.PI);
-            robotReal.setPosition(new Vec2(0, 50));
-
+            robotReal.setPosition(new Vec2(0, 300));
 
             robotReal.moveLengthwise(100);
             /*ArrayList<Vec2> path = new ArrayList<>();
