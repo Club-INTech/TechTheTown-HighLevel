@@ -44,15 +44,17 @@ import java.util.ArrayList;
 /**
  * The Class JUnit_Robot.
  */
-public class JUnit_Robot extends JUnit_Test
-{
-    /** The robotvrai. */
+public class JUnit_Robot extends JUnit_Test {
+    /**
+     * The robotvrai.
+     */
     private Robot robotReal;
     private ScriptManager scriptManager;
     private GameState state;
     private ThreadSimulator simulator;
     private ThreadSimulatorMotion simulatorMotion;
-    
+    private Table table;
+
     /* (non-Javadoc)
      * @see tests.JUnit_Test#setUp()
      */
@@ -63,12 +65,13 @@ public class JUnit_Robot extends JUnit_Test
             robotReal = container.getService(Robot.class);
             scriptManager = container.getService(ScriptManager.class);
             state = container.getService(GameState.class);
-            simulatorMotion = container.getService(ThreadSimulatorMotion.class);
-            simulator = container.getService(ThreadSimulator.class);
+            table = container.getService(Table.class);
+            //    simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+            //  simulator = container.getService(ThreadSimulator.class);
 
             container.startInstanciedThreads();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -82,7 +85,7 @@ public class JUnit_Robot extends JUnit_Test
 
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
             robotReal.setOrientation(Math.PI);
-            robotReal.setPosition(new Vec2(0,50));
+            robotReal.setPosition(new Vec2(0, 50));
 
 
             robotReal.moveLengthwise(100);
@@ -98,10 +101,15 @@ public class JUnit_Robot extends JUnit_Test
             Thread.sleep(5000);
             robotReal.moveLengthwise(-50);
             robotReal.turn(1.2);
-            robotReal.turn(0.8);*/
+            robotReal.turn(0.8);
+
+            */
+
+            Pathfinding pathfinding = new Pathfinding(log, config, table);
+
 
             Thread.sleep(500);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

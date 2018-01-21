@@ -41,9 +41,11 @@ import java.util.ArrayList;
  * Tests Unitaires pour le pathfinding : utiliser ce JUnit pour faire des petits tests de java
  * si vous voulez !
  */
-public class JUnit_Pathfinding extends JUnit_Test{
+public class JUnit_Pathfinding extends JUnit_Test {
 
-    /** Spécification des variables */
+    /**
+     * Spécification des variables
+     */
     private Table table;
     private ObstacleManager obstacleManager;
     private Robot robotReal;
@@ -56,7 +58,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
      * droit sur le test, 'Run')
      */
     @Test
-    public void testUnit() throws ContainerException, InterruptedException{
+    public void testUnit() throws ContainerException, InterruptedException {
 
         /** Instanciation des variables */
         table = container.getService(Table.class);
@@ -64,7 +66,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
         obstacleManager = table.getObstacleManager(); // Grâce au container, le champ ObstacleManager de votre table est déjà instancié !
         // Mais... pour commencer instancier vos variables à la main :
         Vec2 example = new Vec2(50, 40);
-        Vec2 example2= new Vec2(600,1600);
+        Vec2 example2 = new Vec2(600, 1600);
 
 
         // Whatever you want... Le debug pour le moment c'est mettre des 'System.out.println()' qui affiche ce que
@@ -73,44 +75,42 @@ public class JUnit_Pathfinding extends JUnit_Test{
         // ou (petite subtilité : entryposition est un champ static, lié à la classe Table; c'est pour cela que l'on y accède via Table.entryposition)
 //        System.out.println("Position de départ du robot : " + Table.entryPosition);
         // Mais la facon "normale" fonctionne aussi :
-  //      System.out.println("Position de départ : " + table.entryPosition);
+        //      System.out.println("Position de départ : " + table.entryPosition);
 
 
-        Window window=new Window(table);
-        Graphe graphe=new Graphe(table, config, log);
+        Window window = new Window(table);
+        Graphe graphe = new Graphe(table, config, log);
         window.setArete(graphe.getBoneslist());
 
         robotReal = container.getService(Robot.class);
-        state=container.getService(GameState.class);
+        state = container.getService(GameState.class);
         container.startInstanciedThreads();
 
         // Thread.sleep(20000);
 
         Pathfinding pf = new Pathfinding(log, config, table);
-        ArrayList<Vec2> path =  new ArrayList<>();
+        ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);
         Vec2 clic = new Vec2();
         pf.initGraphe();
 
 
-        while(true) {
+        while (true) {
 
             try {
                 clic = window.waitLClic();
-                robotReal.setPosition(new Vec2(0,500));
-                robotReal.setOrientation(Math.PI/2);
+                robotReal.setPosition(new Vec2(0, 500));
+                robotReal.setOrientation(Math.PI / 2);
                 path = pf.findmyway(robotReal.getPosition(), clic);
 
                 robotReal.followPath(path);
 
                 window.setPath(path);
-            }
-            catch (PointInObstacleException e) {
+            } catch (PointInObstacleException e) {
 
                 System.out.println("Obstacle!!");
                 e.printStackTrace();
-            }
-            catch (UnableToMoveException e){
+            } catch (UnableToMoveException e) {
 
                 System.out.println("No way found !!");
 
