@@ -84,7 +84,7 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     private BufferedWriter outStandard;
     private BufferedWriter outDebug;
-    private BufferedWriter outPosion;
+    private BufferedWriter outPosition;
     private BufferedWriter outEvent;
     private BufferedWriter fullDebug;
 
@@ -151,8 +151,8 @@ public class ThreadEth extends AbstractThread implements Service {
                 outStandard.newLine();
                 outDebug = new BufferedWriter(new FileWriter(fileDebug));
                 outDebug.newLine();
-                outPosion = new BufferedWriter(new FileWriter(position));
-                outPosion.newLine();
+                outPosition = new BufferedWriter(new FileWriter(position));
+                outPosition.newLine();
                 outEvent = new BufferedWriter(new FileWriter(event));
                 outEvent.newLine();
                 fullDebug = new BufferedWriter(new FileWriter(fulldebug));
@@ -367,14 +367,14 @@ public class ThreadEth extends AbstractThread implements Service {
         while (!shutdown) {
             try {
                 buffer = input.readLine();
+                fullDebug.write(buffer.substring(2));
+                fullDebug.newLine();
+                fullDebug.flush();
                 if (buffer.length() >= 2 && !(buffer.replaceAll(" ", "").equals(""))) {
                     char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
-                    fullDebug.write(buffer);
-                    fullDebug.newLine();
-                    fullDebug.flush();
                     if (CommunicationHeaders.EVENT.getFirstHeader() == headers[0] && CommunicationHeaders.EVENT.getSecondHeader() == headers[1]) {
                         eventBuffer.add(buffer);
-                        outEvent.write(buffer);
+                        outEvent.write(buffer.substring(2));
                         outEvent.newLine();
                         outEvent.flush();
                         continue;
@@ -384,9 +384,9 @@ public class ThreadEth extends AbstractThread implements Service {
                     } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                         synchronized (this.positionAndOrientation) {
                             positionAndOrientation = new XYO(buffer, splitString);
-                            outPosion.write(buffer);
-                            outPosion.newLine();
-                            outPosion.flush();
+                            outPosition.write(buffer.substring(2));
+                            outPosition.newLine();
+                            outPosition.flush();
                         }
                         continue;
                     } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
