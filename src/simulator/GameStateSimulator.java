@@ -21,7 +21,7 @@ public class GameStateSimulator implements Service {
     private Table table;
 
     /** Position du robot */
-    private Vec2 position = new Vec2(0,0);
+    private Vec2 position;
 
     /** Orientation du robot */
     private float orientation = 0;
@@ -58,6 +58,7 @@ public class GameStateSimulator implements Service {
         this.config = config;
         this.log = log;
         table = new Table(log, config);
+        this.position = new Vec2(0,0);
     }
 
     /** Update la position du robot */
@@ -65,6 +66,7 @@ public class GameStateSimulator implements Service {
 
         int done = 0;
         Vec2 finalAim = position.plusNewVector(new Vec2(distance, orientation));
+        // Divisé par 100 car move delay en ms, translationSpeed en mm/s et distanceLoop en mm
         float distanceLoop = (float) translationSpeed * moveDelay/(float)1000;
 
         this.setRobotMoving(true);

@@ -82,9 +82,10 @@ public class JUnit_Robot extends JUnit_Test
 
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
             robotReal.setOrientation(Math.PI/2);
-            robotReal.setPosition(new Vec2(0,50));
+            robotReal.setPosition(new Vec2(0,300));
 
-            ArrayList<Vec2> path = new ArrayList<>();
+            robotReal.moveLengthwise(100);
+            /*ArrayList<Vec2> path = new ArrayList<>();
             path.add(new Vec2(0,50));
             path.add(new Vec2(10,70));
             robotReal.followPath(path);
@@ -93,7 +94,7 @@ public class JUnit_Robot extends JUnit_Test
             Thread.sleep(5000);
             robotReal.moveLengthwise(-50);
             robotReal.turn(1.2);
-            robotReal.turn(0.8);
+            robotReal.turn(0.8);*/
 
             Thread.sleep(500);
         }catch (Exception e){

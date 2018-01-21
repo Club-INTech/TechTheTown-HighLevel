@@ -192,7 +192,7 @@ public class Locomotion implements Service
     private ConcurrentLinkedQueue<String> unableToMoveEvent;
 
     /** Le robot bouge */
-    private Boolean isMoving;
+    private volatile Boolean isMoving;
 
     /**
      * Constructeur de Locomotion
@@ -211,7 +211,7 @@ public class Locomotion implements Service
             for (int i = 0; i < 4; i++) add(0);
         }};
         this.unableToMoveEvent = thEvent.getUnableToMoveEvent();
-        this.isMoving = thEvent.getIsMovingEvent();
+        this.isMoving = thEvent.getIsMovingObject();
         updateConfig();
     }
 
@@ -262,10 +262,6 @@ public class Locomotion implements Service
 
     public void moveToPoint(Vec2 pointVise, boolean expectedWallImpact, boolean mustDetect) throws UnableToMoveException
     {
-        synchronized (this.isMoving) {
-            this.isMoving = true;
-        }
-
         Vec2 move = pointVise.minusNewVector(highLevelPosition);
         int moveR = (int) move.getR();
         double moveA = move.getA();
@@ -310,9 +306,6 @@ public class Locomotion implements Service
      */
     public void turn(double angle, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException
     {
-        synchronized (this.isMoving) {
-            this.isMoving = true;
-        }
         log.debug("Tourner de "+Double.toString(angle));
 
         actualRetriesIfBlocked=0;
@@ -485,8 +478,7 @@ public class Locomotion implements Service
                 doItAgain = false;
             }
         }
-        while(doItAgain)
-                ;
+        while(doItAgain);
     }
 
     /**
@@ -536,8 +528,9 @@ public class Locomotion implements Service
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println(this.isMoving.booleanValue());
         }
-        while(isMoving);
+        while(this.isMoving.booleanValue());
     }
 
     /**
@@ -719,6 +712,9 @@ public class Locomotion implements Service
     {
         log.warning("Arrêt du robot en "+lowLevelPosition);
         ethWrapper.immobilise();
+        synchronized (this.isMoving) {
+            this.isMoving = false;
+        }
     }
 
 
@@ -883,6 +879,11 @@ public class Locomotion implements Service
     {
         this.basicDetection = basicDetection;
     }
+
+    public Boolean getIsMovingObject(){
+        return this.isMoving;
+    }
+
 
     @Override
     public void updateConfig()

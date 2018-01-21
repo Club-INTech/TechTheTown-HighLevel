@@ -75,8 +75,9 @@ public class Vec2 {
 			r = requestedR;
 			a = requestedA;
 		}
-		x = (int) (r * Math.cos(a));
-		y = (int) (r * Math.sin(a));
+		//Attention, si r*Math.cos(a) torp grand, le cast du long en int provoque des pertes de données
+		x = (int) Math.round(r * Math.cos(a));
+		y = (int) Math.round(r * Math.sin(a));
 	}
 
 	// Il est plus performant de trouver la longueur au carré et de la comparer à des distances au carré que d'en extraire la racine
