@@ -41,9 +41,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class ThreadEth extends AbstractThread implements Service {
 
-    /**
-     * Nom
-     */
+
+
+    /** Nom */
+
     public String name;
 
     /**
@@ -121,6 +122,7 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     private ThreadEth(Log log, Config config) {
         super(config, log);
+
         this.name = "Teensy";
         if (debug) {
             try {
@@ -141,9 +143,13 @@ public class ThreadEth extends AbstractThread implements Service {
                     event.createNewFile();
                 }
                 outStandard = new BufferedWriter(new FileWriter(file));
+                outStandard.newLine();
                 outDebug = new BufferedWriter(new FileWriter(fileDebug));
+                outDebug.newLine();
                 outPosion = new BufferedWriter(new FileWriter(position));
+                outPosion.newLine();
                 outEvent = new BufferedWriter(new FileWriter(event));
+                outEvent.newLine();
 
             } catch (IOException e) {
                 log.critical("Manque de droits pour l'output");
@@ -313,10 +319,11 @@ public class ThreadEth extends AbstractThread implements Service {
                     }
                 }
 
-                if (!isAsciiExtended(inputLines[i])) {
-                    log.critical("Reception de " + inputLines[i] + " (non Ascii) , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " envoi du message a nouveau");
+            /*    if(!isAsciiExtended(inputLines[i]))
+                {
+                    log.critical("Reception de "+inputLines[i]+" (non Ascii) , en réponse à "+ message[0].replaceAll("\r", "").replaceAll("\n", "") + " envoi du message a nouveau");
                     communicate(nb_line_response, message); // On retente
-                }
+                }   */
             }
             if (nb_line_response != 0) {
                 outStandard.newLine();

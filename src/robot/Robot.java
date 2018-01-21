@@ -23,6 +23,7 @@ import container.Service;
 import enums.*;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.NoPathFound;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -100,7 +101,7 @@ public class Robot implements Service {
 	 * @param log           fichier de log
 	 * @param ethWrapper protocole communication série
 	 */
-	private Robot(Locomotion deplacements, Config config, Log log, EthWrapper ethWrapper, Pathfinding pathfinding) {
+	public Robot(Locomotion deplacements, Config config, Log log, EthWrapper ethWrapper, Pathfinding pathfinding) {
 
 		this.config = config;
 		this.log = log;
@@ -169,6 +170,7 @@ public class Robot implements Service {
 	public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException {
 		Vec2 aimPosition= Geometry.closestPointOnCircle(this.position,aim);
 		// TODO : Appel du followpath & Pathfinding !
+		followPath(pathfinding.findmyway(position,aimPosition));
 	}
 
 	/**
@@ -250,7 +252,11 @@ public class Robot implements Service {
 	{
 		turn(angle, false, false);
 	}
-
+	/**Comme turn sauf que les angles sont relatifs, tourne par exemple de Pi/2 à partir de sa position**/
+	public void turnRelatively(double angle) throws UnableToMoveException
+	{
+		turn(angle, false, true);
+	}
 	/**
 	 * Fait tourner le robot, en considérant les hooks et les éventuels calins avec le mur
 	 * @param angle

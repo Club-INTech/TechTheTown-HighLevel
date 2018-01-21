@@ -103,7 +103,7 @@ proguard/
 captures/
 
 # Intellij
-#*.iml
+
 .idea/workspace.xml
 
 # Keystore files
@@ -159,6 +159,7 @@ flycheck_*.el
 .idea/dictionaries
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
+.idea
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
@@ -295,6 +296,7 @@ xcuserdata/
 # Debug files
 *.dSYM/
 *.su
+*.txt
 ### C++ template
 # Compiled Object files
 *.slo

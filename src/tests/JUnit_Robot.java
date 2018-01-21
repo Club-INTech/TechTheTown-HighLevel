@@ -20,14 +20,23 @@
 package tests;
 
 import enums.ScriptNames;
+import enums.Speed;
 import org.junit.Before;
 import org.junit.Test;
+import pathfinder.Pathfinding;
+import pfg.config.Config;
+import robot.EthWrapper;
+import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import smartMath.Vec2;
 import strategie.GameState;
+import table.Table;
+import threads.dataHandlers.ThreadEth;
+import threads.dataHandlers.ThreadSensor;
+import utils.Log;
 
 import java.util.ArrayList;
 
@@ -54,24 +63,41 @@ public class JUnit_Robot extends JUnit_Test
             robotReal = container.getService(Robot.class);
             scriptManager = container.getService(ScriptManager.class);
             state = container.getService(GameState.class);
+            simulatorMotion = container.getService(ThreadSimulatorMotion.class);
             simulator = container.getService(ThreadSimulator.class);
 
             container.startInstanciedThreads();
+
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
     @Test
-    public void testScript() throws Exception {
-        robotReal.setOrientation(Math.PI/2);
-        robotReal.setPosition(new Vec2(0,50));
-        ArrayList<Vec2> path = new ArrayList<>();
-        path.add(new Vec2(0,50));
-        path.add(new Vec2(10,70));
-        robotReal.followPath(path);
-        robotReal.moveLengthwise(100);
-        robotReal.turn(Math.PI);
-        Thread.sleep(5000);
+    public void testScript() {
+        try {
+            robotReal = container.getService(Robot.class);
+            robotReal.getPosition();
+            robotReal.getOrientation();
+
+            robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
+            robotReal.setOrientation(Math.PI/2);
+            robotReal.setPosition(new Vec2(0,50));
+
+            ArrayList<Vec2> path = new ArrayList<>();
+            path.add(new Vec2(0,50));
+            path.add(new Vec2(10,70));
+            robotReal.followPath(path);
+
+            robotReal.goTo(new Vec2(650, 500));
+            Thread.sleep(5000);
+            robotReal.moveLengthwise(-50);
+            robotReal.turn(1.2);
+            robotReal.turn(0.8);
+
+            Thread.sleep(500);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

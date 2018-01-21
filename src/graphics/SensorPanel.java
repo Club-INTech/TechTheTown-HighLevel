@@ -46,7 +46,8 @@ public class SensorPanel extends JPanel
 	public SensorPanel()
 	{
 	}
-	
+
+	@Override
 	public void paintComponent(Graphics g)
 	{
 		g.setColor(Color.black);

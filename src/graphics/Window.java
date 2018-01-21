@@ -21,91 +21,143 @@
 
 package graphics;
 
+import org.jfree.chart.axis.SegmentedTimeline;
+import pathfinder.Arete;
+import pathfinder.Noeud;
 import scripts.ScriptManager;
+import smartMath.Segment;
+import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
+import tests.container.A;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.*;
 
 /**
- * interface graphique de debugage
- * @author Etienne
- *
+ * Interface graphique pour faciliter le debugage HL
+ * @author Etienne, rem
  */
 public class Window extends JFrame
 {
 	/** numéro de serialisation	 */
 	private static final long serialVersionUID = -3140220993568124763L;
 
-	private TablePanel mPanel;
-	private SensorPanel mSensorPanel;
-	private Mouse mMouse;
-	private Keyboard mKeyboard;
-	
-	public Window(Table table, GameState mRobot, ScriptManager scriptManager)
+	/** Panels : sert à définir ce que l'on dessine sur la fenêtre */
+	private TablePanel tablePanel;
+
+	/** Mouse Listener & Keyboard Listener */
+	private Mouse mouse;
+	private Keyboard keyboard;
+
+	/** Couleur de fond */
+	private Color backgroundColor = new Color(25, 20, 30);
+
+	/** Construit toute l'interface : cette dernière contient la table (avec robot et chemin), ainsi que l'état du robot
+	 * (action executée, état de certaines variables, ...)
+	 * @param table
+	 * @param state
+	 * @param scriptManager
+	 */
+	public Window(Table table, GameState state, ScriptManager scriptManager)
 	{
-		this.setVisible(true);
-		this.setTitle("Table");
-	    this.setSize(600, 400);
+		this.setTitle("Interface - Full");
+	    this.setSize(1300, 950);
 	    this.setLocationRelativeTo(null);
+	    this.setResizable(false);
+	    this.setBackground(backgroundColor);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    tablePanel = new TablePanel(table, state.robot);
+	    this.setContentPane(tablePanel);
 	    
-	    mPanel = new TablePanel(table, mRobot.robot);
-	    this.setContentPane(mPanel);
+	    mouse = new Mouse(tablePanel);
+	    addMouseListener(mouse);
 	    
-	    mMouse = new Mouse(mPanel);
-	    addMouseListener(mMouse);
-	    
-	    mKeyboard = new Keyboard(mRobot, scriptManager);
-	    addKeyListener(mKeyboard);
+	    keyboard = new Keyboard(state, scriptManager);
+	    addKeyListener(keyboard);
+
+	    this.setVisible(true);
 	}
 
+	/** Construit l'interface de debug du pathfinding : ce dernier contient la table, sur laquelle est présente le graph,
+	 * un mouse Listener permettant de tester le pathfinding de manière interactive, ainsi que quelques infos de debug
+	 * @param table
+	 */
 	public Window(Table table)
 	{
-		this.setVisible(true);
-		this.setTitle("table");
-		this.setSize(600, 400);
+		this.setTitle("Interface - Pathfinding");
+		this.setSize(1300, 950);
 		this.setLocationRelativeTo(null);
+		this.setResizable(false);
+		this.setBackground(backgroundColor);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		tablePanel = new TablePanel(table);
+		this.setContentPane(tablePanel);
 
-		mPanel = new TablePanel(table);
-		this.setContentPane(mPanel);
+		mouse = new Mouse(tablePanel);
+		addMouseListener(mouse);
 
-		mMouse = new Mouse(mPanel);
-		addMouseListener(mMouse);
-
-	}
-	
-	public Window()
-	{
 		this.setVisible(true);
-		this.setTitle("sensorValues");
-	    this.setSize(1200, 800);
-	    this.setLocationRelativeTo(null);
-	    
-	    mSensorPanel = new SensorPanel();
-	    this.setContentPane(mSensorPanel);
 	}
-	
-	/**
-	 * 
-	 * @return le panneau
-	 */
+
+	/** Attend que l'on clic droit et gauche et renvoie les positions des clics (gauche puis droit) */
+	public ArrayList<Vec2> waitLRClic() throws InterruptedException{
+		mouse.resetClics();
+		ArrayList<Vec2> clics = new ArrayList<>();
+		while(mouse.getLeftClicPosition() == null || mouse.getRightClicPosition() == null){
+			Thread.sleep(100);
+			// TODO Mettre une vérification de la position du clic : accès à Table par le tablePanel
+		}
+		clics.add(mouse.getLeftClicPosition().clone());
+		clics.add(mouse.getRightClicPosition().clone());
+		tablePanel.setClics(clics);
+		repaint();
+		mouse.resetClics();
+		return clics;
+	}
+
+	/** Attend que l'on clic gauche et renvoie la position des clics (gauche puis droit) */
+	public Vec2 waitLClic() throws InterruptedException{
+		mouse.resetClics();
+		ArrayList<Vec2> clics = new ArrayList<>();
+		while(mouse.getLeftClicPosition() == null ){
+			Thread.sleep(100);
+			// TODO Mettre une vérification de la position du clic : accès à Table par le tablePanel
+		}
+		clics.add(mouse.getLeftClicPosition().clone());
+		tablePanel.setClics(new ArrayList<Vec2>(clics));
+		repaint();
+		mouse.resetClics();
+		return clics.get(0);
+	}
+
+	/** Permet d'afficher les aretes/le chemin */
+	public void setArete(ArrayList<Arete> aretes){
+		tablePanel.setAretes(aretes);
+		repaint();
+	}
+	public void setPath(ArrayList<Vec2> path){
+		tablePanel.setPath(path);
+		repaint();
+	}
+	public void setNode(ArrayList<Noeud> nodes){
+		tablePanel.setNodes(nodes);
+		repaint();
+	}
+
+	/** Getters */
 	public TablePanel getPanel()
 	{
-		return mPanel;
+		return tablePanel;
 	}
-	
-	public void drawInt(int value1, int value2, int value3, int value4)
-	{
-		mSensorPanel.drawInteger(new Integer(value1), new Integer(value2), new Integer(value3), new Integer(value4));
-	}
-	
 	public Mouse getMouse()
 	{
-		return mMouse;
+		return mouse;
 	}
-
 	public Keyboard getKeyboard()
 	{
-		return mKeyboard;
+		return keyboard;
 	}
 }

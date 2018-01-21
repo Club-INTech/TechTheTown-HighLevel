@@ -185,7 +185,6 @@ public class Container implements Service
             System.exit(0);
         }
 
-
 		if(showGraph)
 		{
 			try {
@@ -201,7 +200,6 @@ public class Container implements Service
 
 		// Le container est aussi un service
 		instanciedServices.put(getClass().getSimpleName(), this);
-
 	}
 	
 	/**

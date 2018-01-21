@@ -55,7 +55,8 @@ public class ObstacleManager implements Service
     private ArrayList<ObstacleProximity> mMobileObstacles;
 
     /** Ensemble des obstacles circulaires */
-    private ArrayList<ObstacleCircular> mCircularObstacle;
+    public ArrayList<ObstacleCircular> mCircularObstacle;
+
 
     /** Ensemble des obstacles mobiles/temporaires a tester pour les placer sur la table */
 	private ArrayList<ObstacleProximity> mUntestedMobileObstacles;
@@ -64,7 +65,7 @@ public class ObstacleManager implements Service
     private ArrayList<Segment> mLines;
 
 	/** Les obstacles rectangulaires de la table */
-	private ArrayList<ObstacleRectangular> mRectangles;
+	public ArrayList<ObstacleRectangular> mRectangles;
 
 	/** Rayon de notre robot */
 	public int mRobotRadius;
@@ -110,7 +111,7 @@ public class ObstacleManager implements Service
         this.log = log;
         this.config = config;
         
-        //creation des listes qui contiendrons les differents types d'obstacles
+        //creation des listes qui contiendront les differents types d'obstacles
         mMobileObstacles = new ArrayList<ObstacleProximity>();
         mCircularObstacle = new ArrayList<ObstacleCircular>();
         mLines = new ArrayList<Segment>();
@@ -126,7 +127,6 @@ public class ObstacleManager implements Service
       	mLines.add(new Segment(new Vec2(1500 - mRobotRadius, 0 + mRobotRadius), new Vec2(1500 - mRobotRadius, 2000 - mRobotRadius)));
       	mLines.add(new Segment(new Vec2(1500 - mRobotRadius, 2000 - mRobotRadius), new Vec2(-1500 + mRobotRadius, 2000 - mRobotRadius)));
       	mLines.add(new Segment(new Vec2(-1500 + mRobotRadius, 2000 - mRobotRadius), new Vec2(-1500 + mRobotRadius, 0 + mRobotRadius)));
-
 		try {
 			File file = new File("debugDetect.txt");
 
@@ -153,35 +153,23 @@ public class ObstacleManager implements Service
 		//Les différents obstacles fixés sur la table
 		//TODO initialiser tout les obstacles de la table
 
-		// zones de départ
-		//mRectangles.add(new ObstacleRectangular(new Vec2(-1145, 370), 710 + 2*mRobotRadius, 20 + 2*mRobotRadius));
-		//mRectangles.add(new ObstacleRectangular(new Vec2(1145, 370), 710 + 2*mRobotRadius, 20 + 2*mRobotRadius)); // x 350, y 360 => centre 965, 300
-		//mRectangles.add(new ObstacleRectangular(new Vec2(-1145, 371), 710 + 2*mRobotRadius, 22 + 2*mRobotRadius));
-		//mRectangles.add(new ObstacleRectangular(new Vec2(1145, 371), 710 + 2*mRobotRadius, 22 + 2*mRobotRadius));
+		//mRectangles.add(new ObstacleRectangular(new Vec2(1300, 325), 400 + 2*mRobotRadius, 650 + 2*mRobotRadius)); //-1446, 678, 108, 472
+		mRectangles.add(new ObstacleRectangular(new Vec2(-1300, 325),  400 + 2*mRobotRadius, 650 + 2*mRobotRadius));
+        mRectangles.add(new ObstacleRectangular(new Vec2(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
 
+        /** Cubes*/
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1200, 1190), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(400, 1500), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-400, 1500), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1200, 1190), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-650, 540), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(650, 540), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
 
-		//fusées
-		/*
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-350, 40), 40 + mRobotRadius))); // 350, 40, 40 / 1460, 1350, 40
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(350, 40), 40 + mRobotRadius)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1460, 1350), 40 + mRobotRadius)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1460, 1350), 40 + mRobotRadius)));
-		*/
-
-		//cratères
-		/*
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-850, 540), 135 + mRobotRadius, -Math.PI/6, 2*Math.PI/3, true)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(850, 540), 135 + mRobotRadius,Math.PI/3, 7*Math.PI/6, true)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1500, 2000), 550 + mRobotRadius, -Math.PI/2, -Math.PI/4,true)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1500, 2000), 550 + mRobotRadius, -3*Math.PI/4, -Math.PI/2, true)));
-		*/
-
-		//pose module côté
-		mRectangles.add(new ObstacleRectangular(new Vec2(-1446, 870), 108 + 2*mRobotRadius, 500 + 2*mRobotRadius)); //-1446, 678, 108, 472
-		mRectangles.add(new ObstacleRectangular(new Vec2(1446, 870), 108 + 2*mRobotRadius, 500 + 2*mRobotRadius));
-
-		//base lunaire
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(0, 2000), 815 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		/**Récupérateur des eaux usées*/
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 1500,840), 105 + mRobotRadius,-9*Math.PI/10,-Math.PI/10,true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -1500, 840), 105 + mRobotRadius, -9*Math.PI/10,-Math.PI/10,true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 890,2000), 105 + mRobotRadius,-9*Math.PI/10,-Math.PI/10,true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -890, 2000), 105 + mRobotRadius, -9*Math.PI/10,-Math.PI/10,true)));
 	}
 
 	/**
@@ -632,10 +620,10 @@ public class ObstacleManager implements Service
 		if(obstacle instanceof ObstacleRectangular)
 		{
 			ObstacleRectangular obstacleRectangular = (ObstacleRectangular)obstacle;
-			return pos.getX()<(obstacleRectangular.position.getX()-(obstacleRectangular.sizeX/2))
-					&& pos.getX()>(obstacleRectangular.position.getX()+(obstacleRectangular.sizeX/2))
-					&& pos.getY()<(obstacleRectangular.position.getY()-(obstacleRectangular.sizeY/2))
-					&& pos.getY()>(obstacleRectangular.position.getY()+(obstacleRectangular.sizeY/2));
+			return pos.getX()<(obstacleRectangular.position.getX()+(obstacleRectangular.sizeX/2))
+					&& pos.getX()>(obstacleRectangular.position.getX()-(obstacleRectangular.sizeX/2))
+					&& pos.getY()<(obstacleRectangular.position.getY()+(obstacleRectangular.sizeY/2))
+					&& pos.getY()>(obstacleRectangular.position.getY()-(obstacleRectangular.sizeY/2));
 		}
 		else
 			throw new IllegalArgumentException();
