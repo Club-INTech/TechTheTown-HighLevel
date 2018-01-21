@@ -84,6 +84,7 @@ public class GameStateSimulator implements Service {
         if(!this.isMustStop()) {
             position = finalAim;
         }
+
     }
 
     /** Update l'orientation du robot */
