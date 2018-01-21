@@ -372,30 +372,31 @@ public class ThreadEth extends AbstractThread implements Service {
                 fullDebug.flush();
                 if (buffer.length() >= 2 && !(buffer.replaceAll(" ", "").equals(""))) {
                     char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
+                    String infosFromBuffer=buffer.substring(2);
                     if (CommunicationHeaders.EVENT.getFirstHeader() == headers[0] && CommunicationHeaders.EVENT.getSecondHeader() == headers[1]) {
-                        eventBuffer.add(buffer);
-                        outEvent.write(buffer.substring(2));
+                        eventBuffer.add(infosFromBuffer);
+                        outEvent.write(infosFromBuffer);
                         outEvent.newLine();
                         outEvent.flush();
                         continue;
                     } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
-                        ultrasoundBuffer.add(buffer);
+                        ultrasoundBuffer.add(infosFromBuffer);
                         continue;
                     } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                         synchronized (this.positionAndOrientation) {
-                            positionAndOrientation = new XYO(buffer, splitString);
-                            outPosition.write(buffer.substring(2));
+                            positionAndOrientation = new XYO(infosFromBuffer, splitString);
+                            outPosition.write(infosFromBuffer);
                             outPosition.newLine();
                             outPosition.flush();
                         }
                         continue;
                     } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
-                        outDebug.write(buffer.substring(2));
+                        outDebug.write(infosFromBuffer);
                         outDebug.newLine();
                         outDebug.flush();
                         continue;
                     } else {
-                        standardBuffer.add(buffer);
+                        standardBuffer.add(infosFromBuffer);
                         continue;
                     }
                 } else if (!(buffer.replaceAll(" ", "").equals(""))) {

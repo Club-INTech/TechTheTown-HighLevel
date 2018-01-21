@@ -44,7 +44,7 @@ public class ThreadEvents extends AbstractThread
     private ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
 
     /** Le robot bouge */
-    private Boolean isMoving;
+    private volatile Boolean isMoving;
 
     /**
      * Constructeur
@@ -57,7 +57,7 @@ public class ThreadEvents extends AbstractThread
         this.config = config;
         this.log = log;
         events = eth.getEventBuffer();
-        this.isMoving = false;
+        this.isMoving = new Boolean(false);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class ThreadEvents extends AbstractThread
                     else if (message[0].equals(EventType.STOPPEDMOVING.getEventId())){
                         log.debug("Arret du robot");
                         synchronized (this.isMoving) {
-                            this.isMoving = false;
+                            this.isMoving = new Boolean(false);
                         }
                     }
                 } else {
@@ -94,6 +94,7 @@ public class ThreadEvents extends AbstractThread
     public ConcurrentLinkedQueue<String> getUnableToMoveEvent() {
         return unableToMoveEvent;
     }
-    public boolean getIsMovingEvent() { return isMoving; }
+    public Boolean getIsMovingObject() {
+        return this.isMoving; }
     public void setIsMoving(boolean value){ this.isMoving=value; }
 }

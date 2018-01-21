@@ -22,6 +22,7 @@ package simulator;
 import container.Service;
 import enums.ActuatorOrder;
 import enums.CommunicationHeaders;
+import enums.EventType;
 import enums.TurningStrategy;
 import exceptions.Locomotion.UnableToMoveException;
 import pfg.config.Config;
@@ -86,9 +87,9 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
             } else if (head.equals(ActuatorOrder.TURN_RIGHT_ONLY.getSerialOrder())) {
                 state.turn(Float.parseFloat(messages[1]), TurningStrategy.RIGHT_ONLY);
             } else {
-                log.warning("Ordre Inconnue : " + head);
+                log.warning("Ordre Inconnu : " + head);
             }
-            simulator.communicate(CommunicationHeaders.EVENT, "Ah!");
+            simulator.communicate(CommunicationHeaders.EVENT, EventType.STOPPEDMOVING.getEventId());
         }catch (UnableToMoveException e){
             log.critical("SIMULATOR : Robot dans un obstacle (théorique)");
             e.printStackTrace();
