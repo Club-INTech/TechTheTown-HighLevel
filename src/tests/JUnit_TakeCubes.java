@@ -47,7 +47,7 @@ public class JUnit_TakeCubes extends JUnit_Test {
 
             robotReal.setOrientation(Math.PI);
 //            takeCubes.execute(0,state,0.025,0.045);
-            takeCubes.execute(40,state,0,0);
+            takeCubes.execute(0,state,0,0);
             /*int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
             state.robot.moveLengthwise(-l);*/
 
