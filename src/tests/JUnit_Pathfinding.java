@@ -92,6 +92,8 @@ public class JUnit_Pathfinding extends JUnit_Test{
         Vec2 clic = new Vec2();
         pf.initGraphe();
 
+        robotReal.setPosition(new Vec2(0,50));
+        robotReal.setOrientation(Math.PI/2);
 
         while(true) {
 
