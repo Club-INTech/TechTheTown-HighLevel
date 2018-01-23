@@ -565,7 +565,7 @@ public class Locomotion implements Service
         }
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
         if (!turnOnly){
-            double angleToCompare = Geometry.moduloSpec(delta.getA()-highLevelOrientation,Math.PI);
+            double angleToCompare = delta.getA();
             if (angleToCompare<-1.57||angleToCompare>1.57){
                 moveToPointSerialOrder(delta.getA(), -delta.getR(), turnOnly);
             }
