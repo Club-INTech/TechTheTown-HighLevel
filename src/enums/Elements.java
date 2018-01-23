@@ -27,5 +27,5 @@ package enums;
 public enum Elements 
 {
 	// exemple : SHELL;
-	// TODO : rajouter les éléments de jeu 
+	// TODO : rajouter les éléments de jeu
 }

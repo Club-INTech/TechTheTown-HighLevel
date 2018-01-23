@@ -27,10 +27,11 @@ package enums;
 
 public enum ScriptNames
 {
-    CLOSE_DOORS,
-    INITIALISE_ROBOT,
+	// TODO : Rajouter les noms des scripts
+    TAKE_CUBES,
+    DEPOSE_CUBES,
+    ACTIVATION_BRAS_LATERAL,
 
-	// exemple : CLOSE_DOORS,
-	// TODO : Rajouter les noms des scripts 
+
 
 }
