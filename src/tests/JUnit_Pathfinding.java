@@ -88,20 +88,21 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
         // Thread.sleep(20000);
 
-        Pathfinding pf = new Pathfinding(log, config, table);
+        Pathfinding pathfinding = container.getService(Pathfinding.class);
         ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);
         Vec2 clic = new Vec2();
-        pf.initGraphe();
 
+        pathfinding.initGraphe();
+        robotReal.setPosition(new Vec2(0, 500));
+        robotReal.setOrientation(Math.PI / 2);
 
         while (true) {
 
             try {
                 clic = window.waitLClic();
-                robotReal.setPosition(new Vec2(0, 500));
-                robotReal.setOrientation(Math.PI / 2);
-                path = pf.findmyway(robotReal.getPosition(), clic);
+
+                path = pathfinding.findmyway(robotReal.getPosition(), clic);
 
                 robotReal.followPath(path);
 

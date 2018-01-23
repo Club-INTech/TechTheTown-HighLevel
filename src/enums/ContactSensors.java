@@ -25,7 +25,7 @@ public enum ContactSensors {
 	// TODO : rajouter les contacteurs
 	/**TO DO: Définir les durées d'actions*/
 	PORTE_OUVERTE("po",10,false),
-	BRASINTECH_BAISSE("bib",10,false),
+	BRASINTECH_BAISSE("binb",10,false),
 	BRASTSP_BAISSE("btspb",10,false),
 	BRASABEILLE_BAISSE("bab",10,false),
 	BRASINTERR_BAISSE("bib",10,false),
