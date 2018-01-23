@@ -66,8 +66,8 @@ public class JUnit_Robot extends JUnit_Test {
             scriptManager = container.getService(ScriptManager.class);
             state = container.getService(GameState.class);
             table = container.getService(Table.class);
-            simulatorMotion = container.getService(ThreadSimulatorMotion.class);
-            simulator = container.getService(ThreadSimulator.class);
+     //       simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+     //       simulator = container.getService(ThreadSimulator.class);
 
             container.startInstanciedThreads();
 
@@ -84,19 +84,22 @@ public class JUnit_Robot extends JUnit_Test {
             robotReal.getOrientation();
 
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            robotReal.setOrientation(Math.PI);
-            robotReal.setPosition(new Vec2(200, 300));
+            robotReal.setOrientation(Math.PI/2);
+            robotReal.setPosition(new Vec2(0, 500));
 
-            robotReal.moveLengthwise(-100);
-            robotReal.moveLengthwise(100);
-            /*ArrayList<Vec2> path = new ArrayList<>();
-            path.add(new Vec2(0,50));
-            path.add(new Vec2(10,70));
+      //      robotReal.moveLengthwise(100);
+     //       robotReal.turnRelatively(-Math.PI);
 
-            robotReal.moveLengthwise( 100);
-            Thread.sleep(3000);
-            robotReal.followPath(path);
+       //     robotReal.moveLengthwise(-100);
+       //     robotReal.moveLengthwise(100);
+            ArrayList<Vec2> path = new ArrayList<>();
+            path.add(new Vec2(0,500));
+            path.add(new Vec2(1000,1000));
+            path.add(new Vec2(500,400));
 
+    //            Thread.sleep(3000);
+               robotReal.followPath(path);
+    /*
             robotReal.goTo(new Vec2(650, 500));
             Thread.sleep(5000);
             robotReal.moveLengthwise(-50);

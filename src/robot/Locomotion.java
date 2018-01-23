@@ -356,7 +356,7 @@ public class Locomotion implements Service
         Double dist = (double) distance;
         Vec2 aim = highLevelPosition.plusNewVector(new Vec2(dist, highLevelOrientation));
         finalAim = aim;
-        //System.out.println(finalAim);
+       // System.out.println("FINAL AIM"+finalAim);
 
         /** TODO A adapté à l'annee en cours */
         int totalTime = 0;
@@ -565,7 +565,8 @@ public class Locomotion implements Service
         }
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
         if (!turnOnly){
-            if (delta.getA()<-1.57||delta.getA()>1.57){
+            double angleToCompare = Geometry.moduloSpec(delta.getA()-highLevelOrientation,Math.PI);
+            if (angleToCompare<-1.57||angleToCompare>1.57){
                 moveToPointSerialOrder(delta.getA(), -delta.getR(), turnOnly);
             }
             else{
