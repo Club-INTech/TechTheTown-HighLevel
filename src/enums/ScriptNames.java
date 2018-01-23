@@ -31,6 +31,8 @@ public enum ScriptNames
     TAKE_CUBES,
     DEPOSE_CUBES,
     ACTIVATION_BRAS_LATERAL,
+    CLOSE_DOORS,
+    INITIALISE_ROBOT,
 
 
 

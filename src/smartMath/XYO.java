@@ -48,7 +48,7 @@ public class XYO {
      */
     public XYO(String buffer, String splitString){
         String[] infos = buffer.split(splitString);
-        this.position = new Vec2(Integer.parseInt(infos[0]), Integer.parseInt(infos[1]));
+        this.position = new Vec2((int)Math.round(Double.parseDouble(infos[0])), (int)Math.round(Double.parseDouble(infos[1])));
         this.orientation = Double.parseDouble(infos[2]);
     }
 
