@@ -88,6 +88,7 @@ public class JUnit_Robot extends JUnit_Test {
             robotReal.setPosition(new Vec2(0, 300));
 
             robotReal.moveLengthwise(100);
+            robotReal.turnRelatively(Math.PI/2);
             /*ArrayList<Vec2> path = new ArrayList<>();
             path.add(new Vec2(0,50));
             path.add(new Vec2(10,70));

@@ -12,7 +12,7 @@ LONGUEUR_CUBE                        =  99
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = bleu
-SIMULATION                           = true
+SIMULATION                           = false
 
 # PARAMETRES POUR LES CAPTEUR
 # horizon_capteurs                   = 500
