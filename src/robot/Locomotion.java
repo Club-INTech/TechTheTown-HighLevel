@@ -565,7 +565,7 @@ public class Locomotion implements Service
         }
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
         if (!turnOnly){
-            double produitScalaire = highLevelPosition.dot(delta);
+            double produitScalaire = delta.dot(new Vec2(100,highLevelOrientation));
             if (produitScalaire<0){
                 moveToPointSerialOrder(delta.getA(), -delta.getR(), turnOnly);
             }

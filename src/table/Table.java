@@ -39,7 +39,8 @@ import utils.Log;
  *          -------------------------------------------------------
  *          
  * (0,0) = entre les deux zones de départ
- * (0,2000) = Base Lunaire
+ * (0,2000) = Stations de récupération
+ * (0,0) = Pattern de couleurs
  */
 
 /**
