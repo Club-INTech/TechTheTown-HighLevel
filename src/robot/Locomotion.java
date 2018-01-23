@@ -720,7 +720,7 @@ public class Locomotion implements Service
         XYO positionAndOrientation = ethWrapper.updatePositionAndOrientation();
 
         lowLevelPosition = positionAndOrientation.getPosition();
-        lowLevelOrientation = Geometry.moduloSpec(positionAndOrientation.getOrientation()-Math.PI, Math.PI);
+        lowLevelOrientation = Geometry.moduloSpec(positionAndOrientation.getOrientation(), Math.PI);
         highLevelPosition = lowLevelPosition.clone();
         highLevelOrientation = lowLevelOrientation;
 
