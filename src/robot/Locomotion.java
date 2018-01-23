@@ -356,6 +356,7 @@ public class Locomotion implements Service
         Double dist = (double) distance;
         Vec2 aim = highLevelPosition.plusNewVector(new Vec2(dist, highLevelOrientation));
         finalAim = aim;
+        //System.out.println(finalAim);
 
         /** TODO A adapté à l'annee en cours */
         int totalTime = 0;
@@ -563,8 +564,18 @@ public class Locomotion implements Service
             aimSymetrized.setX(-aimSymetrized.getX());
         }
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
-
-        moveToPointSerialOrder(delta.getA(), delta.getR(), turnOnly);
+        if (!turnOnly){
+            if (delta.getA()<-1.57||delta.getA()>1.57){
+                moveToPointSerialOrder(delta.getA(), -delta.getR(), turnOnly);
+            }
+            else{
+                moveToPointSerialOrder(delta.getA(), delta.getR(), turnOnly);
+            }
+        }
+        else
+            {
+            moveToPointSerialOrder(delta.getA(), delta.getR(), turnOnly);
+        }
     }
 
     /**

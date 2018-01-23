@@ -323,9 +323,9 @@ public class Vec2 {
  */
 	@Override
 	public String toString() {
-		String rs = String.format("%s", Math.round(r*10000)/10000);//.substring(0,6);
-		String os = String.format("%s", Math.round(a*10000)/10000);//.substring(0,6);
-		return String.format("(%s , %s) (%s , %s)", x,y,rs,os);
+		String rs = String.format("%s", Math.round(r*10000)/(float)10000);//.substring(0,6);
+		String os = String.format("%s", Math.round(a*10000)/(float)10000);//.substring(0,6);
+		return String.format("(%s , %s) (%s , %s)",x,y,rs,os);
 	}
 
 	/**
