@@ -23,7 +23,17 @@ public enum ContactSensors {
 	// Syntaxe: NOM_METHODE("protocole_serie", duree_action, valeur_par_default, nombre_de_ligne_reponse)
 	// exemple : DOOR_OPENED_LEFT("ildo",10,true),
 	// TODO : rajouter les contacteurs
+	/**TO DO: Définir les durées d'actions*/
+	PORTE_OUVERTE("po",10,false),
+	BRASINTECH_BAISSE("bib",10,false),
+	BRASTSP_BAISSE("btspb",10,false),
+	BRASABEILLE_BAISSE("bab",10,false),
+	BRASINTERR_BAISSE("bib",10,false),
+	CUBE_PRIS("cp",10,false),
+	TOUR_CONSTRUITE("tc",10,false),
+
 	;
+
 
 	/**la duree moyenne que fait perdre une autre valeur que la valeur par default*/
 	private int averageDuration;
