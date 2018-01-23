@@ -566,6 +566,7 @@ public class Locomotion implements Service
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
         if (!turnOnly){
             double produitScalaire = delta.dot(new Vec2(100,highLevelOrientation));
+            System.out.println("highLevelOrientation: "+highLevelOrientation);
             if (produitScalaire<0){
                 moveToPointSerialOrder(delta.getA(), -delta.getR(), turnOnly);
             }
@@ -719,7 +720,7 @@ public class Locomotion implements Service
         XYO positionAndOrientation = ethWrapper.updatePositionAndOrientation();
 
         lowLevelPosition = positionAndOrientation.getPosition();
-        lowLevelOrientation = Geometry.moduloSpec(positionAndOrientation.getOrientation()-Math.PI, Math.PI);
+        lowLevelOrientation = Geometry.moduloSpec(positionAndOrientation.getOrientation(), Math.PI);
 
         if(symetry){
             highLevelPosition = lowLevelPosition.clone();

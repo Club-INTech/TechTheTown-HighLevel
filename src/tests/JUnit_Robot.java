@@ -95,11 +95,12 @@ public class JUnit_Robot extends JUnit_Test {
             ArrayList<Vec2> path = new ArrayList<>();
             path.add(new Vec2(0,500));
             path.add(new Vec2(1000,1000));
-            path.add(new Vec2(500,00));
+            path.add(new Vec2(500,800));
 
     //            Thread.sleep(3000);
                robotReal.followPath(path);
-    /*
+
+            /*
             robotReal.goTo(new Vec2(650, 500));
             Thread.sleep(5000);
             robotReal.moveLengthwise(-50);
