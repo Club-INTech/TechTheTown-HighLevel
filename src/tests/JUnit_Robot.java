@@ -87,19 +87,24 @@ public class JUnit_Robot extends JUnit_Test {
             robotReal.setOrientation(Math.PI/2);
             robotReal.setPosition(new Vec2(0, 500));
 
-      //      robotReal.moveLengthwise(100);
-     //       robotReal.turnRelatively(-Math.PI);
+      //   robotReal.moveLengthwise(-200);
+        //    robotReal.turnRelatively(-Math.PI/2);
+
+         //   robotReal.goTo(new Vec2(0,500))
+      //      robotReal.goTo(new Vec2( 0,400));
+        //    robotReal.goTo(new Vec2(1000,600));
+         //   robotReal.goTo(new Vec2(1000,800));
 
        //     robotReal.moveLengthwise(-100);
        //     robotReal.moveLengthwise(100);
             ArrayList<Vec2> path = new ArrayList<>();
-            path.add(new Vec2(0,500));
+            path.add(new Vec2(0,400));
             path.add(new Vec2(0,600));
             path.add(new Vec2(1000,600));
-            path.add(new Vec2(1000,400));
+            path.add(new Vec2(1000,800));
 
     //            Thread.sleep(3000);
-               robotReal.followPath(path);
+              robotReal.followPath(path);
 
             /*
             robotReal.goTo(new Vec2(650, 500));

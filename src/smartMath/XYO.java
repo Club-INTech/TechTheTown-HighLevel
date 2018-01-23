@@ -52,6 +52,19 @@ public class XYO {
         this.orientation = Double.parseDouble(infos[2]);
     }
 
+    /**
+     * Methode mettant à jour la position du robot
+     * @param buffer
+     */
+    public void update(String buffer, String splitString){
+        String[] infos = buffer.split(splitString);
+        this.position = new Vec2((int)Math.round(Double.parseDouble(infos[0])), (int)Math.round(Double.parseDouble(infos[1])));
+        this.orientation = Double.parseDouble(infos[2]);
+    }
+
+
+
+
     /** Getters & Setters */
     public Vec2 getPosition() {
         return position;
@@ -65,4 +78,6 @@ public class XYO {
     public void setOrientation(double orientation) {
         this.orientation = orientation;
     }
+
+
 }

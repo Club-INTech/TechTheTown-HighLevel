@@ -242,12 +242,10 @@ public class Locomotion implements Service
      */
     public void followPath(ArrayList<Vec2> path, boolean mustDetect) throws UnableToMoveException
     {
-        updateCurrentPositionAndOrientation();
 
-        path.remove(0);//On enleve le premier point, notre propre position
-
-        for(int i = 0; i < path.size(); i++)
+        for(int i = 1; i < path.size(); i++) //On enleve le premier point, notre propre position
         {
+            updateCurrentPositionAndOrientation();
             Vec2 aim = path.get(i);
             finalAim = aim;
             moveToPoint(aim, false, mustDetect);

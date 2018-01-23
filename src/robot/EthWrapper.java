@@ -304,6 +304,7 @@ public class EthWrapper implements Service {
     public void setX(int x)
     {
         float floatX=(float)x; //On transtype car la serie veut des Floats <3
+        eth.getPositionAndOrientation().getPosition().setX(x);
         eth.communicate(0, ActuatorOrder.SET_X.getSerialOrder(), String.format(Locale.US, "%.3f", floatX));
     }
 
@@ -314,6 +315,7 @@ public class EthWrapper implements Service {
     public void setY(int y)
     {
         float floatY=(float)y;//On transtype car la serie veut des Floats
+        eth.getPositionAndOrientation().getPosition().setY(y);
         eth.communicate(0, ActuatorOrder.SET_Y.getSerialOrder(), String.format(Locale.US, "%.3f", floatY));
     }
 
@@ -324,6 +326,7 @@ public class EthWrapper implements Service {
     public void setOrientation(double orientation)
     {
         float floatOrientation =(float) orientation; //On transtype car la serie veut des Floats (T_T)
+        eth.getPositionAndOrientation().setOrientation(orientation);
         eth.communicate(0, ActuatorOrder.SET_ORIENTATION.getSerialOrder(), String.format(Locale.US, "%.3f", floatOrientation));
     }
 

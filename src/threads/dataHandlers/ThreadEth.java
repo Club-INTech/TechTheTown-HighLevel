@@ -123,7 +123,7 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     private ThreadEth(Log log, Config config) {
         super(config, log);
-
+        this.positionAndOrientation = new XYO(Table.entryPosition,Table.entryOrientation);
         this.name = "Teensy";
         if (debug) {
             try {
@@ -384,7 +384,7 @@ public class ThreadEth extends AbstractThread implements Service {
                         continue;
                     } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                         synchronized (this.positionAndOrientation) {
-                            positionAndOrientation = new XYO(infosFromBuffer, splitString);
+                            positionAndOrientation.update(infosFromBuffer,splitString);
                             outPosition.write(infosFromBuffer);
                             outPosition.newLine();
                             outPosition.flush();
@@ -441,6 +441,10 @@ public class ThreadEth extends AbstractThread implements Service {
         synchronized (positionAndOrientation) {
             return positionAndOrientation;
         }
+    }
+
+    public void setPositionAndOrientation(XYO positionAndOrientation) {
+        this.positionAndOrientation = positionAndOrientation;
     }
 
     public boolean isInterfaceCreated() {
