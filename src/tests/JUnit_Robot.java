@@ -98,10 +98,10 @@ public class JUnit_Robot extends JUnit_Test {
        //     robotReal.moveLengthwise(-100);
        //     robotReal.moveLengthwise(100);
             ArrayList<Vec2> path = new ArrayList<>();
-            path.add(new Vec2(0,400));
-            path.add(new Vec2(0,600));
-            path.add(new Vec2(1000,600));
-            path.add(new Vec2(1000,800));
+            path.add(new Vec2(0,500));
+            for (int i=0; i<=40; i++){
+                path.add(new Vec2((int) (500*Math.cos(2*Math.PI*i/40)), (int) (500*Math.sin(2*i*Math.PI/40))+500));
+            }
 
     //            Thread.sleep(3000);
               robotReal.followPath(path);

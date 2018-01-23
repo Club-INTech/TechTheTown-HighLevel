@@ -88,7 +88,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
         // Thread.sleep(20000);
 
-        Pathfinding pathfinding = container.getService(Pathfinding.class);
+        Pathfinding pathfinding = new Pathfinding(log,config,table);
         ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);
         Vec2 clic = new Vec2();
