@@ -94,8 +94,9 @@ public class JUnit_Robot extends JUnit_Test {
        //     robotReal.moveLengthwise(100);
             ArrayList<Vec2> path = new ArrayList<>();
             path.add(new Vec2(0,500));
-            path.add(new Vec2(1000,1000));
-            path.add(new Vec2(500,800));
+            path.add(new Vec2(0,600));
+            path.add(new Vec2(1000,600));
+            path.add(new Vec2(1000,400));
 
     //            Thread.sleep(3000);
                robotReal.followPath(path);

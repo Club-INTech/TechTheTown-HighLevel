@@ -564,6 +564,7 @@ public class Locomotion implements Service
             aimSymetrized.setX(-aimSymetrized.getX());
         }
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
+        System.out.println("highLevelOrientation: "+highLevelOrientation);
         if (!turnOnly){
             double produitScalaire = delta.dot(new Vec2(100,highLevelOrientation));
             System.out.println("highLevelOrientation: "+highLevelOrientation);
@@ -722,8 +723,10 @@ public class Locomotion implements Service
         lowLevelPosition = positionAndOrientation.getPosition();
         lowLevelOrientation = Geometry.moduloSpec(positionAndOrientation.getOrientation(), Math.PI);
 
+        highLevelPosition = lowLevelPosition.clone();
+        highLevelOrientation = lowLevelOrientation;
+
         if(symetry){
-            highLevelPosition = lowLevelPosition.clone();
             highLevelPosition.setX(-highLevelPosition.getX());
             highLevelOrientation = Geometry.moduloSpec(lowLevelOrientation-Math.PI, Math.PI);
         }
@@ -756,8 +759,9 @@ public class Locomotion implements Service
     {
         this.lowLevelPosition = positionWanted.clone();
         this.highLevelPosition = positionWanted.clone();
-        if(symetry)
+        if(symetry) {
             this.lowLevelPosition.setX(-this.lowLevelPosition.getX()); // on lui met la vraie position
+        }
         ethWrapper.setX(this.lowLevelPosition.getX());
         ethWrapper.setY(this.lowLevelPosition.getY());
 
@@ -782,8 +786,9 @@ public class Locomotion implements Service
     {
         this.lowLevelOrientation = orientation;
         this.highLevelOrientation = orientation;
-        if(symetry)
-            this.lowLevelOrientation = Math.PI-this.lowLevelOrientation; // la vraie orientation
+        if(symetry) {
+            this.lowLevelOrientation = Math.PI - this.lowLevelOrientation; // la vraie orientation
+        }
         ethWrapper.setOrientation(this.lowLevelOrientation);
     }
 
