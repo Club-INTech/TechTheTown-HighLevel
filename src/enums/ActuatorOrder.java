@@ -78,6 +78,8 @@ public enum ActuatorOrder implements MotionOrder
 	OUVRE_LA_PORTE("olp"),
 	TILT_LA_PORTE("tlp"),
 	ACTIVE_LE_BRAS_LATERAL("albl"),
+	ACTIVE_ELECTROVANNE("ae"),
+	DESACTIVE_ELECTROVANNE("de"),
 
 /*			 _____________________
  * 		   *|                     |*
