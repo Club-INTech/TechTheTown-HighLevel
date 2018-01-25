@@ -84,7 +84,9 @@ public class JUnit_Robot extends JUnit_Test {
             robotReal.getOrientation();
 
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            robotReal.setOrientation(Math.PI/2);
+            robotReal.moveLengthwise(100);
+            robotReal.moveLengthwise(-100);
+            /*robotReal.setOrientation(Math.PI/2);
             robotReal.setPosition(new Vec2(0, 500));
 
       //   robotReal.moveLengthwise(-200);
@@ -105,6 +107,7 @@ public class JUnit_Robot extends JUnit_Test {
 
     //            Thread.sleep(3000);
               robotReal.followPath(path);
+              */
 
             /*
             robotReal.goTo(new Vec2(650, 500));

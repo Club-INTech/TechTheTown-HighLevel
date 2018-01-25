@@ -84,7 +84,7 @@ public class EthWrapper implements Service {
      */
     public void moveLengthwise(double distance)
     {
-        int distanceTruncated = (int)distance;
+        int distanceTruncated=(int)Math.round(distance);
         eth.communicate(0, ActuatorOrder.MOVE_LENTGHWISE.getSerialOrder(), String.format(Locale.US, "%d", distanceTruncated));
     }
 

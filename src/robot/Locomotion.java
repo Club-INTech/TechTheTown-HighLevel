@@ -188,12 +188,6 @@ public class Locomotion implements Service
     /** Temps prévu de fin de mouvement */
     private long timeExpected = 0;
 
-    /** UnableToMove Reason */
-    private ConcurrentLinkedQueue<String> unableToMoveEvent;
-
-    /** Le robot bouge */
-    private Boolean isMoving;
-
     /** ThreadEvent */
     private ThreadEvents thEvent;
 
@@ -213,7 +207,6 @@ public class Locomotion implements Service
         this.USvalues = new ArrayList<Integer>() {{
             for (int i = 0; i < 4; i++) add(0);
         }};
-        this.unableToMoveEvent = thEvent.getUnableToMoveEvent();
         this.thEvent = thEvent;
         updateConfig();
     }
@@ -510,8 +503,8 @@ public class Locomotion implements Service
         {
             updateCurrentPositionAndOrientation();
 
-            if(unableToMoveEvent.peek() != null){
-                String unableToMoveReason = unableToMoveEvent.poll();
+            if(thEvent.getUnableToMoveEvent().peek() != null){
+                String unableToMoveReason = thEvent.getUnableToMoveEvent().poll();
                 if(unableToMoveReason == UnableToMoveReason.PHYSICALLY_BLOCKED.getSerialOrder()){
                     throw new BlockedException();
                 }
