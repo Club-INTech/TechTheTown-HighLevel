@@ -194,155 +194,287 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider,"avant");
         }
         /**(jaune,vert,noir)*/
-        if (versionToExecute==30 ||versionToExecute==31 || versionToExecute==32 ){
+        if (versionToExecute==30){
             stateToConsider.robot.moveLengthwise(l+d);
             // prend le cube jaune
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
             stateToConsider.robot.moveLengthwise(l+d);
             //prend le cube vert
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
             stateToConsider.robot.moveLengthwise(-l-d);
             stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             // prend le cube noir
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
             stateToConsider.robot.moveLengthwise(-l-d);
             stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube orange
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
         }
+        if(versionToExecute==31 || versionToExecute==32 ) {
+            stateToConsider.robot.moveLengthwise(l+d);
+            // prend le cube jaune
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(l+d);
+            //prend le cube vert
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(-l-d);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
+            // prend le cube noir
+            takethiscube(stateToConsider,"avant");
+        }
+        if(versionToExecute==32){
+            stateToConsider.robot.moveLengthwise(l+d);
+            // prend le cube jaune
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(l+d);
+            //prend le cube vert
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(-l-d);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
+            // prend le cube noir
+            takethiscube(stateToConsider,"avant");
+
         /**(bleu,jaune,orange)*/
-        if (versionToExecute==40 ||versionToExecute==41 || versionToExecute==42 ){
+        if (versionToExecute==40 ){
             //on inverse l'odre : ca demandera moins de mouvements vu la position d'entrée choisie
             // prend le cube orange
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.moveLengthwise(l+d);
             // prendre le cube jaune
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.turnRelatively(-Math.PI/6+2*drotation);
             //prend le cube noir
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
         }
-        /**(vert,jaune,bleu)*/
-        if (versionToExecute==50 ||versionToExecute==51 || versionToExecute==52 ){
-            stateToConsider.robot.moveLengthwise(2*(l+d));
-            //prend le cube vert
-            takethiscube(stateToConsider);
-            stateToConsider.robot.moveLengthwise(-l-d);
-            //prend le cube jaune
-            takethiscube(stateToConsider);
+        if(versionToExecute==41 ){
+            //on inverse l'odre : ca demandera moins de mouvements vu la position d'entrée choisie
+            // prend le cube orange
+            takethiscube(stateToConsider,"arriere");
+            stateToConsider.robot.moveLengthwise(l+d);
+            // prendre le cube jaune
+            takethiscube(stateToConsider,"arriere");
             stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
+        }
+        if(versionToExecute==42 ){
+            //on inverse l'odre : ca demandera moins de mouvements vu la position d'entrée choisie
+            // prend le cube orange
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(l+d);
+            // prendre le cube jaune
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
+            //prend le cube bleu
+            takethiscube(stateToConsider,"avant");
+        }
+        /**(vert,jaune,bleu)*/
+        if (versionToExecute==50) {
+            stateToConsider.robot.moveLengthwise(2*(l+d));
+            //prend le cube vert
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(-l-d);
+            //prend le cube jaune
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
+            //prend le cube bleu
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.turnRelatively(Math.PI/6-2*drotation);
             //prend le cube noir
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
+        }
+        if(versionToExecute==51  ){
+            stateToConsider.robot.moveLengthwise(2*(l+d));
+            //prend le cube vert
+            takethiscube(stateToConsider,"arriere");
+            stateToConsider.robot.moveLengthwise(-l-d);
+            //prend le cube jaune
+            takethiscube(stateToConsider,"arriere");
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
+            //prend le cube bleu
+            takethiscube(stateToConsider,"arriere");
+        }
+        if(versionToExecute==52){
+            stateToConsider.robot.moveLengthwise(2*(l+d));
+            //prend le cube vert
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(-l-d);
+            //prend le cube jaune
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
+            //prend le cube bleu
+            takethiscube(stateToConsider,"avant");
         }
         /**(bleu,orange,noir)*/
-        if (versionToExecute==60 ||versionToExecute==61 || versionToExecute==62 ){
+        if (versionToExecute==60) {
             stateToConsider.robot.moveLengthwise(l+d);
             stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.moveLengthwise(-l-d);
             stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             //prend le cube orange
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.moveLengthwise(l+d);
             stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             //prend le cube noir
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube jaune
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
         }
+        if(versionToExecute==61 ){
+            stateToConsider.robot.moveLengthwise(l+d);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
+            //prend le cube bleu
+            takethiscube(stateToConsider,"arriere");
+            stateToConsider.robot.moveLengthwise(-l-d);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
+            //prend le cube orange
+            takethiscube(stateToConsider,"arriere");
+            stateToConsider.robot.moveLengthwise(l+d);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
+            //prend le cube noir
+            takethiscube(stateToConsider,"arriere");
+        }
+        if( versionToExecute==62){
+            stateToConsider.robot.moveLengthwise(l+d);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
+            //prend le cube bleu
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(-l-d);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
+            //prend le cube orange
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(l+d);
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
+            //prend le cube noir
+            takethiscube(stateToConsider,"avant");
+            }
         /**(vert,orange,jaune)*/
         if (versionToExecute==70  ){
             //on inverse l'ordre
             stateToConsider.robot.moveLengthwise(l+d);
             //prend le cube jaune
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.moveLengthwise(-l-d);
             //prend le cube orange
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.moveLengthwise(2*(l+d));
             //prend le cube vert
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.moveLengthwise(-l-d);
             stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
         }
-        if(versionToExecute==71 || versionToExecute==72){
+        if(versionToExecute==71){
             //on inverse l'ordre
             stateToConsider.robot.moveLengthwise(l+d);
             //prend le cube jaune
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
             stateToConsider.robot.moveLengthwise(-l-d);
             //prend le cube orange
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
             stateToConsider.robot.moveLengthwise(2*(l+d));
             //prend le cube vert
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
+        }
+        if(versionToExecute==72){
+            //on inverse l'ordre
+            stateToConsider.robot.moveLengthwise(l+d);
+            //prend le cube jaune
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(-l-d);
+            //prend le cube orange
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(2*(l+d));
+            //prend le cube vert
+            takethiscube(stateToConsider,"avant");
         }
         /**(Noir,Bleu,Vert)*/
         if (versionToExecute==80  ){
             //on inverse l'odre : on prend le vert d'abord
             stateToConsider.robot.moveLengthwise(2*(l+d));
             //prend le cube vert
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.moveLengthwise(-l-d);
             stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.turnRelatively(Math.PI/6-2*drotation);
             //prend le cube noir
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube jaune
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
         }
-        if(versionToExecute==81 || versionToExecute==82){
+        if(versionToExecute==81){
             //on inverse l'odre : on prend le vert d'abord
             stateToConsider.robot.moveLengthwise(2*(l+d));
             //prend le cube vert
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
             stateToConsider.robot.moveLengthwise(-l-d);
             stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
             stateToConsider.robot.turnRelatively(Math.PI/6-2*drotation);
             //prend le cube noir
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
         }
+        if( versionToExecute==82){
+            //on inverse l'odre : on prend le vert d'abord
+            stateToConsider.robot.moveLengthwise(2*(l+d));
+            //prend le cube vert
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(-l-d);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
+            //prend le cube bleu
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.turnRelatively(Math.PI/6-2*drotation);
+            //prend le cube noir
+            takethiscube(stateToConsider,"avant");
+            }
         /**(orange,bleu,jaune)*/
         if (versionToExecute==90  ){
             //prend le cube orange
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.moveLengthwise(l+d);
             stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             //prend le cube jaune
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
             stateToConsider.robot.moveLengthwise(l+d);
             //prend le cube vert
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"avant");
         }
-        if(versionToExecute==91 || versionToExecute==92){
+        if(versionToExecute==91) {
             //prend le cube orange
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
             stateToConsider.robot.moveLengthwise(l+d);
             stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
             //prend le cube bleu
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
             stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
             //prend le cube jaune
-            takethiscube(stateToConsider);
+            takethiscube(stateToConsider,"arriere");
         }
+        if( versionToExecute==92){
+            //prend le cube orange
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.moveLengthwise(l+d);
+            stateToConsider.robot.turnRelatively(-Math.PI/12+drotation);
+            //prend le cube bleu
+            takethiscube(stateToConsider,"avant");
+            stateToConsider.robot.turnRelatively(Math.PI/12-drotation);
+            //prend le cube jaune
+            takethiscube(stateToConsider,"avant");
+            }
         stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
 
     }
