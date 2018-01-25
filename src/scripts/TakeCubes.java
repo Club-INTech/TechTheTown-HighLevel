@@ -44,7 +44,7 @@ public class TakeCubes extends AbstractScript {
      * Les cubes sont positionnés ainsi
      * ______|Noir |_____
      * Orange|Jaune| Vert|
-     *       |Bleu |
+     * |Bleu |
      * On se positionne toujours en face du cube orange comme position d'entrée
      * les mouvements à faire sont soit :
      * on tourne de 15 degrés pour prendre un autre cube si on n'a pas à avancer

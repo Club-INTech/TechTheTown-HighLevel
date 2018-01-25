@@ -1,7 +1,5 @@
 package enums;
 
-import smartMath.Geometry;
-
 /**
  * Enum qui rassemble les headers (plus propre pour le Simulateur & le ThreadEth)
  */
