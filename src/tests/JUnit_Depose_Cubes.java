@@ -33,10 +33,10 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
 
             robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
             //robotReal.moveLengthwise(500);
-            robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS,false);
-            robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
+            robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,false);
+            robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT,true);
             robotReal.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
-            robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
+            robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
             robotReal.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
 
             Thread.sleep(500);
