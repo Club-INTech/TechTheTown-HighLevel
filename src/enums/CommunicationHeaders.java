@@ -11,6 +11,7 @@ public enum CommunicationHeaders {
     ULTRASON((char) 0x01, (char) 0x06),
     DEBUG((char) 0x02, (char) 0x20),
     POSITION((char) 0x07, (char) 0x05),
+    STANDARD((char) 0x40, (char) 0x40),
     ;
 
     /** Le seul contenu de cette enum... */

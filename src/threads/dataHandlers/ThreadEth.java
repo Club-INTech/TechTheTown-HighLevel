@@ -395,7 +395,7 @@ public class ThreadEth extends AbstractThread implements Service {
                         outDebug.newLine();
                         outDebug.flush();
                         continue;
-                    } else {
+                    } else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]){
                         standardBuffer.add(infosFromBuffer);
                         continue;
                     }
