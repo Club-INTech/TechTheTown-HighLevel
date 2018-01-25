@@ -19,6 +19,7 @@
 
 package tests;
 
+import enums.Speed;
 import exceptions.ContainerException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
@@ -96,6 +97,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         pathfinding.initGraphe();
         robotReal.setPosition(new Vec2(0, 500));
         robotReal.setOrientation(Math.PI / 2);
+     //   robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
 
         while (true) {
 
