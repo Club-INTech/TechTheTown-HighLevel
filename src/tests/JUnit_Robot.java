@@ -44,14 +44,17 @@ import java.util.ArrayList;
 /**
  * The Class JUnit_Robot.
  */
-public class JUnit_Robot extends JUnit_Test
-{
-    
-    /** The robotvrai. */
+public class JUnit_Robot extends JUnit_Test {
+    /**
+     * The robotvrai.
+     */
     private Robot robotReal;
     private ScriptManager scriptManager;
     private GameState state;
-    
+    private ThreadSimulator simulator;
+    private ThreadSimulatorMotion simulatorMotion;
+    private Table table;
+
     /* (non-Javadoc)
      * @see tests.JUnit_Test#setUp()
      */
@@ -59,7 +62,16 @@ public class JUnit_Robot extends JUnit_Test
     public void setUp() {
         try {
             super.setUp();
-        }catch (Exception e){
+            robotReal = container.getService(Robot.class);
+            scriptManager = container.getService(ScriptManager.class);
+            state = container.getService(GameState.class);
+            table = container.getService(Table.class);
+     //       simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+     //       simulator = container.getService(ThreadSimulator.class);
+
+            container.startInstanciedThreads();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -68,22 +80,49 @@ public class JUnit_Robot extends JUnit_Test
     public void testScript() {
         try {
             robotReal = container.getService(Robot.class);
-            container.startInstanciedThreads();
-            robotReal.setPosition(new Vec2(600, 500));
             robotReal.getPosition();
-            robotReal.setOrientation(0.0);
-            Thread.sleep(100);
             robotReal.getOrientation();
-            robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
 
+            robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
+            robotReal.moveLengthwise(100);
+            robotReal.moveLengthwise(-100);
+            /*robotReal.setOrientation(Math.PI/2);
+            robotReal.setPosition(new Vec2(0, 500));
+
+      //   robotReal.moveLengthwise(-200);
+        //    robotReal.turnRelatively(-Math.PI/2);
+
+         //   robotReal.goTo(new Vec2(0,500))
+      //      robotReal.goTo(new Vec2( 0,400));
+        //    robotReal.goTo(new Vec2(1000,600));
+         //   robotReal.goTo(new Vec2(1000,800));
+
+       //     robotReal.moveLengthwise(-100);
+       //     robotReal.moveLengthwise(100);
+            ArrayList<Vec2> path = new ArrayList<>();
+            path.add(new Vec2(0,500));
+            for (int i=0; i<=40; i++){
+                path.add(new Vec2((int) (500*Math.cos(2*Math.PI*i/40)), (int) (500*Math.sin(2*i*Math.PI/40))+500));
+            }
+
+    //            Thread.sleep(3000);
+              robotReal.followPath(path);
+              */
+
+            /*
             robotReal.goTo(new Vec2(650, 500));
             Thread.sleep(5000);
             robotReal.moveLengthwise(-50);
             robotReal.turn(1.2);
             robotReal.turn(0.8);
 
+            */
+
+            Pathfinding pathfinding = new Pathfinding(log, config, table);
+
+
             Thread.sleep(500);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

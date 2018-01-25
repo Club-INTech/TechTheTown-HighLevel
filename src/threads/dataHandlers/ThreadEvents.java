@@ -19,66 +19,81 @@
 
 package threads.dataHandlers;
 
-import robot.Robot;
-import table.Table;
+import enums.EventType;
+import pfg.config.Config;
 import threads.AbstractThread;
-import utils.Sleep;
+import utils.Log;
 
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 
 /**
  *  Gestionnaire des events LL
- *  @author discord
+ *  @author discord, rem
  */
 public class ThreadEvents extends AbstractThread
 {
-    /** Table ! */
-    Table table;
-
-    /** Et le robot... */
-    Robot robot;
+    /** Config & Log */
+    private Config config;
+    private Log log;
 
     /** Buffer de lecture des events, rempli par ThreadEth */
-    ConcurrentLinkedQueue<String> events;
+    private ConcurrentLinkedQueue<String> events;
+
+    /** Buffer d'envoie des events */
+    private ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
+
+    /** Le robot bouge */
+    public Boolean isMoving;
 
     /**
-     * ...
-     * @param table
-     * @param robot
+     * Constructeur
+     * @param config
+     * @param log
      * @param eth
      */
-    public ThreadEvents(Table table, Robot robot, ThreadEth eth)
+    public ThreadEvents(Config config, Log log, ThreadEth eth)
     {
-        this.table = table;
-        this.robot = robot;
+        this.config = config;
+        this.log = log;
         events = eth.getEventBuffer();
+        this.isMoving = false;
     }
 
     @Override
     public void run()
     {
-        String event = null;
+        String event;
         Thread.currentThread().setPriority(6);
         while(!ThreadEth.shutdown)
         {
+            try {
+                if (events.peek() != null) {
+                    event = events.poll();
+                    String[] message = event.split(" ");
 
-            Sleep.sleep(100);
-
-            if(events.peek() != null)
-                event = events.poll();
-
-            if(event == null)
-                continue;
-
-            //==========
-
-            // TODO Events et réactions
-
-            //==========
-
-            event = null;
+                    if (message[0].equals(EventType.BLOCKED.getEventId())) {
+                        log.critical("Event du LL : UnableToMove");
+                        unableToMoveEvent.add(message[1]);
+                    }
+                    else if (message[0].equals(EventType.STOPPEDMOVING.getEventId())){
+                        log.debug("Arret du robot");
+                        synchronized (this.isMoving) {
+                            this.isMoving = false;
+                            log.debug("isMoving variable has been defined to False");
+                        }
+                    }
+                } else {
+                    Thread.sleep(100);
+                }
+            }catch (InterruptedException e){
+                e.getStackTrace();
+            }
         }
-
     }
+
+    public ConcurrentLinkedQueue<String> getUnableToMoveEvent() {
+        return unableToMoveEvent;
+    }
+    public void setIsMoving(boolean value){ this.isMoving=value; }
 }

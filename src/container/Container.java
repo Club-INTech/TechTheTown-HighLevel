@@ -88,7 +88,7 @@ public class Container implements Service
 	/**
 	 * True si l'on veut montrer le graphe des dépendances (pour debug)
 	 */
-	private static final boolean showGraph = false;
+	private static final boolean showGraph = true;
 	private FileWriter fileWriter;
 
 	/**

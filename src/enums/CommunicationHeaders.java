@@ -7,9 +7,11 @@ import smartMath.Geometry;
  */
 public enum CommunicationHeaders {
 
-    EVENT((char) 0x13, (char) 0x17),
-    ULTRASON((char) 0x01, (char) 0x10),
+    EVENT((char) 0x14, (char) 0x17),
+    ULTRASON((char) 0x01, (char) 0x06),
     DEBUG((char) 0x02, (char) 0x20),
+    POSITION((char) 0x07, (char) 0x05),
+    STANDARD((char) 0x40, (char) 0x40),
     ;
 
     /** Le seul contenu de cette enum... */

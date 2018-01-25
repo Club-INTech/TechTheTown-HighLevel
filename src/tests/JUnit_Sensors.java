@@ -239,38 +239,6 @@ public class JUnit_Sensors extends JUnit_Test
 	}
 	
 	//@Test
-	public void testSensorEnnemyInDiscWithoutMovement()
-	{
-		log.debug("Test d'évitement fixe");
-		while(true)
-		{
-			try
-			{
-				mLocomotion.detectEnemyInDisk(true, false, state.robot.getPosition());
-			}
-			catch (UnexpectedObstacleOnPathException unexpectedObstacle)
-	        {
-                log.critical("Haut: Catch de "+unexpectedObstacle+" dans moveToPointException"); 
-
-            	long detectionTime = System.currentTimeMillis();
-                log.critical("Détection d'un ennemi! Abandon du mouvement.");
-            	while(System.currentTimeMillis() - detectionTime < 600)
-            	{
-            		try
-            		{
-            			mLocomotion.detectEnemyInDisk(true, false, state.robot.getPosition());
-            			break;
-            		}
-            		catch(UnexpectedObstacleOnPathException e2)
-            		{
-            			log.critical( e2.logStack());
-            		}
-            	}
-			}
-		}
-	}
-	
-	//@Test
 	public void testSensorEnnemyWithoutMovement() throws InterruptedException {
 		log.debug("Test des capteurs fixe");
 		state.robot.disableFeedbackLoop();

@@ -135,8 +135,8 @@ public class Pathfinding implements Service {
         while (noeuddepart != finalList.get(finalList.size() - 1) ) {
             finalList.add(finalList.get(finalList.size() - 1).getPred());
         }
-        for (int i = 0; i < finalList.size(); i++) {
-            finalPath.add(finalList.get(i).getPosition());
+        for (int i = 1; i <= finalList.size(); i++) {
+            finalPath.add(finalList.get(finalList.size()-i).getPosition());
         }
         long time2=System.currentTimeMillis()-time1;
         System.out.println("Time to execute (ms): "+time2);

@@ -45,6 +45,10 @@ public enum ConfigInfoRobot implements ConfigInfo
     PRINT_LOG(true),
     SAVE_LOG(true),
 
+    /** Paramètres match !*/
+    COULEUR("vert"),
+    C_DES_FOUS_EN_FACE(false),
+
     /** Dimensions du robot */
     ROBOT_LENGTH(300),
     ROBOT_WIDTH(300),
@@ -58,12 +62,29 @@ public enum ConfigInfoRobot implements ConfigInfo
     /** Paramètres obstacles */
     PEREMP_OBST(5000),
 
-    /** Paramètres match !*/
-    COULEUR("vert"),
-    C_DES_FOUS_EN_FACE(false),
-
     /** Paramètres capteurs */
-    /** Paramètres de dégagement du robot */
+    ROBOT_EN_RADIUS(220),
+    MAX_SENSOR_RANGE(800),
+    MIN_SENSOR_RANGEAV(30),
+    MIN_SENSOR_RANGEAR(30),
+    MIN_SENSOR_RANGE(30),
+    SENSOR_POSITION_ANGLE_FRONT(1),
+    SENSOR_POSITION_ANGLE_BACK(1),
+    SENSOR_ANGLE_WIDENESS(30),
+    UNCERTAINTY(1),
+    // TODO à compléter
+
+    /** Paramètres Locomotion */
+    BASIC_DETECTION_DISTANCE(100),
+    DETECTION_DISTANCE(200),
+    DETECTION_RAY(250),
+    FEEDBACK_LOOPDELAY(50),
+    ENNEMY_LOOPDELAY(500),
+    ENNEMY_TIMEOUT(10000),
+
+    DISTANCE_TO_DISENGAGE(50),
+    MAX_RETRIES_IF_BLOCKED(1),
+
     /** Paramètres des scripts */
     VECTEUR_EXAMPLE(new Vec2(50, 60)),
 

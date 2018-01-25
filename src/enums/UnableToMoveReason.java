@@ -25,7 +25,24 @@ package enums;
  */
 public enum UnableToMoveReason
 {
-	OBSTACLE_DETECTED, // obstacle vu par les capteurs
-	PHYSICALLY_BLOCKED, // blocage physique (bord de table, décor...)
-	NO_WAY_FOUND, // le pathfinding ne trouve pas de chemin vers cette destination
+	OBSTACLE_DETECTED("o"), // obstacle vu par les capteurs
+	PHYSICALLY_BLOCKED("p"), // blocage physique (bord de table, décor...)
+	NO_WAY_FOUND() // le pathfinding ne trouve pas de chemin vers cette destination
+	;
+
+	/** Ce que le LL envoie pour spécifier l'UnableToMoveException */
+	private String serialOrder;
+
+	/** Constructeur */
+	UnableToMoveReason(String serialOrder){
+		this.serialOrder = serialOrder;
+	}
+	UnableToMoveReason(){
+		this.serialOrder = null;
+	}
+
+
+	public String getSerialOrder() {
+		return serialOrder;
+	}
 }

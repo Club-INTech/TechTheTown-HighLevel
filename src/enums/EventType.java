@@ -20,20 +20,25 @@
 package enums;
 
 /**
- * Enumération des noms des différents scripts.
- * @author pf
- *
+ * Différents types d'event (Robot bloqué, Hook fait,...)
+ * @author rem
  */
 
-public enum ScriptNames
-{
-	// TODO : Rajouter les noms des scripts
-    TAKE_CUBES,
-    DEPOSE_CUBES,
-    ACTIVATION_BRAS_LATERAL,
-    CLOSE_DOORS,
-    INITIALISE_ROBOT,
+public enum EventType {
 
+    //Ne pas mettre d'espaces !
+    BLOCKED("unableToMove"),
+    STOPPEDMOVING("stoppedMoving");
 
+    /** Id de l'event, qui diffère en fonction du type d'event */
+    private String eventId;
 
+    /** Constructeur de base */
+    EventType(String eventId){
+        this.eventId=eventId;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
 }

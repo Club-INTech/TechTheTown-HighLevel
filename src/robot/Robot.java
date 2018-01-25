@@ -183,7 +183,7 @@ public class Robot implements Service {
 	public void followPath(ArrayList<Vec2> chemin) throws UnableToMoveException
 	{
 		cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-		mLocomotion.followPath(chemin, DirectionStrategy.getDefaultStrategy());
+		mLocomotion.followPath(chemin);
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class Robot implements Service {
 	protected void followPath(ArrayList<Vec2> chemin, DirectionStrategy direction) throws UnableToMoveException
 	{
 		cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-		mLocomotion.followPath(chemin, direction);
+		mLocomotion.followPath(chemin);
 	}
 
 	/**
@@ -218,7 +218,7 @@ public class Robot implements Service {
 	 */
 	public void goTo(Vec2 pointVise, boolean expectedWallImpact, boolean isDetect) throws UnableToMoveException {
 		log.debug("Appel de Robot.goTo :" + pointVise);
-		mLocomotion.goTo(pointVise, expectedWallImpact, isDetect);
+		mLocomotion.moveToPoint(pointVise, expectedWallImpact, isDetect);
 	}
 
 
@@ -631,11 +631,6 @@ public class Robot implements Service {
 	public Speed getLocomotionSpeed()
 	{
 		return speed;
-	}
-
-	public boolean getIsRobotTurning()
-	{
-		return mLocomotion.isRobotTurning;
 	}
 
 	public boolean getIsRobotMovingForward()
