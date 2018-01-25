@@ -7,6 +7,7 @@ import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.WrongBrasException;
 import hook.HookFactory;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
@@ -58,6 +59,7 @@ public class TakeCubes extends AbstractScript {
         int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         int d=-(int)Math.round(l*alpha);//dépassement translation(alpha=2,5%)
         int drotation=(int)Math.round(Math.PI/12*beta);//dépassement rotation(beta=4,5%)
+        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
         /**Les version toexecute seront :
          * soit (0,1,...5) (les 6 positions d'entrée possibles si la reconnaissance de couleur
          * renvoit 0
@@ -245,11 +247,20 @@ public class TakeCubes extends AbstractScript {
         }
 
     }
-    public void takethiscube(GameState stateToConsider){
-        stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS,true);
-        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
-        stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS,true);
-        stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+    public void takethiscube(GameState stateToConsider,String bras)throws WrongBrasException{
+        if(bras=="avant"){
+            stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT,true);
+
+            stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+        }
+        if(bras=="arrier"){
+            stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+        }
+
     }
 
     /**
