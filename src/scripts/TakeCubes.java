@@ -245,20 +245,26 @@ public class TakeCubes extends AbstractScript {
             //prend le cube vert
             takethiscube(stateToConsider);
         }
+        stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
 
     }
     public void takethiscube(GameState stateToConsider,String bras)throws WrongBrasException{
         if(bras=="avant"){
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT,true);
-
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,true);
         }
-        if(bras=="arrier"){
+        if(bras=="arriere"){
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,true);
+        }
+        else{
+            throw new WrongBrasException();
+
+            }
         }
 
     }
