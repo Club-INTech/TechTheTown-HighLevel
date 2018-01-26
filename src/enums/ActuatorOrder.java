@@ -75,9 +75,9 @@ public enum ActuatorOrder implements MotionOrder
 
 	BAISSE_LE_BRAS_AVANT("blbAv",1500),
 	RELEVE_LE_BRAS_AVANT("rlbAv",1500),
-	FERME_LA_PORTE("flp",1000),
-	OUVRE_LA_PORTE("olp"),
-	TILT_LA_PORTE("tlp"),
+	OUVRE_LA_PORTE_AVANT("olpAv"),
+	FERME_LA_PORTE_AVANT("flpAv"),
+	TILT_LA_PORTE_AVANT("tlpAv"),
 	ACTIVE_LE_BRAS_LATERAL("albl"),
 	ACTIVE_ELECTROVANNE_AVANT("aeAv"),
 	DESACTIVE_ELECTROVANNE_AVANT("deAv"),

@@ -31,22 +31,33 @@ public class DeposeCubes extends AbstractScript{
         /* d est la distance avec laquelle on recule : on recule d'une distance au moins égale à la dimension
         de la porte pour pouvoir la fermer à nouveau
          */
+        int l= config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         int d=950;
         int d2=20; //c'est la même distance que d dans entryPosition
+        int d3=2*l;//mesure à faire pour savoir exactement
         stateToConsider.robot.turn(-Math.PI/2);
-        if (versionToExecute==0 ||versionToExecute==1 || versionToExecute==2){
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE,true);
+        if (versionToExecute==0) {
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
             stateToConsider.robot.moveLengthwise(-d-d2);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
+            stateToConsider.robot.turn(0);
+            stateToConsider.robot.moveLengthwise(d3);
+            stateToConsider.robot.turn(Math.PI/2);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE,true);
+            stateToConsider.robot.moveLengthwise(-d-d2);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
+        }
+        if(versionToExecute==1 || versionToExecute==2){
+
         }
         /*il s'agit des cubes pris de la zone adverse, comme la zone de construction est assez petite, on
         devrait plutot pousser les tours déjà faites
          */
         else{
-            int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
             stateToConsider.robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
             stateToConsider.robot.moveLengthwise(l);//on pousse la tour déjà faite
             stateToConsider.robot.moveLengthwise(-l);//on retourne à notre position d'entrée
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
             stateToConsider.robot.moveLengthwise(-d-d2);
 
 

@@ -56,7 +56,7 @@ public class TakeCubes extends AbstractScript {
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
         //considérer le cas où on est de l'autre côté de la table : rajouter un symmetry
         stateToConsider.robot.turn(0);
-        stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE, true);
+        stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
         int l = config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, true);
         /**Les version toexecute seront :
