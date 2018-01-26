@@ -70,7 +70,7 @@ public class TakeCubes extends AbstractScript {
         /**
          * Ici c'est la version (orange,noir,vert)
          */
-        if (versionToExecute == 0) {
+        if (versionToExecute == 1) {
             //prend lecube orange
             takethiscube(stateToConsider, "avant");
             stateToConsider.robot.moveLengthwise(l );
@@ -113,7 +113,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
         }
         /**ici c'est la version (jaune, noir,bleu)*/
-        if (versionToExecute == 10) {
+        if (versionToExecute == 11) {
             stateToConsider.robot.moveLengthwise(l );
             //prendre le cube jaune
             takethiscube(stateToConsider, "avant");
@@ -128,7 +128,7 @@ public class TakeCubes extends AbstractScript {
             //prendre le cube orange
             takethiscube(stateToConsider, "avant");
         }
-        if (versionToExecute == 11) {
+        if (versionToExecute == 10) {
             stateToConsider.robot.moveLengthwise(l );
             //prendre le cube jaune
             takethiscube(stateToConsider, "arriere");
@@ -139,7 +139,7 @@ public class TakeCubes extends AbstractScript {
             // prendre le cube bleu
             takethiscube(stateToConsider, "arriere");
         }
-        if (versionToExecute == 12) {
+        if (versionToExecute == 11) {
             stateToConsider.robot.moveLengthwise(l);
             //prendre le cube jaune
             takethiscube(stateToConsider, "avant");
@@ -151,7 +151,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
         }
         /**(Bleu,Vert,Orange)*/
-        if (versionToExecute == 20) {
+        if (versionToExecute == 22) {
             //On prend le cube orange d'abord (on peut inverser l'ordre)
             // prendre le cube orange
             takethiscube(stateToConsider, "avant");
@@ -179,7 +179,7 @@ public class TakeCubes extends AbstractScript {
             //prendre le cube bleu
             takethiscube(stateToConsider, "arriere");
         }
-        if (versionToExecute == 22) {
+        if (versionToExecute == 20) {
             //On prend le cube orange d'abord (on peut inverser l'ordre)
             // prendre le cube orange
             takethiscube(stateToConsider, "avant");
@@ -192,7 +192,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
         }
         /**(jaune,vert,noir)*/
-        if (versionToExecute == 30) {
+        if (versionToExecute == 32) {
             stateToConsider.robot.moveLengthwise(l );
             // prend le cube jaune
             takethiscube(stateToConsider, "avant");
@@ -221,7 +221,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "arriere");
         }
 
-        if (versionToExecute == 32) {
+        if (versionToExecute == 30) {
             stateToConsider.robot.moveLengthwise(l );
             // prend le cube jaune
             takethiscube(stateToConsider, "avant");
@@ -234,7 +234,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
         }
         /**(bleu,jaune,orange)*/
-        if (versionToExecute == 40) {
+        if (versionToExecute == 42) {
             //on inverse l'odre : ca demandera moins de mouvements vu la position d'entrée choisie
             // prend le cube orange
             takethiscube(stateToConsider, "avant");
@@ -259,7 +259,7 @@ public class TakeCubes extends AbstractScript {
             //prend le cube bleu
             takethiscube(stateToConsider, "arriere");
         }
-        if (versionToExecute == 42) {
+        if (versionToExecute == 40) {
             //on inverse l'odre : ca demandera moins de mouvements vu la position d'entrée choisie
             // prend le cube orange
             takethiscube(stateToConsider, "avant");
@@ -271,7 +271,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
         }
         /**(vert,jaune,bleu)*/
-        if (versionToExecute == 50) {
+        if (versionToExecute == 52) {
             stateToConsider.robot.moveLengthwise(2 * l);
             //prend le cube vert
             takethiscube(stateToConsider, "avant");
@@ -296,7 +296,7 @@ public class TakeCubes extends AbstractScript {
             //prend le cube bleu
             takethiscube(stateToConsider, "arriere");
         }
-        if (versionToExecute == 52) {
+        if (versionToExecute == 50) {
             stateToConsider.robot.moveLengthwise(2 * l);
             //prend le cube vert
             takethiscube(stateToConsider, "avant");
@@ -308,7 +308,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
         }
         /**(bleu,orange,noir)*/
-        if (versionToExecute == 60) {
+        if (versionToExecute == 62) {
             stateToConsider.robot.moveLengthwise(l );
             stateToConsider.robot.turnRelatively(-Math.PI / 12 );
             //prend le cube bleu
@@ -339,7 +339,7 @@ public class TakeCubes extends AbstractScript {
             //prend le cube noir
             takethiscube(stateToConsider, "arriere");
         }
-        if (versionToExecute == 62) {
+        if (versionToExecute == 60) {
             stateToConsider.robot.moveLengthwise(l );
             stateToConsider.robot.turnRelatively(-Math.PI / 12 );
             //prend le cube bleu
@@ -354,7 +354,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
         }
         /**(vert,orange,jaune)*/
-        if (versionToExecute == 70) {
+        if (versionToExecute == 72) {
             //on inverse l'ordre
             stateToConsider.robot.moveLengthwise(l );
             //prend le cube jaune
@@ -382,7 +382,7 @@ public class TakeCubes extends AbstractScript {
             //prend le cube vert
             takethiscube(stateToConsider, "arriere");
         }
-        if (versionToExecute == 72) {
+        if (versionToExecute == 70) {
             //on inverse l'ordre
             stateToConsider.robot.moveLengthwise(l );
             //prend le cube jaune
@@ -395,7 +395,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
         }
         /**(Noir,Bleu,Vert)*/
-        if (versionToExecute == 80) {
+        if (versionToExecute == 82) {
             //on inverse l'odre : on prend le vert d'abord
             stateToConsider.robot.moveLengthwise(2 *l );
             //prend le cube vert
@@ -424,7 +424,7 @@ public class TakeCubes extends AbstractScript {
             //prend le cube noir
             takethiscube(stateToConsider, "arriere");
         }
-        if (versionToExecute == 82) {
+        if (versionToExecute == 80) {
             //on inverse l'odre : on prend le vert d'abord
             stateToConsider.robot.moveLengthwise(2 *l);
             //prend le cube vert
@@ -438,7 +438,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
         }
         /**(orange,bleu,jaune)*/
-        if (versionToExecute == 90) {
+        if (versionToExecute == 92) {
             //prend le cube orange
             takethiscube(stateToConsider, "avant");
             stateToConsider.robot.moveLengthwise(l );
@@ -463,7 +463,7 @@ public class TakeCubes extends AbstractScript {
             //prend le cube jaune
             takethiscube(stateToConsider, "arriere");
         }
-        if (versionToExecute == 92) {
+        if (versionToExecute == 90) {
             //prend le cube orange
             takethiscube(stateToConsider, "avant");
             stateToConsider.robot.moveLengthwise(l );
