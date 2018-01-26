@@ -52,18 +52,6 @@ public class DeposeCubes extends AbstractScript{
             stateToConsider.robot.moveLengthwise(-d-d2);
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
         }
-        /*il s'agit des cubes pris de la zone adverse, comme la zone de construction est assez petite, on
-        devrait plutot pousser les tours déjà faites
-         */
-        else{
-            stateToConsider.robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
-            stateToConsider.robot.moveLengthwise(l);//on pousse la tour déjà faite
-            stateToConsider.robot.moveLengthwise(-l);//on retourne à notre position d'entrée
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
-            stateToConsider.robot.moveLengthwise(-d-d2);
-
-
-        }
     }
     public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
         int r = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
