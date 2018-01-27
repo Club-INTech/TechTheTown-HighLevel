@@ -1,4 +1,11 @@
 package strategie.IA;
 
-public class IA {
+import container.Service;
+
+public class IA implements Service{
+
+    @Override
+    public void updateConfig() {
+
+    }
 }
