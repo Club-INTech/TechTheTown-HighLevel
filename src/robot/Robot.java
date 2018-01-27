@@ -94,6 +94,9 @@ public class Robot implements Service {
 	/** Système de locomotion à utiliser pour déplacer le robot */
 	private Locomotion mLocomotion;
 
+	/** Liste des scripts déjà réalisés */
+	private ArrayList<Boolean> scriptDone;
+
 	/**
 	 * Constructeur
 	 * @param deplacements  système de locomotion
