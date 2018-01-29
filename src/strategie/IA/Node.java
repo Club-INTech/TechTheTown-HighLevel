@@ -43,13 +43,13 @@ public class Node {
     }
 
     //lance l'action du noeud
-    public void execute(int versiontoexecute, GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException {
+    public void execute( GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException {
         this.executed=true;
         for(Node node : this.nextNodes){
             node.executed=false;
             node.condition=false;
         }
-        this.script.goToThenExec(versiontoexecute, gs);
+        this.script.goToThenExec(this.versionToexecute, gs);
     }
 
     //met à jour la condition pour savoir si ce noeud doit être executé
