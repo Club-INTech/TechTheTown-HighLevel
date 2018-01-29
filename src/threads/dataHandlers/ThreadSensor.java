@@ -130,6 +130,10 @@ public class ThreadSensor extends AbstractThread
     private BufferedWriter out;
     private final boolean debug = true;
 
+    public Sensor sensorFL;//Front left
+    public Sensor sensorFR;//Front right
+    public Sensor sensorBL;//Back left
+    public Sensor sensorBR;//Back right
     /**
 	 * Crée un nouveau thread de capteurs
 	 * @param table La table a l'intérieure de laquelle le thread doit croire évoluer
@@ -141,10 +145,15 @@ public class ThreadSensor extends AbstractThread
         this.mTable = table;
         this.ethWrapper = ethWrapper;
 		Thread.currentThread().setPriority(6);
-        sensorsArray.set(0,new Sensor(0,120,125,this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty));
-        sensorsArray.set(1,new Sensor(1,120,-125,-this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty));
-        sensorsArray.set(2,new Sensor(2,-120,125,-this.sensorPositionAngleB+Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty));
-        sensorsArray.set(3,new Sensor(3,-120,-125,this.sensorPositionAngleB-Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty));
+		this.sensorFL=new Sensor(0,120,125,this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorFR=new Sensor(1,120,-125,-this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorBL=new Sensor(2,-120,125,-this.sensorPositionAngleB+Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorBR=new Sensor(3,-120,-125,this.sensorPositionAngleB-Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+        this.sensorsArray.set(0,sensorFL);
+        this.sensorsArray.set(1,sensorFR);
+        this.sensorsArray.set(2,sensorBL);
+        this.sensorsArray.set(3,sensorBR);
+
 	}
 	/** Ajoute les obstacles a l'obstacleManager */
 	private void addObstacle() {
@@ -172,32 +181,32 @@ public class ThreadSensor extends AbstractThread
              *           Back
              */
 
-            if (sensorsArray.get(0).getDetectedDistance() != 0){
-                if (sensorsArray.get(1).getDetectedDistance() != 0) {
-                    out.write("Detection:Sensor0And1 ");
+            if (sensorFL.getDetectedDistance() != 0){
+                if (sensorFR.getDetectedDistance() != 0) {
+                    out.write("Detection:SensorFLandFR ");
                     addFrontObstacleBoth();
                 }
                 else {
-                    out.write("Detection:Sensor0 ");
+                    out.write("Detection:SensorFL ");
                     addFrontObstacleSingle(true);
                 }
             }
-            else if (sensorsArray.get(1).getDetectedDistance() != 0){
-                out.write("Detection:Sensor1 ");
+            else if (sensorFR.getDetectedDistance() != 0){
+                out.write("Detection:SensorFR ");
                 addBackObstacleSingle(false);
             }
-            if (sensorsArray.get(2).getDetectedDistance() != 0){
-                if (sensorsArray.get(3).getDetectedDistance() != 0){
-                    out.write("Detection:Sensor2And3 ");
+            if (sensorBL.getDetectedDistance() != 0){
+                if (sensorBR.getDetectedDistance() != 0){
+                    out.write("Detection:SensorBLandBR");
                     addBackObstacleBoth();
                 }
                 else{
-                    out.write("Detection:Sensor2 ");
+                    out.write("Detection:SensorBL ");
                     addBackObstacleSingle(true);
                 }
             }
-            else if (sensorsArray.get(3).getDetectedDistance() != 0){
-                out.write("Detection:Sensor3 ");
+            else if (sensorBR.getDetectedDistance() != 0){
+                out.write("Detection:SensorBR ");
                 addBackObstacleSingle(false);
             }
 
@@ -220,13 +229,14 @@ public class ThreadSensor extends AbstractThread
         Vec2 vec = new Vec2();
         boolean isValue = true;
 
-        R1 = sensorsArray.get(0).getDetectedDistance() + (enRadius*0.8);
-        R2 = sensorsArray.get(1).getDetectedDistance() + (enRadius*0.8);
-        robotY = (R1*R1 - R2*R2)/(double)(4*sensorsArray.get(1).getY());    //sensor avant droit
+        //TODO : Changer le facteur de 0.8, à tester empiriquement
+        R1 = sensorFL.getDetectedDistance() + (enRadius*0.8);
+        R2 = sensorFR.getDetectedDistance() + (enRadius*0.8);
+        robotY = (R1*R1 - R2*R2)/(double)(4*sensorFR.getY());    //sensor avant droit
         Integer Y = new Integer((int) robotY);
 
-        b = -2 * sensorsArray.get(0).getX();                                //sensor avant gauche
-        delta = 2*(R1*R1 + R2*R2) - Math.pow(sensorsArray.get(0).getY(),2); //sensor avant gauche
+        b = -2 * sensorFL.getX();                                //sensor avant gauche
+        delta = 2*(R1*R1 + R2*R2) - Math.pow(sensorFL.getY(),2); //sensor avant gauche
 
         if (delta > 1) {
             robotX = ((-b + Math.sqrt(delta)) / 2.0);
@@ -257,14 +267,15 @@ public class ThreadSensor extends AbstractThread
         Vec2 vec = new Vec2();
         boolean isValue = true;
 
-        R1 = sensorsArray.get(2).getDetectedDistance() + (enRadius*0.8);
-        R2 = sensorsArray.get(3).getDetectedDistance() + (enRadius*0.8);
-        robotY = (R1*R1 - R2*R2)/(double)(4*sensorsArray.get(3).getY());            //position arrière droit
+        //TODO : Changer le facteur de 0.8, à tester empiriquement
+        R1 = sensorBL.getDetectedDistance() + (enRadius*0.8);
+        R2 = sensorBR.getDetectedDistance() + (enRadius*0.8);
+        robotY = (R1*R1 - R2*R2)/(double)(4*sensorBR.getY());            //position arrière droit
         Integer Y = new Integer((int) robotY);
 
-        b = -2 * sensorsArray.get(2).getX();                                        //position arrière gauche
+        b = -2 * sensorBL.getX();                                        //position arrière gauche
 
-        delta = 2*(R1*R1 + R2*R2) + Math.pow(sensorsArray.get(2).getY(),2);         //position arrière gauche
+        delta = 2*(R1*R1 + R2*R2) + Math.pow(sensorBL.getY(),2);         //position arrière gauche
         if (delta > 1) {
             robotX = (int) ((-b - Math.sqrt(delta)) / 2);
             Integer X = new Integer((int) robotX);
@@ -291,20 +302,20 @@ public class ThreadSensor extends AbstractThread
         // Et on place le robot ennemie tangent en ce point : la position calculée n'est pas la position réelle du robot adverse mais elle suffit
 
         Vec2 posEn;
-        Double USFL = sensorsArray.get(0).getDetectedDistance();
-        Double USFR = sensorsArray.get(1).getDetectedDistance();
+        Double USFL = sensorFL.getDetectedDistance();
+        Double USFR = sensorFR.getDetectedDistance();
 
         if (isLeft){
             // On choisit le point à l'extrémité de l'arc à coté du capteur pour la position de l'ennemie: à courte distance, la position est réaliste,
             // à longue distance (>1m au vue des dimensions), l'ennemie est en réalité de l'autre coté
-            Vec2 posDetect = new Vec2(USFL, sensorsArray.get(0).getDetectionAnglePosition() + detectionAngle/2); //sensor avant gauche
-            double angleEn = sensorsArray.get(1).getDetectionAnglePosition() + detectionAngle/2;    //sensor avant droit
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorsArray.get(0).getVecteur());     //sensor avant gauche
+            Vec2 posDetect = new Vec2(USFL, sensorFL.getDetectionAnglePosition() + detectionAngle/2); //sensor avant gauche
+            double angleEn = sensorFR.getDetectionAnglePosition() + detectionAngle/2;    //sensor avant droit
+            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorFL.getVecteur());     //sensor avant gauche
         }
         else{
-            Vec2 posDetect = new Vec2(USFR, sensorsArray.get(1).getDetectionAnglePosition() - detectionAngle/2); //sensor avant droit
-            double angleEn = sensorsArray.get(0).getDetectionAnglePosition() - detectionAngle/2; //sensor avant gauche
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorsArray.get(1).getVecteur());     //sensor avant droit
+            Vec2 posDetect = new Vec2(USFR, sensorFR.getDetectionAnglePosition() - detectionAngle/2); //sensor avant droit
+            double angleEn = sensorFL.getDetectionAnglePosition() - detectionAngle/2; //sensor avant gauche
+            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorFR.getVecteur());     //sensor avant droit
         }
 
         this.printDebug(posEn);
@@ -317,18 +328,18 @@ public class ThreadSensor extends AbstractThread
         // De meme qu'avec le front
 
         Vec2 posEn;
-        Double USBL = sensorsArray.get(2).getDetectedDistance();
-        Double USBF = sensorsArray.get(3).getDetectedDistance();
+        Double USBL = sensorBL.getDetectedDistance();
+        Double USBF = sensorBR.getDetectedDistance();
 
         if (isLeft){
-            Vec2 posDetect = new Vec2(USBL,sensorsArray.get(2).getDetectionAnglePosition() - detectionAngle/2);     //sensor arrière gauche
-            double angleEn = sensorsArray.get(3).getDetectionAnglePosition() - detectionAngle/2;            //sensor arrière droit
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorsArray.get(2).getVecteur());     //sensor arrière gauche
+            Vec2 posDetect = new Vec2(USBL,sensorBL.getDetectionAnglePosition() - detectionAngle/2);     //sensor arrière gauche
+            double angleEn = sensorBR.getDetectionAnglePosition() - detectionAngle/2;            //sensor arrière droit
+            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorBL.getVecteur());     //sensor arrière gauche
         }
         else{
-            Vec2 posDetect = new Vec2(USBF,sensorsArray.get(3).getDetectionAnglePosition() + detectionAngle/2);     //sensor arrière droit
-            double angleEn = sensorsArray.get(2).getDetectionAnglePosition() + detectionAngle/2;            //sensor arrière gauche
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorsArray.get(3).getVecteur());     //sensor arrière droit
+            Vec2 posDetect = new Vec2(USBF,sensorBR.getDetectionAnglePosition() + detectionAngle/2);     //sensor arrière droit
+            double angleEn = sensorBL.getDetectionAnglePosition() + detectionAngle/2;            //sensor arrière gauche
+            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorBR.getVecteur());     //sensor arrière droit
         }
 
         this.printDebug(posEn);
@@ -417,8 +428,8 @@ public class ThreadSensor extends AbstractThread
 
             if(symetry) //Inversion gauche/droite pour symétriser
             {
-                sensorsArray.get(0).switchValues(sensorsArray.get(1));
-                sensorsArray.get(2).switchValues(sensorsArray.get(3));
+                sensorFL.switchValues(sensorFR);
+                sensorBL.switchValues(sensorBR);
             }
 
             for(int i=0 ; i<nbSensors ; i++)
