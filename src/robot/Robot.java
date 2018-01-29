@@ -26,9 +26,11 @@ import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
+import scripts.AbstractScript;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Vec2;
+import sun.font.Script;
 import table.Table;
 import utils.Log;
 import utils.Sleep;
@@ -95,7 +97,7 @@ public class Robot implements Service {
 	private Locomotion mLocomotion;
 
 	/** Liste des scripts déjà réalisés */
-	private ArrayList<Boolean> scriptDone;
+	private HashMap<AbstractScript,Boolean> scriptDone;
 
 	/**
 	 * Constructeur
@@ -645,6 +647,8 @@ public class Robot implements Service {
 	{
 		return mLocomotion.isRobotMovingBackward;
 	}
+
+	public HashMap<AbstractScript, Boolean> getScriptDone() { return scriptDone;}
 
 	/**
 	 * Met à jour la configuration de la classe via le fichier de configuration fourni par le sysème de container

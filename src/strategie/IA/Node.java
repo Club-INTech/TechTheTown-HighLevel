@@ -14,34 +14,42 @@ import sun.font.Script;
 
 import java.util.ArrayList;
 
-public abstract class Node {
+public class Node {
 
-    protected Node previous;
-    protected ArrayList<Node> nextNodes;
-    protected Boolean condition;  //si true on execute ce noeud
-    protected Boolean executed;   //true execute nous lancé aucune exeption
-    protected String action;
-    protected long time;           //ne pas executer le script si le match est plus avancé que cette valeur
+    private Node previous;
+    private ArrayList<Node> nextNodes;
+    private Boolean condition;  //si true on execute ce noeud
+    private Boolean executed;   //si true execute n'a soulèvé aucune exeption
+    private String action;      //nom de l'action réalisée
+    private long time;           //ne pas executer le script si le match à duré plus longtemps que cette valeur
 
-    protected Pathfinding pathfinding;
-    protected GameState gamestate;
-    protected AbstractScript script;
+    private Pathfinding pathfinding;
+    private GameState gamestate;
+    private AbstractScript script;
+    private Exception exception;
 
 
-    public Node(Node previous, ArrayList<Node> nextNodes, Boolean condition, String action, long time, Pathfinding pathfinding, GameState gamestate, AbstractScript script) {
+    public Node(Node previous, ArrayList<Node> nextNodes, Boolean condition, Boolean executed, String action, long time, Pathfinding pathfinding, GameState gamestate, AbstractScript script, Exception exception) {
         this.previous = previous;
         this.nextNodes = nextNodes;
         this.condition = condition;
+        this.executed = executed;
         this.action = action;
         this.time = time;
         this.pathfinding = pathfinding;
         this.gamestate = gamestate;
         this.script = script;
+        this.exception = exception;
+    }
+    //lance l'action du noeud
+    public void execute(int versiontoexecute, GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException {
+        this.script.goToThenExec(versiontoexecute, gs);
     }
 
-    public abstract void execute(int versiontoexecute, GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException ;
-
-    public abstract Boolean getCondition() ;
+    //met à jour la la condition pour savoir si ce noeud doit être executé
+    public Boolean updateCondition(Exception e) {
+        return gamestate.getTimeEllapsed()<time && gamestate.robot.getScriptDone().get(script) && ! exception.equals(null)|| exception==e ;
+    }
 
     @Override
     public String toString() {
