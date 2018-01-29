@@ -130,10 +130,10 @@ public class ThreadSensor extends AbstractThread
     private BufferedWriter out;
     private final boolean debug = true;
 
-    public Sensor sensorFL;
-    public Sensor sensorFR;
-    public Sensor sensorBL;
-    public Sensor sensorBR;
+    public Sensor sensorFL;//Front left
+    public Sensor sensorFR;//Front right
+    public Sensor sensorBL;//Back left
+    public Sensor sensorBR;//Back right
     /**
 	 * Crée un nouveau thread de capteurs
 	 * @param table La table a l'intérieure de laquelle le thread doit croire évoluer
@@ -229,6 +229,7 @@ public class ThreadSensor extends AbstractThread
         Vec2 vec = new Vec2();
         boolean isValue = true;
 
+        //TODO : Changer le facteur de 0.8, à tester empiriquement
         R1 = sensorFL.getDetectedDistance() + (enRadius*0.8);
         R2 = sensorFR.getDetectedDistance() + (enRadius*0.8);
         robotY = (R1*R1 - R2*R2)/(double)(4*sensorFR.getY());    //sensor avant droit
@@ -266,6 +267,7 @@ public class ThreadSensor extends AbstractThread
         Vec2 vec = new Vec2();
         boolean isValue = true;
 
+        //TODO : Changer le facteur de 0.8, à tester empiriquement
         R1 = sensorBL.getDetectedDistance() + (enRadius*0.8);
         R2 = sensorBR.getDetectedDistance() + (enRadius*0.8);
         robotY = (R1*R1 - R2*R2)/(double)(4*sensorBR.getY());            //position arrière droit
