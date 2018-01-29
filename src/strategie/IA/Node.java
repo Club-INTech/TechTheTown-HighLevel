@@ -26,9 +26,10 @@ public class Node {
     private GameState gamestate;
     private AbstractScript script;
     private Exception exception;
+    private int versionToexecute;
 
 
-    public Node(Node previous, ArrayList<Node> nextNodes, Boolean condition, Boolean executed, String action, long time, GameState gamestate, AbstractScript script, Exception exception) {
+    public Node(Node previous, ArrayList<Node> nextNodes, Boolean condition, Boolean executed, String action, long time, GameState gamestate, AbstractScript script, Exception exception,int versionToexecute) {
         this.previous = previous;
         this.nextNodes = nextNodes;
         this.condition = condition;
@@ -38,6 +39,7 @@ public class Node {
         this.gamestate = gamestate;
         this.script = script;
         this.exception = exception;
+        this.versionToexecute=versionToexecute;
     }
 
     //lance l'action du noeud
