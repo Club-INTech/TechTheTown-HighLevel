@@ -114,6 +114,19 @@ public class TakeCubes extends AbstractScript {
             //prend le cube jaune
             takethiscube(stateToConsider, "avant");
         }
+        //les cubes restants
+        if(versionToExecute==3 ){
+            stateToConsider.robot.turnRelatively(-Math.PI/12);
+            stateToConsider.robot.moveLengthwise(l);
+            takethiscube(stateToConsider,"arriere");
+        }
+        if(versionToExecute==4){
+            stateToConsider.robot.moveLengthwise(l);
+            takethiscube(stateToConsider,"arriere");
+            stateToConsider.robot.turnRelatively(Math.PI/12);
+            takethiscube(stateToConsider,"arriere");
+
+        }
         /**ici c'est la version (jaune, noir,bleu)*/
         if (versionToExecute == 10) {
             stateToConsider.robot.moveLengthwise(l );
@@ -500,19 +513,25 @@ public class TakeCubes extends AbstractScript {
 
 
     /**
-     * les cubes sont numérotés de la façon suivant le sens trigonométrique
+     * les cubes sont numérotés de la façon suivant le sens trigonométrique : 0,1,2 sont de
+     * vrais tas de cubes, par contre le tas de cubes 3 désigne le 1 et le 4 désigne le 0
+     * c'est juste pour prendre le tas de cubes qui reste si jamais il nous reste du temps
+     * par conséquent, on prend le cube qui restent dans le tas 1 et les 2 dans le
+     * tas 0, donc pour prendre trois cubes, il va falloir appeler execute 2 fois et donc
+     * gotothenexec 2 fois aussi pour pouvoir construire une tour de 3 cubes
      */
+
     @Override
     public Circle entryPosition(int numtasdecubeaprendre, int ray, Vec2 robotPosition) throws BadVersionException {
         int d = 160; //distance entre le robot et l'amas de cubes pour faire descendre le bras
         int rayonRobot = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        if (numtasdecubeaprendre == 0) {
+        if (numtasdecubeaprendre == 0 || numtasdecubeaprendre==4) {
             int xEntry = 650;
             int yEntry = 540;
             Vec2 position = new Vec2(xEntry, yEntry);
             return new Circle(position);
         } else {
-            if (numtasdecubeaprendre == 1) {
+            if (numtasdecubeaprendre == 1 || numtasdecubeaprendre==3) {
                 int xEntry = 650 - (rayonRobot + d);
                 int yEntry = 540;
                 Vec2 position = new Vec2(xEntry, yEntry);
@@ -523,30 +542,9 @@ public class TakeCubes extends AbstractScript {
                     int yEntry = 1190;
                     Vec2 position = new Vec2(xEntry, yEntry);
                     return new Circle(position);
-                } else {
-                    if (numtasdecubeaprendre == 3) {
-                        int xEntry = 400 - (rayonRobot + d);
-                        int yEntry = 1500;
-                        Vec2 position = new Vec2(xEntry, yEntry);
-                        return new Circle(position);
-                    } else {
-                        if (numtasdecubeaprendre == 4) {
-                            int xEntry = -1200 + (rayonRobot + d);
-                            int yEntry = 1190;
-                            Vec2 position = new Vec2(xEntry, yEntry);
-                            return new Circle(position);
-                        } else {
-                            if (numtasdecubeaprendre == 5) {
-                                int xEntry = -400 + (rayonRobot + d);
-                                int yEntry = 1500;
-                                Vec2 position = new Vec2(xEntry, yEntry);
-                                return new Circle(position);
-                            }
-                        }
-                    }
+                }
                 }
             }
-        }
         log.debug("erreur : mauvaise version de script");
         throw new BadVersionException();
     }
