@@ -2,6 +2,7 @@ package strategie.IA;
 
 import container.Service;
 import exceptions.ExecuteException;
+import strategie.GameState;
 
 public class IA implements Service {
 
@@ -22,11 +23,13 @@ public class IA implements Service {
 
     }
 
-    //parcourt l'arbre si il y a une exeption
-    public void execute(Exception e) {
+    //parcourt l'arbre si il y a une exception
+    public void execute(Exception e, GameState gs) {
         root.updateConditions(e);
         for (Node node : root.getNextNodes()) {
-
+            if(node.getCondition()==true){
+                node.execute(,gs);
+            }
         }
     }
 }

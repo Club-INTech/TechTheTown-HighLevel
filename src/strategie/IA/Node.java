@@ -21,7 +21,7 @@ public class Node {
     private Boolean condition;  //si true on execute ce noeud
     private Boolean executed;   //si true execute n'a soulèvé aucune exeption
     private String action;      //nom de l'action réalisée
-    private long time;           //ne pas executer le script si le match à duré plus longtemps que cette valeur
+    private long time;           //ne pas executer le script si le match a duré plus longtemps que cette valeur
 
     private GameState gamestate;
     private AbstractScript script;
@@ -42,12 +42,24 @@ public class Node {
 
     //lance l'action du noeud
     public void execute(int versiontoexecute, GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException {
+        this.executed=true;
+        for(Node node : this.nextNodes){
+            node.executed=false;
+            node.condition=false;
+        }
         this.script.goToThenExec(versiontoexecute, gs);
     }
 
-    //met à jour la la condition pour savoir si ce noeud doit être executé
-    public Boolean updateCondition(Exception e) {
-        return gamestate.getTimeEllapsed() < time && gamestate.robot.getScriptDone().get(script) && !exception.equals(null) || exception == e;
+    //met à jour la condition pour savoir si ce noeud doit être executé
+    //si aucune exception n'est levée, le noeud doit necessairement etre executée
+    public boolean updateCondition(Exception e) {
+        if(e==null && this.previous.executed==true){
+            return true;
+        }
+        else{
+            return gamestate.getTimeEllapsed() < time && gamestate.robot.getScriptDone().get(script) && !exception.equals(null) || exception == e;
+        }
+
     }
 
     //met à jour la condition de tout les noeuds enfants
