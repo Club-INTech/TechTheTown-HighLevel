@@ -23,24 +23,23 @@ public class Node {
     private String action;      //nom de l'action réalisée
     private long time;           //ne pas executer le script si le match à duré plus longtemps que cette valeur
 
-    private Pathfinding pathfinding;
     private GameState gamestate;
     private AbstractScript script;
     private Exception exception;
 
 
-    public Node(Node previous, ArrayList<Node> nextNodes, Boolean condition, Boolean executed, String action, long time, Pathfinding pathfinding, GameState gamestate, AbstractScript script, Exception exception) {
+    public Node(Node previous, ArrayList<Node> nextNodes, Boolean condition, Boolean executed, String action, long time, GameState gamestate, AbstractScript script, Exception exception) {
         this.previous = previous;
         this.nextNodes = nextNodes;
         this.condition = condition;
         this.executed = executed;
         this.action = action;
         this.time = time;
-        this.pathfinding = pathfinding;
         this.gamestate = gamestate;
         this.script = script;
         this.exception = exception;
     }
+
     //lance l'action du noeud
     public void execute(int versiontoexecute, GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException {
         this.script.goToThenExec(versiontoexecute, gs);
@@ -48,7 +47,14 @@ public class Node {
 
     //met à jour la la condition pour savoir si ce noeud doit être executé
     public Boolean updateCondition(Exception e) {
-        return gamestate.getTimeEllapsed()<time && gamestate.robot.getScriptDone().get(script) && ! exception.equals(null)|| exception==e ;
+        return gamestate.getTimeEllapsed() < time && gamestate.robot.getScriptDone().get(script) && !exception.equals(null) || exception == e;
+    }
+
+    //met à jour la condition de tout les noeuds enfants
+    public void updateConditions(Exception e) {
+        for (Node node : nextNodes) {
+            node.updateCondition(e);
+        }
     }
 
     @Override
@@ -56,5 +62,21 @@ public class Node {
         return "Node{" +
                 "action='" + action + '\'' +
                 '}';
+    }
+
+    public ArrayList<Node> getNextNodes() {
+        return nextNodes;
+    }
+
+    public Node getPrevious() {
+        return previous;
+    }
+
+    public Boolean getCondition() {
+        return condition;
+    }
+
+    public Boolean getExecuted() {
+        return executed;
     }
 }
