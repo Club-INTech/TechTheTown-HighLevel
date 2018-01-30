@@ -592,7 +592,7 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.turnRelatively(Math.PI/12);
             stateToConsider.robot.moveLengthwise(l);
             takethiscube(stateToConsider,"arriere");
-            stateToConsider.robot.turnRelatively(-Math.PI/12)
+            stateToConsider.robot.turnRelatively(-Math.PI/12);
             stateToConsider.robot.moveLengthwise(l);
             takethiscube(stateToConsider,"arriere");
         }
