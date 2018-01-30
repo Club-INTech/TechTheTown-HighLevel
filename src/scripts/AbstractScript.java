@@ -92,7 +92,15 @@ public abstract class AbstractScript implements Service
 		}
 
 		// exécute la version demandée
-		execute(versionToExecute, actualState);
+		try{
+			execute(versionToExecute, actualState);
+		}
+		catch (InterruptedException e){
+			log.debug("pour l'instant je sais pas");
+			e.printStackTrace();
+		}
+
+
 	}
 
 	   
@@ -103,7 +111,7 @@ public abstract class AbstractScript implements Service
 	 * @throws UnableToMoveException exception levée lorsque le robot ne peut se déplacer (décor ou obstacles détectés par capteurs)
 	 * @throws ExecuteException
 	 */
-	public abstract void execute(int versionToExecute, GameState actualState) throws UnableToMoveException, ExecuteException, BlockedActuatorException;
+	public abstract void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException;
 
 
 	/**

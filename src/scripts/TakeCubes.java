@@ -53,7 +53,7 @@ public class TakeCubes extends AbstractScript {
 
     //méthode prenant en compte les dépassements
 
-    public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
+    public void execute(int versionToExecute, GameState stateToConsider) throws InterruptedException, ExecuteException, UnableToMoveException {
         //considérer le cas où on est de l'autre côté de la table : rajouter un symmetry
         stateToConsider.robot.turn(0);
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
@@ -600,13 +600,14 @@ public class TakeCubes extends AbstractScript {
 
     }
 
-    public void takethiscube(GameState stateToConsider, String bras) {
+    public void takethiscube(GameState stateToConsider, String bras) throws InterruptedException{
         if (bras.equals("avant")) {
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
+            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
+            Thread.sleep(500);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, false);
         }
         if (bras.equals("arriere")) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
