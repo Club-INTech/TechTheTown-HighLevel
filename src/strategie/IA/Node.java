@@ -52,6 +52,7 @@ public class Node {
             node.condition = false;
         }
         this.script.goToThenExec(this.versionToexecute, gs);
+        this.executed = true;
     }
 
     //met à jour la condition pour savoir si ce noeud doit être executé
@@ -70,6 +71,18 @@ public class Node {
         for (Node node : nextNodes) {
             node.updateCondition(e);
         }
+    }
+
+    /* Cette méthode retourne le noeud executé parmi les noeuds fils du node pris en
+      paramètre c'est pour l'IA
+     */
+    public Node returnExecutedNode(Node node) {
+        for (Node noeud : node.getNextNodes()) {
+            if (noeud.getExecuted()) {
+                return noeud;
+            }
+        }
+        return null;
     }
 
     public void display() {
@@ -106,4 +119,9 @@ public class Node {
     public Boolean getExecuted() {
         return executed;
     }
+
+    public int getscore() {
+        return this.score;
+    }
+
 }

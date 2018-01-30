@@ -14,10 +14,13 @@ public class IA implements Service {
 
     private Node root;
     private GameState gameState;
+    private int scorefinal;
+
 
     public IA(GameState gameState) {
         this.root = new Node("root", null, 666, -1, null, 0, null, gameState);
         this.gameState = gameState;
+        this.scorefinal = 0;
     }
 
     @Override
@@ -43,10 +46,20 @@ public class IA implements Service {
         }
     }
 
-    public Node getRoot() {        return root;    }
 
-    public GameState getGameState() {        return gameState;    }
+    public Node getRoot() {
+        return root;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public int getscorefinal(Node node, Exception e) {
+        if (node == root) {
+            return root.getscore();
+        } else {
+            return getscorefinal(node.returnExecutedNode(node), e);
+        }
+    }
 }
-
-
-
