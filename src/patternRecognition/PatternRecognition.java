@@ -69,7 +69,7 @@ public class PatternRecognition{
      * x est l'abscisse,
      * y est l'ordonnée,
      * 0,1 ou 2, si on veut R, G ou B**/
-    private static int[][][] createColorMatrix(String pathname) {
+    public static int[][][] createColorMatrix(String pathname) {
         int[][][] colorMatrix;
         BufferedImage picture;
         try {

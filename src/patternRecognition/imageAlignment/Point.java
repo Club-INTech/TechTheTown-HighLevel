@@ -26,4 +26,10 @@ public class Point {
     public void setB(int b) {
         this.b = b;
     }
+
+    @Override
+    public String toString(){
+        String toReturn="("+this.x+","+this.y+")";
+        return toReturn;
+    }
 }

@@ -1,22 +1,35 @@
 package patternRecognition.imageAlignment;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class HighPassFilter{
     private static boolean debug=true;
 
-    public static int[][][] keepWhite(int[][][] colorMatrix, int seuil){
-        for (int y = 0; y < colorMatrix[0].length; y++) {
-            for (int x = 0; x < colorMatrix.length; x++) {
-                if (colorMatrix[x][y][0]>seuil && colorMatrix[x][y][1]>seuil && colorMatrix[x][y][1]>seuil){
-                    colorMatrix[x][y][0]=255;
-                    colorMatrix[x][y][1]=255;
-                    colorMatrix[x][y][2]=255;
-                }
+    private static void saveHighPassedImage(int[][][] passeHautMatrix){
+        BufferedImage out = new BufferedImage(passeHautMatrix.length,passeHautMatrix[0].length,BufferedImage.TYPE_INT_RGB);
+        Color color;
+        for (int x=0; x<passeHautMatrix.length; x++){
+            for (int y=0; y<passeHautMatrix[0].length; y++){
+                color= new Color(passeHautMatrix[x][y][0],passeHautMatrix[x][y][1],passeHautMatrix[x][y][2]);
+                int RGB=color.getRGB();
+                out.setRGB(x,y,RGB);
             }
         }
-        return colorMatrix;
+        try {
+            File outputfile = new File("saved.png");
+            ImageIO.write(out, "png", outputfile);
+        } catch (IOException e) {
+            System.out.println("Problème à l'enregistrement de l'image");
+        }
     }
 
-    public static int[][][] highPassFiltering(int[][][] colorMatrix, int[][] selectedZone){
+
+    public static ArrayList<Point> highPassingFilter(int[][][] colorMatrix, int[][] selectedZone, int validPointColorSeuil){
         int xdebut=selectedZone[0][0];
         int ydebut=selectedZone[0][1];
         int xfin=selectedZone[1][0];
@@ -45,22 +58,24 @@ public class HighPassFilter{
         int[][][] passeHautMatrix = new int[xfin-xdebut+1][yfin-ydebut+1][3];
         for (int y = ydebut; y <= yfin; y++) {
             for (int x = xdebut; x <= xfin; x++) {
-                passeHautMatrix[x][y][0]=0;
-                passeHautMatrix[x][y][1]=0;
-                passeHautMatrix[x][y][2]=0;
+                int xPasseHautMatrix=x-xdebut;
+                int yPasseHautMatrix=y-ydebut;
+                passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][0]=0;
+                passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][1]=0;
+                passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][2]=0;
                 boolean edge=false;
                 for (int i = -1; i <= 1; i++) {
                     for (int j = -1; j <= 1; j++) {
                         if (x + i >= xdebut && x + i <= xfin) {
                             if (y + j >= ydebut && y + j <= yfin) {
                                 if (i == 0 && j == 0) {
-                                    passeHautMatrix[x][y][0] += 8 * colorMatrix[x+i][y+j][0];
-                                    passeHautMatrix[x][y][1] += 8 * colorMatrix[x+i][y+j][1];
-                                    passeHautMatrix[x][y][2] += 8 * colorMatrix[x+i][y+j][2];
+                                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][0] += 8 * colorMatrix[x+i][y+j][0];
+                                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][1] += 8 * colorMatrix[x+i][y+j][1];
+                                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][2] += 8 * colorMatrix[x+i][y+j][2];
                                 } else {
-                                    passeHautMatrix[x][y][0] -= colorMatrix[x+i][y+j][0];
-                                    passeHautMatrix[x][y][1] -= colorMatrix[x+i][y+j][1];
-                                    passeHautMatrix[x][y][2] -= colorMatrix[x+i][y+j][2];
+                                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][0] -= colorMatrix[x+i][y+j][0];
+                                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][1] -= colorMatrix[x+i][y+j][1];
+                                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][2] -= colorMatrix[x+i][y+j][2];
                                 }
 
                             }
@@ -73,13 +88,15 @@ public class HighPassFilter{
                         }
                     }
                 }
-                passeHautMatrix[x][y][0]*=(double)1/8;
-                passeHautMatrix[x][y][1]*=(double)1/8;
-                passeHautMatrix[x][y][2]*=(double)1/8;
                 if (edge){
-                    passeHautMatrix[x][y][0]=0;
-                    passeHautMatrix[x][y][1]=0;
-                    passeHautMatrix[x][y][2]=0;
+                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][0]=0;
+                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][1]=0;
+                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][2]=0;
+                }
+                else{
+                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][0]*=(double)1/8;
+                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][1]*=(double)1/8;
+                    passeHautMatrix[xPasseHautMatrix][yPasseHautMatrix][2]*=(double)1/8;
                 }
             }
         }
@@ -101,12 +118,17 @@ public class HighPassFilter{
                 }
             }
         }
+        ArrayList<Point> points = new ArrayList<Point>();
         for (int y = 0; y < passeHautMatrix[0].length; y++) {
             for (int x = 0; x < passeHautMatrix.length; x++) {
+                boolean toAppend=false;
                 passeHautMatrix[x][y][0]*=255;
                 passeHautMatrix[x][y][0]=(int)(passeHautMatrix[x][y][0]/(float)maxRed);
                 if (passeHautMatrix[x][y][0]<0){
                     passeHautMatrix[x][y][0]=0;
+                }
+                else if (passeHautMatrix[x][y][0]>validPointColorSeuil){
+                    toAppend=true;
                 }
 
                 passeHautMatrix[x][y][1]*=255;
@@ -114,16 +136,25 @@ public class HighPassFilter{
                 if (passeHautMatrix[x][y][1]<0){
                     passeHautMatrix[x][y][1]=0;
                 }
+                else if (passeHautMatrix[x][y][1]>validPointColorSeuil){
+                    toAppend=true;
+                }
 
                 passeHautMatrix[x][y][2]*=255;
                 passeHautMatrix[x][y][2]=(int)(passeHautMatrix[x][y][2]/(float)maxBlue);
                 if (passeHautMatrix[x][y][2]<0){
                     passeHautMatrix[x][y][2]=0;
                 }
+                else if (passeHautMatrix[x][y][2]>validPointColorSeuil){
+                    toAppend=true;
+                }
+                if (toAppend){
+                    points.add(new Point(x+xdebut,y+ydebut));
+                }
             }
         }
-
-        return passeHautMatrix;
+        saveHighPassedImage(passeHautMatrix);
+        return points;
     }
 
 }

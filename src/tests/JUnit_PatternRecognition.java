@@ -3,11 +3,15 @@ package tests;
 
 import org.junit.Test;
 import patternRecognition.PatternRecognition;
+import patternRecognition.imageAlignment.HighPassFilter;
+import patternRecognition.imageAlignment.Point;
+
+import java.util.ArrayList;
 
 public class JUnit_PatternRecognition extends JUnit_Test {
 
     @Test
-    public void testReconnaissanceTotale(){
+    public void testReconnaissance(){
         //String pathToImage = "Patterns.jpg";
         //String pathToImage = "PatternsLitUp.jpg";
 
@@ -79,4 +83,19 @@ public class JUnit_PatternRecognition extends JUnit_Test {
         log.debug("Pattern found : "+victoryPattern);
     }
 
-}
+    @Test
+    public void testReconnaissanceAvecRecadrage(){
+        String pathToImage = "ImageRaspberryPi5.png";
+
+        boolean debug=false;
+        PatternRecognition.setDebugPatternRecognition(debug);
+
+        int[][][] colorMatrix = PatternRecognition.createColorMatrix(pathToImage);
+        int[][] zoneToAnalyse={{700,50},{1300,600}};
+        ArrayList<Point> points = HighPassFilter.highPassingFilter(colorMatrix,zoneToAnalyse,200);
+        for (Point point : points){
+            System.out.println(point);
+        }
+    }
+
+    }
