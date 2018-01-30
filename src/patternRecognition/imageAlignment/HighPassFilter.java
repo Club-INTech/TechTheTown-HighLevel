@@ -45,113 +45,8 @@ public class HighPassFilter{
         }
     }
 
-    //Binarisation d'une matrice
-    private static int[][][] binarize(int[][][] colorMatrix, int seuil){
-        for (int y = 0; y < colorMatrix[0].length; y++) {
-            for (int x = 0; x < colorMatrix.length; x++) {
-                if ((colorMatrix[x][y][0]+colorMatrix[x][y][1]+colorMatrix[x][y][2])/3>seuil){
-                    colorMatrix[x][y][0]=255;
-                    colorMatrix[x][y][1]=255;
-                    colorMatrix[x][y][2]=255;
-                }
-                else{
-                    colorMatrix[x][y][0]=0;
-                    colorMatrix[x][y][1]=0;
-                    colorMatrix[x][y][2]=0;
-                }
-            }
-        }
-        return colorMatrix;
-    }
-    private static int[][] binarize(int[][] colorMatrix, int seuil) {
-        for (int y = 0; y < colorMatrix[0].length; y++) {
-            for (int x = 0; x < colorMatrix.length; x++) {
-                if (colorMatrix[x][y] > seuil && colorMatrix[x][y] > seuil && colorMatrix[x][y] > seuil) {
-                    colorMatrix[x][y] = 255;
-                }
-                else{
-                    colorMatrix[x][y]=0;
-                }
-            }
-        }
-        return colorMatrix;
-    }
 
-    //Convertit une matrice de couleur en nuances de gris
-    private static int[][] toGreyMatrix(int[][][] colorMatrix){
-        int[][] greyMatrix = new int[colorMatrix.length][colorMatrix[0].length];
-        for (int x=0; x<colorMatrix.length;x++) {
-            for (int y = 0; y < colorMatrix[0].length; y++) {
-                greyMatrix[x][y]=0;
-                for (int i=0; i<3;i++) {
-                    greyMatrix[x][y]+=colorMatrix[x][y][i];
-                }
-                greyMatrix[x][y]/=(double)3;
-            }
-        }
-        return greyMatrix;
-    }
 
-    //Normalisation d'une matrice
-    private static int[][][] normaliseOver255(int[][][]highPassMatrix){
-        int maxRed=0;
-        int maxGreen=0;
-        int maxBlue=0;
-        for (int y = 0; y < highPassMatrix[0].length; y++) {
-            for (int x = 0; x < highPassMatrix.length; x++) {
-                if (highPassMatrix[x][y][0]>maxRed){
-                    maxRed=highPassMatrix[x][y][0];
-                }
-                if (highPassMatrix[x][y][1]>maxGreen){
-                    maxGreen=highPassMatrix[x][y][1];
-                }
-                if (highPassMatrix[x][y][2]>maxBlue){
-                    maxBlue=highPassMatrix[x][y][2];
-                }
-            }
-        }
-        for (int y = 0; y < highPassMatrix[0].length; y++) {
-            for (int x = 0; x < highPassMatrix.length; x++) {
-                highPassMatrix[x][y][0]*=255;
-                highPassMatrix[x][y][0]=(int)(highPassMatrix[x][y][0]/(float)maxRed);
-                if (highPassMatrix[x][y][0]<0){
-                    highPassMatrix[x][y][0]=0;
-                }
-                highPassMatrix[x][y][1]*=255;
-                highPassMatrix[x][y][1]=(int)(highPassMatrix[x][y][1]/(float)maxGreen);
-                if (highPassMatrix[x][y][1]<0){
-                    highPassMatrix[x][y][1]=0;
-                }
-
-                highPassMatrix[x][y][2]*=255;
-                highPassMatrix[x][y][2]=(int)(highPassMatrix[x][y][2]/(float)maxBlue);
-                if (highPassMatrix[x][y][2]<0){
-                    highPassMatrix[x][y][2]=0;
-                }
-            }
-        }
-        return highPassMatrix;
-    }
-    private static int[][] normaliseOver255(int[][] highPassMatrix){
-        int maxGrey=0;
-        for (int y = 0; y < highPassMatrix[0].length; y++) {
-            for (int x = 0; x < highPassMatrix.length; x++) {
-                if (highPassMatrix[x][y]>maxGrey){
-                    maxGrey=highPassMatrix[x][y];
-                }
-            }
-        }
-        for (int y = 0; y < highPassMatrix[0].length; y++) {
-            for (int x = 0; x < highPassMatrix.length; x++) {
-                highPassMatrix[x][y]*=255;
-                highPassMatrix[x][y]=(int)(highPassMatrix[x][y]/(float)maxGrey);
-                if (highPassMatrix[x][y]<0){
-                    highPassMatrix[x][y]=0;
-                }
-            }
-        }
-        return highPassMatrix;
-    }
 
     //Filtre passe-haut sur une zone sélectionnée
     private static int[][][] highPassingFilter(int[][][] colorMatrix, int[][] selectedZone, int validPointColorSeuil){
@@ -229,13 +124,158 @@ public class HighPassFilter{
         return highPassedMatrix;
     }
 
+    //Normalisation d'une matrice
+    private static int[][][] normaliseOver255(int[][][]highPassMatrix){
+        int maxRed=0;
+        int maxGreen=0;
+        int maxBlue=0;
+        for (int y = 0; y < highPassMatrix[0].length; y++) {
+            for (int x = 0; x < highPassMatrix.length; x++) {
+                if (highPassMatrix[x][y][0]>maxRed){
+                    maxRed=highPassMatrix[x][y][0];
+                }
+                if (highPassMatrix[x][y][1]>maxGreen){
+                    maxGreen=highPassMatrix[x][y][1];
+                }
+                if (highPassMatrix[x][y][2]>maxBlue){
+                    maxBlue=highPassMatrix[x][y][2];
+                }
+            }
+        }
+        for (int y = 0; y < highPassMatrix[0].length; y++) {
+            for (int x = 0; x < highPassMatrix.length; x++) {
+                highPassMatrix[x][y][0]*=255;
+                highPassMatrix[x][y][0]=(int)(highPassMatrix[x][y][0]/(float)maxRed);
+                if (highPassMatrix[x][y][0]<0){
+                    highPassMatrix[x][y][0]=0;
+                }
+                highPassMatrix[x][y][1]*=255;
+                highPassMatrix[x][y][1]=(int)(highPassMatrix[x][y][1]/(float)maxGreen);
+                if (highPassMatrix[x][y][1]<0){
+                    highPassMatrix[x][y][1]=0;
+                }
+
+                highPassMatrix[x][y][2]*=255;
+                highPassMatrix[x][y][2]=(int)(highPassMatrix[x][y][2]/(float)maxBlue);
+                if (highPassMatrix[x][y][2]<0){
+                    highPassMatrix[x][y][2]=0;
+                }
+            }
+        }
+        return highPassMatrix;
+    }
+    private static int[][] normaliseOver255(int[][] highPassMatrix){
+        int maxGrey=0;
+        for (int y = 0; y < highPassMatrix[0].length; y++) {
+            for (int x = 0; x < highPassMatrix.length; x++) {
+                if (highPassMatrix[x][y]>maxGrey){
+                    maxGrey=highPassMatrix[x][y];
+                }
+            }
+        }
+        for (int y = 0; y < highPassMatrix[0].length; y++) {
+            for (int x = 0; x < highPassMatrix.length; x++) {
+                highPassMatrix[x][y]*=255;
+                highPassMatrix[x][y]=(int)(highPassMatrix[x][y]/(float)maxGrey);
+                if (highPassMatrix[x][y]<0){
+                    highPassMatrix[x][y]=0;
+                }
+            }
+        }
+        return highPassMatrix;
+    }
+
+    //Convertit une matrice de couleur en nuances de gris
+    private static int[][] toGreyMatrix(int[][][] colorMatrix){
+        int[][] greyMatrix = new int[colorMatrix.length][colorMatrix[0].length];
+        for (int x=0; x<colorMatrix.length;x++) {
+            for (int y = 0; y < colorMatrix[0].length; y++) {
+                greyMatrix[x][y]=0;
+                for (int i=0; i<3;i++) {
+                    greyMatrix[x][y]+=colorMatrix[x][y][i];
+                }
+                greyMatrix[x][y]/=(double)3;
+            }
+        }
+        return greyMatrix;
+    }
+
+    //Binarisation d'une matrice
+    private static int[][][] binarize(int[][][] colorMatrix, int seuil){
+        for (int y = 0; y < colorMatrix[0].length; y++) {
+            for (int x = 0; x < colorMatrix.length; x++) {
+                if ((colorMatrix[x][y][0]+colorMatrix[x][y][1]+colorMatrix[x][y][2])/3>seuil){
+                    colorMatrix[x][y][0]=255;
+                    colorMatrix[x][y][1]=255;
+                    colorMatrix[x][y][2]=255;
+                }
+                else{
+                    colorMatrix[x][y][0]=0;
+                    colorMatrix[x][y][1]=0;
+                    colorMatrix[x][y][2]=0;
+                }
+            }
+        }
+        return colorMatrix;
+    }
+    private static int[][] binarize(int[][] colorMatrix, int seuil) {
+        for (int y = 0; y < colorMatrix[0].length; y++) {
+            for (int x = 0; x < colorMatrix.length; x++) {
+                if (colorMatrix[x][y] > seuil && colorMatrix[x][y] > seuil && colorMatrix[x][y] > seuil) {
+                    colorMatrix[x][y] = 255;
+                }
+                else{
+                    colorMatrix[x][y]=0;
+                }
+            }
+        }
+        return colorMatrix;
+    }
+
+    //Check des zones de détection de couleur
+    private static boolean checkDetectionZonesThenReplaceImage(int[][] colorMatrix, int[][] selectedZone, int[][] positionColorsOnImage){
+        int xdebut=selectedZone[0][0];
+        int ydebut=selectedZone[0][1];
+
+        for (int i=0; i<positionColorsOnImage[0].length; i++){
+            int nbWhiteCases=0;
+            if (debug){
+                System.out.println("Pixels checked (on filtered image) from ("+
+                        (positionColorsOnImage[0][i]-xdebut)+ ","+(positionColorsOnImage[1][i]-ydebut)
+                        +") to ("+
+                        (positionColorsOnImage[2][i]-xdebut)+"," +(positionColorsOnImage[3][i]-ydebut)
+                        +")");
+            }
+            for (int x=positionColorsOnImage[0][i]-xdebut; x<positionColorsOnImage[2][i]-xdebut; x++){
+                for (int y=positionColorsOnImage[1][i]-ydebut; y<positionColorsOnImage[3][i]-ydebut; y++){
+                    if (colorMatrix[x][y]==255){
+                        nbWhiteCases+=1;
+                    }
+                }
+            }
+            if (debug){
+                System.out.println("Zone "+i+" : "+nbWhiteCases+" cases blanches");
+            }
+            if (nbWhiteCases>3){
+                return false;
+            }
+        }
+        return true;
+    }
 
     //Main
-    public static void process(int[][][] colorMatrix, int[][] selectedZone, int validPointColorSeuil){
+    public static void process(int[][][] colorMatrix, int[][] selectedZone, int validPointColorSeuil, int[][] positionsColorsOnImage){
         int[][][] highPassedMatrix=highPassingFilter(colorMatrix,selectedZone,validPointColorSeuil);
         highPassedMatrix=normaliseOver255(highPassedMatrix);
         int[][] greyMatrix=toGreyMatrix(highPassedMatrix);
         int[][] binaryGreyMatrix = binarize(greyMatrix,validPointColorSeuil);
+        boolean areZonesValid = checkDetectionZonesThenReplaceImage(binaryGreyMatrix, selectedZone,  positionsColorsOnImage);
+
         saveHighPassedImage(binaryGreyMatrix);
+    }
+
+
+    public static void setDebugHighPassFilter(boolean value) {
+        debug = value;
     }
 }
