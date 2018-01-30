@@ -80,6 +80,7 @@ public class Node {
                 return noeud;
             }
         }
+        return null;
     }
 
     @Override

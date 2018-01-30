@@ -44,17 +44,12 @@ public class IA implements Service {
             return root.getscore();
         }
         else{
-            if(node.getExecuted()){
-                this.scorefinal=scorefinal+node.getscore();
-                return scorefinal+node.getscore();
-            }
-            else{
-                return getscorefinal(node.getPrevious().getNextNodes().get(0),e);
+            return getscorefinal(node.returnExecutedNode(node),e);
             }
         }
 
     }
-}
+
 
 
 
