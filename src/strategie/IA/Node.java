@@ -59,7 +59,7 @@ public class Node {
             return true;
         }
         else{
-            return gamestate.getTimeEllapsed() < time && gamestate.robot.getScriptDone().get(script) && !exception.equals(null) || exception == e;
+            return gamestate.getTimeEllapsed() < time && gamestate.robot.getScriptDone().get(script) && !exception.equals(null) || exception == e && this.previous.executed;
         }
 
     }
