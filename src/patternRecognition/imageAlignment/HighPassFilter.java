@@ -5,12 +5,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class HighPassFilter{
     private static boolean debug=true;
 
-    //Savegarde des matrices
+    //Savegarde d'une matrice
     private static void saveHighPassedImage(int[][][] highPassedMatrix){
         BufferedImage out = new BufferedImage(highPassedMatrix.length,highPassedMatrix[0].length,BufferedImage.TYPE_INT_RGB);
         Color color;
@@ -28,7 +27,6 @@ public class HighPassFilter{
             System.out.println("Problème à l'enregistrement de l'image");
         }
     }
-
     private static void saveHighPassedImage(int[][] highPassedMatrix){
         BufferedImage out = new BufferedImage(highPassedMatrix.length,highPassedMatrix[0].length,BufferedImage.TYPE_INT_RGB);
         Color color;
@@ -47,11 +45,8 @@ public class HighPassFilter{
         }
     }
 
-
-
-
-    //Binarisation des matrices
-    public static int[][][] binarize(int[][][] colorMatrix, int seuil){
+    //Binarisation d'une matrice
+    private static int[][][] binarize(int[][][] colorMatrix, int seuil){
         for (int y = 0; y < colorMatrix[0].length; y++) {
             for (int x = 0; x < colorMatrix.length; x++) {
                 if ((colorMatrix[x][y][0]+colorMatrix[x][y][1]+colorMatrix[x][y][2])/3>seuil){
@@ -68,8 +63,7 @@ public class HighPassFilter{
         }
         return colorMatrix;
     }
-
-    public static int[][] binarize(int[][] colorMatrix, int seuil) {
+    private static int[][] binarize(int[][] colorMatrix, int seuil) {
         for (int y = 0; y < colorMatrix[0].length; y++) {
             for (int x = 0; x < colorMatrix.length; x++) {
                 if (colorMatrix[x][y] > seuil && colorMatrix[x][y] > seuil && colorMatrix[x][y] > seuil) {
@@ -98,9 +92,8 @@ public class HighPassFilter{
         return greyMatrix;
     }
 
-
-    public static int[][][] normaliseOver255(int[][][]highPassMatrix){
-        //NormaliseOn255
+    //Normalisation d'une matrice
+    private static int[][][] normaliseOver255(int[][][]highPassMatrix){
         int maxRed=0;
         int maxGreen=0;
         int maxBlue=0;
@@ -139,8 +132,7 @@ public class HighPassFilter{
         }
         return highPassMatrix;
     }
-
-    public static int[][] normaliseOver255(int[][] highPassMatrix){
+    private static int[][] normaliseOver255(int[][] highPassMatrix){
         int maxGrey=0;
         for (int y = 0; y < highPassMatrix[0].length; y++) {
             for (int x = 0; x < highPassMatrix.length; x++) {
@@ -161,12 +153,8 @@ public class HighPassFilter{
         return highPassMatrix;
     }
 
-
-
-
-
-    //Filtre passe-haut sur une zone
-    public static int[][][] highPassingFilter(int[][][] colorMatrix, int[][] selectedZone, int validPointColorSeuil){
+    //Filtre passe-haut sur une zone sélectionnée
+    private static int[][][] highPassingFilter(int[][][] colorMatrix, int[][] selectedZone, int validPointColorSeuil){
         int xdebut=selectedZone[0][0];
         int ydebut=selectedZone[0][1];
         int xfin=selectedZone[1][0];
@@ -242,6 +230,7 @@ public class HighPassFilter{
     }
 
 
+    //Main
     public static void process(int[][][] colorMatrix, int[][] selectedZone, int validPointColorSeuil){
         int[][][] highPassedMatrix=highPassingFilter(colorMatrix,selectedZone,validPointColorSeuil);
         highPassedMatrix=normaliseOver255(highPassedMatrix);
@@ -249,5 +238,4 @@ public class HighPassFilter{
         int[][] binaryGreyMatrix = binarize(greyMatrix,validPointColorSeuil);
         saveHighPassedImage(binaryGreyMatrix);
     }
-
 }

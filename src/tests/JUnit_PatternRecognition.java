@@ -4,9 +4,6 @@ package tests;
 import org.junit.Test;
 import patternRecognition.PatternRecognition;
 import patternRecognition.imageAlignment.HighPassFilter;
-import patternRecognition.imageAlignment.Point;
-
-import java.util.ArrayList;
 
 public class JUnit_PatternRecognition extends JUnit_Test {
 
@@ -85,17 +82,13 @@ public class JUnit_PatternRecognition extends JUnit_Test {
 
     @Test
     public void testReconnaissanceAvecRecadrage(){
-        String pathToImage = "ImageRaspberryPi5+30+30.png";
+        String pathToImage = "ImageRaspberryPi5.png";
 
         boolean debug=false;
         PatternRecognition.setDebugPatternRecognition(debug);
 
         int[][][] colorMatrix = PatternRecognition.createColorMatrix(pathToImage);
         int[][] zoneToAnalyse={{800,100},{1200,550}};
-        HighPassFilter.highPassingFilter(colorMatrix,zoneToAnalyse,35);
-        /*for (Point point : points){
-            System.out.println(point);
-        }*/
+        HighPassFilter.process(colorMatrix,zoneToAnalyse,35);
     }
-
-    }
+}
