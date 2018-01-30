@@ -85,17 +85,17 @@ public class JUnit_PatternRecognition extends JUnit_Test {
 
     @Test
     public void testReconnaissanceAvecRecadrage(){
-        String pathToImage = "ImageRaspberryPi5.png";
+        String pathToImage = "ImageRaspberryPi5+30+30.png";
 
         boolean debug=false;
         PatternRecognition.setDebugPatternRecognition(debug);
 
         int[][][] colorMatrix = PatternRecognition.createColorMatrix(pathToImage);
-        int[][] zoneToAnalyse={{700,50},{1300,600}};
-        ArrayList<Point> points = HighPassFilter.highPassingFilter(colorMatrix,zoneToAnalyse,200);
-        for (Point point : points){
+        int[][] zoneToAnalyse={{800,100},{1200,550}};
+        HighPassFilter.highPassingFilter(colorMatrix,zoneToAnalyse,35);
+        /*for (Point point : points){
             System.out.println(point);
-        }
+        }*/
     }
 
     }
