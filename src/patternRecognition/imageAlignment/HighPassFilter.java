@@ -273,8 +273,10 @@ public class HighPassFilter{
         int xdebut=selectedZone[0][0];
         int ydebut=selectedZone[0][1];
 
-        int[][] xOffsetList=new int[3][2];
-        int[][] yOffsetList=new int[3][2];
+        int[] xOffsetLeftList=new int[3];
+        int[] xOffsetRightList=new int[3];
+        int[] yOffsetUpList=new int[3];
+        int[] yOffsetDownList=new int[3];
         for (int i=0; i<3; i++){
             int nbWhiteCases=0;
             int leftWhiteX=10000;
@@ -311,34 +313,34 @@ public class HighPassFilter{
                 System.out.println("Zone "+i+" : "+nbWhiteCases+" cases blanches");
             }
             if (nbWhiteCases>5){
-                int[] xToMove = new int[2];
-                int[] yToMove = new int[2];
-                xToMove[0]=(positionColorsOnImage[0][i]-rightWhiteX);
-                xToMove[1]=(positionColorsOnImage[2][i]-leftWhiteX);
-                if (xToMove[0]<0 || xToMove[0]>width){
-                    xToMove[0]=0;
+                xOffsetLeftList[i]=(positionColorsOnImage[0][i]-rightWhiteX);
+                xOffsetRightList[i]=(positionColorsOnImage[2][i]-leftWhiteX);
+                if (xOffsetLeftList[0]<0 || xOffsetLeftList[0]>width){
+                    xOffsetLeftList[0]=0;
                 }
-                if (xToMove[1]<0 || xToMove[1]>width){
-                    xToMove[1]=0;
+                if (xOffsetRightList[1]<0 || xOffsetRightList[1]>width){
+                    xOffsetRightList[1]=0;
                 }
-                yToMove[0]=(positionColorsOnImage[1][i]-downWhiteY);
-                yToMove[1]=(positionColorsOnImage[3][i]-upWhiteY);
-                if (yToMove[0]<0 || yToMove[0]>height){
-                    yToMove[0]=0;
+
+                yOffsetUpList[i]=(positionColorsOnImage[1][i]-downWhiteY);
+                yOffsetDownList[i]=(positionColorsOnImage[3][i]-upWhiteY);
+                if (yOffsetUpList[0]<0 || yOffsetUpList[0]>height){
+                    yOffsetUpList[0]=0;
                 }
-                if (yToMove[1]<0 || yToMove[1]>height){
-                    yToMove[1]=0;
+                if (yOffsetDownList[1]<0 || yOffsetDownList[1]>height){
+                    yOffsetDownList[1]=0;
                 }
-                xOffsetList[i]=xToMove;
-                yOffsetList[i]=yToMove;
             }
             else{
-                xOffsetList[i]=new int[]{0,0};
-                yOffsetList[i]=new int[]{0,0};
+                xOffsetLeftList[i]=0;
+                xOffsetRightList[i]=0;
+                yOffsetUpList[i]=0;
+                yOffsetDownList[i]=0;
             }
         }
-        int[][][] offsetList={xOffsetList,yOffsetList};
-        return offsetList;
+
+        int[][][] a={{{0}}};
+        return a;
     }
 
     //Main
@@ -352,7 +354,6 @@ public class HighPassFilter{
 
         saveHighPassedImage(binaryGreyMatrix);
     }
-
 
     public static void setDebugHighPassFilter(boolean value) {
         debug = value;
