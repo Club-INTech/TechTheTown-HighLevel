@@ -10,6 +10,7 @@ import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import strategie.GameState;
 import table.Table;
+import strategie.IA.*;
 
 /*
  * Copyright (c) 2016, INTech.
@@ -40,6 +41,8 @@ public class JUnit_IA extends JUnit_Test{
         private ThreadSimulatorMotion simulatorMotion;
         private Table table;
 
+        private IA ia;
+
         /* (non-Javadoc)
          * @see tests.JUnit_Test#setUp()
          */
@@ -52,8 +55,11 @@ public class JUnit_IA extends JUnit_Test{
                 scriptManager = container.getService(ScriptManager.class);
                 state = container.getService(GameState.class);
                 table = container.getService(Table.class);
+
                 simulatorMotion = container.getService(ThreadSimulatorMotion.class);
                 simulator = container.getService(ThreadSimulator.class);
+
+                ia=container.getService(IA.class);
 
                 container.startInstanciedThreads();
 
@@ -68,8 +74,8 @@ public class JUnit_IA extends JUnit_Test{
                 robotReal = container.getService(Robot.class);
                 robotReal.getPosition();
                 robotReal.getOrientation();
-
-
+                ia.create();
+                ia.getRoot().display();
 
                 Thread.sleep(500);
             } catch (Exception e) {

@@ -22,6 +22,7 @@ public class Node {
     private Boolean executed;   //si true execute n'a soulèvé aucune exeption
     private String action;      //nom de l'action réalisée
     private long time;           //ne pas executer le script si le match a duré plus longtemps que cette valeur
+    private int score;
 
     private GameState gamestate;
     private AbstractScript script;
@@ -29,25 +30,26 @@ public class Node {
     private int versionToexecute;
 
 
-    public Node(Node previous, ArrayList<Node> nextNodes, Boolean condition, Boolean executed, String action, long time, GameState gamestate, AbstractScript script, Exception exception,int versionToexecute) {
+    public Node(String action, Node previous, long time, int score, AbstractScript script, int versionToexecute, Exception exception, GameState gamestate) {
         this.previous = previous;
-        this.nextNodes = nextNodes;
-        this.condition = condition;
-        this.executed = executed;
+        this.nextNodes = null;
+        this.condition = false;
+        this.executed = false;
         this.action = action;
         this.time = time;
         this.gamestate = gamestate;
         this.script = script;
         this.exception = exception;
-        this.versionToexecute=versionToexecute;
+        this.versionToexecute = versionToexecute;
+        this.score = score;
     }
 
     //lance l'action du noeud
-    public void execute( GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException {
-        this.executed=true;
-        for(Node node : this.nextNodes){
-            node.executed=false;
-            node.condition=false;
+    public void execute(GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException {
+        this.executed = true;
+        for (Node node : this.nextNodes) {
+            node.executed = false;
+            node.condition = false;
         }
         this.script.goToThenExec(this.versionToexecute, gs);
     }
@@ -55,10 +57,9 @@ public class Node {
     //met à jour la condition pour savoir si ce noeud doit être executé
     //si aucune exception n'est levée, le noeud doit necessairement etre executée
     public boolean updateCondition(Exception e) {
-        if(e==null && this.previous.executed==true){
+        if (e == null && this.previous.executed == true) {
             return true;
-        }
-        else{
+        } else {
             return gamestate.getTimeEllapsed() < time && gamestate.robot.getScriptDone().get(script) && !exception.equals(null) || exception == e && this.previous.executed;
         }
 
@@ -71,11 +72,23 @@ public class Node {
         }
     }
 
+    public void display() {
+        System.out.println(this);
+        if (nextNodes != null) {
+            for (Node node : nextNodes) {
+                node.display();
+
+            }
+        }
+    }
+
     @Override
     public String toString() {
-        return "Node{" +
-                "action='" + action + '\'' +
-                '}';
+        return "action=" + action;
+    }
+
+    public void setNextNodes(ArrayList<Node> nextNodes) {
+        this.nextNodes = nextNodes;
     }
 
     public ArrayList<Node> getNextNodes() {
