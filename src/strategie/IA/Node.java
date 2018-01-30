@@ -22,7 +22,7 @@ public class Node {
     private Boolean executed;   //si true execute n'a soulèvé aucune exeption
     private String action;      //nom de l'action réalisée
     private long time;           //ne pas executer le script si le match a duré plus longtemps que cette valeur
-
+    private int score;
     private GameState gamestate;
     private AbstractScript script;
     private Exception exception;
@@ -40,16 +40,17 @@ public class Node {
         this.script = script;
         this.exception = exception;
         this.versionToexecute=versionToexecute;
+
     }
 
     //lance l'action du noeud
     public void execute( GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException {
-        this.executed=true;
         for(Node node : this.nextNodes){
             node.executed=false;
             node.condition=false;
         }
         this.script.goToThenExec(this.versionToexecute, gs);
+        this.executed=true;
     }
 
     //met à jour la condition pour savoir si ce noeud doit être executé
@@ -68,6 +69,16 @@ public class Node {
     public void updateConditions(Exception e) {
         for (Node node : nextNodes) {
             node.updateCondition(e);
+        }
+    }
+    /* Cette méthode retourne le noeud executé parmi les noeuds fils du node pris en
+      paramètre c'est pour l'IA
+     */
+    public Node returnExecutedNode(Node node){
+        for(Node noeud : node.getNextNodes()){
+            if(noeud.getExecuted()){
+                return noeud;
+            }
         }
     }
 
@@ -93,4 +104,8 @@ public class Node {
     public Boolean getExecuted() {
         return executed;
     }
+    public int getscore(){
+        return this.score;
+    }
+
 }

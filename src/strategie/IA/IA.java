@@ -11,9 +11,11 @@ import strategie.GameState;
 public class IA implements Service {
 
     private Node root;
+    private int scorefinal;
 
     public IA(Node root) {
         this.root = root;
+        this.scorefinal=0;
     }
 
     @Override
@@ -35,6 +37,22 @@ public class IA implements Service {
                 node.execute(gs);
             }
         }
+    }
+
+    public int getscorefinal(Node node,Exception e){
+        if(node==root){
+            return root.getscore();
+        }
+        else{
+            if(node.getExecuted()){
+                this.scorefinal=scorefinal+node.getscore();
+                return scorefinal+node.getscore();
+            }
+            else{
+                return getscorefinal(node.getPrevious().getNextNodes().get(0),e);
+            }
+        }
+
     }
 }
 
