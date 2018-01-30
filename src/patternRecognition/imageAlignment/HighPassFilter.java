@@ -1,13 +1,18 @@
 package patternRecognition.imageAlignment;
 
+import tests.container.A;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class HighPassFilter{
     private static boolean debug=true;
+    private static int width=2000;
+    private static int height=2000;
 
     //Savegarde d'une matrice
     private static void saveHighPassedImage(int[][][] highPassedMatrix){
@@ -233,12 +238,49 @@ public class HighPassFilter{
     }
 
     //Check des zones de détection de couleur
-    private static boolean checkDetectionZonesThenReplaceImage(int[][] colorMatrix, int[][] selectedZone, int[][] positionColorsOnImage){
+    private static int[] checkDetectionZones(int[][] colorMatrix, int[][] selectedZone, int[][] positionColorsOnImage) {
+        int xdebut = selectedZone[0][0];
+        int ydebut = selectedZone[0][1];
+        int[] nbWhiteCasesArray = new int[3];
+        for (int i = 0; i < 3; i++) {
+            int nbWhiteCases = 0;
+            int xcenter = ((positionColorsOnImage[0][i] - xdebut) + (positionColorsOnImage[2][i] - xdebut)) / 2;
+            int ycenter = ((positionColorsOnImage[1][i] - ydebut) + (positionColorsOnImage[3][i] - ydebut)) / 2;
+            if (debug) {
+                System.out.println("Pixels checked (on filtered image) from (" +
+                        (positionColorsOnImage[0][i] - xdebut) + "," + (positionColorsOnImage[1][i] - ydebut)
+                        + ") to (" +
+                        (positionColorsOnImage[2][i] - xdebut) + "," + (positionColorsOnImage[3][i] - ydebut)
+                        + ")");
+            }
+            for (int x = positionColorsOnImage[0][i] - xdebut; x < positionColorsOnImage[2][i] - xdebut; x++) {
+                for (int y = positionColorsOnImage[1][i] - ydebut; y < positionColorsOnImage[3][i] - ydebut; y++) {
+                    if (colorMatrix[x][y] == 255) {
+                        nbWhiteCases += 1;
+                    }
+                }
+            }
+            if (debug) {
+                System.out.println("Zone " + i + " : " + nbWhiteCases + " cases blanches");
+            }
+            nbWhiteCasesArray[i] = nbWhiteCases;
+        }
+        return nbWhiteCasesArray;
+    }
+
+
+    private static int[][][] checkDetectionZonesWithOffset(int[][] colorMatrix, int[][] selectedZone, int[][] positionColorsOnImage){
         int xdebut=selectedZone[0][0];
         int ydebut=selectedZone[0][1];
 
-        for (int i=0; i<positionColorsOnImage[0].length; i++){
+        int[][] xOffsetList=new int[3][2];
+        int[][] yOffsetList=new int[3][2];
+        for (int i=0; i<3; i++){
             int nbWhiteCases=0;
+            int leftWhiteX=10000;
+            int upWhiteY=10000;
+            int rightWhiteX=-1;
+            int downWhiteY=-1;
             if (debug){
                 System.out.println("Pixels checked (on filtered image) from ("+
                         (positionColorsOnImage[0][i]-xdebut)+ ","+(positionColorsOnImage[1][i]-ydebut)
@@ -250,26 +292,63 @@ public class HighPassFilter{
                 for (int y=positionColorsOnImage[1][i]-ydebut; y<positionColorsOnImage[3][i]-ydebut; y++){
                     if (colorMatrix[x][y]==255){
                         nbWhiteCases+=1;
+                        if (leftWhiteX>x){
+                            leftWhiteX=x;
+                        }
+                        if (rightWhiteX<x){
+                            rightWhiteX=x;
+                        }
+                        if (upWhiteY>y){
+                            upWhiteY=y;
+                        }
+                        if (downWhiteY<y){
+                            downWhiteY=y;
+                        }
                     }
                 }
             }
             if (debug){
                 System.out.println("Zone "+i+" : "+nbWhiteCases+" cases blanches");
             }
-            if (nbWhiteCases>3){
-                return false;
+            if (nbWhiteCases>5){
+                int[] xToMove = new int[2];
+                int[] yToMove = new int[2];
+                xToMove[0]=(positionColorsOnImage[0][i]-rightWhiteX);
+                xToMove[1]=(positionColorsOnImage[2][i]-leftWhiteX);
+                if (xToMove[0]<0 || xToMove[0]>width){
+                    xToMove[0]=0;
+                }
+                if (xToMove[1]<0 || xToMove[1]>width){
+                    xToMove[1]=0;
+                }
+                yToMove[0]=(positionColorsOnImage[1][i]-downWhiteY);
+                yToMove[1]=(positionColorsOnImage[3][i]-upWhiteY);
+                if (yToMove[0]<0 || yToMove[0]>height){
+                    yToMove[0]=0;
+                }
+                if (yToMove[1]<0 || yToMove[1]>height){
+                    yToMove[1]=0;
+                }
+                xOffsetList[i]=xToMove;
+                yOffsetList[i]=yToMove;
+            }
+            else{
+                xOffsetList[i]=new int[]{0,0};
+                yOffsetList[i]=new int[]{0,0};
             }
         }
-        return true;
+        int[][][] offsetList={xOffsetList,yOffsetList};
+        return offsetList;
     }
 
     //Main
-    public static void process(int[][][] colorMatrix, int[][] selectedZone, int validPointColorSeuil, int[][] positionsColorsOnImage){
+    public static void process(int[][][] colorMatrix, int[][] selectedZone, int[][] positionsColorsOnImage){
+        int validPointColorSeuil=50;
         int[][][] highPassedMatrix=highPassingFilter(colorMatrix,selectedZone,validPointColorSeuil);
         highPassedMatrix=normaliseOver255(highPassedMatrix);
         int[][] greyMatrix=toGreyMatrix(highPassedMatrix);
         int[][] binaryGreyMatrix = binarize(greyMatrix,validPointColorSeuil);
-        boolean areZonesValid = checkDetectionZonesThenReplaceImage(binaryGreyMatrix, selectedZone,  positionsColorsOnImage);
+        int[][][] offsetList = checkDetectionZonesWithOffset(binaryGreyMatrix, selectedZone,  positionsColorsOnImage);
 
         saveHighPassedImage(binaryGreyMatrix);
     }

@@ -92,6 +92,6 @@ public class JUnit_PatternRecognition extends JUnit_Test {
 
         int[][][] colorMatrix = PatternRecognition.createColorMatrix(pathToImage);
         int[][] zoneToAnalyse={{800,100},{1200,550}};
-        HighPassFilter.process(colorMatrix,zoneToAnalyse,35, positionsColorsOnImage);
+        HighPassFilter.process(colorMatrix,zoneToAnalyse, positionsColorsOnImage);
     }
 }
