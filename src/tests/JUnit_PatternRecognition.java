@@ -57,14 +57,26 @@ public class JUnit_PatternRecognition extends JUnit_Test {
         //int[][][] pat={posNoir,posBleu,posVert};
         //int[][][] pat={posOrange,posBleu,posJaune};
 
+        //Si symmetry
+        boolean symmetry=false;
+        if (symmetry) {
+            int[][] temp = pat[0];
+            pat[0] = pat[2];
+            pat[2] = temp;
+        }
 
         //Ghetto, mais ne pas toucher tant qu'on est en test
-        int[][] positionsColorsOnImage={{pat[0][0][0],pat[1][0][0],pat[2][0][0]},{pat[0][0][1],pat[1][0][1],pat[2][0][1]},{pat[0][1][0],pat[1][1][0],pat[2][1][0]},{pat[0][1][1],pat[1][1][1],pat[2][1][1]}};
+        int[][] positionsColorsOnImage=
+                {{pat[0][0][0],pat[1][0][0],pat[2][0][0]},
+                 {pat[0][0][1],pat[1][0][1],pat[2][0][1]},
+                 {pat[0][1][0],pat[1][1][0],pat[2][1][0]},
+                 {pat[0][1][1],pat[1][1][1],pat[2][1][1]}};
 
-        boolean debug=true;
+        boolean debug=false;
         PatternRecognition.setDebugPatternRecognition(debug);
 
         int victoryPattern=PatternRecognition.analysePattern(pathToImage, pat, positionsColorsOnImage);
+        log.debug("Pattern found : "+victoryPattern);
     }
 
 }

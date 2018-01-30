@@ -11,10 +11,16 @@ import java.util.ArrayList;
 /** Classe permettant de faire la reconnaissance de patterns
  * @author Nayht
  */
-public class PatternRecognition {
+public class PatternRecognition{
 
-    private static boolean debug = false;
-    private static boolean alreadyPrintedColorMatchingProba=false;
+    private static boolean debug = false;   //Debug
+    private static boolean alreadyPrintedColorMatchingProba=false; //Utile pour le debug
+
+
+    private static boolean mustSelectAValidPattern = false; //Est-ce qu'on peut renvoyer qu'aucun pattern n'a été trouvé ?
+    private static boolean symmetry = false;    //Est-ce qu'on est du côté orange (alors symmetry = true) ou vert (alors symmetry=false)
+
+
 
     public static void setDebugPatternRecognition(boolean value){
         debug=value;
@@ -425,10 +431,11 @@ public class PatternRecognition {
      * @return renvoie l'indice finalement choisi
      */
     private static int computeFinalIndice(double[] probabilitiesList, int[][][] colorMatrix, int[][] positionsColorsOnImage) {
-        ArrayList selectionnedProbabilitiesIndice = selectBestProbabilities(probabilitiesList);
-        System.out.println(selectionnedProbabilitiesIndice.toString());
+        ArrayList<Integer> selectionnedProbabilitiesIndice = selectBestProbabilities(probabilitiesList);
         int finalIndice = 10;
         if (debug==true) {
+            System.out.println(selectionnedProbabilitiesIndice.toString());
+            System.out.println("robabilities");
             for (int i = 0; i < 10; i++) {
                 System.out.println(probabilitiesList[i]);
             }
@@ -436,13 +443,28 @@ public class PatternRecognition {
         if (selectionnedProbabilitiesIndice.size() == 1) {
             finalIndice = getMostProbablePattern(probabilitiesList, selectionnedProbabilitiesIndice);
         } else {
-            System.out.println("////////////// Lighting up the color matrix ////////////////");
+            if (debug) {
+                System.out.println("////////////// Lighting up the color matrix ////////////////");
+            }
             int[][][] colorMatrixLitUp=lightUpColors(colorMatrix,positionsColorsOnImage[0],positionsColorsOnImage[1],positionsColorsOnImage[2],positionsColorsOnImage[3]);
-            double[] probabilitiesListLitUp = encapsulationThreeFourFive(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
-            finalIndice = getMostProbablePattern(probabilitiesListLitUp, selectionnedProbabilitiesIndice);
+            double[] probabilitiesListLitUp = encapsulationThreeFourFive(colorMatrixLitUp, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
+            ArrayList<Integer> selectionnedProbabilitiesIndiceLitUp = selectBestProbabilities(probabilitiesListLitUp);
+
             if (debug==true) {
+                System.out.println(selectionnedProbabilitiesIndiceLitUp.toString());
+                System.out.println("LitUpProbabilities");
                 for (int i = 0; i < 10; i++) {
                     System.out.println(probabilitiesListLitUp[i]);
+                }
+            }
+            if (mustSelectAValidPattern) {
+                finalIndice = getMostProbablePattern(probabilitiesListLitUp, selectionnedProbabilitiesIndiceLitUp);
+            }
+            else {
+                if (selectionnedProbabilitiesIndiceLitUp.size() == 1) {
+                    finalIndice = getMostProbablePattern(probabilitiesListLitUp, selectionnedProbabilitiesIndiceLitUp);
+                } else {
+                    return -1;
                 }
             }
         }
@@ -472,6 +494,13 @@ public class PatternRecognition {
         //CALIBRER SUR UNE IMAGE SOMBRE
         //PARTIE A NE PAS TOUCHER DU MAIN
         int[][][] colorMatrix = createColorMatrix(pathToImage);
+        if (symmetry){
+            for (int i=0; i<4; i++) {
+                int temp = positionsColorsOnImage[i][2];
+                positionsColorsOnImage[i][2] = positionsColorsOnImage[i][0];
+                positionsColorsOnImage[i][0] = temp;
+            }
+        }
         double[] probabilitiesList = encapsulationThreeFourFive(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
         int finalIndice=computeFinalIndice(probabilitiesList,colorMatrix,positionsColorsOnImage);
 
