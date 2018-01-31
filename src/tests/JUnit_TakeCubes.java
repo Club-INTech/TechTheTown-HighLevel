@@ -47,11 +47,11 @@ public class JUnit_TakeCubes extends JUnit_Test {
             TakeCubes takeCubes = new TakeCubes(config,log,hookFactory);
 
             robotReal.setOrientation(0);
-            //state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
-            //state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
-           // state.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
-          //  takeCubes.takethiscube(state,"avant");
-         //   state.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+            /*state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
+            state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
+            state.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
+            takeCubes.takethiscube(state,"avant");
+             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);*/
             takeCubes.execute(2,state);
             /*int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
             state.robot.moveLengthwise(-l);*/
