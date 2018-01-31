@@ -402,6 +402,10 @@ public class Container implements Service
 		return config;
 	}
 
+	public Log getLog() {
+		return log;
+	}
+
 	@Override
 	public void updateConfig()
 	{}
