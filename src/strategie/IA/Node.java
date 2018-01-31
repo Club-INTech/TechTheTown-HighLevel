@@ -27,10 +27,10 @@ public class Node {
     private GameState gamestate;
     private AbstractScript script;
     private Exception exception;
-    private int versionToexecute;
+    private int pattern;
 
 
-    public Node(String action, Node previous, long time, int score, AbstractScript script, int versionToexecute, Exception exception, GameState gamestate) {
+    public Node(String action, Node previous, long time, int score, AbstractScript script, int pattern, Exception exception, GameState gamestate) {
         this.previous = previous;
         this.nextNodes = null;
         this.condition = false;
@@ -40,7 +40,7 @@ public class Node {
         this.gamestate = gamestate;
         this.script = script;
         this.exception = exception;
-        this.versionToexecute = versionToexecute;
+        this.pattern = pattern;
         this.score = score;
     }
 
@@ -122,6 +122,16 @@ public class Node {
 
     public int getscore() {
         return this.score;
+    }
+
+    /**
+     * Cette fonction permet de set les versions de scripts selon la version du pattern retournée
+     * par le code de reconnaissance de couleur,cela permet d'instancier moins de noeuds
+     * @param pattern
+     * @return
+     */
+    public int setVersionduscript(int pattern){
+
     }
 
 }
