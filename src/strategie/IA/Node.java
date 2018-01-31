@@ -1,16 +1,12 @@
 package strategie.IA;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import pathfinder.Pathfinding;
-import robot.Locomotion;
 import scripts.AbstractScript;
 import strategie.GameState;
-import sun.font.Script;
 
 import java.util.ArrayList;
 
@@ -30,7 +26,7 @@ public class Node {
     private int versionToexecute;
 
 
-    public Node(String action, Node previous, long time, int score, AbstractScript script, int versionToexecute, Exception exception, GameState gamestate) {
+    public Node(String action, Node previous, long time, int score, AbstractScript script, int positionDentree, Exception exception, GameState gamestate) {
         this.previous = previous;
         this.nextNodes = null;
         this.condition = false;
@@ -40,7 +36,7 @@ public class Node {
         this.gamestate = gamestate;
         this.script = script;
         this.exception = exception;
-        this.versionToexecute = versionToexecute;
+        this.versionToexecute = gamestate.robot.getPaterneToExecute() * 10 + positionDentree;
         this.score = score;
     }
 

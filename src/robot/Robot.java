@@ -23,14 +23,12 @@ import container.Service;
 import enums.*;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.NoPathFound;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.AbstractScript;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Vec2;
-import sun.font.Script;
 import table.Table;
 import utils.Log;
 import utils.Sleep;
@@ -98,6 +96,9 @@ public class Robot implements Service {
 
 	/** Liste des scripts déjà réalisés */
 	private HashMap<AbstractScript,Boolean> scriptDone;
+
+	/**  */
+	private int paterneToExecute;
 
 	/**
 	 * Constructeur
@@ -602,6 +603,8 @@ public class Robot implements Service {
 		return orientation;
 	}
 
+	public void setPaterneToExecute(int paterneToExecute) {	this.paterneToExecute = paterneToExecute;	}
+
 	/**
 	 * Donne la dernière position connue du robot sur la table
 	 * cette methode est rapide et ne déclenche pas d'appel série
@@ -649,6 +652,8 @@ public class Robot implements Service {
 	}
 
 	public HashMap<AbstractScript, Boolean> getScriptDone() { return scriptDone;}
+
+	public int getPaterneToExecute() {	return paterneToExecute;}
 
 	/**
 	 * Met à jour la configuration de la classe via le fichier de configuration fourni par le sysème de container
