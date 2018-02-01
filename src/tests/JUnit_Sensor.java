@@ -10,6 +10,7 @@ import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
+import threads.dataHandlers.ThreadSensor;
 
 public class JUnit_Sensor extends JUnit_Test {
 
@@ -18,6 +19,7 @@ public class JUnit_Sensor extends JUnit_Test {
     private ScriptManager scriptManager;
     private GameState state;
     private HookFactory hookFactory;
+    private ThreadSensor threadSensor;
 
 
     @Before
@@ -28,7 +30,9 @@ public class JUnit_Sensor extends JUnit_Test {
             scriptManager = container.getService(ScriptManager.class);
             state = container.getService(GameState.class);
             table = container.getService(Table.class);
+            threadSensor=container.getService(ThreadSensor.class);
             container.startInstanciedThreads();
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,7 +45,6 @@ public class JUnit_Sensor extends JUnit_Test {
             robotReal = container.getService(Robot.class);
             robotReal.getPosition();
             robotReal.getOrientation();
-
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
             robotReal.moveLengthwise(100);
             robotReal.moveLengthwise(-100);

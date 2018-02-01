@@ -50,7 +50,7 @@ import static smartMath.Geometry.isBetween;
 public class ThreadSensor extends AbstractThread
 {
     /** Array de sensor */
-    public ArrayList<Sensor> sensorsArray = new ArrayList<Sensor>(4);
+    public ArrayList<Sensor> sensorsArray = new ArrayList<Sensor>();
     private int nbSensors=sensorsArray.size();
 
     /** La table */
@@ -149,10 +149,10 @@ public class ThreadSensor extends AbstractThread
 		this.sensorFR=new Sensor(1,120,-125,-this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
 		this.sensorBL=new Sensor(2,-120,125,-this.sensorPositionAngleB+Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty);
 		this.sensorBR=new Sensor(3,-120,-125,this.sensorPositionAngleB-Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty);
-        this.sensorsArray.set(0,sensorFL);
-        this.sensorsArray.set(1,sensorFR);
-        this.sensorsArray.set(2,sensorBL);
-        this.sensorsArray.set(3,sensorBR);
+        this.sensorsArray.add(0,sensorFL);
+        this.sensorsArray.add(1,sensorFR);
+        this.sensorsArray.add(2,sensorBL);
+        this.sensorsArray.add(3,sensorBR);
 
 	}
 	/** Ajoute les obstacles a l'obstacleManager */
@@ -396,13 +396,13 @@ public class ThreadSensor extends AbstractThread
             while(valuesReceived.peek() == null){
                 Thread.sleep(5);
             }
-
-            valuesSReceived = valuesReceived.poll().split(" ");
+            String values = valuesReceived.poll().substring(2);
+            valuesSReceived = values.split(" ");
 
 
             for(int i=0; i<nbSensors; i++) {
 
-                int distance=Integer.parseInt(valuesSReceived[i].substring(2));
+                int distance=Integer.parseInt(valuesSReceived[i]);
                 //Old method
                 //res.add(distance);
 
@@ -466,6 +466,8 @@ public class ThreadSensor extends AbstractThread
                 file.createNewFile();
             }
             out = new BufferedWriter(new FileWriter(file));
+            out.newLine();
+
 
         } catch (IOException e) {
             e.printStackTrace();

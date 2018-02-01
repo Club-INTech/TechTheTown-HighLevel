@@ -11,6 +11,7 @@ import scripts.ScriptManager;
 import scripts.TakeCubes;
 import strategie.GameState;
 import table.Table;
+import threads.dataHandlers.ThreadSensor;
 
 public class JUnit_TakeCubes extends JUnit_Test {
 
@@ -33,8 +34,8 @@ public class JUnit_TakeCubes extends JUnit_Test {
         try {
             robotReal = container.getService(Robot.class);
             state=container.getService(GameState.class);
+            ThreadSensor threadSensor=container.getService(ThreadSensor.class);
             container.startInstanciedThreads();
-
 
             /*
             robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
@@ -53,7 +54,7 @@ public class JUnit_TakeCubes extends JUnit_Test {
             state.robot.moveLengthwise(58);
             takeCubes.takethiscube(state,"avant");*/
              //state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
-            takeCubes.execute(1,state);
+            takeCubes.execute(11,state);
             /*int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
             state.robot.moveLengthwise(-l);*/
 
