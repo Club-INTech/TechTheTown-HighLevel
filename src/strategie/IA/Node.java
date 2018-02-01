@@ -1,16 +1,12 @@
 package strategie.IA;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import pathfinder.Pathfinding;
-import robot.Locomotion;
 import scripts.AbstractScript;
 import strategie.GameState;
-import sun.font.Script;
 
 import java.util.ArrayList;
 
@@ -27,10 +23,11 @@ public class Node {
     private GameState gamestate;
     private AbstractScript script;
     private Exception exception;
-    private int pattern;
+    private int versionToexecute;
 
 
-    public Node(String action, Node previous, long time, int score, AbstractScript script, int pattern, Exception exception, GameState gamestate) {
+
+    public Node(String action, Node previous, long time, int score, AbstractScript script, int positionDentree, Exception exception, GameState gamestate) {
         this.previous = previous;
         this.nextNodes = null;
         this.condition = false;
@@ -40,7 +37,7 @@ public class Node {
         this.gamestate = gamestate;
         this.script = script;
         this.exception = exception;
-        this.pattern = pattern;
+        this.versionToexecute = gamestate.robot.getPaterneToExecute() * 10 + positionDentree;
         this.score = score;
     }
 
@@ -124,14 +121,6 @@ public class Node {
         return this.score;
     }
 
-    /**
-     * Cette fonction permet de set les versions de scripts selon la version du pattern retournée
-     * par le code de reconnaissance de couleur,cela permet d'instancier moins de noeuds
-     * @param pattern
-     * @return
-     */
-    public int setVersionduscript(int pattern){
 
-    }
 
 }
