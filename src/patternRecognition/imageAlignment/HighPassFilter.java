@@ -50,9 +50,6 @@ public class HighPassFilter{
         }
     }
 
-
-
-
     //Filtre passe-haut sur une zone sélectionnée
     private static int[][][] highPassingFilter(int[][][] colorMatrix, int[][] selectedZone, int validPointColorSeuil){
         int xdebut=selectedZone[0][0];
@@ -237,6 +234,7 @@ public class HighPassFilter{
         return colorMatrix;
     }
 
+
     //Check des zones de détection de couleur
     private static int[] checkDetectionZones(int[][] colorMatrix, int[][] selectedZone, int[][] positionColorsOnImage) {
         int xdebut = selectedZone[0][0];
@@ -269,42 +267,47 @@ public class HighPassFilter{
     }
 
 
-    private static int[][][] checkDetectionZonesWithOffset(int[][] colorMatrix, int[][] selectedZone, int[][] positionColorsOnImage){
+    private static int[] checkDetectionZonesWithOffset(int[][] binaryMatrix, int[][] referenceBinaryMatrix, int[][] selectedZone, int[][] positionColorsOnImage){
         int xdebut=selectedZone[0][0];
         int ydebut=selectedZone[0][1];
 
-        int[] xOffsetLeftList=new int[3];
-        int[] xOffsetRightList=new int[3];
-        int[] yOffsetUpList=new int[3];
-        int[] yOffsetDownList=new int[3];
+        int xOffsetLeftTemp=0;
+        int xOffsetRightTemp=0;
+        int yOffsetDownTemp=0;
+        int yOffsetUpTemp=0;
+        int xOffsetLeftAverage=0;
+        int xOffsetRightAverage=0;
+        int yOffsetDownAverage=0;
+        int yOffsetUpAverage=0;
+        int maxOffset=0;
         for (int i=0; i<3; i++){
             int nbWhiteCases=0;
-            int leftWhiteX=10000;
-            int upWhiteY=10000;
+            int leftWhiteX=5000;
+            int upWhiteY=5000;
             int rightWhiteX=-1;
             int downWhiteY=-1;
             if (debug){
                 System.out.println("Pixels checked (on filtered image) from ("+
-                        (positionColorsOnImage[0][i]-xdebut)+ ","+(positionColorsOnImage[1][i]-ydebut)
+                        (positionColorsOnImage[0][i]-xdebut)+","+(positionColorsOnImage[1][i]-ydebut)
                         +") to ("+
                         (positionColorsOnImage[2][i]-xdebut)+"," +(positionColorsOnImage[3][i]-ydebut)
                         +")");
             }
             for (int x=positionColorsOnImage[0][i]-xdebut; x<positionColorsOnImage[2][i]-xdebut; x++){
                 for (int y=positionColorsOnImage[1][i]-ydebut; y<positionColorsOnImage[3][i]-ydebut; y++){
-                    if (colorMatrix[x][y]==255){
+                    if (binaryMatrix[x][y]==255){
                         nbWhiteCases+=1;
-                        if (leftWhiteX>x){
-                            leftWhiteX=x;
+                        if (leftWhiteX>(x+xdebut-positionColorsOnImage[0][i])){
+                            leftWhiteX=(x+xdebut-positionColorsOnImage[0][i]);
                         }
-                        if (rightWhiteX<x){
-                            rightWhiteX=x;
+                        if (rightWhiteX<(x+xdebut-positionColorsOnImage[0][i])){
+                            rightWhiteX=(x+xdebut-positionColorsOnImage[0][i]);
                         }
-                        if (upWhiteY>y){
-                            upWhiteY=y;
+                        if (upWhiteY>(y+ydebut-positionColorsOnImage[1][i])){
+                            upWhiteY=(y+ydebut-positionColorsOnImage[1][i]);
                         }
-                        if (downWhiteY<y){
-                            downWhiteY=y;
+                        if (downWhiteY<(y+ydebut-positionColorsOnImage[1][i])){
+                            downWhiteY=(y+ydebut-positionColorsOnImage[1][i]);
                         }
                     }
                 }
@@ -313,45 +316,182 @@ public class HighPassFilter{
                 System.out.println("Zone "+i+" : "+nbWhiteCases+" cases blanches");
             }
             if (nbWhiteCases>5){
-                xOffsetLeftList[i]=(positionColorsOnImage[0][i]-rightWhiteX);
-                xOffsetRightList[i]=(positionColorsOnImage[2][i]-leftWhiteX);
-                if (xOffsetLeftList[0]<0 || xOffsetLeftList[0]>width){
-                    xOffsetLeftList[0]=0;
+                xOffsetLeftTemp=-rightWhiteX; //Formule OK
+                xOffsetRightTemp=-leftWhiteX;
+                if (debug) {
+                    System.out.println("xOffsetLeftTemp:" + xOffsetLeftTemp);
+                    System.out.println("xOffsetRightTemp:" + xOffsetRightTemp);
+                    System.out.println("yOffsetUpTemp:" + yOffsetUpTemp);
+                    System.out.println("yOffsetDownTemp:" + yOffsetDownTemp);
                 }
-                if (xOffsetRightList[1]<0 || xOffsetRightList[1]>width){
-                    xOffsetRightList[1]=0;
+                if (xOffsetLeftTemp+positionColorsOnImage[0][i]<0 || xOffsetLeftTemp+positionColorsOnImage[0][i]>width){
+                    xOffsetLeftAverage+=0;
                 }
-
-                yOffsetUpList[i]=(positionColorsOnImage[1][i]-downWhiteY);
-                yOffsetDownList[i]=(positionColorsOnImage[3][i]-upWhiteY);
-                if (yOffsetUpList[0]<0 || yOffsetUpList[0]>height){
-                    yOffsetUpList[0]=0;
+                else{
+                    xOffsetLeftAverage+=xOffsetLeftTemp;
                 }
-                if (yOffsetDownList[1]<0 || yOffsetDownList[1]>height){
-                    yOffsetDownList[1]=0;
+                if (xOffsetRightTemp+positionColorsOnImage[2][i]<0 || xOffsetRightTemp+positionColorsOnImage[2][i]>width){
+                    xOffsetRightAverage+=0;
+                }
+                else{
+                    xOffsetRightAverage+=xOffsetRightTemp;
+                }
+                yOffsetUpTemp=-downWhiteY; //Formule OK
+                yOffsetDownTemp=-upWhiteY;
+                if (yOffsetUpTemp+positionColorsOnImage[1][i]<0 || yOffsetUpTemp+positionColorsOnImage[1][i]>height){
+                    yOffsetUpAverage+=0;
+                }
+                else{
+                    yOffsetUpAverage+=yOffsetUpTemp;
+                }
+                if (yOffsetDownTemp+positionColorsOnImage[3][i]<0 || yOffsetDownTemp+positionColorsOnImage[3][i]>height){
+                    yOffsetDownAverage+=0;
+                }
+                else{
+                    yOffsetDownAverage+=yOffsetDownTemp;
                 }
             }
             else{
-                xOffsetLeftList[i]=0;
-                xOffsetRightList[i]=0;
-                yOffsetUpList[i]=0;
-                yOffsetDownList[i]=0;
+                xOffsetLeftAverage+=0;
+                xOffsetRightAverage+=0;
+                yOffsetUpAverage+=0;
+                yOffsetDownAverage+=0;
             }
         }
+        xOffsetLeftAverage/=3;
+        xOffsetRightAverage/=3;
+        yOffsetUpAverage/=3;
+        yOffsetDownAverage/=3;
+        if (Math.abs(xOffsetLeftAverage)>maxOffset){
+            maxOffset=Math.abs(xOffsetLeftAverage);
+        }
+        if (Math.abs(xOffsetRightAverage)>maxOffset){
+            maxOffset=Math.abs(xOffsetRightAverage);
+        }
+        if (Math.abs(yOffsetUpAverage)>maxOffset){
+            maxOffset=Math.abs(yOffsetUpAverage);
+        }
+        if (Math.abs(yOffsetDownAverage)>maxOffset){
+            maxOffset=Math.abs(yOffsetDownAverage);
+        }
 
-        int[][][] a={{{0}}};
-        return a;
+        if (debug){
+            System.out.println("xOffsetLeftAverage: "+xOffsetLeftAverage);
+            System.out.println("xOffsetRightAverage: "+xOffsetRightAverage);
+            System.out.println("yOffsetUpAverage: "+yOffsetUpAverage);
+            System.out.println("yOffsetDownAverage: "+yOffsetDownAverage);
+            System.out.println("maxOffset: "+maxOffset);
+        }
+
+        if (debug){
+            System.out.println("xDebutSelectedZone: "+selectedZone[0][0]);
+            System.out.println("yDebutSelectedZone: "+selectedZone[0][1]);
+            System.out.println("xFinSelectedZone: "+selectedZone[1][0]);
+            System.out.println("yFinSelectedZone: "+selectedZone[1][1]);
+        }
+        int[] nbDifferringCasesArray={0,0,0,0,0,0,0,0};
+        for (int x=maxOffset; x<binaryMatrix.length-maxOffset;x++){
+            for (int y=maxOffset; y<binaryMatrix[0].length-maxOffset; y++){
+                if (binaryMatrix[x+xOffsetLeftAverage][y+yOffsetUpAverage]!=referenceBinaryMatrix[x][y]){
+                    nbDifferringCasesArray[0]+=1;
+                }
+                if (binaryMatrix[x][y+yOffsetUpAverage]!=referenceBinaryMatrix[x][y]){
+                    nbDifferringCasesArray[1]+=1;
+                }
+                if (binaryMatrix[x+xOffsetRightAverage][y+yOffsetUpAverage]!=referenceBinaryMatrix[x][y]){
+                    nbDifferringCasesArray[2]+=1;
+                }
+                if (binaryMatrix[x+xOffsetLeftAverage][y]!=referenceBinaryMatrix[x][y]){
+                    nbDifferringCasesArray[3]+=1;
+                }
+                if (binaryMatrix[x+xOffsetRightAverage][y]!=referenceBinaryMatrix[x][y]){
+                    nbDifferringCasesArray[4]+=1;
+                }
+                if (binaryMatrix[x+xOffsetLeftAverage][y+yOffsetDownAverage]!=referenceBinaryMatrix[x][y]){
+                    nbDifferringCasesArray[5]+=1;
+                }
+                if (binaryMatrix[x][y+yOffsetDownAverage]!=referenceBinaryMatrix[x][y]){
+                    nbDifferringCasesArray[6]+=1;
+                }
+                if (binaryMatrix[x][y+yOffsetDownAverage]!=referenceBinaryMatrix[x][y]){
+                    nbDifferringCasesArray[7]+=1;
+                }
+            }
+        }
+        int minDiffIndice=0;
+        for (int i=0; i<8; i++){
+            if (debug){
+                System.out.println("Position n°"+i+":"+nbDifferringCasesArray[i]+" pixels différents");
+            }
+            if (nbDifferringCasesArray[minDiffIndice]>nbDifferringCasesArray[i]){
+                minDiffIndice=i;
+            }
+        }
+        if (debug) {
+            System.out.println("minDiffIndice:" + minDiffIndice);
+        }
+        int xOffset=0;
+        int yOffset=0;
+        if (minDiffIndice==0){
+            xOffset=xOffsetLeftAverage;
+            yOffset=yOffsetUpAverage;
+        }
+        else if(minDiffIndice==1){
+            xOffset=0;
+            yOffset=yOffsetUpAverage;
+        }
+        else if(minDiffIndice==2){
+            xOffset=xOffsetRightAverage;
+            yOffset=yOffsetUpAverage;
+        }
+        else if(minDiffIndice==3){
+            xOffset=xOffsetLeftAverage;
+            yOffset=0;
+        }
+        else if(minDiffIndice==4){
+            xOffset=xOffsetRightAverage;
+            yOffset=0;
+        }
+        else if(minDiffIndice==5){
+            xOffset=xOffsetLeftAverage;
+            yOffset=yOffsetDownAverage;
+        }
+        else if(minDiffIndice==6){
+            xOffset=0;
+            yOffset=yOffsetDownAverage;
+        }
+        else if(minDiffIndice==7){
+            xOffset=xOffsetRightAverage;
+            yOffset=yOffsetDownAverage;
+        }
+        int[] offset={xOffset,yOffset};
+        return offset;
     }
 
     //Main
-    public static void process(int[][][] colorMatrix, int[][] selectedZone, int[][] positionsColorsOnImage){
+    public static void process(int[][][] colorMatrix, int[][][] referenceFilteredColorMatrix, int[][] selectedZone, int[][] positionsColorsOnImage){
         int validPointColorSeuil=50;
+        long timeStart=0;
+        if (debug) {
+            timeStart = System.currentTimeMillis();
+        }
+
+        int[][][] highPassedReferenceMatrix=highPassingFilter(colorMatrix,selectedZone,validPointColorSeuil);
+        highPassedReferenceMatrix=normaliseOver255(highPassedReferenceMatrix);
+        int[][] greyReferenceMatrix=toGreyMatrix(highPassedReferenceMatrix);
+        int[][] binaryGreyReferenceMatrix = binarize(greyReferenceMatrix,validPointColorSeuil);
+
+
         int[][][] highPassedMatrix=highPassingFilter(colorMatrix,selectedZone,validPointColorSeuil);
         highPassedMatrix=normaliseOver255(highPassedMatrix);
         int[][] greyMatrix=toGreyMatrix(highPassedMatrix);
         int[][] binaryGreyMatrix = binarize(greyMatrix,validPointColorSeuil);
-        int[][][] offsetList = checkDetectionZonesWithOffset(binaryGreyMatrix, selectedZone,  positionsColorsOnImage);
-
+        int[] offset = checkDetectionZonesWithOffset(binaryGreyMatrix, binaryGreyReferenceMatrix, selectedZone, positionsColorsOnImage);
+        if (debug){
+            long timeEnd=System.currentTimeMillis();
+            System.out.println("Time : "+(timeEnd-timeStart));
+            System.out.println("Offset : ("+offset[0]+","+offset[1]+")");
+        }
         saveHighPassedImage(binaryGreyMatrix);
     }
 
