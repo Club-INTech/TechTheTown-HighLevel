@@ -90,11 +90,11 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
             stateToConsider.robot.moveLengthwise(l);
             //test permettant de corriger les erreurs de dépassements
-            stateToConsider.robot.turnRelatively(Math.PI / 12 ); //fait tourner le robot relativement
+            stateToConsider.robot.turnRelatively(Math.PI/12 ); //fait tourner le robot relativement
             //prend le cube noir
             takethiscube(stateToConsider, "avant");
             stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12);
+            stateToConsider.robot.turnRelatively(-Math.PI/12);
             //prend le cube vert
             takethiscube(stateToConsider, "avant");
         }
@@ -602,12 +602,12 @@ public class TakeCubes extends AbstractScript {
 
     public void takethiscube(GameState stateToConsider, String bras) throws InterruptedException{
         if (bras.equals("avant")) {
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
-            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
             Thread.sleep(500);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, false);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
         }
         if (bras.equals("arriere")) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);

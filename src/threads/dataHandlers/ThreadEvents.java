@@ -77,7 +77,7 @@ public class ThreadEvents extends AbstractThread
                         unableToMoveEvent.add(message[1]);
                     }
                     else if (message[0].equals(EventType.STOPPEDMOVING.getEventId())){
-                        log.debug("Arret du robot");
+                        log.debug("Le robot a fini de bouger");
                         synchronized (this.isMoving) {
                             this.isMoving = false;
                             log.debug("isMoving variable has been defined to False");
