@@ -127,7 +127,6 @@ public class ThreadSensor extends AbstractThread
     //ArrayList<Integer> USvaluesForDeletion = new ArrayList<>();
 
     /** Fichier de debug pour le placement d'obstacles */
-    private BufferedWriter out;
     private final boolean debug = true;
 
     public Sensor sensorFL;//Front left
@@ -155,11 +154,14 @@ public class ThreadSensor extends AbstractThread
         this.sensorsArray.add(3,sensorBR);
 
 	}
-	/** Ajoute les obstacles a l'obstacleManager */
+
+
+	/** Ajoute les obstacles a l'obstacleManager **/
+	/*
 	private void addObstacle() {
         try {
 
-            /**Schéma du robot :
+            Schéma du robot :
              *
              *           Front
              *
@@ -179,7 +181,7 @@ public class ThreadSensor extends AbstractThread
              *   /     \      /     \
              *
              *           Back
-             */
+             *
 
             if (sensorFL.getDetectedDistance() != 0){
                 if (sensorFR.getDetectedDistance() != 0) {
@@ -215,6 +217,7 @@ public class ThreadSensor extends AbstractThread
             e.printStackTrace();
         }
     }
+    */
 
     /** Ajoute un obstacle en face du robot, avec les deux capteurs ayant détecté quelque chose
      * Convention: la droite du robot est l'orientation 0 (on travaille dans le repère du robot, et on garde les memes conventions que pour la table) */
@@ -252,7 +255,6 @@ public class ThreadSensor extends AbstractThread
             isValue = false;
         }
         if (isValue) {
-            printDebug(vec);
             mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius, lifetimeForUntestedObstacle);
         }
     }
@@ -289,7 +291,6 @@ public class ThreadSensor extends AbstractThread
             isValue = false;
         }
         if (isValue) {
-            this.printDebug(vec);
             mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius, lifetimeForUntestedObstacle);
         }
     }
@@ -318,7 +319,6 @@ public class ThreadSensor extends AbstractThread
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorFR.getVecteur());     //sensor avant droit
         }
 
-        this.printDebug(posEn);
         mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius, lifetimeForUntestedObstacle);
     }
 
@@ -341,14 +341,12 @@ public class ThreadSensor extends AbstractThread
             double angleEn = sensorBL.getDetectionAnglePosition() + detectionAngle/2;            //sensor arrière gauche
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorBR.getVecteur());     //sensor arrière droit
         }
-
-        this.printDebug(posEn);
         mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius, lifetimeForUntestedObstacle);
     }
 
     /** P'tite methode pour print le debug des capteurs
      * @param obPositionRobotRef la position de l'obstacle dans le réferentiel du robot */
-    private void printDebug(Vec2 obPositionRobotRef){
+   /* private void printDebug(Vec2 obPositionRobotRef){
         try {
             out.write("Position calculée (référentiel du robot) :" + obPositionRobotRef);
             out.newLine();
@@ -364,6 +362,7 @@ public class ThreadSensor extends AbstractThread
             log.debug("IOException sur le Debug...");
         }
     }
+    */
 
     /** Passe du référentiel du robot à celui de la table
      * @param pos la position relative dont on cherche les coordonées absolues */
@@ -396,7 +395,7 @@ public class ThreadSensor extends AbstractThread
             while(valuesReceived.peek() == null){
                 Thread.sleep(5);
             }
-            String values = valuesReceived.poll().substring(2);
+            String values = valuesReceived.poll();
             valuesSReceived = values.split(" ");
 
 
@@ -412,19 +411,7 @@ public class ThreadSensor extends AbstractThread
 
             //USvalues = res;
 
-            if(this.debug)
-            {
-               try {
-                   for (int i=0; i<nbSensors; i++) {
-                       out.write(sensorsArray.get(i).getStringDetectedDistance());
-                       out.newLine();
-                   }
-                   out.newLine();
-                   out.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+
 
             if(symetry) //Inversion gauche/droite pour symétriser
             {
@@ -457,21 +444,6 @@ public class ThreadSensor extends AbstractThread
         /** Initialisation : fichiers de debug, temps d'attente,...*/
 
         updateConfig();
-        try
-        {
-            File file = new File("us.txt");
-
-            if (!file.exists()) {
-                //file.delete();
-                file.createNewFile();
-            }
-            out = new BufferedWriter(new FileWriter(file));
-            out.newLine();
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         /* while(ethWrapper.isJumperAbsent())
         {
@@ -515,7 +487,7 @@ public class ThreadSensor extends AbstractThread
             this.getSensorInfos();
 
             this.removeOutDatedObstacle();
-            this.addObstacle();
+        //    this.addObstacle();
         }
         log.debug("Fin du thread de capteurs");
 
