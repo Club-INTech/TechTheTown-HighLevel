@@ -40,7 +40,7 @@ public class ShootStill {
 	}
 	
 	private static void shootStill(RPiCamera piCamera, String imageName, String encoding) {
-		piCamera.setTimeout(2000)			// Temps d'exposition en ms
+		piCamera.setTimeout(50)				// Temps d'exposition en ms
 				.setDRC(DRC.OFF) 			// Turn off Dynamic Range Compression
 				.setSharpness(100)		    // Set maximum sharpness
 				.setQuality(100) 		    // Set maximum quality
