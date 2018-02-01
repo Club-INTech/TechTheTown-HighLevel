@@ -64,7 +64,7 @@ public class IA implements Service {
         node3.setNextNodes(lnodes4);
         ArrayList<Node> lnode5 = new ArrayList<>();
         //noeud des cubes de la position 0
-        Node node5 = new Node("Cubes 2", node4, 666, 0, container.getService(TakeCubes.class), 0, null, gameState);
+        Node node5 = new Node("Cubes 0", node4, 666, 0, container.getService(TakeCubes.class), 0, null, gameState);
         lnode5.add(node5);
         node4.setNextNodes(lnode5);
         ArrayList<Node> lnodes6 = new ArrayList<>();
