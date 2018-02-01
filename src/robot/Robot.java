@@ -98,7 +98,7 @@ public class Robot implements Service {
 	private HashMap<AbstractScript,Boolean> scriptDone;
 
 	/**  */
-	private int paterneToExecute;
+	private int patternToExecute;
 
 	/**
 	 * Constructeur
@@ -603,7 +603,7 @@ public class Robot implements Service {
 		return orientation;
 	}
 
-	public void setPaterneToExecute(int paterneToExecute) {	this.paterneToExecute = paterneToExecute;	}
+	public void setPatternToExecute(int patternToExecute) {	this.patternToExecute = patternToExecute;	}
 
 	/**
 	 * Donne la dernière position connue du robot sur la table
@@ -653,7 +653,7 @@ public class Robot implements Service {
 
 	public HashMap<AbstractScript, Boolean> getScriptDone() { return scriptDone;}
 
-	public int getPaterneToExecute() {	return paterneToExecute;}
+	public int getPatternToExecute() {	return patternToExecute;}
 
 	/**
 	 * Met à jour la configuration de la classe via le fichier de configuration fourni par le sysème de container

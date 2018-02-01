@@ -37,7 +37,7 @@ public class Node {
         this.gamestate = gamestate;
         this.script = script;
         this.exception = exception;
-        this.versionToexecute = gamestate.robot.getPaterneToExecute() * 10 + positionDentree;
+        this.versionToexecute = gamestate.robot.getPatternToExecute() * 10 + positionDentree;
         this.score = score;
     }
     public Node(String action,Node previous,long time, int score, AbstractScript script,int versionToexecute,GameState gamestate,Exception exception){
