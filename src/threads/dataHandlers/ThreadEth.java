@@ -409,6 +409,7 @@ public class ThreadEth extends AbstractThread implements Service {
                     if (socket != null) {
                         socket.close();
                         Thread.sleep(1000);
+                        createInterface();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

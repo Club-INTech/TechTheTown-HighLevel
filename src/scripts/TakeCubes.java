@@ -103,11 +103,11 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
             stateToConsider.robot.moveLengthwise(l );
             //test permettant de corriger les erreurs de dépassements
-            stateToConsider.robot.turnRelatively(Math.PI / 12 ); //fait tourner le robot relativement
+            stateToConsider.robot.turnRelatively(Math.PI / 13 ); //fait tourner le robot relativement
             //prend le cube noir
             takethiscube(stateToConsider, "avant");
             stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
+            stateToConsider.robot.turnRelatively(-Math.PI / 13 );
             //prend le cube vert
             takethiscube(stateToConsider, "avant");
             stateToConsider.robot.moveLengthwise(-l);
