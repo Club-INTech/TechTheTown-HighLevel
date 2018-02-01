@@ -69,6 +69,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
 
 
         if (symmetry) {
+            //TODO mettre d'autres coordonnées au lieu d'inverser
             int[][] temp = pat[0];
             pat[0] = pat[2];
             pat[2] = temp;
@@ -77,7 +78,14 @@ public class JUnit_PatternRecognition extends JUnit_Test {
         boolean debug=false;
         PatternRecognition.setDebugPatternRecognition(debug);
 
-        int victoryPattern=PatternRecognition.analysePattern(pathToImage, pat, positionsColorsOnImage);
+        PatternRecognition PatternRecognitionThread = new PatternRecognition(pathToImage, pat, positionsColorsOnImage);
+        log.debug("Starting PatternRecognition thread...");
+        PatternRecognitionThread.start();
+        int victoryPattern=-2;
+        while (victoryPattern==-2) {
+            victoryPattern = PatternRecognitionThread.returnFinalIndice();
+        }
+        PatternRecognitionThread.shutdown();
         log.debug("Pattern found : "+victoryPattern);
     }
 }

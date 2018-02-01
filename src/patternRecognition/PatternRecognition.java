@@ -1,5 +1,8 @@
 package patternRecognition;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.Pattern;
+import threads.AbstractThread;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -11,7 +14,7 @@ import java.util.ArrayList;
 /** Classe permettant de faire la reconnaissance de patterns
  * @author Nayht
  */
-public class PatternRecognition{
+public class PatternRecognition extends AbstractThread{
 
     private static boolean debug = false;   //Debug
     private static boolean alreadyPrintedColorMatchingProba=false; //Utile pour le debug
@@ -69,7 +72,7 @@ public class PatternRecognition{
      * x est l'abscisse,
      * y est l'ordonnée,
      * 0,1 ou 2, si on veut R, G ou B**/
-    public static int[][][] createColorMatrix(String pathname) {
+    private static int[][][] createColorMatrix(String pathname) {
         int[][][] colorMatrix;
         BufferedImage picture;
         try {
@@ -490,11 +493,12 @@ public class PatternRecognition{
     /**Méthode permettant de faire la reconnaissance de pattenrs
      * @return l'id du pattern (int de 0 à 9, bornes comprises)
      */
-    public static int analysePattern(String pathToImage, int[][][] pat, int[][] positionsColorsOnImage) {
+    private static int analysePattern(String pathToImage, int[][][] pat, int[][] positionsColorsOnImage) {
         //CALIBRER SUR UNE IMAGE SOMBRE
         //PARTIE A NE PAS TOUCHER DU MAIN
         int[][][] colorMatrix = createColorMatrix(pathToImage);
         if (symmetry){
+            //TODO ne pas seulement inverser les positions, mais changer les coordonnées
             for (int i=0; i<4; i++) {
                 int temp = positionsColorsOnImage[i][2];
                 positionsColorsOnImage[i][2] = positionsColorsOnImage[i][0];
@@ -509,5 +513,44 @@ public class PatternRecognition{
             System.out.println("Pattern recognized : "+finalIndice);
         }
         return finalIndice;
+    }
+
+
+
+    private String pathToImage;
+    private int[][][] pat;
+    private int[][] positionsColorsOnImage;
+    private int finalIndice=-2;
+    private boolean isShutdown=false;
+    public PatternRecognition(String pathToImage, int[][][] pat, int[][] positionsColorsOnImage){
+        this.pathToImage=pathToImage;
+        this.pat=pat;
+        this.positionsColorsOnImage=positionsColorsOnImage;
+    }
+
+    public void run(){
+        this.setPriority(5);
+        this.finalIndice=analysePattern(this.pathToImage, this.pat, this.positionsColorsOnImage);
+        while (!this.isShutdown){
+            try {
+                this.sleep(100);
+            } catch (InterruptedException e) {
+                log.debug("Le thread a été interrompu");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public int returnFinalIndice(){
+        try {
+            this.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return this.finalIndice;
+    }
+
+    public void shutdown(){
+        this.isShutdown=true;
     }
 }
