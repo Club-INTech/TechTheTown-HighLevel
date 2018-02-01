@@ -40,6 +40,16 @@ public class Node {
         this.versionToexecute = gamestate.robot.getPaterneToExecute() * 10 + positionDentree;
         this.score = score;
     }
+    public Node(String action,Node previous,long time, int score, AbstractScript script,int versionToexecute,GameState gamestate,Exception exception){
+        this.action=action;
+        this.previous=previous;
+        this.time=time;
+        this.score=score;
+        this.script=script;
+        this.versionToexecute=versionToexecute;
+        this.exception=exception;
+        this.gamestate=gamestate;
+    }
 
     //lance l'action du noeud
     public void execute(GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException {
