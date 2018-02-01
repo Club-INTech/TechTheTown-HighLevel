@@ -3,10 +3,11 @@ package tests;
 
 import org.junit.Test;
 import patternRecognition.PatternRecognition;
-import patternRecognition.imageAlignment.HighPassFilter;
 
 public class JUnit_PatternRecognition extends JUnit_Test {
 
+    @Test
+    public void testReconnaissance(){
     //String pathToImage = "Patterns.jpg";
     //String pathToImage = "PatternsLitUp.jpg";
 
@@ -50,9 +51,9 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     //int[][][] pat={posBleu,posVert,posOrange};
     //int[][][] pat={posJaune,posVert,posNoir};
     //int[][][] pat={posNoir,posJaune,posOrange};
-    //int[][][] pat={posVert,posJaune,posBleu};
+    int[][][] pat={posVert,posJaune,posBleu};
     //int[][][] pat={posBleu,posOrange,posNoir};
-    int[][][] pat={posVert,posOrange,posJaune};
+    //int[][][] pat={posVert,posOrange,posJaune};
     //int[][][] pat={posNoir,posBleu,posVert};
     //int[][][] pat={posOrange,posBleu,posJaune};
 
@@ -62,13 +63,11 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     //Ghetto, mais ne pas toucher tant qu'on est en test
     int[][] positionsColorsOnImage=
             {{pat[0][0][0],pat[1][0][0],pat[2][0][0]},
-                    {pat[0][0][1],pat[1][0][1],pat[2][0][1]},
-                    {pat[0][1][0],pat[1][1][0],pat[2][1][0]},
-                    {pat[0][1][1],pat[1][1][1],pat[2][1][1]}};
+             {pat[0][0][1],pat[1][0][1],pat[2][0][1]},
+             {pat[0][1][0],pat[1][1][0],pat[2][1][0]},
+             {pat[0][1][1],pat[1][1][1],pat[2][1][1]}};
 
 
-    @Test
-    public void testReconnaissance(){
         if (symmetry) {
             int[][] temp = pat[0];
             pat[0] = pat[2];
@@ -80,20 +79,5 @@ public class JUnit_PatternRecognition extends JUnit_Test {
 
         int victoryPattern=PatternRecognition.analysePattern(pathToImage, pat, positionsColorsOnImage);
         log.debug("Pattern found : "+victoryPattern);
-    }
-
-    @Test
-    public void testReconnaissanceAvecRecadrage(){
-        String pathToImage = "ImageRaspberryPi5-Offset20,20.png";
-        String pathToReferenceImage= "ImageRaspberryPi5.png";
-
-        //Valeurs de debug
-        PatternRecognition.setDebugPatternRecognition(true);
-        HighPassFilter.setDebugHighPassFilter(true);
-
-        int[][][] colorMatrix = PatternRecognition.createColorMatrix(pathToImage);
-        int[][][] referenceColorMatrix = PatternRecognition.createColorMatrix(pathToReferenceImage);
-        int[][] zoneToAnalyse={{800,100},{1200,550}};
-        HighPassFilter.process(colorMatrix, referenceColorMatrix,zoneToAnalyse, positionsColorsOnImage);
     }
 }
