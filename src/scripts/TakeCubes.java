@@ -90,11 +90,11 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "avant");
             stateToConsider.robot.moveLengthwise(l);
             //test permettant de corriger les erreurs de dépassements
-            stateToConsider.robot.turnRelatively(Math.PI/13 ); //fait tourner le robot relativement
+            stateToConsider.robot.turnRelatively(Math.PI/30 ); //fait tourner le robot relativement
             //prend le cube noir
             takethiscube(stateToConsider, "avant");
+            stateToConsider.robot.turnRelatively(-Math.PI/30);
             stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(-Math.PI/13);
             //prend le cube vert
             takethiscube(stateToConsider, "avant");
         }
@@ -634,20 +634,20 @@ public class TakeCubes extends AbstractScript {
         int d = 160; //distance entre le robot et l'amas de cubes pour faire descendre le bras
         int rayonRobot = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         if (numtasdecubeaprendre == 0 || numtasdecubeaprendre==4) {
-            int xEntry = 650;
+            int xEntry = 650-(rayonRobot + d);
             int yEntry = 540;
             Vec2 position = new Vec2(xEntry, yEntry);
             return new Circle(position);
         } else {
             if (numtasdecubeaprendre == 1 || numtasdecubeaprendre==3) {
-                int xEntry = 650 - (rayonRobot + d);
-                int yEntry = 540;
+                int xEntry = 1200-(rayonRobot + d);
+                int yEntry = 1190;
                 Vec2 position = new Vec2(xEntry, yEntry);
                 return new Circle(position);
             } else {
                 if (numtasdecubeaprendre == 2) {
-                    int xEntry = 1200 - (rayonRobot + d);
-                    int yEntry = 1190;
+                    int xEntry = 400-(rayonRobot + d);
+                    int yEntry = 1500;
                     Vec2 position = new Vec2(xEntry, yEntry);
                     return new Circle(position);
                 }
