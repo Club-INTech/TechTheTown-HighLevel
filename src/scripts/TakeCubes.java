@@ -86,6 +86,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "arriere");
         }
         if (versionToExecute == 2) {
+            stateToConsider.robot.turn(Math.PI);
             //prend lecube orange
             takethiscube(stateToConsider, "avant");
             stateToConsider.robot.moveLengthwise(l);
@@ -140,6 +141,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "arriere");
         }
         if (versionToExecute == 12) {
+            stateToConsider.robot.turn(Math.PI);
             stateToConsider.robot.moveLengthwise(l);
             //prendre le cube jaune
             takethiscube(stateToConsider, "avant");
@@ -191,6 +193,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "arriere");
         }
         if (versionToExecute == 22) {
+            stateToConsider.robot.turn(Math.PI);
             //On prend le cube orange d'abord (on peut inverser l'ordre)
             // prendre le cube orange
             takethiscube(stateToConsider, "avant");
@@ -245,6 +248,7 @@ public class TakeCubes extends AbstractScript {
         }
 
         if (versionToExecute == 32) {
+            stateToConsider.robot.turn(Math.PI);
             stateToConsider.robot.moveLengthwise(l );
             // prend le cube jaune
             takethiscube(stateToConsider, "avant");
@@ -299,6 +303,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "arriere");
         }
         if (versionToExecute == 42) {
+            stateToConsider.robot.turn(Math.PI);
             //on inverse l'odre : ca demandera moins de mouvements vu la position d'entrée choisie
             // prend le cube orange
             takethiscube(stateToConsider, "avant");
@@ -348,6 +353,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "arriere");
         }
         if (versionToExecute == 52) {
+            stateToConsider.robot.turn(Math.PI);
             stateToConsider.robot.moveLengthwise(2 * l);
             //prend le cube vert
             takethiscube(stateToConsider, "avant");
@@ -398,6 +404,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "arriere");
         }
         if (versionToExecute == 62) {
+            stateToConsider.robot.turn(Math.PI);
             stateToConsider.robot.moveLengthwise(l );
             stateToConsider.robot.turnRelatively(-Math.PI / 12 );
             //prend le cube bleu
@@ -453,6 +460,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "arriere");
         }
         if (versionToExecute == 72) {
+            stateToConsider.robot.turn(Math.PI);
             //on inverse l'ordre
             stateToConsider.robot.moveLengthwise(l );
             //prend le cube jaune
@@ -508,6 +516,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "arriere");
         }
         if (versionToExecute == 82) {
+            stateToConsider.robot.turn(Math.PI);
             //on inverse l'odre : on prend le vert d'abord
             stateToConsider.robot.moveLengthwise(2 *l);
             //prend le cube vert
@@ -558,6 +567,7 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "arriere");
         }
         if (versionToExecute == 92) {
+            stateToConsider.robot.turn(Math.PI);
             //prend le cube orange
             takethiscube(stateToConsider, "avant");
             stateToConsider.robot.moveLengthwise(l );
@@ -633,6 +643,7 @@ public class TakeCubes extends AbstractScript {
     public Circle entryPosition(int numtasdecubeaprendre, int ray, Vec2 robotPosition) throws BadVersionException {
         int d = 160; //distance entre le robot et l'amas de cubes pour faire descendre le bras
         int rayonRobot = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+        int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         if (numtasdecubeaprendre == 0 || numtasdecubeaprendre==4) {
             int xEntry = 650-(rayonRobot + d);
             int yEntry = 540;
@@ -646,7 +657,7 @@ public class TakeCubes extends AbstractScript {
                 return new Circle(position);
             } else {
                 if (numtasdecubeaprendre == 2) {
-                    int xEntry = 400-(rayonRobot + d);
+                    int xEntry = 400-(rayonRobot + d )+3*l;
                     int yEntry = 1500;
                     Vec2 position = new Vec2(xEntry, yEntry);
                     return new Circle(position);

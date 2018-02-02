@@ -26,8 +26,8 @@ public class DeposeCubes extends AbstractScript{
     }
     @Override
     public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
-        /* d est la distance avec laquelle on recule : on recule d'une distance au moins égale à la dimension
-        de la porte pour pouvoir la fermer à nouveau
+        /* d est la distance avec laquelle on recule : on recule d'une distance au moins égale
+        à la dimension de la porte pour pouvoir la fermer à nouveau
          */
         int l= config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         int d=950;
