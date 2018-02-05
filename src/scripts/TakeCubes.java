@@ -16,6 +16,7 @@ import smartMath.Vec2;
 import strategie.GameState;
 import table.obstacles.Obstacle;
 import table.obstacles.ObstacleManager;
+import threads.ThreadInterface;
 import utils.Log;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class TakeCubes extends AbstractScript {
 
     public void execute(int versionToExecute, GameState stateToConsider) throws InterruptedException, ExecuteException, UnableToMoveException {
         //considérer le cas où on est de l'autre côté de la table : rajouter un symmetry
-        stateToConsider.robot.turn(0);
+        //stateToConsider.robot.turn(0);
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
         int l = config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);   //ouvre l'électrovanne
@@ -86,18 +87,18 @@ public class TakeCubes extends AbstractScript {
             takethiscube(stateToConsider, "arriere");
         }
         if (versionToExecute == 2) {
-            stateToConsider.robot.turn(Math.PI);
-            //prend lecube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l);
+            stateToConsider.robot.turn(0);
+            //prend lecube vert
+            takethiscube(stateToConsider, "arriere");
+            stateToConsider.robot.moveLengthwise(-l);
             //test permettant de corriger les erreurs de dépassements
-            stateToConsider.robot.turnRelatively(Math.PI/30 ); //fait tourner le robot relativement
+            stateToConsider.robot.turnRelatively(-Math.PI/30 ); //fait tourner le robot relativement
             //prend le cube noir
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(-Math.PI/30);
-            stateToConsider.robot.moveLengthwise(l );
-            //prend le cube vert
-            takethiscube(stateToConsider, "avant");
+            takethiscube(stateToConsider, "arriere");
+            stateToConsider.robot.turnRelatively(Math.PI/30);
+            stateToConsider.robot.moveLengthwise(-l );
+            //prend le cube orange
+            takethiscube(stateToConsider, "arriere");
         }
         if (versionToExecute == 1) {
             //prend lecube orange
@@ -623,6 +624,7 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
+            ThreadInterface.sleep(500);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
         }
@@ -657,7 +659,7 @@ public class TakeCubes extends AbstractScript {
                 return new Circle(position);
             } else {
                 if (numtasdecubeaprendre == 2) {
-                    int xEntry = 400-(rayonRobot + d )+3*l;
+                    int xEntry = 400 + (rayonRobot + d );
                     int yEntry = 1500;
                     Vec2 position = new Vec2(xEntry, yEntry);
                     return new Circle(position);

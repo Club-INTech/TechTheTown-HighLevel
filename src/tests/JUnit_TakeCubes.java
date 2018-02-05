@@ -49,18 +49,18 @@ public class JUnit_TakeCubes extends JUnit_Test {
             robotReal.turnRelatively(Math.PI/3);
             */
             robotReal.setOrientation(Math.PI);
-            Vec2 positionentree=new Vec2(1340,470);
+            Vec2 positionentree=new Vec2(1330,455);
             robotReal.setPosition(positionentree);
-            robotReal.moveLengthwise(100);
+            robotReal.moveLengthwise(150);
             robotReal.turnRelatively(-Math.PI/4);
-            robotReal.moveLengthwise(200);
+            robotReal.moveLengthwise(700);
             TakeCubes takeCubes = new TakeCubes(config,log,hookFactory);
             takeCubes.goToThenExec(2,state);
-            robotReal.moveLengthwise(-250);
-            robotReal.turnRelatively(-Math.PI/2);
-            robotReal.moveLengthwise(500);
+            //robotReal.moveLengthwise(-250);
+            //robotReal.turnRelatively(-Math.PI/2);
+            //robotReal.moveLengthwise(500);
             //DeposeCubes
-
+            //robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,true);
             /*state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
             state.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
@@ -71,10 +71,10 @@ public class JUnit_TakeCubes extends JUnit_Test {
          //   takeCubes.execute(1,state);
             /*int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
             state.robot.moveLengthwise(-l);*/
-            DeposeCubes deposeCubes = new DeposeCubes(config,log,hookFactory);
-            deposeCubes.goToThenExec(0,state);
+            //DeposeCubes deposeCubes = new DeposeCubes(config,log,hookFactory);
+            //deposeCubes.goToThenExec(0,state);
             //deposeCubes.execute(0,state);
-            Thread.sleep(500);
+            //Thread.sleep(500);
         }catch (Exception e){
             e.printStackTrace();
         }
