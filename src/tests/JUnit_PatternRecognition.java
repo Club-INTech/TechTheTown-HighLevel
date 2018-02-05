@@ -81,6 +81,8 @@ public class JUnit_PatternRecognition extends JUnit_Test {
         PatternRecognition PatternRecognitionThread = new PatternRecognition(pathToImage, pat, positionsColorsOnImage);
         log.debug("Starting PatternRecognition thread...");
         PatternRecognitionThread.start();
+
+
         int victoryPattern=-2;
         while (victoryPattern==-2) {
             victoryPattern = PatternRecognitionThread.returnFinalIndice();
