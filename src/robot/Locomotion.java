@@ -325,6 +325,32 @@ public class Locomotion implements Service
         isRobotMovingBackward=false;
     }
 
+
+    /** Fait tourner le robot afin qu'il regarde vers un point spécifique de la table
+     * @param aim
+     * @throws UnableToMoveException
+     */
+    public void turnToPoint(Vec2 aim) throws UnableToMoveException{
+        //TODO : à tester !
+        Vec2 relativeCoords = aim.minusNewVector(highLevelPosition);
+        turn(relativeCoords.getA(),true, true);
+    }
+
+
+    /** Fait tourner le robot vers un point, puis le fait avancer jusqu'à une certaine distance du point
+     * @param aim distance visée
+     * @param distanceNear distance à laquelle le robot doit s'arrêter avant le point
+     * @throws UnableToMoveException
+     */
+    public void moveNearPoint(Vec2 aim, double distanceNear) throws UnableToMoveException{
+        //TODO : à tester !
+        turnToPoint(aim);
+        Vec2 relativeCoords = aim.minusNewVector(highLevelPosition);
+        long distance=Math.round(relativeCoords.getR()-distanceNear);
+        moveLengthwise((int)distance, true, true);
+    }
+
+
     /**
      * Fait avancer le robot de "distance" (en mm), et vérifie avant s'il n'y a pas d'obstacle proche sur le chemin avant d'avancer
      * Si la distance spécifiée est négative, le robot recule !
