@@ -1,15 +1,11 @@
 package tests;
 
-import enums.ActuatorOrder;
-import enums.ConfigInfoRobot;
-import enums.Speed;
+import enums.*;
 import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
-import scripts.DeposeCubes;
-import scripts.ScriptManager;
-import scripts.TakeCubes;
+import scripts.*;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
@@ -37,8 +33,8 @@ public class JUnit_TakeCubes extends JUnit_Test {
         try {
             robotReal = container.getService(Robot.class);
             state=container.getService(GameState.class);
-            ThreadSensor threadSensor=container.getService(ThreadSensor.class);
-            ThreadInterface threadInterface = container.getService(ThreadInterface.class);
+            //ThreadSensor threadSensor=container.getService(ThreadSensor.class);
+            //ThreadInterface threadInterface = container.getService(ThreadInterface.class);
             container.startInstanciedThreads();
 
             /*
@@ -49,13 +45,11 @@ public class JUnit_TakeCubes extends JUnit_Test {
             robotReal.turnRelatively(Math.PI/3);
             */
             robotReal.setOrientation(Math.PI);
-            Vec2 positionentree=new Vec2(1330,455);
+            Vec2 positionentree=new Vec2(900,850);
             robotReal.setPosition(positionentree);
-            robotReal.moveLengthwise(150);
-            robotReal.turnRelatively(-Math.PI/4);
-            robotReal.moveLengthwise(700);
-            TakeCubes takeCubes = new TakeCubes(config,log,hookFactory);
-            takeCubes.goToThenExec(2,state);
+            robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
+            TakeCubesRemastered takeCubes = new TakeCubesRemastered(config,log,hookFactory);
+            takeCubes.execute(2, TasCubes.TAS_STATION_EPURATION, BrasUtilise.AVANT, Cubes.NULL, state);
             //robotReal.moveLengthwise(-250);
             //robotReal.turnRelatively(-Math.PI/2);
             //robotReal.moveLengthwise(500);

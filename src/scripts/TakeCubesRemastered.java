@@ -1,8 +1,6 @@
 package scripts;
 
-import enums.ActuatorOrder;
-import enums.Colors;
-import enums.Patterns;
+import enums.*;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.PatternNotRecognizedException;
@@ -12,82 +10,12 @@ import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
-import threads.ThreadInterface;
 import utils.Log;
-
-
-enum Cubes{
-    ORANGE(1,0,Colors.ORANGE),
-    BLUE(0,1,Colors.BLUE),
-    GREEN(-1,0,Colors.GREEN),
-    BLACK(0,-1,Colors.BLACK),
-    YELLOW(0,0,Colors.YELLOW),
-    NULL(0,0,Colors.NULL);
-
-    private int xRelative;
-    private int yRelative;
-    private Colors color;
-
-    Cubes(int xRelative, int yRelative, Colors color){
-        this.xRelative=xRelative;
-        this.yRelative=yRelative;
-        this.color=color;
-    }
-
-    public static int[] findRelativeCoordsWithColor(Colors colorToSearch){
-        for (Cubes position : Cubes.values()){
-            if (colorToSearch==position.color){
-                int[] toReturn={position.xRelative, position.yRelative};
-                return toReturn;
-            }
-        }
-        return null;
-    }
-    public Colors getColor(){
-        return this.color;
-    }
-    public int[] getRelativeCoords(){
-        int[] toReturn={this.xRelative, this.yRelative};
-        return toReturn;
-    }
-}
-
-enum TasCubes{
-    TAS_BASE(-650,540),
-    TAS_CHATEAU_EAU(-300,1190),
-    TAS_STATION_EPURATION(-400,1500);
-
-    private int x;
-    private int y;
-    TasCubes(int x, int y){
-        this.x=x;
-        this.y=y;
-    }
-
-    public int[] getCoords(){
-        int[] coords={this.x,this.y};
-        return getCoords();
-    }
-}
-
-enum BrasUtilise{
-    AVANT("avant"),
-    ARRIERE("arriere");
-    private String side;
-
-    BrasUtilise(String side){
-        this.side=side;
-    }
-
-    public String getSide() {
-        return side;
-    }
-}
 
 
 public class TakeCubesRemastered extends AbstractScript {
     private int largeurCubes=58;
-    private int longueurBras=200;
+    private int longueurBras=330;
 
     //TODO : importer largeurCubes de la config
     public TakeCubesRemastered(Config config, Log log, HookFactory hookFactory) {
@@ -96,8 +24,13 @@ public class TakeCubesRemastered extends AbstractScript {
 
     public void execute(int indicePattern, TasCubes tas, BrasUtilise bras, Cubes additionalCube, GameState stateToConsider)
             throws InterruptedException, ExecuteException, UnableToMoveException, PatternNotYetCalculatedException, PatternNotRecognizedException{
-        if (indicePattern == -2){
-            if (indicePattern == -1) {
+        stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
+        int l = config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
+        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);   //ouvre l'électrovanne
+        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);  //ouvre l'électrovanne
+        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, true);
+        if (indicePattern != -2){
+            if (indicePattern != -1) {
                 int[][] successivesPositionsList;
                 if (additionalCube.getColor() == Colors.NULL) {
                     successivesPositionsList = new int[3][2];
