@@ -1,4 +1,4 @@
-package patternRecognition;
+package enums;
 
 import java.util.Objects;
 
@@ -16,7 +16,8 @@ public enum Colors {
     YELLOW(1,"yellow", new int[]{254,221,0}),
     BLUE(2,"blue", new int[]{38,109,150}),
     BLACK(3,"black", new int[]{66,68,26}),
-    GREEN(4,"green", new int[]{142,196,45});
+    GREEN(4,"green", new int[]{142,196,45}),
+    NULL(-1,"null",new int[]{0,0,0});
 
     /*
     //Couleurs RGB calibrées par rapport à la photo ImageRaspberry5.png

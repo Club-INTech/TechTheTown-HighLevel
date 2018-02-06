@@ -357,7 +357,6 @@ public class Robot implements Service {
 		moveLengthwise(distance, expectsWallImpact, true);
 	}
 
-
 	/**
 	 * Fait avancer le robot de la distance spécifiée. Le robot garde son orientation actuelle et va simplement avancer
 	 * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
@@ -423,13 +422,13 @@ public class Robot implements Service {
 	 * @param aim distance visée
 	 * @param distanceNear distance à laquelle le robot doit s'arrêter avant le point
 	 * @throws UnableToMoveException
+	 * @author Nayht
 	 */
 	public void moveNearPoint(Vec2 aim, double distanceNear) throws UnableToMoveException{
-		//TODO : à tester !
 		turnTo(aim);
 		Vec2 relativeCoords = aim.minusNewVector(position);
 		long distance=Math.round(relativeCoords.getR()-distanceNear);
-		moveLengthwise((int)distance, true, true);
+		moveLengthwise((int)distance);
 	}
 
 

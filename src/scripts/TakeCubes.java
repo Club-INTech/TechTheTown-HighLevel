@@ -678,7 +678,6 @@ public class TakeCubes extends AbstractScript {
 
     @Override
     public void finalize(GameState state, Exception e) throws UnableToMoveException {
-
     }
 
     @Override
