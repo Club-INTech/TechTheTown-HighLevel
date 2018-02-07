@@ -125,7 +125,7 @@ public class Pathfinding implements Service {
         }
         // pas de chemain trouvé.
         if(! closeList.contains(noeudarrive) && openList.isEmpty()){
-            System.out.println("No way found");
+            log.debug("No way found");
             //throw new NoPathFound(false,true);
             throw new UnableToMoveException(noeudarrive.getPosition(), UnableToMoveReason.NO_WAY_FOUND);
         }
@@ -139,7 +139,7 @@ public class Pathfinding implements Service {
             finalPath.add(finalList.get(finalList.size()-i).getPosition());
         }
         long time2=System.currentTimeMillis()-time1;
-        System.out.println("Time to execute (ms): "+time2);
+        log.debug("Time to execute (ms): "+time2);
         return finalPath;
     }
 
@@ -190,7 +190,7 @@ public class Pathfinding implements Service {
         }
 
         long time2=System.currentTimeMillis()-time1;
-        System.out.println("Time to execute (ms): "+time2);
+        log.debug("Time to execute (ms): "+time2);
         return finalPath;
     }
 

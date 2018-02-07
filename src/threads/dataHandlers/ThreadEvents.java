@@ -80,8 +80,8 @@ public class ThreadEvents extends AbstractThread
                         log.debug("Le robot a fini de bouger");
                         synchronized (this.isMoving) {
                             this.isMoving = false;
-                            log.debug("isMoving variable has been defined to False");
                         }
+                        log.debug("isMoving variable has been defined to False");
                     }
                 } else {
                     Thread.sleep(100);

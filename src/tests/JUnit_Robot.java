@@ -19,8 +19,11 @@
 
 package tests;
 
+import enums.ActuatorOrder;
 import enums.ScriptNames;
 import enums.Speed;
+import enums.UnableToMoveReason;
+import exceptions.Locomotion.UnableToMoveException;
 import org.junit.Before;
 import org.junit.Test;
 import pathfinder.Pathfinding;
@@ -79,7 +82,6 @@ public class JUnit_Robot extends JUnit_Test {
     @Test
     public void testScript() {
         try {
-            robotReal = container.getService(Robot.class);
             robotReal.getPosition();
             robotReal.getOrientation();
 
@@ -125,6 +127,23 @@ public class JUnit_Robot extends JUnit_Test {
             Thread.sleep(500);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void basicTest() {
+        for (int i=0; i<20; i++){
+            try {
+                robotReal.moveLengthwise(250);
+                robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
+                robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+
+                robotReal.moveLengthwise(-250);
+                robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
+                robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
+            }catch (UnableToMoveException e){
+                e.printStackTrace();
+            }
         }
     }
 }

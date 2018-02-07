@@ -110,11 +110,6 @@ public class ObstacleCircular extends Obstacle
 		return "Obstacle circulaire de centre " + position + " et de rayon: " + circle.getRadius();
 	}
 	
-	public void printObstacleDeleted()
-	{
-		System.out.println("Obstacle enlevé");
-	}
-	
 	public void printObstacleMemory()
 	{
 		System.out.println("Obstacle en memoire");
