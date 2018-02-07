@@ -57,7 +57,7 @@ public enum ConfigInfoRobot implements ConfigInfo
 
 
     /**Les cubes*/
-    LONGUEUR_CUBE (58),
+    LONGUEUR_CUBE(58),
 
     /**Longueur bras*/
     LONGUEUR_BRAS(330),

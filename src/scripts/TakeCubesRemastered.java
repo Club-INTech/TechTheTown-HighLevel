@@ -15,12 +15,14 @@ import utils.Log;
 
 
 public class TakeCubesRemastered extends AbstractScript {
-    private int largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
-    private int longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS);
+    private int largeurCubes;
+    private int longueurBras;
     private String direction;
 
     public TakeCubesRemastered(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
+        this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
+        this.longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS);
     }
 
     public void execute(int indicePattern, TasCubes tas, BrasUtilise bras, Cubes additionalCube, GameState stateToConsider)
@@ -46,12 +48,12 @@ public class TakeCubesRemastered extends AbstractScript {
                 Vec2 firstPosition = new Vec2(successivesPositionsList[0][0], successivesPositionsList[0][1]);
                 Vec2 secondPosition = new Vec2(successivesPositionsList[1][0], successivesPositionsList[1][1]);
                 Vec2 thirdPosition = new Vec2(successivesPositionsList[2][0], successivesPositionsList[2][1]);
-
                 stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
                 stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
                 stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, true);
                 if (bras==BrasUtilise.ARRIERE){
                     direction="backward";
+                    stateToConsider.robot.turnRelatively(Math.PI);
                 }
                 else{
                     direction="forward";

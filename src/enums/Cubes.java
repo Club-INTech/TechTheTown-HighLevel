@@ -2,9 +2,9 @@ package enums;
 
 public enum Cubes{
     ORANGE(-1,0,Colors.ORANGE),
-    BLUE(0,-1,Colors.BLUE),
+    BLUE(0,1,Colors.BLUE),
     GREEN(1,0,Colors.GREEN),
-    BLACK(0,1,Colors.BLACK),
+    BLACK(0,-1,Colors.BLACK),
     YELLOW(0,0,Colors.YELLOW),
     NULL(0,0,Colors.NULL);
 

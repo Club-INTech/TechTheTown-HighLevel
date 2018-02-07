@@ -168,9 +168,9 @@ public class Robot implements Service {
 	 * @throws UnableToMoveException lorsque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
 	public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException {
-		Vec2 aimPosition= Geometry.closestPointOnCircle(this.position,aim);
+		Vec2 aimPosition= Geometry.closestPointOnCircle(this.getPosition(),aim);
 		// TODO : Appel du followpath & Pathfinding !
-			followPath(pathfinding.findmyway(position,aimPosition));
+			followPath(pathfinding.findmyway(getPosition(),aimPosition));
 	}
 
 	/**
@@ -423,15 +423,19 @@ public class Robot implements Service {
 	 * @author Nayht
 	 */
 	public void moveNearPoint(Vec2 aim, double distanceNear, String direction) throws UnableToMoveException{
-		Vec2 relativeCoords = aim.minusNewVector(position);
+		Vec2 relativeCoords = aim.minusNewVector(getPosition());
 		long distance=Math.round(relativeCoords.getR()-distanceNear);
 		if (direction=="backward"){
-			turnTo(new Vec2(getPosition().getX()-relativeCoords.getX(),getPosition().getY()-relativeCoords.getY()));
+			System.out.println("testBackward");
+			turnTo(getPosition().minusNewVector(relativeCoords));
 			distance*=-1;
+
 		}
 		else{
 			turnTo(aim);
 		}
+		System.out.println("distance"+distance);
+		System.out.println("distanceNear"+distanceNear);
 		moveLengthwise((int)distance);
 	}
 
