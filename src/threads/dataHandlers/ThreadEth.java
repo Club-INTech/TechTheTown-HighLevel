@@ -32,6 +32,7 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.Time;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -107,12 +108,18 @@ public class ThreadEth extends AbstractThread implements Service {
     private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
 
     /**
      * Le "canal" position & orientation
      */
     private XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
     private String splitString = " ";
+
+    /**
+     * Horloge pour le temps de réponse du bas-niveau
+     */
+    private static long timestamp=0;
 
     /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
@@ -267,6 +274,7 @@ public class ThreadEth extends AbstractThread implements Service {
         /* Envoie de l'ordre */
         try {
             mess += "\r\n";
+            timestamp=System.currentTimeMillis();
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
             output.write(mess, 0, mess.length());
             output.flush();
@@ -390,7 +398,9 @@ public class ThreadEth extends AbstractThread implements Service {
                         }
                         continue;
                     } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
-                        outDebug.write(infosFromBuffer);
+                        long timeAfter=(System.currentTimeMillis()-timestamp);
+                        debugBuffer.add(infosFromBuffer);
+                        outDebug.write("[Time:"+timeAfter+"ms] "+infosFromBuffer);
                         outDebug.newLine();
                         outDebug.flush();
                         continue;

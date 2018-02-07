@@ -8,9 +8,6 @@ import robot.Robot;
 import scripts.*;
 import smartMath.Vec2;
 import strategie.GameState;
-import table.Table;
-import threads.ThreadInterface;
-import threads.dataHandlers.ThreadSensor;
 
 public class JUnit_TakeCubes extends JUnit_Test {
 
@@ -36,7 +33,6 @@ public class JUnit_TakeCubes extends JUnit_Test {
             //ThreadSensor threadSensor=container.getService(ThreadSensor.class);
             //ThreadInterface threadInterface = container.getService(ThreadInterface.class);
             container.startInstanciedThreads();
-
             /*
             robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
             robotReal.moveLengthwise(- 100);
@@ -45,11 +41,14 @@ public class JUnit_TakeCubes extends JUnit_Test {
             robotReal.turnRelatively(Math.PI/3);
             */
             robotReal.setOrientation(Math.PI);
-            Vec2 positionentree=new Vec2(900,850);
-            robotReal.setPosition(positionentree);
+            Vec2 positionDepart=new Vec2(900,850);
+            robotReal.setPosition(positionDepart);
             robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
             TakeCubesRemastered takeCubes = new TakeCubesRemastered(config,log,hookFactory);
             takeCubes.execute(2, TasCubes.TAS_STATION_EPURATION, BrasUtilise.AVANT, Cubes.NULL, state);
+            robotReal.goTo(new Vec2(1170,250));
+            DeposeCubes deposeCubes = new DeposeCubes(config, log, hookFactory);
+            deposeCubes.execute(0,state);
             //robotReal.moveLengthwise(-250);
             //robotReal.turnRelatively(-Math.PI/2);
             //robotReal.moveLengthwise(500);

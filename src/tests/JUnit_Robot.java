@@ -19,6 +19,7 @@
 
 package tests;
 
+import enums.ActuatorOrder;
 import enums.ScriptNames;
 import enums.Speed;
 import org.junit.Before;
@@ -29,6 +30,7 @@ import robot.EthWrapper;
 import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
+import scripts.TakeCubes;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import smartMath.Vec2;
@@ -83,10 +85,10 @@ public class JUnit_Robot extends JUnit_Test {
             robotReal.getPosition();
             robotReal.getOrientation();
 
-            robotReal.setPosition(new Vec2(900,1460));
+            robotReal.setPosition(new Vec2(900,850));
             robotReal.setOrientation(Math.PI);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            robotReal.moveNearPoint(new Vec2(0,0),300);
+            robotReal.moveLengthwise(200);
             /*robotReal.setOrientation(Math.PI/2);
             robotReal.setPosition(new Vec2(0, 500));
 

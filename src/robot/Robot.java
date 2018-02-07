@@ -171,8 +171,6 @@ public class Robot implements Service {
 		Vec2 aimPosition= Geometry.closestPointOnCircle(this.position,aim);
 		// TODO : Appel du followpath & Pathfinding !
 			followPath(pathfinding.findmyway(position,aimPosition));
-
-
 	}
 
 	/**
@@ -293,8 +291,9 @@ public class Robot implements Service {
 	 */
 	public void turn(double angle, boolean expectsWallImpact, boolean isTurnRelative, boolean mustDetect) throws UnableToMoveException
 	{
-		if(isTurnRelative)
+		if(isTurnRelative) {
 			angle += getOrientation();
+		}
 		mLocomotion.turn(angle, expectsWallImpact, mustDetect);
 	}
 
@@ -308,7 +307,6 @@ public class Robot implements Service {
 	 */
 	public void turnNoSymmetry(double angle) throws UnableToMoveException
 	{
-
 		log.debug("appel de Robot.turnNoSymmetry(" + angle + ")");
 		// Fais la symétrie deux fois (symétrie de symétrie, c'est l'identité)
 		if(symmetry)
@@ -424,18 +422,22 @@ public class Robot implements Service {
 	 * @throws UnableToMoveException
 	 * @author Nayht
 	 */
-	public void moveNearPoint(Vec2 aim, double distanceNear) throws UnableToMoveException{
-		turnTo(aim);
+	public void moveNearPoint(Vec2 aim, double distanceNear, String direction) throws UnableToMoveException{
 		Vec2 relativeCoords = aim.minusNewVector(position);
 		long distance=Math.round(relativeCoords.getR()-distanceNear);
+		if (direction=="backward"){
+			turnTo(new Vec2(getPosition().getX()-relativeCoords.getX(),getPosition().getY()-relativeCoords.getY()));
+			distance*=-1;
+		}
+		else{
+			turnTo(aim);
+		}
 		moveLengthwise((int)distance);
 	}
-
 
 	/********************************
 	 * ASSERV', VITESSE & STRATEGIE *
 	 ********************************/
-
 
 	/**
 	 * Active le mouvement forcé (on ignore les conditions de blocage du bas-niveau)

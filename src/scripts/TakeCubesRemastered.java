@@ -10,12 +10,14 @@ import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
+import tests.container.A;
 import utils.Log;
 
 
 public class TakeCubesRemastered extends AbstractScript {
     private int largeurCubes=58;
     private int longueurBras=330;
+    private String direction;
 
     //TODO : importer largeurCubes de la config
     public TakeCubesRemastered(Config config, Log log, HookFactory hookFactory) {
@@ -25,10 +27,6 @@ public class TakeCubesRemastered extends AbstractScript {
     public void execute(int indicePattern, TasCubes tas, BrasUtilise bras, Cubes additionalCube, GameState stateToConsider)
             throws InterruptedException, ExecuteException, UnableToMoveException, PatternNotYetCalculatedException, PatternNotRecognizedException{
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
-        int l = config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
-        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);   //ouvre l'électrovanne
-        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);  //ouvre l'électrovanne
-        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, true);
         if (indicePattern != -2){
             if (indicePattern != -1) {
                 int[][] successivesPositionsList;
@@ -50,17 +48,27 @@ public class TakeCubesRemastered extends AbstractScript {
                 Vec2 secondPosition = new Vec2(successivesPositionsList[1][0], successivesPositionsList[1][1]);
                 Vec2 thirdPosition = new Vec2(successivesPositionsList[2][0], successivesPositionsList[2][1]);
 
-                stateToConsider.robot.moveNearPoint(firstPosition, longueurBras);
+                stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
+                stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
+                stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, true);
+                if (bras==BrasUtilise.ARRIERE){
+                    direction="backward";
+                }
+                else{
+                    direction="forward";
+                }
+                stateToConsider.robot.moveNearPoint(firstPosition, longueurBras, direction);
                 takethiscube(stateToConsider, bras.getSide());
-                stateToConsider.robot.moveNearPoint(secondPosition, longueurBras);
+                stateToConsider.robot.moveNearPoint(secondPosition, longueurBras, direction);
                 takethiscube(stateToConsider, bras.getSide());
-                stateToConsider.robot.moveNearPoint(thirdPosition, longueurBras);
+                stateToConsider.robot.moveNearPoint(thirdPosition, longueurBras, direction);
                 takethiscube(stateToConsider, bras.getSide());
                 if (additionalCube.getColor() != Colors.NULL){
                     Vec2 fourthPosition = new Vec2(successivesPositionsList[3][0], successivesPositionsList[3][1]);
-                    stateToConsider.robot.moveNearPoint(fourthPosition, longueurBras);
+                    stateToConsider.robot.moveNearPoint(fourthPosition, longueurBras, direction);
                     takethiscube(stateToConsider, bras.getSide());
                 }
+                stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
             }
             else{
                 log.debug("Le pattern n'a pas été reconnu");
