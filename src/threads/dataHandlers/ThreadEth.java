@@ -279,7 +279,7 @@ public class ThreadEth extends AbstractThread implements Service {
 
         /* Envoie de l'ordre */
         try {
-            timeRef = System.nanoTime();
+            timeRef = System.currentTimeMillis();
             comFlag = true;
             mess += "\r\n";
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
