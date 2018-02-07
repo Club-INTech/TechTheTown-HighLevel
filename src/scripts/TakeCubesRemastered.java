@@ -19,7 +19,6 @@ public class TakeCubesRemastered extends AbstractScript {
     private int longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS);
     private String direction;
 
-    //TODO : importer largeurCubes de la config
     public TakeCubesRemastered(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
     }
