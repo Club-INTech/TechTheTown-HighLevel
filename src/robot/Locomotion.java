@@ -325,6 +325,10 @@ public class Locomotion implements Service
         isRobotMovingBackward=false;
     }
 
+
+
+
+
     /**
      * Fait avancer le robot de "distance" (en mm), et vérifie avant s'il n'y a pas d'obstacle proche sur le chemin avant d'avancer
      * Si la distance spécifiée est négative, le robot recule !
@@ -347,7 +351,6 @@ public class Locomotion implements Service
         Double dist = (double) distance;
         Vec2 aim = highLevelPosition.plusNewVector(new Vec2(dist, highLevelOrientation));
         finalAim = aim;
-       // System.out.println("FINAL AIM"+finalAim);
 
         /** TODO A adapté à l'annee en cours */
         int totalTime = 0;
@@ -555,10 +558,9 @@ public class Locomotion implements Service
             aimSymetrized.setX(-aimSymetrized.getX());
         }
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
-        System.out.println("highLevelOrientation: "+highLevelOrientation);
+        log.debug("HighLevelOrientation: "+highLevelOrientation);
         if (!turnOnly){
             double produitScalaire = delta.dot(new Vec2(100,highLevelOrientation));
-            System.out.println("highLevelOrientation: "+highLevelOrientation);
             if (produitScalaire<0){
                 moveToPointSerialOrder(delta.getA(), -delta.getR(), turnOnly);
             }

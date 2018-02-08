@@ -29,7 +29,6 @@ import threads.AbstractThread;
 import utils.Log;
 
 import java.io.*;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -59,7 +58,6 @@ public class ThreadEth extends AbstractThread implements Service {
      * Socket
      */
     private Socket socket;
-    private InetSocketAddress server;
 
     /**
      * IP Teensy & local
@@ -76,6 +74,8 @@ public class ThreadEth extends AbstractThread implements Service {
      * True si besoin de fichiers de debug
      */
     private boolean debug = true;
+    private volatile boolean comFlag;
+    private long timeRef;
 
     /**
      * Buffer pour fichiers de debug
@@ -239,6 +239,19 @@ public class ThreadEth extends AbstractThread implements Service {
     }
 
     /**
+     * Attend que le LL réponde sur le canal debug lors d'un envoie d'ordre
+     */
+    private synchronized void waitForAResponse() {
+        while (comFlag){
+            try {
+                Thread.sleep(1);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * Ferme la socket !
      */
     public synchronized void close() {
@@ -273,6 +286,8 @@ public class ThreadEth extends AbstractThread implements Service {
 
         /* Envoie de l'ordre */
         try {
+            timeRef = System.currentTimeMillis();
+            comFlag = true;
             mess += "\r\n";
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
             output.write(mess, 0, mess.length());
@@ -338,10 +353,14 @@ public class ThreadEth extends AbstractThread implements Service {
                     communicate(nb_line_response, message); // On retente
                 }   */
             }
+
             if (nb_line_response != 0) {
                 outStandard.newLine();
                 outStandard.flush();
             }
+
+            waitForAResponse();
+
         } catch (SocketException e1) {
             log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
             try {
@@ -373,6 +392,7 @@ public class ThreadEth extends AbstractThread implements Service {
         while (!shutdown) {
             try {
                 buffer = input.readLine();
+
                 fullDebug.write(buffer.substring(2));
                 fullDebug.newLine();
                 fullDebug.flush();
@@ -400,7 +420,8 @@ public class ThreadEth extends AbstractThread implements Service {
                         }
                         continue;
                     } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
-                        outDebug.write(infosFromBuffer);
+                        comFlag = false;
+                        outDebug.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis()-timeRef));
                         outDebug.newLine();
                         outDebug.flush();
                         continue;
@@ -412,6 +433,7 @@ public class ThreadEth extends AbstractThread implements Service {
                     standardBuffer.add(buffer);
                     continue;
                 }
+
             } catch (SocketException se) {
                 log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
                 try {
@@ -459,6 +481,20 @@ public class ThreadEth extends AbstractThread implements Service {
 
     public boolean isInterfaceCreated() {
         return interfaceCreated;
+    }
+
+    /** Methode appelée lors de la destruction de l'objet : il sert à fermer la socket avant
+     * d'arreter le process */
+    @Override
+    public void finalize(){
+        try {
+            log.debug("Fermeture de la socket");
+            socket.close();
+        }catch (SocketException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @Override

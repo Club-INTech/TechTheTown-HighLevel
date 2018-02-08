@@ -432,6 +432,21 @@ public class Robot implements Service {
 	}
 
 
+
+	/** Fait tourner le robot vers un point, puis le fait avancer jusqu'à une certaine distance du point
+	 * @param aim distance visée
+	 * @param distanceNear distance à laquelle le robot doit s'arrêter avant le point
+	 * @throws UnableToMoveException
+	 */
+	public void moveNearPoint(Vec2 aim, double distanceNear) throws UnableToMoveException{
+		//TODO : à tester !
+		turnTo(aim);
+		Vec2 relativeCoords = aim.minusNewVector(position);
+		long distance=Math.round(relativeCoords.getR()-distanceNear);
+		moveLengthwise((int)distance, true, true);
+	}
+
+
 	/********************************
 	 * ASSERV', VITESSE & STRATEGIE *
 	 ********************************/
