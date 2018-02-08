@@ -19,43 +19,55 @@ public class DeposeCubes extends AbstractScript{
         super(config, log, hookFactory);
     }
 
-    public void execute(int versionToExecute, GameState stateToConsider,Boolean pousse) throws ExecuteException, UnableToMoveException {
-        /* d est la distance avec laquelle on recule : on recule d'une distance au moins égale
-        à la dimension de la porte pour pouvoir la fermer à nouveau
-         */
-        int l= config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
-        int d=950;
-        int d2=20; //c'est la même distance que d dans entryPosition
-        int d3=2*l;//mesure à faire pour savoir exactement
-        stateToConsider.robot.turn(-Math.PI/2);
-        //la version 0 et 1 corresondent au cas ou on dépose les deux tours
-        if (versionToExecute==0 || versionToExecute==1) {
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
-            stateToConsider.robot.moveLengthwise(-d-d2);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
-            stateToConsider.robot.turn(0);
-            stateToConsider.robot.moveLengthwise(d3);
-            stateToConsider.robot.turn(Math.PI/2);
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE,true);
-            stateToConsider.robot.moveLengthwise(-d-d2);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
+    /**
+     * Cette méthode dépose les cubes pris par les deux bras
+     * @param stateToConsider
+     * @param pousse : on est obligé de pousser les deux premières tours car on n'aura
+     *               pas la place où déposer les deux dernières, par conséquent, on active
+     *               cette boolean pour les deux premières tours
+     * @throws ExecuteException
+     * @throws UnableToMoveException
+     */
+
+    public void execute(GameState stateToConsider,Boolean pousse) throws ExecuteException, UnableToMoveException {
+        int d=70; //on pénètre la zone de construction de cette distance
+        int dimensionporte=config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
+        int distancepush=105;
+        stateToConsider.robot.turn(Math.PI/2);
+        stateToConsider.robot.moveLengthwise(d);
+        stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
+        stateToConsider.robot.moveLengthwise(-d-dimensionporte);
+        stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
+        if(pousse){
+            stateToConsider.robot.moveLengthwise(dimensionporte);
+            stateToConsider.robot.moveLengthwise(distancepush);
+            stateToConsider.robot.moveLengthwise(-distancepush);
         }
-        //on dépose la troisième tour au cas ou on arrive pas à prendre la 4ème
-        if(versionToExecute==3){
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
-            stateToConsider.robot.moveLengthwise(-d-d2);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
+        stateToConsider.robot.turn(Math.PI);
+        //on dépose la deuxième tour là
+        stateToConsider.robot.moveLengthwise(350);
+        stateToConsider.robot.turn(Math.PI/2);
+        stateToConsider.robot.moveLengthwise(d);
+        stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
+        stateToConsider.robot.moveLengthwise(-d-dimensionporte);
+        stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
+        if(pousse){
+            stateToConsider.robot.moveLengthwise(dimensionporte);
+            stateToConsider.robot.moveLengthwise(distancepush);
+            stateToConsider.robot.moveLengthwise(-distancepush);
         }
     }
+
+
     public Circle entryPosition(int ray, Vec2 robotPosition) throws BadVersionException {
         /*coordonnées de la zone de construction
                550<x<1070
                 y=175
          */
-        int yconstructionzone=175;
-        int d=70; //on pénètre la zone de construction de cette distance
-        int dimensionport
-
+        int xentry=650;
+        int yentry=175;
+        Vec2 position=new Vec2(xentry,yentry);
+        return new Circle(position);
     }
 
 

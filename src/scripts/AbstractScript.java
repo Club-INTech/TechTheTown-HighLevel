@@ -102,6 +102,35 @@ public abstract class AbstractScript implements Service
 
 
 	}
+	public void goToThenExec(GameState actualState,boolean pousse) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
+		// va jusqu'au point d'entrée de la version demandée
+		log.debug("Lancement de " + this.toString());
+		try
+		{
+			if(actualState.robot.getPosition().minusNewVector(entryPosition(actualState.robot.getRobotRadius(), actualState.robot.getPositionFast()).getCenter()).squaredLength() > 40) {
+
+				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition( actualState.robot.getRobotRadius(), actualState.robot.getPosition()).getCenter());
+
+				actualState.robot.moveToCircle(entryPosition( actualState.robot.getRobotRadius(), actualState.robot.getPositionFast()), actualState.table);
+			}
+		}
+		catch (UnableToMoveException e)
+		{
+			log.debug("Catch de "+e+" Impossible de goToThenExec : abandon d'exec, throw de "+e);
+			throw e;
+		}
+
+		// exécute la version demandée
+		try{
+			execute(actualState,pousse);
+		}
+		catch (InterruptedException e){
+			log.debug("pour l'instant je sais pas");
+			e.printStackTrace();
+		}
+
+
+	}
 
 	   
 	/**
@@ -113,6 +142,7 @@ public abstract class AbstractScript implements Service
 	 */
 	public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException{}
 
+	public abstract void execute(GameState stateToConsider,Boolean pousse) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException;
 
 	/**
 	 * Renvoie le score que peut fournir une version d'un script.
@@ -132,7 +162,9 @@ public abstract class AbstractScript implements Service
 	 * @param robotPosition la position actuelle du robot
 	 * @return la position du point d'entrée
 	 */
-	public abstract Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException;
+	public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException{
+		return null;
+	}
 	public Circle entryPosition(int ray, Vec2 robotPosition) throws BadVersionException{
 		return null;
 	}

@@ -2,9 +2,11 @@ package tests;
 
 import enums.ActuatorOrder;
 import enums.Speed;
+import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
+import scripts.DeposeCubes;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -15,6 +17,7 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
     private Robot robotReal;
     private ScriptManager scriptManager;
     private GameState state;
+    private HookFactory hookFactory;
 
     @Before
     public void setUp() {
@@ -30,16 +33,10 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
         try {
             robotReal = container.getService(Robot.class);
             container.startInstanciedThreads();
-
             robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
-            //robotReal.moveLengthwise(500);
-            robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,false);
-            robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT,true);
-            robotReal.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
-            robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
-            robotReal.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+            DeposeCubes deposeCubes=new DeposeCubes(config,log,hookFactory);
+            deposeCubes.goToThenExec();
 
-            Thread.sleep(500);
         }catch (Exception e){
             e.printStackTrace();
         }
