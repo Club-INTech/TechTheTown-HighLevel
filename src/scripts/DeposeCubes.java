@@ -17,15 +17,9 @@ public class DeposeCubes extends AbstractScript{
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory){
         super(config, log, hookFactory);
-        /**3 versions de DeposeCubes
-         * La version 0 correspond à l'action de déposer les deux premières tours de cubes
-         * La version 1 correspond aux 2 deuxièmes tours
-         * La version 2 correspond au cas ou on va déposer que la troisième tour mais
-         * pas la quatrième*/
-        versions = new Integer[]{0,1,2};
     }
-    @Override
-    public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
+
+    public void execute(int versionToExecute, GameState stateToConsider,Boolean pousse) throws ExecuteException, UnableToMoveException {
         /* d est la distance avec laquelle on recule : on recule d'une distance au moins égale
         à la dimension de la porte pour pouvoir la fermer à nouveau
          */
@@ -53,41 +47,15 @@ public class DeposeCubes extends AbstractScript{
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
         }
     }
-    public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
+    public Circle entryPosition(int ray, Vec2 robotPosition) throws BadVersionException {
         /*coordonnées de la zone de construction
                550<x<1070
                 y=175
          */
+        int yconstructionzone=175;
+        int d=70; //on pénètre la zone de construction de cette distance
+        int dimensionport
 
-        int r = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        int yconstructionzone=150;
-        int d=20; //distance à mesurer pour pénétrer dans la zone de construction (c'est plus beau)
-        /**mesures à effectuer pour yconstructionzone*/
-            if (version == 0 || version==3)  {
-                int xEntry=630;
-                int yEntry=r+yconstructionzone+d;
-                Vec2 position = new Vec2(xEntry, yEntry);
-                return new Circle(position);
-            }
-            else {
-                if (version == 1 || version==4) {
-                    int xEntry=630+r ;
-                    int yEntry=r+yconstructionzone+d ;
-                    Vec2 position = new Vec2(xEntry, yEntry);
-                    return new Circle(position);
-                } else {
-                    if (version == 2 || version==5) {
-                        int xEntry=630+2*r;
-                        int yEntry=r+yconstructionzone+d ;
-                        Vec2 position = new Vec2(xEntry, yEntry);
-                        return new Circle(position);
-                    }
-                    else{
-                        log.critical("Version invalide");
-                        throw new BadVersionException();
-                    }
-                }
-            }
     }
 
 

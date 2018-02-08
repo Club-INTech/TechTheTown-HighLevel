@@ -111,7 +111,7 @@ public abstract class AbstractScript implements Service
 	 * @throws UnableToMoveException exception levée lorsque le robot ne peut se déplacer (décor ou obstacles détectés par capteurs)
 	 * @throws ExecuteException
 	 */
-	public abstract void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException;
+	public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException{}
 
 
 	/**
@@ -133,6 +133,9 @@ public abstract class AbstractScript implements Service
 	 * @return la position du point d'entrée
 	 */
 	public abstract Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException;
+	public Circle entryPosition(int ray, Vec2 robotPosition) throws BadVersionException{
+		return null;
+	}
 	
 	/**
 	 * Méthode appelée à la fin du script si une exception a lieu.
