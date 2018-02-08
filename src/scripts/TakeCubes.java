@@ -689,5 +689,6 @@ public class TakeCubes extends AbstractScript {
     public Integer[] getVersion(GameState stateToConsider) {
         return new Integer[]{};
     }
-
+    public void execute(GameState stateToConsider,Boolean pousse) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException{
+    }
 }

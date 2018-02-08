@@ -21,6 +21,7 @@ package scripts;
 
 import enums.Speed;
 import exceptions.BadVersionException;
+import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
@@ -313,5 +314,7 @@ public class CloseDoors extends AbstractScript
 	public Integer[][] getVersion2(GameState stateToConsider)
 	{ return new Integer[][]{};
 	}
-	
+	public void execute(GameState stateToConsider,Boolean pousse) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
+	}
+
 }

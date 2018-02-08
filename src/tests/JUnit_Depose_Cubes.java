@@ -32,10 +32,13 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
     public void testScript() {
         try {
             robotReal = container.getService(Robot.class);
+            state=container.getService(GameState.class);
             container.startInstanciedThreads();
-            robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
+            robotReal.setOrientation(Math.PI);
+            Vec2 positionDepart=new Vec2(900,850);
+            robotReal.setPosition(positionDepart);
             DeposeCubes deposeCubes=new DeposeCubes(config,log,hookFactory);
-            deposeCubes.goToThenExec();
+            deposeCubes.execute(state,false);
 
         }catch (Exception e){
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package scripts;
 
 import enums.*;
+import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.PatternNotRecognizedException;
@@ -124,5 +125,8 @@ public class TakeCubesRemastered extends AbstractScript {
 
     public Integer[][] getVersion2(GameState stateToConsider) {
         return versions2;
+    }
+
+    public void execute(GameState stateToConsider,Boolean pousse) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException{
     }
 }

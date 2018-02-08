@@ -30,10 +30,15 @@ public class DeposeCubes extends AbstractScript{
      */
 
     public void execute(GameState stateToConsider,Boolean pousse) throws ExecuteException, UnableToMoveException {
+        int xentry=650;
+        int yentry=165+config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+        Vec2 aim=new Vec2(xentry,yentry);
+        stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+        stateToConsider.robot.goTo(aim,false,false);
         int d=70; //on pénètre la zone de construction de cette distance
         int dimensionporte=config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
         int distancepush=105;
-        stateToConsider.robot.turn(Math.PI/2);
+        stateToConsider.robot.turn(-Math.PI/2);
         stateToConsider.robot.moveLengthwise(d);
         stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
         stateToConsider.robot.moveLengthwise(-d-dimensionporte);
@@ -45,16 +50,16 @@ public class DeposeCubes extends AbstractScript{
         }
         stateToConsider.robot.turn(Math.PI);
         //on dépose la deuxième tour là
-        stateToConsider.robot.moveLengthwise(350);
+        stateToConsider.robot.moveLengthwise(-300);
         stateToConsider.robot.turn(Math.PI/2);
-        stateToConsider.robot.moveLengthwise(d);
-        stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
-        stateToConsider.robot.moveLengthwise(-d-dimensionporte);
-        stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
+        stateToConsider.robot.moveLengthwise(-d);
+        stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE,true);
+        stateToConsider.robot.moveLengthwise(d+dimensionporte);
+        stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
         if(pousse){
-            stateToConsider.robot.moveLengthwise(dimensionporte);
-            stateToConsider.robot.moveLengthwise(distancepush);
+            stateToConsider.robot.moveLengthwise(-dimensionporte);
             stateToConsider.robot.moveLengthwise(-distancepush);
+            stateToConsider.robot.moveLengthwise(distancepush);
         }
     }
 
@@ -65,7 +70,7 @@ public class DeposeCubes extends AbstractScript{
                 y=175
          */
         int xentry=650;
-        int yentry=175;
+        int yentry=175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         Vec2 position=new Vec2(xentry,yentry);
         return new Circle(position);
     }

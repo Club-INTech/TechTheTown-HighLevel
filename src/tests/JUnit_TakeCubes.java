@@ -39,11 +39,10 @@ public class JUnit_TakeCubes extends JUnit_Test {
             robotReal.setPosition(positionDepart);
             robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
             TakeCubesRemastered takeCubes = new TakeCubesRemastered(config,log,hookFactory);
-            takeCubes.execute(2, TasCubes.TAS_STATION_EPURATION, BrasUtilise.ARRIERE, Cubes.NULL, state);
-            //robotReal.goTo(new Vec2(1170,250));
-            robotReal.moveNearPoint(new Vec2(600,300),0, "forward");
+            takeCubes.execute(2, TasCubes.TAS_STATION_EPURATION, BrasUtilise.AVANT, Cubes.NULL, state);
+            takeCubes.execute(2,TasCubes.TAS_CHATEAU_EAU,BrasUtilise.ARRIERE,Cubes.NULL,state);
             DeposeCubes deposeCubes = new DeposeCubes(config, log, hookFactory);
-            deposeCubes.execute(1,state);
+            deposeCubes.execute(state,true);
 
         }catch (Exception e){
             e.printStackTrace();
