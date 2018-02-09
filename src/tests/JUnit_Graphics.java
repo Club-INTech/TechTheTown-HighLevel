@@ -20,34 +20,42 @@
 package tests;
 
 import graphics.Window;
+import org.junit.Before;
 import org.junit.Test;
 import pathfinder.Arete;
+import simulator.ThreadSimulator;
+import simulator.ThreadSimulatorMotion;
 import smartMath.Segment;
 import smartMath.Vec2;
+import strategie.GameState;
 import table.Table;
+import threads.ThreadInterface;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
 public class JUnit_Graphics extends JUnit_Test
 {
-	/** La JFrame à tester */
-	private Window win;
+	/** Threads */
+	private ThreadInterface anInterface;
+	private ThreadSimulator simulator;
+	private ThreadSimulatorMotion simulatorMotion;
 
-	/** La table */
-	private Table table;
+	/** Le GameState */
+	private GameState state;
 
-	/** Test du debug pathfinding */
+	@Override
+	public void setUp() throws  Exception {
+		super.setUp();
+		anInterface = container.getService(ThreadInterface.class);
+		simulator = container.getService(ThreadSimulator.class);
+		simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+		state = container.getService(GameState.class);
+		container.startInstanciedThreads();
+	}
+
 	@Test
-	public void testWinTable() throws Exception {
-		table = container.getService(Table.class);
-
-		ArrayList<Vec2> clics = new ArrayList<>();
-
-		win = new Window(table);
-
-		while(true) {
-			clics = win.waitLRClic();
-			Thread.sleep(100);
-		}
+	public void testInterface() throws Exception {
+		Thread.sleep(5000);
 	}
 }
