@@ -9,21 +9,38 @@ import java.util.List;
 
 import static org.opencv.imgcodecs.Imgcodecs.imread;
 
-
+/** Permet de localiser le pattern sur l'image prise par la PiCam
+ */
 public class LocatePattern {
 
+    //Variable de debug
     private static boolean debug=false;
-    
+
+    /** Fonction de localisation du pattern sur l'image prise par la Picam
+     * @param path chemin de l'image à analyser
+     * @param selectedZone zone de l'image à analyser, de la forme {xstart, ystart, width, height}
+     * @return renvoie les coordonnées du pattern sur l'image à analyser
+     */
     public static int[] locatePattern(String path, int[] selectedZone) {
-        /**selectedZone={xdebut, ydebut, width, height}*/
+        //Charge la librairie OpenCV
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+        //Définit un rectange de la zone utilisée, afin de réduire l'image
         Rect zoneUsed = new Rect(selectedZone[0], selectedZone[1], selectedZone[2], selectedZone[3]);
+
+        //Importe l'image
         Mat src = imread(path);
+
+        //Convertit l'image de RGB à BGR
         //Imgproc.cvtColor(src, src, Imgproc.COLOR_RGB2BGR);
+
+        //Garde la zone sélectionnée de l'image
         Mat image = new Mat(src, zoneUsed);
+
+        //Multiples passages pour détecter les rectangles
         int[][][] foundRectangles;
         try {
-            /**Essentials:*/
+            //Essentials
             int[][] firstRect = findRectangle(image, 10, 20, 9);
             int[][] secondRect = findRectangle(image, 30, 40, 9);
             int[][] thirdRect = findRectangle(image, 30, 40, 15);
@@ -32,6 +49,8 @@ public class LocatePattern {
             foundRectangles = null;
             e.printStackTrace();
         }
+
+        //La zone où les patterns ont étés trouvés est rognée afin de garder toutes les détections en un minimal de place
         int xmax = -1;
         int ymax = -1;
         int xmin = 10000;
@@ -58,18 +77,36 @@ public class LocatePattern {
                 }
             }
         }
-        Point center=new Point((int)(xmin+xmax)/2, (int)(ymin+ymax)/2);
         if (debug) {
             System.out.println("FinalCoords:(" + xmin + "," + ymin + "),(" + xmax + "," + ymax + ")");
             String outputName = "resultColor.png";
+
+            //Affiche le centre de la zone de pattern déterminée
+            Point center=new Point((int)(xmin+xmax)/2, (int)(ymin+ymax)/2);
             Imgproc.drawMarker(image, center, new Scalar(255, 0, 0));
+
+            //Enregistre l'image
             Imgcodecs.imwrite(outputName, image);
         }
-        int[] fullCoords = new int[]{xmin + selectedZone[0], ymin + selectedZone[1], xmax + selectedZone[0], ymax + selectedZone[1]};
+        int[] fullCoords;
+        //Renvoie les coordonnées de la zone de localisation rognée.
+        if (xmax>=0 && ymax >=0 && xmin<10000 && ymin<10000) {
+            fullCoords = new int[]{xmin + selectedZone[0], ymin + selectedZone[1], xmax + selectedZone[0], ymax + selectedZone[1]};
+        }
+        else{
+            fullCoords = new int[]{0,0,0,0};
+        }
         return fullCoords;
     }
 
-    private static int[][] findRectangle(Mat src, int threesold1Value, int threesold2Value, int ksize) throws Exception {
+    /** Fonction permettant de détecter les rectangles
+     * @param src image source
+     * @param threesold1Value valeur de threesold 1
+     * @param threesold2Value valeur de threesold 2
+     * @param ksize grossièreté du floutage de l'image (doit être un nombre impair)
+     * @return renvoie les coordonnées des 2 points créant un rectangle entourant la zone de pattern déterminé
+     */
+    private static int[][] findRectangle(Mat src, int threesold1Value, int threesold2Value, int ksize){
         Mat blurred = src.clone();
         Imgproc.medianBlur(src, blurred, ksize);
         Mat gray0 = new Mat(blurred.size(), CvType.CV_8U), gray = new Mat();
@@ -83,14 +120,16 @@ public class LocatePattern {
         int maxId = -1;
         for (int c = 0; c < 3; c++) {
             int ch[] = { c, 0 };
+            //Mélange les images grises et floues
             Core.mixChannels(blurredChannel, gray0Channel, new MatOfInt(ch));
             int thresholdLevel = 1;
             for (int t = 0; t < thresholdLevel; t++) {
                 if (t == 0) {
+                    //Fonction canny : très utile à la reconnaissance
                     Imgproc.Canny(gray0, gray, threesold1Value, threesold2Value, 3, true); // true ?
+                    //Avant modifications : Imgproc.Canny(gray0, gray, 10, 20, 3, true); // true ?
+                    //Fonction dilate : grossi les pixels de l'image
                     Imgproc.dilate(gray, gray, new Mat(), new Point(-1, -1),1); // 1
-                    // DE BASE : Imgproc.Canny(gray0, gray, 10, 20, 3, true); // true ?
-                    // ?
                 } else {
                     Imgproc.adaptiveThreshold(gray0, gray, thresholdLevel,
                             Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,
@@ -98,16 +137,20 @@ public class LocatePattern {
                             (src.width() + src.height())/200, t);
                 }
 
+                //Fonctions permettant de trouver les contours de l'image
                 Imgproc.findContours(gray, contours, new Mat(),
                         Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-                Imgcodecs.imwrite("gray.png", gray);
 
+                //Enregistre l'image en gris
+                //Imgcodecs.imwrite("gray.png", gray);
+
+                //Détermination du meilleur contour
                 for (MatOfPoint contour : contours) {
                     List<Point> currentContour = contour.toList();
                     double xmin=10000;
-                    double xmax=0;
+                    double xmax=-1;
                     double ymin=10000;
-                    double ymax=0;
+                    double ymax=-1;
                     for (int i=0; i<currentContour.size(); i++){
                         if (currentContour.get(i).x<xmin){
                             xmin=currentContour.get(i).x;
@@ -122,13 +165,21 @@ public class LocatePattern {
                             ymax=currentContour.get(i).y;
                         }
                     }
+                    //Delta X = taille de la zone détectée en X
                     double deltaX=xmax-xmin;
+                    //Delta Y = taille de la zone détectée en Y
                     double deltaY=ymax-ymin;
+                    //On valide le contour s'il correspond aux spécifications du pattern:
+                    //deltaX>40 pixels
+                    //deltaY>80 pixels
+                    //deltaY<150 pixels
+                    //deltaX<2*deltaY
                     if (deltaX>40 && deltaY>80 && deltaY<150 && deltaX<250 && deltaX<2*deltaY) {
                         MatOfPoint2f temp = new MatOfPoint2f(contour.toArray());
 
                         double area = Imgproc.contourArea(contour);
                         approxCurve = new MatOfPoint2f();
+                        //On détecte les rectangles
                         Imgproc.approxPolyDP(temp, approxCurve,
                                 Imgproc.arcLength(temp, true) * 0.02, true);
 
@@ -152,8 +203,11 @@ public class LocatePattern {
                 }
             }
         }
+
         int[][] patternZoneCroppedImage;
+        //Si un contour a été sélectionné
         if (maxId >= 0) {
+            //La zone où les patterns ont étés trouvés est rognée afin de garder toutes les détections en un minimal de place
             double xmin=10000;
             double xmax=-1;
             double ymin=10000;
@@ -180,9 +234,12 @@ public class LocatePattern {
         else {
             patternZoneCroppedImage=new int[][]{{-1,-1},{-1,-1}};
         }
+        //Renvoie les points permettant de définir un rectangle autour de la zone croppée.
         return patternZoneCroppedImage;
     }
 
+    /** Fonction d'angle, je sais pas trop ce qu'lle fait, ça a l'air d'être Al-quashi
+     */
     private static double angle(Point p1, Point p2, Point p0) {
         double dx1 = p1.x - p0.x;
         double dy1 = p1.y - p0.y;
@@ -193,6 +250,9 @@ public class LocatePattern {
                 + 1e-10);
     }
 
+    /**Set le debug
+     * @param value valeur à mettre à debug
+     */
     public static void setDebug(boolean value){
         debug=value;
     }
