@@ -1,15 +1,20 @@
 package tests;
 
+import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.Speed;
 import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
+import scripts.DeposeCubes;
 import scripts.ScriptManager;
 import scripts.TakeCubes;
+import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
+import threads.ThreadInterface;
+import threads.dataHandlers.ThreadSensor;
 
 public class JUnit_TakeCubes extends JUnit_Test {
 
@@ -32,8 +37,9 @@ public class JUnit_TakeCubes extends JUnit_Test {
         try {
             robotReal = container.getService(Robot.class);
             state=container.getService(GameState.class);
+            ThreadSensor threadSensor=container.getService(ThreadSensor.class);
+            ThreadInterface threadInterface = container.getService(ThreadInterface.class);
             container.startInstanciedThreads();
-
 
             /*
             robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
@@ -42,18 +48,33 @@ public class JUnit_TakeCubes extends JUnit_Test {
             robotReal.moveLengthwise(100);
             robotReal.turnRelatively(Math.PI/3);
             */
-
-            TakeCubes takeCubes = new TakeCubes(config,log,hookFactory);
-
             robotReal.setOrientation(Math.PI);
-//            takeCubes.execute(0,state,0.025,0.045);
-
-            takeCubes.execute(0,state);
+            Vec2 positionentree=new Vec2(1330,455);
+            robotReal.setPosition(positionentree);
+            robotReal.moveLengthwise(150);
+            robotReal.turnRelatively(-Math.PI/4);
+            robotReal.moveLengthwise(700);
+            TakeCubes takeCubes = new TakeCubes(config,log,hookFactory);
+            takeCubes.goToThenExec(2,state);
+            //robotReal.moveLengthwise(-250);
+            //robotReal.turnRelatively(-Math.PI/2);
+            //robotReal.moveLengthwise(500);
+            //DeposeCubes
+            //robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,true);
+            /*state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
+            state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
+            state.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
+            takeCubes.takethiscube(state,"avant");
+            state.robot.moveLengthwise(58);
+            takeCubes.takethiscube(state,"avant");*/
+             //state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
+         //   takeCubes.execute(1,state);
             /*int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
             state.robot.moveLengthwise(-l);*/
-
-
-            Thread.sleep(500);
+            //DeposeCubes deposeCubes = new DeposeCubes(config,log,hookFactory);
+            //deposeCubes.goToThenExec(0,state);
+            //deposeCubes.execute(0,state);
+            //Thread.sleep(500);
         }catch (Exception e){
             e.printStackTrace();
         }

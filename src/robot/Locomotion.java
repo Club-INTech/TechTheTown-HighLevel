@@ -325,6 +325,10 @@ public class Locomotion implements Service
         isRobotMovingBackward=false;
     }
 
+
+
+
+
     /**
      * Fait avancer le robot de "distance" (en mm), et vérifie avant s'il n'y a pas d'obstacle proche sur le chemin avant d'avancer
      * Si la distance spécifiée est négative, le robot recule !

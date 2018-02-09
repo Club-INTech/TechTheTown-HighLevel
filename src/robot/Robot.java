@@ -170,7 +170,9 @@ public class Robot implements Service {
 	public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException {
 		Vec2 aimPosition= Geometry.closestPointOnCircle(this.position,aim);
 		// TODO : Appel du followpath & Pathfinding !
-		followPath(pathfinding.findmyway(position,aimPosition));
+			followPath(pathfinding.findmyway(position,aimPosition));
+
+
 	}
 
 	/**
@@ -413,6 +415,21 @@ public class Robot implements Service {
 		setLocomotionSpeed(Speed.SLOW_ALL);
 		moveLengthwise(distance, true, false);
 		setLocomotionSpeed(oldSpeed);
+	}
+
+
+
+	/** Fait tourner le robot vers un point, puis le fait avancer jusqu'à une certaine distance du point
+	 * @param aim distance visée
+	 * @param distanceNear distance à laquelle le robot doit s'arrêter avant le point
+	 * @throws UnableToMoveException
+	 */
+	public void moveNearPoint(Vec2 aim, double distanceNear) throws UnableToMoveException{
+		//TODO : à tester !
+		turnTo(aim);
+		Vec2 relativeCoords = aim.minusNewVector(position);
+		long distance=Math.round(relativeCoords.getR()-distanceNear);
+		moveLengthwise((int)distance, true, true);
 	}
 
 

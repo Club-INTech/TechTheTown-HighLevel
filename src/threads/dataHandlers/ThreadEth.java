@@ -41,8 +41,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class ThreadEth extends AbstractThread implements Service {
 
-
-
     /** Nom */
 
     public String name;
@@ -285,6 +283,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 if (socket != null) {
                     socket.close();
                     Thread.sleep(1000);
+                    createInterface();
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -409,6 +408,7 @@ public class ThreadEth extends AbstractThread implements Service {
                     if (socket != null) {
                         socket.close();
                         Thread.sleep(1000);
+                        createInterface();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
