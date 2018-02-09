@@ -44,6 +44,8 @@ public class LocatePattern {
             int[][] firstRect = findRectangle(image, 10, 20, 9);
             int[][] secondRect = findRectangle(image, 30, 40, 9);
             int[][] thirdRect = findRectangle(image, 30, 40, 15);
+            //Add-ons
+            //int[][] forthRect = findRectangle(image, 30, 40, 21);
             foundRectangles = new int[][][]{firstRect, secondRect, thirdRect};
         } catch (Exception e) {
             foundRectangles = null;
@@ -172,9 +174,10 @@ public class LocatePattern {
                     //On valide le contour s'il correspond aux spécifications du pattern:
                     //deltaX>40 pixels
                     //deltaY>80 pixels
+                    //deltaX<250 pixels
                     //deltaY<150 pixels
                     //deltaX<2*deltaY
-                    if (deltaX>40 && deltaY>80 && deltaY<150 && deltaX<250 && deltaX<2*deltaY) {
+                    if (deltaX>40 && deltaY>80 && deltaX<250 && deltaY<150 && deltaX<2*deltaY) {
                         MatOfPoint2f temp = new MatOfPoint2f(contour.toArray());
 
                         double area = Imgproc.contourArea(contour);
