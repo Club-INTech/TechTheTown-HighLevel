@@ -221,6 +221,9 @@ public class TablePanel extends JPanel
 		}
 
 		// Infos diverses
+		graphics.setColor(Color.BLACK);
+		graphics.fillRect(900, 0, 400, 600);
+		graphics.fillRect(0, 600, 1300, 400);
 		graphics.setColor(Color.DARK_GRAY);
 		graphics.fillRoundRect(920, 20, 360, 580, 20, 20);
 		graphics.fillRoundRect(20, 620, 1260, 275, 20, 20);
