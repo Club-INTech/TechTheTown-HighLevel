@@ -103,7 +103,6 @@ proguard/
 captures/
 
 # Intellij
-
 .idea/workspace.xml
 
 # Keystore files

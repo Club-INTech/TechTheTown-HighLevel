@@ -74,7 +74,7 @@ public class TablePanel extends JPanel
 	private Color unconfirmedColor = new Color(220, 220, 50, 100);
 	private Color robotColor = new Color(50, 180, 50, 100);
 	private Color teamColor = new Color(50, 80, 50, 220);
-	private Color pathColor = new Color(200, 0, 80);
+	private Color pathColor = new Color(200, 0, 80, 220);
 	private Color graphColor = new Color(50, 80, 120, 50);
 
 	/** Construit un panel pour du l'interface full
@@ -127,7 +127,6 @@ public class TablePanel extends JPanel
 		Vec2 pathNode2;
 		Vec2 pathNode3;
 
-
 		// Background
 		graphics.drawImage(tableBackground,0, 0, 900, 600, this);
 
@@ -179,7 +178,7 @@ public class TablePanel extends JPanel
 			Vec2 robotPosition = robot.getPositionFast();
 			Vec2 robotPositionDisplay = changeRefToDisplay(robotPosition);
 			double robotOrientation = robot.getOrientationFast();
-			Vec2 orentationIndicator = changeRefToDisplay(new Vec2(new Double(robot.getRobotRadius()), robotOrientation));
+			Vec2 orentationIndicator = changeRefToDisplay(robotPosition.plusNewVector(new Vec2(new Double(robot.getRobotRadius()), robotOrientation)));
 
 			upLeftCorner = changeRefToDisplay(robotPosition).plusNewVector(new Vec2(-wideDisplay, -wideDisplay));
 			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), wideDisplay*2, wideDisplay*2);
@@ -222,6 +221,9 @@ public class TablePanel extends JPanel
 		}
 
 		// Infos diverses
+		graphics.setColor(Color.BLACK);
+		graphics.fillRect(900, 0, 400, 600);
+		graphics.fillRect(0, 600, 1300, 400);
 		graphics.setColor(Color.DARK_GRAY);
 		graphics.fillRoundRect(920, 20, 360, 580, 20, 20);
 		graphics.fillRoundRect(20, 620, 1260, 275, 20, 20);
