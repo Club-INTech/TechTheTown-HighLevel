@@ -19,12 +19,17 @@
 
 package tests;
 
+import enums.DirectionStrategy;
+import enums.Speed;
+import exceptions.Locomotion.PointInObstacleException;
+import exceptions.Locomotion.UnableToMoveException;
 import graphics.Window;
 import org.junit.Before;
 import org.junit.Test;
 import pathfinder.Arete;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
+import smartMath.Circle;
 import smartMath.Segment;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -43,6 +48,7 @@ public class JUnit_Graphics extends JUnit_Test
 
 	/** Le GameState */
 	private GameState state;
+	private Table table;
 
 	@Override
 	public void setUp() throws  Exception {
@@ -51,11 +57,21 @@ public class JUnit_Graphics extends JUnit_Test
 		simulator = container.getService(ThreadSimulator.class);
 		simulatorMotion = container.getService(ThreadSimulatorMotion.class);
 		state = container.getService(GameState.class);
+		table = container.getService(Table.class);
 		container.startInstanciedThreads();
 	}
 
 	@Test
 	public void testInterface() throws Exception {
 		Thread.sleep(5000);
+	}
+
+	@Test
+	public void testSimpleMove() throws UnableToMoveException, PointInObstacleException {
+		state.robot.setPosition(new Vec2(1200, 400));
+		state.robot.setOrientation(3*Math.PI/4);
+		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+
+		state.robot.moveToCircle(new Circle(new Vec2(0, 1200), 0), table);
 	}
 }

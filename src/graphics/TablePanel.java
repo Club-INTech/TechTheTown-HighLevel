@@ -127,7 +127,6 @@ public class TablePanel extends JPanel
 		Vec2 pathNode2;
 		Vec2 pathNode3;
 
-
 		// Background
 		graphics.drawImage(tableBackground,0, 0, 900, 600, this);
 
@@ -179,7 +178,7 @@ public class TablePanel extends JPanel
 			Vec2 robotPosition = robot.getPositionFast();
 			Vec2 robotPositionDisplay = changeRefToDisplay(robotPosition);
 			double robotOrientation = robot.getOrientationFast();
-			Vec2 orentationIndicator = changeRefToDisplay(new Vec2(new Double(robot.getRobotRadius()), robotOrientation));
+			Vec2 orentationIndicator = changeRefToDisplay(robotPosition.plusNewVector(new Vec2(new Double(robot.getRobotRadius()), robotOrientation)));
 
 			upLeftCorner = changeRefToDisplay(robotPosition).plusNewVector(new Vec2(-wideDisplay, -wideDisplay));
 			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), wideDisplay*2, wideDisplay*2);
