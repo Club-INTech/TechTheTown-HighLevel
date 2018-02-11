@@ -85,7 +85,7 @@ public class LocatePattern {
 
             //Affiche le centre de la zone de pattern déterminée
             Point center=new Point((int)(xmin+xmax)/2, (int)(ymin+ymax)/2);
-            Imgproc.drawMarker(image, center, new Scalar(255, 0, 0));
+            Imgproc.drawMarker(image, center, new Scalar(0, 255, 0));
 
             //Enregistre l'image
             Imgcodecs.imwrite(outputName, image);
@@ -142,9 +142,10 @@ public class LocatePattern {
                 //Fonctions permettant de trouver les contours de l'image
                 Imgproc.findContours(gray, contours, new Mat(),
                         Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-
-                //Enregistre l'image en gris
-                //Imgcodecs.imwrite("gray.png", gray);
+                if (debug) {
+                    //Enregistre l'image en gris
+                    Imgcodecs.imwrite("gray.png", gray);
+                }
 
                 //Détermination du meilleur contour
                 for (MatOfPoint contour : contours) {
@@ -197,7 +198,7 @@ public class LocatePattern {
                                 maxCosine = Math.max(maxCosine, cosine);
                             }
 
-                            if (maxCosine < 0.3) {
+                            if (maxCosine < 0.5) {
                                 maxArea = area;
                                 maxId = contours.indexOf(contour);
                             }
@@ -230,9 +231,8 @@ public class LocatePattern {
                     ymax=retainedContours.get(i).y;
                 }
             }
-            System.out.println("("+xmin+","+ymin+"),("+xmax+","+ymax+")");
-            //Imgproc.drawContours(src, contours, maxId, new Scalar(255, 0, 0,.8), 8);
-            patternZoneCroppedImage=new int[][]{{(int)xmin,(int)ymin},{(int)xmax,(int)ymax}};
+                Imgproc.drawContours(src, contours, maxId, new Scalar(255, 0, 0,.8), 8);
+                patternZoneCroppedImage = new int[][]{{(int) xmin, (int) ymin}, {(int) xmax, (int) ymax}};
         }
         else {
             patternZoneCroppedImage=new int[][]{{-1,-1},{-1,-1}};

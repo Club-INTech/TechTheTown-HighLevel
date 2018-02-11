@@ -11,12 +11,22 @@ public enum Colors {
     BLACK(3,"black", new int[]{14,14,16}),
     GREEN(4,"green", new int[]{97,153,59});*/
 
+    /*
     //Couleurs calibrées par rapport à la photo ImageRaspberry1.png
     ORANGE(0,"orange", new int[]{252, 88, 46}),
     YELLOW(1,"yellow", new int[]{254,221,0}),
     BLUE(2,"blue", new int[]{38,109,150}),
     BLACK(3,"black", new int[]{66,68,26}),
     GREEN(4,"green", new int[]{142,196,45});
+    */
+
+
+    //Couleurs calibrées par rapport à une photo normale au local Intech
+    ORANGE(0,"orange", new int[]{147, 80, 28}),
+    YELLOW(1,"yellow", new int[]{153,142,0}),
+    BLUE(2,"blue", new int[]{23,54,76}),
+    BLACK(3,"black", new int[]{18,34,10}),
+    GREEN(4,"green", new int[]{83,125,20});
 
     /*
     //Couleurs RGB calibrées par rapport à la photo ImageRaspberry5.png
