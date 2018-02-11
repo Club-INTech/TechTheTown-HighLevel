@@ -43,10 +43,9 @@ public class LocatePattern {
             //Essentials
             int[][] firstRect = findRectangle(image, 10, 20, 9);
             int[][] secondRect = findRectangle(image, 30, 40, 9);
-            int[][] thirdRect = findRectangle(image, 30, 40, 15);
             //Add-ons
             //int[][] forthRect = findRectangle(image, 30, 40, 21);
-            foundRectangles = new int[][][]{firstRect, secondRect, thirdRect};
+            foundRectangles = new int[][][]{firstRect, secondRect};
         } catch (Exception e) {
             foundRectangles = null;
             e.printStackTrace();

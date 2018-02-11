@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static jdk.nashorn.internal.objects.NativeMath.max;
 
 
 /** Classe permettant de faire la reconnaissance de patterns
@@ -156,11 +157,11 @@ public class PatternRecognition extends AbstractThread{
         int[] mediansList= new int[3];
         for (int i=0; i<3; i++){
             mediansList[i]=getMedianValue(colorMatrix, xstart, ystart, xend, yend, i);
-            if (debug==true) {
+            if (debug) {
                 System.out.println("posRGB:"+i+" MedianValue:"+mediansList[i]);
             }
         }
-        if (debug==true){
+        if (debug){
             System.out.println("");
         }
         return mediansList;
@@ -209,7 +210,7 @@ public class PatternRecognition extends AbstractThread{
         double[] inverseDistances=computeInverseDistanceToAllColors(RGBToEvaluate);
         double[] normalizedInverseDistances = normalizeDoubleList(inverseDistances);
 
-        if (debug==true && alreadyPrintedColorMatchingProba==false) {
+        if (debug && !alreadyPrintedColorMatchingProba) {
             for (int i = 0; i < normalizedInverseDistances.length; i++) {
                 System.out.println("Proba corresponde a la couleur "+Colors.getNameFromID(i)+":\t"+normalizedInverseDistances[i]);
             }
@@ -230,7 +231,7 @@ public class PatternRecognition extends AbstractThread{
         double finalProbability = 1;
         for (int i=0; i<3; i++){
             int colorID=pattern[i].getID();
-            if (debug==true && alreadyPrintedColorMatchingProba==false){
+            if (debug && !alreadyPrintedColorMatchingProba){
                 if (i==0) {
                     System.out.println("First color :");
                 }
@@ -273,7 +274,7 @@ public class PatternRecognition extends AbstractThread{
      * @return renvoe la liste normalisée des probabilités que la pattern pris en photo soit un des patterns de la liste
      * (correspondance entre les indices de la liste renvoyée et l'ID des patterns)
      */
-    private double[] encapsulationThreeFourFive(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends) {
+    private double[] computeProximity(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends) {
         if (debug==true){
             System.out.println("First color");
         }
@@ -291,8 +292,11 @@ public class PatternRecognition extends AbstractThread{
             mediansList[i] = mediansListTemp[i];
         }
         double[] probabilitiesList = compareThreeRGBsToAllPatterns(mediansList);
-        double[] normalizedList=normalizeDoubleList(probabilitiesList);
-        return normalizedList;
+        return probabilitiesList;
+    }
+    private double[] computeProximity(int[][][] colorMatrix, int[][] positionsColorsOnImage){
+        double[] probabilitiesList = computeProximity(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
+        return probabilitiesList;
     }
 
     //////////////////////////////////// DISCRIMINATION /////////////////////////////////////////////
@@ -431,13 +435,6 @@ public class PatternRecognition extends AbstractThread{
     private int computeFinalIndice(double[] probabilitiesList, int[][][] colorMatrix, int[][] positionsColorsOnImage) {
         ArrayList<Integer> selectionnedProbabilitiesIndice = selectBestProbabilities(probabilitiesList);
         int finalIndice = 10;
-        if (debug==true) {
-            System.out.println(selectionnedProbabilitiesIndice.toString());
-            System.out.println("Probabilities");
-            for (int i = 0; i < 10; i++) {
-                System.out.println(probabilitiesList[i]);
-            }
-        }
         if (selectionnedProbabilitiesIndice.size() == 1) {
             finalIndice = getMostProbablePattern(probabilitiesList, selectionnedProbabilitiesIndice);
         } else {
@@ -445,10 +442,11 @@ public class PatternRecognition extends AbstractThread{
                 System.out.println("////////////// Lighting up the color matrix ////////////////");
             }
             int[][][] colorMatrixLitUp=lightUpColors(colorMatrix,positionsColorsOnImage[0],positionsColorsOnImage[1],positionsColorsOnImage[2],positionsColorsOnImage[3]);
-            double[] probabilitiesListLitUp = encapsulationThreeFourFive(colorMatrixLitUp, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
+            double[] distancesListLitUp = computeProximity(colorMatrixLitUp, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
+            double[] probabilitiesListLitUp=normalizeDoubleList(distancesListLitUp);
             ArrayList<Integer> selectionnedProbabilitiesIndiceLitUp = selectBestProbabilities(probabilitiesListLitUp);
 
-            if (debug==true) {
+            if (debug) {
                 System.out.println(selectionnedProbabilitiesIndiceLitUp.toString());
                 System.out.println("LitUpProbabilities");
                 for (int i = 0; i < 10; i++) {
@@ -489,8 +487,10 @@ public class PatternRecognition extends AbstractThread{
      * @return l'id du pattern (int de 0 à 9, bornes comprises)
      */
     private double[] analysePattern(int[][][] colorMatrix, int[][] positionsColorsOnImage) {
-        double[] probabilitiesList = encapsulationThreeFourFive(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
-        return probabilitiesList;
+        alreadyPrintedColorMatchingProba=false;
+        double[] distancesList = computeProximity(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
+        double[] normalizedList=normalizeDoubleList(distancesList);
+        return normalizedList;
     }
 
     /////////////////////////////// CALCULATING CENTER OF LOCATED PATTERN ///////////////////////////////
@@ -515,7 +515,7 @@ public class PatternRecognition extends AbstractThread{
 
     /////////////////////////// REPLACING THE LOCATED ZONE //////////////////////////
 
-    private boolean doZoneHasToBeShifted(int[][][] colorMatrix, int[] center, int lengthSideOfSquareDetection){
+    private boolean doCenterHasToBeXShifted(int[][][] colorMatrix, int[] center, int lengthSideOfSquareDetection){
         int[] countingArray=new int[]{0,0,0,0,0};
         for (int x=-lengthSideOfSquareDetection/2; x<lengthSideOfSquareDetection/2; x++){
             double[] RGBprobabilities=computeInverseDistanceToAllColors(colorMatrix[center[0]+x][center[1]]);
@@ -571,9 +571,8 @@ public class PatternRecognition extends AbstractThread{
     public PatternRecognition(String pathToImage, int[] zoneToPerformLocalisation){
         //TODO:CALIBRER SUR UNE IMAGE SOMBRE
         this.pathToImage=pathToImage;
-        this.positionsColorsOnImage=positionsColorsOnImage;
         this.zoneToPerformLocalisation=zoneToPerformLocalisation;
-        this.lengthSideOfSquareDetection=30; //in pixels
+        this.lengthSideOfSquareDetection=20; //in pixels
         this.distanceBetweenTwoColors=70; //in pixels
     }
 
@@ -581,42 +580,59 @@ public class PatternRecognition extends AbstractThread{
         this.setPriority(5);
         int[][][] colorMatrix = createColorMatrix(pathToImage);
         centerPointPattern=calculateCenterPattern(pathToImage, zoneToPerformLocalisation);
-        boolean zoneHasToBeShifted=doZoneHasToBeShifted(colorMatrix, this.centerPointPattern, this.lengthSideOfSquareDetection);
-        if (zoneHasToBeShifted){
-            if (debug) {
-                System.out.println("Zone has to be shifted");
+        if (!(centerPointPattern[0] == 0 && centerPointPattern[1] == 0)) {
+            double[][] distanceArrays = new double[5][10];
+            int halfLengthSideOfSquareDetection = lengthSideOfSquareDetection / 2;
+            int halfDistanceBetweenTwoColors = distanceBetweenTwoColors / 2;
+            int iStartValue = -2;
+            for (int i = iStartValue; i <= 2; i++) {
+                /**On définit où l'algorithme doit chercher ses couleurs
+                 * positionColorsOnImage=
+                 * {
+                 * {xStartFirstColor,xStartSecondColor,xStartThirdColor},
+                 * {yStartFirstColor,yStartSecondColor,yStartThirdColor},
+                 * {xEndFirstColor,xEndSecondColor,xEndThirdColor},
+                 * {yEndFirstColor,yEndSecondColor,yEndThirdColor},
+                 * }
+                 */
+                positionsColorsOnImage = new int[][]
+                        {{Math.max(centerPointPattern[0] - halfLengthSideOfSquareDetection - distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, 0),
+                          Math.max(centerPointPattern[0] - halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, 0),
+                          Math.max(centerPointPattern[0] - halfLengthSideOfSquareDetection + distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, 0)},
+                         {centerPointPattern[1] - halfLengthSideOfSquareDetection,
+                          centerPointPattern[1] - halfLengthSideOfSquareDetection,
+                          centerPointPattern[1] - halfLengthSideOfSquareDetection},
+                         {Math.max(centerPointPattern[0] + halfLengthSideOfSquareDetection - distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, 0),
+                          Math.max(centerPointPattern[0] + halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, 0),
+                          Math.max(centerPointPattern[0] + halfLengthSideOfSquareDetection + distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, 0)},
+                         {centerPointPattern[1] + halfLengthSideOfSquareDetection,
+                          centerPointPattern[1] + halfLengthSideOfSquareDetection,
+                          centerPointPattern[1] + halfLengthSideOfSquareDetection}};
+                distanceArrays[i - iStartValue] = computeProximity(colorMatrix, positionsColorsOnImage);
             }
+            double maxProba = 0;
+            int maxI = 0;
+            int maxJ = 0;
+            for (int i = 0; i < distanceArrays.length; i++) {
+                if (debug) {
+                    System.out.println("");
+                    System.out.println("Proximity (Xshifted by " + ((i + iStartValue) * halfDistanceBetweenTwoColors) + " )");
+                }
+                for (int j = 0; j < distanceArrays[0].length; j++) {
+                    if (distanceArrays[i][j] > maxProba) {
+                        maxProba = distanceArrays[i][j];
+                        maxI = i;
+                        maxJ = j;
+                    }
+                    if (debug) {
+                        System.out.println(distanceArrays[i][j]);
+                    }
+                }
+            }
+            this.finalIndice = maxJ;
         }
-
-
-        /**On définit où l'algorithme doit chercher ses couleurs
-         * positionColorsOnImage=
-         * {
-         * {xStartFirstColor,xStartSecondColor,xStartThirdColor},
-         * {yStartFirstColor,yStartSecondColor,yStartThirdColor},
-         * {xEndFirstColor,xEndSecondColor,xEndThirdColor},
-         * {yEndFirstColor,yEndSecondColor,yEndThirdColor},
-         * }
-         */
-        int halfLengthSideOfSquareDetection=lengthSideOfSquareDetection/2;
-        positionsColorsOnImage=new int[][]
-                {{centerPointPattern[0]-halfLengthSideOfSquareDetection-distanceBetweenTwoColors,
-                  centerPointPattern[0]-halfLengthSideOfSquareDetection,
-                  centerPointPattern[0]-halfLengthSideOfSquareDetection+distanceBetweenTwoColors},
-                 {centerPointPattern[1]-halfLengthSideOfSquareDetection,
-                  centerPointPattern[1]-halfLengthSideOfSquareDetection,
-                  centerPointPattern[1]-halfLengthSideOfSquareDetection},
-                 {centerPointPattern[0]+halfLengthSideOfSquareDetection-distanceBetweenTwoColors,
-                  centerPointPattern[0]+halfLengthSideOfSquareDetection,
-                  centerPointPattern[0]+halfLengthSideOfSquareDetection+distanceBetweenTwoColors},
-                 {centerPointPattern[1]+halfLengthSideOfSquareDetection,
-                  centerPointPattern[1]+halfLengthSideOfSquareDetection,
-                  centerPointPattern[1]+halfLengthSideOfSquareDetection}};
-
-        double[] probabilitiesList=analysePattern(colorMatrix, this.positionsColorsOnImage);
-        this.finalIndice=computeFinalIndice(probabilitiesList,colorMatrix,positionsColorsOnImage);
-        if (debug==true){
-            System.out.println("Pattern recognized : "+finalIndice);
+        if (debug == true) {
+            System.out.println("Pattern recognized : " + finalIndice);
         }
         while (!this.isShutdown){
             try {
