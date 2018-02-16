@@ -12,9 +12,10 @@ public class MatchScript extends AbstractScript {
         super(config,log,hookFactory);
     }
 
-    public void execute(GameState gameState){
-        ActivationBrasLateral actblat=new ActivationBrasLateral(config,log,hookFactory);
-        actblat.goToThenExec();
+    public void execute(GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException{
+        ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
+        actPD.goToThenExec(0,gameState);
+
 
     }
 }
