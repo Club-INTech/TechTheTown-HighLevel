@@ -5,7 +5,6 @@ import enums.ConfigInfoRobot;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
-import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import pfg.config.Config;
@@ -17,9 +16,8 @@ import utils.Log;
 public class ActiveAbeille extends AbstractScript {
 
     /** Active l'abeille */
-
-    int d=250;
-    int r = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+    private int securityDistance = 10; //distance de sécurité pour ne pas cogner le mur en tournant
+    private int radius = config.getInt(ConfigInfoRobot.LONGUEUR_BOUT_DU_BRAS); //distance du centre du robot jusqu'au bout du bras
 
     public ActiveAbeille(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -27,9 +25,7 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
-
         actualState.robot.turn(Math.PI/2);
-        actualState.robot.moveLengthwise(d);
         actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,true);
         actualState.robot.turn(Math.PI,true);
         actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
@@ -37,16 +33,14 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
-
-        int xEntry = 2000-d-r;
-        int yEntry = 1290;
+        //Se place tout de suite à la bonne position pour tourner et activer l'abeille
+        int xEntry = 1500-radius-securityDistance;
+        int yEntry = 2000-radius-securityDistance;
         return new Circle(new Vec2(xEntry,yEntry));
     }
 
     @Override
-    public void finalize(GameState state, Exception e) throws UnableToMoveException {
-
-    }
+    public void finalize(GameState state, Exception e) throws UnableToMoveException {}
 
     @Override
     public Integer[][] getVersion2(GameState stateToConsider) {

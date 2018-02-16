@@ -55,12 +55,11 @@ public enum ConfigInfoRobot implements ConfigInfo
     ROBOT_RADIUS(212),
     ENNEMY_RADIUS(400),
 
-
     /**Les cubes*/
     LONGUEUR_CUBE(58),
 
     /**Longueur bras*/
-    LONGUEUR_BRAS(330),
+    LONGUEUR_BOUT_DU_BRAS(330),
 
     /**Dimension portes*/
     DIMENSION_PORTES(87),
