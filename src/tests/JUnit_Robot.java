@@ -19,28 +19,17 @@
 
 package tests;
 
-import enums.ActuatorOrder;
-import enums.ScriptNames;
 import enums.Speed;
 import org.junit.Before;
 import org.junit.Test;
 import pathfinder.Pathfinding;
-import pfg.config.Config;
-import robot.EthWrapper;
-import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
-import scripts.TakeCubes;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
-import threads.dataHandlers.ThreadEth;
-import threads.dataHandlers.ThreadSensor;
-import utils.Log;
-
-import java.util.ArrayList;
 
 
 /**
