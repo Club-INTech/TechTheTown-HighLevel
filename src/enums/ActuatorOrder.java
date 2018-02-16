@@ -89,8 +89,7 @@ public enum ActuatorOrder implements MotionOrder
 	ACTIVE_ELECTROVANNE_ARRIERE("aeAr",300),
 	DESACTIVE_ELECTROVANNE_ARRIERE("deAr",300),
 
-	ACTIVE_BRAS_AVANT_POUR_ABEILLE("AXGm0140",200),
-
+	ACTIVE_BRAS_AVANT_POUR_ABEILLE("blbAbei",1750),
 
 /*			 _____________________
  * 		   *|                     |*

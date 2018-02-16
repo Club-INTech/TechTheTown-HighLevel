@@ -25,9 +25,13 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
+        //On se tourne vers l'abeille
         actualState.robot.turn(Math.PI/2);
+        //On active le bras
         actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,true);
+        //On tourne de 90° pour lancer l'abeille
         actualState.robot.turn(Math.PI,true);
+        //On relève le bras
         actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
     }
 
