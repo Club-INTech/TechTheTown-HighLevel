@@ -27,9 +27,6 @@ import exceptions.Locomotion.UnableToMoveException;
 import org.junit.Before;
 import org.junit.Test;
 import pathfinder.Pathfinding;
-import pfg.config.Config;
-import robot.EthWrapper;
-import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
@@ -37,11 +34,6 @@ import simulator.ThreadSimulatorMotion;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
-import threads.dataHandlers.ThreadEth;
-import threads.dataHandlers.ThreadSensor;
-import utils.Log;
-
-import java.util.ArrayList;
 
 
 /**
@@ -85,10 +77,10 @@ public class JUnit_Robot extends JUnit_Test {
             robotReal.getPosition();
             robotReal.getOrientation();
 
-            robotReal.setPosition(new Vec2(900,1460));
+            robotReal.setPosition(new Vec2(900,850));
             robotReal.setOrientation(Math.PI);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            robotReal.moveNearPoint(new Vec2(0,0),300);
+            robotReal.moveLengthwise(200);
             /*robotReal.setOrientation(Math.PI/2);
             robotReal.setPosition(new Vec2(0, 500));
 

@@ -31,6 +31,7 @@ import utils.Log;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.Time;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -108,12 +109,18 @@ public class ThreadEth extends AbstractThread implements Service {
     private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
 
     /**
      * Le "canal" position & orientation
      */
     private XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
     private String splitString = " ";
+
+    /**
+     * Horloge pour le temps de réponse du bas-niveau
+     */
+    private static long timestamp=0;
 
     /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
@@ -289,6 +296,7 @@ public class ThreadEth extends AbstractThread implements Service {
             timeRef = System.currentTimeMillis();
             comFlag = true;
             mess += "\r\n";
+            timestamp=System.currentTimeMillis();
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
             output.write(mess, 0, mess.length());
             output.flush();

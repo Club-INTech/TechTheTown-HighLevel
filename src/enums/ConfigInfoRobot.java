@@ -57,7 +57,13 @@ public enum ConfigInfoRobot implements ConfigInfo
 
 
     /**Les cubes*/
-    LONGUEUR_CUBE (55),
+    LONGUEUR_CUBE(58),
+
+    /**Longueur bras*/
+    LONGUEUR_BRAS(330),
+
+    /**Dimension portes*/
+    DIMENSION_PORTES(87),
 
     /** Paramètres obstacles */
     PEREMP_OBST(5000),

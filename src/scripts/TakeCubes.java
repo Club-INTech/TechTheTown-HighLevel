@@ -1,622 +1,172 @@
 package scripts;
 
-import enums.ActuatorOrder;
-import enums.ConfigInfoRobot;
-import exceptions.BadVersionException;
-import exceptions.BlockedActuatorException;
-import exceptions.ExecuteException;
-import exceptions.Locomotion.PointInObstacleException;
+import enums.*;
+import exceptions.*;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.WrongBrasException;
 import hook.HookFactory;
-import pathfinder.Pathfinding;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
-import table.obstacles.Obstacle;
-import table.obstacles.ObstacleManager;
-import threads.ThreadInterface;
 import utils.Log;
 
-import java.util.ArrayList;
-
+/** Script permettant de récupérer les cubes de n'importe quel tas, selon n'importe quel pattern, dans n'importe quelle direction
+ */
 public class TakeCubes extends AbstractScript {
+    private int largeurCubes;
+    private int longueurBras;
+    private String direction;
 
     public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
-        /**Les versions de TakeCubes dépendent du pattern
-         * Elles sont donc stockées dans une matrice[i][j] telle que i est l'entier retourné par le code
-         des patterns et j la version à exécuter suivant l'une des six positions d'entrées
-         La version[1][2] par exemple correspond au deuxième pattern pour le troisième tas de cubes
-         Les versions commençant par 0 sont au fait non pas 00 jusqu'a 05 mais 0 jusqu'a 5
-         */
-        Integer[][] versions = new Integer[10][6];
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 6; j++) {
-                String x = Integer.toString(i);
-                String y = x + Integer.toString(j);
-                versions[i][j] = Integer.parseInt(y);
+        this.updateConfig();
+    }
+
+    /** Execution du script de récupération des cubes
+     * @param stateToConsider
+     * @throws InterruptedException
+     * @throws ExecuteException
+     * @throws UnableToMoveException
+     * @throws PatternNotYetCalculatedException
+     * @throws PatternNotRecognizedException
+     */
+    @Override
+    public void execute(int indiceTas, GameState stateToConsider)
+            throws InterruptedException, ExecuteException, UnableToMoveException {
+        BrasUtilise bras;
+        Cubes additionalCube;
+
+        //On récupère l'indice du pattern
+        int indicePattern=stateToConsider.indicePattern;
+
+        //On récupère le tas correspondant à l'indice
+        TasCubes tas = TasCubes.getTasFromID(indiceTas);
+
+        //On regarde si la tour avant est remplie
+        if (!stateToConsider.tourAvantRemplie){
+            stateToConsider.tourAvantRemplie=true;
+            bras=BrasUtilise.AVANT;
+        }
+        //On regarde si la tour arrièr est remplie
+        else if (!stateToConsider.tourArriereRemplie){
+            stateToConsider.tourArriereRemplie=false;
+            bras=BrasUtilise.ARRIERE;
+        }
+        //Si les deux tours sont remplies, on renvoie une exception et n'execute pas le script
+        else{
+            throw new ExecuteException(new BothTowersFullException("Les deux tours sont remplies"));
+        }
+
+        //On regarde quel bras on utilise
+        if (bras==BrasUtilise.AVANT){
+            //On gère le cas où le cube bonus est encore présent
+            if (stateToConsider.cubeAvantPresent){
+                additionalCube=Cubes.NULL;
+            }
+            else{
+                additionalCube=Cubes.getCubeNotInPattern(indicePattern);
             }
         }
-    }
+        else{
+            //On gère le cas où le cube bonus est encore présent
+            if (stateToConsider.cubeArrierePresent){
+                additionalCube=Cubes.NULL;
+            }
+            else{
+                additionalCube=Cubes.getCubeNotInPattern(indicePattern);
+            }
+        }
 
-    /**
-     * Les cubes sont positionnés ainsi
-     * ______|Noir |_____
-     * Orange|Jaune| Vert|
-     *       |Bleu |
-     * On se positionne toujours en face du cube orange comme position d'entrée
-     * les mouvements à faire sont soit :
-     * on tourne de 15 degrés pour prendre un autre cube si on n'a pas à avancer
-     * on avance de l (58 mm : la longueur d'un cube) s'il faut le faire
-     */
 
-    //méthode prenant en compte les dépassements
-
-    public void execute(int versionToExecute, GameState stateToConsider) throws InterruptedException, ExecuteException, UnableToMoveException {
-        //considérer le cas où on est de l'autre côté de la table : rajouter un symmetry
-        //stateToConsider.robot.turn(0);
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
-        int l = config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
-        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);   //ouvre l'électrovanne
-        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);  //ouvre l'électrovanne
-        stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, true);
-        /**Les version toexecute seront :
-         * soit (0,1,...5) (les 6 positions d'entrée possibles si la reconnaissance de couleur
-         * renvoit 0
-         * soit(10,11,...15) (les 6 positions si la reconnaissance de couleur renvoit1)
-         * etc etc (ça dépend du résultat du test de reconnaissance de couleur)
-         */
-        /**Cas où c'est le pattern 0 qui est retourné par le code de reconnaissance de couleur*/
+        //Si indicePattern==-2, c'est que le pattern n'a pas encore été calculé
+        if (indicePattern != -2){
+            //Si indicePattern==-1, c'est que le pattern n'a pas pu être identifié
+            if (indicePattern != -1) {
+                int[][] successivesPositionsList;
+                //Si additionalCube.getColor()==Colors.NULL, c'est qu'on a choisi de ne prendre que 3 cubes
+                //Sinon, la couleur de additionalCube sera correspondra au cube qui sera pris après le pattern
+                if (additionalCube.getColor() == Colors.NULL) {
+                    successivesPositionsList = new int[3][2];
+                } else {
+                    successivesPositionsList = new int[4][2];
+                    //On calcule les positions du cube additionnel pour x et y :
+                    // position = position du tas + position relative du cube choisi par rapport au tas
+                    successivesPositionsList[3][0] = tas.getCoords()[0] + additionalCube.getRelativeCoords()[0] * largeurCubes;
+                    successivesPositionsList[3][1] = tas.getCoords()[1] + additionalCube.getRelativeCoords()[1] * largeurCubes;
+                }
 
-        /**
-         * Ici c'est la version (orange,noir,vert)
-         */
-        if (versionToExecute == 0) {
-            //prend lecube orange
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(l );
-            //test permettant de corriger les erreurs de dépassements
-            stateToConsider.robot.turnRelatively(Math.PI / 12 ); //fait tourner le robot relativement
-            //prend le cube noir
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube vert
-            takethiscube(stateToConsider, "arriere");
-        }
-        if (versionToExecute == 2) {
-            stateToConsider.robot.turn(0);
-            //prend lecube vert
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(-l);
-            //test permettant de corriger les erreurs de dépassements
-            stateToConsider.robot.turnRelatively(-Math.PI/30 ); //fait tourner le robot relativement
-            //prend le cube noir
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.turnRelatively(Math.PI/30);
-            stateToConsider.robot.moveLengthwise(-l );
-            //prend le cube orange
-            takethiscube(stateToConsider, "arriere");
-        }
-        if (versionToExecute == 1) {
-            //prend lecube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l );
-            //test permettant de corriger les erreurs de dépassements
-            stateToConsider.robot.turnRelatively(Math.PI / 13 ); //fait tourner le robot relativement
-            //prend le cube noir
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 13 );
-            //prend le cube vert
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l);
-            //prend le cube jaune
-            takethiscube(stateToConsider, "avant");
-        }
-        //les cubes restants
-        if(versionToExecute==3 ){
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        if(versionToExecute==4){
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-            stateToConsider.robot.turnRelatively(Math.PI/12);
-            takethiscube(stateToConsider,"arriere");
+                //On récupère les couleurs composant le pattern reconnu (le pattern reconnu est identifié grâce à indicePattern)
+                Colors[] pattern = Patterns.getPatternFromID(indicePattern);
+                for (int i = 0; i < 3; i++) {
+                    //On calcule les positions des cubes pour x et y :
+                    // position = position du tas + position relative du cube choisi par rapport au tas
+                    successivesPositionsList[i][0] = tas.getCoords()[0] + Cubes.findRelativeCoordsWithColor(pattern[i])[0] * largeurCubes;
+                    successivesPositionsList[i][1] = tas.getCoords()[1] + Cubes.findRelativeCoordsWithColor(pattern[i])[1] * largeurCubes;
+                }
 
-        }
-        /**ici c'est la version (jaune, noir,bleu)*/
-        if (versionToExecute == 10) {
-            stateToConsider.robot.moveLengthwise(l );
-            //prendre le cube jaune
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.turnRelatively(Math.PI / 12);
-            //prendre le cube noir
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.turnRelatively(-Math.PI / 6 );
-            // prendre le cube bleu
-            takethiscube(stateToConsider, "arriere");
-        }
-        if (versionToExecute == 12) {
-            stateToConsider.robot.turn(Math.PI);
-            stateToConsider.robot.moveLengthwise(l);
-            //prendre le cube jaune
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(Math.PI / 12);
-            //prendre le cube noir
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(-Math.PI / 6 );
-            // prendre le cube bleu
-            takethiscube(stateToConsider, "avant");
-        }
-        if (versionToExecute == 11) {
-            stateToConsider.robot.moveLengthwise(l );
-            //prendre le cube jaune
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(Math.PI / 13 );
-            //prendre le cube noir
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(-Math.PI / 6 );
-            // prendre le cube bleu
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l);
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            //prendre le cube orange
-            takethiscube(stateToConsider, "avant");
-        }
-        //les cubes restants
-        if(versionToExecute==13 ){
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        if(versionToExecute==14){
-            takethiscube(stateToConsider,"arriere");
-            stateToConsider.robot.moveLengthwise(l);
-            stateToConsider.robot.turnRelatively(Math.PI/12);
-            takethiscube(stateToConsider,"arriere");
-        }
-        /**(Bleu,Vert,Orange)*/
-        if (versionToExecute == 20) {
-            //On prend le cube orange d'abord (on peut inverser l'ordre)
-            // prendre le cube orange
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(2 * (l ));
-            // prendre le cube vert
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(-l);
-            stateToConsider.robot.turnRelatively(-Math.PI / 12);
-            //prendre le cube bleu
-            takethiscube(stateToConsider, "arriere");
-        }
-        if (versionToExecute == 22) {
-            stateToConsider.robot.turn(Math.PI);
-            //On prend le cube orange d'abord (on peut inverser l'ordre)
-            // prendre le cube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(2 * l);
-            // prendre le cube vert
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l);
-            stateToConsider.robot.turnRelatively(-Math.PI / 12);
-            //prendre le cube bleu
-            takethiscube(stateToConsider, "avant");
-        }
-        if (versionToExecute == 21) {
-            //On prend le cube orange d'abord (on peut inverser l'ordre)
-            // prendre le cube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(2 * l);
-            // prendre le cube vert
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l);
-            stateToConsider.robot.turnRelatively(-Math.PI / 12);
-            //prendre le cube bleu
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(Math.PI / 12);
-            //prendre le cube jaune
-            takethiscube(stateToConsider, "avant");
+                //On définit les Vec2 correspondant aux positions où le robot doit aller pour prendre les cubes
+                Vec2 firstPosition = new Vec2(successivesPositionsList[0][0], successivesPositionsList[0][1]);
+                Vec2 secondPosition = new Vec2(successivesPositionsList[1][0], successivesPositionsList[1][1]);
+                Vec2 thirdPosition = new Vec2(successivesPositionsList[2][0], successivesPositionsList[2][1]);
 
-        }
-        //les cubes restants
-        if(versionToExecute==23 ){
-            stateToConsider.robot.turnRelatively(Math.PI/12);
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        if(versionToExecute==24){
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-            stateToConsider.robot.turnRelatively(Math.PI/12);
-            takethiscube(stateToConsider,"arriere");
-        }
-        /**(jaune,vert,noir)*/
-        if (versionToExecute == 30) {
-            stateToConsider.robot.moveLengthwise(l );
-            // prend le cube jaune
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(l );
-            //prend le cube vert
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(-l );
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            // prend le cube noir
-            takethiscube(stateToConsider, "arriere");
-        }
+                if (bras==BrasUtilise.ARRIERE){
+                    direction="backward";
+                    stateToConsider.robot.turnRelatively(Math.PI);
+                }
+                else{
+                    direction="forward";
+                }
+                //On active la pompe, et ouvre les électrovannes
+                stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
+                stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
+                stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, true);
 
-        if (versionToExecute == 32) {
-            stateToConsider.robot.turn(Math.PI);
-            stateToConsider.robot.moveLengthwise(l );
-            // prend le cube jaune
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l );
-            //prend le cube vert
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l );
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            // prend le cube noir
-            takethiscube(stateToConsider, "avant");
+                //On fait aller le robot à la position pour prendre le premier cube du pattern
+                stateToConsider.robot.moveNearPoint(firstPosition, longueurBras, direction);
+                //Le robot execute les actions pour prendre le cube
+                takeThisCube(stateToConsider, bras.getSide());
+
+                //On fait aller le robot à la position pour prendre le deuxième cube du pattern
+                stateToConsider.robot.moveNearPoint(secondPosition, longueurBras, direction);
+                //Le robot execute les actions pour prendre le cube
+                takeThisCube(stateToConsider, bras.getSide());
+
+                //On fait aller le robot à la position pour prendre le troisième cube du pattern
+                stateToConsider.robot.moveNearPoint(thirdPosition, longueurBras, direction);
+                //Le robot execute les actions pour prendre le cube
+                takeThisCube(stateToConsider, bras.getSide());
+
+                //Si un cube additionnel a été précisé
+                if (additionalCube.getColor() != Colors.NULL){
+                    //On définit le Vec2 de la position permettant de prendre le cube additionnel
+                    Vec2 fourthPosition = new Vec2(successivesPositionsList[3][0], successivesPositionsList[3][1]);
+
+                    //On fait aller le robot à la position pour prendre le cube additionnel.
+                    stateToConsider.robot.moveNearPoint(fourthPosition, longueurBras, direction);
+                    //Le robot execute les actions pour prendre le cube
+                    takeThisCube(stateToConsider, bras.getSide());
+                }
+                stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
+            }
+            else{
+                log.debug("Le pattern n'a pas été reconnu");
+                throw new ExecuteException(new PatternNotRecognizedException("Le pattern n'a pas été reconnu"));
+            }
         }
-        if (versionToExecute == 31) {
-            stateToConsider.robot.moveLengthwise(l );
-            // prend le cube jaune
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l);
-            //prend le cube vert
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l );
-            stateToConsider.robot.turnRelatively(Math.PI / 12);
-            // prend le cube noir
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12);
-            //prend le cube orange
-            takethiscube(stateToConsider, "avant");
+        else{
+            log.debug("Exécution script de récupération des cubes avant que le pattern ait été calculé");
+            throw new ExecuteException(new PatternNotYetCalculatedException("Le pattern n'a pas encore été calculé"));
         }
-        //les cubes restants
-        if(versionToExecute==33 ){
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        if(versionToExecute==34){
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
-            stateToConsider.robot.moveLengthwise(-l);
-            takethiscube(stateToConsider,"arriere");
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        /**(bleu,jaune,orange)*/
-        if (versionToExecute == 40) {
-            //on inverse l'odre : ca demandera moins de mouvements vu la position d'entrée choisie
-            // prend le cube orange
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(l );
-            // prendre le cube jaune
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "arriere");
-        }
-        if (versionToExecute == 42) {
-            stateToConsider.robot.turn(Math.PI);
-            //on inverse l'odre : ca demandera moins de mouvements vu la position d'entrée choisie
-            // prend le cube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l );
-            // prendre le cube jaune
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "avant");
-        }
-        if (versionToExecute == 41) {
-            //on inverse l'odre : ca demandera moins de mouvements vu la position d'entrée choisie
-            // prend le cube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l );
-            // prendre le cube jaune
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(-Math.PI / 6 );
-            //prend le cube noir
-            takethiscube(stateToConsider, "avant");
-        }
-        //les cubes restants
-        if(versionToExecute==43 ){
-            stateToConsider.robot.moveLengthwise(2*l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        if(versionToExecute==44){
-            stateToConsider.robot.moveLengthwise(2*l);
-            takethiscube(stateToConsider,"arriere");
-            stateToConsider.robot.moveLengthwise(-l);
-            stateToConsider.robot.turnRelatively(Math.PI/12);
-            takethiscube(stateToConsider,"arriere");
-        }
-        /**(vert,jaune,bleu)*/
-        if (versionToExecute == 50) {
-            stateToConsider.robot.moveLengthwise(2 *l);
-            //prend le cube vert
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(-l );
-            //prend le cube jaune
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "arriere");
-        }
-        if (versionToExecute == 52) {
-            stateToConsider.robot.turn(Math.PI);
-            stateToConsider.robot.moveLengthwise(2 * l);
-            //prend le cube vert
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l );
-            //prend le cube jaune
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "avant");
-        }
-        if (versionToExecute == 51) {
-            stateToConsider.robot.moveLengthwise(2 * l);
-            //prend le cube vert
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l);
-            //prend le cube jaune
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(Math.PI / 6);
-            //prend le cube noir
-            takethiscube(stateToConsider, "avant");
-        }
-        //les cubes restants
-        if(versionToExecute==53 ){
-            takethiscube(stateToConsider,"arriere");
-        }
-        if(versionToExecute==54){
-            takethiscube(stateToConsider,"arriere");
-            stateToConsider.robot.turnRelatively(Math.PI/12);
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        /**(bleu,orange,noir)*/
-        if (versionToExecute == 60) {
-            stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(-l );
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            //prend le cube orange
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            //prend le cube noir
-            takethiscube(stateToConsider, "arriere");
-        }
-        if (versionToExecute == 62) {
-            stateToConsider.robot.turn(Math.PI);
-            stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l );
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            //prend le cube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            //prend le cube noir
-            takethiscube(stateToConsider, "avant");
-        }
-        if (versionToExecute == 61) {
-            stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l );
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            //prend le cube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            //prend le cube noir
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube jaune
-            takethiscube(stateToConsider, "avant");
-        }
-        //les cubes restants
-        if(versionToExecute==63 ){
-            stateToConsider.robot.moveLengthwise(2*l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        if(versionToExecute==64){
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        /**(vert,orange,jaune)*/
-        if (versionToExecute == 70) {
-            //on inverse l'ordre
-            stateToConsider.robot.moveLengthwise(l);
-            //prend le cube jaune
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(-l);
-            //prend le cube orange
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(2 * l);
-            //prend le cube vert
-            takethiscube(stateToConsider, "arriere");
-        }
-        if (versionToExecute == 72) {
-            stateToConsider.robot.turn(Math.PI);
-            //on inverse l'ordre
-            stateToConsider.robot.moveLengthwise(l );
-            //prend le cube jaune
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l );
-            //prend le cube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(2 * l);
-            //prend le cube vert
-            takethiscube(stateToConsider, "avant");
-        }
-        if (versionToExecute == 71) {
-            //on inverse l'ordre
-            stateToConsider.robot.moveLengthwise(l );
-            //prend le cube jaune
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l );
-            //prend le cube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(2 *l);
-            //prend le cube vert
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l);
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "avant");
-        }
-        //les cubes restants
-        if(versionToExecute==73 ){
-            stateToConsider.robot.turnRelatively(Math.PI/12);
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        if(versionToExecute==74){
-            stateToConsider.robot.turnRelatively(Math.PI/12);
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-            stateToConsider.robot.turnRelatively(-Math.PI/6);
-            takethiscube(stateToConsider,"arriere");
-        }
-        /**(Noir,Bleu,Vert)*/
-        if (versionToExecute == 80) {
-            //on inverse l'odre : on prend le vert d'abord
-            stateToConsider.robot.moveLengthwise(2 * l);
-            //prend le cube vert
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(-l);
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.turnRelatively(Math.PI / 6 );
-            //prend le cube noir
-            takethiscube(stateToConsider, "arriere");
-        }
-        if (versionToExecute == 82) {
-            stateToConsider.robot.turn(Math.PI);
-            //on inverse l'odre : on prend le vert d'abord
-            stateToConsider.robot.moveLengthwise(2 *l);
-            //prend le cube vert
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(Math.PI / 6 );
-            //prend le cube noir
-            takethiscube(stateToConsider, "avant");
-        }
-        if (versionToExecute == 81) {
-            //on inverse l'odre : on prend le vert d'abord
-            stateToConsider.robot.moveLengthwise(2 *l );
-            //prend le cube vert
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(-l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(Math.PI / 6 );
-            //prend le cube noir
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube jaune
-            takethiscube(stateToConsider, "avant");
-        }
-        //les cubes restants
-        if(versionToExecute==83 ){
-            takethiscube(stateToConsider,"arriere");
-        }
-        if(versionToExecute==84){
-            takethiscube(stateToConsider,"arriere");
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        /**(orange,bleu,jaune)*/
-        if (versionToExecute == 90) {
-            //prend le cube orange
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "arriere");
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            //prend le cube jaune
-            takethiscube(stateToConsider, "arriere");
-        }
-        if (versionToExecute == 92) {
-            stateToConsider.robot.turn(Math.PI);
-            //prend le cube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            //prend le cube jaune
-            takethiscube(stateToConsider, "avant");
-        }
-        if (versionToExecute == 91) {
-            //prend le cube orange
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l );
-            stateToConsider.robot.turnRelatively(-Math.PI / 12 );
-            //prend le cube bleu
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.turnRelatively(Math.PI / 12 );
-            //prend le cube jaune
-            takethiscube(stateToConsider, "avant");
-            stateToConsider.robot.moveLengthwise(l);
-            //prend le cube vert
-            takethiscube(stateToConsider, "avant");
-        }
-        //les cubes restants
-        if(versionToExecute==93 ){
-            stateToConsider.robot.moveLengthwise(l);
-            stateToConsider.robot.turnRelatively(Math.PI/12);
-            takethiscube(stateToConsider,"arriere");
-        }
-        if(versionToExecute==94){
-            stateToConsider.robot.turnRelatively(Math.PI/12);
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-            stateToConsider.robot.turnRelatively(-Math.PI/12);
-            stateToConsider.robot.moveLengthwise(l);
-            takethiscube(stateToConsider,"arriere");
-        }
-        stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
 
     }
 
-    public void takethiscube(GameState stateToConsider, String bras) throws InterruptedException{
+    public void takeThisCube(GameState stateToConsider, String bras) throws InterruptedException{
+        //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
         if (bras.equals("avant")) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
-            Thread.sleep(500);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
         }
@@ -624,52 +174,25 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
-            ThreadInterface.sleep(500);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
         }
-
     }
-
-
-    /**
-     * les cubes sont numérotés de la façon suivant le sens trigonométrique : 0,1,2 sont de
-     * vrais tas de cubes, par contre le tas de cubes 3 désigne le 1 et le 4 désigne le 0
-     * c'est juste pour prendre le tas de cubes qui reste si jamais il nous reste du temps
-     * par conséquent, on prend le cube qui restent dans le tas 1 et les 2 dans le
-     * tas 0, donc pour prendre trois cubes, il va falloir appeler execute 2 fois et donc
-     * gotothenexec 2 fois aussi pour pouvoir construire une tour de 3 cubes
-     */
 
     @Override
-    public Circle entryPosition(int numtasdecubeaprendre, int ray, Vec2 robotPosition) throws BadVersionException {
-        int d = 160; //distance entre le robot et l'amas de cubes pour faire descendre le bras
-        int rayonRobot = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        int l=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
-        if (numtasdecubeaprendre == 0 || numtasdecubeaprendre==4) {
-            int xEntry = 650-(rayonRobot + d);
-            int yEntry = 540;
-            Vec2 position = new Vec2(xEntry, yEntry);
-            return new Circle(position);
-        } else {
-            if (numtasdecubeaprendre == 1 || numtasdecubeaprendre==3) {
-                int xEntry = 1200-(rayonRobot + d);
-                int yEntry = 1190;
-                Vec2 position = new Vec2(xEntry, yEntry);
-                return new Circle(position);
-            } else {
-                if (numtasdecubeaprendre == 2) {
-                    int xEntry = 400 + (rayonRobot + d );
-                    int yEntry = 1500;
-                    Vec2 position = new Vec2(xEntry, yEntry);
-                    return new Circle(position);
-                }
-                }
-            }
-        log.debug("erreur : mauvaise version de script");
-        throw new BadVersionException();
+    public Circle entryPosition(int version, int rayon, Vec2 robotPosition) throws BadVersionException{
+        if (version>5 || version<0){
+            throw new BadVersionException("Bad version exception : la version doit être comprise entre 0 et 5 (bornes incluses)");
+        }
+        TasCubes tas = TasCubes.getTasFromID(version);
+        int[] coords = tas.getCoords();
+        Vec2 coordsTas=new Vec2(coords[0],coords[1]);
+        //TODO : ajuster le rayon du cercle si il est trop petit
+        return new Circle(coordsTas,this.longueurBras+this.largeurCubes+30);
     }
 
+    @Override
+    public void finalize(GameState state, Exception e) throws UnableToMoveException { }
 
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
@@ -677,8 +200,8 @@ public class TakeCubes extends AbstractScript {
     }
 
     @Override
-    public void finalize(GameState state, Exception e) throws UnableToMoveException {
-
+    public Integer[] getVersion(GameState stateToConsider) {
+        return new Integer[]{};
     }
 
     @Override
@@ -686,9 +209,11 @@ public class TakeCubes extends AbstractScript {
         return versions2;
     }
 
-    @Override
-    public Integer[] getVersion(GameState stateToConsider) {
-        return new Integer[]{};
-    }
 
+    @Override
+    public void updateConfig() {
+        super.updateConfig();
+        this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
+        this.longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS);
+    }
 }

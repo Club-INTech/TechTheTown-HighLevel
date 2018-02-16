@@ -168,11 +168,9 @@ public class Robot implements Service {
 	 * @throws UnableToMoveException lorsque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
 	public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException {
-		Vec2 aimPosition= Geometry.closestPointOnCircle(this.position,aim);
+		Vec2 aimPosition= Geometry.closestPointOnCircle(this.getPosition(),aim);
 		// TODO : Appel du followpath & Pathfinding !
-			followPath(pathfinding.findmyway(position,aimPosition));
-
-
+			followPath(pathfinding.findmyway(getPosition(),aimPosition));
 	}
 
 	/**
@@ -293,8 +291,9 @@ public class Robot implements Service {
 	 */
 	public void turn(double angle, boolean expectsWallImpact, boolean isTurnRelative, boolean mustDetect) throws UnableToMoveException
 	{
-		if(isTurnRelative)
+		if(isTurnRelative) {
 			angle += getOrientation();
+		}
 		mLocomotion.turn(angle, expectsWallImpact, mustDetect);
 	}
 
@@ -308,7 +307,6 @@ public class Robot implements Service {
 	 */
 	public void turnNoSymmetry(double angle) throws UnableToMoveException
 	{
-
 		log.debug("appel de Robot.turnNoSymmetry(" + angle + ")");
 		// Fais la symétrie deux fois (symétrie de symétrie, c'est l'identité)
 		if(symmetry)
@@ -370,7 +368,6 @@ public class Robot implements Service {
 		log.debug("appel de Robot.moveLengthwise(" + distance + "," + expectsWallImpact + ")");
 		moveLengthwise(distance, expectsWallImpact, true);
 	}
-
 
 	/**
 	 * Fait avancer le robot de la distance spécifiée. Le robot garde son orientation actuelle et va simplement avancer
@@ -437,20 +434,28 @@ public class Robot implements Service {
 	 * @param aim distance visée
 	 * @param distanceNear distance à laquelle le robot doit s'arrêter avant le point
 	 * @throws UnableToMoveException
+	 * @author Nayht
 	 */
-	public void moveNearPoint(Vec2 aim, double distanceNear) throws UnableToMoveException{
-		//TODO : à tester !
-		turnTo(aim);
-		Vec2 relativeCoords = aim.minusNewVector(position);
+	public void moveNearPoint(Vec2 aim, double distanceNear, String direction) throws UnableToMoveException{
+		Vec2 relativeCoords = aim.minusNewVector(getPosition());
 		long distance=Math.round(relativeCoords.getR()-distanceNear);
-		moveLengthwise((int)distance, true, true);
-	}
+		if (direction=="backward"){
+			System.out.println("testBackward");
+			turnTo(getPosition().minusNewVector(relativeCoords));
+			distance*=-1;
 
+		}
+		else{
+			turnTo(aim);
+		}
+		System.out.println("distance"+distance);
+		System.out.println("distanceNear"+distanceNear);
+		moveLengthwise((int)distance);
+	}
 
 	/********************************
 	 * ASSERV', VITESSE & STRATEGIE *
 	 ********************************/
-
 
 	/**
 	 * Active le mouvement forcé (on ignore les conditions de blocage du bas-niveau)

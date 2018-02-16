@@ -1,6 +1,7 @@
 package patternRecognition;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.Pattern;
+import enums.Colors;
+import enums.Patterns;
 import threads.AbstractThread;
 
 import javax.imageio.ImageIO;
@@ -200,7 +201,7 @@ public class PatternRecognition extends AbstractThread{
     private static double[] computeInverseDistanceToAllColors(int[] RGBToEvaluate){
         double[] inverseDistances=new double[5];
         for (int idColor=0; idColor<5; idColor++){
-            int[] color=Colors.getRGBFromID(idColor);
+            int[] color= Colors.getRGBFromID(idColor);
             inverseDistances[idColor]=computeInverseDistanceToSingleColor(RGBToEvaluate, color);
         }
         return inverseDistances;

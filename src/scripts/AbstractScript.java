@@ -99,11 +99,8 @@ public abstract class AbstractScript implements Service
 			log.debug("pour l'instant je sais pas");
 			e.printStackTrace();
 		}
-
-
 	}
 
-	   
 	/**
 	 * Exécute le script
 	 * @param versionToExecute la version du script à exécuter
@@ -112,7 +109,6 @@ public abstract class AbstractScript implements Service
 	 * @throws ExecuteException
 	 */
 	public abstract void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, BadVersionException, PointInObstacleException;
-
 
 	/**
 	 * Renvoie le score que peut fournir une version d'un script.
@@ -132,7 +128,12 @@ public abstract class AbstractScript implements Service
 	 * @param robotPosition la position actuelle du robot
 	 * @return la position du point d'entrée
 	 */
-	public abstract Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException;
+	public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException{
+		return null;
+	}
+	public Circle entryPosition(int ray, Vec2 robotPosition) throws BadVersionException{
+		return null;
+	}
 	
 	/**
 	 * Méthode appelée à la fin du script si une exception a lieu.
