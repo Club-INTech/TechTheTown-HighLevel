@@ -323,6 +323,6 @@ Supprimerait out/
 /lib/jSSC-2.6.0-Release/javadoc/
 /lib/jSSC-2.6.0-Release/src/
 
-.txt
-.dot
+*.txt
+*.dot
 log/

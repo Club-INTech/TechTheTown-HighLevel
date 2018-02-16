@@ -127,7 +127,6 @@ public class ThreadSensor extends AbstractThread
     //ArrayList<Integer> USvaluesForDeletion = new ArrayList<>();
 
     /** Fichier de debug pour le placement d'obstacles */
-    private BufferedWriter out;
     private final boolean debug = true;
 
     public Sensor sensorFL;//Front left
@@ -155,9 +154,10 @@ public class ThreadSensor extends AbstractThread
         this.sensorsArray.add(3,sensorBR);
 
 	}
-	/** Ajoute les obstacles a l'obstacleManager */
-	private void addObstacle() {
-        try {
+
+
+    /** Ajoute les obstacles a l'obstacleManager */
+    private void addObstacle() {
 
             /**Schéma du robot :
              *
@@ -181,39 +181,35 @@ public class ThreadSensor extends AbstractThread
              *           Back
              */
 
-            if (sensorFL.getDetectedDistance() != 0){
-                if (sensorFR.getDetectedDistance() != 0) {
-                    out.write("Detection:SensorFLandFR ");
+            if (sensorsArray.get(0).getDetectedDistance() != 0){
+                if (sensorsArray.get(1).getDetectedDistance() != 0) {
+                 //   out.write("Detection:Sensor0And1 ");
                     addFrontObstacleBoth();
                 }
                 else {
-                    out.write("Detection:SensorFL ");
+                 //   out.write("Detection:Sensor0 ");
                     addFrontObstacleSingle(true);
                 }
             }
-            else if (sensorFR.getDetectedDistance() != 0){
-                out.write("Detection:SensorFR ");
+            else if (sensorsArray.get(1).getDetectedDistance() != 0){
+              //  out.write("Detection:Sensor1 ");
                 addBackObstacleSingle(false);
             }
-            if (sensorBL.getDetectedDistance() != 0){
-                if (sensorBR.getDetectedDistance() != 0){
-                    out.write("Detection:SensorBLandBR");
+            if (sensorsArray.get(2).getDetectedDistance() != 0){
+                if (sensorsArray.get(3).getDetectedDistance() != 0){
+               //     out.write("Detection:Sensor2And3 ");
                     addBackObstacleBoth();
                 }
                 else{
-                    out.write("Detection:SensorBL ");
+                 //   out.write("Detection:Sensor2 ");
                     addBackObstacleSingle(true);
                 }
             }
-            else if (sensorBR.getDetectedDistance() != 0){
-                out.write("Detection:SensorBR ");
+            else if (sensorsArray.get(3).getDetectedDistance() != 0){
+            //    out.write("Detection:Sensor3 ");
                 addBackObstacleSingle(false);
             }
 
-
-        }catch(IOException e){
-            e.printStackTrace();
-        }
     }
 
     /** Ajoute un obstacle en face du robot, avec les deux capteurs ayant détecté quelque chose
@@ -252,7 +248,6 @@ public class ThreadSensor extends AbstractThread
             isValue = false;
         }
         if (isValue) {
-            printDebug(vec);
             mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius, lifetimeForUntestedObstacle);
         }
     }
@@ -289,7 +284,6 @@ public class ThreadSensor extends AbstractThread
             isValue = false;
         }
         if (isValue) {
-            this.printDebug(vec);
             mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius, lifetimeForUntestedObstacle);
         }
     }
@@ -318,7 +312,6 @@ public class ThreadSensor extends AbstractThread
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorFR.getVecteur());     //sensor avant droit
         }
 
-        this.printDebug(posEn);
         mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius, lifetimeForUntestedObstacle);
     }
 
@@ -341,14 +334,12 @@ public class ThreadSensor extends AbstractThread
             double angleEn = sensorBL.getDetectionAnglePosition() + detectionAngle/2;            //sensor arrière gauche
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorBR.getVecteur());     //sensor arrière droit
         }
-
-        this.printDebug(posEn);
         mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius, lifetimeForUntestedObstacle);
     }
 
     /** P'tite methode pour print le debug des capteurs
      * @param obPositionRobotRef la position de l'obstacle dans le réferentiel du robot */
-    private void printDebug(Vec2 obPositionRobotRef){
+   /* private void printDebug(Vec2 obPositionRobotRef){
         try {
             out.write("Position calculée (référentiel du robot) :" + obPositionRobotRef);
             out.newLine();
@@ -364,6 +355,7 @@ public class ThreadSensor extends AbstractThread
             log.debug("IOException sur le Debug...");
         }
     }
+    */
 
     /** Passe du référentiel du robot à celui de la table
      * @param pos la position relative dont on cherche les coordonées absolues */
@@ -396,7 +388,7 @@ public class ThreadSensor extends AbstractThread
             while(valuesReceived.peek() == null){
                 Thread.sleep(5);
             }
-            String values = valuesReceived.poll().substring(2);
+            String values = valuesReceived.poll();
             valuesSReceived = values.split(" ");
 
 
@@ -412,19 +404,7 @@ public class ThreadSensor extends AbstractThread
 
             //USvalues = res;
 
-            if(this.debug)
-            {
-               try {
-                   for (int i=0; i<nbSensors; i++) {
-                       out.write(sensorsArray.get(i).getStringDetectedDistance());
-                       out.newLine();
-                   }
-                   out.newLine();
-                   out.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+
 
             if(symetry) //Inversion gauche/droite pour symétriser
             {
@@ -457,21 +437,6 @@ public class ThreadSensor extends AbstractThread
         /** Initialisation : fichiers de debug, temps d'attente,...*/
 
         updateConfig();
-        try
-        {
-            File file = new File("us.txt");
-
-            if (!file.exists()) {
-                //file.delete();
-                file.createNewFile();
-            }
-            out = new BufferedWriter(new FileWriter(file));
-            out.newLine();
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         /* while(ethWrapper.isJumperAbsent())
         {

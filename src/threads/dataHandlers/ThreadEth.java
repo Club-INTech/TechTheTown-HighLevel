@@ -85,6 +85,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private BufferedWriter outPosition;
     private BufferedWriter outEvent;
     private BufferedWriter fullDebug;
+    private BufferedWriter outSensor;
 
     /**
      * True pour couper la connexion (pas trouvé d'autres idées, mais la lib java.net a probablement un truc propre à proposer)
@@ -130,6 +131,8 @@ public class ThreadEth extends AbstractThread implements Service {
                 File position = new File("debugPosition.txt");
                 File event = new File("debugEvent.txt");
                 File fulldebug = new File("fullDebug.txt");
+                File sensorUS = new File("us.txt");
+
                 if (!file.exists()) {
                     file.createNewFile();
                 }
@@ -145,6 +148,9 @@ public class ThreadEth extends AbstractThread implements Service {
                 if (!fulldebug.exists()) {
                     fulldebug.createNewFile();
                 }
+                if (!sensorUS.exists()) {
+                    sensorUS.createNewFile();
+                }
                 outStandard = new BufferedWriter(new FileWriter(file));
                 outStandard.newLine();
                 outDebug = new BufferedWriter(new FileWriter(fileDebug));
@@ -155,6 +161,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 outEvent.newLine();
                 fullDebug = new BufferedWriter(new FileWriter(fulldebug));
                 fullDebug.newLine();
+                outSensor = new BufferedWriter(new FileWriter(sensorUS));
 
             } catch (IOException e) {
                 log.critical("Manque de droits pour l'output");
@@ -400,6 +407,9 @@ public class ThreadEth extends AbstractThread implements Service {
                         continue;
                     } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
                         ultrasoundBuffer.add(infosFromBuffer);
+                        outSensor.write(infosFromBuffer);
+                        outSensor.newLine();
+                        outSensor.flush();
                         continue;
                     } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                         synchronized (this.positionAndOrientation) {
