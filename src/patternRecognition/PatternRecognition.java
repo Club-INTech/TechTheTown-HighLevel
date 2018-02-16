@@ -491,7 +491,7 @@ public class PatternRecognition extends AbstractThread{
             }
         }
         if (maxProba<0.1){
-            if (alreadyLitUp<5){
+            if (alreadyLitUp<3){
                 alreadyLitUp+=1;
                 if (debug){
                     System.out.println("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
