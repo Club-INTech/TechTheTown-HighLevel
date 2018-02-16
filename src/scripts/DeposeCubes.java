@@ -17,19 +17,17 @@ public class DeposeCubes extends AbstractScript{
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory){
         super(config, log, hookFactory);
+        versions= new Integer[]{0,1};
     }
 
     /**
      * Cette méthode dépose les cubes pris par les deux bras
      * @param stateToConsider
-     * @param pousse : on est obligé de pousser les deux premières tours car on n'aura
-     *               pas la place où déposer les deux dernières, par conséquent, on active
-     *               cette boolean pour les deux premières tours
      * @throws ExecuteException
      * @throws UnableToMoveException
      */
 
-    public void execute(GameState stateToConsider,Boolean pousse) throws ExecuteException, UnableToMoveException {
+    public void execute(int versiontoexecute,GameState stateToConsider) throws ExecuteException, UnableToMoveException {
         int xentry=650;
         int yentry=165+config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         Vec2 aim=new Vec2(xentry,yentry);
@@ -38,36 +36,50 @@ public class DeposeCubes extends AbstractScript{
         int d=70; //on pénètre la zone de construction de cette distance
         int dimensionporte=config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
         int distancepush=105;
-        stateToConsider.robot.turn(-Math.PI/2);
-        stateToConsider.robot.moveLengthwise(d);
-        stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
-        stateToConsider.robot.moveLengthwise(-d-dimensionporte);
-        stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
-        if(pousse){
+        if(versiontoexecute==0) {
+            stateToConsider.robot.turn(-Math.PI / 2);
+            stateToConsider.robot.moveLengthwise(d);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
+            stateToConsider.robot.moveLengthwise(-d - dimensionporte);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
             stateToConsider.robot.moveLengthwise(dimensionporte);
             stateToConsider.robot.moveLengthwise(distancepush);
             stateToConsider.robot.moveLengthwise(-distancepush);
-        }
-        stateToConsider.robot.turn(Math.PI);
-        //on dépose la deuxième tour là
-        stateToConsider.robot.moveLengthwise(-300);
-        stateToConsider.robot.turn(Math.PI/2);
-        stateToConsider.robot.moveLengthwise(-d);
-        stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE,true);
-        stateToConsider.robot.moveLengthwise(d+dimensionporte);
-        stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
-        if(pousse){
+            stateToConsider.robot.turn(Math.PI);
+            //on dépose la deuxième tour là
+            stateToConsider.robot.moveLengthwise(-300);
+            stateToConsider.robot.turn(Math.PI / 2);
+            stateToConsider.robot.moveLengthwise(-d);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
+            stateToConsider.robot.moveLengthwise(d + dimensionporte);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, true);
             stateToConsider.robot.moveLengthwise(-dimensionporte);
             stateToConsider.robot.moveLengthwise(-distancepush);
             stateToConsider.robot.moveLengthwise(distancepush);
         }
+        if(versiontoexecute==1){
+            stateToConsider.robot.turn(-Math.PI / 2);
+            stateToConsider.robot.moveLengthwise(d);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
+            stateToConsider.robot.moveLengthwise(-d - dimensionporte);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
+            stateToConsider.robot.turn(Math.PI);
+            //on dépose la deuxième tour là
+            stateToConsider.robot.moveLengthwise(-300);
+            stateToConsider.robot.turn(Math.PI / 2);
+            stateToConsider.robot.moveLengthwise(-d);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
+            stateToConsider.robot.moveLengthwise(d + dimensionporte);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, true);
+        }
     }
+
 
 
     @Override
 
 
-    public Circle entryPosition(int ray, Vec2 robotPosition) throws BadVersionException {
+    public Circle entryPosition(int versiontoexecute, Vec2 robotPosition) throws BadVersionException {
         /*coordonnées de la zone de construction
                550<x<1070
                 y=175
@@ -77,10 +89,6 @@ public class DeposeCubes extends AbstractScript{
         Vec2 position=new Vec2(xentry,yentry);
         return new Circle(position);
     }
-
-
-    @Override
-    public void execute(int placeHolder, GameState placeHolder2){}
 
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
