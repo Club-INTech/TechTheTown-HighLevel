@@ -64,6 +64,9 @@ public class DeposeCubes extends AbstractScript{
     }
 
 
+    @Override
+
+
     public Circle entryPosition(int ray, Vec2 robotPosition) throws BadVersionException {
         /*coordonnées de la zone de construction
                550<x<1070
@@ -76,7 +79,8 @@ public class DeposeCubes extends AbstractScript{
     }
 
 
-
+    @Override
+    public void execute(int placeHolder, GameState placeHolder2){}
 
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
@@ -85,7 +89,6 @@ public class DeposeCubes extends AbstractScript{
 
     @Override
     public void finalize(GameState state, Exception e) throws UnableToMoveException {
-
     }
 
     @Override

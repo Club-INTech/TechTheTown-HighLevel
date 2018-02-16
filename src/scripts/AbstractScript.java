@@ -99,40 +99,8 @@ public abstract class AbstractScript implements Service
 			log.debug("pour l'instant je sais pas");
 			e.printStackTrace();
 		}
-
-
-	}
-	public void goToThenExec(GameState actualState,boolean pousse) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
-		// va jusqu'au point d'entrée de la version demandée
-		log.debug("Lancement de " + this.toString());
-		try
-		{
-			if(actualState.robot.getPosition().minusNewVector(entryPosition(actualState.robot.getRobotRadius(), actualState.robot.getPositionFast()).getCenter()).squaredLength() > 40) {
-
-				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition( actualState.robot.getRobotRadius(), actualState.robot.getPosition()).getCenter());
-
-				actualState.robot.moveToCircle(entryPosition( actualState.robot.getRobotRadius(), actualState.robot.getPositionFast()), actualState.table);
-			}
-		}
-		catch (UnableToMoveException e)
-		{
-			log.debug("Catch de "+e+" Impossible de goToThenExec : abandon d'exec, throw de "+e);
-			throw e;
-		}
-
-		// exécute la version demandée
-		try{
-			execute(actualState,pousse);
-		}
-		catch (InterruptedException e){
-			log.debug("pour l'instant je sais pas");
-			e.printStackTrace();
-		}
-
-
 	}
 
-	   
 	/**
 	 * Exécute le script
 	 * @param versionToExecute la version du script à exécuter
@@ -140,9 +108,7 @@ public abstract class AbstractScript implements Service
 	 * @throws UnableToMoveException exception levée lorsque le robot ne peut se déplacer (décor ou obstacles détectés par capteurs)
 	 * @throws ExecuteException
 	 */
-	public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException{}
-
-	public abstract void execute(GameState stateToConsider,Boolean pousse) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException;
+	public abstract void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException;
 
 	/**
 	 * Renvoie le score que peut fournir une version d'un script.

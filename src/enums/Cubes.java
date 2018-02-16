@@ -1,5 +1,7 @@
 package enums;
 
+import java.util.regex.Pattern;
+
 public enum Cubes{
     ORANGE(-1,0,Colors.ORANGE),
     BLUE(0,1,Colors.BLUE),
@@ -33,6 +35,29 @@ public enum Cubes{
     public int[] getRelativeCoords(){
         int[] toReturn={this.xRelative, this.yRelative};
         return toReturn;
+    }
+    public static Cubes getCubeFromColor(Colors colorToSearch){
+        for (Cubes cube : Cubes.values()){
+            if (colorToSearch==cube.color){
+                return cube;
+            }
+        }
+        return null;
+    }
+    public static Cubes getCubeNotInPattern(int givenPatternID){
+        Colors[] pattern=Patterns.getPatternFromID(givenPatternID);
+        for (Colors color : Colors.values()){
+            boolean colorNotInPattern=true;
+            for (int i=0; i<pattern.length; i++){
+                if (pattern[i]==color){
+                    colorNotInPattern=false;
+                }
+            }
+            if (!colorNotInPattern){
+                return getCubeFromColor(color);
+            }
+        }
+        return null;
     }
 }
 

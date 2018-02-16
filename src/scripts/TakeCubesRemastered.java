@@ -1,11 +1,8 @@
 package scripts;
 
 import enums.*;
-import exceptions.BlockedActuatorException;
-import exceptions.ExecuteException;
+import exceptions.*;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.PatternNotRecognizedException;
-import exceptions.PatternNotYetCalculatedException;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -27,10 +24,6 @@ public class TakeCubesRemastered extends AbstractScript {
     }
 
     /** Execution du script de récupération des cubes
-     * @param indicePattern
-     * @param tas
-     * @param bras
-     * @param additionalCube
      * @param stateToConsider
      * @throws InterruptedException
      * @throws ExecuteException
@@ -38,8 +31,41 @@ public class TakeCubesRemastered extends AbstractScript {
      * @throws PatternNotYetCalculatedException
      * @throws PatternNotRecognizedException
      */
-    public void execute(int indicePattern, TasCubes tas, BrasUtilise bras, Cubes additionalCube, GameState stateToConsider)
-            throws InterruptedException, ExecuteException, UnableToMoveException, PatternNotYetCalculatedException, PatternNotRecognizedException{
+    @Override
+    public void execute(int indiceTas, GameState stateToConsider)
+            throws InterruptedException, ExecuteException, UnableToMoveException {
+        BrasUtilise bras;
+        Cubes additionalCube;
+        int indicePattern=stateToConsider.indicePattern;
+        TasCubes tas = TasCubes.getTasFromID(indiceTas);
+
+        if (!stateToConsider.tourAvantRemplie){
+            stateToConsider.tourAvantRemplie=true;
+            bras=BrasUtilise.AVANT;
+        }
+        else if (!stateToConsider.tourArriereRemplie){
+            stateToConsider.tourArriereRemplie=false;
+            bras=BrasUtilise.ARRIERE;
+        }
+        else{
+            throw new ExecuteException(new BothTowersFullException("Les deux tours sont remplies"));
+        }
+        if (bras==BrasUtilise.AVANT){
+            if (stateToConsider.cubeAvantPresent){
+                additionalCube=Cubes.NULL;
+            }
+            else{
+                additionalCube=Cubes.getCubeNotInPattern(indicePattern);
+            }
+        }
+        else{
+            if (stateToConsider.cubeArrierePresent){
+                additionalCube=Cubes.NULL;
+            }
+            else{
+                additionalCube=Cubes.getCubeNotInPattern(indicePattern);
+            }
+        }
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
         //Si indicePattern==-2, c'est que le pattern n'a pas encore été calculé
         if (indicePattern != -2){
@@ -113,16 +139,15 @@ public class TakeCubesRemastered extends AbstractScript {
             }
             else{
                 log.debug("Le pattern n'a pas été reconnu");
-                throw new PatternNotRecognizedException("Le pattern n'a pas été reconnu");
+                throw new ExecuteException(new PatternNotRecognizedException("Le pattern n'a pas été reconnu"));
             }
         }
         else{
             log.debug("Exécution script de récupération des cubes avant que le pattern ait été calculé");
-            throw new PatternNotYetCalculatedException("Le pattern n'a pas encore été calculé");
+            throw new ExecuteException(new PatternNotYetCalculatedException("Le pattern n'a pas encore été calculé"));
         }
 
     }
-
 
     public void takethiscube(GameState stateToConsider, String bras) throws InterruptedException{
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
@@ -144,19 +169,12 @@ public class TakeCubesRemastered extends AbstractScript {
     }
 
     @Override
-    public void execute(int placeHolder, GameState placeHolder2){
-
-    }
-
-    @Override
     public Circle entryPosition(int version, int rayon, Vec2 robotPosition){
         return new Circle(robotPosition,0);
     }
 
     @Override
-    public void finalize(GameState state, Exception e) throws UnableToMoveException {
-
-    }
+    public void finalize(GameState state, Exception e) throws UnableToMoveException { }
 
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
@@ -173,9 +191,6 @@ public class TakeCubesRemastered extends AbstractScript {
         return versions2;
     }
 
-    @Override
-    public void execute(GameState stateToConsider,Boolean pousse) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException{
-    }
 
     @Override
     public void updateConfig() {

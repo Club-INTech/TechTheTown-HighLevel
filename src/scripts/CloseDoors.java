@@ -314,7 +314,5 @@ public class CloseDoors extends AbstractScript
 	public Integer[][] getVersion2(GameState stateToConsider)
 	{ return new Integer[][]{};
 	}
-	public void execute(GameState stateToConsider,Boolean pousse) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
-	}
 
 }
