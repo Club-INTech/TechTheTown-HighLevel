@@ -8,17 +8,16 @@ import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
-import tests.container.A;
 import utils.Log;
 
 /** Script permettant de récupérer les cubes de n'importe quel tas, selon n'importe quel pattern, dans n'importe quelle direction
  */
-public class TakeCubesRemastered extends AbstractScript {
+public class TakeCubes extends AbstractScript {
     private int largeurCubes;
     private int longueurBras;
     private String direction;
 
-    public TakeCubesRemastered(Config config, Log log, HookFactory hookFactory) {
+    public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
         this.updateConfig();
     }
@@ -36,21 +35,31 @@ public class TakeCubesRemastered extends AbstractScript {
             throws InterruptedException, ExecuteException, UnableToMoveException {
         BrasUtilise bras;
         Cubes additionalCube;
+
+        //On récupère l'indice du pattern
         int indicePattern=stateToConsider.indicePattern;
+
+        //On récupère le tas correspondant à l'indice
         TasCubes tas = TasCubes.getTasFromID(indiceTas);
 
+        //On regarde si la tour avant est remplie
         if (!stateToConsider.tourAvantRemplie){
             stateToConsider.tourAvantRemplie=true;
             bras=BrasUtilise.AVANT;
         }
+        //On regarde si la tour arrièr est remplie
         else if (!stateToConsider.tourArriereRemplie){
             stateToConsider.tourArriereRemplie=false;
             bras=BrasUtilise.ARRIERE;
         }
+        //Si les deux tours sont remplies, on renvoie une exception et n'execute pas le script
         else{
             throw new ExecuteException(new BothTowersFullException("Les deux tours sont remplies"));
         }
+
+        //On regarde quel bras on utilise
         if (bras==BrasUtilise.AVANT){
+            //On gère le cas où le cube bonus est encore présent
             if (stateToConsider.cubeAvantPresent){
                 additionalCube=Cubes.NULL;
             }
@@ -59,6 +68,7 @@ public class TakeCubesRemastered extends AbstractScript {
             }
         }
         else{
+            //On gère le cas où le cube bonus est encore présent
             if (stateToConsider.cubeArrierePresent){
                 additionalCube=Cubes.NULL;
             }
@@ -66,6 +76,8 @@ public class TakeCubesRemastered extends AbstractScript {
                 additionalCube=Cubes.getCubeNotInPattern(indicePattern);
             }
         }
+
+
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
         //Si indicePattern==-2, c'est que le pattern n'a pas encore été calculé
         if (indicePattern != -2){
@@ -113,17 +125,17 @@ public class TakeCubesRemastered extends AbstractScript {
                 //On fait aller le robot à la position pour prendre le premier cube du pattern
                 stateToConsider.robot.moveNearPoint(firstPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
-                takethiscube(stateToConsider, bras.getSide());
+                takeThisCube(stateToConsider, bras.getSide());
 
                 //On fait aller le robot à la position pour prendre le deuxième cube du pattern
                 stateToConsider.robot.moveNearPoint(secondPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
-                takethiscube(stateToConsider, bras.getSide());
+                takeThisCube(stateToConsider, bras.getSide());
 
                 //On fait aller le robot à la position pour prendre le troisième cube du pattern
                 stateToConsider.robot.moveNearPoint(thirdPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
-                takethiscube(stateToConsider, bras.getSide());
+                takeThisCube(stateToConsider, bras.getSide());
 
                 //Si un cube additionnel a été précisé
                 if (additionalCube.getColor() != Colors.NULL){
@@ -133,7 +145,7 @@ public class TakeCubesRemastered extends AbstractScript {
                     //On fait aller le robot à la position pour prendre le cube additionnel.
                     stateToConsider.robot.moveNearPoint(fourthPosition, longueurBras, direction);
                     //Le robot execute les actions pour prendre le cube
-                    takethiscube(stateToConsider, bras.getSide());
+                    takeThisCube(stateToConsider, bras.getSide());
                 }
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
             }
@@ -149,7 +161,7 @@ public class TakeCubesRemastered extends AbstractScript {
 
     }
 
-    public void takethiscube(GameState stateToConsider, String bras) throws InterruptedException{
+    public void takeThisCube(GameState stateToConsider, String bras) throws InterruptedException{
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
         if (bras.equals("avant")) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
@@ -165,12 +177,18 @@ public class TakeCubesRemastered extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
         }
-
     }
 
     @Override
-    public Circle entryPosition(int version, int rayon, Vec2 robotPosition){
-        return new Circle(robotPosition,0);
+    public Circle entryPosition(int version, int rayon, Vec2 robotPosition) throws BadVersionException{
+        if (version>5 || version<0){
+            throw new BadVersionException("Bad version exception : la version doit être comprise entre 0 et 5 (bornes incluses)");
+        }
+        TasCubes tas = TasCubes.getTasFromID(version);
+        int[] coords = tas.getCoords();
+        Vec2 coordsTas=new Vec2(coords[0],coords[1]);
+        //TODO : ajuster le rayon du cercle si il est trop petit
+        return new Circle(coordsTas,this.longueurBras+this.largeurCubes+30);
     }
 
     @Override

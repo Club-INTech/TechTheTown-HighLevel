@@ -53,7 +53,7 @@ public enum Cubes{
                     colorNotInPattern=false;
                 }
             }
-            if (!colorNotInPattern){
+            if (colorNotInPattern){
                 return getCubeFromColor(color);
             }
         }
