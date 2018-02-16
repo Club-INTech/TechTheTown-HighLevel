@@ -156,12 +156,10 @@ public class ThreadSensor extends AbstractThread
 	}
 
 
-	/** Ajoute les obstacles a l'obstacleManager **/
-	/*
-	private void addObstacle() {
-        try {
+    /** Ajoute les obstacles a l'obstacleManager */
+    private void addObstacle() {
 
-            Schéma du robot :
+            /**Schéma du robot :
              *
              *           Front
              *
@@ -181,43 +179,38 @@ public class ThreadSensor extends AbstractThread
              *   /     \      /     \
              *
              *           Back
-             *
+             */
 
-            if (sensorFL.getDetectedDistance() != 0){
-                if (sensorFR.getDetectedDistance() != 0) {
-                    out.write("Detection:SensorFLandFR ");
+            if (sensorsArray.get(0).getDetectedDistance() != 0){
+                if (sensorsArray.get(1).getDetectedDistance() != 0) {
+                 //   out.write("Detection:Sensor0And1 ");
                     addFrontObstacleBoth();
                 }
                 else {
-                    out.write("Detection:SensorFL ");
+                 //   out.write("Detection:Sensor0 ");
                     addFrontObstacleSingle(true);
                 }
             }
-            else if (sensorFR.getDetectedDistance() != 0){
-                out.write("Detection:SensorFR ");
+            else if (sensorsArray.get(1).getDetectedDistance() != 0){
+              //  out.write("Detection:Sensor1 ");
                 addBackObstacleSingle(false);
             }
-            if (sensorBL.getDetectedDistance() != 0){
-                if (sensorBR.getDetectedDistance() != 0){
-                    out.write("Detection:SensorBLandBR");
+            if (sensorsArray.get(2).getDetectedDistance() != 0){
+                if (sensorsArray.get(3).getDetectedDistance() != 0){
+               //     out.write("Detection:Sensor2And3 ");
                     addBackObstacleBoth();
                 }
                 else{
-                    out.write("Detection:SensorBL ");
+                 //   out.write("Detection:Sensor2 ");
                     addBackObstacleSingle(true);
                 }
             }
-            else if (sensorBR.getDetectedDistance() != 0){
-                out.write("Detection:SensorBR ");
+            else if (sensorsArray.get(3).getDetectedDistance() != 0){
+            //    out.write("Detection:Sensor3 ");
                 addBackObstacleSingle(false);
             }
 
-
-        }catch(IOException e){
-            e.printStackTrace();
-        }
     }
-    */
 
     /** Ajoute un obstacle en face du robot, avec les deux capteurs ayant détecté quelque chose
      * Convention: la droite du robot est l'orientation 0 (on travaille dans le repère du robot, et on garde les memes conventions que pour la table) */
@@ -487,7 +480,7 @@ public class ThreadSensor extends AbstractThread
             this.getSensorInfos();
 
             this.removeOutDatedObstacle();
-        //    this.addObstacle();
+            this.addObstacle();
         }
         log.debug("Fin du thread de capteurs");
 
