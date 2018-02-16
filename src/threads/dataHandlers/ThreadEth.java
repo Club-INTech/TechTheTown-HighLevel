@@ -491,15 +491,11 @@ public class ThreadEth extends AbstractThread implements Service {
         return interfaceCreated;
     }
 
-    /** Methode appelée lors de la destruction de l'objet : il sert à fermer la socket avant
-     * d'arreter le process */
     @Override
-    public void finalize(){
+    public void interrupt(){
+        super.interrupt();
         try {
-            log.debug("Fermeture de la socket");
             socket.close();
-        }catch (SocketException e){
-            e.printStackTrace();
         }catch (IOException e){
             e.printStackTrace();
         }
