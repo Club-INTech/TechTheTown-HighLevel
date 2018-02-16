@@ -38,8 +38,7 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
             Vec2 positionDepart=new Vec2(900,850);
             robotReal.setPosition(positionDepart);
             DeposeCubes deposeCubes=new DeposeCubes(config,log,hookFactory);
-            deposeCubes.execute(state,false);
-
+            deposeCubes.execute(0,state);
         }catch (Exception e){
             e.printStackTrace();
         }

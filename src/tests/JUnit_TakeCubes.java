@@ -8,6 +8,7 @@ import robot.Robot;
 import scripts.*;
 import smartMath.Vec2;
 import strategie.GameState;
+import table.Table;
 
 public class JUnit_TakeCubes extends JUnit_Test {
 
@@ -20,6 +21,10 @@ public class JUnit_TakeCubes extends JUnit_Test {
     public void setUp() {
         try {
             super.setUp();
+            robotReal = container.getService(Robot.class);
+            scriptManager = container.getService(ScriptManager.class);
+            state = container.getService(GameState.class);
+            container.startInstanciedThreads();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -28,21 +33,15 @@ public class JUnit_TakeCubes extends JUnit_Test {
     @Test
     public void testScript() {
         try {
-            robotReal = container.getService(Robot.class);
-            state=container.getService(GameState.class);
-            //ThreadSensor threadSensor=container.getService(ThreadSensor.class);
-            //ThreadInterface threadInterface = container.getService(ThreadInterface.class);
-            container.startInstanciedThreads();
-
             robotReal.setOrientation(Math.PI);
             Vec2 positionDepart=new Vec2(900,850);
             robotReal.setPosition(positionDepart);
             robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
             TakeCubes takeCubes = new TakeCubes(config,log,hookFactory);
-            takeCubes.execute(2, TasCubes.TAS_STATION_EPURATION, BrasUtilise.AVANT, Cubes.NULL, state);
-            takeCubes.execute(2,TasCubes.TAS_CHATEAU_EAU,BrasUtilise.ARRIERE,Cubes.NULL,state);
+            takeCubes.execute(TasCubes.TAS_STATION_EPURATION.getID(), state);
+            takeCubes.execute(TasCubes.TAS_CHATEAU_EAU.getID(),state);
             DeposeCubes deposeCubes = new DeposeCubes(config, log, hookFactory);
-            deposeCubes.execute(state,true);
+            deposeCubes.execute(0,state);
 
         }catch (Exception e){
             e.printStackTrace();

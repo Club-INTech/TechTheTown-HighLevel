@@ -78,11 +78,11 @@ public abstract class AbstractScript implements Service
 		log.debug("Lancement de " + this.toString() + " version " + versionToExecute);
 		try 
 		{
-			if(actualState.robot.getPosition().minusNewVector(entryPosition(versionToExecute,actualState.robot.getRobotRadius(), actualState.robot.getPositionFast()).getCenter()).squaredLength() > 40) {
+			if(actualState.robot.getPosition().minusNewVector(entryPosition(versionToExecute, actualState.robot.getPositionFast()).getCenter()).squaredLength() > 40) {
 
-				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getRobotRadius(), actualState.robot.getPosition()).getCenter());
+				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getPosition()).getCenter());
 
-				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getRobotRadius(), actualState.robot.getPositionFast()), actualState.table);
+				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPositionFast()), actualState.table);
 			}
 		}
 		catch (UnableToMoveException e)
@@ -122,16 +122,11 @@ public abstract class AbstractScript implements Service
 
 	/**
 	 * Retourne la position d'entrée associée à la version.
-	 *
 	 * @param version version dont on veut le point d'entrée
-	 * @param ray : rayon du robot
 	 * @param robotPosition la position actuelle du robot
 	 * @return la position du point d'entrée
 	 */
-	public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException{
-		return null;
-	}
-	public Circle entryPosition(int ray, Vec2 robotPosition) throws BadVersionException{
+	public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException{
 		return null;
 	}
 	

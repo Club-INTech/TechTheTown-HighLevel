@@ -125,17 +125,17 @@ public class TakeCubes extends AbstractScript {
                 //On fait aller le robot à la position pour prendre le premier cube du pattern
                 stateToConsider.robot.moveNearPoint(firstPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
-                takeThisCube(stateToConsider, bras.getSide());
+                takeThisCube(stateToConsider, bras);
 
                 //On fait aller le robot à la position pour prendre le deuxième cube du pattern
                 stateToConsider.robot.moveNearPoint(secondPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
-                takeThisCube(stateToConsider, bras.getSide());
+                takeThisCube(stateToConsider, bras);
 
                 //On fait aller le robot à la position pour prendre le troisième cube du pattern
                 stateToConsider.robot.moveNearPoint(thirdPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
-                takeThisCube(stateToConsider, bras.getSide());
+                takeThisCube(stateToConsider, bras);
 
                 //Si un cube additionnel a été précisé
                 if (additionalCube.getColor() != Colors.NULL){
@@ -145,7 +145,7 @@ public class TakeCubes extends AbstractScript {
                     //On fait aller le robot à la position pour prendre le cube additionnel.
                     stateToConsider.robot.moveNearPoint(fourthPosition, longueurBras, direction);
                     //Le robot execute les actions pour prendre le cube
-                    takeThisCube(stateToConsider, bras.getSide());
+                    takeThisCube(stateToConsider, bras);
                 }
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
             }
@@ -161,16 +161,16 @@ public class TakeCubes extends AbstractScript {
 
     }
 
-    public void takeThisCube(GameState stateToConsider, String bras) throws InterruptedException{
+    public void takeThisCube(GameState stateToConsider, BrasUtilise bras) throws InterruptedException{
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
-        if (bras.equals("avant")) {
+        if (bras==BrasUtilise.AVANT) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
         }
-        if (bras.equals("arriere")) {
+        else if (bras==BrasUtilise.ARRIERE) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
@@ -180,7 +180,7 @@ public class TakeCubes extends AbstractScript {
     }
 
     @Override
-    public Circle entryPosition(int version, int rayon, Vec2 robotPosition) throws BadVersionException{
+    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException{
         if (version>5 || version<0){
             throw new BadVersionException("Bad version exception : la version doit être comprise entre 0 et 5 (bornes incluses)");
         }

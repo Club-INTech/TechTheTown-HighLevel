@@ -36,7 +36,7 @@ public class ActiveAbeille extends AbstractScript {
     }
 
     @Override
-    public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
+    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
         //Se place tout de suite à la bonne position pour tourner et activer l'abeille
         int xEntry = 1500-radius-securityDistance;
         int yEntry = 2000-radius-securityDistance;

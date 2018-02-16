@@ -19,8 +19,8 @@ public class ActivationPanneauDomotique extends AbstractScript{
         super(config,log,hookFactory);
     }
 
-
-    public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
+    @Override
+    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
         int xEntry=370;
         int yEntry=350;
         Vec2 positionentree=new Vec2(xEntry,yEntry);

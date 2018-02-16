@@ -19,7 +19,7 @@ public class MatchScript extends AbstractScript {
         super(config,log,hookFactory);
     }
 
-
+    @Override
     public void execute(int versionToexecute,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
         ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
         actPD.goToThenExec(0,gameState);
@@ -37,7 +37,8 @@ public class MatchScript extends AbstractScript {
         dpCubes1.goToThenExec(1,gameState);
     }
 
-    public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
+    @Override
+    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
         return new Circle(robotPosition);
     }
 

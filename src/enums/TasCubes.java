@@ -22,6 +22,9 @@ public enum TasCubes{
         return coords;
     }
 
+    public int getID(){
+        return this.id;
+    }
     public static TasCubes getTasFromID(int id){
         for (TasCubes tas : TasCubes.values()){
             if (tas.id==id){
