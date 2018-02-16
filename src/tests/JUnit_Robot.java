@@ -110,7 +110,6 @@ public class JUnit_Robot extends JUnit_Test {
             robotReal.moveLengthwise(-50);
             robotReal.turn(1.2);
             robotReal.turn(0.8);
-
             */
 
             Pathfinding pathfinding = new Pathfinding(log, config, table);

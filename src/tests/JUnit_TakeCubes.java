@@ -33,15 +33,16 @@ public class JUnit_TakeCubes extends JUnit_Test {
     @Test
     public void testScript() {
         try {
+            //Définition des paramètres de départ du robot
             robotReal.setOrientation(Math.PI);
             Vec2 positionDepart=new Vec2(900,850);
             robotReal.setPosition(positionDepart);
             robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
-            TakeCubes takeCubes = new TakeCubes(config,log,hookFactory);
-            takeCubes.execute(TasCubes.TAS_STATION_EPURATION.getID(), state);
-            takeCubes.execute(TasCubes.TAS_CHATEAU_EAU.getID(),state);
-            DeposeCubes deposeCubes = new DeposeCubes(config, log, hookFactory);
-            deposeCubes.execute(0,state);
+
+            //goToThenExec
+            scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(0,state);
+
+            scriptManager.getScript(ScriptNames.DEPOSE_CUBES).goToThenExec(0,state);
 
         }catch (Exception e){
             e.printStackTrace();
