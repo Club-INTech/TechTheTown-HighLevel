@@ -47,8 +47,7 @@ public abstract class AbstractScript implements Service
 
 	/**  Liste des versions du script. */
 	protected Integer[] versions;
-	/**  tableau de 2 dimensions des versions du script. */
-	protected Integer[][] versions2;
+
 
 	/** HookFactory pour gérer les hooks */
 	protected static HookFactory hookFactory;
@@ -185,6 +184,6 @@ public abstract class AbstractScript implements Service
 	 * @param stateToConsider état de jeu actuel
 	 * @return les versions possibles du script*/
 	abstract public Integer[] getVersion(GameState stateToConsider);
-	abstract public Integer[][] getVersion2(GameState stateToConsider);
+
 
 }
