@@ -90,9 +90,8 @@ public class JUnit_Pathfinding extends JUnit_Test{
             try {
                 clics = window.waitLRClic();
                 Vec2 positionentreeDeposeCubes=new Vec2(650,175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
-
-
-                path = pf.findmyway(clics.get(0), positionentreeDeposeCubes);
+                window.setPoint(positionentreeDeposeCubes);
+                path = pf.findmyway(clics.get(0), clics.get(1));
                 window.setPath(path);
             }
             catch (PointInObstacleException e) {

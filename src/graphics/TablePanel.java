@@ -90,6 +90,7 @@ public class TablePanel extends JPanel
 		nodes=new ArrayList<>();
 		this.table = table;
 		this.robot = robot;
+		this.point=new Vec2();
 
 		try{
 			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
@@ -110,6 +111,7 @@ public class TablePanel extends JPanel
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
+		this.point=new Vec2();
 
 		try{
 			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
@@ -213,6 +215,7 @@ public class TablePanel extends JPanel
 				graphics.fillOval(pathNode2.getX() - 4, pathNode2.getY() - 4, 8, 8);
 			}
 
+
 		}
 
 		// Print les clics et leur position
@@ -226,6 +229,9 @@ public class TablePanel extends JPanel
 		graphics.setColor(Color.DARK_GRAY);
 		graphics.fillRoundRect(920, 20, 360, 580, 20, 20);
 		graphics.fillRoundRect(20, 620, 1260, 275, 20, 20);
+		//afficher le point qu'on veut
+		Vec2 position=changeRefToDisplay(point);
+		graphics.fillOval(position.getX()-4,position.getY()-4,8,8);
 	}
 
 	/** Conversion en coordonnées d'affichage
