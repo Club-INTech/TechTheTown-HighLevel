@@ -127,6 +127,10 @@ public class Window extends JFrame
 		tablePanel.setPath(path);
 		repaint();
 	}
+	public void setPoint(Vec2 point){
+		tablePanel.setPoint(point);
+		repaint();
+	}
 	public void setNode(ArrayList<Noeud> nodes){
 		tablePanel.setNodes(nodes);
 		repaint();

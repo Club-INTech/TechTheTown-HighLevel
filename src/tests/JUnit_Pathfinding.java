@@ -19,18 +19,21 @@
 
 package tests;
 
+import enums.ConfigInfoRobot;
 import exceptions.ContainerException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import graphics.Window;
 import org.junit.Test;
+import pathfinder.Noeud;
 import pathfinder.Pathfinding;
 import pathfinder.Graphe;
 import smartMath.Vec2;
 import table.Table;
 import table.obstacles.ObstacleManager;
 
+import javax.xml.soap.Node;
 import java.util.ArrayList;
 
 /**
@@ -86,7 +89,10 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
             try {
                 clics = window.waitLRClic();
-                path = pf.findmyway(clics.get(0), clics.get(1));
+                Vec2 positionentreeDeposeCubes=new Vec2(650,175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
+
+
+                path = pf.findmyway(clics.get(0), positionentreeDeposeCubes);
                 window.setPath(path);
             }
             catch (PointInObstacleException e) {

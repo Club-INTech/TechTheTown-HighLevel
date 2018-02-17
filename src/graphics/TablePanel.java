@@ -55,6 +55,7 @@ public class TablePanel extends JPanel
 	private ArrayList<Vec2> path;
 	private ArrayList<Arete> aretes;
 	private ArrayList<Vec2> clics;
+	private Vec2 point;
 	private ArrayList<Noeud> nodes;
 	public static boolean showGraph = false;
 
@@ -247,6 +248,11 @@ public class TablePanel extends JPanel
 	}
 	public void setClics(ArrayList<Vec2> clics) {
 		this.clics = clics;
+		removeAll();
+		revalidate();
+	}
+	public void setPoint(Vec2 point ){
+		this.point=point;
 		removeAll();
 		revalidate();
 	}
