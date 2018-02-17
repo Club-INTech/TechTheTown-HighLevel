@@ -144,7 +144,8 @@ public class TablePanel extends JPanel
 		graphics.fillRect(0, 600 - wideDisplay, 900, wideDisplay);
 		graphics.fillRect(0, wideDisplay, wideDisplay, 600 - 2*wideDisplay);
 		graphics.fillRect(900 - wideDisplay, wideDisplay, wideDisplay, 600 - 2*wideDisplay);
-	    
+
+
 	    // Obstacles rectangulaires
 	    for(ObstacleRectangular rectangular : table.getObstacleManager().getRectangles())
 	    {
@@ -230,6 +231,7 @@ public class TablePanel extends JPanel
 		graphics.fillRoundRect(920, 20, 360, 580, 20, 20);
 		graphics.fillRoundRect(20, 620, 1260, 275, 20, 20);
 		//afficher le point qu'on veut
+		graphics.setColor(Color.GREEN);
 		Vec2 position=changeRefToDisplay(point);
 		graphics.fillOval(position.getX()-4,position.getY()-4,8,8);
 	}

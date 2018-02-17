@@ -77,6 +77,7 @@ public class JUnit_Pathfinding extends JUnit_Test{
 
 
 
+
         // Thread.sleep(20000);
 
         Pathfinding pf = new Pathfinding(log, config, table);
@@ -90,8 +91,10 @@ public class JUnit_Pathfinding extends JUnit_Test{
             try {
                 clics = window.waitLRClic();
                 Vec2 positionentreeDeposeCubes=new Vec2(650,175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
-                window.setPoint(positionentreeDeposeCubes);
-                path = pf.findmyway(clics.get(0), clics.get(1));
+                Vec2 positiontest=new Vec2(200,100);
+
+                window.setPoint(positiontest);
+                path = pf.findmyway(clics.get(0), positionentreeDeposeCubes);
                 window.setPath(path);
             }
             catch (PointInObstacleException e) {

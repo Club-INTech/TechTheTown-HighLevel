@@ -54,6 +54,7 @@ public class ThreadInterface extends AbstractThread
         while(true)
         {
             win.getPanel().setPath(robot.cheminSuivi);
+
             win.getPanel().repaint();
             try {
                 Thread.sleep(100);
@@ -61,5 +62,13 @@ public class ThreadInterface extends AbstractThread
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Getter de window
+     * @return
+     */
+    public Window getWindow() {
+        return win;
     }
 }
