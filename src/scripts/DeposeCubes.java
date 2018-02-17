@@ -112,9 +112,6 @@ public class DeposeCubes extends AbstractScript{
     public Integer[] getVersion(GameState stateToConsider) {
         return versions;
     }
-    @Override
-    public Integer[][] getVersion2(GameState stateToConsider) {
-        return new Integer[][]{};
-    }
+
 
 }

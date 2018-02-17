@@ -204,10 +204,7 @@ public class TakeCubes extends AbstractScript {
         return new Integer[]{};
     }
 
-    @Override
-    public Integer[][] getVersion2(GameState stateToConsider) {
-        return versions2;
-    }
+
 
 
     @Override

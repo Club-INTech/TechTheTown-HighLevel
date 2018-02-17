@@ -311,9 +311,6 @@ public class CloseDoors extends AbstractScript
 	{
 		return versions;
 	}
-	@Override
-	public Integer[][] getVersion2(GameState stateToConsider)
-	{ return new Integer[][]{};
-	}
+
 
 }

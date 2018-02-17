@@ -46,10 +46,7 @@ public class ActiveAbeille extends AbstractScript {
     @Override
     public void finalize(GameState state, Exception e) throws UnableToMoveException {}
 
-    @Override
-    public Integer[][] getVersion2(GameState stateToConsider) {
-        return new Integer[0][];
-    }
+
 
     @Override
     public Integer[] getVersion(GameState stateToConsider) {

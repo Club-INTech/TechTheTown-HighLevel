@@ -44,10 +44,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
         return new Integer[0];
     }
 
-    @Override
-    public Integer[][] getVersion2(GameState stateToConsider) {
-        return new Integer[0][];
-    }
+
 
     @Override
     public int remainingScoreOfVersion(int version, GameState state) {

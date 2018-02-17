@@ -19,6 +19,7 @@
 
 package tests;
 
+import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.ContainerException;
 import exceptions.Locomotion.PointInObstacleException;
@@ -103,8 +104,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
             try {
                 clic = window.waitLClic();
+                Vec2 positionentreeDeposeCubes=new Vec2(650,175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
 
-                path = pathfinding.findmyway(robotReal.getPosition(), clic);
+                path = pathfinding.findmyway(robotReal.getPosition(), positionentreeDeposeCubes);
 
                 robotReal.followPath(path);
 
