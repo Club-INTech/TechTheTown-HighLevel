@@ -188,7 +188,9 @@ public class TakeCubes extends AbstractScript {
         int[] coords = tas.getCoords();
         Vec2 coordsTas=new Vec2(coords[0],coords[1]);
         //TODO : ajuster le rayon du cercle si il est trop petit
-        return new Circle(coordsTas,this.longueurBras+this.largeurCubes+30);
+        Circle aimCircle = new Circle(coordsTas,this.longueurBras+this.largeurCubes+30);
+        Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimCircle);
+        return new Circle(aim);
     }
 
     @Override
