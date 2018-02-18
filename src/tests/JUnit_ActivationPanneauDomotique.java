@@ -11,8 +11,7 @@ import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
 
-public class JUnit_Depose_Cubes extends JUnit_Test{
-
+public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
     private Robot robotReal;
     private ScriptManager scriptManager;
     private GameState state;
@@ -30,13 +29,12 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
             e.printStackTrace();
         }
     }
-
     @Test
     public void testScript() {
         try {
             //Définition des paramètres de base
             robotReal.setOrientation(Math.PI);
-            Vec2 positionDepart=new Vec2(890,837);
+            Vec2 positionDepart=new Vec2(1270,475);//(1325,455)
             robotReal.setPosition(positionDepart);
             robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
@@ -44,7 +42,7 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
             robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
 
             //goToThenExec
-            scriptManager.getScript(ScriptNames.DEPOSE_CUBES).goToThenExec(0,state);
+            scriptManager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE).goToThenExec(0,state);
             //Vec2 positionarrivee=new Vec2(890,347);
             //robotReal.goTo(positionarrivee);
 
@@ -54,4 +52,5 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
             e.printStackTrace();
         }
     }
+
 }
