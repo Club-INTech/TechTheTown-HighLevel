@@ -125,9 +125,7 @@ public abstract class AbstractScript implements Service
 	 * @param robotPosition la position actuelle du robot
 	 * @return la position du point d'entrée
 	 */
-	public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException{
-		return null;
-	}
+	public abstract Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException;
 	
 	/**
 	 * Méthode appelée à la fin du script si une exception a lieu.
