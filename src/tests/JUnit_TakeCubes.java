@@ -40,9 +40,9 @@ public class JUnit_TakeCubes extends JUnit_Test {
             robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
 
             //goToThenExec
-            scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(0,state);
+            scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(1,state);
 
-            scriptManager.getScript(ScriptNames.DEPOSE_CUBES).goToThenExec(0,state);
+            //scriptManager.getScript(ScriptNames.DEPOSE_CUBES).goToThenExec(0,state);
 
         }catch (Exception e){
             e.printStackTrace();
