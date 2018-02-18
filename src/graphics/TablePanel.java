@@ -90,7 +90,7 @@ public class TablePanel extends JPanel
 		nodes=new ArrayList<>();
 		this.table = table;
 		this.robot = robot;
-		this.point=new Vec2();
+		this.point=new Vec2(650,175+212);
 
 		try{
 			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
@@ -111,7 +111,7 @@ public class TablePanel extends JPanel
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
-		this.point=new Vec2();
+		this.point=new Vec2(650,175+212);
 
 		try{
 			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
