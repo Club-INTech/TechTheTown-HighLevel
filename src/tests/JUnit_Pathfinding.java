@@ -104,7 +104,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
             try {
                 clic = window.waitLClic();
-                Vec2 positionentreeDeposeCubes=new Vec2(650,175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
+                Vec2 positionentreeDeposeCubes=new Vec2(970,175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
 
                 path = pathfinding.findmyway(robotReal.getPosition(), positionentreeDeposeCubes);
 

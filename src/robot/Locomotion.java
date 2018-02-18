@@ -268,6 +268,8 @@ public class Locomotion implements Service
             int sens = move.dot(new Vec2(100, highLevelOrientation));
             if (sens>=0) {                      //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
                 turn(moveA, expectedWallImpact, mustDetect);
+                log.debug("angle de rotation"+moveA);
+                log.debug("angle de translation"+moveR);
                 moveLengthwise(moveR, expectedWallImpact, mustDetect);
             } else                              //si il est orienté vers l'arrière par rapport au point visé
             {
@@ -286,6 +288,7 @@ public class Locomotion implements Service
             turn(moveA, expectedWallImpact, mustDetect);
             moveLengthwise(moveR, expectedWallImpact, mustDetect);
         }
+
     }
 
 
