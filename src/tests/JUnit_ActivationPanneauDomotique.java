@@ -34,11 +34,10 @@ public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
         try {
             //Définition des paramètres de base
             robotReal.setOrientation(Math.PI);
-            Vec2 positionDepart=new Vec2(1270,475);//(1325,455)
+            Vec2 positionDepart=new Vec2(1252,455);
             robotReal.setPosition(positionDepart);
             robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            robotReal.turn(-Math.PI/2);
             robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
 
             //goToThenExec
@@ -46,7 +45,7 @@ public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
             //Vec2 positionarrivee=new Vec2(890,347);
             //robotReal.goTo(positionarrivee);
 
-            //robotReal.goTo(positionDepart);
+            robotReal.goTo(positionDepart);
             //robotReal.turn(Math.PI/2);
         }catch (Exception e){
             e.printStackTrace();

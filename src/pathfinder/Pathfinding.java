@@ -123,7 +123,7 @@ public class Pathfinding implements Service {
 
             }
         }
-        // pas de chemain trouvé.
+        // pas de chemin trouvé.
         if(! closeList.contains(noeudarrive) && openList.isEmpty()){
             log.debug("No way found");
             //throw new NoPathFound(false,true);
