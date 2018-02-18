@@ -28,11 +28,6 @@ public class DeposeCubes extends AbstractScript{
      */
     @Override
     public void execute(int version,GameState stateToConsider) throws ExecuteException, UnableToMoveException {
-        int xentry=650;
-        int yentry=165+config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        Vec2 aim=new Vec2(xentry,yentry);
-        stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-        stateToConsider.robot.goTo(aim,false,false);
         int d=70; //on pénètre la zone de construction de cette distance
         int dimensionporte=config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
         int distancepush=105;
@@ -57,8 +52,8 @@ public class DeposeCubes extends AbstractScript{
             //Première tour déposée
             //On dépose la deuxième tour
 
-            //On recule (on va vers la base) pour éviter de redéposer au même endroit
-            stateToConsider.robot.moveLengthwise(-300);
+            //On avance pour éviter de redéposer au même endroit
+            stateToConsider.robot.moveLengthwise(300);
             //On se tourne vers la zone de construction
             stateToConsider.robot.turn(Math.PI / 2);
             //On fait la même chose qu'avant, mais pour la porte arrière
@@ -78,7 +73,7 @@ public class DeposeCubes extends AbstractScript{
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
             stateToConsider.robot.turn(Math.PI);
             //on dépose la deuxième tour là
-            stateToConsider.robot.moveLengthwise(-300);
+            stateToConsider.robot.moveLengthwise(300);
             stateToConsider.robot.turn(Math.PI / 2);
             stateToConsider.robot.moveLengthwise(-d);
             stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
@@ -93,7 +88,7 @@ public class DeposeCubes extends AbstractScript{
                550<x<1070
                 y=175
          */
-        int xentry=650;
+        int xentry=970;
         int yentry=175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         Vec2 position=new Vec2(xentry,yentry);
         return new Circle(position);
