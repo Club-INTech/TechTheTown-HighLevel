@@ -60,7 +60,7 @@ public class Pathfinding implements Service {
      * @return
      */
 
-    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws PointInObstacleException, UnableToMoveException{
+    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws PointInObstacleException, UnableToMoveException,NoPathFound{
         long time1=System.currentTimeMillis();
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
@@ -126,8 +126,8 @@ public class Pathfinding implements Service {
         // pas de chemin trouvé.
         if(! closeList.contains(noeudarrive) && openList.isEmpty()){
             log.debug("No way found");
-            //throw new NoPathFound(false,true);
-            throw new UnableToMoveException(noeudarrive.getPosition(), UnableToMoveReason.NO_WAY_FOUND);
+            throw new NoPathFound(false,true);
+            //throw new UnableToMoveException(noeudarrive.getPosition(), UnableToMoveReason.NO_WAY_FOUND);
         }
 
         // fabrique le chemain en partant du noeud d'arrivé

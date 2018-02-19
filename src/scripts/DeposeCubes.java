@@ -31,7 +31,8 @@ public class DeposeCubes extends AbstractScript{
         int d=70; //on pénètre la zone de construction de cette distance
         int dimensionporte=config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
         int distancepush=105;
-        if(version==0) {
+        //on fait la même suite d'actions, mais pas au même endroit
+        if(version==0 || version==1) {
             //On se tourne vers la zone de construction
             stateToConsider.robot.turn(-Math.PI / 2);
             //On rentre dans la zone
@@ -46,17 +47,9 @@ public class DeposeCubes extends AbstractScript{
             stateToConsider.robot.moveLengthwise(dimensionporte+distancepush);
             //On recule de la distance de poussée
             stateToConsider.robot.moveLengthwise(-distancepush);
-            //On se tourne vers la droite
-            stateToConsider.robot.turn(Math.PI);
-
-            //Première tour déposée
-            //On dépose la deuxième tour
-
-            //On avance pour éviter de redéposer au même endroit
-            stateToConsider.robot.moveLengthwise(300);
-            //On se tourne vers la zone de construction
-            stateToConsider.robot.turn(Math.PI / 2);
-            //On fait la même chose qu'avant, mais pour la porte arrière
+            //on tourne pour déposer la deuxième tour
+            stateToConsider.robot.turn(Math.PI/2);
+            //on refait la même chose mais avec la porte arrière
             stateToConsider.robot.moveLengthwise(-d);
             stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
             stateToConsider.robot.moveLengthwise(d + dimensionporte);
@@ -64,22 +57,8 @@ public class DeposeCubes extends AbstractScript{
             stateToConsider.robot.moveLengthwise(-dimensionporte-distancepush);
             stateToConsider.robot.moveLengthwise(distancepush);
         }
-        if(version==1){
-            //IDEM QUE VERSION 0, MAIS SANS POUSSER
-            stateToConsider.robot.turn(-Math.PI / 2);
-            stateToConsider.robot.moveLengthwise(d);
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
-            stateToConsider.robot.moveLengthwise(-d - dimensionporte);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
-            stateToConsider.robot.turn(Math.PI);
-            //on dépose la deuxième tour là
-            stateToConsider.robot.moveLengthwise(300);
-            stateToConsider.robot.turn(Math.PI / 2);
-            stateToConsider.robot.moveLengthwise(-d);
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
-            stateToConsider.robot.moveLengthwise(d + dimensionporte);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, true);
-        }
+        //TODO: Trouver une bonne position d'entrée
+
     }
 
     @Override

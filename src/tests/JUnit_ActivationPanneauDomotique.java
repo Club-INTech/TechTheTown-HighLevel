@@ -40,12 +40,11 @@ public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
             robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
 
-            //goToThenExec
             scriptManager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE).goToThenExec(0,state);
             //Vec2 positionarrivee=new Vec2(890,347);
             //robotReal.goTo(positionarrivee);
 
-            robotReal.goTo(positionDepart);
+            //robotReal.goTo(positionDepart);
             //robotReal.turn(Math.PI/2);
         }catch (Exception e){
             e.printStackTrace();

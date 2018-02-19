@@ -25,6 +25,7 @@ import exceptions.ContainerException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
+import exceptions.NoPathFound;
 import org.junit.Before;
 import org.junit.Test;
 import robot.EthWrapper;
@@ -313,7 +314,11 @@ public class JUnit_Sensors extends JUnit_Test
 			{
 				log.critical("!!!!! Catch de"+e1+" dans testEvitement !!!!!");
 				break;
-			} 
+			}
+			catch (NoPathFound e){
+				log.debug("pas de chemin trouvé");
+				e.printStackTrace();
+			}
     	}
 	}
 }

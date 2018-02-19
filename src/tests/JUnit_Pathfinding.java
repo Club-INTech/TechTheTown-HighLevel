@@ -27,11 +27,13 @@ import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import graphics.Window;
 import hook.HookFactory;
+import org.junit.Before;
 import org.junit.Test;
 import pathfinder.Pathfinding;
 import pathfinder.Graphe;
 import robot.Robot;
 import scripts.ScriptManager;
+import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
@@ -54,6 +56,19 @@ public class JUnit_Pathfinding extends JUnit_Test {
     private ScriptManager scriptManager;
     private GameState state;
     private HookFactory hookFactory;
+    @Before
+    public void setUp(){
+        try {
+            super.setUp();
+            robotReal = container.getService(Robot.class);
+            state=container.getService(GameState.class);
+            scriptManager=container.getService(ScriptManager.class);
+            table=container.getService(Table.class);
+            container.startInstanciedThreads();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Méthode pour un test : ce sont les instruction executées par IntelliJ lorque vous lancer le test (clique
@@ -63,9 +78,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
     public void testUnit() throws ContainerException, InterruptedException {
 
         /** Instanciation des variables */
-        table = container.getService(Table.class);
+
         //Pathfinding pathfinding = container.getService(Pathfinding.class);
-        obstacleManager = table.getObstacleManager(); // Grâce au container, le champ ObstacleManager de votre table est déjà instancié !
+       ; // Grâce au container, le champ ObstacleManager de votre table est déjà instancié !
         // Mais... pour commencer instancier vos variables à la main :
         Vec2 example = new Vec2(50, 40);
         Vec2 example2 = new Vec2(600, 1600);
@@ -83,33 +98,26 @@ public class JUnit_Pathfinding extends JUnit_Test {
         Window window = new Window(table);
         Graphe graphe = new Graphe(table, config, log);
         window.setArete(graphe.getBoneslist());
-
-        robotReal = container.getService(Robot.class);
-        state = container.getService(GameState.class);
-        container.startInstanciedThreads();
-
         // Thread.sleep(20000);
 
-        Pathfinding pathfinding = new Pathfinding(log,config,table);
+        //Pathfinding pathfinding = container.getService(Pathfinding.class);
         ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);
         Vec2 clic = new Vec2();
 
-        pathfinding.initGraphe();
-        robotReal.setPosition(new Vec2(0, 500));
-        robotReal.setOrientation(Math.PI / 2);
-     //   robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
+
+        robotReal.setPosition(new Vec2(890,837));
+        robotReal.setOrientation(Math.PI);
+     //robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
 
         while (true) {
 
             try {
-                clic = window.waitLClic();
-                Vec2 positionentreeDeposeCubes=new Vec2(970,175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
-
-                path = pathfinding.findmyway(robotReal.getPosition(), positionentreeDeposeCubes);
-
-                robotReal.followPath(path);
-
+                //clic = window.waitLClic();
+                //position d'entree de ActivationPanneauDomotique
+                Vec2 arrivee=new Vec2(370,350);
+                Circle aim=new Circle(arrivee,0);
+                robotReal.moveToCircle(aim,table);
                 window.setPath(path);
             } catch (PointInObstacleException e) {
 
@@ -119,6 +127,10 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
                 System.out.println("No way found !!");
 
+                e.printStackTrace();
+            }
+            catch (NoPathFound e){
+                log.debug("pas de chemin trouvé");
                 e.printStackTrace();
             }
         }
