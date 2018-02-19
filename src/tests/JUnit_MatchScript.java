@@ -10,6 +10,7 @@ import robot.Robot;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
+import threads.ThreadInterface;
 
 public class JUnit_MatchScript extends JUnit_Test {
 
@@ -23,26 +24,28 @@ public class JUnit_MatchScript extends JUnit_Test {
         try {
             super.setUp();
             robotReal = container.getService(Robot.class);
-            state=container.getService(GameState.class);
-            scriptManager=container.getService(ScriptManager.class);
+            state = container.getService(GameState.class);
+            scriptManager = container.getService(ScriptManager.class);
+            ThreadInterface threadInterface = container.getService(ThreadInterface.class);
             container.startInstanciedThreads();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     @Test
     public void testScript() {
         try {
             //Définition des paramètres de base
             robotReal.setOrientation(Math.PI);
-            Vec2 positionDepart=new Vec2(1252,455);
+            Vec2 positionDepart = new Vec2(1252, 455);
             robotReal.setPosition(positionDepart);
             //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
             //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
-            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0,state);
+            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

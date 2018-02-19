@@ -28,7 +28,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
 
         Vec2 positionentree=new Vec2(xEntry,yEntry);
-        return new Circle(positionentree);
+        return new Circle(positionentree,0);
     }
 
     @Override
@@ -38,7 +38,8 @@ public class ActivationPanneauDomotique extends AbstractScript{
         actualState.robot.goTo(aim);
         actualState.robot.turn(-Math.PI/2);
         actualState.robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
-        actualState.robot.moveLengthwise(350);
+        actualState.robot.moveLengthwise(290);
+        actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.goTo(new Vec2(xEntry,yEntry));
     }
 
