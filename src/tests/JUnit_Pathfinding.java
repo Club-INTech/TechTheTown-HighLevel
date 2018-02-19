@@ -36,7 +36,9 @@ import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import table.obstacles.ObstacleManager;
+import threads.ThreadInterface;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 /**
@@ -54,6 +56,13 @@ public class JUnit_Pathfinding extends JUnit_Test {
     private ScriptManager scriptManager;
     private GameState state;
     private HookFactory hookFactory;
+    private Pathfinding pathfinding;
+
+    /**
+     * Threads
+     */
+
+    private ThreadInterface anInterface;
 
     /**
      * Méthode pour un test : ce sont les instruction executées par IntelliJ lorque vous lancer le test (clique
@@ -90,23 +99,23 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
         // Thread.sleep(20000);
 
-        Pathfinding pathfinding = new Pathfinding(log,config,table);
+        Pathfinding pathfinding = new Pathfinding(log, config, table);
         ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);
         Vec2 clic = new Vec2();
 
         pathfinding.initGraphe();
-        robotReal.setPosition(new Vec2(0, 500));
+        robotReal.setPosition(new Vec2(1252, 455));
         robotReal.setOrientation(Math.PI / 2);
-     //   robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
+        //   robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
 
         while (true) {
 
             try {
                 clic = window.waitLClic();
-                Vec2 positionentreeDeposeCubes=new Vec2(650,175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
+                Vec2 positionentreeDeposeCubes = new Vec2(650, 175 + config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
 
-                path = pathfinding.findmyway(robotReal.getPosition(), positionentreeDeposeCubes);
+                path = pathfinding.findmyway(robotReal.getPosition(), clic);
 
                 robotReal.followPath(path);
 
@@ -122,7 +131,47 @@ public class JUnit_Pathfinding extends JUnit_Test {
                 e.printStackTrace();
             }
         }
+    }
 
+    @Test
+    public void pathTest() throws InterruptedException, ContainerException {
+        pathfinding = container.getService(Pathfinding.class);
+        table = container.getService(Table.class);
+        obstacleManager = container.getService(ObstacleManager.class);
+        robotReal = container.getService(Robot.class);
+        state = container.getService(GameState.class);
+        anInterface = container.getService(ThreadInterface.class);
+        container.startInstanciedThreads();
+
+        pathfinding.initGraphe();
+        robotReal.setPosition(new Vec2(1252, 455));
+        robotReal.setOrientation(Math.PI);
+
+
+        try {
+            ArrayList<Vec2> pathToFollow = new ArrayList<>();
+            //activation panneau domotique
+            //pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(350, 370));
+            //tas de cube
+            pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(350, 370));
+            robotReal.followPath(pathToFollow);
+            Thread.sleep(1000);
+            pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(1222, 455));
+            robotReal.followPath(pathToFollow);
+            robotReal.turn(Math.PI);
+            robotReal.moveLengthwise(30);
+
+
+        } catch (PointInObstacleException e) {
+
+            System.out.println("Obstacle!!");
+            e.printStackTrace();
+        } catch (UnableToMoveException e) {
+
+            System.out.println("No way found !!");
+
+            e.printStackTrace();
+        }
     }
 }
 
