@@ -47,9 +47,9 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.tourAvantRemplie=true;
             bras=BrasUtilise.AVANT;
         }
-        //On regarde si la tour arrièr est remplie
+        //On regarde si la tour arrière est remplie
         else if (!stateToConsider.tourArriereRemplie){
-            stateToConsider.tourArriereRemplie=false;
+            stateToConsider.tourArriereRemplie=true;
             bras=BrasUtilise.ARRIERE;
         }
         //Si les deux tours sont remplies, on renvoie une exception et n'execute pas le script
@@ -169,6 +169,7 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.TILT_LA_PORTE_AVANT, true);
         }
         else if (bras==BrasUtilise.ARRIERE) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
@@ -176,6 +177,7 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.TILT_LA_PORTE_ARRIERE, true);
         }
     }
 

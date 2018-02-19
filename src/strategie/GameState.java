@@ -87,6 +87,10 @@ public class GameState implements Service
         //Aucun des tours n'est remplie en début de match
         this.tourAvantRemplie=false;
         this.tourArriereRemplie=false;
+
+        //On dit que les cubes bonus sont présents au début du match
+        this.cubeAvantPresent=true;
+        this.cubeArrierePresent=true;
     }
 
     /* (non-Javadoc)
