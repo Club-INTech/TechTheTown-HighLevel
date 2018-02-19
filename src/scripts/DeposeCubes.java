@@ -57,7 +57,7 @@ public class DeposeCubes extends AbstractScript{
             stateToConsider.robot.moveLengthwise(-dimensionporte-distancepush);
             stateToConsider.robot.moveLengthwise(distancepush);
         }
-        //TODO: Trouver une bonne position d'entrée
+
 
     }
 
@@ -67,10 +67,19 @@ public class DeposeCubes extends AbstractScript{
                550<x<1070
                 y=175
          */
-        int xentry=970;
-        int yentry=175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        Vec2 position=new Vec2(xentry,yentry);
-        return new Circle(position);
+        if(version==1) {
+            int xentry = 970;
+            int yentry = 175 + config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+            Vec2 position = new Vec2(xentry, yentry);
+            return new Circle(position);
+        }
+        //TODO: Trouver une bonne position d'entrée accessible par le pathfinding pour la version 2
+        else if(version==2){
+            return null;
+        }
+        else{
+            throw new BadVersionException();
+        }
     }
 
     @Override
