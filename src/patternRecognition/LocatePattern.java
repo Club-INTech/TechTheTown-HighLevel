@@ -15,6 +15,7 @@ public class LocatePattern {
 
     //Variable de debug
     private static boolean debug=false;
+    private static boolean isSavingImages=true;
 
     /** Fonction de localisation du pattern sur l'image prise par la Picam
      * @param path chemin de l'image à analyser
@@ -80,14 +81,16 @@ public class LocatePattern {
         }
         if (debug) {
             System.out.println("FinalCoords:(" + xmin + "," + ymin + "),(" + xmax + "," + ymax + ")");
-            String outputName = "resultColor.png";
 
             //Affiche le centre de la zone de pattern déterminée
             Point center=new Point((int)(xmin+xmax)/2, (int)(ymin+ymax)/2);
             Imgproc.drawMarker(image, center, new Scalar(0, 255, 0));
 
             //Enregistre l'image
-            Imgcodecs.imwrite(outputName, image);
+            if (isSavingImages) {
+                String outputName = path+".png";
+                Imgcodecs.imwrite(outputName, image);
+            }
         }
         int[] fullCoords;
         //Renvoie les coordonnées de la zone de localisation rognée.

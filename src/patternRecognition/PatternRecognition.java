@@ -1,5 +1,8 @@
 package patternRecognition;
 
+import enums.ConfigInfoRobot;
+import pfg.config.Config;
+import strategie.GameState;
 import threads.AbstractThread;
 
 import javax.imageio.ImageIO;
@@ -497,8 +500,8 @@ public class PatternRecognition extends AbstractThread{
                     System.out.println("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                 }
                 colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3]);
-                String imageName="imageFromColorMatrix"+alreadyLitUp+".png";
                 if (isSavingImages) {
+                    String imageName=this.pathToImage+".png";
                     saveImage(colorMatrix, imageName);
                 }
                 analysePattern(colorMatrix);
@@ -576,6 +579,7 @@ public class PatternRecognition extends AbstractThread{
     private String pathToImage;
     private int[][] positionsColorsOnImage;
     private int finalIndice=-2;
+    private Config config;
     private boolean isShutdown=false;
     private int[] zoneToPerformLocalisation;
     private int lengthSideOfSquareDetection; //in pixels
@@ -586,15 +590,30 @@ public class PatternRecognition extends AbstractThread{
     private boolean mustSelectAValidPattern; //Est-ce qu'on peut renvoyer qu'aucun pattern n'a été trouvé ?
     private int alreadyLitUp; //l'image a déjà été éclairée
     private boolean isSavingImages;
+    private boolean symmetry;
+    private int[] zoneToPerformLocalisationVert={1,800,700,800};
+    private int[] zoneToPerformLocalisationOrange={2592-801,800,700,800};
 
     /** Instanciation du thread de reconnaissance de couleurs
      * @param pathToImage chemin à l'image enregistrée
      * @param zoneToPerformLocalisation zone dans laquelle la localisation de pattern va devoir se faire.
      */
-    public PatternRecognition(String pathToImage, int[] zoneToPerformLocalisation){
+    public PatternRecognition(Config config, String pathToImage, int[] zoneToPerformLocalisation){
         //TODO:CALIBRER SUR UNE IMAGE SOMBRE
+        this.config=config;
         this.pathToImage=pathToImage;
-        this.zoneToPerformLocalisation=zoneToPerformLocalisation;
+        this.symmetry=this.config.getBoolean(ConfigInfoRobot.COULEUR).equals("orange");
+        if (!(zoneToPerformLocalisation[0]==0 && zoneToPerformLocalisation[1]==0 && zoneToPerformLocalisation[2]==0 && zoneToPerformLocalisation[3]==0)) {
+            this.zoneToPerformLocalisation = zoneToPerformLocalisation;
+        }
+        else{
+            if (this.symmetry) {
+                this.zoneToPerformLocalisation = zoneToPerformLocalisationOrange;
+            }
+            else {
+                this.zoneToPerformLocalisation = zoneToPerformLocalisationVert;
+            }
+        }
         this.lengthSideOfSquareDetection=20; //in pixels
         this.distanceBetweenTwoColors=70; //in pixels
         this.debug=false;
@@ -606,8 +625,8 @@ public class PatternRecognition extends AbstractThread{
 
     public void run(){
         this.setPriority(5);
-        int[][][] colorMatrix = createColorMatrix(pathToImage);
-        centerPointPattern=calculateCenterPattern(pathToImage, zoneToPerformLocalisation);
+        int[][][] colorMatrix = createColorMatrix(this.pathToImage);
+        centerPointPattern=calculateCenterPattern(this.pathToImage, this.zoneToPerformLocalisation);
         if (!(centerPointPattern[0] == 0 && centerPointPattern[1] == 0)) {
             analysePattern(colorMatrix);
         }
