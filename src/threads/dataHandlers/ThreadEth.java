@@ -468,29 +468,35 @@ public class ThreadEth extends AbstractThread implements Service {
     public ConcurrentLinkedQueue<String> getEventBuffer() {
         return eventBuffer;
     }
-
     public ConcurrentLinkedQueue<String> getUltrasoundBuffer() {
         return ultrasoundBuffer;
     }
-
     public ConcurrentLinkedQueue<String> getStandardBuffer() {
         return standardBuffer;
     }
 
+    /**
+     * On stocke la position et l'orientation ici : les classes qui en ont besoin l'a mettre à jour via le Wrapper
+     */
     public XYO getPositionAndOrientation() {
         synchronized (positionAndOrientation) {
             return positionAndOrientation;
         }
     }
-
     public void setPositionAndOrientation(XYO positionAndOrientation) {
         this.positionAndOrientation = positionAndOrientation;
     }
 
+    /**
+     * Utilisé par le container pour temporiser tant que l'interface n'a pas été créée
+     */
     public boolean isInterfaceCreated() {
         return interfaceCreated;
     }
 
+    /**
+     * Permet la fermeture de la socket à la fin du programme
+     */
     @Override
     public void interrupt(){
         super.interrupt();

@@ -16,6 +16,7 @@ public class TakeCubes extends AbstractScript {
     private int largeurCubes;
     private int longueurBras;
     private String direction;
+    private Vec2 entryPositionPoint;
 
     public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
@@ -47,9 +48,9 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.tourAvantRemplie=true;
             bras=BrasUtilise.AVANT;
         }
-        //On regarde si la tour arrièr est remplie
+        //On regarde si la tour arrière est remplie
         else if (!stateToConsider.tourArriereRemplie){
-            stateToConsider.tourArriereRemplie=false;
+            stateToConsider.tourArriereRemplie=true;
             bras=BrasUtilise.ARRIERE;
         }
         //Si les deux tours sont remplies, on renvoie une exception et n'execute pas le script
@@ -148,6 +149,9 @@ public class TakeCubes extends AbstractScript {
                     takeThisCube(stateToConsider, bras);
                 }
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
+                Circle aimArcCircle = new Circle(tas.getCoordsVec2(),this.longueurBras+this.largeurCubes*1.5+10,Math.PI/2,3*Math.PI/2,true);
+                Vec2 aim = smartMath.Geometry.closestPointOnCircle(stateToConsider.robot.getPosition(),aimArcCircle);
+                stateToConsider.robot.goTo(aim);
             }
             else{
                 log.debug("Le pattern n'a pas été reconnu");
@@ -169,6 +173,7 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.TILT_LA_PORTE_AVANT, true);
         }
         else if (bras==BrasUtilise.ARRIERE) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
@@ -176,6 +181,7 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.TILT_LA_PORTE_ARRIERE, true);
         }
     }
 
@@ -188,7 +194,31 @@ public class TakeCubes extends AbstractScript {
         int[] coords = tas.getCoords();
         Vec2 coordsTas=new Vec2(coords[0],coords[1]);
         //TODO : ajuster le rayon du cercle si il est trop petit
-        return new Circle(coordsTas,this.longueurBras+this.largeurCubes+30);
+        Circle aimArcCircle;
+        if (version==0){
+            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, 0, Math.PI, true);
+        }
+        else if (version==1) {
+            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, Math.PI / 2, 3 * Math.PI / 2, true);
+        }
+        else if (version==2) {
+            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI, 0, true);
+        }
+        else if (version==3) {
+            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI, 0, true);
+        }
+        else if (version==4) {
+            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI / 2, Math.PI / 2, true);
+        }
+        else if (version==5) {
+            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI / 2, Math.PI / 2, true);
+        }
+        else{
+            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10);
+        }
+        Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
+        this.entryPositionPoint=aim;
+        return new Circle(aim);
     }
 
     @Override
