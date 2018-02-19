@@ -51,6 +51,16 @@ public class Pathfinding implements Service {
         graphe.createAretes(graphe.getNodes());
     }
 
+    /** Méthode réinitialisant le graphe, à appeler après chaque utilisation de findmyway */
+
+    public void reInitGraphe(){
+        for(Noeud node: graphe.getNodes()){
+            node.setPred(null);
+            node.setCout(-1);
+            node.setHeuristique(999999999);
+        }
+
+    }
 
     /** Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemain le plus rapide
      * entre les deux positions entrées.
@@ -150,6 +160,7 @@ public class Pathfinding implements Service {
      * Incomplète...
      *
      */
+    /*
     public ArrayList<Vec2> findmywayD(Vec2 positiondepart, Vec2 positionarrive) throws NoPathFound  {
         long time1=System.currentTimeMillis();
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
@@ -192,6 +203,6 @@ public class Pathfinding implements Service {
         long time2=System.currentTimeMillis()-time1;
         log.debug("Time to execute (ms): "+time2);
         return finalPath;
-    }
+    }*/
 
 }

@@ -19,6 +19,7 @@
 
 package tests;
 
+import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.ContainerException;
@@ -153,7 +154,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
             //activation panneau domotique
             //pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(350, 370));
             //tas de cube
-            pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(350, 370));
+            pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(1232, 725));
             robotReal.followPath(pathToFollow);
             Thread.sleep(1000);
             pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(1222, 455));
@@ -171,6 +172,48 @@ public class JUnit_Pathfinding extends JUnit_Test {
             System.out.println("No way found !!");
 
             e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void randomPathTest() throws InterruptedException, ContainerException {
+        pathfinding = container.getService(Pathfinding.class);
+        table = container.getService(Table.class);
+        obstacleManager = container.getService(ObstacleManager.class);
+        robotReal = container.getService(Robot.class);
+        state = container.getService(GameState.class);
+        anInterface = container.getService(ThreadInterface.class);
+        container.startInstanciedThreads();
+
+        pathfinding.initGraphe();
+        robotReal.setPosition(new Vec2(1252, 455));
+        robotReal.setOrientation(Math.PI);
+
+        ArrayList<Vec2> pathToFollow = new ArrayList<>();
+        Vec2 position = new Vec2();
+
+        for (int i = 0; i < 12; i++) {
+            position.setX(Math.max((((int) (Math.random() * 3000 - 1500))), -20));
+            position.setY(((int) (Math.random() * 2000)));
+            log.debug("Position : " + position);
+            try {
+                pathfinding =new Pathfinding(log,config,table);
+                pathToFollow = pathfinding.findmyway(robotReal.getPosition(), position);
+                robotReal.followPath(pathToFollow);
+                robotReal.moveLengthwise(42);
+                robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,true);
+                robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
+                log.debug("Arrived at " + position + i);
+            } catch (PointInObstacleException e) {
+
+                System.out.println("Obstacle!!" + i);
+                e.printStackTrace();
+            } catch (UnableToMoveException e) {
+
+                System.out.println("No way found !!");
+
+                e.printStackTrace();
+            }
         }
     }
 }
