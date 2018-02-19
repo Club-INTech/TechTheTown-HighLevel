@@ -153,7 +153,7 @@ public class Robot implements Service {
 	 * @param table la table sur laquelle le robot se deplace
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
-	public void moveToLocation(Vec2 aim, Table table) throws  UnableToMoveException,PointInObstacleException
+	public void moveToLocation(Vec2 aim, Table table) throws  UnableToMoveException,PointInObstacleException,NoPathFound
 	{
 		log.debug("Appel de Robot.moveToLocation(" + aim + "," + table + ")");
 		//On crée bêtement un cercle de rayon nul pour lancer moveToCircle, sachant que la position de ce cercle est extraite pour le pathDiniDing (et après on dit qu'à INTech on code comme des porcs...)
@@ -167,7 +167,7 @@ public class Robot implements Service {
 	 * @param table la table sur laquelle on est sensé se déplacer
 	 * @throws UnableToMoveException lorsque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
-	public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException {
+	public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException,NoPathFound {
 		Vec2 aimPosition= Geometry.closestPointOnCircle(this.getPosition(),aim);
 		// TODO : Appel du followpath & Pathfinding !
 			followPath(pathfinding.findmyway(getPosition(),aimPosition));

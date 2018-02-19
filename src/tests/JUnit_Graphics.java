@@ -23,6 +23,7 @@ import enums.DirectionStrategy;
 import enums.Speed;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.NoPathFound;
 import graphics.Window;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,7 +72,13 @@ public class JUnit_Graphics extends JUnit_Test
 		state.robot.setPosition(new Vec2(1200, 400));
 		state.robot.setOrientation(3*Math.PI/4);
 		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+		try {
+			state.robot.moveToCircle(new Circle(new Vec2(0, 1200), 0), table);
+		}
 
-		state.robot.moveToCircle(new Circle(new Vec2(0, 1200), 0), table);
+		catch (NoPathFound e){
+			log.debug("pas de chemin trouvé");
+			e.printStackTrace();
+		}
 	}
 }

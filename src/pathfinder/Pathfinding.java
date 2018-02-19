@@ -62,15 +62,15 @@ public class Pathfinding implements Service {
 
     }
 
-    /** Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemain le plus rapide
-     * entre les deux positions entrées.
+    /** Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemin le plus rapide
+     * entre les deux positions d'entrée.
      *
      * @param positiondepart
      * @param positionarrive
      * @return
      */
 
-    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws PointInObstacleException, UnableToMoveException{
+    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws PointInObstacleException, UnableToMoveException,NoPathFound{
         long time1=System.currentTimeMillis();
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
@@ -133,11 +133,11 @@ public class Pathfinding implements Service {
 
             }
         }
-        // pas de chemain trouvé.
+        // pas de chemin trouvé.
         if(! closeList.contains(noeudarrive) && openList.isEmpty()){
             log.debug("No way found");
-            //throw new NoPathFound(false,true);
-            throw new UnableToMoveException(noeudarrive.getPosition(), UnableToMoveReason.NO_WAY_FOUND);
+            throw new NoPathFound(false,true);
+            //throw new UnableToMoveException(noeudarrive.getPosition(), UnableToMoveReason.NO_WAY_FOUND);
         }
 
         // fabrique le chemain en partant du noeud d'arrivé

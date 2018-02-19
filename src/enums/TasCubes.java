@@ -1,5 +1,7 @@
 package enums;
 
+import smartMath.Vec2;
+
 public enum TasCubes{
     TAS_BASE(0,650,540),
     TAS_CHATEAU_EAU(1,1200,1190),
@@ -19,6 +21,10 @@ public enum TasCubes{
 
     public int[] getCoords(){
         int[] coords={this.x,this.y};
+        return coords;
+    }
+    public Vec2 getCoordsVec2(){
+        Vec2 coords = new Vec2(this.x,this.y);
         return coords;
     }
 

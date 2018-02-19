@@ -25,6 +25,7 @@ import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.NoPathFound;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -88,6 +89,9 @@ public abstract class AbstractScript implements Service
 		{
 			log.debug("Catch de "+e+" Impossible de goToThenExec : abandon d'exec, throw de "+e);
 			throw e;
+		}
+		catch(NoPathFound e){
+			log.debug("pas de chemin trouvé");
 		}
 
 		// exécute la version demandée
