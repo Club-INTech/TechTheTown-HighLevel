@@ -21,16 +21,19 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
-        int xEntry=370;
-        int yEntry=350;
+        int xEntry=350;
+        int yEntry=370;
         Vec2 positionentree=new Vec2(xEntry,yEntry);
         return new Circle(positionentree);
     }
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
+        //l'accès est scripté
+        Vec2 aim=new Vec2(370,350);
+        actualState.robot.goTo(aim);
+        actualState.robot.turn(-Math.PI/2);
         actualState.robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
-        actualState.robot.setOrientation(Math.PI/2);
         actualState.robot.moveLengthwise(350);
     }
 

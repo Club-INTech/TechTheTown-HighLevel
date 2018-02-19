@@ -52,8 +52,8 @@ public class Pathfinding implements Service {
     }
 
 
-    /** Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemain le plus rapide
-     * entre les deux positions entrées.
+    /** Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemin le plus rapide
+     * entre les deux positions d'entrée.
      *
      * @param positiondepart
      * @param positionarrive

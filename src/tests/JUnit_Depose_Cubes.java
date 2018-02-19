@@ -40,11 +40,10 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
             robotReal.setPosition(positionDepart);
             robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            robotReal.turn(-Math.PI/2);
             robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
 
             //goToThenExec
-            scriptManager.getScript(ScriptNames.DEPOSE_CUBES).goToThenExec(0,state);
+            scriptManager.getScript(ScriptNames.DEPOSE_CUBES).goToThenExec(1,state);
             //Vec2 positionarrivee=new Vec2(890,347);
             //robotReal.goTo(positionarrivee);
 

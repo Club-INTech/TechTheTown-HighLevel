@@ -211,6 +211,6 @@ public class TakeCubes extends AbstractScript {
     public void updateConfig() {
         super.updateConfig();
         this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
-        this.longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BOUT_DU_BRAS);
+        this.longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS);
     }
 }
