@@ -42,6 +42,7 @@ public class Pathfinding implements Service {
         this.table = table;
         graphe = new Graphe(table, config, log);
         obstacleManager=table.getObstacleManager();
+        log.debug("xoxoxoxoxox PATHFINDING");
     }
 
     /** Méthode initialisant le graghe, à appeler au début du match.        */
