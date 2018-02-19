@@ -89,12 +89,11 @@ public class JUnit_Pathfinding extends JUnit_Test{
         while(true) {
 
             try {
-                clics = window.waitLRClic();
+                //clics = window.waitLRClic();
                 Vec2 positionentreeDeposeCubes=new Vec2(650,175+config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
-                Vec2 positiontest=new Vec2(200,100);
-
+                Vec2 positiontest=new Vec2(1263,1763);
                 window.setPoint(positiontest);
-                path = pf.findmyway(clics.get(0), positionentreeDeposeCubes);
+                path = pf.findmyway(positionentreeDeposeCubes, positionentreeDeposeCubes);
                 window.setPath(path);
             }
             catch (PointInObstacleException e) {
