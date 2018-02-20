@@ -22,6 +22,10 @@ public class Noeud {
         this.cout = cout;
         this.voisins = voisins;
     }
+
+
+    /** Test utiliser pour trouver si un noeud est plus interessant qu'un autre */
+
     @Override
     public boolean equals(Object object){
         if(object instanceof Noeud){
@@ -37,37 +41,23 @@ public class Noeud {
 
 
 
-        public Vec2 getPosition() {
-        return position;
-    }
+    public Vec2 getPosition() {  return position;   }
 
-    public double getHeuristique(){
-        return heuristique;
-    }
+    public double getHeuristique(){  return heuristique;}
 
-    public ArrayList<Noeud> getVoisins() {
-        return voisins;
-    }
+    public ArrayList<Noeud> getVoisins() { return voisins;  }
 
-    public double getCout() {
-        return cout;
-    }
+    public double getCout() { return cout; }
 
-    public Noeud getPred() {       return pred;    }
+    public Noeud getPred() {   return pred;    }
 
-    public void setPosition(Vec2 position) {
-        this.position = position;
-    }
+    public void setPosition(Vec2 position) { this.position = position;  }
 
-    public void setHeuristique(double heuristique) {
-        this.heuristique = heuristique;
-    }
+    public void setHeuristique(double heuristique) { this.heuristique = heuristique;  }
 
     public void setVoisins(ArrayList<Noeud> voisins){ this.voisins = voisins; }
 
-    public void setCout(double cout) {
-        this.cout = cout;
-    }
+    public void setCout(double cout) {      this.cout = cout;    }
 
     public void setPred(Noeud pred) {        this.pred = pred;   }
 }

@@ -42,7 +42,7 @@ public class Pathfinding implements Service {
         this.table = table;
         obstacleManager = table.getObstacleManager();
         initGraphe();
-        log.debug("xoxoxoxoxox PATHFINDING");
+        log.debug("init PATHFINDING");
     }
 
     /**
@@ -91,16 +91,27 @@ public class Pathfinding implements Service {
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
 
-
-        //exception départ ou arrivée dans un obstacle/
+        /** exception départ ou arrivée dans un obstacle */
         if (obstacleManager.isObstructed(noeuddepart.getPosition()) || !obstacleManager.isRobotInTable(noeuddepart.getPosition())) {
             throw new PointInObstacleException(noeuddepart.getPosition());
         } else if (obstacleManager.isObstructed(noeudarrive.getPosition())
                 || !obstacleManager.isRobotInTable(noeudarrive.getPosition())) {
             throw new PointInObstacleException(noeudarrive.getPosition());
-        } else {
+        }
+        //début de l'algorithme
+        else {
             graphe.addNodeInGraphe(noeudarrive);
             graphe.addNodeInGraphe(noeuddepart);
+
+            if (noeuddepart.getVoisins().contains(noeudarrive)) {
+                finalPath.add(positiondepart);
+                finalPath.add(positionarrive);
+                long time2 = System.currentTimeMillis() - time1;
+                log.debug("Time to execute (ms): " + time2);
+                reInitGraphe(noeuddepart, noeudarrive);
+                return finalPath;
+            }
+
             openList.add(noeuddepart);
 
             while (!closeList.contains(noeudarrive) && !openList.isEmpty()) {
@@ -129,7 +140,6 @@ public class Pathfinding implements Service {
                         voisin.setPred(noeudcourant);
                     }
                 }
-
             }
         }
         // pas de chemin trouvé.
@@ -139,6 +149,9 @@ public class Pathfinding implements Service {
         }
         // fabrique le chemain en partant du noeud d'arrivé
         finalList.add(noeudarrive);
+        if (noeudarrive.getPred() == null) {
+            log.debug("prednull");
+        }
         while (noeuddepart != finalList.get(finalList.size() - 1)) {
             finalList.add(finalList.get(finalList.size() - 1).getPred());
         }
@@ -149,7 +162,7 @@ public class Pathfinding implements Service {
         long time2 = System.currentTimeMillis() - time1;
         log.debug("Time to execute (ms): " + time2);
 
-        reInitGraphe(noeuddepart,noeudarrive);
+        reInitGraphe(noeuddepart, noeudarrive);
 
         return finalPath;
     }
