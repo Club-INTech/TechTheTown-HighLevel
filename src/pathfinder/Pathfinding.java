@@ -40,22 +40,26 @@ public class Pathfinding implements Service {
         this.log = log;
         this.config = config;
         this.table = table;
-        graphe = new Graphe(table, config, log);
-        obstacleManager=table.getObstacleManager();
+        graphe = new Graphe(log, config, table);
+        obstacleManager = table.getObstacleManager();
         log.debug("xoxoxoxoxox PATHFINDING");
     }
 
-    /** Méthode initialisant le graghe, à appeler au début du match.        */
+    /**
+     * Méthode initialisant le graghe, à appeler au début du match.
+     */
 
-    public void initGraphe(){
+    public void initGraphe() {
         graphe.createNodes();
         graphe.createAretes(graphe.getNodes());
     }
 
-    /** Méthode réinitialisant le graphe, à appeler après chaque utilisation de findmyway */
+    /**
+     * Méthode réinitialisant le graphe, à appeler après chaque utilisation de findmyway
+     */
 
-    public void reInitGraphe(){
-        for(Noeud node: graphe.getNodes()){
+    public void reInitGraphe() {
+        for (Noeud node : graphe.getNodes()) {
             node.setPred(null);
             node.setCout(-1);
             node.setHeuristique(999999999);
@@ -63,7 +67,8 @@ public class Pathfinding implements Service {
 
     }
 
-    /** Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemin le plus rapide
+    /**
+     * Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemin le plus rapide
      * entre les deux positions d'entrée.
      *
      * @param positiondepart
@@ -71,8 +76,10 @@ public class Pathfinding implements Service {
      * @return
      */
 
-    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws PointInObstacleException, UnableToMoveException,NoPathFound{
-        long time1=System.currentTimeMillis();
+    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws PointInObstacleException, UnableToMoveException, NoPathFound {
+        long time1 = System.currentTimeMillis();
+
+        /** Dévclaration des variables */
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
         Noeud noeudarrive = new Noeud(positionarrive, 0, 0, new ArrayList<Noeud>());
@@ -81,33 +88,26 @@ public class Pathfinding implements Service {
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
-        ObstacleManager obstacleManager =  table.getObstacleManager();
+        ObstacleManager obstacleManager = table.getObstacleManager();
 
 
-        if(        obstacleManager.isObstructed(noeuddepart.getPosition())
-                || ! obstacleManager.isRobotInTable(noeuddepart.getPosition())
-                || obstacleManager.isObstructed(noeudarrive.getPosition())
-                || ! obstacleManager.isRobotInTable(noeudarrive.getPosition())){
-            //exception départ ou arrivée dans un obstacle/
-            //throw new NoPathFound(true,false);
-            if (obstacleManager.isObstructed(noeuddepart.getPosition()) || ! obstacleManager.isRobotInTable(noeuddepart.getPosition())){
-                throw new PointInObstacleException(noeuddepart.getPosition());
-            }
-            else{
-                throw new PointInObstacleException(noeudarrive.getPosition());
-            }
-        }
-        else {
+        //exception départ ou arrivée dans un obstacle/
+        if (obstacleManager.isObstructed(noeuddepart.getPosition()) || !obstacleManager.isRobotInTable(noeuddepart.getPosition())) {
+            throw new PointInObstacleException(noeuddepart.getPosition());
+        } else if (obstacleManager.isObstructed(noeudarrive.getPosition())
+                || !obstacleManager.isRobotInTable(noeudarrive.getPosition())) {
+            throw new PointInObstacleException(noeudarrive.getPosition());
+        } else {
             graphe.addNodeInGraphe(noeudarrive);
             graphe.addNodeInGraphe(noeuddepart);
             openList.add(noeuddepart);
 
-            while (! closeList.contains(noeudarrive) && !openList.isEmpty()) {
+            while (!closeList.contains(noeudarrive) && !openList.isEmpty()) {
 
                 noeudcourant = openList.poll();
                 closeList.add(noeudcourant);
 
-                for (Noeud voisin: noeudcourant.getVoisins()) {
+                for (Noeud voisin : noeudcourant.getVoisins()) {
 
                     if (closeList.contains(voisin)) {
                         if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()))) {
@@ -116,15 +116,12 @@ public class Pathfinding implements Service {
                             voisin.setPred(noeudcourant);
                             voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         }
-                      }
-
-                    else if(openList.contains(voisin)) {
+                    } else if (openList.contains(voisin)) {
                         if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()))) {
                             voisin.setPred(voisin.getPred());
                             voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         }
-                    }
-                    else {
+                    } else {
                         voisin.setHeuristique(voisin.getPosition().distance(noeudarrive.getPosition()));
                         voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         openList.add(voisin);
@@ -135,75 +132,30 @@ public class Pathfinding implements Service {
             }
         }
         // pas de chemin trouvé.
-        if(! closeList.contains(noeudarrive) && openList.isEmpty()){
+        if (!closeList.contains(noeudarrive) && openList.isEmpty()) {
             log.debug("No way found");
-            throw new NoPathFound(false,true);
+            throw new NoPathFound(false, true);
             //throw new UnableToMoveException(noeudarrive.getPosition(), UnableToMoveReason.NO_WAY_FOUND);
         }
 
         // fabrique le chemain en partant du noeud d'arrivé
         finalList.add(noeudarrive);
-        while (noeuddepart != finalList.get(finalList.size() - 1) ) {
+        while (noeuddepart != finalList.get(finalList.size() - 1)) {
             finalList.add(finalList.get(finalList.size() - 1).getPred());
         }
         for (int i = 1; i <= finalList.size(); i++) {
-            finalPath.add(finalList.get(finalList.size()-i).getPosition());
+            finalPath.add(finalList.get(finalList.size() - i).getPosition());
         }
-        long time2=System.currentTimeMillis()-time1;
-        log.debug("Time to execute (ms): "+time2);
+        long time2 = System.currentTimeMillis() - time1;
+        log.debug("Time to execute (ms): " + time2);
+
+
+        //graphe.removeNode(noeudarrive);
+        //graphe.removeNode(noeuddepart);
+        // reInitGraphe();
+
         return finalPath;
     }
 
-
-
-    /** Methode basée sur l'algorithme Dijkstra renvoyant une liste de vecteurs qui contient le chemain le plus rapide
-     * entre les deux positions entrées.
-     * Incomplète...
-     *
-     */
-    /*
-    public ArrayList<Vec2> findmywayD(Vec2 positiondepart, Vec2 positionarrive) throws NoPathFound  {
-        long time1=System.currentTimeMillis();
-        Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
-        Noeud noeudarrive = new Noeud(positionarrive, 999999999, -1, new ArrayList<Noeud>());
-        ArrayList<Noeud> nodes = graphe.createNodes();
-        ArrayList<Noeud> noeudvoisin = new ArrayList<Noeud>();
-        ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
-        ArrayList<Noeud> finalList = new ArrayList<>();
-        nodes.add(0, noeuddepart);
-        nodes.add(noeudarrive);
-        ObstacleManager obstacleManager =  new ObstacleManager(log,config);
-        ArrayList aretes = graphe.createAretes(nodes);
-
-        Noeud noeudcourant;
-        PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
-        openList.addAll(nodes);
-
-        while(! openList.isEmpty()){
-            noeudcourant=openList.poll();
-            for (Noeud voisin: noeudcourant.getVoisins()
-                    ) {
-                if(voisin.getCout()>noeudcourant.getCout()+voisin.getPosition().distance(noeudcourant.getPosition())) {
-                    voisin.setHeuristique(0);
-                    voisin.setCout(noeudcourant.getCout() + voisin.getPosition().distance(noeudcourant.getPosition()));
-                    voisin.setPred(noeudcourant);
-                }
-            }
-        }
-
-        noeudcourant=noeudarrive;
-        while (!noeudcourant.equals(noeuddepart)){
-            finalList.add(noeudcourant);
-            noeudcourant.getPred();
-        }
-
-        for (int i = 0; i < finalList.size(); i++) {
-            finalPath.add(finalList.get(i).getPosition());
-        }
-
-        long time2=System.currentTimeMillis()-time1;
-        log.debug("Time to execute (ms): "+time2);
-        return finalPath;
-    }*/
 
 }
