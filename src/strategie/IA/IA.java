@@ -119,11 +119,15 @@ public class IA implements Service {
      */
 
     public int getscorefinal(Exception e,Node node) {
+        //on get la dernière version de l'arbre
        root.updateConditions(e);
+       //on get les fils du noeud passé en paramètre
        ArrayList<Node> lnodes=node.getNextNodes();
        for(Node noeud : lnodes){
+           //si l'un des noeuds fils est executé, on rajoute son score au score final
            if(noeud.getExecuted()){
                scorefinal+=noeud.getscore();
+               //on refait la même chose avec le noeud executé
                return getscorefinal(e,noeud);
            }
        }
