@@ -23,6 +23,7 @@ import container.Service;
 import enums.*;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.NoPathFound;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.AbstractScript;
@@ -186,7 +187,7 @@ public class Robot implements Service {
 	 */
 
 	@SuppressWarnings("unchecked")
-	public void followPath(ArrayList<Vec2> chemin) throws UnableToMoveException
+	public void followPath(ArrayList<Vec2> chemin) throws UnableToMoveException, NoPathFound
 	{
 		cheminSuivi = (ArrayList<Vec2>) chemin.clone();
 		mLocomotion.followPath(chemin);
