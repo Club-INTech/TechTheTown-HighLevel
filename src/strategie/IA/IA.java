@@ -43,7 +43,6 @@ public class IA implements Service {
     //génère l'arbre
     public void create() throws InterruptedException, ContainerException {
         ArrayList<Node> lnode1 = new ArrayList<Node>();
-        //Node(String action, Node previous, long time, int score, AbstractScript script,int versionToexecute ,Exception exception, GameState gamestate)
         //noeud du pattern
         Node node1 = new Node("pattern", root, 666, 0, null, 0, null, gameState);
         lnode1.add(node1);
@@ -114,11 +113,22 @@ public class IA implements Service {
         return gameState;
     }
 
-    public int getscorefinal(Node node, Exception e) {
-        if (node == root) {
-            return root.getscore();
-        } else {
-            return getscorefinal(node.returnExecutedNode(node), e);
-        }
+    /**
+     *Il s'agit d'une méthode récursive pour calculer le score, on lui file comme paramètre en Node
+     * root
+     */
+
+    public int getscorefinal(Exception e,Node node) {
+       root.updateConditions(e);
+       ArrayList<Node> lnodes=node.getNextNodes();
+       for(Node noeud : lnodes){
+           if(noeud.getExecuted()){
+               scorefinal+=noeud.getscore();
+               return getscorefinal(e,noeud);
+           }
+       }
+       return scorefinal;
+
     }
+
 }
