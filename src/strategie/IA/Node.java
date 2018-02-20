@@ -15,7 +15,7 @@ public class Node {
     private Node previous;
     private ArrayList<Node> nextNodes;
     private Boolean condition;  //si true on execute ce noeud
-    private Boolean executed;   //si true execute n'a soulèvé aucune exeption
+    private Boolean executed;   //si true execute n'a soulevé aucune exeption
     private String action;      //nom de l'action réalisée
     private long time;           //ne pas executer le script si le match a duré plus longtemps que cette valeur
     private int score;
@@ -27,7 +27,7 @@ public class Node {
 
 
 
-    public Node(String action, Node previous, long time, int score, AbstractScript script, int positionDentree, Exception exception, GameState gamestate) {
+    public Node(String action, Node previous, long time, int score, AbstractScript script,int versionToexecute ,Exception exception, GameState gamestate) {
         this.previous = previous;
         this.nextNodes = null;
         this.condition = false;
@@ -37,18 +37,7 @@ public class Node {
         this.gamestate = gamestate;
         this.script = script;
         this.exception = exception;
-        this.versionToexecute = gamestate.robot.getPatternToExecute() * 10 + positionDentree;
         this.score = score;
-    }
-    public Node(String action,Node previous,long time, int score, AbstractScript script,int versionToexecute,GameState gamestate,Exception exception){
-        this.action=action;
-        this.previous=previous;
-        this.time=time;
-        this.score=score;
-        this.script=script;
-        this.versionToexecute=versionToexecute;
-        this.exception=exception;
-        this.gamestate=gamestate;
     }
 
     //lance l'action du noeud
