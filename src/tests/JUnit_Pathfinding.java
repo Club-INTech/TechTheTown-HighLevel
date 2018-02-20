@@ -34,6 +34,8 @@ import pathfinder.Pathfinding;
 import pathfinder.Graphe;
 import robot.Robot;
 import scripts.ScriptManager;
+import simulator.ThreadSimulator;
+import simulator.ThreadSimulatorMotion;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -64,7 +66,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
     /**
      * Threads
      */
-
+    private ThreadSimulator simulator;
+    private ThreadSimulatorMotion simulatorMotion;
     private ThreadInterface anInterface;
     /*
     @Before
@@ -81,6 +84,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         }
     }
 */
+
     /**
      * Méthode pour un test : ce sont les instruction executées par IntelliJ lorque vous lancer le test (clique
      * droit sur le test, 'Run')
@@ -91,7 +95,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         /** Instanciation des variables */
 
         //Pathfinding pathfinding = container.getService(Pathfinding.class);
-       ; // Grâce au container, le champ ObstacleManager de votre table est déjà instancié !
+        ; // Grâce au container, le champ ObstacleManager de votre table est déjà instancié !
         // Mais... pour commencer instancier vos variables à la main :
         Vec2 example = new Vec2(50, 40);
         Vec2 example2 = new Vec2(600, 1600);
@@ -107,7 +111,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
 
         Window window = new Window(table);
-        Graphe graphe = new Graphe(table, config, log);
+        Graphe graphe = new Graphe(log, config, table);
         window.setArete(graphe.getBoneslist());
         // Thread.sleep(20000);
 
@@ -134,9 +138,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
                 //clic = window.waitLClic();
                 //position d'entree de ActivationPanneauDomotique
-                Vec2 arrivee=new Vec2(370,350);
-                Circle aim=new Circle(arrivee,0);
-                robotReal.moveToCircle(aim,table);
+                Vec2 arrivee = new Vec2(370, 350);
+                Circle aim = new Circle(arrivee, 0);
+                robotReal.moveToCircle(aim, table);
                 window.setPath(path);
             } catch (PointInObstacleException e) {
 
@@ -147,8 +151,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
                 System.out.println("No way found !!");
 
                 e.printStackTrace();
-            }
-            catch (NoPathFound e){
+            } catch (NoPathFound e) {
                 log.debug("pas de chemin trouvé");
                 e.printStackTrace();
             }
@@ -206,6 +209,10 @@ public class JUnit_Pathfinding extends JUnit_Test {
         robotReal = container.getService(Robot.class);
         state = container.getService(GameState.class);
         anInterface = container.getService(ThreadInterface.class);
+
+        simulator = container.getService(ThreadSimulator.class);
+        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+
         container.startInstanciedThreads();
 
         pathfinding.initGraphe();
@@ -216,11 +223,11 @@ public class JUnit_Pathfinding extends JUnit_Test {
         Vec2 position = new Vec2();
 
         for (int i = 0; i < 12; i++) {
-            position.setX(Math.max((((int) (Math.random() * 3000 - 1500))), -20));
+            position.setX(Math.max((((int) (Math.random() * 3000 - 1500))), -1500));
             position.setY(((int) (Math.random() * 2000)));
             log.debug("Position : " + position);
             try {
-                //pathfinding =new Pathfinding(log,config,table);
+                //pathfinding = new Pathfinding(log, config, table);
                 pathToFollow = pathfinding.findmyway(robotReal.getPosition(), position);
                 robotReal.followPath(pathToFollow);
                 log.debug("Arrived at " + position + i);
@@ -238,5 +245,45 @@ public class JUnit_Pathfinding extends JUnit_Test {
             }
         }
     }
-}
+    @Test
+    public void testSimulation() throws InterruptedException, ContainerException {
 
+        pathfinding = container.getService(Pathfinding.class);
+        table = container.getService(Table.class);
+        obstacleManager = container.getService(ObstacleManager.class);
+        robotReal = container.getService(Robot.class);
+        state = container.getService(GameState.class);
+        simulator = container.getService(ThreadSimulator.class);
+        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+        //anInterface = container.getService(ThreadInterface.class);
+        container.startInstanciedThreads();
+
+
+        Window window = new Window(table);
+        Graphe graphe = new Graphe(log, config, table);
+        window.setArete(graphe.getBoneslist());
+
+        ArrayList<Vec2> path = new ArrayList<>();
+        window.setPath(path);
+        ArrayList<Vec2> clics = new ArrayList<>();
+
+        while (true) {
+
+            try {
+                clics = window.waitLRClic();
+                path = pathfinding.findmyway(clics.get(0), clics.get(1));
+                window.setPath(path);
+                window.repaint();
+            } catch (PointInObstacleException e) {
+                System.out.println("Obstacle!!");
+                e.printStackTrace();
+            } catch (UnableToMoveException e) {
+                System.out.println("No way found !!");
+                e.printStackTrace();
+            } catch (NoPathFound e) {
+                System.out.println("No way found");
+                e.printStackTrace();
+            }
+        }
+    }
+}
