@@ -135,7 +135,6 @@ public class Robot implements Service {
 		}
 	}
 
-
 	/**************
 	 * LOCOMOTION *
 	 **************/
@@ -170,9 +169,7 @@ public class Robot implements Service {
 	public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException {
 		Vec2 aimPosition= Geometry.closestPointOnCircle(this.position,aim);
 		// TODO : Appel du followpath & Pathfinding !
-			followPath(pathfinding.findmyway(position,aimPosition));
-
-
+		followPath(pathfinding.findmyway(position, aimPosition));
 	}
 
 	/**

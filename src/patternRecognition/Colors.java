@@ -22,11 +22,12 @@ public enum Colors {
 
 
     //Couleurs calibrées par rapport à une photo normale au local Intech
-    ORANGE(0,"orange", new int[]{147, 80, 28}),
-    YELLOW(1,"yellow", new int[]{153,142,0}),
-    BLUE(2,"blue", new int[]{23,54,76}),
-    BLACK(3,"black", new int[]{18,34,10}),
-    GREEN(4,"green", new int[]{83,125,20});
+    ORANGE(0,"orange", new int[]{152, 75, 33}),
+    YELLOW(1,"yellow", new int[]{178,151,1}),
+    BLUE(2,"blue", new int[]{47,68,82}),
+    BLACK(3,"black", new int[]{33,29,17}),
+    GREEN(4,"green", new int[]{100,133,17}),
+    FUCKING_INTERRUPTEUR(5,"interrupteur",new int[]{158,149,114});
 
     /*
     //Couleurs RGB calibrées par rapport à la photo ImageRaspberry5.png

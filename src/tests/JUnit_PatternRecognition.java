@@ -1,6 +1,5 @@
 package tests;
 
-
 import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +19,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     public void setUp() {
         try {
             super.setUp();
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
         }
     }
@@ -28,12 +27,11 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     @Test
     public void testReconnaissance(){
         //String pathToImage = "ImageRaspberryPi.png";
-        for (int i=1; i<=500; i++) {
+        for (int i=36; i<=500; i++) {
             String pathToImage = "500ImagesTest/Image"+i+".png";
             int[] zoneToPerformLocalisation = {0, 0, 0, 0};
             PatternRecognition patternRecognitionThread = new PatternRecognition(config, pathToImage, zoneToPerformLocalisation);
-            boolean debug = false;
-            patternRecognitionThread.setDebugPatternRecognition(debug);
+            patternRecognitionThread.setDebugPatternRecognition(false);
             log.debug("Starting PatternRecognition thread...");
             patternRecognitionThread.start();
 

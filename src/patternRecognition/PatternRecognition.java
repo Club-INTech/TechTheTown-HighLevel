@@ -85,7 +85,7 @@ public class PatternRecognition extends AbstractThread{
                 }
                 catch (IOException e3) {
                     colorMatrix = null;
-                    picture = new BufferedImage(2000, 2000, 1);
+                    picture = new BufferedImage(2592, 1944, 1);
                     System.out.println("Image not found");
                 }
             }
@@ -128,7 +128,11 @@ public class PatternRecognition extends AbstractThread{
         int width = xend - xstart;
         int height = yend - ystart;
         int[] listAllPoints = new int[width*height];
+        System.out.println(xstart+" "+ystart+" "+xend+" "+yend);
         for (int i = 0; i < width * height; i++){
+            if (i%height + xstart > 2590){
+                System.out.println(i%height + xstart +" "+i/height+ystart);
+            }
             listAllPoints[i] = colorMatrix[i%height + xstart][i/height + ystart][posRGB];
         }
         java.util.Arrays.sort(listAllPoints);
@@ -188,6 +192,27 @@ public class PatternRecognition extends AbstractThread{
         }
         return inverseDistance;
     }
+
+    /**Fonction permettant de calculer l'inverse de la distance quadratique d'une couleur (RGBToEvaluate) à une autre prédéfinie (color)
+     * @param RGBToEvaluate RGB correspondant à la couleur à évaluer, ie couleur dont la distance doit être calculée
+     * @param color RGB correspondant à une couleur prédéfinie
+     * @return renvoie l'inverse de la distance quadratique (double) entre les 2 couleurs
+     */
+    public static double computeDistancesToColor(int[] RGBToEvaluate, int[] color){
+        double distance = 0;
+        for (int i=0; i<3; i++){
+            distance+=Math.pow(RGBToEvaluate[i]-color[i],2);
+        }
+        double inverseDistance;
+        if (distance==0){
+            inverseDistance = 5;
+        }
+        else {
+            inverseDistance = 1/distance;
+        }
+        return inverseDistance;
+    }
+
 
     /** Fonction permettant de calculer l'inversee de la distance quadratique d'une couleur (RGBToEvaluate) à toutes les autres couleurs des cubes
      * @param RGBToEvaluate RGB correspondant à la couleur à évaluer, ie couleur dont la distance doit être calculée
@@ -459,19 +484,21 @@ public class PatternRecognition extends AbstractThread{
              * {yEndFirstColor,yEndSecondColor,yEndThirdColor},
              * }
              */
+            int imageWidthMinusOne=2592-1;
+            int imageHeightMinusOne=1944-1;
             positionsColorsOnImage = new int[][]
-                    {{Math.max(centerPointPattern[0] - halfLengthSideOfSquareDetection - distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, 0),
-                            Math.max(centerPointPattern[0] - halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, 0),
-                            Math.max(centerPointPattern[0] - halfLengthSideOfSquareDetection + distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, 0)},
-                            {centerPointPattern[1] - halfLengthSideOfSquareDetection,
-                                    centerPointPattern[1] - halfLengthSideOfSquareDetection,
-                                    centerPointPattern[1] - halfLengthSideOfSquareDetection},
-                            {Math.max(centerPointPattern[0] + halfLengthSideOfSquareDetection - distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, 0),
-                                    Math.max(centerPointPattern[0] + halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, 0),
-                                    Math.max(centerPointPattern[0] + halfLengthSideOfSquareDetection + distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, 0)},
-                            {centerPointPattern[1] + halfLengthSideOfSquareDetection,
-                                    centerPointPattern[1] + halfLengthSideOfSquareDetection,
-                                    centerPointPattern[1] + halfLengthSideOfSquareDetection}};
+                    {{Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection - distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
+                      Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
+                      Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection + distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0)},
+                     {Math.max(centerPointPattern[1] - halfLengthSideOfSquareDetection,0),
+                      Math.max(centerPointPattern[1] - halfLengthSideOfSquareDetection,0),
+                      Math.max(centerPointPattern[1] - halfLengthSideOfSquareDetection,0)},
+                     {Math.max(Math.min(centerPointPattern[0] + halfLengthSideOfSquareDetection - distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
+                      Math.max(Math.min(centerPointPattern[0] + halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
+                      Math.max(Math.min(centerPointPattern[0] + halfLengthSideOfSquareDetection + distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0)},
+                     {Math.min(centerPointPattern[1] + halfLengthSideOfSquareDetection,imageHeightMinusOne),
+                      Math.min(centerPointPattern[1] + halfLengthSideOfSquareDetection,imageHeightMinusOne),
+                      Math.min(centerPointPattern[1] + halfLengthSideOfSquareDetection,imageHeightMinusOne)}};
             distanceArrays[i - iStartValue] = computeProximity(colorMatrix, positionsColorsOnImage);
         }
         double maxProba = 0;
@@ -494,14 +521,14 @@ public class PatternRecognition extends AbstractThread{
             }
         }
         if (maxProba<0.1){
-            if (alreadyLitUp<3){
+            if (alreadyLitUp<2){
                 alreadyLitUp+=1;
                 if (debug){
                     System.out.println("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                 }
                 colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3]);
                 if (isSavingImages) {
-                    String imageName=this.pathToImage+".png";
+                    String imageName="images/patternRecognition/500ImagesTest/output"+Double.toString(Math.random())+".png";
                     saveImage(colorMatrix, imageName);
                 }
                 analysePattern(colorMatrix);
@@ -529,6 +556,7 @@ public class PatternRecognition extends AbstractThread{
         String pathToImageLocation="images/patternRecognition/"+pathToImage;
         LocatePattern.setDebug(true);
         int[] patternZone = LocatePattern.locatePattern(pathToImageLocation, zoneToPerformLocalisation);
+        System.out.println(patternZone[0]+" "+patternZone[1]+" "+patternZone[2]+" "+patternZone[3]);
         int[] centerPattern=new int[]{(patternZone[0]+patternZone[2])/2,(patternZone[1]+patternZone[3])/2};
         if (debug){
             System.out.println("Center found : ("+centerPattern[0]+","+centerPattern[1]+")");
@@ -546,7 +574,7 @@ public class PatternRecognition extends AbstractThread{
             double[] RGBprobabilities=computeInverseDistanceToAllColors(colorMatrix[center[0]+x][center[1]]);
             int maxIndice=0;
             double max=0;
-            for (int i=0; i<Colors.values().length; i++) {
+            for (int i=0; i<5; i++) {
                 if (RGBprobabilities[i] > max) {
                     max = RGBprobabilities[i];
                     maxIndice = i;
@@ -591,8 +619,10 @@ public class PatternRecognition extends AbstractThread{
     private int alreadyLitUp; //l'image a déjà été éclairée
     private boolean isSavingImages;
     private boolean symmetry;
-    private int[] zoneToPerformLocalisationVert={1,800,700,800};
-    private int[] zoneToPerformLocalisationOrange={2592-801,800,700,800};
+    private int[] zoneToPerformLocalisationVert={1,800,800,800};
+    private int[] zoneToPerformLocalisationOrange={(2592-801),800,800,800};
+    private int imageWidth=2592;
+    private int imageHeight=1944;
 
     /** Instanciation du thread de reconnaissance de couleurs
      * @param pathToImage chemin à l'image enregistrée
@@ -602,7 +632,7 @@ public class PatternRecognition extends AbstractThread{
         //TODO:CALIBRER SUR UNE IMAGE SOMBRE
         this.config=config;
         this.pathToImage=pathToImage;
-        this.symmetry=this.config.getBoolean(ConfigInfoRobot.COULEUR).equals("orange");
+        this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
         if (!(zoneToPerformLocalisation[0]==0 && zoneToPerformLocalisation[1]==0 && zoneToPerformLocalisation[2]==0 && zoneToPerformLocalisation[3]==0)) {
             this.zoneToPerformLocalisation = zoneToPerformLocalisation;
         }
