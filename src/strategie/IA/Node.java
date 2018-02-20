@@ -38,6 +38,7 @@ public class Node {
         this.script = script;
         this.exception = exception;
         this.score = score;
+        this.versionToexecute=versionToexecute;
     }
 
     //lance l'action du noeud

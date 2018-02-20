@@ -43,13 +43,14 @@ public class IA implements Service {
     //génère l'arbre
     public void create() throws InterruptedException, ContainerException {
         ArrayList<Node> lnode1 = new ArrayList<Node>();
+        //Node(String action, Node previous, long time, int score, AbstractScript script,int versionToexecute ,Exception exception, GameState gamestate)
         //noeud du pattern
-        Node node1 = new Node("pattern", root, 666, 0, null, 0, gameState, null);
+        Node node1 = new Node("pattern", root, 666, 0, null, 0, null, gameState);
         lnode1.add(node1);
         root.setNextNodes(lnode1);
         ArrayList<Node> lnode2 = new ArrayList<>();
         //noeud interrupteur
-        Node node2 = new Node("interrupteur", node1, 666, 25, container.getService(ActivationBrasLateral.class), 0, gameState, null);
+        Node node2 = new Node("interrupteur", node1, 666, 25, container.getService(ActivationBrasLateral.class), 0, null, gameState);
         lnode2.add(node2);
         node1.setNextNodes(lnode2);
         ArrayList<Node> lnode3 = new ArrayList<>();
@@ -59,7 +60,7 @@ public class IA implements Service {
         node2.setNextNodes(lnode3);
         ArrayList<Node> lnodes4 = new ArrayList<>();
         //noeud de l'abeille
-        Node node4 = new Node("abeille", node3, 666, 50, container.getService(ActivationBrasLateral.class), 1, gameState, null);
+        Node node4 = new Node("abeille", node3, 666, 50, container.getService(ActivationBrasLateral.class), 1, null,gameState);
         lnodes4.add(node4);
         node3.setNextNodes(lnodes4);
         ArrayList<Node> lnode5 = new ArrayList<>();
@@ -69,7 +70,7 @@ public class IA implements Service {
         node4.setNextNodes(lnode5);
         ArrayList<Node> lnodes6 = new ArrayList<>();
         //noeud pour déposer tous les cubes
-        Node node6 = new Node("deposer les cubes 2 et 0", node5, 666, 80, container.getService(DeposeCubes.class), 0, gameState, null);
+        Node node6 = new Node("deposer les cubes 2 et 0", node5, 666, 80, container.getService(DeposeCubes.class), 0,  null,gameState);
         lnodes6.add(node6);
         node5.setNextNodes(lnodes6);
         ArrayList<Node> lnode7 = new ArrayList<>();
@@ -89,7 +90,7 @@ public class IA implements Service {
         node8.setNextNodes(lnode9);
         ArrayList<Node> lnode10 = new ArrayList<>();
         //déposer tous les cubes qui restent
-        Node node10 = new Node("déposer tous les cubes", node9, 666, 46, container.getService(DeposeCubes.class), 1, gameState, null);
+        Node node10 = new Node("déposer tous les cubes", node9, 666, 46, container.getService(DeposeCubes.class), 1,  null,gameState);
         lnode10.add(node10);
         node9.setNextNodes(lnode10);
     }
