@@ -33,8 +33,11 @@ public class Noeud {
         return false;
     }
 
+    public void removeNeighbour(Noeud noeud){ voisins.remove(noeud);}
 
-    public Vec2 getPosition() {
+
+
+        public Vec2 getPosition() {
         return position;
     }
 
@@ -66,7 +69,7 @@ public class Noeud {
         this.cout = cout;
     }
 
-    public void setPred(Noeud pred) {        this.pred = pred;    }
+    public void setPred(Noeud pred) {        this.pred = pred;   }
 }
 
 /*private Vec2 alineate(int xdepart, int ydepart,int xPointoalinate,int yPointoalinate) {

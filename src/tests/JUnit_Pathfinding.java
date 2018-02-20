@@ -260,8 +260,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
 
         Window window = new Window(table);
-        Graphe graphe = new Graphe(log, config, table);
-        window.setArete(graphe.getBoneslist());
+        window.setArete(pathfinding.getGraphe().getBoneslist());
 
         ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);

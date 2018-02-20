@@ -40,8 +40,8 @@ public class Pathfinding implements Service {
         this.log = log;
         this.config = config;
         this.table = table;
-        graphe = new Graphe(log, config, table);
         obstacleManager = table.getObstacleManager();
+        initGraphe();
         log.debug("xoxoxoxoxox PATHFINDING");
     }
 
@@ -50,21 +50,23 @@ public class Pathfinding implements Service {
      */
 
     public void initGraphe() {
-        graphe.createNodes();
-        graphe.createAretes(graphe.getNodes());
+        graphe = new Graphe(log, config, table);
     }
 
     /**
      * Méthode réinitialisant le graphe, à appeler après chaque utilisation de findmyway
      */
 
-    public void reInitGraphe() {
+    public void reInitGraphe(Noeud noeudDepart, Noeud noeudArrive) {
         for (Noeud node : graphe.getNodes()) {
             node.setPred(null);
             node.setCout(-1);
             node.setHeuristique(999999999);
+            node.removeNeighbour(noeudDepart);
+            node.removeNeighbour(noeudArrive);
         }
-
+        graphe.removeNode(noeudDepart);
+        graphe.removeNode(noeudArrive);
     }
 
     /**
@@ -88,7 +90,6 @@ public class Pathfinding implements Service {
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
-        ObstacleManager obstacleManager = table.getObstacleManager();
 
 
         //exception départ ou arrivée dans un obstacle/
@@ -135,9 +136,7 @@ public class Pathfinding implements Service {
         if (!closeList.contains(noeudarrive) && openList.isEmpty()) {
             log.debug("No way found");
             throw new NoPathFound(false, true);
-            //throw new UnableToMoveException(noeudarrive.getPosition(), UnableToMoveReason.NO_WAY_FOUND);
         }
-
         // fabrique le chemain en partant du noeud d'arrivé
         finalList.add(noeudarrive);
         while (noeuddepart != finalList.get(finalList.size() - 1)) {
@@ -146,16 +145,16 @@ public class Pathfinding implements Service {
         for (int i = 1; i <= finalList.size(); i++) {
             finalPath.add(finalList.get(finalList.size() - i).getPosition());
         }
+
         long time2 = System.currentTimeMillis() - time1;
         log.debug("Time to execute (ms): " + time2);
 
-
-        //graphe.removeNode(noeudarrive);
-        //graphe.removeNode(noeuddepart);
-        // reInitGraphe();
+        reInitGraphe(noeuddepart,noeudarrive);
 
         return finalPath;
     }
 
-
+    public Graphe getGraphe() {
+        return graphe;
+    }
 }
