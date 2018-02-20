@@ -11,7 +11,8 @@ import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import org.classpath.icedtea.Config;
 import robot.EthWrapper;
-import scripts.ActivationBrasLateral;
+import scripts.ActivationPanneauDomotique;
+import scripts.ActiveAbeille;
 import scripts.DeposeCubes;
 import scripts.TakeCubes;
 import strategie.GameState;
@@ -49,7 +50,7 @@ public class IA implements Service {
         root.setNextNodes(lnode1);
         ArrayList<Node> lnode2 = new ArrayList<>();
         //noeud interrupteur
-        Node node2 = new Node("interrupteur", node1, 666, 25, container.getService(ActivationBrasLateral.class), 0, null, gameState);
+        Node node2 = new Node("interrupteur", node1, 666, 25, container.getService(ActivationPanneauDomotique.class), 0, null, gameState);
         lnode2.add(node2);
         node1.setNextNodes(lnode2);
         ArrayList<Node> lnode3 = new ArrayList<>();
@@ -59,7 +60,7 @@ public class IA implements Service {
         node2.setNextNodes(lnode3);
         ArrayList<Node> lnodes4 = new ArrayList<>();
         //noeud de l'abeille
-        Node node4 = new Node("abeille", node3, 666, 50, container.getService(ActivationBrasLateral.class), 1, null,gameState);
+        Node node4 = new Node("abeille", node3, 666, 50, container.getService(ActiveAbeille.class), 0, null,gameState);
         lnodes4.add(node4);
         node3.setNextNodes(lnodes4);
         ArrayList<Node> lnode5 = new ArrayList<>();
