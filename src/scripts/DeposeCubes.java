@@ -74,6 +74,7 @@ public class DeposeCubes extends AbstractScript{
             stateToConsider.robot.moveLengthwise(-(d + dimensionporte+distancepush));
             stateToConsider.robot.moveLengthwise(dimensionporte+distancepush+d);
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
+            stateToConsider.robot.goTo(aim);
         }
 
     }
