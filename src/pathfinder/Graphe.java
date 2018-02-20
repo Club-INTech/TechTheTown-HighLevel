@@ -18,9 +18,7 @@ import utils.Log;
 import java.util.ArrayList;
 
 
-
-
-public class Graphe implements Service{
+public class Graphe implements Service {
 
     @Override
     public void updateConfig() {
@@ -37,40 +35,43 @@ public class Graphe implements Service{
     private ArrayList<Arete> boneslist;
 
 
-    /**Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
-     là où il y'a des obstacles
+    /**
+     * Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
+     * là où il y'a des obstacles
      */
 
-    public Graphe(Table table){
-        this.listCircu=new ArrayList<>();
+    public Graphe(Log log, Config config, Table table) {
+        this.listCircu = new ArrayList<>();
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
-        this.listRectangu=new ArrayList<>();
+        this.listRectangu = new ArrayList<>();
         listRectangu = table.getObstacleManager().getRectangles();
-        this.table=table;
-        this.nodes=new ArrayList<Noeud>();
-        this.nodes=createNodes();
-        long time1=System.currentTimeMillis();
-        this.boneslist=new ArrayList<>();
-        this.boneslist=createAretes(nodes);
-        long time2=System.currentTimeMillis()-time1;
-        System.out.println("Time to create graph (ms): "+time2);
+        this.table = table;
+        this.nodes = new ArrayList<Noeud>();
+        this.nodes = createNodes();
+        long time1 = System.currentTimeMillis();
+        this.boneslist = new ArrayList<>();
+        this.boneslist = createAretes(nodes);
+        long time2 = System.currentTimeMillis() - time1;
+        this.log = log;
+        this.config = config;
+        System.out.println("Time to create graph (ms): " + time2);
 
     }
 
-    /** Méthode testant la présence d'un noeud dans un obstacle.
-
+    /**
+     * Méthode testant la présence d'un noeud dans un obstacle.
      */
 
 
-    public static boolean nodeInObstacle(Noeud noeud, Graphe graphe) {
-        int mRobotRadius= 210; // graphe.config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+    public boolean nodeInObstacle(Noeud noeud, Graphe graphe) {
+        int mRobotRadius = this.config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         int n = graphe.listCircu.size();
         ArrayList<ObstacleRectangular> listRectangu2 = new ArrayList<>();
         Vec2 position0 = new Vec2();
         int xNoeud = noeud.getPosition().getX();
         int yNoeud = noeud.getPosition().getY();
         for (int i = 0; i < n; i++) {
-            if ( noeud.getPosition().distance(graphe.listCircu.get(i).getPosition())<graphe.listCircu.get(i).getRadius() ){
+            if (noeud.getPosition().distance(graphe.listCircu.get(i).getPosition()) < graphe.listCircu.get(i).getRadius()) {
                 return true;
             }
         }
@@ -90,14 +91,14 @@ public class Graphe implements Service{
             }
         }
 
-        if(xNoeud< - 1500 + mRobotRadius || xNoeud>1500-mRobotRadius || yNoeud<mRobotRadius || yNoeud>2000-mRobotRadius){
+        if (xNoeud < -1500 + mRobotRadius || xNoeud > 1500 - mRobotRadius || yNoeud < mRobotRadius || yNoeud > 2000 - mRobotRadius) {
             return true;
         }
         return false;
     }
 
-    /** Méthode générant dans noeuds sur la table
-
+    /**
+     * Méthode générant dans noeuds sur la table
      */
 
     public ArrayList<Noeud> createNodes() {
@@ -111,7 +112,7 @@ public class Graphe implements Service{
         int m;
         ArrayList<Noeud> node = new ArrayList<>();
         ArrayList<Noeud> nodesToKeep = new ArrayList<>();
-        for (int i = 1; i < 3000 / pasX-1; i++) {
+        for (int i = 1; i < 3000 / pasX - 1; i++) {
             x = i * pasX + xdebut;
             for (int j = 1; j < 2000 / pasY; j++) {
                 Vec2 nodeposition = new Vec2();
@@ -161,35 +162,36 @@ public class Graphe implements Service{
 
     }
 
-    /**Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
-     l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
-     ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
-     déja un chemin à suivre, à chaque noeud, on associe une liste d'arete qui lui est propre
-     donc implicitement une liste de noeuds, le tout stocké dans un dictionnaire.
-
-     Maj. Cette méthode permet également le compléter pour chaque noeud du graphe
-     le champ contenant la liste de ses noeuds voisins.
+    /**
+     * Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
+     * l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
+     * ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
+     * déja un chemin à suivre, à chaque noeud, on associe une liste d'arete qui lui est propre
+     * donc implicitement une liste de noeuds, le tout stocké dans un dictionnaire.
+     * <p>
+     * Maj. Cette méthode permet également le compléter pour chaque noeud du graphe
+     * le champ contenant la liste de ses noeuds voisins.
      */
 
 
-    public ArrayList<Arete> createAretes(ArrayList<Noeud>nodes){
+    public ArrayList<Arete> createAretes(ArrayList<Noeud> nodes) {
         Arete arete;
-        ArrayList<Arete> boneslist=new ArrayList<>();
-        int n=nodes.size();
-        for(int i=0; i<n;i++){
-            ArrayList<Arete> listaretes=new ArrayList<>();
+        ArrayList<Arete> boneslist = new ArrayList<>();
+        int n = nodes.size();
+        for (int i = 0; i < n; i++) {
+            ArrayList<Arete> listaretes = new ArrayList<>();
             ArrayList<Noeud> voisins = new ArrayList<>();
-            for(int j=i+1;j<n;j++){
-                Segment segment=new Segment(nodes.get(i).getPosition(),nodes.get(j).getPosition());
-                boolean isIntersection=false;
-                for(int k=0;k<listCircu.size();k++){
-                    if(Geometry.intersects(segment,listCircu.get(k).getCircle())){
-                        isIntersection=true;
+            for (int j = i + 1; j < n; j++) {
+                Segment segment = new Segment(nodes.get(i).getPosition(), nodes.get(j).getPosition());
+                boolean isIntersection = false;
+                for (int k = 0; k < listCircu.size(); k++) {
+                    if (Geometry.intersects(segment, listCircu.get(k).getCircle())) {
+                        isIntersection = true;
                     }
                 }
                 if (!isIntersection) {
                     double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
-                    cost=Math.sqrt(cost);
+                    cost = Math.sqrt(cost);
                     arete = new Arete(nodes.get(i), nodes.get(j), cost);
                     listaretes.add(arete);
                     voisins.add(nodes.get(j));
@@ -203,26 +205,28 @@ public class Graphe implements Service{
         return boneslist;
     }
 
-    /** Méthode ajoutant un au graphe. Cela consiste à remplir le champ de ses noeuds voisins.     */
+    /**
+     * Méthode ajoutant un au graphe. Cela consiste à remplir le champ de ses noeuds voisins.
+     */
 
-    public void addNodeInGraphe(Noeud noeud){
+    public void addNodeInGraphe(Noeud noeud) {
         ArrayList<Noeud> voisins = new ArrayList<>();
 
-        for(int j=0;j<nodes.size();j++){
+        for (int j = 0; j < nodes.size(); j++) {
 
-            Segment segment=new Segment(noeud.getPosition(),nodes.get(j).getPosition());
-            boolean isIntersection=false;
+            Segment segment = new Segment(noeud.getPosition(), nodes.get(j).getPosition());
+            boolean isIntersection = false;
 
-            for(int k=0;k<listCircu.size();k++){
+            for (int k = 0; k < listCircu.size(); k++) {
 
-                if(Geometry.intersects(segment,listCircu.get(k).getCircle())){
-                    isIntersection=true;
+                if (Geometry.intersects(segment, listCircu.get(k).getCircle())) {
+                    isIntersection = true;
                 }
             }
             if (!isIntersection) {
 
                 voisins.add(nodes.get(j));
-                ArrayList<Noeud> noeuds= nodes.get(j).getVoisins();
+                ArrayList<Noeud> noeuds = nodes.get(j).getVoisins();
                 noeuds.add(noeud);
                 nodes.get(j).setVoisins(noeuds);
             }
@@ -240,41 +244,46 @@ public class Graphe implements Service{
         return boneslist;
     }
 
-    public boolean traceArete(Noeud noeud1, Noeud noeud2){
-        Segment segment=new Segment(noeud1.getPosition(),noeud2.getPosition());
-        int n=listCircu.size();
-        for(int i=0;i<n;i++){
-            if(Geometry.intersects(segment,listCircu.get(i).getCircle())){
+    public boolean traceArete(Noeud noeud1, Noeud noeud2) {
+        Segment segment = new Segment(noeud1.getPosition(), noeud2.getPosition());
+        int n = listCircu.size();
+        for (int i = 0; i < n; i++) {
+            if (Geometry.intersects(segment, listCircu.get(i).getCircle())) {
                 return false;
             }
         }
         return true;
 
     }
-    public void clear(Graphe graphe){
-        graphe.nodes=null;
-        graphe.boneslist=null;
+
+    public void clear(Graphe graphe) {
+        graphe.nodes = null;
+        graphe.boneslist = null;
     }
 
 
-    public ArrayList<Arete> removeDoublons(ArrayList<Arete> areteslist){
-        int n=areteslist.size();
-        ArrayList<Arete> aretesToreturn=new ArrayList<>();
-        for(int i=0;i<n;i++){
-            Boolean toadd=true;
-            for(int k=0;k<n;k++){
-                if((areteslist.get(i).equals(areteslist.get(k)))){
-                    toadd=false;
+    public ArrayList<Arete> removeDoublons(ArrayList<Arete> areteslist) {
+        int n = areteslist.size();
+        ArrayList<Arete> aretesToreturn = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            Boolean toadd = true;
+            for (int k = 0; k < n; k++) {
+                if ((areteslist.get(i).equals(areteslist.get(k)))) {
+                    toadd = false;
                 }
             }
-            if(toadd){
+            if (toadd) {
                 aretesToreturn.add(aretesToreturn.get(i));
             }
 
         }
         return aretesToreturn;
     }
+
+    public void removeNode(Noeud noeud){
+        nodes.remove(noeud);
     }
+}
 
 
 

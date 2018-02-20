@@ -153,7 +153,7 @@ public class Robot implements Service {
 	 * @param table la table sur laquelle le robot se deplace
 	 * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
-	public void moveToLocation(Vec2 aim, Table table) throws  UnableToMoveException,PointInObstacleException
+	public void moveToLocation(Vec2 aim, Table table) throws  UnableToMoveException,PointInObstacleException,NoPathFound
 	{
 		log.debug("Appel de Robot.moveToLocation(" + aim + "," + table + ")");
 		//On crée bêtement un cercle de rayon nul pour lancer moveToCircle, sachant que la position de ce cercle est extraite pour le pathDiniDing (et après on dit qu'à INTech on code comme des porcs...)
@@ -167,10 +167,10 @@ public class Robot implements Service {
 	 * @param table la table sur laquelle on est sensé se déplacer
 	 * @throws UnableToMoveException lorsque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 */
-	public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException {
-		Vec2 aimPosition= Geometry.closestPointOnCircle(this.position,aim);
+	public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException,NoPathFound {
+		Vec2 aimPosition= Geometry.closestPointOnCircle(this.getPosition(),aim);
 		// TODO : Appel du followpath & Pathfinding !
-		followPath(pathfinding.findmyway(position,aimPosition));
+			followPath(pathfinding.findmyway(getPosition(),aimPosition));
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class Robot implements Service {
 	public void followPath(ArrayList<Vec2> chemin) throws UnableToMoveException
 	{
 		cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-		mLocomotion.followPath(chemin, DirectionStrategy.getDefaultStrategy());
+		mLocomotion.followPath(chemin);
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class Robot implements Service {
 	protected void followPath(ArrayList<Vec2> chemin, DirectionStrategy direction) throws UnableToMoveException
 	{
 		cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-		mLocomotion.followPath(chemin, direction);
+		mLocomotion.followPath(chemin);
 	}
 
 	/**
@@ -218,7 +218,7 @@ public class Robot implements Service {
 	 */
 	public void goTo(Vec2 pointVise, boolean expectedWallImpact, boolean isDetect) throws UnableToMoveException {
 		log.debug("Appel de Robot.goTo :" + pointVise);
-		mLocomotion.goTo(pointVise, expectedWallImpact, isDetect);
+		mLocomotion.moveToPoint(pointVise, expectedWallImpact, isDetect);
 	}
 
 
@@ -291,8 +291,9 @@ public class Robot implements Service {
 	 */
 	public void turn(double angle, boolean expectsWallImpact, boolean isTurnRelative, boolean mustDetect) throws UnableToMoveException
 	{
-		if(isTurnRelative)
+		if(isTurnRelative) {
 			angle += getOrientation();
+		}
 		mLocomotion.turn(angle, expectsWallImpact, mustDetect);
 	}
 
@@ -306,13 +307,26 @@ public class Robot implements Service {
 	 */
 	public void turnNoSymmetry(double angle) throws UnableToMoveException
 	{
-
 		log.debug("appel de Robot.turnNoSymmetry(" + angle + ")");
 		// Fais la symétrie deux fois (symétrie de symétrie, c'est l'identité)
 		if(symmetry)
 			turn(Math.PI-angle, false, false);
 		else
 			turn(angle, false, false);
+	}
+
+	/**
+	 * Oriente le robot vers un point.
+	 *
+	 * @param point
+	 * @throws UnableToMoveException
+	 */
+
+	public void turnToPoint(Vec2 point) throws UnableToMoveException{
+		Vec2 vec = point.minusNewVector(position);
+		double angle = vec.getA();
+		log.debug("appel de Robot.turnToPoint(" + angle + ")");
+		turn(angle,false,false);
 	}
 
 	/**
@@ -354,7 +368,6 @@ public class Robot implements Service {
 		log.debug("appel de Robot.moveLengthwise(" + distance + "," + expectsWallImpact + ")");
 		moveLengthwise(distance, expectsWallImpact, true);
 	}
-
 
 	/**
 	 * Fait avancer le robot de la distance spécifiée. Le robot garde son orientation actuelle et va simplement avancer
@@ -416,10 +429,33 @@ public class Robot implements Service {
 	}
 
 
+
+	/** Fait tourner le robot vers un point, puis le fait avancer jusqu'à une certaine distance du point
+	 * @param aim distance visée
+	 * @param distanceNear distance à laquelle le robot doit s'arrêter avant le point
+	 * @throws UnableToMoveException
+	 * @author Nayht
+	 */
+	public void moveNearPoint(Vec2 aim, double distanceNear, String direction) throws UnableToMoveException{
+		Vec2 relativeCoords = aim.minusNewVector(getPosition());
+		long distance=Math.round(relativeCoords.getR()-distanceNear);
+		if (direction=="backward"){
+			System.out.println("testBackward");
+			turnTo(getPosition().minusNewVector(relativeCoords));
+			distance*=-1;
+
+		}
+		else{
+			turnTo(aim);
+		}
+		System.out.println("distance"+distance);
+		System.out.println("distanceNear"+distanceNear);
+		moveLengthwise((int)distance);
+	}
+
 	/********************************
 	 * ASSERV', VITESSE & STRATEGIE *
 	 ********************************/
-
 
 	/**
 	 * Active le mouvement forcé (on ignore les conditions de blocage du bas-niveau)
@@ -631,11 +667,6 @@ public class Robot implements Service {
 	public Speed getLocomotionSpeed()
 	{
 		return speed;
-	}
-
-	public boolean getIsRobotTurning()
-	{
-		return mLocomotion.isRobotTurning;
 	}
 
 	public boolean getIsRobotMovingForward()

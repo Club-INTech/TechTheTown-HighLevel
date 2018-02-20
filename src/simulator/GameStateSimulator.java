@@ -1,6 +1,7 @@
 package simulator;
 
 import container.Service;
+import enums.CommunicationHeaders;
 import enums.TurningStrategy;
 import enums.UnableToMoveReason;
 import exceptions.Locomotion.UnableToMoveException;
@@ -21,7 +22,7 @@ public class GameStateSimulator implements Service {
     private Table table;
 
     /** Position du robot */
-    private Vec2 position = new Vec2(0,0);
+    private Vec2 position;
 
     /** Orientation du robot */
     private float orientation = 0;
@@ -48,6 +49,7 @@ public class GameStateSimulator implements Service {
     /** La config et le log, qui sont les seuls champs partagé avec le HL */
     private Config config;
     private Log log;
+    private ThreadSimulator simulator;
 
     /**
      * Constructeur du coeur du simulateur !
@@ -58,22 +60,28 @@ public class GameStateSimulator implements Service {
         this.config = config;
         this.log = log;
         table = new Table(log, config);
+        this.position = new Vec2(0,0);
     }
 
     /** Update la position du robot */
     public void moveLengthwise(float distance) throws InterruptedException, UnableToMoveException{
 
+        long timeRef = System.currentTimeMillis();
         int done = 0;
         Vec2 finalAim = position.plusNewVector(new Vec2(distance, orientation));
+        // Divisé par 100 car move delay en ms, translationSpeed en mm/s et distanceLoop en mm
         float distanceLoop = (float) translationSpeed * moveDelay/(float)1000;
 
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
 
+        log.debug(String.format("Move delay : %d, DistancePerDelay : %s", moveDelay, distanceLoop));
+
         while (done < Math.abs(distance) && !this.isMustStop()) {
             Thread.sleep(moveDelay);
             position.plus(new Vec2(distanceLoop, orientation));
             done += distanceLoop;
+            simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", position.getX(), position.getY(), orientation));
 
             if(table.getObstacleManager().isObstructed(position) || !table.getObstacleManager().isRobotInTable(position)){
                 throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
@@ -84,6 +92,7 @@ public class GameStateSimulator implements Service {
         if(!this.isMustStop()) {
             position = finalAim;
         }
+        log.debug(String.format("Fin du mouvement, position : (%d, %d), temps : %d", position.getX(), position.getY(), (System.currentTimeMillis() - timeRef)));
     }
 
     /** Update l'orientation du robot */
@@ -115,6 +124,7 @@ public class GameStateSimulator implements Service {
             Thread.sleep(moveDelay);
             orientation = (float) Geometry.moduloSpec((double)(orientation + angleStep), Math.PI);
             done+=Math.abs(angleStep);
+            simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", position.getX(), position.getY(), orientation));
         }
         this.setRobotMoving(false);
 
@@ -124,6 +134,10 @@ public class GameStateSimulator implements Service {
     }
 
     /** Getters & Setters */
+    public void setSimulator(ThreadSimulator simulator) {
+        this.simulator = simulator;
+    }
+
     /** Position */
     public synchronized Vec2 getPosition() {
         return position;

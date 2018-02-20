@@ -25,6 +25,7 @@ import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.NoPathFound;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -47,8 +48,7 @@ public abstract class AbstractScript implements Service
 
 	/**  Liste des versions du script. */
 	protected Integer[] versions;
-	/**  tableau de 2 dimensions des versions du script. */
-	protected Integer[][] versions2;
+
 
 	/** HookFactory pour gérer les hooks */
 	protected static HookFactory hookFactory;
@@ -78,11 +78,11 @@ public abstract class AbstractScript implements Service
 		log.debug("Lancement de " + this.toString() + " version " + versionToExecute);
 		try 
 		{
-			if(actualState.robot.getPosition().minusNewVector(entryPosition(versionToExecute,actualState.robot.getRobotRadius(), actualState.robot.getPositionFast()).getCenter()).squaredLength() > 40) {
+			if(actualState.robot.getPosition().minusNewVector(entryPosition(versionToExecute, actualState.robot.getPositionFast()).getCenter()).squaredLength() > 40) {
 
-				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getRobotRadius(), actualState.robot.getPosition()).getCenter());
+				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getPosition()).getCenter());
 
-				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getRobotRadius(), actualState.robot.getPositionFast()), actualState.table);
+				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPositionFast()), actualState.table);
 			}
 		}
 		catch (UnableToMoveException e)
@@ -90,12 +90,20 @@ public abstract class AbstractScript implements Service
 			log.debug("Catch de "+e+" Impossible de goToThenExec : abandon d'exec, throw de "+e);
 			throw e;
 		}
+		catch(NoPathFound e){
+			log.debug("pas de chemin trouvé");
+		}
 
 		// exécute la version demandée
-		execute(versionToExecute, actualState);
+		try{
+			execute(versionToExecute, actualState);
+		}
+		catch (InterruptedException e){
+			log.debug("pour l'instant je sais pas");
+			e.printStackTrace();
+		}
 	}
 
-	   
 	/**
 	 * Exécute le script
 	 * @param versionToExecute la version du script à exécuter
@@ -103,7 +111,7 @@ public abstract class AbstractScript implements Service
 	 * @throws UnableToMoveException exception levée lorsque le robot ne peut se déplacer (décor ou obstacles détectés par capteurs)
 	 * @throws ExecuteException
 	 */
-	public abstract void execute(int versionToExecute, GameState actualState) throws UnableToMoveException, ExecuteException, BlockedActuatorException;
+	public abstract void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, BadVersionException, PointInObstacleException;
 
 	/**
 	 * Renvoie le score que peut fournir une version d'un script.
@@ -117,13 +125,11 @@ public abstract class AbstractScript implements Service
 
 	/**
 	 * Retourne la position d'entrée associée à la version.
-	 *
 	 * @param version version dont on veut le point d'entrée
-	 * @param ray : rayon du robot
 	 * @param robotPosition la position actuelle du robot
 	 * @return la position du point d'entrée
 	 */
-	public abstract Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException;
+	public abstract Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException;
 	
 	/**
 	 * Méthode appelée à la fin du script si une exception a lieu.
@@ -172,9 +178,6 @@ public abstract class AbstractScript implements Service
 	 * @see container.Service#updateConfig()
 	 */
 
-	public static Config getConfig() {
-		return config;
-	}
 
 	public void updateConfig() {
 	}
@@ -183,6 +186,6 @@ public abstract class AbstractScript implements Service
 	 * @param stateToConsider état de jeu actuel
 	 * @return les versions possibles du script*/
 	abstract public Integer[] getVersion(GameState stateToConsider);
-	abstract public Integer[][] getVersion2(GameState stateToConsider);
+
 
 }

@@ -25,7 +25,7 @@ package utils;
  * @author pf,
  */
 
-public class Sleep 
+public class Sleep
 {
 
 	// Constructeur privé car cette classe n'a qu'une méthode statique

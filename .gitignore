@@ -158,6 +158,7 @@ flycheck_*.el
 .idea/dictionaries
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
+.idea
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
@@ -321,3 +322,7 @@ Supprimerait out/
 /.idea/copyright/profiles_settings.xml
 /lib/jSSC-2.6.0-Release/javadoc/
 /lib/jSSC-2.6.0-Release/src/
+
+*.txt
+*.dot
+log/

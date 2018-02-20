@@ -19,14 +19,11 @@
 
 package tests;
 
-import enums.ScriptNames;
-import enums.Speed;
+import enums.*;
+import exceptions.Locomotion.UnableToMoveException;
 import org.junit.Before;
 import org.junit.Test;
 import pathfinder.Pathfinding;
-import pfg.config.Config;
-import robot.EthWrapper;
-import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
@@ -34,24 +31,22 @@ import simulator.ThreadSimulatorMotion;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
-import threads.dataHandlers.ThreadEth;
-import threads.dataHandlers.ThreadSensor;
-import utils.Log;
-
-import java.util.ArrayList;
 
 
 /**
  * The Class JUnit_Robot.
  */
-public class JUnit_Robot extends JUnit_Test
-{
-    
-    /** The robotvrai. */
+public class JUnit_Robot extends JUnit_Test {
+    /**
+     * The robotvrai.
+     */
     private Robot robotReal;
     private ScriptManager scriptManager;
     private GameState state;
-    
+    private ThreadSimulator simulator;
+    private ThreadSimulatorMotion simulatorMotion;
+    private Table table;
+
     /* (non-Javadoc)
      * @see tests.JUnit_Test#setUp()
      */
@@ -59,7 +54,16 @@ public class JUnit_Robot extends JUnit_Test
     public void setUp() {
         try {
             super.setUp();
-        }catch (Exception e){
+            robotReal = container.getService(Robot.class);
+            scriptManager = container.getService(ScriptManager.class);
+            state = container.getService(GameState.class);
+            table = container.getService(Table.class);
+     //       simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+     //       simulator = container.getService(ThreadSimulator.class);
+
+            container.startInstanciedThreads();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -67,24 +71,44 @@ public class JUnit_Robot extends JUnit_Test
     @Test
     public void testScript() {
         try {
-            robotReal = container.getService(Robot.class);
-            container.startInstanciedThreads();
-            robotReal.setPosition(new Vec2(600, 500));
             robotReal.getPosition();
-            robotReal.setOrientation(0.0);
-            Thread.sleep(100);
             robotReal.getOrientation();
-            robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
 
-            robotReal.goTo(new Vec2(650, 500));
-            Thread.sleep(5000);
-            robotReal.moveLengthwise(-50);
-            robotReal.turn(1.2);
-            robotReal.turn(0.8);
+            robotReal.setPosition(new Vec2(890,840));
+            robotReal.setOrientation(Math.PI);
+            robotReal.setLocomotionSpeed(Speed.FAST_ALL);
+            robotReal.moveLengthwise(200);
+            state.indicePattern=1;
+
+            scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(TasCubes.TAS_STATION_EPURATION.getID(),state);
+            scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(TasCubes.TAS_CHATEAU_EAU.getID(),state);
+
+            scriptManager.getScript(ScriptNames.DEPOSE_CUBES).goToThenExec(0,state);
 
             Thread.sleep(500);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void basicTest() {
+        //robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,false);
+        //robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT,true);
+        robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,false);
+        robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,true);
+        /*for (int i=0; i<20; i++){
+            try {
+                robotReal.moveLengthwise(250);
+                robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
+                robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+
+                robotReal.moveLengthwise(-250);
+                robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
+                robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
+            }catch (UnableToMoveException e){
+                e.printStackTrace();
+            }
+        }*/
     }
 }

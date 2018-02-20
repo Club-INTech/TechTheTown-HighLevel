@@ -59,6 +59,8 @@ public enum ActuatorOrder implements MotionOrder
 	DISABLE_FORCE_MOVEMENT("dfm"),
 	SET_TRANSLATION_SPEED("ctv"),
 	SET_ROTATIONNAL_SPEED("crv"),
+	SET_SPEED("ctrv"),
+
 	SET_X("cx"),
 	SET_Y("cy"),
 	SET_ORIENTATION("co"),
@@ -67,12 +69,28 @@ public enum ActuatorOrder implements MotionOrder
 	INITIALISE_HOOK("nh"),
 	ENABLE_HOOK("eh"),
 	DISABLE_HOOK("dh"),
-	BAISSE_LE_BRAS("blb"),
-	ACTIVE_LA_POMPE("alp"),
-	RELEVE_LE_BRAS("rlb"),
-	DESACTIVE_LA_POMPE("dlp"),
-	FERME_LA_PORTE("flp"),
-	OUVRE_LA_PORTE("olp"),
+
+	ACTIVE_LA_POMPE("alp",400),
+	DESACTIVE_LA_POMPE("dlp",400),
+
+	BAISSE_LE_BRAS_AVANT("blbAv",1750),
+	RELEVE_LE_BRAS_AVANT("rlbAv",1750),
+	OUVRE_LA_PORTE_AVANT("olpAv",750),
+	FERME_LA_PORTE_AVANT("flpAv",750),
+	TILT_LA_PORTE_AVANT("tlpAv",500),
+	ACTIVE_ELECTROVANNE_AVANT("aeAv",300),
+	DESACTIVE_ELECTROVANNE_AVANT("deAv",300),
+
+	BAISSE_LE_BRAS_ARRIERE("blbAr",1750),
+	RELEVE_LE_BRAS_ARRIERE("rlbAr",1750),
+	FERME_LA_PORTE_ARRIERE("flpAr",750),
+	OUVRE_LA_PORTE_ARRIERE("olpAr",750),
+	TILT_LA_PORTE_ARRIERE("tlpAr",500),
+	ACTIVE_ELECTROVANNE_ARRIERE("aeAr",300),
+	DESACTIVE_ELECTROVANNE_ARRIERE("deAr",300),
+
+	ACTIVE_BRAS_AVANT_POUR_ABEILLE("blbAbei",1750),
+
 /*			 _____________________
  * 		   *|                     |*
  *		   *|   ASSERVISSEMENTS   |*

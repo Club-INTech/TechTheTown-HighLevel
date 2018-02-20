@@ -53,6 +53,21 @@ public class GameState implements Service
 	/** points marqués depuis le debut du match */
     public int obtainedPoints;
 
+    /** Indice du pattern trouvé*/
+    public int indicePattern;
+
+    /** Tour avant déjà remplie */
+    public boolean tourAvantRemplie;
+
+    /** Tour arriere déjà remplie */
+    public boolean tourArriereRemplie;
+
+    /** Cube bonus avant présent dans la tour*/
+    public boolean cubeAvantPresent;
+
+    /** Cube bonus arrière présent dans la tour*/
+    public boolean cubeArrierePresent;
+
     /**
      * Instancie un nouvel état de jeu. (il ne représente pas forcément la réalité, il peut être fictif)
      *
@@ -66,8 +81,16 @@ public class GameState implements Service
         this.table = table;
         this.robot = robot;
         
-        // on n'a marqué aucun point en début de match
-        obtainedPoints = 0;
+        //On n'a marqué aucun point en début de match
+        this.obtainedPoints = 0;
+
+        //Aucun des tours n'est remplie en début de match
+        this.tourAvantRemplie=false;
+        this.tourArriereRemplie=false;
+
+        //On dit que les cubes bonus sont présents au début du match
+        this.cubeAvantPresent=true;
+        this.cubeArrierePresent=true;
     }
 
     /* (non-Javadoc)

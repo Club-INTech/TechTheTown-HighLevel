@@ -19,35 +19,66 @@
 
 package tests;
 
+import enums.DirectionStrategy;
+import enums.Speed;
+import exceptions.Locomotion.PointInObstacleException;
+import exceptions.Locomotion.UnableToMoveException;
+import exceptions.NoPathFound;
 import graphics.Window;
+import org.junit.Before;
 import org.junit.Test;
 import pathfinder.Arete;
+import simulator.ThreadSimulator;
+import simulator.ThreadSimulatorMotion;
+import smartMath.Circle;
 import smartMath.Segment;
 import smartMath.Vec2;
+import strategie.GameState;
 import table.Table;
+import threads.ThreadInterface;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
 public class JUnit_Graphics extends JUnit_Test
 {
-	/** La JFrame à tester */
-	private Window win;
+	/** Threads */
+	private ThreadInterface anInterface;
+	private ThreadSimulator simulator;
+	private ThreadSimulatorMotion simulatorMotion;
 
-	/** La table */
+	/** Le GameState */
+	private GameState state;
 	private Table table;
 
-	/** Test du debug pathfinding */
-	@Test
-	public void testWinTable() throws Exception {
+	@Override
+	public void setUp() throws  Exception {
+		super.setUp();
+		anInterface = container.getService(ThreadInterface.class);
+		simulator = container.getService(ThreadSimulator.class);
+		simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+		state = container.getService(GameState.class);
 		table = container.getService(Table.class);
+		container.startInstanciedThreads();
+	}
 
-		ArrayList<Vec2> clics = new ArrayList<>();
+	@Test
+	public void testInterface() throws Exception {
+		Thread.sleep(5000);
+	}
 
-		win = new Window(table);
+	@Test
+	public void testSimpleMove() throws UnableToMoveException, PointInObstacleException {
+		state.robot.setPosition(new Vec2(1200, 400));
+		state.robot.setOrientation(3*Math.PI/4);
+		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+		try {
+			state.robot.moveToCircle(new Circle(new Vec2(0, 1200), 0), table);
+		}
 
-		while(true) {
-			clics = win.waitLRClic();
-			Thread.sleep(100);
+		catch (NoPathFound e){
+			log.debug("pas de chemin trouvé");
+			e.printStackTrace();
 		}
 	}
 }

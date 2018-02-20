@@ -39,7 +39,8 @@ import utils.Log;
  *          -------------------------------------------------------
  *          
  * (0,0) = entre les deux zones de départ
- * (0,2000) = Base Lunaire
+ * (0,2000) = Stations de récupération
+ * (0,0) = Pattern de couleurs
  */
 
 /**
@@ -66,6 +67,7 @@ public class Table implements Service
 
 	/** point de départ du match à modifier a chaque base roulante */
 	public static Vec2 entryPosition = new Vec2(590, 176);
+	public static double entryOrientation = Math.PI;
 
 	/**
 	 * Instancie une nouvelle table
@@ -83,7 +85,6 @@ public class Table implements Service
 
 	public void initialise() // initialise la table du debut du jeu
 	{
-
 		if(symetry)
 		{
 			entryPosition = new Vec2(560, 176);

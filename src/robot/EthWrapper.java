@@ -20,13 +20,11 @@
 package robot;
 
 import container.Service;
-import enums.ActuatorOrder;
-import enums.ConfigInfoRobot;
-import enums.ContactSensors;
-import enums.TurningStrategy;
+import enums.*;
 import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Vec2;
+import smartMath.XYO;
 import threads.dataHandlers.ThreadEth;
 import utils.Log;
 import utils.Sleep;
@@ -86,7 +84,7 @@ public class EthWrapper implements Service {
      */
     public void moveLengthwise(double distance)
     {
-        int distanceTruncated = (int)distance;
+        int distanceTruncated=(int)Math.round(distance);
         eth.communicate(0, ActuatorOrder.MOVE_LENTGHWISE.getSerialOrder(), String.format(Locale.US, "%d", distanceTruncated));
     }
 
@@ -176,7 +174,6 @@ public class EthWrapper implements Service {
      */
     public void setTranslationnalSpeed(float speed)
     {
-        // envoie a la carte d'asservissement le nouveau maximum du pwm
         eth.communicate(0, ActuatorOrder.SET_TRANSLATION_SPEED.getSerialOrder(), String.format(Locale.US, "%.3f", speed));
     }
 
@@ -186,8 +183,15 @@ public class EthWrapper implements Service {
      */
     public void setRotationnalSpeed(double rotationSpeed)
     {
-        // envoie a la carte d'asservissement le nouveau maximum du pwm
         eth.communicate(0, ActuatorOrder.SET_ROTATIONNAL_SPEED.getSerialOrder(), String.format(Locale.US, "%.3f", (float)rotationSpeed));
+    }
+
+    /**
+     * Modifie les vitesses de translation et de rotation du robot
+     * @param speed
+     */
+    public void setBothSpeed(Speed speed){
+        eth.communicate(0, ActuatorOrder.SET_SPEED.getSerialOrder(), String.format(Locale.US, "%.3f", speed.translationSpeed), String.format(Locale.US, "%.3f", speed.rotationSpeed));
     }
 
     /**
@@ -300,6 +304,7 @@ public class EthWrapper implements Service {
     public void setX(int x)
     {
         float floatX=(float)x; //On transtype car la serie veut des Floats <3
+        eth.getPositionAndOrientation().getPosition().setX(x);
         eth.communicate(0, ActuatorOrder.SET_X.getSerialOrder(), String.format(Locale.US, "%.3f", floatX));
     }
 
@@ -310,6 +315,7 @@ public class EthWrapper implements Service {
     public void setY(int y)
     {
         float floatY=(float)y;//On transtype car la serie veut des Floats
+        eth.getPositionAndOrientation().getPosition().setY(y);
         eth.communicate(0, ActuatorOrder.SET_Y.getSerialOrder(), String.format(Locale.US, "%.3f", floatY));
     }
 
@@ -320,6 +326,7 @@ public class EthWrapper implements Service {
     public void setOrientation(double orientation)
     {
         float floatOrientation =(float) orientation; //On transtype car la serie veut des Floats (T_T)
+        eth.getPositionAndOrientation().setOrientation(orientation);
         eth.communicate(0, ActuatorOrder.SET_ORIENTATION.getSerialOrder(), String.format(Locale.US, "%.3f", floatOrientation));
     }
 
@@ -354,6 +361,12 @@ public class EthWrapper implements Service {
      * DIVERS *
      **********/
 
+    /**
+     * Met à jour l'orientaton et la position du robot
+     */
+    public XYO updatePositionAndOrientation(){
+        return eth.getPositionAndOrientation();
+    }
 
     /**
      * Demande a la carte capteurs de nous indiquer si le jumper de début de match est présent ou non
@@ -437,7 +450,6 @@ public class EthWrapper implements Service {
     public void updateConfig(){
         loopDelay = config.getInt(ConfigInfoRobot.ETH_DELAY);
     }
-
     public boolean getSensorState(){
         return sensorState;
     }

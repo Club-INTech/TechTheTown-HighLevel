@@ -1,5 +1,8 @@
 package scripts;
 
+import enums.ActuatorOrder;
+import enums.ConfigInfoRobot;
+import enums.Speed;
 import exceptions.BadVersionException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.UnableToMoveException;
@@ -14,71 +17,94 @@ public class DeposeCubes extends AbstractScript{
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory){
         super(config, log, hookFactory);
-        /**6  versions pour les 6 blocs de cubes :
-         *  quand on va prendre 4 cubes (pour l'instant 4 le 5 ème à venir ^^) , ilfaudra déposer la
-         *  tour construite à partir d'un bloc dans la zone de construction, comme on est très forts,
-         *  on va prendre les six, et du coup, six positions d'entrées donc six versions*/
-        versions = new Integer[]{0,1,2,3,4,5};
+        versions= new Integer[]{0,1};
     }
+
+    /**
+     * Cette méthode dépose les cubes pris par les deux bras
+     * @param stateToConsider
+     * @throws ExecuteException
+     * @throws UnableToMoveException
+     */
     @Override
-    public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
-        // d est la distance avec laquelle on recule (mesures à effectuer)
-        int d=120;
-        stateToConsider.robot.turn(-Math.PI/2);
-        if (versionToExecute==0 ||versionToExecute==1 || versionToExecute==2 ||versionToExecute==3
-                || versionToExecute==4 ||versionToExecute==5) {
-            stateToConsider.robot.moveLengthwise(-d);
+    public void execute(int version,GameState stateToConsider) throws ExecuteException, UnableToMoveException {
+        int d=70; //on pénètre la zone de construction de cette distance
+        int dimensionporte=config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
+        int distancepush=105;
+        int radius=config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+        Vec2 aim=new Vec2(750,175+radius);
+        //on fait la même suite d'actions, mais pas au même endroit
+        if(version==0) {
+            //On se tourne vers la zone de construction
+            stateToConsider.robot.turn(-Math.PI / 2);
+            //On rentre dans la zone
+            stateToConsider.robot.moveLengthwise(d);
+            //On ouvre la porte
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
+            //On recule de la largeur de la porte + de la longueur avancée dans la zone
+            stateToConsider.robot.moveLengthwise(-d - dimensionporte);
+            //On ferme la porte
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
+            stateToConsider.robot.turn(Math.PI/2);
+            stateToConsider.robot.moveLengthwise(dimensionporte);
+            //On avance de la dimension de la porte + de la distance poussée
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
+            stateToConsider.robot.moveLengthwise(-(d + dimensionporte+distancepush));
+            stateToConsider.robot.moveLengthwise(dimensionporte+distancepush+d);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
+
+        }
+        //comme la version précédente mais l'accès à la zone est scripté
+        else if(version==1){
+            stateToConsider.robot.goTo(aim);
+            //On se tourne vers la zone de construction
+            stateToConsider.robot.turn(-Math.PI / 2);
+            //On rentre dans la zone
+            stateToConsider.robot.moveLengthwise(d);
+            //On ouvre la porte
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
+            //On recule de la largeur de la porte + de la longueur avancée dans la zone
+            stateToConsider.robot.moveLengthwise(-d - dimensionporte);
+            //On ferme la porte
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
+            stateToConsider.robot.turn(Math.PI/2);
+            stateToConsider.robot.moveLengthwise(dimensionporte);
+            //On avance de la dimension de la porte + de la distance poussée
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
+            stateToConsider.robot.moveLengthwise(-(d + dimensionporte+distancepush));
+            stateToConsider.robot.moveLengthwise(dimensionporte+distancepush+d);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
+        }
+
+    }
+
+    @Override
+    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
+        /*coordonnées de la zone de construction
+               550<x<1070
+                y=175
+         */
+        if(version==0) {
+            int xentry = 970;
+            int yentry = 175 + config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+            Vec2 position = new Vec2(xentry, yentry);
+            return new Circle(position);
+        }
+        /*
+        On va vers cette position en utilisant le pathfinding, apres on scripte l'acces a
+        la zone de depose cubes
+         */
+        else if(version==1){
+            int xEntry=350;
+            int yEntry=370;
+            Vec2 positionentree=new Vec2(xEntry,yEntry);
+            return new Circle(positionentree);
+        }
+        else{
+            throw new BadVersionException();
         }
     }
-    public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
-        /**mesures à effectuer pour initialiser xEntry et yEntry*/
-            if (version == 0) {
-                int xEntry=0;
-                int yEntry=0;
-                Vec2 position = new Vec2(xEntry, yEntry);
-                return new Circle(position);
-            }
-            else {
-                if (version == 1) {
-                    int xEntry=0 ;
-                    int yEntry=0 ;
-                    Vec2 position = new Vec2(xEntry, yEntry);
-                    return new Circle(position);
-                } else {
-                    if (version == 2) {
-                        int xEntry=0 ;
-                        int yEntry=0 ;
-                        Vec2 position = new Vec2(xEntry, yEntry);
-                        return new Circle(position);
-                    } else {
-                        if (version == 3) {
-                            int xEntry=0 ;
-                            int yEntry=0 ;
-                            Vec2 position = new Vec2(xEntry, yEntry);
-                            return new Circle(position);
-                        } else {
-                            if (version == 4) {
-                                int xEntry=0 ;
-                                int yEntry=0 ;
-                                Vec2 position = new Vec2(xEntry, yEntry);
-                                return new Circle(position);
-                            } else {
-                                if (version == 5) {
-                                    int xEntry=0 ;
-                                    int yEntry=0 ;
-                                    Vec2 position = new Vec2(xEntry, yEntry);
-                                    return new Circle(position);
-                                }
-                                else{
-                                    log.critical("Version invalide");
-                                    throw new BadVersionException();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-    }
+
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
         return 0;
@@ -86,16 +112,12 @@ public class DeposeCubes extends AbstractScript{
 
     @Override
     public void finalize(GameState state, Exception e) throws UnableToMoveException {
-
     }
 
     @Override
     public Integer[] getVersion(GameState stateToConsider) {
         return versions;
     }
-    @Override
-    public Integer[][] getVersion2(GameState stateToConsider) {
-        return new Integer[][]{};
-    }
+
 
 }

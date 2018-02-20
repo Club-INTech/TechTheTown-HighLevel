@@ -21,6 +21,7 @@ package scripts;
 
 import enums.Speed;
 import exceptions.BadVersionException;
+import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
@@ -280,7 +281,7 @@ public class CloseDoors extends AbstractScript
 	}
 
 	@Override
-	public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException
+	public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException
 	{
 		if (version == 0 || version == 1 || version == 4)
 		{
@@ -310,8 +311,6 @@ public class CloseDoors extends AbstractScript
 	{
 		return versions;
 	}
-	public Integer[][] getVersion2(GameState stateToConsider)
-	{ return new Integer[][]{};
-	}
-	
+
+
 }
