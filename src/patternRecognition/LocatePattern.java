@@ -224,7 +224,7 @@ public class LocatePattern {
                                             curves.get(j - 2), curves.get(j - 1)));
                                     maxCosine = Math.max(maxCosine, cosine);
                                 }
-                                if (maxCosine < 0.5) {
+                                if (maxCosine < 0.4) {
                                     maxArea = area;
                                     maxId = contours.indexOf(contour);
                                 }

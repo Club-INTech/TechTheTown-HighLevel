@@ -84,7 +84,6 @@ public class PatternRecognition extends AbstractThread{
                     picture = ImageIO.read(new File(pathnameTris));
                 }
                 catch (IOException e3) {
-                    colorMatrix = null;
                     picture = new BufferedImage(2592, 1944, 1);
                     System.out.println("Image not found");
                 }
@@ -425,19 +424,19 @@ public class PatternRecognition extends AbstractThread{
         return HSB;
     }
 
-    private int[][][] lightUpSector(int[][][] colorMatrixLitUp, int xstart, int ystart, int xend, int yend){
+    private int[][][] lightUpSector(int[][][] colorMatrixLitUp, int xstart, int ystart, int xend, int yend, double saturationModifier, double brightnessModifier){
         for (int x=xstart; x<xend; x++){
             for (int y=ystart; y<yend; y++){
                     int[] RGB = colorMatrixLitUp[x][y];
                     float[] HSB=convertRGBtoHSB(RGB[0],RGB[1],RGB[2]);
 
                     //Improve saturation
-                    HSB[1]*=1.5;
+                    HSB[1]*=saturationModifier;
                     if (HSB[1]>1){
                         HSB[1]=1;
                     }
                     //Improve brightness
-                    HSB[2]*=1.5;
+                    HSB[2]*=brightnessModifier;
                     if (HSB[2]>1){
                         HSB[2]=1;
                     }
@@ -451,7 +450,7 @@ public class PatternRecognition extends AbstractThread{
     private int[][][] lightUpColors(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends){
         int[][][] colorMatrixLitUp=colorMatrix.clone();
         for (int i=0; i<xstarts.length; i++){
-            colorMatrixLitUp=lightUpSector(colorMatrixLitUp, xstarts[i], ystarts[i], xends[i], yends[i]);
+            colorMatrixLitUp=lightUpSector(colorMatrixLitUp, xstarts[i], ystarts[i], xends[i], yends[i],1,1.5);
         }
         return colorMatrixLitUp;
     }
@@ -497,6 +496,14 @@ public class PatternRecognition extends AbstractThread{
         double[][] distanceArrays = new double[5][10];
         int halfLengthSideOfSquareDetection = lengthSideOfSquareDetection / 2;
         int halfDistanceBetweenTwoColors = distanceBetweenTwoColors / 2;
+        if (!(this.alreadyPreModified)){
+            if (debug){
+                System.out.println("Modification");
+            }
+            colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3],saturationPreModifier,brightnessPreModifier);
+            this.alreadyPreModified=true;
+        }
+
         int iStartValue = -2;
         for (int i = iStartValue; i <= 2; i++) {
             /**On définit où l'algorithme doit chercher ses couleurs
@@ -557,7 +564,7 @@ public class PatternRecognition extends AbstractThread{
                 if (debug){
                     System.out.println("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                 }
-                colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3]);
+                colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3],1.2,1.2);
                 if (isSavingImages) {
                     String imageName="images/patternRecognition/500ImagesTest/output"+Double.toString(Math.random())+".png";
                     saveImage(colorMatrix, imageName);
@@ -649,16 +656,19 @@ public class PatternRecognition extends AbstractThread{
     private int alreadyLitUp; //l'image a déjà été éclairée
     private boolean isSavingImages;
     private boolean symmetry;
-    private int[] zoneToPerformLocalisationVert={1,800,800,800};
-    private int[] zoneToPerformLocalisationOrange={(2592-801),800,800,800};
     private int imageWidth=2592;
     private int imageHeight=1944;
+    private int[] zoneToPerformLocalisationVert={1,700,1200,1200};
+    private int[] zoneToPerformLocalisationOrange={(imageWidth-1201),700,1200,1200};
+    private double saturationPreModifier;
+    private double brightnessPreModifier;
+    private boolean alreadyPreModified;
 
     /** Instanciation du thread de reconnaissance de couleurs
      * @param pathToImage chemin à l'image enregistrée
      * @param zoneToPerformLocalisation zone dans laquelle la localisation de pattern va devoir se faire.
      */
-    public PatternRecognition(Config config, String pathToImage, int[] zoneToPerformLocalisation){
+    public PatternRecognition(Config config, String pathToImage, int[] zoneToPerformLocalisation, double saturationPreModifier, double brightnessPreModifier){
         //TODO:CALIBRER SUR UNE IMAGE SOMBRE
         this.config=config;
         this.pathToImage=pathToImage;
@@ -681,6 +691,9 @@ public class PatternRecognition extends AbstractThread{
         this.mustSelectAValidPattern=false;
         this.alreadyLitUp=0;
         this.isSavingImages=true;
+        this.saturationPreModifier=saturationPreModifier;
+        this.brightnessPreModifier=brightnessPreModifier;
+        this.alreadyPreModified=false;
     }
 
     public void run(){

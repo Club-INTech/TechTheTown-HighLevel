@@ -28,11 +28,13 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     public void testReconnaissance(){
         //String pathToImage = "ImageRaspberryPi.png";
         String results="";
+        int nbMinusOne=0;
+        int nbSuccessful=0;
         for (int i=1; i<=500; i++) {
             results+=i+"\t:\t";
             String pathToImage = "500ImagesTest/Image"+i+".png";
             int[] zoneToPerformLocalisation = {0, 0, 0, 0};
-            PatternRecognition patternRecognitionThread = new PatternRecognition(config, pathToImage, zoneToPerformLocalisation);
+            PatternRecognition patternRecognitionThread = new PatternRecognition(config, pathToImage, zoneToPerformLocalisation,1.2,1);
             patternRecognitionThread.setDebugPatternRecognition(false);
             log.debug("Starting PatternRecognition thread...");
             patternRecognitionThread.start();
@@ -41,10 +43,18 @@ public class JUnit_PatternRecognition extends JUnit_Test {
             while (victoryPattern == -2) {
                 victoryPattern = patternRecognitionThread.returnFinalIndice();
             }
+            if (victoryPattern==-1){
+                nbMinusOne+=1;
+            }
+            else if ((i/50)==victoryPattern){
+                nbSuccessful+=1;
+            }
             results+=victoryPattern+"\n";
             patternRecognitionThread.shutdown();
             log.debug("Pattern found : " + victoryPattern);
         }
         System.out.println(results);
+        System.out.println("Nombre de -1 : "+nbMinusOne);
+        System.out.println("Nombre de réussites : "+nbSuccessful);
     }
 }
