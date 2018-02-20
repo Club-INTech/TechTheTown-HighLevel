@@ -17,76 +17,93 @@ public class DeposeCubes extends AbstractScript{
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory){
         super(config, log, hookFactory);
-        /**3 versions de DeposeCubes
-         * La version 0 correspond à l'action de déposer les deux premières tours de cubes
-         * La version 1 correspond aux 2 deuxièmes tours
-         * La version 2 correspond au cas ou on va déposer que la troisième tour mais
-         * pas la quatrième*/
-        versions = new Integer[]{0,1,2};
+        versions= new Integer[]{0,1};
     }
+
+    /**
+     * Cette méthode dépose les cubes pris par les deux bras
+     * @param stateToConsider
+     * @throws ExecuteException
+     * @throws UnableToMoveException
+     */
     @Override
-    public void execute(int versionToExecute, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
-        /* d est la distance avec laquelle on recule : on recule d'une distance au moins égale à la dimension
-        de la porte pour pouvoir la fermer à nouveau
-         */
-        int l= config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
-        int d=950;
-        int d2=20; //c'est la même distance que d dans entryPosition
-        int d3=2*l;//mesure à faire pour savoir exactement
-        stateToConsider.robot.turn(-Math.PI/2);
-        //la version 0 et 1 corresondent au cas ou on dépose les deux tours
-        if (versionToExecute==0 || versionToExecute==1) {
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
-            stateToConsider.robot.moveLengthwise(-d-d2);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
-            stateToConsider.robot.turn(0);
-            stateToConsider.robot.moveLengthwise(d3);
+    public void execute(int version,GameState stateToConsider) throws ExecuteException, UnableToMoveException {
+        int d=70; //on pénètre la zone de construction de cette distance
+        int dimensionporte=config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
+        int distancepush=105;
+        int radius=config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+        Vec2 aim=new Vec2(750,175+radius);
+        //on fait la même suite d'actions, mais pas au même endroit
+        if(version==0) {
+            //On se tourne vers la zone de construction
+            stateToConsider.robot.turn(-Math.PI / 2);
+            //On rentre dans la zone
+            stateToConsider.robot.moveLengthwise(d);
+            //On ouvre la porte
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
+            //On recule de la largeur de la porte + de la longueur avancée dans la zone
+            stateToConsider.robot.moveLengthwise(-d - dimensionporte);
+            //On ferme la porte
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
             stateToConsider.robot.turn(Math.PI/2);
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE,true);
-            stateToConsider.robot.moveLengthwise(-d-d2);
+            stateToConsider.robot.moveLengthwise(dimensionporte);
+            //On avance de la dimension de la porte + de la distance poussée
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
+            stateToConsider.robot.moveLengthwise(-(d + dimensionporte+distancepush));
+            stateToConsider.robot.moveLengthwise(dimensionporte+distancepush+d);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
+
+        }
+        //comme la version précédente mais l'accès à la zone est scripté
+        else if(version==1){
+            stateToConsider.robot.goTo(aim);
+            //On se tourne vers la zone de construction
+            stateToConsider.robot.turn(-Math.PI / 2);
+            //On rentre dans la zone
+            stateToConsider.robot.moveLengthwise(d);
+            //On ouvre la porte
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
+            //On recule de la largeur de la porte + de la longueur avancée dans la zone
+            stateToConsider.robot.moveLengthwise(-d - dimensionporte);
+            //On ferme la porte
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
+            stateToConsider.robot.turn(Math.PI/2);
+            stateToConsider.robot.moveLengthwise(dimensionporte);
+            //On avance de la dimension de la porte + de la distance poussée
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
+            stateToConsider.robot.moveLengthwise(-(d + dimensionporte+distancepush));
+            stateToConsider.robot.moveLengthwise(dimensionporte+distancepush+d);
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
         }
-        //on dépose la troisième tour au cas ou on arrive pas à prendre la 4ème
-        if(versionToExecute==3){
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT,true);
-            stateToConsider.robot.moveLengthwise(-d-d2);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
+
+    }
+
+    @Override
+    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
+        /*coordonnées de la zone de construction
+               550<x<1070
+                y=175
+         */
+        if(version==0) {
+            int xentry = 970;
+            int yentry = 175 + config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+            Vec2 position = new Vec2(xentry, yentry);
+            return new Circle(position);
+        }
+        /*
+        On va vers cette position en utilisant le pathfinding, apres on scripte l'acces a
+        la zone de depose cubes
+         */
+        else if(version==1){
+            int xEntry=350;
+            int yEntry=370;
+            Vec2 positionentree=new Vec2(xEntry,yEntry);
+            return new Circle(positionentree);
+        }
+        else{
+            throw new BadVersionException();
         }
     }
-    public Circle entryPosition(int version, int ray, Vec2 robotPosition) throws BadVersionException {
-        int r = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        int yconstructionzone=150;
-        int d=20; //distance à mesurer pour pénétrer dans la zone de construction (c'est plus beau)
-        /**mesures à effectuer pour yconstructionzone*/
-            if (version == 0 || version==3)  {
-                int xEntry=630;
-                int yEntry=r+yconstructionzone+d;
-                Vec2 position = new Vec2(xEntry, yEntry);
-                return new Circle(position);
-            }
-            else {
-                if (version == 1 || version==4) {
-                    int xEntry=630+r ;
-                    int yEntry=r+yconstructionzone+d ;
-                    Vec2 position = new Vec2(xEntry, yEntry);
-                    return new Circle(position);
-                } else {
-                    if (version == 2 || version==5) {
-                        int xEntry=630+2*r;
-                        int yEntry=r+yconstructionzone+d ;
-                        Vec2 position = new Vec2(xEntry, yEntry);
-                        return new Circle(position);
-                    }
-                    else{
-                        log.critical("Version invalide");
-                        throw new BadVersionException();
-                    }
-                }
-            }
-    }
-
-
-
 
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
@@ -95,16 +112,12 @@ public class DeposeCubes extends AbstractScript{
 
     @Override
     public void finalize(GameState state, Exception e) throws UnableToMoveException {
-
     }
 
     @Override
     public Integer[] getVersion(GameState stateToConsider) {
         return versions;
     }
-    @Override
-    public Integer[][] getVersion2(GameState stateToConsider) {
-        return new Integer[][]{};
-    }
+
 
 }

@@ -1,4 +1,4 @@
-package patternRecognition;
+package enums;
 
 import java.util.Objects;
 

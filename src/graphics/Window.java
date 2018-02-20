@@ -113,7 +113,6 @@ public class Window extends JFrame
 		clics.add(mouse.getLeftClicPosition().clone());
 		clics.add(mouse.getRightClicPosition().clone());
 		tablePanel.setClics(clics);
-		repaint();
 		mouse.resetClics();
 		return clics;
 	}
@@ -128,7 +127,6 @@ public class Window extends JFrame
 		}
 		clics.add(mouse.getLeftClicPosition().clone());
 		tablePanel.setClics(new ArrayList<Vec2>(clics));
-		repaint();
 		mouse.resetClics();
 		return clics.get(0);
 	}
@@ -136,15 +134,12 @@ public class Window extends JFrame
 	/** Permet d'afficher les aretes/le chemin */
 	public void setArete(ArrayList<Arete> aretes){
 		tablePanel.setAretes(aretes);
-		repaint();
 	}
 	public void setPath(ArrayList<Vec2> path){
 		tablePanel.setPath(path);
-		repaint();
 	}
 	public void setNode(ArrayList<Noeud> nodes){
-		tablePanel.setNodes(nodes);
-		repaint();
+		tablePanel.setNodes(nodes);;
 	}
 
 	/** Getters */

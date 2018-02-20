@@ -37,7 +37,6 @@ public class JUnit_Log extends JUnit_Test
     public void setUp() throws Exception
     {
         super.setUp();
-        
         log = container.getService(Log.class);
     }
     

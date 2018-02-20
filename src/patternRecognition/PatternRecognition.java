@@ -1,5 +1,9 @@
 package patternRecognition;
 
+import enums.Colors;
+import enums.Patterns;
+import threads.AbstractThread;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -11,10 +15,16 @@ import java.util.ArrayList;
 /** Classe permettant de faire la reconnaissance de patterns
  * @author Nayht
  */
-public class PatternRecognition {
+public class PatternRecognition extends AbstractThread{
 
-    private static boolean debug = false;
-    private static boolean alreadyPrintedColorMatchingProba=false;
+    private static boolean debug = false;   //Debug
+    private static boolean alreadyPrintedColorMatchingProba=false; //Utile pour le debug
+
+
+    private static boolean mustSelectAValidPattern = false; //Est-ce qu'on peut renvoyer qu'aucun pattern n'a été trouvé ?
+    private static boolean symmetry = false;    //Est-ce qu'on est du côté orange (alors symmetry = true) ou vert (alors symmetry=false)
+
+
 
     public static void setDebugPatternRecognition(boolean value){
         debug=value;
@@ -191,7 +201,7 @@ public class PatternRecognition {
     private static double[] computeInverseDistanceToAllColors(int[] RGBToEvaluate){
         double[] inverseDistances=new double[5];
         for (int idColor=0; idColor<5; idColor++){
-            int[] color=Colors.getRGBFromID(idColor);
+            int[] color= Colors.getRGBFromID(idColor);
             inverseDistances[idColor]=computeInverseDistanceToSingleColor(RGBToEvaluate, color);
         }
         return inverseDistances;
@@ -425,10 +435,11 @@ public class PatternRecognition {
      * @return renvoie l'indice finalement choisi
      */
     private static int computeFinalIndice(double[] probabilitiesList, int[][][] colorMatrix, int[][] positionsColorsOnImage) {
-        ArrayList selectionnedProbabilitiesIndice = selectBestProbabilities(probabilitiesList);
-        System.out.println(selectionnedProbabilitiesIndice.toString());
+        ArrayList<Integer> selectionnedProbabilitiesIndice = selectBestProbabilities(probabilitiesList);
         int finalIndice = 10;
         if (debug==true) {
+            System.out.println(selectionnedProbabilitiesIndice.toString());
+            System.out.println("robabilities");
             for (int i = 0; i < 10; i++) {
                 System.out.println(probabilitiesList[i]);
             }
@@ -436,13 +447,28 @@ public class PatternRecognition {
         if (selectionnedProbabilitiesIndice.size() == 1) {
             finalIndice = getMostProbablePattern(probabilitiesList, selectionnedProbabilitiesIndice);
         } else {
-            System.out.println("////////////// Lighting up the color matrix ////////////////");
+            if (debug) {
+                System.out.println("////////////// Lighting up the color matrix ////////////////");
+            }
             int[][][] colorMatrixLitUp=lightUpColors(colorMatrix,positionsColorsOnImage[0],positionsColorsOnImage[1],positionsColorsOnImage[2],positionsColorsOnImage[3]);
-            double[] probabilitiesListLitUp = encapsulationThreeFourFive(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
-            finalIndice = getMostProbablePattern(probabilitiesListLitUp, selectionnedProbabilitiesIndice);
+            double[] probabilitiesListLitUp = encapsulationThreeFourFive(colorMatrixLitUp, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
+            ArrayList<Integer> selectionnedProbabilitiesIndiceLitUp = selectBestProbabilities(probabilitiesListLitUp);
+
             if (debug==true) {
+                System.out.println(selectionnedProbabilitiesIndiceLitUp.toString());
+                System.out.println("LitUpProbabilities");
                 for (int i = 0; i < 10; i++) {
                     System.out.println(probabilitiesListLitUp[i]);
+                }
+            }
+            if (mustSelectAValidPattern) {
+                finalIndice = getMostProbablePattern(probabilitiesListLitUp, selectionnedProbabilitiesIndiceLitUp);
+            }
+            else {
+                if (selectionnedProbabilitiesIndiceLitUp.size() == 1) {
+                    finalIndice = getMostProbablePattern(probabilitiesListLitUp, selectionnedProbabilitiesIndiceLitUp);
+                } else {
+                    return -1;
                 }
             }
         }
@@ -468,10 +494,18 @@ public class PatternRecognition {
     /**Méthode permettant de faire la reconnaissance de pattenrs
      * @return l'id du pattern (int de 0 à 9, bornes comprises)
      */
-    public static int analysePattern(String pathToImage, int[][][] pat, int[][] positionsColorsOnImage) {
+    private static int analysePattern(String pathToImage, int[][][] pat, int[][] positionsColorsOnImage) {
         //CALIBRER SUR UNE IMAGE SOMBRE
         //PARTIE A NE PAS TOUCHER DU MAIN
         int[][][] colorMatrix = createColorMatrix(pathToImage);
+        if (symmetry){
+            //TODO ne pas seulement inverser les positions, mais changer les coordonnées
+            for (int i=0; i<4; i++) {
+                int temp = positionsColorsOnImage[i][2];
+                positionsColorsOnImage[i][2] = positionsColorsOnImage[i][0];
+                positionsColorsOnImage[i][0] = temp;
+            }
+        }
         double[] probabilitiesList = encapsulationThreeFourFive(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
         int finalIndice=computeFinalIndice(probabilitiesList,colorMatrix,positionsColorsOnImage);
 
@@ -480,5 +514,44 @@ public class PatternRecognition {
             System.out.println("Pattern recognized : "+finalIndice);
         }
         return finalIndice;
+    }
+
+
+
+    private String pathToImage;
+    private int[][][] pat;
+    private int[][] positionsColorsOnImage;
+    private int finalIndice=-2;
+    private boolean isShutdown=false;
+    public PatternRecognition(String pathToImage, int[][][] pat, int[][] positionsColorsOnImage){
+        this.pathToImage=pathToImage;
+        this.pat=pat;
+        this.positionsColorsOnImage=positionsColorsOnImage;
+    }
+
+    public void run(){
+        this.setPriority(5);
+        this.finalIndice=analysePattern(this.pathToImage, this.pat, this.positionsColorsOnImage);
+        while (!this.isShutdown){
+            try {
+                this.sleep(100);
+            } catch (InterruptedException e) {
+                log.debug("Le thread a été interrompu");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public int returnFinalIndice(){
+        try {
+            this.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return this.finalIndice;
+    }
+
+    public void shutdown(){
+        this.isShutdown=true;
     }
 }

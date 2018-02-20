@@ -57,6 +57,13 @@ public class ScriptManager implements Service
 		
 		// exemple: instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(config, log, factory);
 		instanciedScripts[ScriptNames.CLOSE_DOORS.ordinal()] = new CloseDoors(config, log, factory);
+
+		//Scripts de l'année
+		instanciedScripts[ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE.ordinal()] = new ActivationPanneauDomotique(config, log, factory);
+		instanciedScripts[ScriptNames.ACTIVE_ABEILLE.ordinal()] = new ActiveAbeille(config, log, factory);
+		instanciedScripts[ScriptNames.DEPOSE_CUBES.ordinal()] = new DeposeCubes(config, log, factory);
+		instanciedScripts[ScriptNames.MATCH_SCRIPT.ordinal()] = new MatchScript(config, log, factory);
+		instanciedScripts[ScriptNames.TAKE_CUBES.ordinal()] = new TakeCubes(config, log, factory);
 	}
 	
 	/**

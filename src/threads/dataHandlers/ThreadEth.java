@@ -29,9 +29,9 @@ import threads.AbstractThread;
 import utils.Log;
 
 import java.io.*;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.Time;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -40,8 +40,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @author rem
  */
 public class ThreadEth extends AbstractThread implements Service {
-
-
 
     /** Nom */
 
@@ -61,7 +59,6 @@ public class ThreadEth extends AbstractThread implements Service {
      * Socket
      */
     private Socket socket;
-    private InetSocketAddress server;
 
     /**
      * IP Teensy & local
@@ -78,6 +75,8 @@ public class ThreadEth extends AbstractThread implements Service {
      * True si besoin de fichiers de debug
      */
     private boolean debug = true;
+    private volatile boolean comFlag;
+    private long timeRef;
 
     /**
      * Buffer pour fichiers de debug
@@ -87,6 +86,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private BufferedWriter outPosition;
     private BufferedWriter outEvent;
     private BufferedWriter fullDebug;
+    private BufferedWriter outSensor;
 
     /**
      * True pour couper la connexion (pas trouvé d'autres idées, mais la lib java.net a probablement un truc propre à proposer)
@@ -109,12 +109,18 @@ public class ThreadEth extends AbstractThread implements Service {
     private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
 
     /**
      * Le "canal" position & orientation
      */
     private XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
     private String splitString = " ";
+
+    /**
+     * Horloge pour le temps de réponse du bas-niveau
+     */
+    private static long timestamp=0;
 
     /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
@@ -132,6 +138,8 @@ public class ThreadEth extends AbstractThread implements Service {
                 File position = new File("debugPosition.txt");
                 File event = new File("debugEvent.txt");
                 File fulldebug = new File("fullDebug.txt");
+                File sensorUS = new File("us.txt");
+
                 if (!file.exists()) {
                     file.createNewFile();
                 }
@@ -147,6 +155,9 @@ public class ThreadEth extends AbstractThread implements Service {
                 if (!fulldebug.exists()) {
                     fulldebug.createNewFile();
                 }
+                if (!sensorUS.exists()) {
+                    sensorUS.createNewFile();
+                }
                 outStandard = new BufferedWriter(new FileWriter(file));
                 outStandard.newLine();
                 outDebug = new BufferedWriter(new FileWriter(fileDebug));
@@ -157,6 +168,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 outEvent.newLine();
                 fullDebug = new BufferedWriter(new FileWriter(fulldebug));
                 fullDebug.newLine();
+                outSensor = new BufferedWriter(new FileWriter(sensorUS));
 
             } catch (IOException e) {
                 log.critical("Manque de droits pour l'output");
@@ -234,6 +246,19 @@ public class ThreadEth extends AbstractThread implements Service {
     }
 
     /**
+     * Attend que le LL réponde sur le canal debug lors d'un envoie d'ordre
+     */
+    private synchronized void waitForAResponse() {
+        while (comFlag){
+            try {
+                Thread.sleep(1);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * Ferme la socket !
      */
     public synchronized void close() {
@@ -268,7 +293,10 @@ public class ThreadEth extends AbstractThread implements Service {
 
         /* Envoie de l'ordre */
         try {
+            timeRef = System.currentTimeMillis();
+            comFlag = true;
             mess += "\r\n";
+            timestamp=System.currentTimeMillis();
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
             output.write(mess, 0, mess.length());
             output.flush();
@@ -285,6 +313,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 if (socket != null) {
                     socket.close();
                     Thread.sleep(1000);
+                    createInterface();
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -332,10 +361,14 @@ public class ThreadEth extends AbstractThread implements Service {
                     communicate(nb_line_response, message); // On retente
                 }   */
             }
+
             if (nb_line_response != 0) {
                 outStandard.newLine();
                 outStandard.flush();
             }
+
+            waitForAResponse();
+
         } catch (SocketException e1) {
             log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
             try {
@@ -367,6 +400,7 @@ public class ThreadEth extends AbstractThread implements Service {
         while (!shutdown) {
             try {
                 buffer = input.readLine();
+
                 fullDebug.write(buffer.substring(2));
                 fullDebug.newLine();
                 fullDebug.flush();
@@ -381,6 +415,9 @@ public class ThreadEth extends AbstractThread implements Service {
                         continue;
                     } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
                         ultrasoundBuffer.add(infosFromBuffer);
+                        outSensor.write(infosFromBuffer);
+                        outSensor.newLine();
+                        outSensor.flush();
                         continue;
                     } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                         synchronized (this.positionAndOrientation) {
@@ -391,7 +428,8 @@ public class ThreadEth extends AbstractThread implements Service {
                         }
                         continue;
                     } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
-                        outDebug.write(infosFromBuffer);
+                        comFlag = false;
+                        outDebug.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis()-timeRef));
                         outDebug.newLine();
                         outDebug.flush();
                         continue;
@@ -403,12 +441,14 @@ public class ThreadEth extends AbstractThread implements Service {
                     standardBuffer.add(buffer);
                     continue;
                 }
+
             } catch (SocketException se) {
                 log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
                 try {
                     if (socket != null) {
                         socket.close();
                         Thread.sleep(1000);
+                        createInterface();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -428,27 +468,43 @@ public class ThreadEth extends AbstractThread implements Service {
     public ConcurrentLinkedQueue<String> getEventBuffer() {
         return eventBuffer;
     }
-
     public ConcurrentLinkedQueue<String> getUltrasoundBuffer() {
         return ultrasoundBuffer;
     }
-
     public ConcurrentLinkedQueue<String> getStandardBuffer() {
         return standardBuffer;
     }
 
+    /**
+     * On stocke la position et l'orientation ici : les classes qui en ont besoin l'a mettre à jour via le Wrapper
+     */
     public XYO getPositionAndOrientation() {
         synchronized (positionAndOrientation) {
             return positionAndOrientation;
         }
     }
-
     public void setPositionAndOrientation(XYO positionAndOrientation) {
         this.positionAndOrientation = positionAndOrientation;
     }
 
+    /**
+     * Utilisé par le container pour temporiser tant que l'interface n'a pas été créée
+     */
     public boolean isInterfaceCreated() {
         return interfaceCreated;
+    }
+
+    /**
+     * Permet la fermeture de la socket à la fin du programme
+     */
+    @Override
+    public void interrupt(){
+        super.interrupt();
+        try {
+            socket.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @Override

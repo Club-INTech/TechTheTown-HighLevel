@@ -65,6 +65,7 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
         this.state = state;
         this.simulator = sim;
         this.orders = sim.getMotionOrderBuffer();
+        this.state.setSimulator(this.simulator);
     }
 
     /**

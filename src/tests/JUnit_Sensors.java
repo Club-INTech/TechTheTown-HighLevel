@@ -25,6 +25,7 @@ import exceptions.ContainerException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
+import exceptions.NoPathFound;
 import org.junit.Before;
 import org.junit.Test;
 import robot.EthWrapper;
@@ -89,7 +90,6 @@ public class JUnit_Sensors extends JUnit_Test
 		Sleep.sleep(5000);
 		state.robot.setOrientation(-Math.PI/2);
 
-		scriptManager.getScript(ScriptNames.INITIALISE_ROBOT).goToThenExec(0, state);
 		Thread.sleep(2000);
 		log.debug ("Orientation :" + state.robot.getOrientation());
 		log.debug("Position :" + state.robot.getPosition());
@@ -104,16 +104,8 @@ public class JUnit_Sensors extends JUnit_Test
 		log.debug("Test d'arret lors de l'execution d'un script");
 		ScriptManager scriptManager = container.getService(ScriptManager.class);
 		container.startInstanciedThreads();
-
 		state.robot.switchSensor();
 		log.debug("Orientation :" + state.robot.getOrientation());
-
-		try {
-			scriptManager.getScript(ScriptNames.INITIALISE_ROBOT).goToThenExec(1, state);
-		}catch(Exception e){
-			e.printStackTrace();
-			log.debug("Suus, ca a fail");
-		}
 	}
 
 	// @Test
@@ -322,7 +314,11 @@ public class JUnit_Sensors extends JUnit_Test
 			{
 				log.critical("!!!!! Catch de"+e1+" dans testEvitement !!!!!");
 				break;
-			} 
+			}
+			catch (NoPathFound e){
+				log.debug("pas de chemin trouvé");
+				e.printStackTrace();
+			}
     	}
 	}
 }

@@ -10,8 +10,9 @@ import robot.Robot;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
+import threads.ThreadInterface;
 
-public class JUnit_Depose_Cubes extends JUnit_Test{
+public class JUnit_MatchScript extends JUnit_Test {
 
     private Robot robotReal;
     private ScriptManager scriptManager;
@@ -23,10 +24,11 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
         try {
             super.setUp();
             robotReal = container.getService(Robot.class);
-            state=container.getService(GameState.class);
-            scriptManager=container.getService(ScriptManager.class);
+            state = container.getService(GameState.class);
+            scriptManager = container.getService(ScriptManager.class);
+            ThreadInterface threadInterface = container.getService(ThreadInterface.class);
             container.startInstanciedThreads();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -36,21 +38,16 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
         try {
             //Définition des paramètres de base
             robotReal.setOrientation(Math.PI);
-            Vec2 positionDepart=new Vec2(890,837);
+            Vec2 positionDepart = new Vec2(1252, 455);
             robotReal.setPosition(positionDepart);
-            robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+            //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+            //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
 
-            //goToThenExec
-            scriptManager.getScript(ScriptNames.DEPOSE_CUBES).goToThenExec(1,state);
-            //Vec2 positionarrivee=new Vec2(890,347);
-            //robotReal.goTo(positionarrivee);
-
-            //robotReal.goTo(positionDepart);
-            //robotReal.turn(Math.PI/2);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

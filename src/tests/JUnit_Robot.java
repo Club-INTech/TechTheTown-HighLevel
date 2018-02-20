@@ -19,14 +19,11 @@
 
 package tests;
 
-import enums.ScriptNames;
-import enums.Speed;
+import enums.*;
+import exceptions.Locomotion.UnableToMoveException;
 import org.junit.Before;
 import org.junit.Test;
 import pathfinder.Pathfinding;
-import pfg.config.Config;
-import robot.EthWrapper;
-import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
@@ -34,11 +31,6 @@ import simulator.ThreadSimulatorMotion;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
-import threads.dataHandlers.ThreadEth;
-import threads.dataHandlers.ThreadSensor;
-import utils.Log;
-
-import java.util.ArrayList;
 
 
 /**
@@ -79,51 +71,44 @@ public class JUnit_Robot extends JUnit_Test {
     @Test
     public void testScript() {
         try {
-            robotReal = container.getService(Robot.class);
             robotReal.getPosition();
             robotReal.getOrientation();
 
-            robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            robotReal.moveLengthwise(100);
-            robotReal.moveLengthwise(-100);
-            /*robotReal.setOrientation(Math.PI/2);
-            robotReal.setPosition(new Vec2(0, 500));
+            robotReal.setPosition(new Vec2(890,840));
+            robotReal.setOrientation(Math.PI);
+            robotReal.setLocomotionSpeed(Speed.FAST_ALL);
+            robotReal.moveLengthwise(200);
+            state.indicePattern=1;
 
-      //   robotReal.moveLengthwise(-200);
-        //    robotReal.turnRelatively(-Math.PI/2);
+            scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(TasCubes.TAS_STATION_EPURATION.getID(),state);
+            scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(TasCubes.TAS_CHATEAU_EAU.getID(),state);
 
-         //   robotReal.goTo(new Vec2(0,500))
-      //      robotReal.goTo(new Vec2( 0,400));
-        //    robotReal.goTo(new Vec2(1000,600));
-         //   robotReal.goTo(new Vec2(1000,800));
-
-       //     robotReal.moveLengthwise(-100);
-       //     robotReal.moveLengthwise(100);
-            ArrayList<Vec2> path = new ArrayList<>();
-            path.add(new Vec2(0,500));
-            for (int i=0; i<=40; i++){
-                path.add(new Vec2((int) (500*Math.cos(2*Math.PI*i/40)), (int) (500*Math.sin(2*i*Math.PI/40))+500));
-            }
-
-    //            Thread.sleep(3000);
-              robotReal.followPath(path);
-              */
-
-            /*
-            robotReal.goTo(new Vec2(650, 500));
-            Thread.sleep(5000);
-            robotReal.moveLengthwise(-50);
-            robotReal.turn(1.2);
-            robotReal.turn(0.8);
-
-            */
-
-            Pathfinding pathfinding = new Pathfinding(log, config, table);
-
+            scriptManager.getScript(ScriptNames.DEPOSE_CUBES).goToThenExec(0,state);
 
             Thread.sleep(500);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void basicTest() {
+        //robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,false);
+        //robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT,true);
+        robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,false);
+        robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,true);
+        /*for (int i=0; i<20; i++){
+            try {
+                robotReal.moveLengthwise(250);
+                robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
+                robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+
+                robotReal.moveLengthwise(-250);
+                robotReal.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
+                robotReal.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
+            }catch (UnableToMoveException e){
+                e.printStackTrace();
+            }
+        }*/
     }
 }

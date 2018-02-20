@@ -96,7 +96,7 @@ public class JUnit_Communication extends JUnit_Test {
 
         for (int i = 0; i<1001; i++){
             eth.communicate(1, String.format("%s", i));
-            Sleep.sleep(200);
+            Sleep.sleep(500);
         }
     }
 }

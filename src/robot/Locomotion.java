@@ -268,6 +268,8 @@ public class Locomotion implements Service
             int sens = move.dot(new Vec2(100, highLevelOrientation));
             if (sens>=0) {                      //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
                 turn(moveA, expectedWallImpact, mustDetect);
+                log.debug("angle de rotation"+moveA);
+                log.debug("angle de translation"+moveR);
                 moveLengthwise(moveR, expectedWallImpact, mustDetect);
             } else                              //si il est orienté vers l'arrière par rapport au point visé
             {
@@ -286,6 +288,7 @@ public class Locomotion implements Service
             turn(moveA, expectedWallImpact, mustDetect);
             moveLengthwise(moveR, expectedWallImpact, mustDetect);
         }
+
     }
 
 
@@ -325,6 +328,10 @@ public class Locomotion implements Service
         isRobotMovingBackward=false;
     }
 
+
+
+
+
     /**
      * Fait avancer le robot de "distance" (en mm), et vérifie avant s'il n'y a pas d'obstacle proche sur le chemin avant d'avancer
      * Si la distance spécifiée est négative, le robot recule !
@@ -347,7 +354,6 @@ public class Locomotion implements Service
         Double dist = (double) distance;
         Vec2 aim = highLevelPosition.plusNewVector(new Vec2(dist, highLevelOrientation));
         finalAim = aim;
-       // System.out.println("FINAL AIM"+finalAim);
 
         /** TODO A adapté à l'annee en cours */
         int totalTime = 0;
@@ -555,10 +561,9 @@ public class Locomotion implements Service
             aimSymetrized.setX(-aimSymetrized.getX());
         }
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
-        System.out.println("highLevelOrientation: "+highLevelOrientation);
+        log.debug("HighLevelOrientation: "+highLevelOrientation);
         if (!turnOnly){
             double produitScalaire = delta.dot(new Vec2(100,highLevelOrientation));
-            System.out.println("highLevelOrientation: "+highLevelOrientation);
             if (produitScalaire<0){
                 moveToPointSerialOrder(delta.getA(), -delta.getR(), turnOnly);
             }
