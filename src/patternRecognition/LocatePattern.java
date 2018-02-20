@@ -194,8 +194,9 @@ public class LocatePattern {
                         //dimensions relatives interrupteur
                         //valeur plutot bonnes : deltaY>2.1*deltaX  deltaY<2.5*deltaX
                         //valeur à test : deltaY>1.8*deltaX  deltaY<2.3*deltaX
-                        if (!(deltaY>2.1*deltaX && deltaY<2.5*deltaX)){
-                            double[] data1 = src.get((int) (xmax + xmin) / 2, (int) (ymax + ymin) / 2);
+                        //valeur à test : deltaY>1.9*deltaX  deltaY<2.5*deltaX
+                        if (!(deltaY>1.9*deltaX && deltaY<2.5*deltaX)){
+                            /*double[] data1 = src.get((int) (xmax + xmin) / 2, (int) (ymax + ymin) / 2);
                             double[] data2 = src.get((int) Math.min((xmax + xmin) / 2 + 10, src.width()-1), (int) (ymax + ymin) / 2);
                             double[] data3 = src.get((int) Math.max((xmax + xmin) / 2 - 10, 0), (int) (ymax + ymin) / 2);
                             double[] data4 = src.get((int) (xmax + xmin) / 2, (int) Math.min((ymax + ymin) / 2 + 10, src.height()-1));
@@ -208,7 +209,7 @@ public class LocatePattern {
                             if (debug) {
                                 System.out.println(data[0] + " " + data[1] + " " + data[2]);
                                 System.out.println(colorDistanceToInterrupteurDeMesCouilles);
-                            }
+                            }*/
                             MatOfPoint2f temp = new MatOfPoint2f(contour.toArray());
                             double area = Imgproc.contourArea(contour);
                             approxCurve = new MatOfPoint2f();
@@ -223,10 +224,8 @@ public class LocatePattern {
                                             curves.get(j - 2), curves.get(j - 1)));
                                     maxCosine = Math.max(maxCosine, cosine);
                                 }
-
                                 if (maxCosine < 0.5) {
                                     maxArea = area;
-                                    System.out.println(area);
                                     maxId = contours.indexOf(contour);
                                 }
                             }

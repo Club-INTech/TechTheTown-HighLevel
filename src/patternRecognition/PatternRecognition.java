@@ -128,17 +128,32 @@ public class PatternRecognition extends AbstractThread{
         int width = xend - xstart;
         int height = yend - ystart;
         int[] listAllPoints = new int[width*height];
-        System.out.println(xstart+" "+ystart+" "+xend+" "+yend);
         for (int i = 0; i < width * height; i++){
-            if (i%height + xstart > 2590){
-                System.out.println(i%height + xstart +" "+i/height+ystart);
+            int a=i%width + xstart;
+            int b=i/width + ystart;
+            if (a<0){
+                a=1;
             }
-            listAllPoints[i] = colorMatrix[i%height + xstart][i/height + ystart][posRGB];
+            else if (a>=this.imageWidth){
+                a=this.imageWidth-1;
+            }
+            if (b<0){
+                b=1;
+            }
+            else if (b>=this.imageHeight){
+                b=this.imageHeight-1;
+            }
+            listAllPoints[i] = colorMatrix[a][b][posRGB];
         }
         java.util.Arrays.sort(listAllPoints);
         int len_list=listAllPoints.length;
-        int medianValue=listAllPoints[len_list/2];
-        return medianValue;
+        if (len_list==0){
+            return -1;
+        }
+        else {
+            int medianValue = listAllPoints[len_list / 2];
+            return medianValue;
+        }
     }
 
     /** Fonction permettant d'obtenir la valeur médiane de R, G ET B pour une des 3 couleurs de la photo
@@ -161,6 +176,10 @@ public class PatternRecognition extends AbstractThread{
         int[] mediansList= new int[3];
         for (int i=0; i<3; i++){
             mediansList[i]=getMedianValue(colorMatrix, xstart, ystart, xend, yend, i);
+            if (mediansList[i]==-1){
+                int[] badReturn={-1,-1,-1};
+                return badReturn;
+            }
             if (debug) {
                 System.out.println("posRGB:"+i+" MedianValue:"+mediansList[i]);
             }
@@ -300,20 +319,25 @@ public class PatternRecognition extends AbstractThread{
      * (correspondance entre les indices de la liste renvoyée et l'ID des patterns)
      */
     private double[] computeProximity(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends) {
-        if (debug==true){
+        if (debug){
             System.out.println("First color");
         }
         int[] medianFirstColor = getRGBMedianValues(colorMatrix, xstarts[0], ystarts[0], xends[0], yends[0]);
-        if (debug==true){
+        if (debug){
             System.out.println("Second color");
         }
         int[] medianSecondColor = getRGBMedianValues(colorMatrix, xstarts[1], ystarts[1], xends[1], yends[1]);
-        if (debug==true){
+        if (debug){
             System.out.println("Third color");
         }
         int[] medianThirdColor = getRGBMedianValues(colorMatrix, xstarts[2], ystarts[2], xends[2], yends[2]);
         int[][] mediansListTemp = {medianFirstColor, medianSecondColor, medianThirdColor};
+        int[] badResult={-1,-1,-1};
         for (int i=0; i<3; i++) {
+            if(mediansListTemp[i]==badResult){
+                double[] badResultProbabilities={-1,-1,-1,-1,-1,-1,-1,-1,-1};
+                return badResultProbabilities;
+            }
             mediansList[i] = mediansListTemp[i];
         }
         double[] probabilitiesList = compareThreeRGBsToAllPatterns(mediansList);
@@ -484,8 +508,8 @@ public class PatternRecognition extends AbstractThread{
              * {yEndFirstColor,yEndSecondColor,yEndThirdColor},
              * }
              */
-            int imageWidthMinusOne=2592-1;
-            int imageHeightMinusOne=1944-1;
+            int imageWidthMinusOne=imageWidth-1;
+            int imageHeightMinusOne=imageHeight-1;
             positionsColorsOnImage = new int[][]
                     {{Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection - distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
                       Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
@@ -504,11 +528,18 @@ public class PatternRecognition extends AbstractThread{
         double maxProba = 0;
         int maxI = 0;
         int maxJ = 0;
+        double[] badDistanceArray={-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
         for (int i = 0; i < distanceArrays.length; i++) {
             if (debug) {
                 System.out.println("");
                 System.out.println("Proximity (Xshifted by " + ((i + iStartValue) * halfDistanceBetweenTwoColors) + " )");
             }
+            if (distanceArrays[i]==badDistanceArray){
+                for (int j=0; j<distanceArrays[i].length; j++){
+                    distanceArrays[i][j]=0;
+                }
+            }
+            else
             for (int j = 0; j < distanceArrays[0].length; j++) {
                 if (distanceArrays[i][j] > maxProba) {
                     maxProba = distanceArrays[i][j];
@@ -520,7 +551,7 @@ public class PatternRecognition extends AbstractThread{
                 }
             }
         }
-        if (maxProba<0.1){
+        if (maxProba<0.3){
             if (alreadyLitUp<2){
                 alreadyLitUp+=1;
                 if (debug){
@@ -556,7 +587,6 @@ public class PatternRecognition extends AbstractThread{
         String pathToImageLocation="images/patternRecognition/"+pathToImage;
         LocatePattern.setDebug(true);
         int[] patternZone = LocatePattern.locatePattern(pathToImageLocation, zoneToPerformLocalisation);
-        System.out.println(patternZone[0]+" "+patternZone[1]+" "+patternZone[2]+" "+patternZone[3]);
         int[] centerPattern=new int[]{(patternZone[0]+patternZone[2])/2,(patternZone[1]+patternZone[3])/2};
         if (debug){
             System.out.println("Center found : ("+centerPattern[0]+","+centerPattern[1]+")");
@@ -663,7 +693,7 @@ public class PatternRecognition extends AbstractThread{
         else{
             this.finalIndice=-1;
         }
-        if (debug == true) {
+        if (debug) {
             System.out.println("Pattern recognized : " + finalIndice);
         }
         while (!this.isShutdown){

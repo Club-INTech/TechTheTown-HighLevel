@@ -27,7 +27,9 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     @Test
     public void testReconnaissance(){
         //String pathToImage = "ImageRaspberryPi.png";
-        for (int i=36; i<=500; i++) {
+        String results="";
+        for (int i=1; i<=500; i++) {
+            results+=i+"\t:\t";
             String pathToImage = "500ImagesTest/Image"+i+".png";
             int[] zoneToPerformLocalisation = {0, 0, 0, 0};
             PatternRecognition patternRecognitionThread = new PatternRecognition(config, pathToImage, zoneToPerformLocalisation);
@@ -39,8 +41,10 @@ public class JUnit_PatternRecognition extends JUnit_Test {
             while (victoryPattern == -2) {
                 victoryPattern = patternRecognitionThread.returnFinalIndice();
             }
+            results+=victoryPattern+"\n";
             patternRecognitionThread.shutdown();
             log.debug("Pattern found : " + victoryPattern);
         }
+        System.out.println(results);
     }
 }
