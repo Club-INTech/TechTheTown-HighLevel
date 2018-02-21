@@ -61,4 +61,12 @@ public class ThreadInterface extends AbstractThread
             }
         }
     }
+
+    /**
+     * Getter de window
+     * @return
+     */
+    public Window getWindow() {
+        return win;
+    }
 }

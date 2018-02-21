@@ -55,6 +55,7 @@ public class TablePanel extends JPanel
 	private ArrayList<Vec2> path;
 	private ArrayList<Arete> aretes;
 	private ArrayList<Vec2> clics;
+	private Vec2 point;
 	private ArrayList<Noeud> nodes;
 	public static boolean showGraph = false;
 
@@ -89,6 +90,7 @@ public class TablePanel extends JPanel
 		nodes=new ArrayList<>();
 		this.table = table;
 		this.robot = robot;
+		this.point=new Vec2();
 
 		try{
 			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
@@ -109,6 +111,7 @@ public class TablePanel extends JPanel
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
+		this.point=new Vec2();
 
 		try{
 			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
@@ -140,7 +143,8 @@ public class TablePanel extends JPanel
 		graphics.fillRect(0, 600 - wideDisplay, 900, wideDisplay);
 		graphics.fillRect(0, wideDisplay, wideDisplay, 600 - 2*wideDisplay);
 		graphics.fillRect(900 - wideDisplay, wideDisplay, wideDisplay, 600 - 2*wideDisplay);
-	    
+
+
 	    // Obstacles rectangulaires
 	    for(ObstacleRectangular rectangular : table.getObstacleManager().getRectangles())
 	    {
@@ -211,6 +215,7 @@ public class TablePanel extends JPanel
 				graphics.fillOval(pathNode2.getX() - 4, pathNode2.getY() - 4, 8, 8);
 			}
 
+
 		}
 
 		// Print les clics et leur position
@@ -227,6 +232,10 @@ public class TablePanel extends JPanel
 		graphics.setColor(Color.DARK_GRAY);
 		graphics.fillRoundRect(920, 20, 360, 580, 20, 20);
 		graphics.fillRoundRect(20, 620, 1260, 275, 20, 20);
+		//afficher le point qu'on veut
+		graphics.setColor(Color.GREEN);
+		Vec2 position=changeRefToDisplay(point);
+		graphics.fillOval(position.getX()-4,position.getY()-4,8,8);
 	}
 
 	/** Conversion en coordonnées d'affichage
@@ -249,6 +258,11 @@ public class TablePanel extends JPanel
 	}
 	public void setClics(ArrayList<Vec2> clics) {
 		this.clics = clics;
+		removeAll();
+		revalidate();
+	}
+	public void setPoint(Vec2 point ){
+		this.point=point;
 		removeAll();
 		revalidate();
 	}

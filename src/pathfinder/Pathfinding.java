@@ -40,9 +40,9 @@ public class Pathfinding implements Service {
         this.log = log;
         this.config = config;
         this.table = table;
-        graphe = new Graphe(log, config, table);
         obstacleManager = table.getObstacleManager();
-        log.debug("xoxoxoxoxox PATHFINDING");
+        initGraphe();
+        log.debug("init PATHFINDING");
     }
 
     /**
@@ -50,21 +50,23 @@ public class Pathfinding implements Service {
      */
 
     public void initGraphe() {
-        graphe.createNodes();
-        graphe.createAretes(graphe.getNodes());
+        graphe = new Graphe(log, config, table);
     }
 
     /**
      * Méthode réinitialisant le graphe, à appeler après chaque utilisation de findmyway
      */
 
-    public void reInitGraphe() {
+    public void reInitGraphe(Noeud noeudDepart, Noeud noeudArrive) {
         for (Noeud node : graphe.getNodes()) {
             node.setPred(null);
             node.setCout(-1);
             node.setHeuristique(999999999);
+            node.removeNeighbour(noeudDepart);
+            node.removeNeighbour(noeudArrive);
         }
-
+        graphe.removeNode(noeudDepart);
+        graphe.removeNode(noeudArrive);
     }
 
     /**
@@ -88,18 +90,28 @@ public class Pathfinding implements Service {
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
-        ObstacleManager obstacleManager = table.getObstacleManager();
 
-
-        //exception départ ou arrivée dans un obstacle/
+        /** exception départ ou arrivée dans un obstacle */
         if (obstacleManager.isObstructed(noeuddepart.getPosition()) || !obstacleManager.isRobotInTable(noeuddepart.getPosition())) {
             throw new PointInObstacleException(noeuddepart.getPosition());
         } else if (obstacleManager.isObstructed(noeudarrive.getPosition())
                 || !obstacleManager.isRobotInTable(noeudarrive.getPosition())) {
             throw new PointInObstacleException(noeudarrive.getPosition());
-        } else {
+        }
+        //début de l'algorithme
+        else {
             graphe.addNodeInGraphe(noeudarrive);
             graphe.addNodeInGraphe(noeuddepart);
+
+            if (noeuddepart.getVoisins().contains(noeudarrive)) {
+                finalPath.add(positiondepart);
+                finalPath.add(positionarrive);
+                long time2 = System.currentTimeMillis() - time1;
+                log.debug("Time to execute (ms): " + time2);
+                reInitGraphe(noeuddepart, noeudarrive);
+                return finalPath;
+            }
+
             openList.add(noeuddepart);
 
             while (!closeList.contains(noeudarrive) && !openList.isEmpty()) {
@@ -128,34 +140,34 @@ public class Pathfinding implements Service {
                         voisin.setPred(noeudcourant);
                     }
                 }
-
             }
         }
         // pas de chemin trouvé.
         if (!closeList.contains(noeudarrive) && openList.isEmpty()) {
             log.debug("No way found");
             throw new NoPathFound(false, true);
-            //throw new UnableToMoveException(noeudarrive.getPosition(), UnableToMoveReason.NO_WAY_FOUND);
         }
-
         // fabrique le chemain en partant du noeud d'arrivé
         finalList.add(noeudarrive);
+        if (noeudarrive.getPred() == null) {
+            log.debug("prednull");
+        }
         while (noeuddepart != finalList.get(finalList.size() - 1)) {
             finalList.add(finalList.get(finalList.size() - 1).getPred());
         }
         for (int i = 1; i <= finalList.size(); i++) {
             finalPath.add(finalList.get(finalList.size() - i).getPosition());
         }
+
         long time2 = System.currentTimeMillis() - time1;
         log.debug("Time to execute (ms): " + time2);
 
-
-        //graphe.removeNode(noeudarrive);
-        //graphe.removeNode(noeuddepart);
-        // reInitGraphe();
+        reInitGraphe(noeuddepart, noeudarrive);
 
         return finalPath;
     }
 
-
+    public Graphe getGraphe() {
+        return graphe;
+    }
 }

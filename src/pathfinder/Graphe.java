@@ -97,9 +97,7 @@ public class Graphe implements Service {
         return false;
     }
 
-    /**
-     * Méthode générant dans noeuds sur la table
-     */
+    /** Méthode générant des noeuds sur la table   */
 
     public ArrayList<Noeud> createNodes() {
         int pasX = 200;
@@ -200,14 +198,10 @@ public class Graphe implements Service {
             nodes.get(i).setVoisins(voisins);
             boneslist.addAll(listaretes);
         }
-
-
         return boneslist;
     }
 
-    /**
-     * Méthode ajoutant un au graphe. Cela consiste à remplir le champ de ses noeuds voisins.
-     */
+    /** Méthode ajoutant un au graphe. Cela consiste à remplir le champ de ses noeuds voisins.   */
 
     public void addNodeInGraphe(Noeud noeud) {
         ArrayList<Noeud> voisins = new ArrayList<>();

@@ -30,6 +30,7 @@ import graphics.Window;
 import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
+import pathfinder.Noeud;
 import pathfinder.Pathfinding;
 import pathfinder.Graphe;
 import robot.Robot;
@@ -42,7 +43,6 @@ import strategie.GameState;
 import table.Table;
 import table.obstacles.ObstacleManager;
 import threads.ThreadInterface;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -201,6 +201,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         }
     }
 
+    // promenade du robot
     @Test
     public void randomPathTest() throws InterruptedException, ContainerException {
         pathfinding = container.getService(Pathfinding.class);
@@ -210,12 +211,12 @@ public class JUnit_Pathfinding extends JUnit_Test {
         state = container.getService(GameState.class);
         anInterface = container.getService(ThreadInterface.class);
 
-        simulator = container.getService(ThreadSimulator.class);
-        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+//        simulator = container.getService(ThreadSimulator.class);
+//        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
 
         container.startInstanciedThreads();
-
-        pathfinding.initGraphe();
+//        log.debug("begin script");
+//        pathfinding.initGraphe();
         robotReal.setPosition(new Vec2(1252, 455));
         robotReal.setOrientation(Math.PI);
 
@@ -227,7 +228,6 @@ public class JUnit_Pathfinding extends JUnit_Test {
             position.setY(((int) (Math.random() * 2000)));
             log.debug("Position : " + position);
             try {
-                //pathfinding = new Pathfinding(log, config, table);
                 pathToFollow = pathfinding.findmyway(robotReal.getPosition(), position);
                 robotReal.followPath(pathToFollow);
                 log.debug("Arrived at " + position + i);
@@ -260,8 +260,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
 
         Window window = new Window(table);
-        Graphe graphe = new Graphe(log, config, table);
-        window.setArete(graphe.getBoneslist());
+        window.setArete(pathfinding.getGraphe().getBoneslist());
 
         ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);
