@@ -210,12 +210,12 @@ public class JUnit_Pathfinding extends JUnit_Test {
         state = container.getService(GameState.class);
         anInterface = container.getService(ThreadInterface.class);
 
-        simulator = container.getService(ThreadSimulator.class);
-        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+//        simulator = container.getService(ThreadSimulator.class);
+//        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
 
         container.startInstanciedThreads();
-
-        pathfinding.initGraphe();
+        log.debug("begin script");
+//        pathfinding.initGraphe();
         robotReal.setPosition(new Vec2(1252, 455));
         robotReal.setOrientation(Math.PI);
 
@@ -223,7 +223,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         Vec2 position = new Vec2();
 
         for (int i = 0; i < 12; i++) {
-            position.setX(Math.max((((int) (Math.random() * 3000 - 1500))), -1500));
+            position.setX(Math.max((((int) (Math.random() * 3000 - 1500))), -1000));
             position.setY(((int) (Math.random() * 2000)));
             log.debug("Position : " + position);
             try {
