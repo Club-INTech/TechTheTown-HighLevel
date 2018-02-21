@@ -193,29 +193,28 @@ public class TakeCubes extends AbstractScript {
         TasCubes tas = TasCubes.getTasFromID(version);
         int[] coords = tas.getCoords();
         Vec2 coordsTas=new Vec2(coords[0],coords[1]);
-        //TODO : ajuster le rayon du cercle si il est trop petit
 
         Circle aimArcCircle;
         if (version==0){
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, 0, Math.PI, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, 0, Math.PI, true);
         }
         else if (version==1) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, Math.PI / 2, 3 * Math.PI / 2, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, Math.PI / 2, 3 * 9 * Math.PI / 20, true);
         }
         else if (version==2) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI, 0, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, -Math.PI, 0, true);
         }
         else if (version==3) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI, 0, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, -Math.PI, 0, true);
         }
         else if (version==4) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI / 2, Math.PI / 2, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, - 9 * Math.PI / 20, Math.PI / 2, true);
         }
         else if (version==5) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI / 2, Math.PI / 2, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, -Math.PI / 2, Math.PI / 2, true);
         }
         else{
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras);
         }
         Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
         this.entryPositionPoint=aim;

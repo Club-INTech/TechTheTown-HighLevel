@@ -26,13 +26,13 @@ package smartMath;
 
 public class Circle {
 
-	/** Position du centre du cercle*/
+	/** Position du centre du cercle */
 	private Vec2 center;
 	
-	/** Rayon du cercle*/
+	/** Rayon du cercle */
 	private double radius;
 
-	/** Etendu de l'arc de cercle (en absolue et dans le sens trigo)*/
+	/** Etendu de l'arc de cercle (en absolue et dans le sens trigo) */
 	private double angleStart;
 	private double angleEnd;
 	
