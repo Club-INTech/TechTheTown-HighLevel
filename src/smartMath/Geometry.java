@@ -197,7 +197,7 @@ public class Geometry
      */
 	public static boolean isBetween(double val, double a, double b)
 	{
-		if(a>b) //Si le singe a mie de pain inf à la place de sup
+		if(a>b) //Si le singe a mie de pain inf à la place de sup (2013-2014)
 		{
 			double temp=b;
 			b=a;
