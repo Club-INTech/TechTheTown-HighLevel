@@ -38,6 +38,7 @@ import scripts.ScriptManager;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import smartMath.Circle;
+import smartMath.Geometry;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
@@ -122,18 +123,18 @@ public class JUnit_Pathfinding extends JUnit_Test {
         Vec2 clic = new Vec2();
 
         pathfinding.initGraphe();
-        robotReal.setPosition(new Vec2(1252, 455));
+        Vec2 positionDepart=new Vec2(1252, 455);
+        robotReal.setPosition(positionDepart);
         robotReal.setOrientation(Math.PI / 2);
         //   robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
 
         while (true) {
 
             try {
-                clic = window.waitLClic();
+                //clic = window.waitLClic();
                 Vec2 positionentreeDeposeCubes = new Vec2(650, 175 + config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
 
                 path = pathfinding.findmyway(robotReal.getPosition(), clic);
-
                 robotReal.followPath(path);
 
                 //clic = window.waitLClic();
@@ -185,6 +186,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
             robotReal.followPath(pathToFollow);
             robotReal.turn(Math.PI);
             robotReal.moveLengthwise(30);
+
 
 
         } catch (PointInObstacleException e) {
@@ -269,8 +271,13 @@ public class JUnit_Pathfinding extends JUnit_Test {
         while (true) {
 
             try {
-                clics = window.waitLRClic();
-                path = pathfinding.findmyway(clics.get(0), clics.get(1));
+                //clics = window.waitLRClic();
+                Vec2 positionDepart=new Vec2(1252, 455);
+                int d=10;
+                Circle circle=new Circle(new Vec2(1200,1190),330,(Math.PI / 2) ,(3 * Math.PI / 2)*10/11, true);
+                Vec2 entreeTakeCubes= Geometry.closestPointOnCircle(positionDepart,circle);
+                window.setPoint(entreeTakeCubes);
+                path = pathfinding.findmyway(positionDepart, entreeTakeCubes);
                 window.setPath(path);
                 window.repaint();
             } catch (PointInObstacleException e) {
@@ -285,4 +292,5 @@ public class JUnit_Pathfinding extends JUnit_Test {
             }
         }
     }
+
 }
