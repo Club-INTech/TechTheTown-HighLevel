@@ -201,6 +201,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         }
     }
 
+    // promenade du robot
     @Test
     public void randomPathTest() throws InterruptedException, ContainerException {
         pathfinding = container.getService(Pathfinding.class);
@@ -214,7 +215,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 //        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
 
         container.startInstanciedThreads();
-        log.debug("begin script");
+//        log.debug("begin script");
 //        pathfinding.initGraphe();
         robotReal.setPosition(new Vec2(1252, 455));
         robotReal.setOrientation(Math.PI);
@@ -223,11 +224,10 @@ public class JUnit_Pathfinding extends JUnit_Test {
         Vec2 position = new Vec2();
 
         for (int i = 0; i < 12; i++) {
-            position.setX(Math.max((((int) (Math.random() * 3000 - 1500))), -1000));
+            position.setX(Math.max((((int) (Math.random() * 3000 - 1500))), -1500));
             position.setY(((int) (Math.random() * 2000)));
             log.debug("Position : " + position);
             try {
-                //pathfinding = new Pathfinding(log, config, table);
                 pathToFollow = pathfinding.findmyway(robotReal.getPosition(), position);
                 robotReal.followPath(pathToFollow);
                 log.debug("Arrived at " + position + i);
