@@ -157,15 +157,14 @@ public class ObstacleManager implements Service
 		mRectangles.add(new ObstacleRectangular(new Vec2(-1300, 325),  400 + 2*mRobotRadius, 650 + 2*mRobotRadius));
         mRectangles.add(new ObstacleRectangular(new Vec2(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
 
-        /** Cubes*/
-
-		/** Cubes*/
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(650, 540), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1200, 1190), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(400, 1500), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-400, 1500), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1200, 1190), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-650, 540), 87 + mRobotRadius, -9*Math.PI/10, -Math.PI/10, true)));
+		/** Tas de cubes*/
+		int d = 7;
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(650, 540), 87 + mRobotRadius + d, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1200, 1190), 87 + mRobotRadius + d, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(400, 1500), 87 + mRobotRadius + d, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-400, 1500), 87 + mRobotRadius + d, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1200, 1190), 87 + mRobotRadius + d, -9*Math.PI/10, -Math.PI/10, true)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-650, 540), 87 + mRobotRadius + d, -9*Math.PI/10, -Math.PI/10, true)));
 
 		/**Récupérateur des eaux usées*/
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 1500,840), 105 + mRobotRadius,-9*Math.PI/10,-Math.PI/10,true)));

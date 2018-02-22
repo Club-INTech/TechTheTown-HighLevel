@@ -43,6 +43,7 @@ import strategie.GameState;
 import table.Table;
 import table.obstacles.ObstacleManager;
 import threads.ThreadInterface;
+
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -219,18 +220,22 @@ public class JUnit_Pathfinding extends JUnit_Test {
 //        pathfinding.initGraphe();
         robotReal.setPosition(new Vec2(1252, 455));
         robotReal.setOrientation(Math.PI);
+        robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
 
         ArrayList<Vec2> pathToFollow = new ArrayList<>();
         Vec2 position = new Vec2();
 
-        for (int i = 0; i < 12; i++) {
-            position.setX(Math.max((((int) (Math.random() * 3000 - 1500))), -1500));
+        for (int i = 0; i <= 42; i++) {
+            position.setX(Math.max((((int) (Math.random() * 3000 - 1500))), -1300));
             position.setY(((int) (Math.random() * 2000)));
             log.debug("Position : " + position);
             try {
                 pathToFollow = pathfinding.findmyway(robotReal.getPosition(), position);
                 robotReal.followPath(pathToFollow);
                 log.debug("Arrived at " + position + i);
+                if (i == 42) {
+                    robotReal.followPath(pathfinding.findmyway(robotReal.getPosition(), new Vec2(1252, 455)));
+                }
             } catch (PointInObstacleException e) {
 
                 System.out.println("Obstacle!!" + i);
@@ -245,6 +250,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
             }
         }
     }
+
     @Test
     public void testSimulation() throws InterruptedException, ContainerException {
 
