@@ -123,8 +123,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
         Vec2 clic = new Vec2();
 
         pathfinding.initGraphe();
-        robotReal.setPosition(new Vec2(1252, 455));
-        robotReal.setOrientation(Math.PI / 2);
+//        robotReal.setPosition(new Vec2(1252, 455));
+//        robotReal.setOrientation(Math.PI / 2);
         //   robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
 
         while (true) {
@@ -212,14 +212,14 @@ public class JUnit_Pathfinding extends JUnit_Test {
         state = container.getService(GameState.class);
         anInterface = container.getService(ThreadInterface.class);
 
-//        simulator = container.getService(ThreadSimulator.class);
-//        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+        simulator = container.getService(ThreadSimulator.class);
+        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
 
         container.startInstanciedThreads();
 //        log.debug("begin script");
 //        pathfinding.initGraphe();
-        robotReal.setPosition(new Vec2(1252, 455));
-        robotReal.setOrientation(Math.PI);
+//        robotReal.setPosition(new Vec2(1252, 455));
+//        robotReal.setOrientation(Math.PI);
         robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
 
         ArrayList<Vec2> pathToFollow = new ArrayList<>();
