@@ -261,35 +261,27 @@ public class JUnit_Pathfinding extends JUnit_Test {
         container.startInstanciedThreads();
 
 
-        Window window = new Window(table);
-        window.setArete(pathfinding.getGraphe().getBoneslist());
+       Window window = new Window(table);
+        /*window.setArete(pathfinding.getGraphe().getBoneslist());
 
         ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);
-        ArrayList<Vec2> clics = new ArrayList<>();
+        ArrayList<Vec2> clics = new ArrayList<>();*/
 
         while (true) {
-
-            try {
-                //clics = window.waitLRClic();
+              //clics = window.waitLRClic();
                 Vec2 positionDepart=new Vec2(1252, 455);
                 int d=10;
-                Circle circle=new Circle(new Vec2(1200,1190),330,(Math.PI / 2) ,(3 * Math.PI / 2)*10/11, true);
-                Vec2 entreeTakeCubes= Geometry.closestPointOnCircle(positionDepart,circle);
-                window.setPoint(entreeTakeCubes);
-                path = pathfinding.findmyway(positionDepart, entreeTakeCubes);
+                Circle circle=new Circle(new Vec2(650,540),87 + 212+30);
+                ArrayList<Vec2> path = new ArrayList<>();
+                path = circle.pointsaroundcircle(12);
+                int n=path.size();
+                for(int i=0;i<n;i++){
+                    window.setPoint(path.get(i));
+                }
                 window.setPath(path);
                 window.repaint();
-            } catch (PointInObstacleException e) {
-                System.out.println("Obstacle!!");
-                e.printStackTrace();
-            } catch (UnableToMoveException e) {
-                System.out.println("No way found !!");
-                e.printStackTrace();
-            } catch (NoPathFound e) {
-                System.out.println("No way found");
-                e.printStackTrace();
-            }
+
         }
     }
 

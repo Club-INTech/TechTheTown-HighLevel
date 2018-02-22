@@ -60,6 +60,8 @@ public class Noeud {
     public void setCout(double cout) {      this.cout = cout;    }
 
     public void setPred(Noeud pred) {        this.pred = pred;   }
+
+
 }
 
 /*private Vec2 alineate(int xdepart, int ydepart,int xPointoalinate,int yPointoalinate) {

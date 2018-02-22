@@ -156,6 +156,7 @@ public class Graphe implements Service {
         }
 
         listRectangu.removeAll(listRectangu2);
+        nodesToKeep.addAll(this.createNodesObstacles());
         return nodesToKeep;
 
     }
@@ -276,6 +277,28 @@ public class Graphe implements Service {
 
     public void removeNode(Noeud noeud){
         nodes.remove(noeud);
+    }
+
+    /**
+     * Cette méthode crée des noeuds autour des obstacles
+     * @return
+     */
+    public ArrayList<Noeud> createNodesObstacles(){
+        int n=listCircu.size();
+        ArrayList<Vec2> pointstoreturn=new ArrayList<>();
+        ArrayList<Noeud> nodestoreturn=new ArrayList<>();
+        for(int i=0;i<n;i++) {
+            ArrayList<Vec2> l = listCircu.get(i).getCircle().pointsaroundcircle(5);
+            pointstoreturn.addAll(l);
+        }
+        int m=pointstoreturn.size();
+        for(int i=0;i<m;i++){
+            Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,null);
+            this.addNodeInGraphe(nodetoadd);
+            nodestoreturn.add(nodetoadd);
+        }
+        return nodestoreturn;
+
     }
 }
 
