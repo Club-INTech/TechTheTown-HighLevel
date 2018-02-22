@@ -41,9 +41,11 @@ public class ShootBufferedStill {
 	}
 	
 	private static void shootBufferedStill(RPiCamera piCamera, String imageName, String encoding) {
-		piCamera.setRotation(180)                    //Tourne l'image à 180°
-				.setTimeout(500)                   	 //Temps d'attente avant la prise de photo (on peut bouger après T=timeout+shutter~=1s)
-				.setSharpness(100);
+		piCamera.setRotation(180)                   //Tourne l'image à 180°
+				.setTimeout(500)                   	//Temps d'attente avant la prise de photo (on peut bouger après T=timeout+shutter~=1s)
+				.setSharpness(100)
+				.setQuality(100)
+				.setAWB(AWB.TUNGSTEN);				//Rend la photo froide, permettant de faire une distinction plus facile entre les couleurs
 		try {
 			BufferedImage buffImg = piCamera.takeBufferedStill(2592, 1944); // Take image and store in BufferedImage
 			File saveFile = new File(imageName); // Create file to save image to
