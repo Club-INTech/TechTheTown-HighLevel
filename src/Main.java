@@ -54,6 +54,8 @@ public class Main {
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
 // PS : Les vérifications et validations c'est pas pour les chiens.
+	//TODO : Aide-mémoire : mettre la lib libopencv_java340.so dans le répertoire /usr/lib de la raspi, et executer execstack -c libopencv_java340.so
+
     public static void main(String[] args) throws InterruptedException {
         try {
 

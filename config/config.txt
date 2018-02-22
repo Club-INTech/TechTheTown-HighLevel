@@ -13,7 +13,7 @@ LONGUEUR_BRAS                        = 330
 DIMENSION_PORTES                     = 87
 
 # ETAT INITIAL DES ROBOTS
-COULEUR                              = bleu
+COULEUR                              = vert
 SIMULATION                           = false
 
 # PARAMETRES POUR LES CAPTEUR

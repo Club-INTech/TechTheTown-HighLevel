@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
+
 /**
  * ShootBufferedStill is an example of how to take and buffer a still image using JRPiCam.
  * 
@@ -16,10 +18,10 @@ import java.io.IOException;
  */
 public class ShootBufferedStill {
 	
-	public static String TakeBufferedPicture() {
+	public static BufferedImage TakeBufferedPicture() {
 		RPiCamera piCamera = null;
 		// Attempt to create an instance of RPiCamera.RPiCamera, will fail if raspistill is not properly installed
-		String saveDir = "/home/pi/Desktop";
+		String saveDir = "/home/pi";
 		try {
 			piCamera = new RPiCamera(saveDir);
 		} catch (FailedToRunRaspistillException e) {
@@ -30,9 +32,8 @@ public class ShootBufferedStill {
 		if (piCamera != null) {
 			String imageName="ImageRaspberryPi";
 			String encoding="png";
-			shootBufferedStill(piCamera, imageName, encoding);
-			String pathToReturn=saveDir+"/"+imageName+"."+encoding;
-			return pathToReturn;
+			BufferedImage buffImg = shootBufferedStill(piCamera, imageName, encoding);
+			return buffImg;
 		}
 		else{
 			System.out.println("L'image n'a pas pu etre prise (erreur1)");
@@ -40,21 +41,26 @@ public class ShootBufferedStill {
 		}
 	}
 	
-	private static void shootBufferedStill(RPiCamera piCamera, String imageName, String encoding) {
-		piCamera.setRotation(180)                    //Tourne l'image à 180°
-				.setTimeout(500)                   	 //Temps d'attente avant la prise de photo (on peut bouger après T=timeout+shutter~=1s)
-				.setSharpness(100);
+	private static BufferedImage shootBufferedStill(RPiCamera piCamera, String imageName, String encoding) {
+		piCamera.setRotation(180)                   //Tourne l'image à 180°
+				.setTimeout(500)                   	//Temps d'attente avant la prise de photo (on peut bouger après T=timeout+shutter~=1s)
+				.setSharpness(100)
+				.setQuality(100)
+				.setAWB(AWB.TUNGSTEN)				//Rend la photo froide, permettant de faire une distinction plus facile entre les couleurs
+				.setExposure(Exposure.ANTISHAKE);
 		try {
 			BufferedImage buffImg = piCamera.takeBufferedStill(2592, 1944); // Take image and store in BufferedImage
-			File saveFile = new File(imageName); // Create file to save image to
-			ImageIO.write(buffImg, encoding, saveFile); // Save image to file
-			//System.out.println("New PNG image saved to:\n\t" + saveFile.getAbsolutePath()); // Print out location of image
+			return buffImg;
 		} catch (IOException e) {
 			System.out.println("L'image n'a pas pu etre prise (erreur2)");
 			e.printStackTrace();
+			BufferedImage toReturn = new BufferedImage(3000,3000,TYPE_INT_RGB);
+			return toReturn;
 		} catch (InterruptedException e) {
 			System.out.println("L'image n'a pas pu etre prise (erreur3)");
 			e.printStackTrace();
+			BufferedImage toReturn = new BufferedImage(3000,3000,TYPE_INT_RGB);
+			return toReturn;
 		}
 	}
 }
