@@ -8,8 +8,10 @@ import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
 import scripts.ScriptManager;
+import scripts.TakeCubes;
 import smartMath.Vec2;
 import strategie.GameState;
+import table.Table;
 import threads.ThreadInterface;
 
 public class JUnit_MatchScript extends JUnit_Test {
@@ -37,10 +39,12 @@ public class JUnit_MatchScript extends JUnit_Test {
     public void testScript() {
         try {
             //Définition des paramètres de base
-            robotReal.setOrientation(Math.PI);
-            Vec2 positionDepart = new Vec2(1252, 455);
-            robotReal.setPosition(positionDepart);
+//            robotReal.setOrientation(Math.PI);
+//            Vec2 positionDepart = new Vec2(1252, 455);
+//            robotReal.setPosition(positionDepart);
             //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+            robotReal.setPosition(Table.entryPosition);
+            robotReal.setOrientation(Table.entryOrientation);
             robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
             //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
