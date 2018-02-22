@@ -19,7 +19,7 @@ public class ShootBufferedStill {
 	public static String TakeBufferedPicture() {
 		RPiCamera piCamera = null;
 		// Attempt to create an instance of RPiCamera.RPiCamera, will fail if raspistill is not properly installed
-		String saveDir = "/home/pi/Desktop";
+		String saveDir = "/home/pi";
 		try {
 			piCamera = new RPiCamera(saveDir);
 		} catch (FailedToRunRaspistillException e) {
@@ -41,9 +41,12 @@ public class ShootBufferedStill {
 	}
 	
 	private static void shootBufferedStill(RPiCamera piCamera, String imageName, String encoding) {
-		piCamera.setRotation(180)                    //Tourne l'image à 180°
-				.setTimeout(500)                   	 //Temps d'attente avant la prise de photo (on peut bouger après T=timeout+shutter~=1s)
-				.setSharpness(100);
+		piCamera.setRotation(180)                   //Tourne l'image à 180°
+				.setTimeout(500)                   	//Temps d'attente avant la prise de photo (on peut bouger après T=timeout+shutter~=1s)
+				.setSharpness(100)
+				.setQuality(100)
+				.setAWB(AWB.TUNGSTEN)				//Rend la photo froide, permettant de faire une distinction plus facile entre les couleurs
+				.setExposure(Exposure.ANTISHAKE);
 		try {
 			BufferedImage buffImg = piCamera.takeBufferedStill(2592, 1944); // Take image and store in BufferedImage
 			File saveFile = new File(imageName); // Create file to save image to
