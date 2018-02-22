@@ -30,7 +30,7 @@ public class DeposeCubes extends AbstractScript{
     public void execute(int version,GameState stateToConsider) throws ExecuteException, UnableToMoveException {
         int d=70; //on pénètre la zone de construction de cette distance
         int dimensionporte=config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
-        int distancepush=105;
+        int distancepush=107;
         int radius=config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         Vec2 aim=new Vec2(750,175+radius);
         //on fait la même suite d'actions, mais pas au même endroit

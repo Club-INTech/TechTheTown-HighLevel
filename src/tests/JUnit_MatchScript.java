@@ -41,7 +41,7 @@ public class JUnit_MatchScript extends JUnit_Test {
             Vec2 positionDepart = new Vec2(1252, 455);
             robotReal.setPosition(positionDepart);
             //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
-            robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
+            robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
             //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
 
