@@ -103,6 +103,32 @@ public class PatternRecognition extends AbstractThread{
         return colorMatrix;
     }
 
+    /**Fonction de conversion d'une image en une matrice de couleurs
+     * @param picture BufferedImage de l'image à convertir
+     * @return renvoie une matrice 3D matrice[x][y][0,1 ou 2], sachant que
+     * x est l'abscisse,
+     * y est l'ordonnée,
+     * 0,1 ou 2, si on veut R, G ou B**/
+    private int[][][] createColorMatrixFromBufferedImage(BufferedImage picture) {
+        int[][][] colorMatrix;
+        int width = picture.getWidth();
+        int height = picture.getHeight();
+        colorMatrix = new int[width][height][3];
+        //Méthode pour récupérer les paramètres R, G et B de chaque pixel
+        for (int x=0; x<width-1; x++){
+            for (int y=0; y<height-1; y++) {
+                Color color =  new Color(picture.getRGB(x, y));
+                colorMatrix[x][y][0]=color.getRed();
+                colorMatrix[x][y][1]=color.getGreen();
+                colorMatrix[x][y][2]=color.getBlue();
+            }
+        }
+        return colorMatrix;
+    }
+
+
+
+
     /** Fonction permettant d'obtenir la valeur médiane de R, G OU B pour une des 3 couleurs de la photo
      *  Sélectionne la couleur en créant un rectangle par ses sommets opposés :
      *  -------------------------
@@ -662,15 +688,48 @@ public class PatternRecognition extends AbstractThread{
     private double saturationPreModifier;
     private double brightnessPreModifier;
     private boolean alreadyPreModified;
+    private BufferedImage buffImg;
 
     /** Instanciation du thread de reconnaissance de couleurs
      * @param pathToImage chemin à l'image enregistrée
      * @param zoneToPerformLocalisation zone dans laquelle la localisation de pattern va devoir se faire.
      */
     public PatternRecognition(Config config, String pathToImage, int[] zoneToPerformLocalisation, double saturationPreModifier, double brightnessPreModifier){
-        //TODO:CALIBRER SUR UNE IMAGE SOMBRE
         this.config=config;
         this.pathToImage=pathToImage;
+        this.buffImg=new BufferedImage(3000,3000,BufferedImage.TYPE_INT_RGB);
+        this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
+        if (!(zoneToPerformLocalisation[0]==0 && zoneToPerformLocalisation[1]==0 && zoneToPerformLocalisation[2]==0 && zoneToPerformLocalisation[3]==0)) {
+            this.zoneToPerformLocalisation = zoneToPerformLocalisation;
+        }
+        else{
+            if (this.symmetry) {
+                this.zoneToPerformLocalisation = zoneToPerformLocalisationOrange;
+            }
+            else {
+                this.zoneToPerformLocalisation = zoneToPerformLocalisationVert;
+            }
+        }
+        this.lengthSideOfSquareDetection=20; //in pixels
+        this.distanceBetweenTwoColors=70; //in pixels
+        this.debug=false;
+        this.alreadyPrintedColorMatchingProba=false;
+        this.mustSelectAValidPattern=false;
+        this.alreadyLitUp=0;
+        this.isSavingImages=true;
+        this.saturationPreModifier=saturationPreModifier;
+        this.brightnessPreModifier=brightnessPreModifier;
+        this.alreadyPreModified=false;
+    }
+
+    /** Instanciation du thread de reconnaissance de couleurs
+     * @param buffImage image contenue en buffer
+     * @param zoneToPerformLocalisation zone dans laquelle la localisation de pattern va devoir se faire.
+     */
+    public PatternRecognition(Config config, BufferedImage buffImage, int[] zoneToPerformLocalisation, double saturationPreModifier, double brightnessPreModifier){
+        this.config=config;
+        this.pathToImage="BUFFEREDIMAGEDETROMPEUR";
+        this.buffImg=buffImage;
         this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
         if (!(zoneToPerformLocalisation[0]==0 && zoneToPerformLocalisation[1]==0 && zoneToPerformLocalisation[2]==0 && zoneToPerformLocalisation[3]==0)) {
             this.zoneToPerformLocalisation = zoneToPerformLocalisation;
@@ -697,7 +756,13 @@ public class PatternRecognition extends AbstractThread{
 
     public void run(){
         this.setPriority(5);
-        int[][][] colorMatrix = createColorMatrix(this.pathToImage);
+        int[][][] colorMatrix;
+        if(this.pathToImage.equals("BUFFEREDIMAGEDETROMPEUR")) {
+            colorMatrix = createColorMatrixFromBufferedImage(this.buffImg);
+        }
+        else{
+            colorMatrix = createColorMatrix(this.pathToImage);
+        }
         centerPointPattern=calculateCenterPattern(this.pathToImage, this.zoneToPerformLocalisation);
         if (!(centerPointPattern[0] == 0 && centerPointPattern[1] == 0)) {
             analysePattern(colorMatrix);
