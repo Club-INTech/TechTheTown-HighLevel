@@ -34,7 +34,8 @@ public enum Colors {
     YELLOW(1,"yellow", new int[]{178,151,1}),
     BLUE(2,"blue", new int[]{47,68,82}),
     BLACK(3,"black", new int[]{33,29,17}),
-    GREEN(4,"green", new int[]{100,133,17});
+    GREEN(4,"green", new int[]{100,133,17}),
+    NULL(-1,"null",new int[]{0,0,0});
 
     /*
     //Couleurs RGB calibrées par rapport à la photo ImageRaspberry5.png
