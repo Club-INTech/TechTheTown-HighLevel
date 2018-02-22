@@ -44,6 +44,8 @@ import strategie.GameState;
 import table.Table;
 import table.obstacles.ObstacleManager;
 import threads.ThreadInterface;
+
+import java.awt.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -267,20 +269,14 @@ public class JUnit_Pathfinding extends JUnit_Test {
         ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);
         ArrayList<Vec2> clics = new ArrayList<>();*/
+        Graphe graphe=container.getService(Graphe.class);
 
         while (true) {
-              //clics = window.waitLRClic();
-                Vec2 positionDepart=new Vec2(1252, 455);
-                int d=10;
-                Circle circle=new Circle(new Vec2(650,540),87 + 212+30);
-                ArrayList<Vec2> path = new ArrayList<>();
-                path = circle.pointsaroundcircle(12);
-                int n=path.size();
-                for(int i=0;i<n;i++){
-                    window.setPoint(path.get(i));
-                }
-                window.setPath(path);
-                window.repaint();
+              Vec2 position=new Vec2(650,540);
+              Circle circle=new Circle(position,87+212);
+              ArrayList<Vec2> path=circle.pointsaroundcircle(12);
+              window.setNode(graphe.getNodes());
+              window.setArete(graphe.getBoneslist());
 
         }
     }

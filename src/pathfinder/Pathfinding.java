@@ -1,5 +1,6 @@
 package pathfinder;
 
+import container.Container;
 import container.Service;
 import enums.UnableToMoveReason;
 import exceptions.Locomotion.PointInObstacleException;
@@ -50,7 +51,8 @@ public class Pathfinding implements Service {
      */
 
     public void initGraphe() {
-        graphe = new Graphe(log, config, table);
+        graphe = new Graphe(log,config,table);
+        graphe.updateConfig();
     }
 
     /**

@@ -140,8 +140,8 @@ public class Circle {
 	public ArrayList<Vec2> pointsaroundcircle(int n){
 		ArrayList<Vec2> l=new ArrayList<>();
 		for(int i=0;i<n;i++){
-			int x=(int)(this.getRadius()*Math.cos(2*i*Math.PI/n))+this.getCenter().getX();
-			int y=(int)(this.getRadius()*Math.sin(2*i*Math.PI/n))+this.getCenter().getY();
+			int x=new Integer((int)(this.getRadius()*Math.cos(2*i*Math.PI/n))+this.getCenter().getX());
+			int y=new Integer((int)(this.getRadius()*Math.sin(2*i*Math.PI/n))+this.getCenter().getY());
 			Vec2 vectoadd=new Vec2(x,y);
 			l.add(vectoadd);
 		}
