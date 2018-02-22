@@ -18,7 +18,7 @@ public class ShootStill {
 	public static String TakeBufferedPicture() {
 		RPiCamera piCamera = null;
 		// Attempt to create an instance of RPiCamera.RPiCamera, will fail if raspistill is not properly installed
-		String saveDir = "/home/pi/Desktop";
+		String saveDir = "/home/pi";
 		try {
 			piCamera = new RPiCamera(saveDir);
 		} catch (FailedToRunRaspistillException e) {
