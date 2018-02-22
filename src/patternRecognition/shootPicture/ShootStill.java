@@ -44,7 +44,8 @@ public class ShootStill {
 				.setTimeout(500)                   	//Temps d'attente avant la prise de photo (on peut bouger après T=timeout+shutter~=1s)
 				.setSharpness(100)
 				.setQuality(100)
-				.setAWB(AWB.TUNGSTEN);				//Rend la photo froide, permettant de faire une distinction plus facile entre les couleurs
+				.setAWB(AWB.TUNGSTEN)				//Rend la photo froide, permettant de faire une distinction plus facile entre les couleurs
+				.setExposure(Exposure.ANTISHAKE);
 		//for (int i=30; i<=100; i=i+5) {
 		//	for (int j=30; j<=100; j=j+5) {
 		//		piCamera.setBrightness(i)	// Set brightness
