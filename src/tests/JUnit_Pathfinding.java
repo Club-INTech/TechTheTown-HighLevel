@@ -181,13 +181,9 @@ public class JUnit_Pathfinding extends JUnit_Test {
             //activation panneau domotique
             //pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(350, 370));
             //tas de cube
-            pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(1232, 725));
+            pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(370, 250));
             robotReal.followPath(pathToFollow);
-            Thread.sleep(1000);
-            pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(1222, 455));
-            robotReal.followPath(pathToFollow);
-            robotReal.turn(Math.PI);
-            robotReal.moveLengthwise(30);
+
 
 
 
