@@ -38,11 +38,14 @@ import scripts.ScriptManager;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import smartMath.Circle;
+import smartMath.Geometry;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import table.obstacles.ObstacleManager;
 import threads.ThreadInterface;
+
+import java.awt.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -122,18 +125,18 @@ public class JUnit_Pathfinding extends JUnit_Test {
         Vec2 clic = new Vec2();
 
         pathfinding.initGraphe();
-        robotReal.setPosition(new Vec2(1252, 455));
+        Vec2 positionDepart=new Vec2(1252, 455);
+        robotReal.setPosition(positionDepart);
         robotReal.setOrientation(Math.PI / 2);
         //   robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
 
         while (true) {
 
             try {
-                clic = window.waitLClic();
+                //clic = window.waitLClic();
                 Vec2 positionentreeDeposeCubes = new Vec2(650, 175 + config.getInt(ConfigInfoRobot.ROBOT_RADIUS));
 
                 path = pathfinding.findmyway(robotReal.getPosition(), clic);
-
                 robotReal.followPath(path);
 
                 //clic = window.waitLClic();
@@ -185,6 +188,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
             robotReal.followPath(pathToFollow);
             robotReal.turn(Math.PI);
             robotReal.moveLengthwise(30);
+
 
 
         } catch (PointInObstacleException e) {
@@ -259,30 +263,22 @@ public class JUnit_Pathfinding extends JUnit_Test {
         container.startInstanciedThreads();
 
 
-        Window window = new Window(table);
-        window.setArete(pathfinding.getGraphe().getBoneslist());
+       Window window = new Window(table);
+        /*window.setArete(pathfinding.getGraphe().getBoneslist());
 
         ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);
-        ArrayList<Vec2> clics = new ArrayList<>();
+        ArrayList<Vec2> clics = new ArrayList<>();*/
+        Graphe graphe=container.getService(Graphe.class);
 
         while (true) {
+              Vec2 position=new Vec2(650,540);
+              Circle circle=new Circle(position,87+212);
+              ArrayList<Vec2> path=circle.pointsaroundcircle(12);
+              window.setNode(graphe.getNodes());
+              window.setArete(graphe.getBoneslist());
 
-            try {
-                clics = window.waitLRClic();
-                path = pathfinding.findmyway(clics.get(0), clics.get(1));
-                window.setPath(path);
-                window.repaint();
-            } catch (PointInObstacleException e) {
-                System.out.println("Obstacle!!");
-                e.printStackTrace();
-            } catch (UnableToMoveException e) {
-                System.out.println("No way found !!");
-                e.printStackTrace();
-            } catch (NoPathFound e) {
-                System.out.println("No way found");
-                e.printStackTrace();
-            }
         }
     }
+
 }

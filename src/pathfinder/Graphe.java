@@ -4,6 +4,7 @@ import container.Service;
 import enums.ConfigInfoRobot;
 import pfg.config.Config;
 import pfg.config.ConfigInfo;
+import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
@@ -20,19 +21,20 @@ import java.util.ArrayList;
 
 public class Graphe implements Service {
 
-    @Override
-    public void updateConfig() {
-
-    }
 
     private Log log;
     private Config config;
-
+    int r;
     private ArrayList<ObstacleCircular> listCircu;
     private ArrayList<ObstacleRectangular> listRectangu;
     private Table table;
     private ArrayList<Noeud> nodes;
     private ArrayList<Arete> boneslist;
+
+    @Override
+    public void updateConfig() {
+        int r=config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+    }
 
 
     /**
@@ -63,38 +65,21 @@ public class Graphe implements Service {
      */
 
 
-    public boolean nodeInObstacle(Noeud noeud, Graphe graphe) {
-        int mRobotRadius = this.config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        int n = graphe.listCircu.size();
-        ArrayList<ObstacleRectangular> listRectangu2 = new ArrayList<>();
-        Vec2 position0 = new Vec2();
-        int xNoeud = noeud.getPosition().getX();
-        int yNoeud = noeud.getPosition().getY();
-        for (int i = 0; i < n; i++) {
-            if (noeud.getPosition().distance(graphe.listCircu.get(i).getPosition()) < graphe.listCircu.get(i).getRadius()) {
-                return true;
+    public boolean nodeInObstacle(Noeud noeud) {
+        int n=listCircu.size();
+        int m=listRectangu.size();
+        boolean inobstacle=false;
+        for(int i=0;i<n;i++){
+            if(table.getObstacleManager().isPositionInObstacle(noeud.getPosition(),listCircu.get(i))){
+                inobstacle=true;
             }
         }
-        int m = graphe.listRectangu.size();
-
-        for (int j = 0; j < m; j++) {
-            int xObstaclerectan = graphe.listRectangu.get(j).getPosition().getX();
-            int yObstaclerectan = graphe.listRectangu.get(j).getPosition().getY();
-            int dx = graphe.listRectangu.get(j).getSizeX() / 2;
-            int dy = graphe.listRectangu.get(j).getSizeY() / 2;
-            int x1 = xObstaclerectan + dx;
-            int x2 = xObstaclerectan - dx;
-            int y1 = yObstaclerectan + dy;
-            int y2 = yObstaclerectan - dy;
-            if ((xNoeud <= x1) && (xNoeud >= x2) && (yNoeud <= y1) && (yNoeud >= y2)) {
-                return true;
+        for(int i=0;i<m;i++){
+            if(table.getObstacleManager().isPositionInObstacle(noeud.getPosition(),listRectangu.get(i))){
+                inobstacle=true;
             }
         }
-
-        if (xNoeud < -1500 + mRobotRadius || xNoeud > 1500 - mRobotRadius || yNoeud < mRobotRadius || yNoeud > 2000 - mRobotRadius) {
-            return true;
-        }
-        return false;
+       return inobstacle;
     }
 
     /** Méthode générant des noeuds sur la table   */
@@ -106,56 +91,38 @@ public class Graphe implements Service {
         int ydebut = 0;
         int x;
         int y;
-        int n = listCircu.size();
-        int m;
         ArrayList<Noeud> node = new ArrayList<>();
         ArrayList<Noeud> nodesToKeep = new ArrayList<>();
-        for (int i = 1; i < 3000 / pasX - 1; i++) {
+        ArrayList<Noeud> nodestoaddaroundobstacles=this.createNodesObstaclesCirculaires();
+        /*for (int i = 1; i < 3000 / pasX - 1; i++) {
             x = i * pasX + xdebut;
-            for (int j = 1; j < 2000 / pasY; j++) {
+            for (int j = 1; j < 2000 / pasY - 1; j++) {
                 Vec2 nodeposition = new Vec2();
                 nodeposition.setX(x);
                 y = j * pasY + ydebut;
                 nodeposition.setY(y);
                 node.add(new Noeud(nodeposition, 999999999, -1, new ArrayList<Noeud>()));
             }
-        }
+        }*/
         int k = node.size();
-        boolean toKeep;
-        ArrayList<ObstacleRectangular> listRectangu2 = new ArrayList<>();
-        Vec2 position0 = new Vec2();
-        for (int i = 0; i < n; i++) {
-            ObstacleRectangular obsrectangu = new ObstacleRectangular(position0, 0, 0);
-            obsrectangu.setPosition(listCircu.get(i).getPosition());
-            obsrectangu.changeDim(listCircu.get(i).getRadius() * 2, listCircu.get(i).getRadius() * 2);
-            listRectangu2.add(obsrectangu);
-        }
-        listRectangu.addAll(listRectangu2);
-
-        m = listRectangu.size();
         for (int i = 0; i < k; i++) {
-            int xNoeud = node.get(i).getPosition().getX();
-            int yNoeud = node.get(i).getPosition().getY();
-            toKeep = true;
-            for (int j = 0; j < m; j++) {
-                int xObstaclerectan = listRectangu.get(j).getPosition().getX();
-                int yObstaclerectan = listRectangu.get(j).getPosition().getY();
-                int dx = listRectangu.get(j).getSizeX() / 2;
-                int dy = listRectangu.get(j).getSizeY() / 2;
-                int x1 = xObstaclerectan + dx;
-                int x2 = xObstaclerectan - dx;
-                int y1 = yObstaclerectan + dy;
-                int y2 = yObstaclerectan - dy;
-                if ((xNoeud <= x1) && (xNoeud >= x2) && (yNoeud <= y1) && (yNoeud >= y2)) {
-                    toKeep = false;
-                }
-            }
-            if (toKeep) {
+            if (!(nodeInObstacle(node.get(i)))) {
                 nodesToKeep.add(node.get(i));
             }
         }
-
-        listRectangu.removeAll(listRectangu2);
+        nodesToKeep.addAll(nodestoaddaroundobstacles);
+        Vec2 positionmilieu=new Vec2(0,1000-r);
+        Noeud nodemilieu=new Noeud(positionmilieu,0,0,null);
+        this.addNodeInGraphe(nodemilieu);
+        nodesToKeep.add(nodemilieu);
+        Vec2 positiondepart=new Vec2(1252, 455);
+        Noeud nodepart=new Noeud(positiondepart,0,0,null);
+        this.addNodeInGraphe(nodepart);
+        nodesToKeep.add(nodepart);
+        Vec2 positioninterrupteur=new Vec2(0, 370);
+        Noeud nodinterrupteur=new Noeud(positioninterrupteur,0,0,null);
+        this.addNodeInGraphe(nodinterrupteur);
+        nodesToKeep.add(nodinterrupteur);
         return nodesToKeep;
 
     }
@@ -250,32 +217,40 @@ public class Graphe implements Service {
 
     }
 
-    public void clear(Graphe graphe) {
-        graphe.nodes = null;
-        graphe.boneslist = null;
-    }
-
-
-    public ArrayList<Arete> removeDoublons(ArrayList<Arete> areteslist) {
-        int n = areteslist.size();
-        ArrayList<Arete> aretesToreturn = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            Boolean toadd = true;
-            for (int k = 0; k < n; k++) {
-                if ((areteslist.get(i).equals(areteslist.get(k)))) {
-                    toadd = false;
-                }
-            }
-            if (toadd) {
-                aretesToreturn.add(aretesToreturn.get(i));
-            }
-
-        }
-        return aretesToreturn;
-    }
 
     public void removeNode(Noeud noeud){
         nodes.remove(noeud);
+    }
+
+    /**
+     * Cette méthode crée des noeuds autour des obstacles
+     * @return
+     */
+    public ArrayList<Noeud> createNodesObstaclesCirculaires(){
+        int n=listCircu.size();
+        ArrayList<Vec2> pointstoreturn=new ArrayList<>();
+        ArrayList<Noeud> nodes=new ArrayList<>();
+        int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
+        for(int i=0;i<n;i++) {
+            Circle obstaclecircle=new Circle(listCircu.get(i).getPosition(),listCircu.get(i).getRadius()+d);
+            ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(12);
+            pointstoreturn.addAll(l);
+        }
+        int m=pointstoreturn.size();
+        for(int i=0;i<m;i++){
+            Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,null);
+            this.addNodeInGraphe(nodetoadd);
+            nodes.add(nodetoadd);
+        }
+        int l=nodes.size();
+        ArrayList<Noeud> nodestoreturn=new ArrayList<>();
+        for(int i=0;i<l;i++){
+            if (!(nodeInObstacle(nodes.get(i))) & table.getObstacleManager().isRobotInTable(nodes.get(i).getPosition())) {
+                nodestoreturn.add(nodes.get(i));
+            }
+        }
+        return nodestoreturn;
+
     }
 }
 
