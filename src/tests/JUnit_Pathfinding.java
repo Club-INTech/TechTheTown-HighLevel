@@ -172,7 +172,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
         container.startInstanciedThreads();
 
         pathfinding.initGraphe();
-        robotReal.setPosition(new Vec2(1252, 455));
+        robotReal.setPosition(new Vec2(890, 835));
         robotReal.setOrientation(Math.PI);
 
 
@@ -181,7 +181,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
             //activation panneau domotique
             //pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(350, 370));
             //tas de cube
-            pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(370, 250));
+            pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(750,175+212));
             robotReal.followPath(pathToFollow);
 
 
