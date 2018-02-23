@@ -14,7 +14,7 @@ DIMENSION_PORTES                     = 87
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
-SIMULATION                           = false
+SIMULATION                           = true
 
 # PARAMETRES POUR LES CAPTEUR
 # horizon_capteurs                   = 500

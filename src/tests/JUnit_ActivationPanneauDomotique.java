@@ -8,14 +8,20 @@ import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
 import scripts.ScriptManager;
+import simulator.ThreadSimulator;
+import simulator.ThreadSimulatorMotion;
 import smartMath.Vec2;
 import strategie.GameState;
+import threads.ThreadInterface;
 
 public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
     private Robot robotReal;
     private ScriptManager scriptManager;
     private GameState state;
     private HookFactory hookFactory;
+    private ThreadSimulatorMotion simulatorMotion;
+    private ThreadSimulator simulator;
+    private ThreadInterface anInterface;
 
     @Before
     public void setUp() {
@@ -24,6 +30,9 @@ public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
             robotReal = container.getService(Robot.class);
             state=container.getService(GameState.class);
             scriptManager=container.getService(ScriptManager.class);
+            simulator = container.getService(ThreadSimulator.class);
+            simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+            anInterface = container.getService(ThreadInterface.class);
             container.startInstanciedThreads();
         }catch (Exception e){
             e.printStackTrace();

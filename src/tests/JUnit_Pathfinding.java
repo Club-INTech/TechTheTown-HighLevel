@@ -70,6 +70,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     private ThreadSimulator simulator;
     private ThreadSimulatorMotion simulatorMotion;
     private ThreadInterface anInterface;
+
     /*
     @Before
     public void setUp(){
@@ -166,7 +167,6 @@ public class JUnit_Pathfinding extends JUnit_Test {
         obstacleManager = container.getService(ObstacleManager.class);
         robotReal = container.getService(Robot.class);
         state = container.getService(GameState.class);
-        anInterface = container.getService(ThreadInterface.class);
         container.startInstanciedThreads();
 
         pathfinding.initGraphe();
@@ -282,11 +282,13 @@ public class JUnit_Pathfinding extends JUnit_Test {
         ArrayList<Vec2> clics = new ArrayList<>();
         ArrayList<Vec2> path = new ArrayList<>();
         window.setArete(pathfinding.getGraphe().getBoneslist());
+        Vec2 positiondepart=new Vec2(1252, 455);
+        Vec2 postioninterrupteur=new Vec2(350,370);
         while (true) {
 
             try {
-                clics = window.waitLRClic();
-                path = pathfinding.findmyway(clics.get(0), clics.get(1));
+                //clics = window.waitLRClic();
+                path = pathfinding.findmyway(positiondepart, postioninterrupteur);
                 window.setPath(path);
                 window.repaint();
             } catch (PointInObstacleException e) {
