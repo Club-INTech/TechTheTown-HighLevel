@@ -218,6 +218,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 //        simulator = container.getService(ThreadSimulator.class);
 //        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
 
+
         container.startInstanciedThreads();
 //        log.debug("begin script");
 //        pathfinding.initGraphe();
@@ -271,13 +272,34 @@ public class JUnit_Pathfinding extends JUnit_Test {
         ArrayList<Vec2> clics = new ArrayList<>();*/
         Graphe graphe=container.getService(Graphe.class);
 
+//        while (true) {
+//              Vec2 position=new Vec2(650,540);
+//              Circle circle=new Circle(position,87+212);
+//              ArrayList<Vec2> path=circle.pointsaroundcircle(12);
+//              window.setNode(graphe.getNodes());
+//              window.setArete(graphe.getBoneslist());
+//
+//        }
+        ArrayList<Vec2> clics = new ArrayList<>();
+        ArrayList<Vec2> path = new ArrayList<>();
+        window.setArete(pathfinding.getGraphe().getBoneslist());
         while (true) {
-              Vec2 position=new Vec2(650,540);
-              Circle circle=new Circle(position,87+212);
-              ArrayList<Vec2> path=circle.pointsaroundcircle(12);
-              window.setNode(graphe.getNodes());
-              window.setArete(graphe.getBoneslist());
 
+            try {
+                clics = window.waitLRClic();
+                path = pathfinding.findmyway(clics.get(0), clics.get(1));
+                window.setPath(path);
+                window.repaint();
+            } catch (PointInObstacleException e) {
+                System.out.println("Obstacle!!");
+                e.printStackTrace();
+            } catch (UnableToMoveException e) {
+                System.out.println("No way found !!");
+                e.printStackTrace();
+            } catch (NoPathFound e) {
+                System.out.println("No way found");
+                e.printStackTrace();
+            }
         }
     }
 

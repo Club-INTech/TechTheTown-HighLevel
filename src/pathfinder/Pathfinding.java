@@ -92,6 +92,8 @@ public class Pathfinding implements Service {
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
+        int heuristique = 100;
+        int k = 0;
 
         /** exception départ ou arrivée dans un obstacle */
         if (obstacleManager.isObstructed(noeuddepart.getPosition()) || !obstacleManager.isRobotInTable(noeuddepart.getPosition())) {
@@ -136,12 +138,15 @@ public class Pathfinding implements Service {
                             voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         }
                     } else {
-                        voisin.setHeuristique(voisin.getPosition().distance(noeudarrive.getPosition()));
+//                        voisin.setHeuristique(voisin.getPosition().distance(noeudarrive.getPosition()));
+                        voisin.setHeuristique(k*heuristique);
                         voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         openList.add(voisin);
                         voisin.setPred(noeudcourant);
                     }
                 }
+                k++;
+                log.debug(k);
             }
         }
         // pas de chemin trouvé.
