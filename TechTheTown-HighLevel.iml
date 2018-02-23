@@ -18,5 +18,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="opencv-340" level="application" />
   </component>
 </module>
