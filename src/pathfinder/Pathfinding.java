@@ -2,6 +2,7 @@ package pathfinder;
 
 import container.Container;
 import container.Service;
+import enums.ConfigInfoRobot;
 import enums.UnableToMoveReason;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
@@ -67,6 +68,12 @@ public class Pathfinding implements Service {
             node.removeNeighbour(noeudDepart);
             node.removeNeighbour(noeudArrive);
         }
+        if(config.getBoolean(ConfigInfoRobot.TOURAVANTREMPLIE)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(0));
+        }
+        if(config.getBoolean(ConfigInfoRobot.TOURARRIEREMPLIE)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(1));
+        }
         graphe.removeNode(noeudDepart);
         graphe.removeNode(noeudArrive);
     }
@@ -94,7 +101,6 @@ public class Pathfinding implements Service {
         ArrayList<Noeud> finalList = new ArrayList<>();
         int heuristique = 100;
         int k = 0;
-
         /** exception départ ou arrivée dans un obstacle */
         if (obstacleManager.isObstructed(noeuddepart.getPosition()) || !obstacleManager.isRobotInTable(noeuddepart.getPosition())) {
             throw new PointInObstacleException(noeuddepart.getPosition());

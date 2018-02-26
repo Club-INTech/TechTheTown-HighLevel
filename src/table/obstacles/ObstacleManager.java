@@ -562,7 +562,7 @@ public class ObstacleManager implements Service
 	 * Supprime la première occurence de cet obstacle
 	 * @param obs l'obstacle
 	 */
-	private synchronized void removeObstacle(ObstacleCircular obs)
+	public synchronized void removeObstacle(ObstacleCircular obs)
 	{
 		mCircularObstacle.remove(obs);
 	}
@@ -571,7 +571,7 @@ public class ObstacleManager implements Service
 	 * Supprime la première occurence de cet obstacle
 	 * @param obs l'obstacle
 	 */
-	private synchronized void removeObstacle(ObstacleRectangular obs)
+	public synchronized void removeObstacle(ObstacleRectangular obs)
 	{
 		mRectangles.remove(obs);
 	}
