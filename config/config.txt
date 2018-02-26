@@ -49,3 +49,6 @@ SIMULATION                           = false
 # PARAMETRES DE DEGAGEMENT EN CAS DE COLLISION
 # angle_degagement_robot             = 0.4
 # distance_degagement_robot          = 50
+
+tourAvantremplie=false;
+tourArrièremplie=false;

@@ -48,6 +48,8 @@ public enum ConfigInfoRobot implements ConfigInfo
     /** Paramètres match !*/
     COULEUR("vert"),
     C_DES_FOUS_EN_FACE(false),
+    TOURAVANTREMPLIE(false),
+    TOURARRIEREMPLIE(false),
 
     /** Dimensions du robot */
     ROBOT_LENGTH(300),

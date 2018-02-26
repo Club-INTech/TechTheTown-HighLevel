@@ -46,11 +46,13 @@ public class TakeCubes extends AbstractScript {
         //On regarde si la tour avant est remplie
         if (!stateToConsider.tourAvantRemplie){
             stateToConsider.tourAvantRemplie=true;
+            config.override(ConfigInfoRobot.TOURAVANTREMPLIE,true);
             bras=BrasUtilise.AVANT;
         }
         //On regarde si la tour arrière est remplie
         else if (!stateToConsider.tourArriereRemplie){
             stateToConsider.tourArriereRemplie=true;
+            config.override(ConfigInfoRobot.TOURARRIEREMPLIE,true);
             bras=BrasUtilise.ARRIERE;
         }
         //Si les deux tours sont remplies, on renvoie une exception et n'execute pas le script
@@ -217,6 +219,7 @@ public class TakeCubes extends AbstractScript {
             aimArcCircle = new Circle(coordsTas, this.longueurBras);
         }
         Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
+        System.out.println("point d'entrée takecubes"+version+aim);
         this.entryPositionPoint=aim;
         return new Circle(aim);
     }

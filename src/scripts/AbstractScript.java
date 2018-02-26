@@ -20,6 +20,7 @@
 package scripts;
 
 import container.Service;
+import enums.ActuatorOrder;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -84,6 +85,7 @@ public abstract class AbstractScript implements Service
 
 				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPositionFast()), actualState.table);
 			}
+			actualState.robot.useActuator(ActuatorOrder.SEND_POSITION,true);
 		}
 		catch (UnableToMoveException e)
 		{
