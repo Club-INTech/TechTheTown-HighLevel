@@ -283,12 +283,12 @@ public class JUnit_Pathfinding extends JUnit_Test {
         ArrayList<Vec2> path = new ArrayList<>();
         window.setArete(pathfinding.getGraphe().getBoneslist());
         Vec2 positiondepart=new Vec2(1252, 455);
-        Vec2 postioninterrupteur=new Vec2(350,370);
+        Vec2 postionabeille=new Vec2(1500-212-45,2000-212-45);
         while (true) {
 
             try {
                 //clics = window.waitLRClic();
-                path = pathfinding.findmyway(positiondepart, postioninterrupteur);
+                path = pathfinding.findmyway(postionabeille,positiondepart );
                 window.setPath(path);
                 window.repaint();
             } catch (PointInObstacleException e) {

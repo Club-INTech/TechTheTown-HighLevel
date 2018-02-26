@@ -25,8 +25,8 @@ public class MatchScript extends AbstractScript {
         actPD.goToThenExec(0,gameState);
         TakeCubes tk2=new TakeCubes(config,log,hookFactory);
         tk2.goToThenExec(2,gameState);
-        ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
-        activeAbeille.goToThenExec(0,gameState);
+        //ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
+        //activeAbeille.goToThenExec(0,gameState);
         TakeCubes tk1=new TakeCubes(config,log,hookFactory);
         tk1.goToThenExec(1,gameState);
         DeposeCubes dpCubes0=new DeposeCubes(config,log,hookFactory);

@@ -91,6 +91,8 @@ public class GameState implements Service
         //On dit que les cubes bonus sont présents au début du match
         this.cubeAvantPresent=true;
         this.cubeArrierePresent=true;
+
+
     }
 
     /* (non-Javadoc)
