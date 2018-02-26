@@ -18,7 +18,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
     /** Position d'entrée du script */
 
     int xEntry=370;
-    int yEntry=350;
+    int yEntry=300;
 
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -35,7 +35,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
         actualState.robot.turn(-Math.PI/2);
         actualState.robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
-        actualState.robot.moveLengthwise(205);
+        actualState.robot.moveLengthwise(155);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.goTo(new Vec2(xEntry,yEntry));
     }
