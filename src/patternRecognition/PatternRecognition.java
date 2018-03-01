@@ -726,6 +726,7 @@ public class PatternRecognition extends AbstractThread{
         this.saturationPreModifier=saturationPreModifier;
         this.brightnessPreModifier=brightnessPreModifier;
         this.alreadyPreModified=false;
+        this.updateConfig();
     }
 
 
@@ -799,5 +800,14 @@ public class PatternRecognition extends AbstractThread{
 
     public boolean isRecognitionlock() {
         return recognitionlock;
+    }
+
+    @Override
+    public void updateConfig() {
+        Colors.ORANGE.setRGB(config.getInt(ConfigInfoRobot.rorange),config.getInt(ConfigInfoRobot.gorange),config.getInt(ConfigInfoRobot.borange));
+        Colors.YELLOW.setRGB(config.getInt(ConfigInfoRobot.rjaune),config.getInt(ConfigInfoRobot.gjaune),config.getInt(ConfigInfoRobot.bjaune));
+        Colors.BLUE.setRGB(config.getInt(ConfigInfoRobot.rbleu),config.getInt(ConfigInfoRobot.gbleu),config.getInt(ConfigInfoRobot.bbleu));
+        Colors.BLACK.setRGB(config.getInt(ConfigInfoRobot.rnoir),config.getInt(ConfigInfoRobot.gnoir),config.getInt(ConfigInfoRobot.bnoir));
+        Colors.GREEN.setRGB(config.getInt(ConfigInfoRobot.rvert),config.getInt(ConfigInfoRobot.gvert),config.getInt(ConfigInfoRobot.bvert));
     }
 }

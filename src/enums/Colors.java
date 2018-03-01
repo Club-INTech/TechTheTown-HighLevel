@@ -4,6 +4,8 @@ import java.util.Objects;
 
 //Enum de couleurs des cubes (id, nom et RGB pour chaque couleur) et donc des patterns
 public enum Colors {
+
+
     //Couleurs données par les règles de la coupe
     /*ORANGE(0,"orange", new int[]{208, 93, 40}),
     YELLOW(1,"yellow", new int[]{247,181,0}),
@@ -30,12 +32,12 @@ public enum Colors {
     */
 
     //Couleurs calibrées par rapport à une photo 1.2*brightness 1*saturation au local Intech
-    ORANGE(0,"orange", new int[]{183, 107, 71}),
-    YELLOW(1,"yellow", new int[]{184,177,37}),
-    BLUE(2,"blue", new int[]{50,84,112}),
-    BLACK(3,"black", new int[]{13,24,20}),
-    GREEN(4,"green", new int[]{43,120,68}),
-    NULL(-1,"null",new int[]{0,0,0});
+    ORANGE(0,"orange", new int[3]),
+    YELLOW(1,"yellow", new int[3]),
+    BLUE(2,"blue", new int[3]),
+    BLACK(3,"black", new int[3]),
+    GREEN(4,"green", new int[3]),
+    NULL(-1,"null",new int[3]);
 
     /*
     //Couleurs RGB calibrées par rapport à la photo ImageRaspberry5.png
@@ -49,12 +51,14 @@ public enum Colors {
     private int[] RGB;      //int[3] R,G et B, calibrés
     private String name;    //nom de la couleur
     private int id;         //id de la couleur
+    private ConfigInfoRobot configInfoRobot;
 
     //Constructeur
     Colors(int id, String name, int[] RGB){
         this.name=name;
         this.RGB=RGB;
         this.id=id;
+
     }
 
     //Renvoie le code RGB de la couleur
@@ -102,5 +106,11 @@ public enum Colors {
             }
         }
         return name;
+    }
+
+    public void setRGB(int r, int g, int b) {
+        RGB[0]=r;
+        RGB[1]=g;
+        RGB[2]=b;
     }
 }

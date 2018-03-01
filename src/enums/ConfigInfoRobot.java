@@ -98,8 +98,24 @@ public enum ConfigInfoRobot implements ConfigInfo
 
     /** Paramètre simulation */
     SIMULATION(false),
-    ;
 
+    /**Paramètres couleurs*/
+    rorange(183),
+    gorange(107),
+    borange(71),
+    rjaune(184),
+    gjaune(177),
+    bjaune(37),
+    rbleu(50),
+    gbleu(84),
+    bbleu(112),
+    rnoir(13),
+    gnoir(24),
+    bnoir(20),
+    rvert(43),
+    gvert(120),
+    bvert(68),
+    ;
     private Object defaultValue;
 
     /**

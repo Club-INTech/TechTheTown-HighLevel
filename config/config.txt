@@ -53,3 +53,34 @@ SIMULATION                           = false
 tourAvantremplie=false;
 tourArrièremplie=false;
 tourAvantremplie2=false;
+
+#RGB pour la couleur orange
+rorange=183;
+gorange=107;
+borange=71;
+
+#RGB pour la couleur jaune
+rjaune=184;
+gjaune=177;
+bjaune=37;
+
+#RGB pour la couleur bleue
+rbleu=50;
+gbleu=84;
+bbleu=112;
+
+
+#RGB pour la couleur noire
+rnoir=13;
+gnoir=24;
+bnoir=20;
+
+
+
+#RGB pour la couleur vert
+rvert=43;
+gvert=120;
+bvert=68;
+
+
+
