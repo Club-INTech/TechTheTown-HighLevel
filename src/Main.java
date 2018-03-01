@@ -23,6 +23,8 @@ import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
 import pathfinder.Pathfinding;
+import patternRecognition.PatternRecognition;
+import patternRecognition.shootPicture.ShootBufferedStill;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
@@ -67,7 +69,7 @@ public class Main {
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion = container.getService(Locomotion.class);
 
-//            Thread.currentThread().setPriority(6);
+            Thread.currentThread().setPriority(6);
 
             // TODO : initialisation des variables globales du robot & objets...
             realState.robot.setPosition(Table.entryPosition);
@@ -77,25 +79,36 @@ public class Main {
 //			container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
             container.getService(ThreadInterface.class);
-//            container.getService(ThreadTimer.class);
-            container.getService(Pathfinding.class);
+            container.getService(ThreadTimer.class);
+            int[] zoneToPerformLocalisation = {0, 0, 0, 0};
+            PatternRecognition patternRecognition =new PatternRecognition(config,mEthWrapper, ShootBufferedStill.TakeBufferedPicture(),zoneToPerformLocalisation,1.2,1);
+            patternRecognition.start();
             container.startInstanciedThreads();
+
+            while(!patternRecognition.isMovinglock()) {
+                Thread.sleep(10);
+            }
+
 
         } catch (ContainerException p) {
             System.out.println("bug container");
         }
-        // container.startAllThreads();
         try {
+
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
             System.out.println("Le robot commence le match");
-//			waitMatchBegin();
-//			 TODO : lancer l'IA
+            waitMatchBegin();
+//			         TODO : lancer l'IA
+
             scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, realState);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
+
 
 
     /**

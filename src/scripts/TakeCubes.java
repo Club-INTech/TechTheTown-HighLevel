@@ -34,8 +34,13 @@ public class TakeCubes extends AbstractScript {
     @Override
     public void execute(int indiceTas, GameState stateToConsider)
             throws InterruptedException, ExecuteException, UnableToMoveException {
+
         BrasUtilise bras;
         Cubes additionalCube;
+
+        while(!stateToConsider.recognitionlock){
+            Thread.sleep(10);
+        }
 
         //On récupère l'indice du pattern
         int indicePattern=stateToConsider.indicePattern;
@@ -44,16 +49,16 @@ public class TakeCubes extends AbstractScript {
         TasCubes tas = TasCubes.getTasFromID(indiceTas);
 
         //On regarde si la tour avant est remplie
-        if (!stateToConsider.tourAvantRemplie){
-            stateToConsider.tourAvantRemplie=true;
-            config.override(ConfigInfoRobot.TOURAVANTREMPLIE,true);
-            bras=BrasUtilise.AVANT;
-        }
-        //On regarde si la tour arrière est remplie
-        else if (!stateToConsider.tourArriereRemplie){
+        if (!stateToConsider.tourArriereRemplie){
             stateToConsider.tourArriereRemplie=true;
             config.override(ConfigInfoRobot.TOURARRIEREMPLIE,true);
             bras=BrasUtilise.ARRIERE;
+        }
+        //On regarde si la tour arrière est remplie
+        else if (!stateToConsider.tourAvantRemplie){
+            stateToConsider.tourAvantRemplie=true;
+            config.override(ConfigInfoRobot.TOURAVANTREMPLIE,true);
+            bras=BrasUtilise.AVANT;
         }
         //Si les deux tours sont remplies, on renvoie une exception et n'execute pas le script
         else{
@@ -65,6 +70,8 @@ public class TakeCubes extends AbstractScript {
             //On gère le cas où le cube bonus est encore présent
             if (stateToConsider.cubeAvantPresent){
                 additionalCube=Cubes.NULL;
+                //s'il n'y a plus de cube bonus, il s'agit donc de la deuxième tour avant qu'on prend
+                config.override(ConfigInfoRobot.TOURAVANTREMPLIE2,true);
             }
             else{
                 additionalCube=Cubes.getCubeNotInPattern(indicePattern);

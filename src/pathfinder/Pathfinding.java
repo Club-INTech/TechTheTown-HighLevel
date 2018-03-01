@@ -69,11 +69,15 @@ public class Pathfinding implements Service {
             node.removeNeighbour(noeudArrive);
         }
         if(config.getBoolean(ConfigInfoRobot.TOURAVANTREMPLIE)){
-            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(0));
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(2));
         }
         if(config.getBoolean(ConfigInfoRobot.TOURARRIEREMPLIE)){
             obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(1));
         }
+        if(config.getBoolean(ConfigInfoRobot.TOURAVANTREMPLIE2)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(0));
+        }
+
         graphe.removeNode(noeudDepart);
         graphe.removeNode(noeudArrive);
     }
@@ -99,7 +103,7 @@ public class Pathfinding implements Service {
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
-        int heuristique = 100;
+        int heuristique = 10;
         int k = 0;
         /** exception départ ou arrivée dans un obstacle */
         if (obstacleManager.isObstructed(noeuddepart.getPosition()) || !obstacleManager.isRobotInTable(noeuddepart.getPosition())) {

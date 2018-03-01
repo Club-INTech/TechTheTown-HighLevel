@@ -20,6 +20,7 @@
 package strategie;
 
 import container.Service;
+import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.Robot;
 import table.Table;
@@ -68,6 +69,13 @@ public class GameState implements Service
     /** Cube bonus arrière présent dans la tour*/
     public boolean cubeArrierePresent;
 
+    private Config config;
+    private Log log;
+    public boolean recognitionlock;
+
+
+
+
     /**
      * Instancie un nouvel état de jeu. (il ne représente pas forcément la réalité, il peut être fictif)
      *
@@ -76,10 +84,13 @@ public class GameState implements Service
      * @param table l'état de la table a considérer
      * @param robot Le robot a considérer, soit un Robot, soit un Robothrono
      */
-    private GameState(Config config, Log log, Table table, Robot robot)
+    private GameState(Config config, Log log, Table table, Robot robot,PatternRecognition patternRecognition)
     {
         this.table = table;
         this.robot = robot;
+        this.config=config;
+        this.log=log;
+
         
         //On n'a marqué aucun point en début de match
         this.obtainedPoints = 0;
@@ -91,6 +102,9 @@ public class GameState implements Service
         //On dit que les cubes bonus sont présents au début du match
         this.cubeAvantPresent=true;
         this.cubeArrierePresent=true;
+
+        this.recognitionlock=patternRecognition.isRecognitionlock();
+
 
 
     }

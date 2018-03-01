@@ -3,7 +3,9 @@ package patternRecognition;
 import enums.Colors;
 import enums.Patterns;
 import enums.ConfigInfoRobot;
+import patternRecognition.shootPicture.ShootBufferedStill;
 import pfg.config.Config;
+import robot.EthWrapper;
 import threads.AbstractThread;
 
 import javax.imageio.ImageIO;
@@ -689,48 +691,20 @@ public class PatternRecognition extends AbstractThread{
     private double brightnessPreModifier;
     private boolean alreadyPreModified;
     private BufferedImage buffImg;
-
-    /** Instanciation du thread de reconnaissance de couleurs
-     * @param pathToImage chemin à l'image enregistrée
-     * @param zoneToPerformLocalisation zone dans laquelle la localisation de pattern va devoir se faire.
-     */
-    public PatternRecognition(Config config, String pathToImage, int[] zoneToPerformLocalisation, double saturationPreModifier, double brightnessPreModifier){
-        this.config=config;
-        this.pathToImage=pathToImage;
-        this.buffImg=new BufferedImage(3000,3000,BufferedImage.TYPE_INT_RGB);
-        this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
-        if (!(zoneToPerformLocalisation[0]==0 && zoneToPerformLocalisation[1]==0 && zoneToPerformLocalisation[2]==0 && zoneToPerformLocalisation[3]==0)) {
-            this.zoneToPerformLocalisation = zoneToPerformLocalisation;
-        }
-        else{
-            if (this.symmetry) {
-                this.zoneToPerformLocalisation = zoneToPerformLocalisationOrange;
-            }
-            else {
-                this.zoneToPerformLocalisation = zoneToPerformLocalisationVert;
-            }
-        }
-        this.lengthSideOfSquareDetection=20; //in pixels
-        this.distanceBetweenTwoColors=70; //in pixels
-        this.debug=false;
-        this.alreadyPrintedColorMatchingProba=false;
-        this.mustSelectAValidPattern=false;
-        this.alreadyLitUp=0;
-        this.isSavingImages=true;
-        this.saturationPreModifier=saturationPreModifier;
-        this.brightnessPreModifier=brightnessPreModifier;
-        this.alreadyPreModified=false;
-    }
+    private EthWrapper ethWrapper;
+    private boolean movinglock=false;
+    private boolean recognitionlock=false;
 
     /** Instanciation du thread de reconnaissance de couleurs
      * @param buffImage image contenue en buffer
      * @param zoneToPerformLocalisation zone dans laquelle la localisation de pattern va devoir se faire.
      */
-    public PatternRecognition(Config config, BufferedImage buffImage, int[] zoneToPerformLocalisation, double saturationPreModifier, double brightnessPreModifier){
+    public PatternRecognition(Config config,EthWrapper ethWrapper ,BufferedImage buffImage, int[] zoneToPerformLocalisation, double saturationPreModifier, double brightnessPreModifier){
         this.config=config;
         this.pathToImage="BUFFEREDIMAGEDETROMPEUR";
         this.buffImg=buffImage;
         this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
+        this.ethWrapper=ethWrapper;
         if (!(zoneToPerformLocalisation[0]==0 && zoneToPerformLocalisation[1]==0 && zoneToPerformLocalisation[2]==0 && zoneToPerformLocalisation[3]==0)) {
             this.zoneToPerformLocalisation = zoneToPerformLocalisation;
         }
@@ -754,8 +728,29 @@ public class PatternRecognition extends AbstractThread{
         this.alreadyPreModified=false;
     }
 
+
     public void run(){
         this.setPriority(5);
+        while (ethWrapper.isJumperAbsent()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // puis attend son retrait
+        while (!ethWrapper.isJumperAbsent()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //TODO: vérifier si c'est bien cela pour prendre une photo
+        ShootBufferedStill.TakeBufferedPicture();
+        movinglock=true;
         int[][][] colorMatrix;
         if(this.pathToImage.equals("BUFFEREDIMAGEDETROMPEUR")) {
             colorMatrix = createColorMatrixFromBufferedImage(this.buffImg);
@@ -766,6 +761,8 @@ public class PatternRecognition extends AbstractThread{
         centerPointPattern=calculateCenterPattern(this.pathToImage, this.zoneToPerformLocalisation);
         if (!(centerPointPattern[0] == 0 && centerPointPattern[1] == 0)) {
             analysePattern(colorMatrix);
+            //TODO : vérifier si c'est bien la ou la boolean recognitionlock doit passer à true
+            recognitionlock=true;
         }
         else{
             this.finalIndice=-1;
@@ -794,5 +791,13 @@ public class PatternRecognition extends AbstractThread{
 
     public void shutdown(){
         this.isShutdown=true;
+    }
+
+    public boolean isMovinglock() {
+        return movinglock;
+    }
+
+    public boolean isRecognitionlock() {
+        return recognitionlock;
     }
 }

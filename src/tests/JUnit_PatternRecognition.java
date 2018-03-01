@@ -4,6 +4,7 @@ import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 import patternRecognition.PatternRecognition;
+import patternRecognition.shootPicture.ShootBufferedStill;
 import robot.Robot;
 import scripts.ScriptManager;
 import strategie.GameState;
@@ -35,7 +36,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
             System.out.println("Image "+i);
             String pathToImage = "500ImagesTest/Image"+i+".png";
             int[] zoneToPerformLocalisation = {0, 0, 0, 0};
-            PatternRecognition patternRecognitionThread = new PatternRecognition(config, pathToImage, zoneToPerformLocalisation,1.2,1);
+            PatternRecognition patternRecognitionThread = new PatternRecognition(config, robotReal.getEthWrapper(),ShootBufferedStill.TakeBufferedPicture(), zoneToPerformLocalisation,1.2,1);
             patternRecognitionThread.setDebugPatternRecognition(false);
             log.debug("Starting PatternRecognition thread...");
             patternRecognitionThread.start();
@@ -58,4 +59,23 @@ public class JUnit_PatternRecognition extends JUnit_Test {
         System.out.println("Nombre de -1 : "+nbMinusOne);
         System.out.println("Nombre de réussites : "+nbSuccessful);
     }
+
+    @Test
+    public void test() {
+        try {
+            int[] zoneToPerformLocalisation = {0, 0, 0, 0};
+            PatternRecognition patternRecognitionThread = new PatternRecognition(config,robotReal.getEthWrapper(), ShootBufferedStill.TakeBufferedPicture(), zoneToPerformLocalisation, 1.2, 1);
+            patternRecognitionThread.start();
+            int finalindice = patternRecognitionThread.returnFinalIndice();
+            while (finalindice == -2) {
+                finalindice = patternRecognitionThread.returnFinalIndice();
+                patternRecognitionThread.sleep(100);
+            }
+            System.out.println(finalindice);
+        }
+        catch(InterruptedException e){
+            e.printStackTrace();
+        }
+    }
+
 }

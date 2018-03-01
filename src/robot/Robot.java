@@ -692,4 +692,8 @@ public class Robot implements Service {
 		position = Table.entryPosition;
 		orientation = Math.PI;
 	}
+
+	public EthWrapper getEthWrapper() {
+		return ethWrapper;
+	}
 }

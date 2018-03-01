@@ -50,6 +50,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     C_DES_FOUS_EN_FACE(false),
     TOURAVANTREMPLIE(false),
     TOURARRIEREMPLIE(false),
+    TOURAVANTREMPLIE2(false),
 
     /** Dimensions du robot */
     ROBOT_LENGTH(300),

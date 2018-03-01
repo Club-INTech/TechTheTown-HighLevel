@@ -30,11 +30,11 @@ public enum Colors {
     */
 
     //Couleurs calibrées par rapport à une photo 1.2*brightness 1*saturation au local Intech
-    ORANGE(0,"orange", new int[]{152, 75, 33}),
-    YELLOW(1,"yellow", new int[]{178,151,1}),
-    BLUE(2,"blue", new int[]{47,68,82}),
-    BLACK(3,"black", new int[]{33,29,17}),
-    GREEN(4,"green", new int[]{100,133,17}),
+    ORANGE(0,"orange", new int[]{183, 107, 71}),
+    YELLOW(1,"yellow", new int[]{184,177,37}),
+    BLUE(2,"blue", new int[]{50,84,112}),
+    BLACK(3,"black", new int[]{13,24,20}),
+    GREEN(4,"green", new int[]{43,120,68}),
     NULL(-1,"null",new int[]{0,0,0});
 
     /*

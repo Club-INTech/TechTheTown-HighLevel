@@ -43,7 +43,7 @@ public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
         try {
             //Définition des paramètres de base
             robotReal.setOrientation(Math.PI);
-            Vec2 positionDepart=new Vec2(1252,455);
+            Vec2 positionDepart=new Vec2(1252,460);
             robotReal.setPosition(positionDepart);
             robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
