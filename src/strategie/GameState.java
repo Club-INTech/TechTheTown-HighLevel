@@ -45,7 +45,7 @@ public class GameState implements Service
     /** La table */
     public final Table table;
     
-    /** Le robot que l'on fait agir sur cette table*/
+    /** Le robot que l'on fait agir sur cette table */
     public final Robot robot;
 
     /** Temps écoulé depuis le début du match en ms */
@@ -54,8 +54,11 @@ public class GameState implements Service
 	/** points marqués depuis le debut du match */
     public int obtainedPoints;
 
-    /** Indice du pattern trouvé*/
+    /** Indice du pattern trouvé */
     public int indicePattern;
+
+    /** Calculs de reconnaissance de patterns finis */
+    public boolean recognitionDone;
 
     /** Tour avant déjà remplie */
     public boolean tourAvantRemplie;
@@ -63,15 +66,14 @@ public class GameState implements Service
     /** Tour arriere déjà remplie */
     public boolean tourArriereRemplie;
 
-    /** Cube bonus avant présent dans la tour*/
+    /** Cube bonus avant présent dans la tour */
     public boolean cubeAvantPresent;
 
-    /** Cube bonus arrière présent dans la tour*/
+    /** Cube bonus arrière présent dans la tour */
     public boolean cubeArrierePresent;
 
     private Config config;
     private Log log;
-    public boolean recognitionDone;
 
 
 
@@ -102,9 +104,11 @@ public class GameState implements Service
         this.cubeAvantPresent=true;
         this.cubeArrierePresent=true;
 
+
+        //La reconnaissance de couleurs est faite ou non
         this.recognitionDone=patternRecognition.isRecognitionDone();
-
-
+        //On set une valeur de base, qui sera changée par PatternRecognition par la suite
+        this.indicePattern=-2;
 
     }
 

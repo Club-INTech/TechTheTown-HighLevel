@@ -6,6 +6,7 @@ import enums.ConfigInfoRobot;
 import patternRecognition.shootPicture.ShootBufferedStill;
 import pfg.config.Config;
 import robot.EthWrapper;
+import strategie.GameState;
 import threads.AbstractThread;
 
 import javax.imageio.ImageIO;
@@ -24,8 +25,10 @@ public class PatternRecognition extends AbstractThread{
 
     private int finalIndice=-2;
     private Config config;
+    private EthWrapper ethWrapper;
+    private GameState gameState;
+
     private boolean isShutdown=false;
-    private int[] zoneToPerformLocalisation;
     private int lengthSideOfSquareDetection; //in pixels
     private int distanceBetweenTwoColors; //in pixels
     private int[] centerPointPattern;
@@ -36,12 +39,14 @@ public class PatternRecognition extends AbstractThread{
     private boolean symmetry;
     private int imageWidth=2592;
     private int imageHeight=1944;
+
+    private int[] zoneToPerformLocalisation;
     private int[] zoneToPerformLocalisationVert={1,700,1200,1200};
     private int[] zoneToPerformLocalisationOrange={(imageWidth-1201),700,1200,1200};
+
     private double saturationPreModifier;
     private double brightnessPreModifier;
     private boolean alreadyPreModified;
-    private EthWrapper ethWrapper;
     private boolean movementLocked=true;
     private boolean recognitionDone=false;
 
@@ -49,10 +54,11 @@ public class PatternRecognition extends AbstractThread{
      * @param config passe la config
      * @param ethWrapper passe l'ethWrapper
      */
-    public PatternRecognition(Config config, EthWrapper ethWrapper){
+    public PatternRecognition(Config config, EthWrapper ethWrapper, GameState stateToConsider){
         this.config=config;
         this.updateConfig();
         this.ethWrapper=ethWrapper;
+        this.gameState=stateToConsider;
         if (this.symmetry) {
             this.zoneToPerformLocalisation = zoneToPerformLocalisationOrange;
         }
@@ -96,6 +102,20 @@ public class PatternRecognition extends AbstractThread{
      */
     public void setBrightnessPreModifier(double brightnessPreModifier){
         this.brightnessPreModifier=brightnessPreModifier;
+    }
+
+    /** Set la distance sur l'axe X (en pixels) sur la photo de 2 centres de carrés adjacents du pattern
+     * @param distance distance sur l'axe X en pixels
+     */
+    public void setDistanceBetweenTwoColors(int distance){
+        this.distanceBetweenTwoColors=distance;
+    }
+
+    /** Set la longueur du côté du carré dans lequel la valeur médiane sera prise
+     * @param length longueur du côté du carré
+     */
+    public void setLengthSideOfSquareDetection(int length){
+        this.lengthSideOfSquareDetection=length;
     }
 
     //////////////////////////////////// GLOBAL VARIABLES DEFINITION /////////////////////////////////////////////
@@ -694,6 +714,7 @@ public class PatternRecognition extends AbstractThread{
         else{
             this.finalIndice=-1;
         }
+        gameState.indicePattern=this.finalIndice;
         this.recognitionDone=true;
         if (debug) {
             log.debug("Pattern recognized : " + finalIndice);
@@ -708,7 +729,7 @@ public class PatternRecognition extends AbstractThread{
         }
     }
 
-    public int returnFinalIndice(){
+    public int getFinalIndice(){
         try {
             this.sleep(10);
         } catch (InterruptedException e) {

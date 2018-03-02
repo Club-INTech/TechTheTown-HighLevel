@@ -33,14 +33,14 @@ public class JUnit_PatternRecognition extends JUnit_Test {
         for (int i=1; i<=500; i++) {
             results+=i+"\t:\t";
             System.out.println("Image "+i);
-            PatternRecognition patternRecognitionThread = new PatternRecognition(config, robotReal.getEthWrapper());
+            PatternRecognition patternRecognitionThread = new PatternRecognition(config, robotReal.getEthWrapper(), this.state);
             patternRecognitionThread.setDebugPatternRecognition(false);
             log.debug("Starting PatternRecognition thread...");
             patternRecognitionThread.start();
 
             int victoryPattern = -2;
             while (victoryPattern == -2) {
-                victoryPattern = patternRecognitionThread.returnFinalIndice();
+                victoryPattern = patternRecognitionThread.getFinalIndice();
             }
             if (victoryPattern==-1){
                 nbMinusOne+=1;
@@ -60,11 +60,11 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     @Test
     public void test() {
         try {
-            PatternRecognition patternRecognitionThread = new PatternRecognition(config,robotReal.getEthWrapper());
+            PatternRecognition patternRecognitionThread = new PatternRecognition(config, robotReal.getEthWrapper(), this.state);
             patternRecognitionThread.start();
-            int finalindice = patternRecognitionThread.returnFinalIndice();
+            int finalindice = patternRecognitionThread.getFinalIndice();
             while (finalindice == -2) {
-                finalindice = patternRecognitionThread.returnFinalIndice();
+                finalindice = patternRecognitionThread.getFinalIndice();
                 patternRecognitionThread.sleep(100);
             }
             System.out.println(finalindice);

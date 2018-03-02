@@ -34,7 +34,6 @@ import utils.Log;
 import utils.Sleep;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Effectue le lien entre le code et la réalité (permet de parler aux actionneurs, d'interroger les capteurs, etc.)
