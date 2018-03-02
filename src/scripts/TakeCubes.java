@@ -38,7 +38,7 @@ public class TakeCubes extends AbstractScript {
         BrasUtilise bras;
         Cubes additionalCube;
 
-        while(!stateToConsider.recognitionlock){
+        while(!stateToConsider.recognitionDone){
             Thread.sleep(10);
         }
 
