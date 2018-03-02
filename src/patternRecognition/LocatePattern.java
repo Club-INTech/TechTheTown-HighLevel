@@ -8,6 +8,8 @@ import org.opencv.imgproc.Imgproc;
 
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,22 +23,22 @@ public class LocatePattern {
 
     //Variable de debug
     private static boolean debug=false;
-    private static boolean isSavingImages=true;
+    private static boolean isSavingImages=false;
 
     /** Fonction de localisation du pattern sur l'image prise par la Picam
-     * @param path chemin de l'image à analyser
+     * @param buffImg BufferedImage de l'image à analyser
      * @param selectedZone zone de l'image à analyser, de la forme {xstart, ystart, width, height}
      * @return renvoie les coordonnées du pattern sur l'image à analyser
      */
-    public static int[] locatePattern(String path, int[] selectedZone) {
+    public static int[] locatePattern(BufferedImage buffImg, int[] selectedZone) {
         //Charge la librairie OpenCV
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         //Définit un rectange de la zone utilisée, afin de réduire l'image
         Rect zoneUsed = new Rect(selectedZone[0], selectedZone[1], selectedZone[2], selectedZone[3]);
 
-        //Importe l'image
-        Mat src = imread(path);
+        //Convertit la BufferedImage en Mat
+        Mat src=bufferedImageToMat(buffImg);
 
         //Convertit l'image de RGB à BGR
         //Imgproc.cvtColor(src, src, Imgproc.COLOR_RGB2BGR);
@@ -99,7 +101,7 @@ public class LocatePattern {
 
             //Enregistre l'image
             if (isSavingImages) {
-                String outputName = path+".png";
+                String outputName ="/home/pi/SavedImages/LocatedPattern.png";
                 Imgcodecs.imwrite(outputName, image);
             }
         }
@@ -113,6 +115,20 @@ public class LocatePattern {
         }
         return fullCoords;
     }
+
+
+
+    /** Convertit une image BufferedImage en Mat pour OpenCV
+     * @param bufferedImage image à convertir
+     * @return renvoie le Mat qui correspond à l'image
+     */
+    public static Mat bufferedImageToMat(BufferedImage bufferedImage) {
+        Mat mat = new Mat(bufferedImage.getHeight(), bufferedImage.getWidth(), CvType.CV_8UC3);
+        byte[] data = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
+        mat.put(0, 0, data);
+        return mat;
+    }
+
 
     /** Fonction permettant de détecter les rectangles
      * @param src image source

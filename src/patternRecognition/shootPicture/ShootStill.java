@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class ShootStill {
 
-	public static String TakeBufferedPicture() {
+	public static String TakePicture() {
 		RPiCamera piCamera = null;
 		// Attempt to create an instance of RPiCamera.RPiCamera, will fail if raspistill is not properly installed
 		String saveDir = "/home/pi";

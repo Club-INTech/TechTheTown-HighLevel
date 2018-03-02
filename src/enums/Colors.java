@@ -65,12 +65,13 @@ public enum Colors {
     public int[] getRGB(){
         return RGB;
     }
+
     //Renvoie le nom de la couleur
     public String getName() {
         return name;
     }
 
-    //renvoie l'ID de la couleur
+    //Renvoie l'ID de la couleur
     public int getID() { return id; }
 
     //Renvoie le RGB d'une couleur en fonction d'un nom de couleur donné
