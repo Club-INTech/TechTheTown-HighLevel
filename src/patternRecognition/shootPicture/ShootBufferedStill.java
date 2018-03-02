@@ -30,9 +30,7 @@ public class ShootBufferedStill {
 		}
 		// Take a still image, buffer, and save it
 		if (piCamera != null) {
-			String imageName="ImageRaspberryPi";
-			String encoding="png";
-			BufferedImage buffImg = shootBufferedStill(piCamera, imageName, encoding);
+			BufferedImage buffImg = shootBufferedStill(piCamera);
 			return buffImg;
 		}
 		else{
@@ -41,7 +39,7 @@ public class ShootBufferedStill {
 		}
 	}
 	
-	private static BufferedImage shootBufferedStill(RPiCamera piCamera, String imageName, String encoding) {
+	private static BufferedImage shootBufferedStill(RPiCamera piCamera) {
 		piCamera.setRotation(180)                   //Tourne l'image à 180°
 				.setTimeout(500)                   	//Temps d'attente avant la prise de photo (on peut bouger après T=timeout+shutter~=1s)
 				.setSharpness(100)
