@@ -7,6 +7,7 @@ import patternRecognition.PatternRecognition;
 import patternRecognition.shootPicture.ShootBufferedStill;
 import robot.Robot;
 import scripts.ScriptManager;
+import simulator.ThreadSimulator;
 import strategie.GameState;
 
 public class JUnit_PatternRecognition extends JUnit_Test {
@@ -15,6 +16,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     private ScriptManager scriptManager;
     private GameState state;
     private HookFactory hookFactory;
+    private ThreadSimulator simulator;
 
     @Before
     public void setUp() {
@@ -23,6 +25,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
             robotReal = container.getService(Robot.class);
             state = container.getService(GameState.class);
             scriptManager=container.getService(ScriptManager.class);
+            simulator=container.getService(ThreadSimulator.class);
             container.startInstanciedThreads();
         } catch (Exception e){
             e.printStackTrace();
