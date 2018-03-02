@@ -714,7 +714,8 @@ public class PatternRecognition extends AbstractThread{
         else{
             this.finalIndice=-1;
         }
-        gameState.indicePattern=this.finalIndice;
+        gameState.setIndicePattern(this.finalIndice);
+        gameState.setRecognitionDone(true);
         this.recognitionDone=true;
         if (debug) {
             log.debug("Pattern recognized : " + finalIndice);

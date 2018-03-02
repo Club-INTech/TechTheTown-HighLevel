@@ -78,7 +78,7 @@ public class JUnit_Robot extends JUnit_Test {
             robotReal.setOrientation(Math.PI);
             robotReal.setLocomotionSpeed(Speed.FAST_ALL);
             robotReal.moveLengthwise(200);
-            state.indicePattern=1;
+            state.setIndicePattern(1);
 
             scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(TasCubes.TAS_STATION_EPURATION.getID(),state);
             scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(TasCubes.TAS_CHATEAU_EAU.getID(),state);

@@ -38,25 +38,25 @@ public class TakeCubes extends AbstractScript {
         BrasUtilise bras;
         Cubes additionalCube;
 
-        while(!stateToConsider.recognitionDone){
+        while(!stateToConsider.isRecognitionDone()){
             Thread.sleep(10);
         }
 
         //On récupère l'indice du pattern
-        int indicePattern=stateToConsider.indicePattern;
+        int indicePattern=stateToConsider.getIndicePattern();
 
         //On récupère le tas correspondant à l'indice
         TasCubes tas = TasCubes.getTasFromID(indiceTas);
 
         //On regarde si la tour avant est remplie
-        if (!stateToConsider.tourAvantRemplie){
-            stateToConsider.tourAvantRemplie=true;
+        if (!stateToConsider.isTourAvantRemplie()){
+            stateToConsider.setTourAvantRemplie(true);
             config.override(ConfigInfoRobot.TOURAVANTREMPLIE,true);
             bras=BrasUtilise.AVANT;
         }
         //On regarde si la tour arrière est remplie
-        else if (!stateToConsider.tourArriereRemplie){
-            stateToConsider.tourArriereRemplie=true;
+        else if (!stateToConsider.isTourArriereRemplie()){
+            stateToConsider.setTourArriereRemplie(true);
             config.override(ConfigInfoRobot.TOURARRIEREMPLIE,true);
             bras=BrasUtilise.ARRIERE;
         }
@@ -68,7 +68,7 @@ public class TakeCubes extends AbstractScript {
         //On regarde quel bras on utilise
         if (bras==BrasUtilise.AVANT){
             //On gère le cas où le cube bonus est encore présent
-            if (stateToConsider.cubeAvantPresent){
+            if (stateToConsider.isCubeAvantPresent()){
                 additionalCube=Cubes.NULL;
                 //s'il n'y a plus de cube bonus, il s'agit donc de la deuxième tour avant qu'on prend
                 config.override(ConfigInfoRobot.TOURAVANTREMPLIE2,true);
@@ -79,7 +79,7 @@ public class TakeCubes extends AbstractScript {
         }
         else{
             //On gère le cas où le cube bonus est encore présent
-            if (stateToConsider.cubeArrierePresent){
+            if (stateToConsider.isCubeArrierePresent()){
                 additionalCube=Cubes.NULL;
             }
             else{

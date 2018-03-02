@@ -50,27 +50,27 @@ public class GameState implements Service
 
     /** Temps écoulé depuis le début du match en ms */
     private long timeEllapsed;
-    
-	/** points marqués depuis le debut du match */
-    public int obtainedPoints;
+
+    /** points marqués depuis le debut du match */
+    private int obtainedPoints;
 
     /** Indice du pattern trouvé */
-    public int indicePattern;
+    private int indicePattern;
 
     /** Calculs de reconnaissance de patterns finis */
-    public boolean recognitionDone;
+    private boolean recognitionDone;
 
     /** Tour avant déjà remplie */
-    public boolean tourAvantRemplie;
+    private boolean tourAvantRemplie;
 
     /** Tour arriere déjà remplie */
-    public boolean tourArriereRemplie;
+    private boolean tourArriereRemplie;
 
     /** Cube bonus avant présent dans la tour */
-    public boolean cubeAvantPresent;
+    private boolean cubeAvantPresent;
 
     /** Cube bonus arrière présent dans la tour */
-    public boolean cubeArrierePresent;
+    private boolean cubeArrierePresent;
 
     private Config config;
     private Log log;
@@ -132,6 +132,81 @@ public class GameState implements Service
 		timeEllapsed = ThreadTimer.ellapsedTimeSinceMatchStarted();
 		return timeEllapsed;
 	}
+
+    public void setTimeEllapsed(long timeEllapsed) {
+        this.timeEllapsed = timeEllapsed;
+    }
+
+
+
+    public int getObtainedPoints() {
+        return obtainedPoints;
+    }
+
+    public void setObtainedPoints(int obtainedPoints) {
+        this.obtainedPoints = obtainedPoints;
+    }
+
+
+
+    public int getIndicePattern() {
+        return indicePattern;
+    }
+
+    public void setIndicePattern(int indicePattern) {
+        this.indicePattern = indicePattern;
+    }
+
+
+
+    public boolean isRecognitionDone() {
+        return recognitionDone;
+    }
+
+    public void setRecognitionDone(boolean recognitionDone) {
+        this.recognitionDone = recognitionDone;
+    }
+
+
+
+    public boolean isTourAvantRemplie() {
+        return tourAvantRemplie;
+    }
+
+    public void setTourAvantRemplie(boolean tourAvantRemplie) {
+        this.tourAvantRemplie = tourAvantRemplie;
+    }
+
+
+
+    public boolean isTourArriereRemplie() {
+        return tourArriereRemplie;
+    }
+
+    public void setTourArriereRemplie(boolean tourArriereRemplie) {
+        this.tourArriereRemplie = tourArriereRemplie;
+    }
+
+
+
+    public boolean isCubeAvantPresent() {
+        return cubeAvantPresent;
+    }
+
+    public void setCubeAvantPresent(boolean cubeAvantPresent) {
+        this.cubeAvantPresent = cubeAvantPresent;
+    }
+
+
+
+    public boolean isCubeArrierePresent() {
+        return cubeArrierePresent;
+    }
+
+    public void setCubeArrierePresent(boolean cubeArrierePresent) {
+        this.cubeArrierePresent = cubeArrierePresent;
+    }
+
 
     /**
      * Change le rayon du robot et fait toutes les modifs necesssaires
