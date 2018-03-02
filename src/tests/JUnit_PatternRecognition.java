@@ -4,10 +4,10 @@ import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 import patternRecognition.PatternRecognition;
-import patternRecognition.shootPicture.ShootBufferedStill;
 import robot.Robot;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
+import simulator.ThreadSimulatorMotion;
 import strategie.GameState;
 
 public class JUnit_PatternRecognition extends JUnit_Test {
@@ -17,6 +17,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     private GameState state;
     private HookFactory hookFactory;
     private ThreadSimulator simulator;
+    private ThreadSimulatorMotion simulatorMotion;
 
     @Before
     public void setUp() {
@@ -26,6 +27,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
             state = container.getService(GameState.class);
             scriptManager=container.getService(ScriptManager.class);
             simulator=container.getService(ThreadSimulator.class);
+            simulatorMotion=container.getService(ThreadSimulatorMotion.class);
             container.startInstanciedThreads();
         } catch (Exception e){
             e.printStackTrace();
