@@ -48,7 +48,7 @@ public class PatternRecognition extends AbstractThread{
     private double brightnessPreModifier;
     private boolean alreadyPreModified;
     private boolean movementLocked=true;
-    private boolean recognitionDone=false;
+    public static boolean recognitionDone=false;
 
     /** Instanciation du thread de reconnaissance de couleurs
      * @param config passe la config
@@ -746,8 +746,8 @@ public class PatternRecognition extends AbstractThread{
         return this.movementLocked;
     }
 
-    public boolean isRecognitionDone() {
-        return this.recognitionDone;
+    public static boolean isRecognitionDone() {
+        return recognitionDone;
     }
 
     @Override

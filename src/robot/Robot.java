@@ -25,6 +25,7 @@ import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import pathfinder.Pathfinding;
+import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Geometry;
@@ -93,6 +94,7 @@ public class Robot implements Service {
 	/** Système de locomotion à utiliser pour déplacer le robot */
 	private Locomotion mLocomotion;
 
+
 	/**
 	 * Constructeur
 	 * @param deplacements  système de locomotion
@@ -107,6 +109,7 @@ public class Robot implements Service {
 		this.pathfinding = pathfinding;
 		this.ethWrapper = ethWrapper;
 		this.mLocomotion = deplacements;
+
 		updateConfig();
 		speed = Speed.SLOW_ALL;
 	}

@@ -85,7 +85,7 @@ public class GameState implements Service
      * @param table l'état de la table a considérer
      * @param robot Le robot a considérer, soit un Robot, soit un Robothrono
      */
-    private GameState(Config config, Log log, Table table, Robot robot,PatternRecognition patternRecognition)
+    private GameState(Config config, Log log, Table table, Robot robot)
     {
         this.table = table;
         this.robot = robot;
@@ -106,7 +106,7 @@ public class GameState implements Service
 
 
         //La reconnaissance de couleurs est faite ou non
-        this.recognitionDone=patternRecognition.isRecognitionDone();
+        this.recognitionDone=PatternRecognition.isRecognitionDone();
         //On set une valeur de base, qui sera changée par PatternRecognition par la suite
         this.indicePattern=-2;
 
