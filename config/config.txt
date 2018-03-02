@@ -50,37 +50,34 @@ SIMULATION                           = false
 # angle_degagement_robot             = 0.4
 # distance_degagement_robot          = 50
 
-tourAvantremplie=false;
-tourArrieremplie=false;
-tourAvantremplie2=false;
+tourAvantremplie=false
+tourArrieremplie=false
+tourAvantremplie2=false
 
 #RGB pour la couleur orange
-rorange=183;
-gorange=107;
-borange=71;
+rorange=183
+gorange=107
+borange=71
 
 #RGB pour la couleur jaune
-rjaune=184;
-gjaune=177;
-bjaune=37;
+rjaune=184
+gjaune=177
+bjaune=37
 
 #RGB pour la couleur bleue
-rbleu=50;
-gbleu=84;
-bbleu=112;
-
+rbleu=50
+gbleu=84
+bbleu=112
 
 #RGB pour la couleur noire
-rnoir=13;
-gnoir=24;
-bnoir=20;
-
-
+rnoir=13
+gnoir=24
+bnoir=20
 
 #RGB pour la couleur vert
-rvert=43;
-gvert=120;
-bvert=68;
+rvert=43
+gvert=120
+bvert=68
 
 
 

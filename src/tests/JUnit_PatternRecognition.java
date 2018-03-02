@@ -20,6 +20,10 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     public void setUp() {
         try {
             super.setUp();
+            robotReal = container.getService(Robot.class);
+            state=container.getService(GameState.class);
+            scriptManager=container.getService(ScriptManager.class);
+            container.startInstanciedThreads();
         } catch (Exception e){
             e.printStackTrace();
         }
