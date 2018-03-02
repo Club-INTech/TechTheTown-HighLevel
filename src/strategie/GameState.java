@@ -71,7 +71,7 @@ public class GameState implements Service
 
     private Config config;
     private Log log;
-    public boolean recognitionlock;
+    public boolean recognitionDone;
 
 
 
@@ -102,7 +102,7 @@ public class GameState implements Service
         this.cubeAvantPresent=true;
         this.cubeArrierePresent=true;
 
-        this.recognitionlock=patternRecognition.isRecognitionlock();
+        this.recognitionDone=patternRecognition.isRecognitionDone();
 
 
 

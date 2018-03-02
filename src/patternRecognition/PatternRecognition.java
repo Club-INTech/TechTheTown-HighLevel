@@ -22,7 +22,6 @@ import java.util.ArrayList;
  */
 public class PatternRecognition extends AbstractThread{
 
-    private int[][] positionsColorsOnImage;
     private int finalIndice=-2;
     private Config config;
     private boolean isShutdown=false;
@@ -32,7 +31,6 @@ public class PatternRecognition extends AbstractThread{
     private int[] centerPointPattern;
     private boolean debug;   //Debug
     private boolean alreadyPrintedColorMatchingProba; //Utile pour le debug
-    private boolean mustSelectAValidPattern; //Est-ce qu'on peut renvoyer qu'aucun pattern n'a été trouvé ?
     private int alreadyLitUp; //l'image a déjà été éclairée
     private boolean isSavingImages;
     private boolean symmetry;
@@ -43,10 +41,9 @@ public class PatternRecognition extends AbstractThread{
     private double saturationPreModifier;
     private double brightnessPreModifier;
     private boolean alreadyPreModified;
-    private BufferedImage buffImg;
     private EthWrapper ethWrapper;
-    private boolean movinglock=false;
-    private boolean recognitionlock=false;
+    private boolean movementLocked=true;
+    private boolean recognitionDone=false;
 
     /** Instanciation du thread de reconnaissance de couleurs
      * @param config passe la config
@@ -66,7 +63,6 @@ public class PatternRecognition extends AbstractThread{
         this.distanceBetweenTwoColors=70; //in pixels
         this.debug=false;
         this.alreadyPrintedColorMatchingProba=false;
-        this.mustSelectAValidPattern=false;
         this.alreadyLitUp=0;
         this.isSavingImages=true;
         this.saturationPreModifier=1.2;
@@ -466,12 +462,28 @@ public class PatternRecognition extends AbstractThread{
         return RGB;
     }
 
+    /** Convertit une couleur RGB en HSB
+     * @param R composante rouge (R)
+     * @param G composante verte (G)
+     * @param B composante bleue (B)
+     * @return renvoie la couleur HSB
+     */
     private float[] convertRGBtoHSB(int R, int G, int B){
         float[] HSB = new float[3];
         Color.RGBtoHSB(R,G,B,HSB);
         return HSB;
     }
 
+    /** Permet d'augmenter la luminosité et la saturation d'une zone de l'image
+     * @param colorMatrixLitUp matrice de couleurs
+     * @param xstart début x de la zone
+     * @param ystart début y de la zone
+     * @param xend fin x de la zone
+     * @param yend fin y de la zone
+     * @param saturationModifier multiplicateur de saturation
+     * @param brightnessModifier multiplicateur de luminosité
+     * @return la matrice de couleurs modifiée
+     */
     private int[][][] lightUpSector(int[][][] colorMatrixLitUp, int xstart, int ystart, int xend, int yend, double saturationModifier, double brightnessModifier){
         for (int x=xstart; x<xend; x++){
             for (int y=ystart; y<yend; y++){
@@ -495,13 +507,6 @@ public class PatternRecognition extends AbstractThread{
         return colorMatrixLitUp;
     }
 
-    private int[][][] lightUpColors(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends){
-        int[][][] colorMatrixLitUp=colorMatrix.clone();
-        for (int i=0; i<xstarts.length; i++){
-            colorMatrixLitUp=lightUpSector(colorMatrixLitUp, xstarts[i], ystarts[i], xends[i], yends[i],1,1.5);
-        }
-        return colorMatrixLitUp;
-    }
 
     //////////////////////////////////// COMMENTAIRES DEBUG /////////////////////////////////////////////
 
@@ -519,7 +524,11 @@ public class PatternRecognition extends AbstractThread{
 
     //////////////////////////////////// ENREGISTREMENT D'UNE PHOTO ///////////////////////////////////
 
-    public static void saveImage(int[][][] colorMatrix, String name){
+    /** Sauvegarde d'une image sur la carte SD
+     * @param colorMatrix matrice de couleur
+     * @param path chemin de l'image
+     */
+    public static void saveImage(int[][][] colorMatrix, String path){
             BufferedImage image = new BufferedImage(colorMatrix.length,colorMatrix[0].length,BufferedImage.TYPE_INT_RGB);
             for (int x=0; x<colorMatrix.length-1; x++){
                 for (int y=0; y<colorMatrix[0].length-1; y++){
@@ -527,12 +536,33 @@ public class PatternRecognition extends AbstractThread{
                     image.setRGB(x,y,color.getRGB());
                 }
             }
-            File outputfile = new File(name);
+            File outputfile = new File(path);
             try {
                 ImageIO.write(image, "png", outputfile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+    }
+
+    /////////////////////////////// CALCULATE CENTER OF PATTERN ///////////////////////////////
+
+    /** Localise le pattern et calcule son centre
+     * @param buffImg BufferedImage de l'image pour laquelle le pattern doit être localisé
+     * @param zoneToPerformLocalisation zone dans laquelle le pattern doit se trouver sur l'image
+     * @return renvoie les coordonnée {x,y} du center de l'image
+     */
+    private int[] calculateCenterPattern(BufferedImage buffImg, int[] zoneToPerformLocalisation){
+        if (debug){
+            log.debug("Performing pattern localisation on : (("+zoneToPerformLocalisation[0]+","+zoneToPerformLocalisation[1]+
+                    "),("+(zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2])+","+(zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3])+"))");
+            LocatePattern.setDebug(true);
+        }
+        int[] patternZone = LocatePattern.locatePattern(buffImg, zoneToPerformLocalisation);
+        int[] centerPattern=new int[]{(patternZone[0]+patternZone[2])/2,(patternZone[1]+patternZone[3])/2};
+        if (debug){
+            log.debug("Center found : ("+centerPattern[0]+","+centerPattern[1]+")");
+        }
+        return centerPattern;
     }
 
     //////////////////////////////////// ANALYSE DE PATTERN /////////////////////////////////////////////
@@ -565,7 +595,7 @@ public class PatternRecognition extends AbstractThread{
              */
             int imageWidthMinusOne=imageWidth-1;
             int imageHeightMinusOne=imageHeight-1;
-            positionsColorsOnImage = new int[][]
+            int[][] positionsColorsOnImage = new int[][]
                     {{Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection - distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
                       Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
                       Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection + distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0)},
@@ -610,10 +640,10 @@ public class PatternRecognition extends AbstractThread{
         if (maxProba<0.3){
             if (alreadyLitUp<2){
                 alreadyLitUp+=1;
+                colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3],1.2,1.2);
                 if (debug){
                     log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                 }
-                colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3],1.2,1.2);
                 if (isSavingImages) {
                     String imageName="/home/pi/images/patternRecognition/500ImagesTest/output"+Double.toString(Math.random())+".png";
                     saveImage(colorMatrix, imageName);
@@ -632,25 +662,8 @@ public class PatternRecognition extends AbstractThread{
         return -1;
     }
 
-    /////////////////////////////// CALCULATING CENTER OF LOCATED PATTERN ///////////////////////////////
+    //////////////////////////////////// FONCTION RUN DU THREAD /////////////////////////////////////////////
 
-    private int[] calculateCenterPattern(BufferedImage buffImg, int[] zoneToPerformLocalisation){
-        if (debug){
-            log.debug("Performing pattern localisation on : (("+zoneToPerformLocalisation[0]+","+zoneToPerformLocalisation[1]+
-                    "),("+(zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2])+","+(zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3])+"))");
-            LocatePattern.setDebug(true);
-        }
-        int[] patternZone = LocatePattern.locatePattern(buffImg, zoneToPerformLocalisation);
-        int[] centerPattern=new int[]{(patternZone[0]+patternZone[2])/2,(patternZone[1]+patternZone[3])/2};
-        if (debug){
-            log.debug("Center found : ("+centerPattern[0]+","+centerPattern[1]+")");
-        }
-        return centerPattern;
-    }
-
-    
-    
-    
     public void run(){
         this.setPriority(5);
         while (ethWrapper.isJumperAbsent()) {
@@ -671,18 +684,17 @@ public class PatternRecognition extends AbstractThread{
         }
 
         //TODO: vérifier si c'est bien cela pour prendre une photo
-        this.buffImg=ShootBufferedStill.TakeBufferedPicture();
-        movinglock=true;
+        BufferedImage buffImg=ShootBufferedStill.TakeBufferedPicture();
+        this.movementLocked=false;
         int[][][] colorMatrix=createColorMatrixFromBufferedImage(buffImg);
-        centerPointPattern=calculateCenterPattern(this.buffImg, this.zoneToPerformLocalisation);
+        centerPointPattern=calculateCenterPattern(buffImg, this.zoneToPerformLocalisation);
         if (!(centerPointPattern[0] == 0 && centerPointPattern[1] == 0)) {
             analysePattern(colorMatrix);
-            //TODO : vérifier si c'est bien la ou la boolean recognitionlock doit passer à true
-            recognitionlock=true;
         }
         else{
             this.finalIndice=-1;
         }
+        this.recognitionDone=true;
         if (debug) {
             log.debug("Pattern recognized : " + finalIndice);
         }
@@ -709,12 +721,12 @@ public class PatternRecognition extends AbstractThread{
         this.isShutdown=true;
     }
 
-    public boolean isMovinglock() {
-        return movinglock;
+    public boolean isMovementLocked() {
+        return this.movementLocked;
     }
 
-    public boolean isRecognitionlock() {
-        return recognitionlock;
+    public boolean isRecognitionDone() {
+        return this.recognitionDone;
     }
 
     @Override

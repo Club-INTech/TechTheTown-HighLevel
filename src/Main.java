@@ -83,7 +83,7 @@ public class Main {
             PatternRecognition patternRecognition= container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
 
-            while(!patternRecognition.isMovinglock()) {
+            while(patternRecognition.isMovementLocked()) {
                 Thread.sleep(10);
             }
 

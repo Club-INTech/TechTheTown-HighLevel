@@ -27,15 +27,12 @@ public class JUnit_PatternRecognition extends JUnit_Test {
 
     @Test
     public void testReconnaissance(){
-        //String pathToImage = "ImageRaspberryPi.png";
         String results="";
         int nbMinusOne=0;
         int nbSuccessful=0;
         for (int i=1; i<=500; i++) {
             results+=i+"\t:\t";
             System.out.println("Image "+i);
-            String pathToImage = "500ImagesTest/Image"+i+".png";
-            int[] zoneToPerformLocalisation = {0, 0, 0, 0};
             PatternRecognition patternRecognitionThread = new PatternRecognition(config, robotReal.getEthWrapper());
             patternRecognitionThread.setDebugPatternRecognition(false);
             log.debug("Starting PatternRecognition thread...");
@@ -63,7 +60,6 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     @Test
     public void test() {
         try {
-            int[] zoneToPerformLocalisation = {0, 0, 0, 0};
             PatternRecognition patternRecognitionThread = new PatternRecognition(config,robotReal.getEthWrapper());
             patternRecognitionThread.start();
             int finalindice = patternRecognitionThread.returnFinalIndice();

@@ -4,6 +4,7 @@ import patternRecognition.shootPicture.RPiCamera.*;
 import patternRecognition.shootPicture.cameraEnums.*;
 import patternRecognition.shootPicture.cameraExceptions.*;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
