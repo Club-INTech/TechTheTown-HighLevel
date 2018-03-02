@@ -35,6 +35,7 @@ public class ActiveAbeille extends AbstractScript {
         actualState.robot.turn(Math.PI,true);
         //On relève le bras
         actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+
     }
 
     @Override

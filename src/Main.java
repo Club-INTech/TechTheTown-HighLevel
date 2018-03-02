@@ -80,9 +80,7 @@ public class Main {
             container.getService(ThreadEth.class);
             container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
-            int[] zoneToPerformLocalisation = {0, 0, 0, 0};
-            PatternRecognition patternRecognition =new PatternRecognition(config,mEthWrapper, ShootBufferedStill.TakeBufferedPicture(),zoneToPerformLocalisation,1.2,1);
-            patternRecognition.start();
+            PatternRecognition patternRecognition= container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
 
             while(!patternRecognition.isMovinglock()) {

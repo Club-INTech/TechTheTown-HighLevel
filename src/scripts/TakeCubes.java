@@ -49,16 +49,16 @@ public class TakeCubes extends AbstractScript {
         TasCubes tas = TasCubes.getTasFromID(indiceTas);
 
         //On regarde si la tour avant est remplie
-        if (!stateToConsider.tourArriereRemplie){
-            stateToConsider.tourArriereRemplie=true;
-            config.override(ConfigInfoRobot.TOURARRIEREMPLIE,true);
-            bras=BrasUtilise.ARRIERE;
-        }
-        //On regarde si la tour arrière est remplie
-        else if (!stateToConsider.tourAvantRemplie){
+        if (!stateToConsider.tourAvantRemplie){
             stateToConsider.tourAvantRemplie=true;
             config.override(ConfigInfoRobot.TOURAVANTREMPLIE,true);
             bras=BrasUtilise.AVANT;
+        }
+        //On regarde si la tour arrière est remplie
+        else if (!stateToConsider.tourArriereRemplie){
+            stateToConsider.tourArriereRemplie=true;
+            config.override(ConfigInfoRobot.TOURARRIEREMPLIE,true);
+            bras=BrasUtilise.ARRIERE;
         }
         //Si les deux tours sont remplies, on renvoie une exception et n'execute pas le script
         else{
@@ -181,16 +181,20 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.TILT_LA_PORTE_AVANT, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
+
+
         }
         else if (bras==BrasUtilise.ARRIERE) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.TILT_LA_PORTE_ARRIERE, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
         }
     }
 

@@ -78,7 +78,6 @@ public class GameState implements Service
 
     /**
      * Instancie un nouvel état de jeu. (il ne représente pas forcément la réalité, il peut être fictif)
-     *
      * @param config inutilisé
      * @param log inutilisé
      * @param table l'état de la table a considérer

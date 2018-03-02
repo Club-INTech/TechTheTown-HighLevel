@@ -51,7 +51,7 @@ SIMULATION                           = false
 # distance_degagement_robot          = 50
 
 tourAvantremplie=false;
-tourArrièremplie=false;
+tourArrieremplie=false;
 tourAvantremplie2=false;
 
 #RGB pour la couleur orange

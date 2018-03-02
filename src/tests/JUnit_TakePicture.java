@@ -6,7 +6,7 @@ public class JUnit_TakePicture extends JUnit_Test {
 
     @Test
     public void testTakePicture(){
-        patternRecognition.shootPicture.ShootStill.TakeBufferedPicture();
+        patternRecognition.shootPicture.ShootStill.TakePicture();
     }
 
     @Test
