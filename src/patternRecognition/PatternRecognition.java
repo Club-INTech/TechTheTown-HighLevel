@@ -4,6 +4,7 @@ import enums.Colors;
 import enums.Patterns;
 import enums.ConfigInfoRobot;
 import patternRecognition.shootPicture.ShootBufferedStill;
+import patternRecognition.shootPicture.ShootBufferedStillWebcamFULLKRAD;
 import pfg.config.Config;
 import robot.EthWrapper;
 import strategie.GameState;
@@ -687,7 +688,6 @@ public class PatternRecognition extends AbstractThread{
     public void run(){
         this.setPriority(5);
 
-        /*
         while (ethWrapper.isJumperAbsent()) {
             try {
                 Thread.sleep(100);
@@ -704,10 +704,9 @@ public class PatternRecognition extends AbstractThread{
                 e.printStackTrace();
             }
         }
-        */
 
-        //TODO: vérifier si c'est bien cela pour prendre une photo
-        BufferedImage buffImg=ShootBufferedStill.TakeBufferedPicture();
+        //BufferedImage buffImg=ShootBufferedStill.TakeBufferedPicture();
+        BufferedImage buffImg=ShootBufferedStillWebcamFULLKRAD.takeBufferedPicture();
         this.movementLocked=false;
         int[][][] colorMatrix=createColorMatrixFromBufferedImage(buffImg);
         centerPointPattern=calculateCenterPattern(buffImg, this.zoneToPerformLocalisation);

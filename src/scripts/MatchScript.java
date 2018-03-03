@@ -6,6 +6,8 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
+import org.junit.Before;
+import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
@@ -21,20 +23,20 @@ public class MatchScript extends AbstractScript {
 
     @Override
     public void execute(int versionToexecute,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
-        ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
-        actPD.goToThenExec(0,gameState);
+        //ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
+        //actPD.goToThenExec(0,gameState);
         TakeCubes tk2=new TakeCubes(config,log,hookFactory);
         tk2.goToThenExec(2,gameState);
-        ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
-        activeAbeille.goToThenExec(0,gameState);
+        //ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
+        //activeAbeille.goToThenExec(0,gameState);
         TakeCubes tk1=new TakeCubes(config,log,hookFactory);
         tk1.goToThenExec(1,gameState);
         DeposeCubes dpCubes0=new DeposeCubes(config,log,hookFactory);
         dpCubes0.goToThenExec(0,gameState);
-        TakeCubes tk0=new TakeCubes(config,log,hookFactory);
-        tk0.goToThenExec(0,gameState);
-        DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
-        dpCubes1.goToThenExec(1,gameState);
+        //TakeCubes tk0=new TakeCubes(config,log,hookFactory);
+        //tk0.goToThenExec(0,gameState);
+        //DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
+        //dpCubes1.goToThenExec(1,gameState);
     }
 
     @Override

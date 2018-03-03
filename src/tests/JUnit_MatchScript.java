@@ -6,10 +6,9 @@ import enums.Speed;
 import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
+import patternRecognition.PatternRecognition;
 import robot.Robot;
 import scripts.ScriptManager;
-import scripts.TakeCubes;
-import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
@@ -20,6 +19,7 @@ public class JUnit_MatchScript extends JUnit_Test {
     private ScriptManager scriptManager;
     private GameState state;
     private HookFactory hookFactory;
+    private PatternRecognition patternRecognitionThread;
 
     @Before
     public void setUp() {
@@ -29,6 +29,7 @@ public class JUnit_MatchScript extends JUnit_Test {
             state = container.getService(GameState.class);
             scriptManager = container.getService(ScriptManager.class);
             ThreadInterface threadInterface = container.getService(ThreadInterface.class);
+            patternRecognitionThread = container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,6 +48,7 @@ public class JUnit_MatchScript extends JUnit_Test {
             robotReal.setOrientation(Table.entryOrientation);
             robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
             //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+            patternRecognitionThread.start();
             scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
 
         } catch (Exception e) {
