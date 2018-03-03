@@ -13,7 +13,7 @@ public class JUnit_ShootBufferedStillWebcamFULLKRAD {
     public void testTakePictureFULLKRAD(){
         BufferedImage buffImg=patternRecognition.shootPicture.ShootBufferedStillWebcamFULLKRAD.takeBufferedPicture();
         try {
-            ImageIO.write(buffImg, "png", new File("/tmp/retourImage.png"));
+            ImageIO.write(buffImg, "jpg", new File("/tmp/retourImage.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("JUnit_testTakePictureFULLKRAD > problème retour image");
