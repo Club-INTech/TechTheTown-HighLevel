@@ -38,12 +38,15 @@ public class PatternRecognition extends AbstractThread{
     private int alreadyLitUp; //l'image a déjà été éclairée
     private boolean isSavingImages;
     private boolean symmetry;
-    private int imageWidth=2592;
-    private int imageHeight=1944;
+    //VALEURS PICAM
+    //private int imageWidth=2592;
+    //private int imageHeight=1944;
+    private int imageWidth=640;
+    private int imageHeight=480;
 
     private int[] zoneToPerformLocalisation;
-    private int[] zoneToPerformLocalisationVert={1,700,1200,1200};
-    private int[] zoneToPerformLocalisationOrange={(imageWidth-1201),700,1200,1200};
+    private int[] zoneToPerformLocalisationVert={1,168,296,288};
+    private int[] zoneToPerformLocalisationOrange={(imageWidth-297),168,296,288};
 
     private double saturationPreModifier;
     private double brightnessPreModifier;
@@ -66,8 +69,8 @@ public class PatternRecognition extends AbstractThread{
         else {
             this.zoneToPerformLocalisation = zoneToPerformLocalisationVert;
         }
-        this.lengthSideOfSquareDetection=20; //in pixels
-        this.distanceBetweenTwoColors=70; //in pixels
+        this.lengthSideOfSquareDetection=5; //in pixels
+        this.distanceBetweenTwoColors=17; //in pixels
         this.debug=false;
         this.alreadyPrintedColorMatchingProba=false;
         this.alreadyLitUp=0;

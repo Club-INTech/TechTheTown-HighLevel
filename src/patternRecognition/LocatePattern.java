@@ -207,7 +207,11 @@ public class LocatePattern {
                     //deltaX<250 pixels
                     //deltaY<300 pixels
                     //deltaX<deltaY
-                    if (deltaX > 60 && deltaY > 100 && deltaX < 250 && deltaY < 200 && deltaX < deltaY) {
+                    /**Valeurs de la taille des carrés à détecter
+                     */
+                    //VALEURS PICAM
+                    //if (deltaX > 60 && deltaY > 100 && deltaX < 250 && deltaY < 200 && deltaX < deltaY)
+                    if (deltaX > 14 && deltaY > 25 && deltaX < 62 && deltaY < 50 && deltaX < deltaY) {
 
                         //dimensions relatives interrupteur
                         //valeur plutot bonnes : deltaY>2.1*deltaX  deltaY<2.5*deltaX
