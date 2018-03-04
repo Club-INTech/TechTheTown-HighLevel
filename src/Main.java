@@ -18,26 +18,19 @@
  */
 
 import container.Container;
-import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
-import pathfinder.Pathfinding;
 import patternRecognition.PatternRecognition;
-import patternRecognition.shootPicture.ShootBufferedStill;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
-import scripts.TakeCubes;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
-import threads.dataHandlers.ThreadSensor;
-
-import java.util.ArrayList;
 
 /**
  * Code qui démarre le robot en début de match

@@ -17,7 +17,7 @@ import static jdk.nashorn.internal.objects.NativeMath.max;
 import static jdk.nashorn.internal.objects.NativeMath.min;
 import static org.opencv.imgcodecs.Imgcodecs.imread;
 
-/** Permet de localiser le pattern sur l'image prise par la PiCam
+/** Permet de localiser le pattern sur l'image prise par la piCam
  */
 public class LocatePattern {
 

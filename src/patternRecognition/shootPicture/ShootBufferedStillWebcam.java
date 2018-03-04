@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShootBufferedStillWebcamFULLKRAD {
+public class ShootBufferedStillWebcam {
 
     public static BufferedImage takeBufferedPicture(){
         BufferedImage picture = null;
@@ -16,7 +16,7 @@ public class ShootBufferedStillWebcamFULLKRAD {
             picture = ImageIO.read(new File("/tmp/ImageRaspi.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("ShootBufferedStillWebcamFULLKRAD > Erreur readingSavedPicture");
+            System.out.println("ShootBufferedStillWebcam > Erreur readingSavedPicture");
         }
         return picture;
     }
@@ -45,13 +45,13 @@ public class ShootBufferedStillWebcamFULLKRAD {
             p = pb.start();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("ShootBufferedStillWebcamFULLKRAD > Erreur processBuilder");
+            System.out.println("ShootBufferedStillWebcam > Erreur processBuilder");
         }
         try {
             p.waitFor();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            System.out.println("ShootBufferedStillWebcamFULLKRAD > Erreur waitfor");
+            System.out.println("ShootBufferedStillWebcam > Erreur waitfor");
         }
         return new File("/tmp/Image.jpg");
     }

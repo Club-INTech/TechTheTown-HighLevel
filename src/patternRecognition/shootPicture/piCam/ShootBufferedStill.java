@@ -1,12 +1,10 @@
-package patternRecognition.shootPicture;
+package patternRecognition.shootPicture.piCam;
 
-import patternRecognition.shootPicture.RPiCamera.*;
-import patternRecognition.shootPicture.cameraEnums.*;
-import patternRecognition.shootPicture.cameraExceptions.*;
+import patternRecognition.shootPicture.piCam.RPiCamera.*;
+import patternRecognition.shootPicture.piCam.cameraEnums.*;
+import patternRecognition.shootPicture.piCam.cameraExceptions.*;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;

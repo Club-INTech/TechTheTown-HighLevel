@@ -19,7 +19,7 @@ public class JUnit_MatchScript extends JUnit_Test {
     private ScriptManager scriptManager;
     private GameState state;
     private HookFactory hookFactory;
-    private PatternRecognition patternRecognitionThread;
+    private PatternRecognition patternRecognitonThread;
 
     @Before
     public void setUp() {
@@ -29,7 +29,7 @@ public class JUnit_MatchScript extends JUnit_Test {
             state = container.getService(GameState.class);
             scriptManager = container.getService(ScriptManager.class);
             ThreadInterface threadInterface = container.getService(ThreadInterface.class);
-            PatternRecognition patternRecognitonth=container.getService(PatternRecognition.class);
+            patternRecognitonThread=container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
         } catch (Exception e) {
             e.printStackTrace();

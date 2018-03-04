@@ -1,4 +1,4 @@
-package patternRecognition.shootPicture.cameraEnums;
+package patternRecognition.shootPicture.piCam.cameraEnums;
 
 /**
  * Metering mode options.

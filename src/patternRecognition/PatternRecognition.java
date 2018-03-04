@@ -3,8 +3,7 @@ package patternRecognition;
 import enums.Colors;
 import enums.Patterns;
 import enums.ConfigInfoRobot;
-import patternRecognition.shootPicture.ShootBufferedStill;
-import patternRecognition.shootPicture.ShootBufferedStillWebcamFULLKRAD;
+import patternRecognition.shootPicture.ShootBufferedStillWebcam;
 import pfg.config.Config;
 import robot.EthWrapper;
 import strategie.GameState;
@@ -44,6 +43,11 @@ public class PatternRecognition extends AbstractThread{
     private int imageWidth=640;
     private int imageHeight=480;
 
+    //mediansList est composé de la médiane en R, en G et en B, pour chacune des 3 couleurs de la photo
+    //Donc, si on nomme les couleurs 1, 2 et 3, on a :
+    //mediansList={{R1,G1,B1},{R2,G2,B2},{R3,G3,B3}}
+    private int[][] mediansList = new int[3][3];
+
     private int[] zoneToPerformLocalisation;
     private int[] zoneToPerformLocalisationVert={1,168,296,288};
     private int[] zoneToPerformLocalisationOrange={(imageWidth-297),168,296,288};
@@ -80,55 +84,8 @@ public class PatternRecognition extends AbstractThread{
         this.alreadyPreModified=false;
     }
 
-    /** Set la valeur de debug
-     * @param value valeur de debug
-     */
-    public void setDebugPatternRecognition(boolean value){
-        debug=value;
-    }
-
-    /** Set la zone dans laquelle faire la localisation
-     * @param zoneToPerformLocalisation {xstart, ystart, width, height}
-     */
-    public void setZoneToPerformLocalisation(int[] zoneToPerformLocalisation){
-        this.zoneToPerformLocalisation=zoneToPerformLocalisation;
-    }
-
-    /** Set la modification de saturation avant l'algorithme de reconnaissance de pattern
-     * @param saturationPreModifier multiplicateur de la saturation
-     */
-    public void setSaturationPreModifier(double saturationPreModifier){
-        this.saturationPreModifier=saturationPreModifier;
-    }
-
-    /** Set la modification de luminosité avant l'algorithme de reconnaissance de pattern
-     * @param brightnessPreModifier multiplicateur de la luminosité
-     */
-    public void setBrightnessPreModifier(double brightnessPreModifier){
-        this.brightnessPreModifier=brightnessPreModifier;
-    }
-
-    /** Set la distance sur l'axe X (en pixels) sur la photo de 2 centres de carrés adjacents du pattern
-     * @param distance distance sur l'axe X en pixels
-     */
-    public void setDistanceBetweenTwoColors(int distance){
-        this.distanceBetweenTwoColors=distance;
-    }
-
-    /** Set la longueur du côté du carré dans lequel la valeur médiane sera prise
-     * @param length longueur du côté du carré
-     */
-    public void setLengthSideOfSquareDetection(int length){
-        this.lengthSideOfSquareDetection=length;
-    }
-
     //////////////////////////////////// GLOBAL VARIABLES DEFINITION /////////////////////////////////////////////
 
-    //Défini l'objet mediansList pour qu'il soit accessible sans être retourné
-    private static int[][] mediansList = new int[3][3];
-    //mediansList est composé de la médiane en R, en G et en B, pour chacune des 3 couleurs de la photo
-    //Donc, si on nomme les couleurs 1, 2 et 3, on a :
-    //mediansList={{R1,G1,B1},{R2,G2,B2},{R3,G3,B3}}
     //Cette valeur, une fois calculée, reste inchangée tout au long de l'exécution du programme
 
     //////////////////////////////////// COLOR MATRIX CREATION /////////////////////////////////////////////
@@ -156,8 +113,6 @@ public class PatternRecognition extends AbstractThread{
         }
         return colorMatrix;
     }
-
-
 
     //////////////////////////////////// GETTING MEDIANS => COLOR COMPARISON => PATTERN COMPARISON /////////////////////////////////////////////
 
@@ -190,9 +145,9 @@ public class PatternRecognition extends AbstractThread{
                 double[] badResultProbabilities={-1,-1,-1,-1,-1,-1,-1,-1,-1};
                 return badResultProbabilities;
             }
-            mediansList[i] = mediansListTemp[i];
+            this.mediansList[i] = mediansListTemp[i];
         }
-        double[] probabilitiesList = compareThreeRGBsToAllPatterns(mediansList);
+        double[] probabilitiesList = compareThreeRGBsToAllPatterns(this.mediansList);
         return probabilitiesList;
     }
     private double[] computeProximity(int[][][] colorMatrix, int[][] positionsColorsOnImage){
@@ -340,21 +295,21 @@ public class PatternRecognition extends AbstractThread{
      * @return renvoie la liste de valeurs (int[3]) R,G et B de la couleur choisie
      */
     private int[] getRGBMedianValues(int[][][] colorMatrix, int xstart, int ystart, int xend, int yend){
-        int[] mediansList= new int[3];
+        int[] mediansListToReturn= new int[3];
         for (int i=0; i<3; i++){
-            mediansList[i]=getMedianValue(colorMatrix, xstart, ystart, xend, yend, i);
-            if (mediansList[i]==-1){
+            mediansListToReturn[i]=getMedianValue(colorMatrix, xstart, ystart, xend, yend, i);
+            if (mediansListToReturn[i]==-1){
                 int[] badReturn={-1,-1,-1};
                 return badReturn;
             }
             if (debug) {
-                log.debug("posRGB:"+i+" MedianValue:"+mediansList[i]);
+                log.debug("posRGB:"+i+" MedianValue:"+mediansListToReturn[i]);
             }
         }
         if (debug){
             log.debug("");
         }
-        return mediansList;
+        return mediansListToReturn;
     }
 
     /** Fonction permettant d'obtenir la valeur médiane de R, G OU B pour une des 3 couleurs de la photo
@@ -531,21 +486,6 @@ public class PatternRecognition extends AbstractThread{
         return colorMatrixLitUp;
     }
 
-
-    //////////////////////////////////// COMMENTAIRES DEBUG /////////////////////////////////////////////
-
-    //MODE OPERATOIRE :
-    // 1) Créer la matrice RGB
-    // 2) Délimiter l'endroit où se trouve le pattern
-    // 2.5) Délimiter les zones de couleur dans le pattern
-    // 3) Déterminer les médianes R,G et B pour chaque zone de couleur
-    // 4) Comparer les valeurs RGB obtenues pour chaque zone avec tous les patterns
-    // 5) Déterminer le pattern ayant la probabilité la plus grande
-    // 5.5) Si doute, détermination plus précise
-
-    //GIMP TRAITEMENT :
-    //Ajout Luminosité/Contraste : indices 30/30
-
     //////////////////////////////////// ENREGISTREMENT D'UNE PHOTO ///////////////////////////////////
 
     /** Sauvegarde d'une image sur la carte SD
@@ -660,7 +600,6 @@ public class PatternRecognition extends AbstractThread{
             }
         }
 
-
         if (maxProba<0.3){
             if (alreadyLitUp<2){
                 alreadyLitUp+=1;
@@ -690,7 +629,7 @@ public class PatternRecognition extends AbstractThread{
 
     public void run(){
         this.setPriority(5);
-        /*
+
         while (ethWrapper.isJumperAbsent()) {
             try {
                 Thread.sleep(100);
@@ -707,10 +646,10 @@ public class PatternRecognition extends AbstractThread{
                 e.printStackTrace();
             }
         }
-        */
 
+        //Ancienne version
         //BufferedImage buffImg=ShootBufferedStill.TakeBufferedPicture();
-        BufferedImage buffImg=ShootBufferedStillWebcamFULLKRAD.takeBufferedPicture();
+        BufferedImage buffImg= ShootBufferedStillWebcam.takeBufferedPicture();
         this.movementLocked=false;
         int[][][] colorMatrix=createColorMatrixFromBufferedImage(buffImg);
         centerPointPattern=calculateCenterPattern(buffImg, this.zoneToPerformLocalisation);
@@ -745,14 +684,55 @@ public class PatternRecognition extends AbstractThread{
         return this.finalIndice;
     }
 
+    /** Set la valeur de debug
+     * @param value valeur de debug
+     */
+    public void setDebugPatternRecognition(boolean value){
+        debug=value;
+    }
+
+    /** Set la zone dans laquelle faire la localisation
+     * @param zoneToPerformLocalisation {xstart, ystart, width, height}
+     */
+    public void setZoneToPerformLocalisation(int[] zoneToPerformLocalisation){
+        this.zoneToPerformLocalisation=zoneToPerformLocalisation;
+    }
+
+    /** Set la modification de saturation avant l'algorithme de reconnaissance de pattern
+     * @param saturationPreModifier multiplicateur de la saturation
+     */
+    public void setSaturationPreModifier(double saturationPreModifier){
+        this.saturationPreModifier=saturationPreModifier;
+    }
+
+    /** Set la modification de luminosité avant l'algorithme de reconnaissance de pattern
+     * @param brightnessPreModifier multiplicateur de la luminosité
+     */
+    public void setBrightnessPreModifier(double brightnessPreModifier){
+        this.brightnessPreModifier=brightnessPreModifier;
+    }
+
+    /** Set la distance sur l'axe X (en pixels) sur la photo de 2 centres de carrés adjacents du pattern
+     * @param distance distance sur l'axe X en pixels
+     */
+    public void setDistanceBetweenTwoColors(int distance){
+        this.distanceBetweenTwoColors=distance;
+    }
+
+    /** Set la longueur du côté du carré dans lequel la valeur médiane sera prise
+     * @param length longueur du côté du carré
+     */
+    public void setLengthSideOfSquareDetection(int length){
+        this.lengthSideOfSquareDetection=length;
+    }
+
+
     public void shutdown(){
         this.isShutdown=true;
     }
-
     public boolean isMovementLocked() {
         return this.movementLocked;
     }
-
     public static boolean isRecognitionDone() {
         return recognitionDone;
     }

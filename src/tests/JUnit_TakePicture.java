@@ -1,16 +1,18 @@
 package tests;
 
 import org.junit.Test;
+import patternRecognition.shootPicture.piCam.ShootBufferedStill;
+import patternRecognition.shootPicture.piCam.ShootStill;
 
 public class JUnit_TakePicture extends JUnit_Test {
 
     @Test
     public void testTakePicture(){
-        patternRecognition.shootPicture.ShootStill.TakePicture();
+        ShootStill.TakePicture();
     }
 
     @Test
     public void testTakeBufferedPicture(){
-        patternRecognition.shootPicture.ShootBufferedStill.TakeBufferedPicture();
+        ShootBufferedStill.TakeBufferedPicture();
     }
 }
