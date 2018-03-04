@@ -8,12 +8,9 @@ import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
-import sun.font.TrueTypeFont;
 import table.Table;
 import table.obstacles.ObstacleCircular;
-import table.obstacles.ObstacleManager;
 import table.obstacles.ObstacleRectangular;
-import tests.container.A;
 import utils.Log;
 
 import java.util.ArrayList;
