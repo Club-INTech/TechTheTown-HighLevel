@@ -48,9 +48,12 @@ public enum ConfigInfoRobot implements ConfigInfo
     /** Paramètres match !*/
     COULEUR("vert"),
     C_DES_FOUS_EN_FACE(false),
-    TOURAVANTREMPLIE(false),
-    TOURARRIEREMPLIE(false),
-    TOURAVANTREMPLIE2(false),
+    TAS_BASE_PRIS(false),
+    TAS_CHATEAU_PRIS(false),
+    TAS_STATION_EPURATION_PRIS(false),
+    TAS_BASE_ENNEMI_PRIS(false),
+    TAS_CHATEAU_ENNEMI_PRIS(false),
+    TAS_STATION_EPURATION_ENNEMI_PRIS(false),
 
     /** Dimensions du robot */
     ROBOT_LENGTH(300),
@@ -115,12 +118,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     rvert(43),
     gvert(120),
     bvert(68),
-    tasbasepris(false),
-    taschateaupris(false),
-    tastationepurationpris(false),
-    tasbasennemipris(false),
-    taschateauennemipris(false),
-    tastationepurationennemipris(false)
+
     ;
     private Object defaultValue;
 

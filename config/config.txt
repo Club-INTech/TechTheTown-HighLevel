@@ -50,12 +50,12 @@ SIMULATION                           = false
 # angle_degagement_robot             = 0.4
 # distance_degagement_robot          = 50
 
-tasbasepris=false
-taschateaupris=false
-tastationepurationpris=false
-tasbasennemipris=false
-taschateauennemipris=false
-tastationepurationennemipris=false
+TAS_BASE_PRIS=false
+TAS_CHATEAU_PRIS=false
+TAS_STATION_EPURATION_PRIS=false
+TAS_BASE_ENNEMI_PRIS=false
+TAS_CHATEAU_ENNEMI_PRIS=false
+TAS_STATION_EPURATION_ENNEMI_PRIS=false
 
 #RGB pour la couleur orange
 rorange=183
