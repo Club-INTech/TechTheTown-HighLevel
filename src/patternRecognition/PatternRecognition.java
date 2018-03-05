@@ -55,8 +55,8 @@ public class PatternRecognition extends AbstractThread{
     private double saturationPreModifier;
     private double brightnessPreModifier;
     private boolean alreadyPreModified;
-    private boolean movementLocked=true;
-    public static boolean recognitionDone=false;
+    private static boolean movementLocked=true;
+    private static boolean recognitionDone=false;
 
     /** Instanciation du thread de reconnaissance de couleurs
      * @param config passe la config
@@ -213,7 +213,7 @@ public class PatternRecognition extends AbstractThread{
                 else if (i==1){
                     log.debug("Second color :");
                 }
-                else if (i==2){
+                else{
                     log.debug("Third color :");
                 }
             }
@@ -492,7 +492,7 @@ public class PatternRecognition extends AbstractThread{
      * @param colorMatrix matrice de couleur
      * @param path chemin de l'image
      */
-    public static void saveImage(int[][][] colorMatrix, String path){
+    private static void saveImage(int[][][] colorMatrix, String path){
             BufferedImage image = new BufferedImage(colorMatrix.length,colorMatrix[0].length,BufferedImage.TYPE_INT_RGB);
             for (int x=0; x<colorMatrix.length-1; x++){
                 for (int y=0; y<colorMatrix[0].length-1; y++){
@@ -650,7 +650,7 @@ public class PatternRecognition extends AbstractThread{
         //Ancienne version
         //BufferedImage buffImg=ShootBufferedStill.TakeBufferedPicture();
         BufferedImage buffImg= ShootBufferedStillWebcam.takeBufferedPicture();
-        this.movementLocked=false;
+        movementLocked=false;
         int[][][] colorMatrix=createColorMatrixFromBufferedImage(buffImg);
         centerPointPattern=calculateCenterPattern(buffImg, this.zoneToPerformLocalisation);
         if (!(centerPointPattern[0] == 0 && centerPointPattern[1] == 0)) {
@@ -661,7 +661,7 @@ public class PatternRecognition extends AbstractThread{
         }
         gameState.setIndicePattern(this.finalIndice);
         gameState.setRecognitionDone(true);
-        this.recognitionDone=true;
+        recognitionDone=true;
         if (debug) {
             log.debug("Pattern recognized : " + finalIndice);
         }
@@ -730,8 +730,8 @@ public class PatternRecognition extends AbstractThread{
     public void shutdown(){
         this.isShutdown=true;
     }
-    public boolean isMovementLocked() {
-        return this.movementLocked;
+    public static boolean isMovementLocked() {
+        return movementLocked;
     }
     public static boolean isRecognitionDone() {
         return recognitionDone;
