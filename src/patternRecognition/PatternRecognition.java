@@ -630,7 +630,7 @@ public class PatternRecognition extends AbstractThread{
     public void run(){
         this.setPriority(5);
 
-        while (ethWrapper.isJumperAbsent()) {
+        /*while (ethWrapper.isJumperAbsent()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -645,7 +645,7 @@ public class PatternRecognition extends AbstractThread{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         //Ancienne version
         //BufferedImage buffImg=ShootBufferedStill.TakeBufferedPicture();
