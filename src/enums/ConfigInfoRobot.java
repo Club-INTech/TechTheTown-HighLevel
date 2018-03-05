@@ -115,6 +115,12 @@ public enum ConfigInfoRobot implements ConfigInfo
     rvert(43),
     gvert(120),
     bvert(68),
+    tasbasepris(false),
+    taschateaupris(false),
+    tastationepurationpris(false),
+    tasbasennemipris(false),
+    taschateauennemipris(false),
+    tastationepurationennemipris(false)
     ;
     private Object defaultValue;
 

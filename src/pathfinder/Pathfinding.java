@@ -19,6 +19,8 @@ import utils.Log;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
+import static enums.TasCubes.*;
+
 /**
  * Pathfinding du robot ! Contient l'algorithme
  *
@@ -68,14 +70,23 @@ public class Pathfinding implements Service {
             node.removeNeighbour(noeudDepart);
             node.removeNeighbour(noeudArrive);
         }
-        if(config.getBoolean(ConfigInfoRobot.TOURAVANTREMPLIE)){
-            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(2));
+        if(config.getBoolean(ConfigInfoRobot.tasbasepris)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_BASE.getID()));
         }
-        if(config.getBoolean(ConfigInfoRobot.TOURARRIEREMPLIE)){
-            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(1));
+        if(config.getBoolean(ConfigInfoRobot.taschateaupris)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_CHATEAU_EAU.getID()));
         }
-        if(config.getBoolean(ConfigInfoRobot.TOURAVANTREMPLIE2)){
-            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(0));
+        if(config.getBoolean(ConfigInfoRobot.tastationepurationpris)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_STATION_EPURATION.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.tasbasennemipris)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_BASE_ENNEMI.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.taschateauennemipris)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_CHATEAU_EAU_ENNEMI.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.tastationepurationennemipris)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_STATION_EPURATION_ENNEMI.getID()));
         }
 
         graphe.removeNode(noeudDepart);
