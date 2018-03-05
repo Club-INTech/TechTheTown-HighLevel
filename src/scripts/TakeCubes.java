@@ -87,21 +87,27 @@ public class TakeCubes extends AbstractScript {
 
         if(indiceTas==0){
             config.override(ConfigInfoRobot.TAS_BASE_PRIS,true);
+            stateToConsider.setTas_base_pris(true);
         }
         if(indiceTas==1){
             config.override(ConfigInfoRobot.TAS_CHATEAU_PRIS,true);
+            stateToConsider.setTas_chateau_eau_pris(true);
         }
         if(indiceTas==2){
             config.override(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS,true);
+            stateToConsider.setTas_station_epuration_pris(true);
         }
         if(indiceTas==3){
             config.override(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS,true);
+            stateToConsider.setTas_base_ennemi_pris(true);
         }
         if(indiceTas==4){
             config.override(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS,true);
+            stateToConsider.setTas_chateau_ennemi_eau_pris(true);
         }
         if(indiceTas==5){
             config.override(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS,true);
+            stateToConsider.setTas_station_epuration_ennemi_pris(true);
         }
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
         //Si indicePattern==-2, c'est que le pattern n'a pas encore été calculé

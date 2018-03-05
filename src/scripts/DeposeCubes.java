@@ -54,9 +54,7 @@ public class DeposeCubes extends AbstractScript{
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
             //les deux premières sont déposées
             stateToConsider.setTourAvantRemplie(false);
-            config.override(ConfigInfoRobot.TOURAVANTREMPLIE,false);
             stateToConsider.setTourArriereRemplie(false);
-            config.override(ConfigInfoRobot.TOURARRIEREMPLIE,false);
         }
         //comme la version précédente mais l'accès à la zone est scripté
         else if(version==1){
@@ -78,10 +76,8 @@ public class DeposeCubes extends AbstractScript{
             stateToConsider.robot.moveLengthwise(d + dimensionporte+distancepush);
             stateToConsider.robot.moveLengthwise(-(dimensionporte+distancepush+d));
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
-            config.override(ConfigInfoRobot.TOURAVANTREMPLIE2,false);
             stateToConsider.robot.goTo(aim);
         }
-
     }
 
     @Override

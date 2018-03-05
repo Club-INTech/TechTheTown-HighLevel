@@ -70,22 +70,22 @@ public class Pathfinding implements Service {
             node.removeNeighbour(noeudDepart);
             node.removeNeighbour(noeudArrive);
         }
-        if(config.getBoolean(ConfigInfoRobot.tasbasepris)){
+        if(config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)){
             obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_BASE.getID()));
         }
-        if(config.getBoolean(ConfigInfoRobot.taschateaupris)){
+        if(config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS)){
             obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_CHATEAU_EAU.getID()));
         }
-        if(config.getBoolean(ConfigInfoRobot.tastationepurationpris)){
+        if(config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS)){
             obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_STATION_EPURATION.getID()));
         }
-        if(config.getBoolean(ConfigInfoRobot.tasbasennemipris)){
+        if(config.getBoolean(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS)){
             obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_BASE_ENNEMI.getID()));
         }
-        if(config.getBoolean(ConfigInfoRobot.taschateauennemipris)){
+        if(config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS)){
             obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_CHATEAU_EAU_ENNEMI.getID()));
         }
-        if(config.getBoolean(ConfigInfoRobot.tastationepurationennemipris)){
+        if(config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)){
             obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_STATION_EPURATION_ENNEMI.getID()));
         }
 

@@ -72,6 +72,14 @@ public class GameState implements Service
     /** Cube bonus arrière présent dans la tour */
     private boolean cubeArrierePresent;
 
+    private boolean tas_base_pris;
+    private boolean tas_chateau_eau_pris;
+    private boolean tas_station_epuration_pris;
+    private boolean tas_base_ennemi_pris;
+    private boolean tas_chateau_ennemi_eau_pris;
+    private boolean tas_station_epuration_ennemi_pris;
+
+
     private Config config;
     private Log log;
 
@@ -103,6 +111,13 @@ public class GameState implements Service
         //On dit que les cubes bonus sont présents au début du match
         this.cubeAvantPresent=true;
         this.cubeArrierePresent=true;
+
+        this.tas_base_pris=false;
+        this.tas_chateau_eau_pris=false;
+        this.tas_station_epuration_pris=false;
+        this.tas_base_ennemi_pris=false;
+        this.tas_chateau_ennemi_eau_pris=false;
+        this.tas_station_epuration_ennemi_pris=false;
 
 
         //La reconnaissance de couleurs est faite ou non
@@ -218,5 +233,52 @@ public class GameState implements Service
         this.robot.setRobotRadius(newRad);
         this.table.getObstacleManager().updateObstacles(newRad);
     }
-	
+
+    public boolean isTas_base_pris() {
+        return tas_base_pris;
+    }
+
+    public boolean isTas_chateau_eau_pris() {
+        return tas_chateau_eau_pris;
+    }
+
+    public boolean isTas_station_epuration_pris() {
+        return tas_station_epuration_pris;
+    }
+
+    public boolean isTas_base_ennemi_pris() {
+        return tas_base_ennemi_pris;
+    }
+
+    public boolean isTas_chateau_ennemi_eau_pris() {
+        return tas_chateau_ennemi_eau_pris;
+    }
+
+    public boolean isTas_station_epuration_ennemi_pris() {
+        return tas_station_epuration_ennemi_pris;
+    }
+
+    public void setTas_base_pris(boolean tas_base_pris) {
+        this.tas_base_pris = tas_base_pris;
+    }
+
+    public void setTas_chateau_eau_pris(boolean tas_chateau_eau_pris) {
+        this.tas_chateau_eau_pris = tas_chateau_eau_pris;
+    }
+
+    public void setTas_station_epuration_pris(boolean tas_station_epuration_pris) {
+        this.tas_station_epuration_pris = tas_station_epuration_pris;
+    }
+
+    public void setTas_base_ennemi_pris(boolean tas_base_ennemi_pris) {
+        this.tas_base_ennemi_pris = tas_base_ennemi_pris;
+    }
+
+    public void setTas_chateau_ennemi_eau_pris(boolean tas_chateau_ennemi_eau_pris) {
+        this.tas_chateau_ennemi_eau_pris = tas_chateau_ennemi_eau_pris;
+    }
+
+    public void setTas_station_epuration_ennemi_pris(boolean tas_station_epuration_ennemi_pris) {
+        this.tas_station_epuration_ennemi_pris = tas_station_epuration_ennemi_pris;
+    }
 }
