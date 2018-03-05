@@ -22,8 +22,8 @@ import static org.opencv.imgcodecs.Imgcodecs.imread;
 public class LocatePattern {
 
     //Variable de debug
-    private static boolean debug=false;
-    private static boolean isSavingImages=false;
+    private static boolean debug=true;
+    private static boolean isSavingImages=true;
 
     /** Fonction de localisation du pattern sur l'image prise par la Picam
      * @param buffImg BufferedImage de l'image à analyser
@@ -50,9 +50,13 @@ public class LocatePattern {
         int[][][] foundRectangles;
         try {
             //Essentials
-            int[][] firstRect = findRectangle(image, 10, 20, 9);
-            int[][] secondRect = findRectangle(image, 30, 40, 9);
-            int[][] thirdRect = findRectangle(image, 30, 40, 15);
+            //PiCam
+            //int[][] firstRect = findRectangle(image, 10, 20, 9);
+            //int[][] secondRect = findRectangle(image, 30, 40, 9);
+            //int[][] thirdRect = findRectangle(image, 30, 40, 15);
+            int[][] firstRect = findRectangle(image, 10, 20, 5);
+            int[][] secondRect = findRectangle(image, 30, 40, 5);
+            int[][] thirdRect = findRectangle(image, 30, 40, 9);
             //Add-ons
             //int[][] forthRect = findRectangle(image, 30, 40, 21);
             foundRectangles = new int[][][]{firstRect, secondRect,thirdRect};
@@ -101,8 +105,7 @@ public class LocatePattern {
 
             //Enregistre l'image
             if (isSavingImages) {
-                String outputName ="/home/pi/SavedImages/LocatedPattern.png";
-                Imgcodecs.imwrite(outputName, image);
+                Imgcodecs.imwrite("/tmp/LocatedPattern.png", image);
             }
         }
         int[] fullCoords;
@@ -173,7 +176,7 @@ public class LocatePattern {
                         Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
                 if (debug) {
                     //Enregistre l'image en gris
-                    Imgcodecs.imwrite("gray.png", gray);
+                    Imgcodecs.imwrite("/tmp/gray.png", gray);
                 }
 
                 //Détermination du meilleur contour
@@ -211,27 +214,14 @@ public class LocatePattern {
                      */
                     //VALEURS PICAM
                     //if (deltaX > 60 && deltaY > 100 && deltaX < 250 && deltaY < 200 && deltaX < deltaY)
-                    if (deltaX > 14 && deltaY > 25 && deltaX < 62 && deltaY < 50 && deltaX < deltaY) {
+                    if (deltaX > 10 && deltaY > 30 && deltaX < 50 && deltaY < 75 && deltaX < deltaY) {
 
                         //dimensions relatives interrupteur
                         //valeur plutot bonnes : deltaY>2.1*deltaX  deltaY<2.5*deltaX
                         //valeur à test : deltaY>1.8*deltaX  deltaY<2.3*deltaX
                         //valeur à test : deltaY>1.9*deltaX  deltaY<2.5*deltaX
-                        if (!(deltaY>1.9*deltaX && deltaY<2.5*deltaX)){
-                            /*double[] data1 = src.get((int) (xmax + xmin) / 2, (int) (ymax + ymin) / 2);
-                            double[] data2 = src.get((int) Math.min((xmax + xmin) / 2 + 10, src.width()-1), (int) (ymax + ymin) / 2);
-                            double[] data3 = src.get((int) Math.max((xmax + xmin) / 2 - 10, 0), (int) (ymax + ymin) / 2);
-                            double[] data4 = src.get((int) (xmax + xmin) / 2, (int) Math.min((ymax + ymin) / 2 + 10, src.height()-1));
-                            double[] data5 = src.get((int) (xmax + xmin) / 2, (int) Math.max((ymax + ymin) / 2 - 10, 0));
-                            int[] data =
-                                    {(int) (data1[0] + data2[0] + data3[0] + data4[0] + data5[0]) / 5,
-                                            (int) (data1[1] + data2[1] + data3[1] + data4[1] + data5[1]) / 5,
-                                            (int) (data1[2] + data2[2] + data3[2] + data4[2] + data5[2]) / 5};
-                            double colorDistanceToInterrupteurDeMesCouilles = 1 / PatternRecognition.computeDistancesToColor(data, Colors.getRGBFromID(5));
-                            if (debug) {
-                                System.out.println(data[0] + " " + data[1] + " " + data[2]);
-                                System.out.println(colorDistanceToInterrupteurDeMesCouilles);
-                            }*/
+                        if (true){
+                        //if (!(deltaY>1.9*deltaX && deltaY<2.5*deltaX)){
                             MatOfPoint2f temp = new MatOfPoint2f(contour.toArray());
                             double area = Imgproc.contourArea(contour);
                             approxCurve = new MatOfPoint2f();

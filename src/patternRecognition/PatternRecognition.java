@@ -74,8 +74,8 @@ public class PatternRecognition extends AbstractThread{
             this.zoneToPerformLocalisation = zoneToPerformLocalisationVert;
         }
         this.lengthSideOfSquareDetection=5; //in pixels
-        this.distanceBetweenTwoColors=17; //in pixels
-        this.debug=false;
+        this.distanceBetweenTwoColors=40; //in pixels
+        this.debug=true;
         this.alreadyPrintedColorMatchingProba=false;
         this.alreadyLitUp=0;
         this.isSavingImages=true;
@@ -83,10 +83,6 @@ public class PatternRecognition extends AbstractThread{
         this.brightnessPreModifier=1;
         this.alreadyPreModified=false;
     }
-
-    //////////////////////////////////// GLOBAL VARIABLES DEFINITION /////////////////////////////////////////////
-
-    //Cette valeur, une fois calculée, reste inchangée tout au long de l'exécution du programme
 
     //////////////////////////////////// COLOR MATRIX CREATION /////////////////////////////////////////////
 
@@ -608,8 +604,7 @@ public class PatternRecognition extends AbstractThread{
                     log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                 }
                 if (isSavingImages) {
-                    String imageName="/home/pi/images/patternRecognition/500ImagesTest/output"+Double.toString(Math.random())+".png";
-                    saveImage(colorMatrix, imageName);
+                    saveImage(colorMatrix, "/tmp/imageCenter.png");
                 }
                 analysePattern(colorMatrix);
             }
@@ -662,9 +657,7 @@ public class PatternRecognition extends AbstractThread{
         gameState.setIndicePattern(this.finalIndice);
         gameState.setRecognitionDone(true);
         recognitionDone=true;
-        if (debug) {
-            log.debug("Pattern recognized : " + finalIndice);
-        }
+        log.debug("Pattern recognized : " + finalIndice);
         while (!this.isShutdown){
             try {
                 this.sleep(100);
