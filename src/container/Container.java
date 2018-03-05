@@ -24,6 +24,7 @@ import enums.ThreadName;
 import exceptions.ContainerException;
 import pfg.config.Config;
 import pfg.config.ConfigInfo;
+import simulator.ThreadSimulator;
 import threads.AbstractThread;
 import threads.ThreadExit;
 import simulator.ThreadSimulatorMotion;
@@ -90,6 +91,9 @@ public class Container implements Service
 	 */
 	private static final boolean showGraph = false;
 	private FileWriter fileWriter;
+
+	/** Sert à instancier les Threads de simulation automatiquement par le container en cas de simulation */
+	private boolean simulation;
 
 	/**
 	 * Fonction appelé automatiquement à la fin du programme.
@@ -200,6 +204,13 @@ public class Container implements Service
 
 		// Le container est aussi un service
 		instanciedServices.put(getClass().getSimpleName(), this);
+
+		// On récupère la simulation si besoin
+		simulation = config.getBoolean(ConfigInfoRobot.SIMULATION);
+		if(simulation){
+			this.getService(ThreadSimulator.class);
+			this.getService(ThreadSimulatorMotion.class);
+		}
 	}
 	
 	/**

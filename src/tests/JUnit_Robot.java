@@ -43,8 +43,6 @@ public class JUnit_Robot extends JUnit_Test {
     private Robot robotReal;
     private ScriptManager scriptManager;
     private GameState state;
-    private ThreadSimulator simulator;
-    private ThreadSimulatorMotion simulatorMotion;
     private Table table;
 
     /* (non-Javadoc)
@@ -58,8 +56,6 @@ public class JUnit_Robot extends JUnit_Test {
             scriptManager = container.getService(ScriptManager.class);
             state = container.getService(GameState.class);
             table = container.getService(Table.class);
-     //       simulatorMotion = container.getService(ThreadSimulatorMotion.class);
-     //       simulator = container.getService(ThreadSimulator.class);
 
             container.startInstanciedThreads();
 
