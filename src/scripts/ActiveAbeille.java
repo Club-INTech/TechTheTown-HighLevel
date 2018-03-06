@@ -35,6 +35,10 @@ public class ActiveAbeille extends AbstractScript {
         actualState.robot.turn(Math.PI,true);
         //On relève le bras
         actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+        int xEntry = 1500-radius-securityDistance;
+        int yEntry = 2000-radius-securityDistance;
+        Vec2 aim =new Vec2(xEntry,yEntry);
+        actualState.robot.goTo(aim);
 
     }
 
