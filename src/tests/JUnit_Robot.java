@@ -43,8 +43,6 @@ public class JUnit_Robot extends JUnit_Test {
     private Robot robotReal;
     private ScriptManager scriptManager;
     private GameState state;
-    private ThreadSimulator simulator;
-    private ThreadSimulatorMotion simulatorMotion;
     private Table table;
 
     /* (non-Javadoc)
@@ -58,8 +56,6 @@ public class JUnit_Robot extends JUnit_Test {
             scriptManager = container.getService(ScriptManager.class);
             state = container.getService(GameState.class);
             table = container.getService(Table.class);
-     //       simulatorMotion = container.getService(ThreadSimulatorMotion.class);
-     //       simulator = container.getService(ThreadSimulator.class);
 
             container.startInstanciedThreads();
 
@@ -78,7 +74,7 @@ public class JUnit_Robot extends JUnit_Test {
             robotReal.setOrientation(Math.PI);
             robotReal.setLocomotionSpeed(Speed.FAST_ALL);
             robotReal.moveLengthwise(200);
-            state.indicePattern=1;
+            state.setIndicePattern(1);
 
             scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(TasCubes.TAS_STATION_EPURATION.getID(),state);
             scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(TasCubes.TAS_CHATEAU_EAU.getID(),state);

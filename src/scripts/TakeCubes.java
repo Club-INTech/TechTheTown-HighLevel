@@ -34,23 +34,28 @@ public class TakeCubes extends AbstractScript {
     @Override
     public void execute(int indiceTas, GameState stateToConsider)
             throws InterruptedException, ExecuteException, UnableToMoveException {
+
         BrasUtilise bras;
         Cubes additionalCube;
 
+        while(!stateToConsider.isRecognitionDone()){
+            Thread.sleep(10);
+        }
+
         //On récupère l'indice du pattern
-        int indicePattern=stateToConsider.indicePattern;
+        int indicePattern=stateToConsider.getIndicePattern();
 
         //On récupère le tas correspondant à l'indice
         TasCubes tas = TasCubes.getTasFromID(indiceTas);
 
         //On regarde si la tour avant est remplie
-        if (!stateToConsider.tourAvantRemplie){
-            stateToConsider.tourAvantRemplie=true;
+        if (!stateToConsider.isTourAvantRemplie()){
+            stateToConsider.setTourAvantRemplie(true);
             bras=BrasUtilise.AVANT;
         }
         //On regarde si la tour arrière est remplie
-        else if (!stateToConsider.tourArriereRemplie){
-            stateToConsider.tourArriereRemplie=true;
+        else if (!stateToConsider.isTourArriereRemplie()){
+            stateToConsider.setTourArriereRemplie(true);
             bras=BrasUtilise.ARRIERE;
         }
         //Si les deux tours sont remplies, on renvoie une exception et n'execute pas le script
@@ -58,11 +63,13 @@ public class TakeCubes extends AbstractScript {
             throw new ExecuteException(new BothTowersFullException("Les deux tours sont remplies"));
         }
 
+
         //On regarde quel bras on utilise
         if (bras==BrasUtilise.AVANT){
             //On gère le cas où le cube bonus est encore présent
-            if (stateToConsider.cubeAvantPresent){
+            if (stateToConsider.isCubeAvantPresent()){
                 additionalCube=Cubes.NULL;
+
             }
             else{
                 additionalCube=Cubes.getCubeNotInPattern(indicePattern);
@@ -70,7 +77,7 @@ public class TakeCubes extends AbstractScript {
         }
         else{
             //On gère le cas où le cube bonus est encore présent
-            if (stateToConsider.cubeArrierePresent){
+            if (stateToConsider.isCubeArrierePresent()){
                 additionalCube=Cubes.NULL;
             }
             else{
@@ -78,7 +85,30 @@ public class TakeCubes extends AbstractScript {
             }
         }
 
-
+        if(indiceTas==0){
+            config.override(ConfigInfoRobot.TAS_BASE_PRIS,true);
+            stateToConsider.setTas_base_pris(true);
+        }
+        if(indiceTas==1){
+            config.override(ConfigInfoRobot.TAS_CHATEAU_PRIS,true);
+            stateToConsider.setTas_chateau_eau_pris(true);
+        }
+        if(indiceTas==2){
+            config.override(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS,true);
+            stateToConsider.setTas_station_epuration_pris(true);
+        }
+        if(indiceTas==3){
+            config.override(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS,true);
+            stateToConsider.setTas_base_ennemi_pris(true);
+        }
+        if(indiceTas==4){
+            config.override(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS,true);
+            stateToConsider.setTas_chateau_ennemi_eau_pris(true);
+        }
+        if(indiceTas==5){
+            config.override(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS,true);
+            stateToConsider.setTas_station_epuration_ennemi_pris(true);
+        }
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
         //Si indicePattern==-2, c'est que le pattern n'a pas encore été calculé
         if (indicePattern != -2){
@@ -172,16 +202,20 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.TILT_LA_PORTE_AVANT, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
+
+
         }
         else if (bras==BrasUtilise.ARRIERE) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.TILT_LA_PORTE_ARRIERE, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
         }
     }
 
@@ -217,6 +251,7 @@ public class TakeCubes extends AbstractScript {
             aimArcCircle = new Circle(coordsTas, this.longueurBras);
         }
         Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
+        System.out.println("point d'entrée takecubes"+version+aim);
         this.entryPositionPoint=aim;
         return new Circle(aim);
     }

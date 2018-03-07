@@ -20,6 +20,7 @@
 package strategie;
 
 import container.Service;
+import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.Robot;
 import table.Table;
@@ -44,33 +45,49 @@ public class GameState implements Service
     /** La table */
     public final Table table;
     
-    /** Le robot que l'on fait agir sur cette table*/
+    /** Le robot que l'on fait agir sur cette table */
     public final Robot robot;
 
     /** Temps écoulé depuis le début du match en ms */
     private long timeEllapsed;
-    
-	/** points marqués depuis le debut du match */
-    public int obtainedPoints;
 
-    /** Indice du pattern trouvé*/
-    public int indicePattern;
+    /** points marqués depuis le debut du match */
+    private int obtainedPoints;
+
+    /** Indice du pattern trouvé */
+    private int indicePattern;
+
+    /** Calculs de reconnaissance de patterns finis */
+    private boolean recognitionDone;
 
     /** Tour avant déjà remplie */
-    public boolean tourAvantRemplie;
+    private boolean tourAvantRemplie;
 
     /** Tour arriere déjà remplie */
-    public boolean tourArriereRemplie;
+    private boolean tourArriereRemplie;
 
-    /** Cube bonus avant présent dans la tour*/
-    public boolean cubeAvantPresent;
+    /** Cube bonus avant présent dans la tour */
+    private boolean cubeAvantPresent;
 
-    /** Cube bonus arrière présent dans la tour*/
-    public boolean cubeArrierePresent;
+    /** Cube bonus arrière présent dans la tour */
+    private boolean cubeArrierePresent;
+
+    private boolean tas_base_pris;
+    private boolean tas_chateau_eau_pris;
+    private boolean tas_station_epuration_pris;
+    private boolean tas_base_ennemi_pris;
+    private boolean tas_chateau_ennemi_eau_pris;
+    private boolean tas_station_epuration_ennemi_pris;
+
+
+    private Config config;
+    private Log log;
+
+
+
 
     /**
      * Instancie un nouvel état de jeu. (il ne représente pas forcément la réalité, il peut être fictif)
-     *
      * @param config inutilisé
      * @param log inutilisé
      * @param table l'état de la table a considérer
@@ -80,6 +97,9 @@ public class GameState implements Service
     {
         this.table = table;
         this.robot = robot;
+        this.config=config;
+        this.log=log;
+
         
         //On n'a marqué aucun point en début de match
         this.obtainedPoints = 0;
@@ -91,6 +111,20 @@ public class GameState implements Service
         //On dit que les cubes bonus sont présents au début du match
         this.cubeAvantPresent=true;
         this.cubeArrierePresent=true;
+
+        this.tas_base_pris=false;
+        this.tas_chateau_eau_pris=false;
+        this.tas_station_epuration_pris=false;
+        this.tas_base_ennemi_pris=false;
+        this.tas_chateau_ennemi_eau_pris=false;
+        this.tas_station_epuration_ennemi_pris=false;
+
+
+        //La reconnaissance de couleurs est faite ou non
+        this.recognitionDone=PatternRecognition.isRecognitionDone();
+        //On set une valeur de base, qui sera changée par PatternRecognition par la suite
+        this.indicePattern=-2;
+
     }
 
     /* (non-Javadoc)
@@ -114,6 +148,81 @@ public class GameState implements Service
 		return timeEllapsed;
 	}
 
+    public void setTimeEllapsed(long timeEllapsed) {
+        this.timeEllapsed = timeEllapsed;
+    }
+
+
+
+    public int getObtainedPoints() {
+        return obtainedPoints;
+    }
+
+    public void setObtainedPoints(int obtainedPoints) {
+        this.obtainedPoints = obtainedPoints;
+    }
+
+
+
+    public int getIndicePattern() {
+        return indicePattern;
+    }
+
+    public void setIndicePattern(int indicePattern) {
+        this.indicePattern = indicePattern;
+    }
+
+
+
+    public boolean isRecognitionDone() {
+        return recognitionDone;
+    }
+
+    public void setRecognitionDone(boolean recognitionDone) {
+        this.recognitionDone = recognitionDone;
+    }
+
+
+
+    public boolean isTourAvantRemplie() {
+        return tourAvantRemplie;
+    }
+
+    public void setTourAvantRemplie(boolean tourAvantRemplie) {
+        this.tourAvantRemplie = tourAvantRemplie;
+    }
+
+
+
+    public boolean isTourArriereRemplie() {
+        return tourArriereRemplie;
+    }
+
+    public void setTourArriereRemplie(boolean tourArriereRemplie) {
+        this.tourArriereRemplie = tourArriereRemplie;
+    }
+
+
+
+    public boolean isCubeAvantPresent() {
+        return cubeAvantPresent;
+    }
+
+    public void setCubeAvantPresent(boolean cubeAvantPresent) {
+        this.cubeAvantPresent = cubeAvantPresent;
+    }
+
+
+
+    public boolean isCubeArrierePresent() {
+        return cubeArrierePresent;
+    }
+
+    public void setCubeArrierePresent(boolean cubeArrierePresent) {
+        this.cubeArrierePresent = cubeArrierePresent;
+    }
+
+
     /**
      * Change le rayon du robot et fait toutes les modifs necesssaires
      * A utiliser dans les scripts et la stratégie
@@ -124,5 +233,52 @@ public class GameState implements Service
         this.robot.setRobotRadius(newRad);
         this.table.getObstacleManager().updateObstacles(newRad);
     }
-	
+
+    public boolean isTas_base_pris() {
+        return tas_base_pris;
+    }
+
+    public boolean isTas_chateau_eau_pris() {
+        return tas_chateau_eau_pris;
+    }
+
+    public boolean isTas_station_epuration_pris() {
+        return tas_station_epuration_pris;
+    }
+
+    public boolean isTas_base_ennemi_pris() {
+        return tas_base_ennemi_pris;
+    }
+
+    public boolean isTas_chateau_ennemi_eau_pris() {
+        return tas_chateau_ennemi_eau_pris;
+    }
+
+    public boolean isTas_station_epuration_ennemi_pris() {
+        return tas_station_epuration_ennemi_pris;
+    }
+
+    public void setTas_base_pris(boolean tas_base_pris) {
+        this.tas_base_pris = tas_base_pris;
+    }
+
+    public void setTas_chateau_eau_pris(boolean tas_chateau_eau_pris) {
+        this.tas_chateau_eau_pris = tas_chateau_eau_pris;
+    }
+
+    public void setTas_station_epuration_pris(boolean tas_station_epuration_pris) {
+        this.tas_station_epuration_pris = tas_station_epuration_pris;
+    }
+
+    public void setTas_base_ennemi_pris(boolean tas_base_ennemi_pris) {
+        this.tas_base_ennemi_pris = tas_base_ennemi_pris;
+    }
+
+    public void setTas_chateau_ennemi_eau_pris(boolean tas_chateau_ennemi_eau_pris) {
+        this.tas_chateau_ennemi_eau_pris = tas_chateau_ennemi_eau_pris;
+    }
+
+    public void setTas_station_epuration_ennemi_pris(boolean tas_station_epuration_ennemi_pris) {
+        this.tas_station_epuration_ennemi_pris = tas_station_epuration_ennemi_pris;
+    }
 }

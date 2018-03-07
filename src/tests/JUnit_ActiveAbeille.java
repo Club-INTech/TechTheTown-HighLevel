@@ -37,9 +37,7 @@ public class JUnit_ActiveAbeille extends JUnit_Test {
             robotReal.setOrientation(Math.PI);
             Vec2 positionDepart = new Vec2(1252, 455);
             robotReal.setPosition(positionDepart);
-            robotReal.useActuator(ActuatorOrder.SEND_POSITION, true);
-            robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            robotReal.useActuator(ActuatorOrder.SEND_POSITION, true);
+            robotReal.setLocomotionSpeed(Speed.FAST_T_MEDIUM_R);
             scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE).goToThenExec(0, state);
             //Vec2 positionarrivee=new Vec2(890,347);
             //robotReal.goTo(positionarrivee);

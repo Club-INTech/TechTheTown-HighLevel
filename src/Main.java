@@ -18,24 +18,19 @@
  */
 
 import container.Container;
-import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
-import pathfinder.Pathfinding;
+import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
-import scripts.TakeCubes;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
-import threads.dataHandlers.ThreadSensor;
-
-import java.util.ArrayList;
 
 /**
  * Code qui démarre le robot en début de match
@@ -67,35 +62,45 @@ public class Main {
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion = container.getService(Locomotion.class);
 
-//            Thread.currentThread().setPriority(6);
+            Thread.currentThread().setPriority(6);
 
+            //			container.getService(ThreadSensor.class);
+            container.getService(ThreadEth.class);
+            container.getService(ThreadInterface.class);
+            container.getService(ThreadTimer.class);
+            PatternRecognition patternRecognition= container.getService(PatternRecognition.class);
+            container.startInstanciedThreads();
             // TODO : initialisation des variables globales du robot & objets...
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
 
-//			container.getService(ThreadSensor.class);
-            container.getService(ThreadEth.class);
-            container.getService(ThreadInterface.class);
-//            container.getService(ThreadTimer.class);
-            container.getService(Pathfinding.class);
-            container.startInstanciedThreads();
+
+
+            while(patternRecognition.isMovementLocked()) {
+                Thread.sleep(10);
+            }
+
 
         } catch (ContainerException p) {
             System.out.println("bug container");
         }
-        // container.startAllThreads();
         try {
+
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
             System.out.println("Le robot commence le match");
-//			waitMatchBegin();
-//			 TODO : lancer l'IA
+            waitMatchBegin();
+//			         TODO : lancer l'IA
+
             scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, realState);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
+
 
 
     /**

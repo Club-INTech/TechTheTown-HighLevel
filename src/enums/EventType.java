@@ -30,6 +30,7 @@ public enum EventType {
     BLOCKED("unableToMove"),
     STOPPEDMOVING("stoppedMoving");
 
+
     /** Id de l'event, qui diffère en fonction du type d'event */
     private String eventId;
 

@@ -42,18 +42,17 @@ public class JUnit_Sensor extends JUnit_Test {
     @Test
     public void testSensor() {
         try {
-            robotReal = container.getService(Robot.class);
-            robotReal.getPosition();
-            robotReal.getOrientation();
-            robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            robotReal.moveLengthwise(100);
-            robotReal.moveLengthwise(-100);
-            robotReal.setOrientation(Math.PI/2);
-            robotReal.setPosition(new Vec2(0, 500));
+
+            while(true){
+                robotReal.getPosition();
+                robotReal.getOrientation();
+            }
 
 
 
-            Thread.sleep(500);
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

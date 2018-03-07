@@ -91,7 +91,7 @@ public class CloseDoors extends AbstractScript
 
 
                 //PORTES FERMEES !
-				stateToConsider.obtainedPoints += 20;
+				stateToConsider.setObtainedPoints(stateToConsider.getObtainedPoints()+20);;
 //				stateToConsider.table.extDoorClosed = true;
 //				stateToConsider.table.intDoorClosed = true;
 
@@ -156,7 +156,7 @@ public class CloseDoors extends AbstractScript
 				stateToConsider.robot.moveLengthwise(600, true);
 
 				//PORTES FERMEES !
-				stateToConsider.obtainedPoints += 20;
+				stateToConsider.setObtainedPoints(stateToConsider.getObtainedPoints()+20);
 //				stateToConsider.table.extDoorClosed = true;
 //				stateToConsider.table.intDoorClosed = true;
 
@@ -197,7 +197,7 @@ public class CloseDoors extends AbstractScript
 
 
                 //PORTES FERMEES !
-                stateToConsider.obtainedPoints += 20;
+				stateToConsider.setObtainedPoints(stateToConsider.getObtainedPoints()+20);
 //                stateToConsider.table.extDoorClosed = true;
 //                stateToConsider.table.intDoorClosed = true;
 

@@ -1,8 +1,8 @@
-package patternRecognition.shootPicture;
+package patternRecognition.shootPicture.piCam;
 
-import patternRecognition.shootPicture.RPiCamera.*;
-import patternRecognition.shootPicture.cameraEnums.*;
-import patternRecognition.shootPicture.cameraExceptions.*;
+import patternRecognition.shootPicture.piCam.RPiCamera.*;
+import patternRecognition.shootPicture.piCam.cameraEnums.*;
+import patternRecognition.shootPicture.piCam.cameraExceptions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class ShootStill {
 
-	public static String TakeBufferedPicture() {
+	public static String TakePicture() {
 		RPiCamera piCamera = null;
 		// Attempt to create an instance of RPiCamera.RPiCamera, will fail if raspistill is not properly installed
 		String saveDir = "/home/pi";

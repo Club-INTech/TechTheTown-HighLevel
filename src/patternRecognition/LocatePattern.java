@@ -8,6 +8,8 @@ import org.opencv.imgproc.Imgproc;
 
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,28 +17,28 @@ import static jdk.nashorn.internal.objects.NativeMath.max;
 import static jdk.nashorn.internal.objects.NativeMath.min;
 import static org.opencv.imgcodecs.Imgcodecs.imread;
 
-/** Permet de localiser le pattern sur l'image prise par la PiCam
+/** Permet de localiser le pattern sur l'image prise par la piCam
  */
 public class LocatePattern {
 
     //Variable de debug
-    private static boolean debug=false;
+    private static boolean debug=true;
     private static boolean isSavingImages=true;
 
     /** Fonction de localisation du pattern sur l'image prise par la Picam
-     * @param path chemin de l'image à analyser
+     * @param buffImg BufferedImage de l'image à analyser
      * @param selectedZone zone de l'image à analyser, de la forme {xstart, ystart, width, height}
      * @return renvoie les coordonnées du pattern sur l'image à analyser
      */
-    public static int[] locatePattern(String path, int[] selectedZone) {
+    public static int[] locatePattern(BufferedImage buffImg, int[] selectedZone) {
         //Charge la librairie OpenCV
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         //Définit un rectange de la zone utilisée, afin de réduire l'image
         Rect zoneUsed = new Rect(selectedZone[0], selectedZone[1], selectedZone[2], selectedZone[3]);
 
-        //Importe l'image
-        Mat src = imread(path);
+        //Convertit la BufferedImage en Mat
+        Mat src=bufferedImageToMat(buffImg);
 
         //Convertit l'image de RGB à BGR
         //Imgproc.cvtColor(src, src, Imgproc.COLOR_RGB2BGR);
@@ -48,9 +50,13 @@ public class LocatePattern {
         int[][][] foundRectangles;
         try {
             //Essentials
-            int[][] firstRect = findRectangle(image, 10, 20, 9);
-            int[][] secondRect = findRectangle(image, 30, 40, 9);
-            int[][] thirdRect = findRectangle(image, 30, 40, 15);
+            //PiCam
+            //int[][] firstRect = findRectangle(image, 10, 20, 9);
+            //int[][] secondRect = findRectangle(image, 30, 40, 9);
+            //int[][] thirdRect = findRectangle(image, 30, 40, 15);
+            int[][] firstRect = findRectangle(image, 10, 20, 5);
+            int[][] secondRect = findRectangle(image, 30, 40, 5);
+            int[][] thirdRect = findRectangle(image, 30, 40, 9);
             //Add-ons
             //int[][] forthRect = findRectangle(image, 30, 40, 21);
             foundRectangles = new int[][][]{firstRect, secondRect,thirdRect};
@@ -99,8 +105,7 @@ public class LocatePattern {
 
             //Enregistre l'image
             if (isSavingImages) {
-                String outputName = path+".png";
-                Imgcodecs.imwrite(outputName, image);
+                Imgcodecs.imwrite("/tmp/LocatedPattern.png", image);
             }
         }
         int[] fullCoords;
@@ -113,6 +118,20 @@ public class LocatePattern {
         }
         return fullCoords;
     }
+
+
+
+    /** Convertit une image BufferedImage en Mat pour OpenCV
+     * @param bufferedImage image à convertir
+     * @return renvoie le Mat qui correspond à l'image
+     */
+    public static Mat bufferedImageToMat(BufferedImage bufferedImage) {
+        Mat mat = new Mat(bufferedImage.getHeight(), bufferedImage.getWidth(), CvType.CV_8UC3);
+        byte[] data = ((DataBufferByte) bufferedImage.getRaster().getDataBuffer()).getData();
+        mat.put(0, 0, data);
+        return mat;
+    }
+
 
     /** Fonction permettant de détecter les rectangles
      * @param src image source
@@ -157,7 +176,7 @@ public class LocatePattern {
                         Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
                 if (debug) {
                     //Enregistre l'image en gris
-                    Imgcodecs.imwrite("gray.png", gray);
+                    Imgcodecs.imwrite("/tmp/gray.png", gray);
                 }
 
                 //Détermination du meilleur contour
@@ -191,27 +210,18 @@ public class LocatePattern {
                     //deltaX<250 pixels
                     //deltaY<300 pixels
                     //deltaX<deltaY
-                    if (deltaX > 60 && deltaY > 100 && deltaX < 250 && deltaY < 200 && deltaX < deltaY) {
+                    /**Valeurs de la taille des carrés à détecter
+                     */
+                    //VALEURS PICAM
+                    //if (deltaX > 60 && deltaY > 100 && deltaX < 250 && deltaY < 200 && deltaX < deltaY)
+                    if (deltaX > 10 && deltaY > 30 && deltaX < 50 && deltaY < 75 && deltaX < deltaY) {
 
                         //dimensions relatives interrupteur
                         //valeur plutot bonnes : deltaY>2.1*deltaX  deltaY<2.5*deltaX
                         //valeur à test : deltaY>1.8*deltaX  deltaY<2.3*deltaX
                         //valeur à test : deltaY>1.9*deltaX  deltaY<2.5*deltaX
-                        if (!(deltaY>1.9*deltaX && deltaY<2.5*deltaX)){
-                            /*double[] data1 = src.get((int) (xmax + xmin) / 2, (int) (ymax + ymin) / 2);
-                            double[] data2 = src.get((int) Math.min((xmax + xmin) / 2 + 10, src.width()-1), (int) (ymax + ymin) / 2);
-                            double[] data3 = src.get((int) Math.max((xmax + xmin) / 2 - 10, 0), (int) (ymax + ymin) / 2);
-                            double[] data4 = src.get((int) (xmax + xmin) / 2, (int) Math.min((ymax + ymin) / 2 + 10, src.height()-1));
-                            double[] data5 = src.get((int) (xmax + xmin) / 2, (int) Math.max((ymax + ymin) / 2 - 10, 0));
-                            int[] data =
-                                    {(int) (data1[0] + data2[0] + data3[0] + data4[0] + data5[0]) / 5,
-                                            (int) (data1[1] + data2[1] + data3[1] + data4[1] + data5[1]) / 5,
-                                            (int) (data1[2] + data2[2] + data3[2] + data4[2] + data5[2]) / 5};
-                            double colorDistanceToInterrupteurDeMesCouilles = 1 / PatternRecognition.computeDistancesToColor(data, Colors.getRGBFromID(5));
-                            if (debug) {
-                                System.out.println(data[0] + " " + data[1] + " " + data[2]);
-                                System.out.println(colorDistanceToInterrupteurDeMesCouilles);
-                            }*/
+                        if (true){
+                        //if (!(deltaY>1.9*deltaX && deltaY<2.5*deltaX)){
                             MatOfPoint2f temp = new MatOfPoint2f(contour.toArray());
                             double area = Imgproc.contourArea(contour);
                             approxCurve = new MatOfPoint2f();

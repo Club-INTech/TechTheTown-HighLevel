@@ -1,6 +1,8 @@
 package pathfinder;
 
+import container.Container;
 import container.Service;
+import enums.ConfigInfoRobot;
 import enums.UnableToMoveReason;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
@@ -16,6 +18,8 @@ import utils.Log;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+
+import static enums.TasCubes.*;
 
 /**
  * Pathfinding du robot ! Contient l'algorithme
@@ -50,7 +54,8 @@ public class Pathfinding implements Service {
      */
 
     public void initGraphe() {
-        graphe = new Graphe(log, config, table);
+        graphe = new Graphe(log,config,table);
+        graphe.updateConfig();
     }
 
     /**
@@ -65,6 +70,25 @@ public class Pathfinding implements Service {
             node.removeNeighbour(noeudDepart);
             node.removeNeighbour(noeudArrive);
         }
+        if(config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_BASE.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_CHATEAU_EAU.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_STATION_EPURATION.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_BASE_ENNEMI.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_CHATEAU_EAU_ENNEMI.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)){
+            obstacleManager.removeObstacle(obstacleManager.getmCircularObstacle().get(TAS_STATION_EPURATION_ENNEMI.getID()));
+        }
+
         graphe.removeNode(noeudDepart);
         graphe.removeNode(noeudArrive);
     }
@@ -90,7 +114,8 @@ public class Pathfinding implements Service {
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
-
+        int heuristique = 10;
+        int k = 0;
         /** exception départ ou arrivée dans un obstacle */
         if (obstacleManager.isObstructed(noeuddepart.getPosition()) || !obstacleManager.isRobotInTable(noeuddepart.getPosition())) {
             throw new PointInObstacleException(noeuddepart.getPosition());
@@ -134,12 +159,15 @@ public class Pathfinding implements Service {
                             voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         }
                     } else {
-                        voisin.setHeuristique(voisin.getPosition().distance(noeudarrive.getPosition()));
+//                        voisin.setHeuristique(voisin.getPosition().distance(noeudarrive.getPosition()));
+                        voisin.setHeuristique(k*heuristique);
                         voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         openList.add(voisin);
                         voisin.setPred(noeudcourant);
                     }
                 }
+                k++;
+                log.debug(k);
             }
         }
         // pas de chemin trouvé.

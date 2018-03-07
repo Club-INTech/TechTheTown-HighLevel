@@ -3,7 +3,10 @@ package patternRecognition;
 import enums.Colors;
 import enums.Patterns;
 import enums.ConfigInfoRobot;
+import patternRecognition.shootPicture.ShootBufferedStillWebcam;
 import pfg.config.Config;
+import robot.EthWrapper;
+import strategie.GameState;
 import threads.AbstractThread;
 
 import javax.imageio.ImageIO;
@@ -20,18 +23,133 @@ import java.util.ArrayList;
  */
 public class PatternRecognition extends AbstractThread{
 
-    public void setDebugPatternRecognition(boolean value){
-        debug=value;
-    }
+    private int finalIndice=-2;
+    private Config config;
+    private EthWrapper ethWrapper;
+    private GameState gameState;
 
-    //////////////////////////////////// GLOBAL VARIABLES DEFINITION /////////////////////////////////////////////
+    private boolean isShutdown=false;
+    private int lengthSideOfSquareDetection; //in pixels
+    private int distanceBetweenTwoColors; //in pixels
+    private int[] centerPointPattern;
+    private boolean debug;   //Debug
+    private boolean alreadyPrintedColorMatchingProba; //Utile pour le debug
+    private int alreadyLitUp; //l'image a déjà été éclairée
+    private boolean isSavingImages;
+    private boolean symmetry;
+    //VALEURS PICAM
+    //private int imageWidth=2592;
+    //private int imageHeight=1944;
+    private int imageWidth=640;
+    private int imageHeight=480;
 
-    //Défini l'objet mediansList pour qu'il soit accessible sans être retourné
-    private static int[][] mediansList = new int[3][3];
     //mediansList est composé de la médiane en R, en G et en B, pour chacune des 3 couleurs de la photo
     //Donc, si on nomme les couleurs 1, 2 et 3, on a :
     //mediansList={{R1,G1,B1},{R2,G2,B2},{R3,G3,B3}}
-    //Cette valeur, une fois calculée, reste inchangée tout au long de l'exécution du programme
+    private int[][] mediansList = new int[3][3];
+
+    private int[] zoneToPerformLocalisation;
+    private int[] zoneToPerformLocalisationVert={1,168,296,288};
+    private int[] zoneToPerformLocalisationOrange={(imageWidth-297),168,296,288};
+
+    private double saturationPreModifier;
+    private double brightnessPreModifier;
+    private boolean alreadyPreModified;
+    private static boolean movementLocked=true;
+    private static boolean recognitionDone=false;
+
+    /** Instanciation du thread de reconnaissance de couleurs
+     * @param config passe la config
+     * @param ethWrapper passe l'ethWrapper
+     */
+    public PatternRecognition(Config config, EthWrapper ethWrapper, GameState stateToConsider){
+        this.config=config;
+        this.updateConfig();
+        this.ethWrapper=ethWrapper;
+        this.gameState=stateToConsider;
+        if (this.symmetry) {
+            this.zoneToPerformLocalisation = zoneToPerformLocalisationOrange;
+        }
+        else {
+            this.zoneToPerformLocalisation = zoneToPerformLocalisationVert;
+        }
+        this.lengthSideOfSquareDetection=5; //in pixels
+        this.distanceBetweenTwoColors=40; //in pixels
+        this.debug=true;
+        this.alreadyPrintedColorMatchingProba=false;
+        this.alreadyLitUp=0;
+        this.isSavingImages=true;
+        this.saturationPreModifier=1.2;
+        this.brightnessPreModifier=1;
+        this.alreadyPreModified=false;
+    }
+
+    //////////////////////////////////// COLOR MATRIX CREATION /////////////////////////////////////////////
+
+    /**Fonction de conversion d'une image en une matrice de couleurs
+     * @param picture BufferedImage de l'image à convertir
+     * @return renvoie une matrice 3D matrice[x][y][0,1 ou 2], sachant que
+     * x est l'abscisse,
+     * y est l'ordonnée,
+     * 0,1 ou 2, si on veut R, G ou B
+     **/
+    private int[][][] createColorMatrixFromBufferedImage(BufferedImage picture) {
+        int[][][] colorMatrix;
+        int width = picture.getWidth();
+        int height = picture.getHeight();
+        colorMatrix = new int[width][height][3];
+        //Méthode pour récupérer les paramètres R, G et B de chaque pixel
+        for (int x=0; x<width-1; x++){
+            for (int y=0; y<height-1; y++) {
+                Color color =  new Color(picture.getRGB(x, y));
+                colorMatrix[x][y][0]=color.getRed();
+                colorMatrix[x][y][1]=color.getGreen();
+                colorMatrix[x][y][2]=color.getBlue();
+            }
+        }
+        return colorMatrix;
+    }
+
+    //////////////////////////////////// GETTING MEDIANS => COLOR COMPARISON => PATTERN COMPARISON /////////////////////////////////////////////
+
+    /**Fonction servant d'encapsulation aux fonctions à enchaîner
+     * @param colorMatrix matrice 3D de la photo
+     * @param xstarts liste des abscisses des points A (cf graphique docstring fonction GetRGBMedianValues)
+     * @param ystarts liste des ordonnées des points A (cf graphique docstring fonction GetRGBMedianValues)
+     * @param xends liste des abscisses des points B (cf graphique docstring fonction GetRGBMedianValues)
+     * @param yends liste des ordonnées des points B (cf graphique docstring fonction GetRGBMedianValues)
+     * @return renvoe la liste normalisée des probabilités que la pattern pris en photo soit un des patterns de la liste
+     * (correspondance entre les indices de la liste renvoyée et l'ID des patterns)
+     */
+    private double[] computeProximity(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends) {
+        if (debug){
+            log.debug("First color");
+        }
+        int[] medianFirstColor = getRGBMedianValues(colorMatrix, xstarts[0], ystarts[0], xends[0], yends[0]);
+        if (debug){
+            log.debug("Second color");
+        }
+        int[] medianSecondColor = getRGBMedianValues(colorMatrix, xstarts[1], ystarts[1], xends[1], yends[1]);
+        if (debug){
+            log.debug("Third color");
+        }
+        int[] medianThirdColor = getRGBMedianValues(colorMatrix, xstarts[2], ystarts[2], xends[2], yends[2]);
+        int[][] mediansListTemp = {medianFirstColor, medianSecondColor, medianThirdColor};
+        int[] badResult={-1,-1,-1};
+        for (int i=0; i<3; i++) {
+            if(mediansListTemp[i]==badResult){
+                double[] badResultProbabilities={-1,-1,-1,-1,-1,-1,-1,-1,-1};
+                return badResultProbabilities;
+            }
+            this.mediansList[i] = mediansListTemp[i];
+        }
+        double[] probabilitiesList = compareThreeRGBsToAllPatterns(this.mediansList);
+        return probabilitiesList;
+    }
+    private double[] computeProximity(int[][][] colorMatrix, int[][] positionsColorsOnImage){
+        double[] probabilitiesList = computeProximity(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
+        return probabilitiesList;
+    }
 
     //////////////////////////////////// NORMALIZATION FUNCTIONS /////////////////////////////////////////////
 
@@ -59,75 +177,136 @@ public class PatternRecognition extends AbstractThread{
         return normalizedList;
     }
 
-    //////////////////////////////////// IMAGE ANALYSIS /////////////////////////////////////////////
+    //////////////////////////////////// PATTERN COMPARISON /////////////////////////////////////////////
 
-    /**Fonction de conversion d'une image en une matrice de couleurs
-     * @param pathname chemin vers l'image à convertir
-     * @return renvoie une matrice 3D matrice[x][y][0,1 ou 2], sachant que
-     * x est l'abscisse,
-     * y est l'ordonnée,
-     * 0,1 ou 2, si on veut R, G ou B**/
-    private int[][][] createColorMatrix(String pathname) {
-        int[][][] colorMatrix;
-        BufferedImage picture;
-        try {
-            picture = ImageIO.read(new File(pathname));
-        } catch (IOException e) {
-            try {
-                String pathnameBis="Photos/"+pathname;
-                picture = ImageIO.read(new File(pathnameBis));
-            }
-            catch (IOException e2){
-                try {
-                    String pathnameTris = "images/patternRecognition/" + pathname;
-                    picture = ImageIO.read(new File(pathnameTris));
-                }
-                catch (IOException e3) {
-                    picture = new BufferedImage(2592, 1944, 1);
-                    System.out.println("Image not found");
-                }
-            }
+    /**Fonction permettant de comparer les valeurs de RGB des 3 couleurs de la photo à tous les autres patterns
+     * @param RGBs valeurs de RGB des 3 couleurs de la photo
+     * @return renvoie la liste (double[nbPatterns=10]) des probabilités que les couleurs de la photo correspondent à un des pattern
+     */
+    private double[] compareThreeRGBsToAllPatterns(int[][] RGBs){
+        int nbPatterns=10;
+        double[] probabilitiesList= new double[nbPatterns];
+        for (int i=0; i<nbPatterns; i++){
+            probabilitiesList[i]=compareThreeRGBsToPattern(RGBs, i);
         }
-        int width = picture.getWidth();
-        int height = picture.getHeight();
-        colorMatrix = new int[width][height][3];
-        //Méthode pour récupérer les paramètres R, G et B de chaque pixel
-        for (int x=0; x<width-1; x++){
-            for (int y=0; y<height-1; y++) {
-                Color color =  new Color(picture.getRGB(x, y));
-                colorMatrix[x][y][0]=color.getRed();
-                colorMatrix[x][y][1]=color.getGreen();
-                colorMatrix[x][y][2]=color.getBlue();
-                }
-            }
-        return colorMatrix;
+        return probabilitiesList;
     }
 
-    /**Fonction de conversion d'une image en une matrice de couleurs
-     * @param picture BufferedImage de l'image à convertir
-     * @return renvoie une matrice 3D matrice[x][y][0,1 ou 2], sachant que
-     * x est l'abscisse,
-     * y est l'ordonnée,
-     * 0,1 ou 2, si on veut R, G ou B**/
-    private int[][][] createColorMatrixFromBufferedImage(BufferedImage picture) {
-        int[][][] colorMatrix;
-        int width = picture.getWidth();
-        int height = picture.getHeight();
-        colorMatrix = new int[width][height][3];
-        //Méthode pour récupérer les paramètres R, G et B de chaque pixel
-        for (int x=0; x<width-1; x++){
-            for (int y=0; y<height-1; y++) {
-                Color color =  new Color(picture.getRGB(x, y));
-                colorMatrix[x][y][0]=color.getRed();
-                colorMatrix[x][y][1]=color.getGreen();
-                colorMatrix[x][y][2]=color.getBlue();
+    /**Fonction permettant de comparer les valeurs de RGB des 3 couleurs de la photo à un pattern prédéfini
+     * @param RGBs valeurs de RGB des 3 couleurs de la photo
+     * @param patternID ID du pattern à évaluer
+     * @return renvoie la probabilité (double) que les couleurs de la photo correspondent au pattern choisi
+     */
+    private double compareThreeRGBsToPattern(int[][] RGBs, int patternID){
+        Colors[] pattern=Patterns.getPatternFromID(patternID);
+        double finalProbability = 1;
+        for (int i=0; i<3; i++){
+            int colorID=pattern[i].getID();
+            if (debug && !alreadyPrintedColorMatchingProba){
+                if (i==0) {
+                    log.debug("First color :");
+                }
+                else if (i==1){
+                    log.debug("Second color :");
+                }
+                else{
+                    log.debug("Third color :");
+                }
             }
+            double[] tempProbabilities=computeProbabilitiesColors(RGBs[i]);
+            finalProbability*=tempProbabilities[colorID];
         }
-        return colorMatrix;
+        alreadyPrintedColorMatchingProba=true;
+        return finalProbability;
     }
 
+    //////////////////////////////////// COLOR COMPARISON /////////////////////////////////////////////
 
+    /**Fonction permettant de calculer les probabilités que la couleur à évaluer(RGBToEvaluate) corresponde à celles prédéfinies
+     * @param RGBToEvaluate RGB correspondant à la oculeur à évaluer, ie couleur dont la distance doit être calculée
+     * @return renvoie la liste (double[]) des probabilités que la couleur à évaluer corresponde à celles prédéfinies
+     */
+    private double[] computeProbabilitiesColors(int[] RGBToEvaluate){
+        double[] inverseDistances=computeInverseDistanceToAllColors(RGBToEvaluate);
+        double[] normalizedInverseDistances = normalizeDoubleList(inverseDistances);
 
+        if (debug && !alreadyPrintedColorMatchingProba) {
+            for (int i = 0; i < normalizedInverseDistances.length; i++) {
+                log.debug("Proba corresponde a la couleur "+Colors.getNameFromID(i)+":\t"+normalizedInverseDistances[i]);
+            }
+            log.debug("");
+        }
+        return normalizedInverseDistances;
+    }
+
+    /** Fonction permettant de calculer l'inversee de la distance quadratique d'une couleur (RGBToEvaluate) à toutes les autres couleurs des cubes
+     * @param RGBToEvaluate RGB correspondant à la couleur à évaluer, ie couleur dont la distance doit être calculée
+     * @return renvoie la liste (double[5]) de l'inverse des distances quadratiques entre la couleur à évaluer et toutes les autres couleus des cubes
+     */
+    private double[] computeInverseDistanceToAllColors(int[] RGBToEvaluate){
+        double[] inverseDistances=new double[5];
+        for (int idColor=0; idColor<5; idColor++){
+            int[] color= Colors.getRGBFromID(idColor);
+            inverseDistances[idColor]=computeInverseDistanceToSingleColor(RGBToEvaluate, color);
+        }
+        return inverseDistances;
+    }
+
+    /**Fonction permettant de calculer l'inverse de la distance quadratique d'une couleur (RGBToEvaluate) à une autre prédéfinie (color)
+     * @param RGBToEvaluate RGB correspondant à la couleur à évaluer, ie couleur dont la distance doit être calculée
+     * @param color RGB correspondant à une couleur prédéfinie
+     * @return renvoie l'inverse de la distance quadratique (double) entre les 2 couleurs
+     */
+    private double computeInverseDistanceToSingleColor(int[] RGBToEvaluate, int[] color){
+        double distance = 0;
+        for (int i=0; i<3; i++){
+            distance+=Math.pow(RGBToEvaluate[i]-color[i],2);
+        }
+        double inverseDistance;
+        if (distance==0){
+            inverseDistance = 5;
+        }
+        else {
+            inverseDistance = 1/distance;
+        }
+        return inverseDistance;
+    }
+
+    //////////////////////////////////// GETTING MEDIAN VALUES /////////////////////////////////////////////
+
+    /** Fonction permettant d'obtenir la valeur médiane de R, G ET B pour une des 3 couleurs de la photo
+     *  Sélectionne la couleur en créant un rectangle par ses sommets opposés :
+     *  -------------------------
+     *  |A                      |
+     *  |                       |
+     *  |                      B|
+     *  -------------------------
+     *  A de coordonnées (xstart, ystart)
+     *  B de coordonnées (xend, yend)
+     * @param colorMatrix image sous forme de matrice 3D (cf createColorMatrix)
+     * @param xstart abscisse de A (cf graphique docstring)
+     * @param ystart ordonnée de A (cf graphique docstring)
+     * @param xend abscisse de B (cf graphique docstring)
+     * @param yend ordonnée de B (cf graphique docstring)
+     * @return renvoie la liste de valeurs (int[3]) R,G et B de la couleur choisie
+     */
+    private int[] getRGBMedianValues(int[][][] colorMatrix, int xstart, int ystart, int xend, int yend){
+        int[] mediansListToReturn= new int[3];
+        for (int i=0; i<3; i++){
+            mediansListToReturn[i]=getMedianValue(colorMatrix, xstart, ystart, xend, yend, i);
+            if (mediansListToReturn[i]==-1){
+                int[] badReturn={-1,-1,-1};
+                return badReturn;
+            }
+            if (debug) {
+                log.debug("posRGB:"+i+" MedianValue:"+mediansListToReturn[i]);
+            }
+        }
+        if (debug){
+            log.debug("");
+        }
+        return mediansListToReturn;
+    }
 
     /** Fonction permettant d'obtenir la valeur médiane de R, G OU B pour une des 3 couleurs de la photo
      *  Sélectionne la couleur en créant un rectangle par ses sommets opposés :
@@ -180,198 +359,6 @@ public class PatternRecognition extends AbstractThread{
         }
     }
 
-    /** Fonction permettant d'obtenir la valeur médiane de R, G ET B pour une des 3 couleurs de la photo
-     *  Sélectionne la couleur en créant un rectangle par ses sommets opposés :
-     *  -------------------------
-     *  |A                      |
-     *  |                       |
-     *  |                      B|
-     *  -------------------------
-     *  A de coordonnées (xstart, ystart)
-     *  B de coordonnées (xend, yend)
-     * @param colorMatrix image sous forme de matrice 3D (cf createColorMatrix)
-     * @param xstart abscisse de A (cf graphique docstring)
-     * @param ystart ordonnée de A (cf graphique docstring)
-     * @param xend abscisse de B (cf graphique docstring)
-     * @param yend ordonnée de B (cf graphique docstring)
-     * @return renvoie la liste de valeurs (int[3]) R,G et B de la couleur choisie
-     */
-    private int[] getRGBMedianValues(int[][][] colorMatrix, int xstart, int ystart, int xend, int yend){
-        int[] mediansList= new int[3];
-        for (int i=0; i<3; i++){
-            mediansList[i]=getMedianValue(colorMatrix, xstart, ystart, xend, yend, i);
-            if (mediansList[i]==-1){
-                int[] badReturn={-1,-1,-1};
-                return badReturn;
-            }
-            if (debug) {
-                System.out.println("posRGB:"+i+" MedianValue:"+mediansList[i]);
-            }
-        }
-        if (debug){
-            System.out.println("");
-        }
-        return mediansList;
-    }
-
-    //////////////////////////////////// COLOR COMPARISON /////////////////////////////////////////////
-
-    /**Fonction permettant de calculer l'inverse de la distance quadratique d'une couleur (RGBToEvaluate) à une autre prédéfinie (color)
-     * @param RGBToEvaluate RGB correspondant à la couleur à évaluer, ie couleur dont la distance doit être calculée
-     * @param color RGB correspondant à une couleur prédéfinie
-     * @return renvoie l'inverse de la distance quadratique (double) entre les 2 couleurs
-     */
-    private double computeInverseDistanceToSingleColor(int[] RGBToEvaluate, int[] color){
-        double distance = 0;
-        for (int i=0; i<3; i++){
-            distance+=Math.pow(RGBToEvaluate[i]-color[i],2);
-        }
-        double inverseDistance;
-        if (distance==0){
-            inverseDistance = 5;
-        }
-        else {
-            inverseDistance = 1/distance;
-        }
-        return inverseDistance;
-    }
-
-    /**Fonction permettant de calculer l'inverse de la distance quadratique d'une couleur (RGBToEvaluate) à une autre prédéfinie (color)
-     * @param RGBToEvaluate RGB correspondant à la couleur à évaluer, ie couleur dont la distance doit être calculée
-     * @param color RGB correspondant à une couleur prédéfinie
-     * @return renvoie l'inverse de la distance quadratique (double) entre les 2 couleurs
-     */
-    public static double computeDistancesToColor(int[] RGBToEvaluate, int[] color){
-        double distance = 0;
-        for (int i=0; i<3; i++){
-            distance+=Math.pow(RGBToEvaluate[i]-color[i],2);
-        }
-        double inverseDistance;
-        if (distance==0){
-            inverseDistance = 5;
-        }
-        else {
-            inverseDistance = 1/distance;
-        }
-        return inverseDistance;
-    }
-
-
-    /** Fonction permettant de calculer l'inversee de la distance quadratique d'une couleur (RGBToEvaluate) à toutes les autres couleurs des cubes
-     * @param RGBToEvaluate RGB correspondant à la couleur à évaluer, ie couleur dont la distance doit être calculée
-     * @return renvoie la liste (double[5]) de l'inverse des distances quadratiques entre la couleur à évaluer et toutes les autres couleus des cubes
-     */
-    private double[] computeInverseDistanceToAllColors(int[] RGBToEvaluate){
-        double[] inverseDistances=new double[5];
-        for (int idColor=0; idColor<5; idColor++){
-            int[] color= Colors.getRGBFromID(idColor);
-            inverseDistances[idColor]=computeInverseDistanceToSingleColor(RGBToEvaluate, color);
-        }
-        return inverseDistances;
-    }
-
-    /**Fonction permettant de calculer les probabilités que la couleur à évaluer(RGBToEvaluate) corresponde à celles prédéfinies
-     * @param RGBToEvaluate RGB correspondant à la oculeur à évaluer, ie couleur dont la distance doit être calculée
-     * @return renvoie la liste (double[]) des probabilités que la couleur à évaluer corresponde à celles prédéfinies
-     */
-    private double[] computeProbabilitiesColors(int[] RGBToEvaluate){
-        double[] inverseDistances=computeInverseDistanceToAllColors(RGBToEvaluate);
-        double[] normalizedInverseDistances = normalizeDoubleList(inverseDistances);
-
-        if (debug && !alreadyPrintedColorMatchingProba) {
-            for (int i = 0; i < normalizedInverseDistances.length; i++) {
-                System.out.println("Proba corresponde a la couleur "+Colors.getNameFromID(i)+":\t"+normalizedInverseDistances[i]);
-            }
-            System.out.println("");
-        }
-        return normalizedInverseDistances;
-    }
-
-    //////////////////////////////////// PATTERN COMPARISON /////////////////////////////////////////////
-
-    /**Fonction permettant de comparer les valeurs de RGB des 3 couleurs de la photo à un pattern prédéfini
-     * @param RGBs valeurs de RGB des 3 couleurs de la photo
-     * @param patternID ID du pattern à évaluer
-     * @return renvoie la probabilité (double) que les couleurs de la photo correspondent au pattern choisi
-     */
-    private double compareThreeRGBsToPattern(int[][] RGBs, int patternID){
-        Colors[] pattern=Patterns.getPatternFromID(patternID);
-        double finalProbability = 1;
-        for (int i=0; i<3; i++){
-            int colorID=pattern[i].getID();
-            if (debug && !alreadyPrintedColorMatchingProba){
-                if (i==0) {
-                    System.out.println("First color :");
-                }
-                else if (i==1){
-                    System.out.println("Second color :");
-                }
-                else if (i==2){
-                    System.out.println("Third color :");
-                }
-            }
-            double[] tempProbabilities=computeProbabilitiesColors(RGBs[i]);
-            finalProbability*=tempProbabilities[colorID];
-        }
-        alreadyPrintedColorMatchingProba=true;
-        return finalProbability;
-    }
-
-
-    /**Fonction permettant de comparer les valeurs de RGB des 3 couleurs de la photo à tous les autres patterns
-     * @param RGBs valeurs de RGB des 3 couleurs de la photo
-     * @return renvoie la liste (double[nbPatterns=10]) des probabilités que les couleurs de la photo correspondent à un des pattern
-     */
-    private double[] compareThreeRGBsToAllPatterns(int[][] RGBs){
-        int nbPatterns=10;
-        double[] probabilitiesList= new double[nbPatterns];
-        for (int i=0; i<nbPatterns; i++){
-            probabilitiesList[i]=compareThreeRGBsToPattern(RGBs, i);
-        }
-        return probabilitiesList;
-    }
-
-    //////////////////////////////////// ENCAPSULATION 3,4 AND 5 /////////////////////////////////////////////
-
-    /**Fonction servant d'encapsulation aux fonctions à enchaîner
-     * @param colorMatrix matrice 3D de la photo
-     * @param xstarts liste des abscisses des points A (cf graphique docstring fonction GetRGBMedianValues)
-     * @param ystarts liste des ordonnées des points A (cf graphique docstring fonction GetRGBMedianValues)
-     * @param xends liste des abscisses des points B (cf graphique docstring fonction GetRGBMedianValues)
-     * @param yends liste des ordonnées des points B (cf graphique docstring fonction GetRGBMedianValues)
-     * @return renvoe la liste normalisée des probabilités que la pattern pris en photo soit un des patterns de la liste
-     * (correspondance entre les indices de la liste renvoyée et l'ID des patterns)
-     */
-    private double[] computeProximity(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends) {
-        if (debug){
-            System.out.println("First color");
-        }
-        int[] medianFirstColor = getRGBMedianValues(colorMatrix, xstarts[0], ystarts[0], xends[0], yends[0]);
-        if (debug){
-            System.out.println("Second color");
-        }
-        int[] medianSecondColor = getRGBMedianValues(colorMatrix, xstarts[1], ystarts[1], xends[1], yends[1]);
-        if (debug){
-            System.out.println("Third color");
-        }
-        int[] medianThirdColor = getRGBMedianValues(colorMatrix, xstarts[2], ystarts[2], xends[2], yends[2]);
-        int[][] mediansListTemp = {medianFirstColor, medianSecondColor, medianThirdColor};
-        int[] badResult={-1,-1,-1};
-        for (int i=0; i<3; i++) {
-            if(mediansListTemp[i]==badResult){
-                double[] badResultProbabilities={-1,-1,-1,-1,-1,-1,-1,-1,-1};
-                return badResultProbabilities;
-            }
-            mediansList[i] = mediansListTemp[i];
-        }
-        double[] probabilitiesList = compareThreeRGBsToAllPatterns(mediansList);
-        return probabilitiesList;
-    }
-    private double[] computeProximity(int[][][] colorMatrix, int[][] positionsColorsOnImage){
-        double[] probabilitiesList = computeProximity(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
-        return probabilitiesList;
-    }
-
     //////////////////////////////////// DISCRIMINATION /////////////////////////////////////////////
 
     /**Fonction permettant de déterminer les patterns qui sont viables au vu de la liste de probabilités
@@ -396,6 +383,13 @@ public class PatternRecognition extends AbstractThread{
     }
 
     //////////////////////////////////// DISCRIMINATION IN CASE OF CONFLICT /////////////////////////////////////////////
+
+    /** Convertit une couleur en HSB à partir d'une couleur en RGB
+     * @param hue angle de la couleur (rouge, orange, jaune, vert, bleu, violet...)
+     * @param saturation saturation de la couleur (coloré ou décoloré)
+     * @param brightness luminosité de la couleur (éclairé ou sombre)
+     * @return renvoie une couleur en HSB
+     */
     private int[] convertHSBtoRGB(float hue, float saturation, float brightness){
         int r = 0, g = 0, b = 0;
         if (saturation == 0) {
@@ -443,12 +437,28 @@ public class PatternRecognition extends AbstractThread{
         return RGB;
     }
 
+    /** Convertit une couleur RGB en HSB
+     * @param R composante rouge (R)
+     * @param G composante verte (G)
+     * @param B composante bleue (B)
+     * @return renvoie la couleur HSB
+     */
     private float[] convertRGBtoHSB(int R, int G, int B){
         float[] HSB = new float[3];
         Color.RGBtoHSB(R,G,B,HSB);
         return HSB;
     }
 
+    /** Permet d'augmenter la luminosité et la saturation d'une zone de l'image
+     * @param colorMatrixLitUp matrice de couleurs
+     * @param xstart début x de la zone
+     * @param ystart début y de la zone
+     * @param xend fin x de la zone
+     * @param yend fin y de la zone
+     * @param saturationModifier multiplicateur de saturation
+     * @param brightnessModifier multiplicateur de luminosité
+     * @return la matrice de couleurs modifiée
+     */
     private int[][][] lightUpSector(int[][][] colorMatrixLitUp, int xstart, int ystart, int xend, int yend, double saturationModifier, double brightnessModifier){
         for (int x=xstart; x<xend; x++){
             for (int y=ystart; y<yend; y++){
@@ -472,31 +482,13 @@ public class PatternRecognition extends AbstractThread{
         return colorMatrixLitUp;
     }
 
-    private int[][][] lightUpColors(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends){
-        int[][][] colorMatrixLitUp=colorMatrix.clone();
-        for (int i=0; i<xstarts.length; i++){
-            colorMatrixLitUp=lightUpSector(colorMatrixLitUp, xstarts[i], ystarts[i], xends[i], yends[i],1,1.5);
-        }
-        return colorMatrixLitUp;
-    }
-
-    //////////////////////////////////// COMMENTAIRES DEBUG /////////////////////////////////////////////
-
-    //MODE OPERATOIRE :
-    // 1) Créer la matrice RGB
-    // 2) Délimiter l'endroit où se trouve le pattern
-    // 2.5) Délimiter les zones de couleur dans le pattern
-    // 3) Déterminer les médianes R,G et B pour chaque zone de couleur
-    // 4) Comparer les valeurs RGB obtenues pour chaque zone avec tous les patterns
-    // 5) Déterminer le pattern ayant la probabilité la plus grande
-    // 5.5) Si doute, détermination plus précise
-
-    //GIMP TRAITEMENT :
-    //Ajout Luminosité/Contraste : indices 30/30
-
     //////////////////////////////////// ENREGISTREMENT D'UNE PHOTO ///////////////////////////////////
 
-    public static void saveImage(int[][][] colorMatrix, String name){
+    /** Sauvegarde d'une image sur la carte SD
+     * @param colorMatrix matrice de couleur
+     * @param path chemin de l'image
+     */
+    private static void saveImage(int[][][] colorMatrix, String path){
             BufferedImage image = new BufferedImage(colorMatrix.length,colorMatrix[0].length,BufferedImage.TYPE_INT_RGB);
             for (int x=0; x<colorMatrix.length-1; x++){
                 for (int y=0; y<colorMatrix[0].length-1; y++){
@@ -504,12 +496,33 @@ public class PatternRecognition extends AbstractThread{
                     image.setRGB(x,y,color.getRGB());
                 }
             }
-            File outputfile = new File(name);
+            File outputfile = new File(path);
             try {
                 ImageIO.write(image, "png", outputfile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+    }
+
+    /////////////////////////////// CALCULATE CENTER OF PATTERN ///////////////////////////////
+
+    /** Localise le pattern et calcule son centre
+     * @param buffImg BufferedImage de l'image pour laquelle le pattern doit être localisé
+     * @param zoneToPerformLocalisation zone dans laquelle le pattern doit se trouver sur l'image
+     * @return renvoie les coordonnée {x,y} du center de l'image
+     */
+    private int[] calculateCenterPattern(BufferedImage buffImg, int[] zoneToPerformLocalisation){
+        if (debug){
+            log.debug("Performing pattern localisation on : (("+zoneToPerformLocalisation[0]+","+zoneToPerformLocalisation[1]+
+                    "),("+(zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2])+","+(zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3])+"))");
+            LocatePattern.setDebug(true);
+        }
+        int[] patternZone = LocatePattern.locatePattern(buffImg, zoneToPerformLocalisation);
+        int[] centerPattern=new int[]{(patternZone[0]+patternZone[2])/2,(patternZone[1]+patternZone[3])/2};
+        if (debug){
+            log.debug("Center found : ("+centerPattern[0]+","+centerPattern[1]+")");
+        }
+        return centerPattern;
     }
 
     //////////////////////////////////// ANALYSE DE PATTERN /////////////////////////////////////////////
@@ -523,7 +536,7 @@ public class PatternRecognition extends AbstractThread{
         int halfDistanceBetweenTwoColors = distanceBetweenTwoColors / 2;
         if (!(this.alreadyPreModified)){
             if (debug){
-                System.out.println("Modification");
+                log.debug("Modification");
             }
             colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3],saturationPreModifier,brightnessPreModifier);
             this.alreadyPreModified=true;
@@ -542,7 +555,7 @@ public class PatternRecognition extends AbstractThread{
              */
             int imageWidthMinusOne=imageWidth-1;
             int imageHeightMinusOne=imageHeight-1;
-            positionsColorsOnImage = new int[][]
+            int[][] positionsColorsOnImage = new int[][]
                     {{Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection - distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
                       Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
                       Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection + distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0)},
@@ -558,41 +571,40 @@ public class PatternRecognition extends AbstractThread{
             distanceArrays[i - iStartValue] = computeProximity(colorMatrix, positionsColorsOnImage);
         }
         double maxProba = 0;
-        int maxI = 0;
         int maxJ = 0;
         double[] badDistanceArray={-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
         for (int i = 0; i < distanceArrays.length; i++) {
             if (debug) {
-                System.out.println("");
-                System.out.println("Proximity (Xshifted by " + ((i + iStartValue) * halfDistanceBetweenTwoColors) + " )");
+                log.debug("");
+                log.debug("Proximity (Xshifted by " + ((i + iStartValue) * halfDistanceBetweenTwoColors) + " )");
             }
             if (distanceArrays[i]==badDistanceArray){
                 for (int j=0; j<distanceArrays[i].length; j++){
                     distanceArrays[i][j]=0;
                 }
             }
-            else
-            for (int j = 0; j < distanceArrays[0].length; j++) {
-                if (distanceArrays[i][j] > maxProba) {
-                    maxProba = distanceArrays[i][j];
-                    maxI = i;
-                    maxJ = j;
-                }
-                if (debug) {
-                    System.out.println(distanceArrays[i][j]);
+            else {
+                for (int j = 0; j < distanceArrays[0].length; j++) {
+                    if (distanceArrays[i][j] > maxProba) {
+                        maxProba = distanceArrays[i][j];
+                        maxJ = j;
+                    }
+                    if (debug) {
+                        log.debug(distanceArrays[i][j]);
+                    }
                 }
             }
         }
+
         if (maxProba<0.3){
             if (alreadyLitUp<2){
                 alreadyLitUp+=1;
-                if (debug){
-                    System.out.println("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
-                }
                 colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3],1.2,1.2);
+                if (debug){
+                    log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
+                }
                 if (isSavingImages) {
-                    String imageName="images/patternRecognition/500ImagesTest/output"+Double.toString(Math.random())+".png";
-                    saveImage(colorMatrix, imageName);
+                    saveImage(colorMatrix, "/tmp/imageCenter.png");
                 }
                 analysePattern(colorMatrix);
             }
@@ -608,171 +620,44 @@ public class PatternRecognition extends AbstractThread{
         return -1;
     }
 
-    /////////////////////////////// CALCULATING CENTER OF LOCATED PATTERN ///////////////////////////////
-
-    private int[] calculateCenterPattern(String pathToImage, int[] zoneToPerformLocalisation){
-        if (debug){
-            System.out.println("PathToImage : "+pathToImage);
-            System.out.println("Performing pattern localisation on : (("+zoneToPerformLocalisation[0]+","+zoneToPerformLocalisation[1]+
-                    "),("+(zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2])+","+(zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3])+"))");
-        }
-        String pathToImageLocation="images/patternRecognition/"+pathToImage;
-        LocatePattern.setDebug(true);
-        int[] patternZone = LocatePattern.locatePattern(pathToImageLocation, zoneToPerformLocalisation);
-        int[] centerPattern=new int[]{(patternZone[0]+patternZone[2])/2,(patternZone[1]+patternZone[3])/2};
-        if (debug){
-            System.out.println("Center found : ("+centerPattern[0]+","+centerPattern[1]+")");
-        }
-        return centerPattern;
-    }
-
-
-
-    /////////////////////////// REPLACING THE LOCATED ZONE //////////////////////////
-
-    /*private boolean doCenterHasToBeXShifted(int[][][] colorMatrix, int[] center, int lengthSideOfSquareDetection){
-        int[] countingArray=new int[]{0,0,0,0,0};
-        for (int x=-lengthSideOfSquareDetection/2; x<lengthSideOfSquareDetection/2; x++){
-            double[] RGBprobabilities=computeInverseDistanceToAllColors(colorMatrix[center[0]+x][center[1]]);
-            int maxIndice=0;
-            double max=0;
-            for (int i=0; i<5; i++) {
-                if (RGBprobabilities[i] > max) {
-                    max = RGBprobabilities[i];
-                    maxIndice = i;
-                }
-            }
-            countingArray[maxIndice]+=1;
-        }
-        int maxSameColorPixels=0;
-        for (int i=0; i<countingArray.length; i++){
-            if (countingArray[i]>maxSameColorPixels){
-                maxSameColorPixels=countingArray[i];
-            }
-        }
-        if (debug){
-            System.out.print("ZoneHasToBeShifted CountingColorsArray:(");
-            for (int i=0; i<countingArray.length; i++){
-                System.out.print(countingArray[i]+",");
-            }
-            System.out.println(")");
-        }
-        if (maxSameColorPixels>(0.8*lengthSideOfSquareDetection)){
-            return false;
-        }
-        else{
-            return true;
-        }
-    }*/
-
-
-    private String pathToImage;
-    private int[][] positionsColorsOnImage;
-    private int finalIndice=-2;
-    private Config config;
-    private boolean isShutdown=false;
-    private int[] zoneToPerformLocalisation;
-    private int lengthSideOfSquareDetection; //in pixels
-    private int distanceBetweenTwoColors; //in pixels
-    private int[] centerPointPattern;
-    private boolean debug;   //Debug
-    private boolean alreadyPrintedColorMatchingProba; //Utile pour le debug
-    private boolean mustSelectAValidPattern; //Est-ce qu'on peut renvoyer qu'aucun pattern n'a été trouvé ?
-    private int alreadyLitUp; //l'image a déjà été éclairée
-    private boolean isSavingImages;
-    private boolean symmetry;
-    private int imageWidth=2592;
-    private int imageHeight=1944;
-    private int[] zoneToPerformLocalisationVert={1,700,1200,1200};
-    private int[] zoneToPerformLocalisationOrange={(imageWidth-1201),700,1200,1200};
-    private double saturationPreModifier;
-    private double brightnessPreModifier;
-    private boolean alreadyPreModified;
-    private BufferedImage buffImg;
-
-    /** Instanciation du thread de reconnaissance de couleurs
-     * @param pathToImage chemin à l'image enregistrée
-     * @param zoneToPerformLocalisation zone dans laquelle la localisation de pattern va devoir se faire.
-     */
-    public PatternRecognition(Config config, String pathToImage, int[] zoneToPerformLocalisation, double saturationPreModifier, double brightnessPreModifier){
-        this.config=config;
-        this.pathToImage=pathToImage;
-        this.buffImg=new BufferedImage(3000,3000,BufferedImage.TYPE_INT_RGB);
-        this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
-        if (!(zoneToPerformLocalisation[0]==0 && zoneToPerformLocalisation[1]==0 && zoneToPerformLocalisation[2]==0 && zoneToPerformLocalisation[3]==0)) {
-            this.zoneToPerformLocalisation = zoneToPerformLocalisation;
-        }
-        else{
-            if (this.symmetry) {
-                this.zoneToPerformLocalisation = zoneToPerformLocalisationOrange;
-            }
-            else {
-                this.zoneToPerformLocalisation = zoneToPerformLocalisationVert;
-            }
-        }
-        this.lengthSideOfSquareDetection=20; //in pixels
-        this.distanceBetweenTwoColors=70; //in pixels
-        this.debug=false;
-        this.alreadyPrintedColorMatchingProba=false;
-        this.mustSelectAValidPattern=false;
-        this.alreadyLitUp=0;
-        this.isSavingImages=true;
-        this.saturationPreModifier=saturationPreModifier;
-        this.brightnessPreModifier=brightnessPreModifier;
-        this.alreadyPreModified=false;
-    }
-
-    /** Instanciation du thread de reconnaissance de couleurs
-     * @param buffImage image contenue en buffer
-     * @param zoneToPerformLocalisation zone dans laquelle la localisation de pattern va devoir se faire.
-     */
-    public PatternRecognition(Config config, BufferedImage buffImage, int[] zoneToPerformLocalisation, double saturationPreModifier, double brightnessPreModifier){
-        this.config=config;
-        this.pathToImage="BUFFEREDIMAGEDETROMPEUR";
-        this.buffImg=buffImage;
-        this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
-        if (!(zoneToPerformLocalisation[0]==0 && zoneToPerformLocalisation[1]==0 && zoneToPerformLocalisation[2]==0 && zoneToPerformLocalisation[3]==0)) {
-            this.zoneToPerformLocalisation = zoneToPerformLocalisation;
-        }
-        else{
-            if (this.symmetry) {
-                this.zoneToPerformLocalisation = zoneToPerformLocalisationOrange;
-            }
-            else {
-                this.zoneToPerformLocalisation = zoneToPerformLocalisationVert;
-            }
-        }
-        this.lengthSideOfSquareDetection=20; //in pixels
-        this.distanceBetweenTwoColors=70; //in pixels
-        this.debug=false;
-        this.alreadyPrintedColorMatchingProba=false;
-        this.mustSelectAValidPattern=false;
-        this.alreadyLitUp=0;
-        this.isSavingImages=true;
-        this.saturationPreModifier=saturationPreModifier;
-        this.brightnessPreModifier=brightnessPreModifier;
-        this.alreadyPreModified=false;
-    }
+    //////////////////////////////////// FONCTION RUN DU THREAD /////////////////////////////////////////////
 
     public void run(){
         this.setPriority(5);
-        int[][][] colorMatrix;
-        if(this.pathToImage.equals("BUFFEREDIMAGEDETROMPEUR")) {
-            colorMatrix = createColorMatrixFromBufferedImage(this.buffImg);
+
+        /*while (ethWrapper.isJumperAbsent()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        else{
-            colorMatrix = createColorMatrix(this.pathToImage);
-        }
-        centerPointPattern=calculateCenterPattern(this.pathToImage, this.zoneToPerformLocalisation);
+
+        // puis attend son retrait
+        while (!ethWrapper.isJumperAbsent()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }*/
+
+        //Ancienne version
+        //BufferedImage buffImg=ShootBufferedStill.TakeBufferedPicture();
+        BufferedImage buffImg= ShootBufferedStillWebcam.takeBufferedPicture();
+        movementLocked=false;
+        int[][][] colorMatrix=createColorMatrixFromBufferedImage(buffImg);
+        centerPointPattern=calculateCenterPattern(buffImg, this.zoneToPerformLocalisation);
         if (!(centerPointPattern[0] == 0 && centerPointPattern[1] == 0)) {
             analysePattern(colorMatrix);
         }
         else{
             this.finalIndice=-1;
         }
-        if (debug) {
-            System.out.println("Pattern recognized : " + finalIndice);
-        }
+        gameState.setIndicePattern(this.finalIndice);
+        gameState.setRecognitionDone(true);
+        recognitionDone=true;
+        log.debug("Pattern recognized : " + finalIndice);
         while (!this.isShutdown){
             try {
                 this.sleep(100);
@@ -783,7 +668,7 @@ public class PatternRecognition extends AbstractThread{
         }
     }
 
-    public int returnFinalIndice(){
+    public int getFinalIndice(){
         try {
             this.sleep(10);
         } catch (InterruptedException e) {
@@ -792,7 +677,66 @@ public class PatternRecognition extends AbstractThread{
         return this.finalIndice;
     }
 
+    /** Set la valeur de debug
+     * @param value valeur de debug
+     */
+    public void setDebugPatternRecognition(boolean value){
+        debug=value;
+    }
+
+    /** Set la zone dans laquelle faire la localisation
+     * @param zoneToPerformLocalisation {xstart, ystart, width, height}
+     */
+    public void setZoneToPerformLocalisation(int[] zoneToPerformLocalisation){
+        this.zoneToPerformLocalisation=zoneToPerformLocalisation;
+    }
+
+    /** Set la modification de saturation avant l'algorithme de reconnaissance de pattern
+     * @param saturationPreModifier multiplicateur de la saturation
+     */
+    public void setSaturationPreModifier(double saturationPreModifier){
+        this.saturationPreModifier=saturationPreModifier;
+    }
+
+    /** Set la modification de luminosité avant l'algorithme de reconnaissance de pattern
+     * @param brightnessPreModifier multiplicateur de la luminosité
+     */
+    public void setBrightnessPreModifier(double brightnessPreModifier){
+        this.brightnessPreModifier=brightnessPreModifier;
+    }
+
+    /** Set la distance sur l'axe X (en pixels) sur la photo de 2 centres de carrés adjacents du pattern
+     * @param distance distance sur l'axe X en pixels
+     */
+    public void setDistanceBetweenTwoColors(int distance){
+        this.distanceBetweenTwoColors=distance;
+    }
+
+    /** Set la longueur du côté du carré dans lequel la valeur médiane sera prise
+     * @param length longueur du côté du carré
+     */
+    public void setLengthSideOfSquareDetection(int length){
+        this.lengthSideOfSquareDetection=length;
+    }
+
+
     public void shutdown(){
         this.isShutdown=true;
+    }
+    public static boolean isMovementLocked() {
+        return movementLocked;
+    }
+    public static boolean isRecognitionDone() {
+        return recognitionDone;
+    }
+
+    @Override
+    public void updateConfig() {
+        Colors.ORANGE.setRGB(config.getInt(ConfigInfoRobot.rorange),config.getInt(ConfigInfoRobot.gorange),config.getInt(ConfigInfoRobot.borange));
+        Colors.YELLOW.setRGB(config.getInt(ConfigInfoRobot.rjaune),config.getInt(ConfigInfoRobot.gjaune),config.getInt(ConfigInfoRobot.bjaune));
+        Colors.BLUE.setRGB(config.getInt(ConfigInfoRobot.rbleu),config.getInt(ConfigInfoRobot.gbleu),config.getInt(ConfigInfoRobot.bbleu));
+        Colors.BLACK.setRGB(config.getInt(ConfigInfoRobot.rnoir),config.getInt(ConfigInfoRobot.gnoir),config.getInt(ConfigInfoRobot.bnoir));
+        Colors.GREEN.setRGB(config.getInt(ConfigInfoRobot.rvert),config.getInt(ConfigInfoRobot.gvert),config.getInt(ConfigInfoRobot.bvert));
+        this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
     }
 }

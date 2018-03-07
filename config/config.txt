@@ -49,3 +49,38 @@ SIMULATION                           = false
 # PARAMETRES DE DEGAGEMENT EN CAS DE COLLISION
 # angle_degagement_robot             = 0.4
 # distance_degagement_robot          = 50
+
+TAS_BASE_PRIS=false
+TAS_CHATEAU_PRIS=false
+TAS_STATION_EPURATION_PRIS=false
+TAS_BASE_ENNEMI_PRIS=false
+TAS_CHATEAU_ENNEMI_PRIS=false
+TAS_STATION_EPURATION_ENNEMI_PRIS=false
+
+#RGB pour la couleur orange
+rorange=183
+gorange=107
+borange=71
+
+#RGB pour la couleur jaune
+rjaune=184
+gjaune=177
+bjaune=37
+
+#RGB pour la couleur bleue
+rbleu=50
+gbleu=84
+bbleu=112
+
+#RGB pour la couleur noire
+rnoir=13
+gnoir=24
+bnoir=20
+
+#RGB pour la couleur vert
+rvert=43
+gvert=120
+bvert=68
+
+
+
