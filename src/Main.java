@@ -66,7 +66,7 @@ public class Main {
 
             //			container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
-            container.getService(ThreadInterface.class);
+            //container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
             PatternRecognition patternRecognition=container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
