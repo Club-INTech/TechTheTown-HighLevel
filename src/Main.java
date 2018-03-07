@@ -68,7 +68,7 @@ public class Main {
             container.getService(ThreadEth.class);
             container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
-            PatternRecognition patternRecognition= container.getService(PatternRecognition.class);
+            PatternRecognition patternRecognition=container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
             // TODO : initialisation des variables globales du robot & objets...
             realState.robot.setPosition(Table.entryPosition);
@@ -89,7 +89,7 @@ public class Main {
 
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
             System.out.println("Le robot commence le match");
-            waitMatchBegin();
+            //waitMatchBegin();
 //			         TODO : lancer l'IA
 
             scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, realState);
