@@ -23,6 +23,8 @@ import enums.ActuatorOrder;
 import enums.TurningStrategy;
 import scripts.ScriptManager;
 import strategie.GameState;
+import tests.container.A;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -42,135 +44,197 @@ public class Keyboard implements KeyListener {
 		this.scriptManager = scriptManager;
 	}
 
-	int isUpPressed = 0;
-	int isDownPressed = 0;
-	int isLeftPressed = 0;
-	int isRightPressed = 0;
+	boolean isUpPressed;
+	boolean wasUpReleased;
+	boolean isDownPressed;
+	boolean wasDownReleased;
+	boolean isLeftPressed;
+	boolean wasLeftReleased;
+	boolean isRightPressed;
+	boolean wasRightReleased;
 
-	boolean isUpPressedb;
-	boolean isDownPressedb;
-	boolean isLeftPressedb;
-	boolean isRightPressedb;
 	boolean isApressed;
+	boolean wasAreleased=true;
 
 	boolean isKpressed;
+	boolean wasKreleased=true;
 	boolean isPpressed;
+	boolean wasPreleased=true;
 
 	boolean isWpressed;
+	boolean wasWreleased=true;
 	boolean isXpressed;
+	boolean wasXreleased=true;
 	boolean isCpressed;
+	boolean wasCreleased=true;
 	boolean isVpressed;
+	boolean wasVreleased=true;
+
 	int lastEvent;
 
+	boolean isPompeActivated=false;
+	boolean isPorteAvantOuverte=false;
+	boolean isPorteArriereOuverte=false;
+	boolean takingCube=false;
+
 	void doThat() {
-		if(/*isUpPressed < 15 &&*/ isUpPressedb)
+		if(isUpPressed)
 		{
-			try
-			{
+			if (wasUpReleased) {
 				mRobot.robot.useActuator(ActuatorOrder.MOVE_FORWARD, false);
 			}
-			catch(Exception exception)
-			{
-				System.out.println("ça marche pas bien trololo");
-			}
 		}
-		else if(/*isDownPressed < 15 &&*/ isDownPressedb)
+		else if(isDownPressed)
 		{
-			try
-			{
+			if (wasDownReleased) {
 				mRobot.robot.useActuator(ActuatorOrder.MOVE_BACKWARD, false);
 			}
-			catch(Exception exception)
-			{
-				System.out.println("ça marche pas bien trololo");
-			}
 		}
-		else if(/*isLeftPressed < 15 &&*/ isLeftPressedb)
+		else if(isLeftPressed)
 		{
-			try{
+			if (wasLeftReleased) {
 				mRobot.robot.useActuator(ActuatorOrder.TURN_LEFT, false);
-			}catch(Exception e)
-			{
-				e.printStackTrace();
-				System.out.println("ça marche pas bien trololo");
 			}
 		}
-		else if( /*isRightPressed < 15 && */isRightPressedb)
+		else if(isRightPressed)
 		{
-			try
-			{
+			if (wasRightReleased) {
 				mRobot.robot.useActuator(ActuatorOrder.TURN_RIGHT, false);
 			}
-			catch(Exception exception)
-			{
-				System.out.println("ça marche pas bien trololo");
-			}
-		}else {
+		}
+		else{
 			release();
 		}
 
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e)
-	{
-		if (e.getKeyCode() != lastEvent) {
-			switch (e.getKeyCode()) {
-				case KeyEvent.VK_UP:
-					isUpPressed++;
-					isUpPressedb = true;
-					lastEvent = e.getKeyCode();
-					break;
-				case KeyEvent.VK_DOWN:
-					isDownPressed++;
-					isDownPressedb = true;
-					lastEvent = e.getKeyCode();
-					break;
-				case KeyEvent.VK_LEFT:
-					isLeftPressed++;
-					isLeftPressedb = true;
-					lastEvent = e.getKeyCode();
-					break;
-
-				case KeyEvent.VK_A:
-					isApressed=true;
-					lastEvent = e.getKeyCode();
-					break;
-				case KeyEvent.VK_K:
-					isKpressed=true;
-					lastEvent = e.getKeyCode();
-					break;
-				case KeyEvent.VK_P:
-					isPpressed = true;
-					lastEvent = e.getKeyCode();
-					break;
-				case KeyEvent.VK_W:
-					isWpressed = true;
-					lastEvent = e.getKeyCode();
-					break;
-				case KeyEvent.VK_X:
-					isXpressed = true;
-					lastEvent = e.getKeyCode();
-					break;
-				case KeyEvent.VK_C:
-					isCpressed = true;
-					lastEvent = e.getKeyCode();
-					break;
-				case KeyEvent.VK_V:
-					isVpressed = true;
-					lastEvent = e.getKeyCode();
-					break;
+		if (isWpressed){
+			if (wasWreleased) {
+				if (!isPorteAvantOuverte) {
+					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
+					wasWreleased = false;
+					isPorteAvantOuverte = true;
+				}
+				else{
+					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+					wasWreleased = false;
+					isPorteAvantOuverte = false;
+				}
 			}
-			doThat();
+		}
+		else if (isCpressed){
+			if (wasCreleased) {
+				if (!isPorteArriereOuverte) {
+					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
+					wasCreleased = false;
+					isPorteArriereOuverte = true;
+				}
+				else{
+					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+					wasCreleased = false;
+					isPorteArriereOuverte = false;
+
+				}
+			}
+		}
+		else if (isXpressed){
+			if (wasXreleased) {
+				if (!takingCube) {
+					this.takingCube=true;
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,false);
+					mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT,true);
+					mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,true);
+					this.takingCube=false;
+				}
+			}
+		}
+		else if (isVpressed){
+			if (wasVreleased){
+				if (!takingCube){
+					this.takingCube=true;
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,false);
+					mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,true);
+					mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,true);
+					this.takingCube=false;
+				}
+			}
 		}
 	}
 
+	@Override
+	public void keyPressed(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+				if (isDownPressed) {
+					isUpPressed=false;
+				}
+				else{
+					isUpPressed=true;
+				}
+			case KeyEvent.VK_DOWN:
+				if (isUpPressed) {
+					isDownPressed=false;
+				}
+				else{
+					isDownPressed=true;
+				}
+			case KeyEvent.VK_LEFT:
+				if (isRightPressed){
+					isLeftPressed=false;
+				}
+				else {
+					isLeftPressed=true;
+				}
+			case KeyEvent.VK_RIGHT:
+				if (isLeftPressed) {
+					isRightPressed=false;
+				}
+				else{
+					isRightPressed=true;
+				}
+
+			case KeyEvent.VK_A:
+				isApressed = true;
+				break;
+			case KeyEvent.VK_K:
+				isKpressed = true;
+				break;
+			case KeyEvent.VK_P:
+				isPpressed = true;
+				break;
+			case KeyEvent.VK_W:
+				isWpressed = true;
+				break;
+			case KeyEvent.VK_X:
+				isXpressed = true;
+				break;
+			case KeyEvent.VK_C:
+				isCpressed = true;
+				break;
+			case KeyEvent.VK_V:
+				isVpressed = true;
+				break;
+		}
+		doThat();
+	}
+
 	void release(){
-		try
-		{
+		try {
+			wasUpReleased=true;
+			wasDownReleased=true;
+			wasLeftReleased=true;
+			wasRightReleased=true;
 			mRobot.robot.useActuator(ActuatorOrder.SSTOP,false);
-		}catch(Exception exception)
-		{
+		}
+		catch(Exception exception) {
 			System.out.println("ça marche pas bien trololo");
 		}
 	}
@@ -182,28 +246,28 @@ public class Keyboard implements KeyListener {
 		switch (e.getKeyCode())
 		{
 			case KeyEvent.VK_UP:
-				lastEvent = 0;isUpPressedb = false;break;
+				isUpPressed=false;break;
 			case KeyEvent.VK_DOWN:
-				lastEvent = 0;isDownPressedb = false;break;
+				isDownPressed=false;break;
 			case KeyEvent.VK_LEFT:
-				lastEvent = 0;isLeftPressedb = false;break;
+				isLeftPressed=false;break;
 			case KeyEvent.VK_RIGHT:
-				lastEvent = 0;isRightPressedb = false;break;
+				isRightPressed=false;break;
 
 			case KeyEvent.VK_A:
-				lastEvent = 0;isApressed = false;break;
+				wasAreleased=true;isApressed=false;break;
 			case KeyEvent.VK_K:
-				lastEvent = 0;isKpressed = false;break;
+				wasKreleased=true;isKpressed=false;break;
 			case KeyEvent.VK_P:
-				lastEvent = 0;isPpressed = false;break;
+				wasPreleased=true;isPpressed=false;break;
 			case KeyEvent.VK_W:
-				lastEvent = 0;isWpressed = false;break;
+				wasWreleased=true;isWpressed=false;break;
 			case KeyEvent.VK_X:
-				lastEvent = 0;isXpressed = false;break;
+				wasXreleased=true;isXpressed=false;break;
 			case KeyEvent.VK_C:
-				lastEvent = 0;isCpressed = false;break;
+				wasCreleased=true;isCpressed=false;break;
 			case KeyEvent.VK_V:
-				lastEvent = 0;isVpressed = false;break;
+				wasVreleased=true;isVpressed=false;break;
 		}
 		release();
 	}

@@ -52,11 +52,13 @@ public class JUnit_MatchScript extends JUnit_Test {
             //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             robotReal.setPosition(Table.entryPosition);
             robotReal.setOrientation(Table.entryOrientation);
-            robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
+            robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
 
-            //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
-           scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
-            //locomotion.moveToPoint(new Vec2(-200, 1000), false, false);
+
+//            robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
+//            locomotion.moveToPoint(new Vec2(-200, 1000), false, false);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

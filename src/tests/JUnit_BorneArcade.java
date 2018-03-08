@@ -55,7 +55,6 @@ public class JUnit_BorneArcade extends JUnit_Test
 		win = new Window(container.getService(Table.class), real_state, container.getService(ScriptManager.class),true);
 
 		container.getService(ThreadSensor.class);
-		container.getService(ThreadInterface.class);
 		container.startInstanciedThreads();
 
 		real_state.robot.setPosition(Table.entryPosition);
