@@ -141,13 +141,12 @@ public class Keyboard implements KeyListener {
 				if (!takingCube) {
 					this.takingCube=true;
 					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,true);
 					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,false);
 					mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT,true);
 					mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,true);
-					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
-					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
-					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,true);
-					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,false);
 					this.takingCube=false;
 				}
 			}
@@ -157,13 +156,12 @@ public class Keyboard implements KeyListener {
 				if (!takingCube){
 					this.takingCube=true;
 					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,true);
 					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,false);
 					mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,true);
 					mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
-					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
-					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
-					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,true);
-					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,false);
 					this.takingCube=false;
 				}
 			}
