@@ -52,6 +52,7 @@ public class Keyboard implements KeyListener {
 	boolean wasLeftReleased;
 	boolean isRightPressed;
 	boolean wasRightReleased;
+	boolean isMoving=false;
 
 	boolean isApressed;
 	boolean wasAreleased=true;
@@ -78,27 +79,27 @@ public class Keyboard implements KeyListener {
 	boolean takingCube=false;
 
 	void doThat() {
-		if(isUpPressed)
-		{
-			if (wasUpReleased) {
+		if(isUpPressed) {
+			if (!isMoving) {
+				isMoving = true;
 				mRobot.robot.useActuator(ActuatorOrder.MOVE_FORWARD, false);
 			}
 		}
-		else if(isDownPressed)
-		{
-			if (wasDownReleased) {
+		else if(isDownPressed) {
+			if (!isMoving) {
+				isMoving = true;
 				mRobot.robot.useActuator(ActuatorOrder.MOVE_BACKWARD, false);
 			}
 		}
-		else if(isLeftPressed)
-		{
-			if (wasLeftReleased) {
+		else if(isLeftPressed) {
+			if (!isMoving) {
+				isMoving = true;
 				mRobot.robot.useActuator(ActuatorOrder.TURN_LEFT, false);
 			}
 		}
-		else if(isRightPressed)
-		{
-			if (wasRightReleased) {
+		else if(isRightPressed) {
+			if (!isMoving) {
+				isMoving = true;
 				mRobot.robot.useActuator(ActuatorOrder.TURN_RIGHT, false);
 			}
 		}
@@ -173,33 +174,17 @@ public class Keyboard implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
-				if (isDownPressed) {
-					isUpPressed=false;
-				}
-				else{
-					isUpPressed=true;
-				}
+				isUpPressed = true;
+				break;
 			case KeyEvent.VK_DOWN:
-				if (isUpPressed) {
-					isDownPressed=false;
-				}
-				else{
-					isDownPressed=true;
-				}
+				isDownPressed = true;
+				break;
 			case KeyEvent.VK_LEFT:
-				if (isRightPressed){
-					isLeftPressed=false;
-				}
-				else {
-					isLeftPressed=true;
-				}
+				isLeftPressed = true;
+				break;
 			case KeyEvent.VK_RIGHT:
-				if (isLeftPressed) {
-					isRightPressed=false;
-				}
-				else{
-					isRightPressed=true;
-				}
+				isRightPressed = true;
+				break;
 
 			case KeyEvent.VK_A:
 				isApressed = true;
@@ -232,6 +217,7 @@ public class Keyboard implements KeyListener {
 			wasDownReleased=true;
 			wasLeftReleased=true;
 			wasRightReleased=true;
+			isMoving=false;
 			mRobot.robot.useActuator(ActuatorOrder.SSTOP,false);
 		}
 		catch(Exception exception) {
