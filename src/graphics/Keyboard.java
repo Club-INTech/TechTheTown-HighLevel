@@ -80,7 +80,6 @@ public class Keyboard implements KeyListener {
 	boolean takingCube=false;
 
 	void doThat() {
-		mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
 		if(/*isUpPressed < 15 &&*/ isUpPressedb)
 		{
 			mRobot.robot.useActuator(ActuatorOrder.MOVE_FORWARD, false);
@@ -101,17 +100,17 @@ public class Keyboard implements KeyListener {
 			release();
 		}
 
-		if (isApressed){
-			if (wasAreleased) {
+		if (isWpressed){
+			if (wasWreleased) {
 				if (isPorteAvantOuverte) {
 					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
-					wasAreleased = false;
-					isPorteAvantOuverte = true;
+					wasWreleased = false;
+					isPorteAvantOuverte = false;
 				}
 				else{
 					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
-					wasAreleased = false;
-					isPorteAvantOuverte = false;
+					wasWreleased = false;
+					isPorteAvantOuverte = true;
 				}
 			}
 		}
@@ -120,12 +119,12 @@ public class Keyboard implements KeyListener {
 				if (isPorteArriereOuverte) {
 					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
 					wasCreleased = false;
-					isPorteArriereOuverte = true;
+					isPorteArriereOuverte = false;
 				}
 				else{
 					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
 					wasCreleased = false;
-					isPorteArriereOuverte = false;
+					isPorteArriereOuverte = true;
 
 				}
 			}
@@ -146,8 +145,8 @@ public class Keyboard implements KeyListener {
 				}
 			}
 		}
-		else if(isKpressed){
-			if (wasKreleased){
+		else if(isVpressed){
+			if (wasVreleased){
 				if (!takingCube){
 					takingCube=true;
 					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
