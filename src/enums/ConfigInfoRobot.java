@@ -102,6 +102,9 @@ public enum ConfigInfoRobot implements ConfigInfo
     /** Paramètre simulation */
     SIMULATION(false),
 
+    /** Paramètre d'attente du jumper */
+    ATTENTE_JUMPER(true),
+
     /**Paramètres couleurs*/
     rorange(183),
     gorange(107),

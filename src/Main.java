@@ -18,6 +18,7 @@
  */
 
 import container.Container;
+import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
@@ -64,11 +65,11 @@ public class Main {
 
             Thread.currentThread().setPriority(6);
 
-            //			container.getService(ThreadSensor.class);
+            //container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
-            container.getService(ThreadInterface.class);
+            //container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
-            PatternRecognition patternRecognition= container.getService(PatternRecognition.class);
+            PatternRecognition patternRecognition=container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
             // TODO : initialisation des variables globales du robot & objets...
             realState.robot.setPosition(Table.entryPosition);
@@ -109,26 +110,32 @@ public class Main {
      */
     static void waitMatchBegin() {
 
-        System.out.println("Robot pret pour le match, attente du retrait du jumper");
+        boolean useJumper=config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
 
-        // attend l'insertion du jumper
-        while (mEthWrapper.isJumperAbsent()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if (useJumper) {
+            System.out.println("Robot pret pour le match, attente du retrait du jumper");
+
+            // attend l'insertion du jumper
+            while (mEthWrapper.isJumperAbsent()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // puis attend son retrait
+            while (!mEthWrapper.isJumperAbsent()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
-
-        // puis attend son retrait
-        while (!mEthWrapper.isJumperAbsent()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        else{
+            System.out.println("Robot pret pour le match, pas d'attente du retrait de jumper");
         }
-
         // maintenant que le jumper est retiré, le match a commencé
         ThreadTimer.matchStarted = true;
     }
