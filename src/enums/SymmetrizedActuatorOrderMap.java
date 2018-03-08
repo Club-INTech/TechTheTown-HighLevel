@@ -55,6 +55,31 @@ public class SymmetrizedActuatorOrderMap
         mCorrespondenceMap.put(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE,ActuatorOrder.OUVRE_LA_PORTE_ARRIERE);
         mCorrespondenceMap.put(ActuatorOrder.FERME_LA_PORTE_ARRIERE,ActuatorOrder.FERME_LA_PORTE_ARRIERE);
 
+        mCorrespondenceMap.put(ActuatorOrder.NO_ASSERV_TRANSLATION,ActuatorOrder.NO_ASSERV_TRANSLATION);
+        mCorrespondenceMap.put(ActuatorOrder.NO_ASSERV_ROTATION,ActuatorOrder.NO_ASSERV_ROTATION);
+        mCorrespondenceMap.put(ActuatorOrder.ASSERV_TRANSLATION,ActuatorOrder.ASSERV_TRANSLATION);
+        mCorrespondenceMap.put(ActuatorOrder.ASSERV_ROTATION,ActuatorOrder.ASSERV_ROTATION);
+        mCorrespondenceMap.put(ActuatorOrder.NO_ASSERV_SPEED,ActuatorOrder.NO_ASSERV_SPEED);
+        mCorrespondenceMap.put(ActuatorOrder.ASSERV_SPEED,ActuatorOrder.ASSERV_SPEED);
+        mCorrespondenceMap.put(ActuatorOrder.DEBUG,ActuatorOrder.DEBUG);
+        mCorrespondenceMap.put(ActuatorOrder.MONTLHERY,ActuatorOrder.MONTLHERY);
+        mCorrespondenceMap.put(ActuatorOrder.MOVE_FORWARD,ActuatorOrder.MOVE_FORWARD);
+        mCorrespondenceMap.put(ActuatorOrder.MOVE_BACKWARD,ActuatorOrder.MOVE_BACKWARD);
+        mCorrespondenceMap.put(ActuatorOrder.TURN_RIGHT,ActuatorOrder.TURN_RIGHT);
+        mCorrespondenceMap.put(ActuatorOrder.TURN_LEFT,ActuatorOrder.TURN_LEFT);
+        mCorrespondenceMap.put(ActuatorOrder.SSTOP,ActuatorOrder.SSTOP);
+
+
+        mCorrespondenceMap.put(ActuatorOrder.DIST_US_BACK_LEFT,ActuatorOrder.DIST_US_BACK_LEFT);
+        mCorrespondenceMap.put(ActuatorOrder.DIST_US_BACK_RIGHT,ActuatorOrder.DIST_US_BACK_RIGHT);
+        mCorrespondenceMap.put(ActuatorOrder.DIST_US_FRONT_RIGHT,ActuatorOrder.DIST_US_FRONT_RIGHT);
+        mCorrespondenceMap.put(ActuatorOrder.DIST_US_FRONT_LEFT,ActuatorOrder.DIST_US_FRONT_LEFT);
+        mCorrespondenceMap.put(ActuatorOrder.JUMPER_STATE,ActuatorOrder.JUMPER_STATE);
+
+        mCorrespondenceMap.put(ActuatorOrder.ETAT_CONTACTEUR1,ActuatorOrder.ETAT_CONTACTEUR1);
+        mCorrespondenceMap.put(ActuatorOrder.ETAT_CONTACTEUR2,ActuatorOrder.ETAT_CONTACTEUR2);
+        mCorrespondenceMap.put(ActuatorOrder.ETAT_CONTACTEUR3,ActuatorOrder.ETAT_CONTACTEUR3);
+
     }
     
     /**
