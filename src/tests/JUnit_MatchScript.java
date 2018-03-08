@@ -31,7 +31,7 @@ public class JUnit_MatchScript extends JUnit_Test {
             state = container.getService(GameState.class);
             scriptManager = container.getService(ScriptManager.class);
             patternRecognitonThread=container.getService(PatternRecognition.class);
-            anInterface=container.getService(ThreadInterface.class);
+            //anInterface=container.getService(ThreadInterface.class);
             container.startInstanciedThreads();
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,7 +51,7 @@ public class JUnit_MatchScript extends JUnit_Test {
             robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
 
             //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
-           scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
+            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
 
         } catch (Exception e) {
             e.printStackTrace();
