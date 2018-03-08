@@ -173,17 +173,33 @@ public class Keyboard implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
-				isUpPressed = true;
-				break;
+				if (isDownPressed) {
+					isUpPressed=false;
+				}
+				else{
+					isUpPressed=true;
+				}
 			case KeyEvent.VK_DOWN:
-				isDownPressed = true;
-				break;
+				if (isUpPressed) {
+					isDownPressed=false;
+				}
+				else{
+					isDownPressed=true;
+				}
 			case KeyEvent.VK_LEFT:
-				isLeftPressed = true;
-				break;
+				if (isRightPressed){
+					isLeftPressed=false;
+				}
+				else {
+					isLeftPressed=true;
+				}
 			case KeyEvent.VK_RIGHT:
-				isRightPressed = true;
-				break;
+				if (isLeftPressed) {
+					isRightPressed=false;
+				}
+				else{
+					isRightPressed=true;
+				}
 
 			case KeyEvent.VK_A:
 				isApressed = true;
