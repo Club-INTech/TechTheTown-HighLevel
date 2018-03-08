@@ -128,12 +128,10 @@ public class Robot implements Service {
 	 * @param waitForCompletion si on attends un temps prédéfini pendant l'action
 	 */
 	public void useActuator(ActuatorOrder order, boolean waitForCompletion) {
-		if (symmetry){
+		if (symmetry) {
 			order = mActuatorCorrespondenceMap.getSymmetrizedActuatorOrder(order);
-			ethWrapper.useActuator(order);
-
 		}
-
+		ethWrapper.useActuator(order);
 		if (waitForCompletion) {
 			sleep(order.getDuration());
 		}
