@@ -52,12 +52,14 @@ public class Keyboard implements KeyListener {
 	boolean isLeftPressedb;
 	boolean isRightPressedb;
 	boolean isApressed;
-	boolean isVpressed;
-	boolean isXpressed;
-	boolean isPpressed;
+
 	boolean isKpressed;
+	boolean isPpressed;
+
 	boolean isWpressed;
+	boolean isXpressed;
 	boolean isCpressed;
+	boolean isVpressed;
 	int lastEvent;
 
 	void doThat() {
@@ -109,7 +111,6 @@ public class Keyboard implements KeyListener {
 
 	}
 
-
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
@@ -130,16 +131,39 @@ public class Keyboard implements KeyListener {
 					isLeftPressedb = true;
 					lastEvent = e.getKeyCode();
 					break;
-				case KeyEvent.VK_RIGHT:
-					isRightPressed++;
-					isRightPressedb = true;
+
+				case KeyEvent.VK_A:
+					isApressed=true;
+					lastEvent = e.getKeyCode();
+					break;
+				case KeyEvent.VK_K:
+					isKpressed=true;
+					lastEvent = e.getKeyCode();
+					break;
+				case KeyEvent.VK_P:
+					isPpressed = true;
+					lastEvent = e.getKeyCode();
+					break;
+				case KeyEvent.VK_W:
+					isWpressed = true;
+					lastEvent = e.getKeyCode();
+					break;
+				case KeyEvent.VK_X:
+					isXpressed = true;
+					lastEvent = e.getKeyCode();
+					break;
+				case KeyEvent.VK_C:
+					isCpressed = true;
+					lastEvent = e.getKeyCode();
+					break;
+				case KeyEvent.VK_V:
+					isVpressed = true;
 					lastEvent = e.getKeyCode();
 					break;
 			}
 			doThat();
 		}
 	}
-
 
 	void release(){
 		try
@@ -150,6 +174,8 @@ public class Keyboard implements KeyListener {
 			System.out.println("ça marche pas bien trololo");
 		}
 	}
+
+
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
@@ -163,6 +189,21 @@ public class Keyboard implements KeyListener {
 				lastEvent = 0;isLeftPressedb = false;break;
 			case KeyEvent.VK_RIGHT:
 				lastEvent = 0;isRightPressedb = false;break;
+
+			case KeyEvent.VK_A:
+				lastEvent = 0;isApressed = false;break;
+			case KeyEvent.VK_K:
+				lastEvent = 0;isKpressed = false;break;
+			case KeyEvent.VK_P:
+				lastEvent = 0;isPpressed = false;break;
+			case KeyEvent.VK_W:
+				lastEvent = 0;isWpressed = false;break;
+			case KeyEvent.VK_X:
+				lastEvent = 0;isXpressed = false;break;
+			case KeyEvent.VK_C:
+				lastEvent = 0;isCpressed = false;break;
+			case KeyEvent.VK_V:
+				lastEvent = 0;isVpressed = false;break;
 		}
 		release();
 	}

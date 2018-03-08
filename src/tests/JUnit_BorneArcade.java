@@ -39,7 +39,7 @@ public class JUnit_BorneArcade extends JUnit_Test
 	GameState real_state;
 	Window win;
 
-	
+
 	public static void main(String[] args) throws Exception
 	{
 	   JUnitCore.main("tests.JUnit_BorneArcade");
@@ -52,17 +52,16 @@ public class JUnit_BorneArcade extends JUnit_Test
 
 		real_state = container.getService(GameState.class);
         
-		win = new Window(container.getService(Table.class), real_state, container.getService(ScriptManager.class));
+		win = new Window(container.getService(Table.class), real_state, container.getService(ScriptManager.class),true);
 
-		/*container.getService(ThreadSensor.class);
+		container.getService(ThreadSensor.class);
 		container.getService(ThreadInterface.class);
-		container.startInstanciedThreads();*/
+		container.startInstanciedThreads();
 
 		real_state.robot.setPosition(Table.entryPosition);
 		real_state.robot.setOrientation(Math.PI);
 		real_state.robot.setLocomotionSpeed(Speed.SLOW_T_MEDIUM_R);
-		
-		
+
 		real_state.robot.updateConfig();
 		real_state.robot.useActuator(ActuatorOrder.MONTLHERY, false);
 	}

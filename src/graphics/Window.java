@@ -60,7 +60,7 @@ public class Window extends JFrame
 	 * @param state
 	 * @param scriptManager
 	 */
-	public Window(Table table, GameState state, ScriptManager scriptManager)
+	public Window(Table table, GameState state, ScriptManager scriptManager, boolean isMontlheryActive)
 	{
 		this.setTitle("Interface - Full");
 	    this.setSize(1300, 950);
@@ -73,10 +73,11 @@ public class Window extends JFrame
 	    
 	    mouse = new Mouse(tablePanel);
 	    addMouseListener(mouse);
-	    
-	    keyboard = new Keyboard(state, scriptManager);
-	    addKeyListener(keyboard);
 
+		if (isMontlheryActive) {
+			keyboard = new Keyboard(state, scriptManager);
+			addKeyListener(keyboard);
+		}
 	    this.setVisible(true);
 	}
 
