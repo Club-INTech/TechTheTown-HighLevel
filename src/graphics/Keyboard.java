@@ -23,6 +23,8 @@ import enums.ActuatorOrder;
 import enums.TurningStrategy;
 import scripts.ScriptManager;
 import strategie.GameState;
+import tests.container.A;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -51,64 +53,115 @@ public class Keyboard implements KeyListener {
 	boolean isDownPressedb;
 	boolean isLeftPressedb;
 	boolean isRightPressedb;
+
 	boolean isApressed;
+	boolean wasAreleased=true;
 
 	boolean isKpressed;
+	boolean wasKreleased=true;
 	boolean isPpressed;
+	boolean wasPreleased=true;
 
 	boolean isWpressed;
+	boolean wasWreleased=true;
 	boolean isXpressed;
+	boolean wasXreleased=true;
 	boolean isCpressed;
+	boolean wasCreleased=true;
 	boolean isVpressed;
+	boolean wasVreleased=true;
+
 	int lastEvent;
 
+	boolean isElectrovanneAvantActivated=true;
+	boolean isPompeActivated=false;
+	boolean isPorteAvantOuverte=false;
+	boolean isPorteArriereOuverte=false;
+	boolean takingCube=false;
+
 	void doThat() {
+		mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
 		if(/*isUpPressed < 15 &&*/ isUpPressedb)
 		{
-			try
-			{
-				mRobot.robot.useActuator(ActuatorOrder.MOVE_FORWARD, false);
-			}
-			catch(Exception exception)
-			{
-				System.out.println("ça marche pas bien trololo");
-			}
+			mRobot.robot.useActuator(ActuatorOrder.MOVE_FORWARD, false);
 		}
 		else if(/*isDownPressed < 15 &&*/ isDownPressedb)
 		{
-			try
-			{
-				mRobot.robot.useActuator(ActuatorOrder.MOVE_BACKWARD, false);
-			}
-			catch(Exception exception)
-			{
-				System.out.println("ça marche pas bien trololo");
-			}
+			mRobot.robot.useActuator(ActuatorOrder.MOVE_BACKWARD, false);
 		}
 		else if(/*isLeftPressed < 15 &&*/ isLeftPressedb)
 		{
-			try{
-				mRobot.robot.useActuator(ActuatorOrder.TURN_LEFT, false);
-			}catch(Exception e)
-			{
-				e.printStackTrace();
-				System.out.println("ça marche pas bien trololo");
-			}
+			mRobot.robot.useActuator(ActuatorOrder.TURN_LEFT, false);
 		}
 		else if( /*isRightPressed < 15 && */isRightPressedb)
 		{
-			try
-			{
-				mRobot.robot.useActuator(ActuatorOrder.TURN_RIGHT, false);
-			}
-			catch(Exception exception)
-			{
-				System.out.println("ça marche pas bien trololo");
-			}
-		}else {
+			mRobot.robot.useActuator(ActuatorOrder.TURN_RIGHT, false);
+		}
+		else {
 			release();
 		}
 
+		if (isApressed){
+			if (wasAreleased) {
+				if (isPorteAvantOuverte) {
+					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
+					wasAreleased = false;
+					isPorteAvantOuverte = true;
+				}
+				else{
+					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+					wasAreleased = false;
+					isPorteAvantOuverte = false;
+				}
+			}
+		}
+		else if (isCpressed){
+			if (wasCreleased) {
+				if (isPorteArriereOuverte) {
+					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
+					wasCreleased = false;
+					isPorteArriereOuverte = true;
+				}
+				else{
+					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+					wasCreleased = false;
+					isPorteArriereOuverte = false;
+
+				}
+			}
+		}
+		else if (isXpressed){
+			if (wasXreleased) {
+				if (!takingCube) {
+					takingCube=true;
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,false);
+					mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT,true);
+					mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,false);
+					takingCube=false;
+				}
+			}
+		}
+		else if(isKpressed){
+			if (wasKreleased){
+				if (!takingCube){
+					takingCube=true;
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,false);
+					mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,true);
+					mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,false);
+					takingCube=false;
+				}
+			}
+		}
 	}
 
 	@Override
@@ -191,19 +244,19 @@ public class Keyboard implements KeyListener {
 				lastEvent = 0;isRightPressedb = false;break;
 
 			case KeyEvent.VK_A:
-				lastEvent = 0;isApressed = false;break;
+				lastEvent = 0;wasAreleased=true;isApressed = false;break;
 			case KeyEvent.VK_K:
-				lastEvent = 0;isKpressed = false;break;
+				lastEvent = 0;wasKreleased=true;isKpressed = false;break;
 			case KeyEvent.VK_P:
-				lastEvent = 0;isPpressed = false;break;
+				lastEvent = 0;wasPreleased=true;isPpressed = false;break;
 			case KeyEvent.VK_W:
-				lastEvent = 0;isWpressed = false;break;
+				lastEvent = 0;wasWreleased=true;isWpressed = false;break;
 			case KeyEvent.VK_X:
-				lastEvent = 0;isXpressed = false;break;
+				lastEvent = 0;wasXreleased=true;isXpressed = false;break;
 			case KeyEvent.VK_C:
-				lastEvent = 0;isCpressed = false;break;
+				lastEvent = 0;wasCreleased=true;isCpressed = false;break;
 			case KeyEvent.VK_V:
-				lastEvent = 0;isVpressed = false;break;
+				lastEvent = 0;wasVreleased=true;isVpressed = false;break;
 		}
 		release();
 	}
