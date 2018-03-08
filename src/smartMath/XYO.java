@@ -19,6 +19,8 @@
 
 package smartMath;
 
+
+
 /**
  * Classe regroupant la position et l'orientation (pratique pour récupérer les infos du LL)
  * @author rem
@@ -30,6 +32,8 @@ public class XYO {
 
     /** Orientation */
     private double orientation;
+
+
 
     /**
      * Constructeur normal

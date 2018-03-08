@@ -117,6 +117,8 @@ public class ThreadEth extends AbstractThread implements Service {
     private XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
     private String splitString = " ";
 
+    private boolean symmetry=config.getBoolean(ConfigInfoRobot.COULEUR);
+
     /**
      * Horloge pour le temps de réponse du bas-niveau
      */
@@ -422,6 +424,10 @@ public class ThreadEth extends AbstractThread implements Service {
                     } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                         synchronized (this.positionAndOrientation) {
                             positionAndOrientation.update(infosFromBuffer,splitString);
+                            if(symmetry){
+                                positionAndOrientation.getPosition().setX(-positionAndOrientation.getPosition().getX());
+                                positionAndOrientation.setOrientation(Math.PI-positionAndOrientation.getOrientation());
+                            }
                             outPosition.write(infosFromBuffer);
                             outPosition.newLine();
                             outPosition.flush();
