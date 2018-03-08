@@ -102,7 +102,7 @@ public class Keyboard implements KeyListener {
 
 		if (isWpressed){
 			if (wasWreleased) {
-				if (isPorteAvantOuverte) {
+				if (!isPorteAvantOuverte) {
 					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
 					wasWreleased = false;
 					isPorteAvantOuverte = false;
@@ -116,7 +116,7 @@ public class Keyboard implements KeyListener {
 		}
 		else if (isCpressed){
 			if (wasCreleased) {
-				if (isPorteArriereOuverte) {
+				if (!isPorteArriereOuverte) {
 					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
 					wasCreleased = false;
 					isPorteArriereOuverte = false;
