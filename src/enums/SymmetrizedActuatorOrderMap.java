@@ -37,8 +37,23 @@ public class SymmetrizedActuatorOrderMap
      */
     public SymmetrizedActuatorOrderMap()
     {
-    	// exemple : mCorrespondenceMap.put(ActuatorOrder.CLOSE_DOOR_RIGHT, ActuatorOrder.CLOSE_DOOR_LEFT);
-    	// TODO : ajouter les ordres symétriques*
+        mCorrespondenceMap.put(ActuatorOrder.ACTIVE_LA_POMPE,ActuatorOrder.ACTIVE_LA_POMPE);
+        mCorrespondenceMap.put(ActuatorOrder.DESACTIVE_LA_POMPE,ActuatorOrder.DESACTIVE_LA_POMPE);
+        mCorrespondenceMap.put(ActuatorOrder.BAISSE_LE_BRAS_AVANT,ActuatorOrder.BAISSE_LE_BRAS_AVANT);
+        mCorrespondenceMap.put(ActuatorOrder.RELEVE_LE_BRAS_AVANT,ActuatorOrder.RELEVE_LE_BRAS_AVANT);
+        mCorrespondenceMap.put(ActuatorOrder.OUVRE_LA_PORTE_AVANT,ActuatorOrder.OUVRE_LA_PORTE_AVANT);
+        mCorrespondenceMap.put(ActuatorOrder.FERME_LA_PORTE_AVANT,ActuatorOrder.FERME_LA_PORTE_AVANT);
+        mCorrespondenceMap.put(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU,ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU);
+        mCorrespondenceMap.put(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU,ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU);
+        mCorrespondenceMap.put(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE);
+        mCorrespondenceMap.put(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE);
+        mCorrespondenceMap.put(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT);
+        mCorrespondenceMap.put(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT);
+        mCorrespondenceMap.put(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,ActuatorOrder.BAISSE_LE_BRAS_ARRIERE);
+        mCorrespondenceMap.put(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,ActuatorOrder.RELEVE_LE_BRAS_ARRIERE);
+        mCorrespondenceMap.put(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE);
+        mCorrespondenceMap.put(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE,ActuatorOrder.OUVRE_LA_PORTE_ARRIERE);
+        mCorrespondenceMap.put(ActuatorOrder.FERME_LA_PORTE_ARRIERE,ActuatorOrder.FERME_LA_PORTE_ARRIERE);
 
     }
     
