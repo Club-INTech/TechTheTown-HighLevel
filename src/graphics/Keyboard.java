@@ -105,12 +105,12 @@ public class Keyboard implements KeyListener {
 				if (!isPorteAvantOuverte) {
 					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
 					wasWreleased = false;
-					isPorteAvantOuverte = false;
+					isPorteAvantOuverte = true;
 				}
 				else{
 					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
 					wasWreleased = false;
-					isPorteAvantOuverte = true;
+					isPorteAvantOuverte = false;
 				}
 			}
 		}
@@ -119,12 +119,12 @@ public class Keyboard implements KeyListener {
 				if (!isPorteArriereOuverte) {
 					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
 					wasCreleased = false;
-					isPorteArriereOuverte = false;
+					isPorteArriereOuverte = true;
 				}
 				else{
 					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
 					wasCreleased = false;
-					isPorteArriereOuverte = true;
+					isPorteArriereOuverte = false;
 
 				}
 			}
@@ -181,6 +181,11 @@ public class Keyboard implements KeyListener {
 				case KeyEvent.VK_LEFT:
 					isLeftPressed++;
 					isLeftPressedb = true;
+					lastEvent = e.getKeyCode();
+					break;
+				case KeyEvent.VK_RIGHT:
+					isRightPressed++;
+					isRightPressedb = true;
 					lastEvent = e.getKeyCode();
 					break;
 
@@ -243,19 +248,19 @@ public class Keyboard implements KeyListener {
 				lastEvent = 0;isRightPressedb = false;break;
 
 			case KeyEvent.VK_A:
-				lastEvent = 0;wasAreleased=true;isApressed = false;break;
+				lastEvent = 0;wasAreleased=true;isApressed=false;break;
 			case KeyEvent.VK_K:
-				lastEvent = 0;wasKreleased=true;isKpressed = false;break;
+				lastEvent = 0;wasKreleased=true;isKpressed=false;break;
 			case KeyEvent.VK_P:
-				lastEvent = 0;wasPreleased=true;isPpressed = false;break;
+				lastEvent = 0;wasPreleased=true;isPpressed=false;break;
 			case KeyEvent.VK_W:
-				lastEvent = 0;wasWreleased=true;isWpressed = false;break;
+				lastEvent = 0;wasWreleased=true;isWpressed=false;break;
 			case KeyEvent.VK_X:
-				lastEvent = 0;wasXreleased=true;isXpressed = false;break;
+				lastEvent = 0;wasXreleased=true;isXpressed=false;break;
 			case KeyEvent.VK_C:
-				lastEvent = 0;wasCreleased=true;isCpressed = false;break;
+				lastEvent = 0;wasCreleased=true;isCpressed=false;break;
 			case KeyEvent.VK_V:
-				lastEvent = 0;wasVreleased=true;isVpressed = false;break;
+				lastEvent = 0;wasVreleased=true;isVpressed=false;break;
 		}
 		release();
 	}
