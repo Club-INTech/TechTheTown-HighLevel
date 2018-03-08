@@ -96,11 +96,8 @@ public class Keyboard implements KeyListener {
 		{
 			mRobot.robot.useActuator(ActuatorOrder.TURN_RIGHT, false);
 		}
-		else {
-			release();
-		}
 
-		if (isWpressed){
+		else if (isWpressed){
 			if (wasWreleased) {
 				if (!isPorteAvantOuverte) {
 					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
@@ -160,6 +157,9 @@ public class Keyboard implements KeyListener {
 					takingCube=false;
 				}
 			}
+		}
+		else {
+			release();
 		}
 	}
 
