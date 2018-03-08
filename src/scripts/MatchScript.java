@@ -22,6 +22,7 @@ public class MatchScript extends AbstractScript {
 
     @Override
     public void execute(int versionToexecute,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
+
         ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
         actPD.goToThenExec(0,gameState);
         gameState.setRecognitionDone(true);
