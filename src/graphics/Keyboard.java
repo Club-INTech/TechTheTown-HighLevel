@@ -73,7 +73,6 @@ public class Keyboard implements KeyListener {
 
 	int lastEvent;
 
-	boolean isElectrovanneAvantActivated=true;
 	boolean isPompeActivated=false;
 	boolean isPorteAvantOuverte=false;
 	boolean isPorteArriereOuverte=false;
@@ -137,12 +136,12 @@ public class Keyboard implements KeyListener {
 					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
 					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
 					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,true);
-					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,false);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,true);
 					takingCube=false;
 				}
 			}
 		}
-		else if(isVpressed){
+		else if (isVpressed){
 			if (wasVreleased){
 				if (!takingCube){
 					takingCube=true;
@@ -153,7 +152,7 @@ public class Keyboard implements KeyListener {
 					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
 					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
 					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,true);
-					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,false);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,true);
 					takingCube=false;
 				}
 			}
