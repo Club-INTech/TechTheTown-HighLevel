@@ -128,9 +128,11 @@ public class Robot implements Service {
 	 * @param waitForCompletion si on attends un temps prédéfini pendant l'action
 	 */
 	public void useActuator(ActuatorOrder order, boolean waitForCompletion) {
-		if (symmetry)
+		if (symmetry){
 			order = mActuatorCorrespondenceMap.getSymmetrizedActuatorOrder(order);
-		ethWrapper.useActuator(order);
+			ethWrapper.useActuator(order);
+
+		}
 
 		if (waitForCompletion) {
 			sleep(order.getDuration());
@@ -438,21 +440,41 @@ public class Robot implements Service {
 	 * @author Nayht
 	 */
 	public void moveNearPoint(Vec2 aim, double distanceNear, String direction) throws UnableToMoveException{
+
+
+		if(symmetry){
+			aim.setX(-aim.getX());
+		}
 		Vec2 relativeCoords = aim.minusNewVector(getPosition());
 		long distance=Math.round(relativeCoords.getR()-distanceNear);
 		if (direction=="backward"){
 			System.out.println("testBackward");
-			turnTo(getPosition().minusNewVector(relativeCoords));
+			if(symmetry){
+				int xSymetry=-getPosition().minusNewVector(relativeCoords).getX();
+				int ySymetry=getPosition().minusNewVector(relativeCoords).getY();
+				Vec2 aimSymetrized=new Vec2(xSymetry,ySymetry);
+				turnTo(aimSymetrized);
+			}
+			else{
+				turnTo(getPosition().minusNewVector(relativeCoords));
+			}
 			distance*=-1;
 
 		}
 		else{
-			turnTo(aim);
+			if(symmetry){
+				turnTo(new Vec2(-aim.getX(),aim.getY()));
+			}
+			else{
+				turnTo(aim);
+			}
+
 		}
 		System.out.println("distance"+distance);
 		System.out.println("distanceNear"+distanceNear);
 		moveLengthwise((int)distance);
 	}
+
 
 	/********************************
 	 * ASSERV', VITESSE & STRATEGIE *
