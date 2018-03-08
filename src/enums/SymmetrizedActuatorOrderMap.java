@@ -37,6 +37,30 @@ public class SymmetrizedActuatorOrderMap
      */
     public SymmetrizedActuatorOrderMap()
     {
+        mCorrespondenceMap.put(ActuatorOrder.MOVE_LENTGHWISE,ActuatorOrder.MOVE_LENTGHWISE);
+        mCorrespondenceMap.put(ActuatorOrder.TURN,ActuatorOrder.TURN);
+        mCorrespondenceMap.put(ActuatorOrder.TURN_RIGHT_ONLY,ActuatorOrder.TURN_RIGHT_ONLY);
+        mCorrespondenceMap.put(ActuatorOrder.TURN_LEFT_ONLY,ActuatorOrder.TURN_LEFT_ONLY);
+        mCorrespondenceMap.put(ActuatorOrder.STOP,ActuatorOrder.STOP);
+        mCorrespondenceMap.put(ActuatorOrder.IS_ROBOT_MOVING,ActuatorOrder.IS_ROBOT_MOVING);
+        mCorrespondenceMap.put(ActuatorOrder.SEND_POSITION,ActuatorOrder.SEND_POSITION);
+
+        mCorrespondenceMap.put(ActuatorOrder.ENABLE_FORCE_MOVEMENT,ActuatorOrder.ENABLE_FORCE_MOVEMENT);
+        mCorrespondenceMap.put(ActuatorOrder.DISABLE_FORCE_MOVEMENT,ActuatorOrder.DISABLE_FORCE_MOVEMENT);
+        mCorrespondenceMap.put(ActuatorOrder.SET_TRANSLATION_SPEED,ActuatorOrder.SET_TRANSLATION_SPEED);
+        mCorrespondenceMap.put(ActuatorOrder.SET_ROTATIONNAL_SPEED,ActuatorOrder.SET_ROTATIONNAL_SPEED);
+        mCorrespondenceMap.put(ActuatorOrder.SET_SPEED,ActuatorOrder.SET_SPEED);
+
+        mCorrespondenceMap.put(ActuatorOrder.SET_X,ActuatorOrder.SET_X);
+        mCorrespondenceMap.put(ActuatorOrder.SET_Y,ActuatorOrder.SET_Y);
+        mCorrespondenceMap.put(ActuatorOrder.SET_ORIENTATION,ActuatorOrder.SET_ORIENTATION);
+        mCorrespondenceMap.put(ActuatorOrder.TURN_LEFT_ONLY,ActuatorOrder.TURN_LEFT_ONLY);
+        mCorrespondenceMap.put(ActuatorOrder.SET_POSITION,ActuatorOrder.SET_POSITION);
+
+        mCorrespondenceMap.put(ActuatorOrder.INITIALISE_HOOK,ActuatorOrder.INITIALISE_HOOK);
+        mCorrespondenceMap.put(ActuatorOrder.ENABLE_HOOK,ActuatorOrder.ENABLE_HOOK);
+        mCorrespondenceMap.put(ActuatorOrder.DISABLE_HOOK,ActuatorOrder.DISABLE_HOOK);
+
         mCorrespondenceMap.put(ActuatorOrder.ACTIVE_LA_POMPE,ActuatorOrder.ACTIVE_LA_POMPE);
         mCorrespondenceMap.put(ActuatorOrder.DESACTIVE_LA_POMPE,ActuatorOrder.DESACTIVE_LA_POMPE);
         mCorrespondenceMap.put(ActuatorOrder.BAISSE_LE_BRAS_AVANT,ActuatorOrder.BAISSE_LE_BRAS_AVANT);
