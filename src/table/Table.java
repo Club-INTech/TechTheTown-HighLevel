@@ -103,7 +103,7 @@ public class Table implements Service
 	@Override
 	public void updateConfig()
 	{
-		symetry = (config.getString(ConfigInfoRobot.COULEUR) == "orange");
+		symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
 		// TODO update config
 	}
 

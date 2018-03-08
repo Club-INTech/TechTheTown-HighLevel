@@ -8,8 +8,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opencv.core.Mat;
 import patternRecognition.PatternRecognition;
+import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
+import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
@@ -22,6 +24,7 @@ public class JUnit_MatchScript extends JUnit_Test {
     private HookFactory hookFactory;
     private PatternRecognition patternRecognitonThread;
     private ThreadInterface anInterface;
+    private Locomotion locomotion;
 
     @Before
     public void setUp() {
@@ -31,7 +34,8 @@ public class JUnit_MatchScript extends JUnit_Test {
             state = container.getService(GameState.class);
             scriptManager = container.getService(ScriptManager.class);
             //patternRecognitonThread=container.getService(PatternRecognition.class);
-            anInterface=container.getService(ThreadInterface.class);
+            anInterface = container.getService(ThreadInterface.class);
+            locomotion = container.getService(Locomotion.class);
             container.startInstanciedThreads();
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,8 +55,8 @@ public class JUnit_MatchScript extends JUnit_Test {
             robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
 
             //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
-            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
-
+//            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
+            locomotion.moveToPoint(new Vec2(-200, 1000), false, false);
         } catch (Exception e) {
             e.printStackTrace();
         }

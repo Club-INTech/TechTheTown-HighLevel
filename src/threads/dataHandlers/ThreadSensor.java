@@ -489,7 +489,7 @@ public class ThreadSensor extends AbstractThread
     @Override
 	public void updateConfig()
 	{
-        this.symetry = (config.getString(ConfigInfoRobot.COULEUR) == "orange");
+        this.symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
         this.enRadius = config.getInt(ConfigInfoRobot.ROBOT_EN_RADIUS);
         this.maxSensorRange = config.getInt(ConfigInfoRobot.MAX_SENSOR_RANGE);
         this.minSensorRangeAv = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGEAV);

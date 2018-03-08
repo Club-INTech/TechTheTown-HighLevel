@@ -328,6 +328,7 @@ public class Locomotion implements Service {
                 moveSymetry.setX(-move.getX());
                 moveR = (int) moveSymetry.getR();
                 moveA = moveSymetry.getA();
+                sens=-sens;
             }
             if (sens >= 0) {                      //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
                 turn(moveA, expectedWallImpact, mustDetect);
