@@ -63,6 +63,8 @@ public class JUnit_BorneArcade extends JUnit_Test
 
 		real_state.robot.updateConfig();
 		real_state.robot.useActuator(ActuatorOrder.MONTLHERY, false);
+
+		win.getKeyboard().run();
 	}
 
 	@Test

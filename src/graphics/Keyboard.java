@@ -22,89 +22,101 @@ package graphics;
 import enums.ActuatorOrder;
 import enums.TurningStrategy;
 import scripts.ScriptManager;
+import simulator.ThreadSimulator;
 import strategie.GameState;
 import tests.container.A;
+import threads.AbstractThread;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.lang.reflect.Array;
 
 /**
  * Gestionnaire des actions clavier pour l'interface graphique, ajoutez vos actions aux blocks correspondants
  * @author etienne, discord, florian
  */
-public class Keyboard implements KeyListener {
+public class Keyboard extends AbstractThread implements KeyListener {
 	private GameState mRobot;
 	private ScriptManager scriptManager;
 	private TurningStrategy turningStr = TurningStrategy.FASTEST;
 	private boolean modeActual = false;
 	
-	public Keyboard(GameState robot, ScriptManager scriptManager)
-	{
-		mRobot= robot;
+	public Keyboard(GameState robot, ScriptManager scriptManager) {
+		mRobot = robot;
 		this.scriptManager = scriptManager;
 	}
 
-	boolean isUpPressed;
-	boolean wasUpReleased;
-	boolean isDownPressed;
-	boolean wasDownReleased;
-	boolean isLeftPressed;
-	boolean wasLeftReleased;
-	boolean isRightPressed;
-	boolean wasRightReleased;
-	boolean isMoving=false;
-
-	boolean isApressed;
-	boolean wasAreleased=true;
-
-	boolean isKpressed;
-	boolean wasKreleased=true;
-	boolean isPpressed;
-	boolean wasPreleased=true;
-
-	boolean isWpressed;
-	boolean wasWreleased=true;
-	boolean isXpressed;
-	boolean wasXreleased=true;
-	boolean isCpressed;
-	boolean wasCreleased=true;
-	boolean isVpressed;
-	boolean wasVreleased=true;
-
-	int lastEvent;
-
-	boolean isPompeActivated=false;
-	boolean isPorteAvantOuverte=false;
-	boolean isPorteArriereOuverte=false;
-	boolean takingCube=false;
-
-	void doThat() {
-		if(isUpPressed) {
-			if (!isMoving) {
-				isMoving = true;
-				mRobot.robot.useActuator(ActuatorOrder.MOVE_FORWARD, false);
+	public void run(){
+		while(true) {
+			doThat();
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+		}
+	}
+
+	private boolean isUpPressed;
+	private boolean isDownPressed;
+	private boolean isLeftPressed;
+	private boolean isRightPressed;
+	private String lastKeyPressed="none";
+	private boolean isMoving=false;
+
+	private boolean isApressed;
+	private boolean wasAreleased=true;
+
+	private boolean isKpressed;
+	private boolean wasKreleased=true;
+	private boolean isPpressed;
+	private boolean wasPreleased=true;
+
+	private boolean isWpressed;
+	private boolean wasWreleased=true;
+	private boolean isXpressed;
+	private boolean wasXreleased=true;
+	private boolean isCpressed;
+	private boolean wasCreleased=true;
+	private boolean isVpressed;
+	private boolean wasVreleased=true;
+
+	private boolean isPompeActivated=false;
+	private boolean isPorteAvantOuverte=false;
+	private boolean isPorteArriereOuverte=false;
+	private boolean takingCube=false;
+
+	private void doThat() {
+		if (lastKeyPressed.equals("up")){
+			goForward();
+		}
+		else if (lastKeyPressed.equals("down")){
+			goBackward();
+		}
+		else if (lastKeyPressed.equals("left")){
+			goLeft();
+		}
+		else if (lastKeyPressed.equals("right")){
+			goRight();
+		}
+
+		else if(isUpPressed) {
+			goForward();
 		}
 		else if(isDownPressed) {
-			if (!isMoving) {
-				isMoving = true;
-				mRobot.robot.useActuator(ActuatorOrder.MOVE_BACKWARD, false);
-			}
+			goBackward();
 		}
 		else if(isLeftPressed) {
-			if (!isMoving) {
-				isMoving = true;
-				mRobot.robot.useActuator(ActuatorOrder.TURN_LEFT, false);
-			}
+			goLeft();
 		}
 		else if(isRightPressed) {
-			if (!isMoving) {
-				isMoving = true;
-				mRobot.robot.useActuator(ActuatorOrder.TURN_RIGHT, false);
-			}
+			goRight();
 		}
 		else{
-			release();
+			if (isMoving) {
+				isMoving = false;
+				sstop();
+			}
 		}
 
 		if (isWpressed){
@@ -148,6 +160,7 @@ public class Keyboard implements KeyListener {
 					mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,true);
 					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
 					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,false);
+					System.out.println("test");
 					this.takingCube=false;
 				}
 			}
@@ -170,20 +183,52 @@ public class Keyboard implements KeyListener {
 		}
 	}
 
+
+	private void goForward(){
+		sstop();
+		isMoving=true;
+		mRobot.robot.useActuator(ActuatorOrder.MOVE_FORWARD, false);
+	}private void goBackward(){
+		sstop();
+		isMoving=true;
+		mRobot.robot.useActuator(ActuatorOrder.MOVE_BACKWARD, false);
+	}private void goLeft(){
+		sstop();
+		isMoving=true;
+		mRobot.robot.useActuator(ActuatorOrder.TURN_LEFT, false);
+	}private void goRight(){
+		sstop();
+		isMoving=true;
+		mRobot.robot.useActuator(ActuatorOrder.TURN_RIGHT, false);
+	}
+
+	private void sstop(){
+		try {
+			mRobot.robot.useActuator(ActuatorOrder.SSTOP,false);
+		}
+		catch(Exception exception) {
+			System.out.println("ça marche pas bien trololo");
+		}
+	}
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
 				isUpPressed = true;
+				lastKeyPressed="up";
 				break;
 			case KeyEvent.VK_DOWN:
 				isDownPressed = true;
+				lastKeyPressed="down";
 				break;
 			case KeyEvent.VK_LEFT:
 				isLeftPressed = true;
+				lastKeyPressed="left";
 				break;
 			case KeyEvent.VK_RIGHT:
 				isRightPressed = true;
+				lastKeyPressed="right";
 				break;
 
 			case KeyEvent.VK_A:
@@ -208,23 +253,7 @@ public class Keyboard implements KeyListener {
 				isVpressed = true;
 				break;
 		}
-		doThat();
 	}
-
-	void release(){
-		try {
-			wasUpReleased=true;
-			wasDownReleased=true;
-			wasLeftReleased=true;
-			wasRightReleased=true;
-			isMoving=false;
-			mRobot.robot.useActuator(ActuatorOrder.SSTOP,false);
-		}
-		catch(Exception exception) {
-			System.out.println("ça marche pas bien trololo");
-		}
-	}
-
 
 	@Override
 	public void keyReleased(KeyEvent e)
@@ -232,13 +261,29 @@ public class Keyboard implements KeyListener {
 		switch (e.getKeyCode())
 		{
 			case KeyEvent.VK_UP:
-				isUpPressed=false;break;
+				this.isUpPressed=false;
+				if (lastKeyPressed.equals("up")){
+					lastKeyPressed="none";
+				}
+				break;
 			case KeyEvent.VK_DOWN:
-				isDownPressed=false;break;
+				this.isDownPressed=false;
+				if (lastKeyPressed.equals("down")){
+					lastKeyPressed="none";
+				}
+				break;
 			case KeyEvent.VK_LEFT:
-				isLeftPressed=false;break;
+				this.isLeftPressed=false;
+				if (lastKeyPressed.equals("left")){
+					lastKeyPressed="none";
+				}
+				break;
 			case KeyEvent.VK_RIGHT:
-				isRightPressed=false;break;
+				this.isRightPressed=false;
+				if (lastKeyPressed.equals("right")){
+					lastKeyPressed="none";
+				}
+				break;
 
 			case KeyEvent.VK_A:
 				wasAreleased=true;isApressed=false;break;
@@ -265,7 +310,6 @@ public class Keyboard implements KeyListener {
     {
         modeActual = false;
     }
-
 
     public TurningStrategy getTurningStrategy()
     {
