@@ -34,7 +34,6 @@ import utils.Log;
 import utils.Sleep;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Entre Deplacement (appels à la série) et RobotVrai (déplacements haut niveau), Locomotion
@@ -595,12 +594,12 @@ public class Locomotion implements Service {
         if (!turnOnly) {
             double produitScalaire = delta.dot(new Vec2(100, highLevelOrientation));
             if (produitScalaire > 0) {
-                moveToPointSerialOrder(delta.getA(), -delta.getR(), turnOnly);
+                moveToPointEthernetOrder(delta.getA(), -delta.getR(), turnOnly);
             } else {
-                moveToPointSerialOrder(delta.getA(), delta.getR(), turnOnly);
+                moveToPointEthernetOrder(delta.getA(), delta.getR(), turnOnly);
             }
         } else {
-            moveToPointSerialOrder(delta.getA(), delta.getR(), turnOnly);
+            moveToPointEthernetOrder(delta.getA(), delta.getR(), turnOnly);
         }
     }
 
@@ -612,7 +611,7 @@ public class Locomotion implements Service {
      * @param distance la distance dont il faut avancer (ordre pour la serie)
      * @param turnOnly vrai si on veut uniquement tourner (et pas avancer)
      */
-    private void moveToPointSerialOrder(double angle, double distance, boolean turnOnly) {
+    private void moveToPointEthernetOrder(double angle, double distance, boolean turnOnly) {
         if (turnOnly) {
             ethWrapper.turn(angle, turningStrategy);
         } else {
