@@ -169,7 +169,7 @@ public class Keyboard extends AbstractThread implements KeyListener {
 			if (wasVreleased){
 				if (!takingCube){
 					this.takingCube=true;
-					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,false);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
 					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
 					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
 					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,false);
