@@ -64,22 +64,29 @@ public class Keyboard extends AbstractThread implements KeyListener {
 	private String lastKeyPressed="none";
 	private boolean isMoving=false;
 
-	private boolean isApressed;
-	private boolean wasAreleased=true;
+	//Mappé à : W  (attention si qwerty)
+	private boolean isFirstButtonPressed;
+	private boolean wasFirstButtonReleased=true;
 
-	private boolean isKpressed;
-	private boolean wasKreleased=true;
-	private boolean isPpressed;
-	private boolean wasPreleased=true;
+	//Mappé à : X
+	private boolean isSecondButtonPressed;
+	private boolean wasSecondButtonReleased=true;
 
-	private boolean isWpressed;
-	private boolean wasWreleased=true;
-	private boolean isXpressed;
-	private boolean wasXreleased=true;
-	private boolean isCpressed;
-	private boolean wasCreleased=true;
-	private boolean isVpressed;
-	private boolean wasVreleased=true;
+	//Mappé à : C
+	private boolean isThirdButtonPressed;
+	private boolean wasThirdButtonReleased=true;
+
+	//Mappé à : P
+	private boolean isForthButtonPressed;
+	private boolean wasForthButtonReleased=true;
+
+	//Mappé à : Spacebar
+	private boolean isFifthButtonPressed;
+	private boolean wasFifthButtonReleased=true;
+
+	//Mappé à : V
+	private boolean isSixthButtonPressed;
+	private boolean wasSixthButtonReleased=true;
 
 	private boolean isPompeActivated=false;
 	private boolean isPorteAvantOuverte=false;
@@ -119,71 +126,67 @@ public class Keyboard extends AbstractThread implements KeyListener {
 			}
 		}
 
-		if (isWpressed){
-			if (wasWreleased) {
+		if (isFirstButtonPressed){
+			if (wasFirstButtonReleased) {
 				if (!isPorteAvantOuverte) {
 					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
-					wasWreleased = false;
+					wasFirstButtonReleased = false;
 					isPorteAvantOuverte = true;
 				}
 				else{
 					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
-					wasWreleased = false;
+					wasFirstButtonReleased = false;
 					isPorteAvantOuverte = false;
 				}
 			}
 		}
-		else if (isCpressed){
-			if (wasCreleased) {
+		else if (isFifthButtonPressed){
+			if (wasFifthButtonReleased) {
 				if (!isPorteArriereOuverte) {
 					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
-					wasCreleased = false;
+					wasFifthButtonReleased = false;
 					isPorteArriereOuverte = true;
 				}
 				else{
 					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
-					wasCreleased = false;
+					wasFifthButtonReleased = false;
 					isPorteArriereOuverte = false;
 
 				}
 			}
 		}
-		else if (isXpressed){
+		else if (isSecondButtonPressed){
 			if (!isMoving) {
-				if (wasXreleased) {
-					if (!takingCube) {
-						this.takingCube = true;
-						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
-						mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
-						mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, false);
-						mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
-						mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
-						mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, false);
-						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
-						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
-						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
-						System.out.println("test");
-						this.takingCube = false;
-					}
+				if (!takingCube) {
+					this.takingCube = true;
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, false);
+					mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
+					mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, false);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
+					System.out.println("test");
+					this.takingCube = false;
 				}
 			}
 		}
-		else if (isVpressed) {
+		else if (isSixthButtonPressed) {
 			if (!isMoving) {
-				if (wasVreleased) {
-					if (!takingCube) {
-						this.takingCube = true;
-						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
-						mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
-						mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, false);
-						mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
-						mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
-						mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, false);
-						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
-						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
-						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
-						this.takingCube = false;
-					}
+				if (!takingCube) {
+					this.takingCube = true;
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, false);
+					mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
+					mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, false);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
+					this.takingCube = false;
 				}
 			}
 		}
@@ -238,26 +241,23 @@ public class Keyboard extends AbstractThread implements KeyListener {
 				lastKeyPressed="right";
 				break;
 
-			case KeyEvent.VK_A:
-				isApressed = true;
-				break;
-			case KeyEvent.VK_K:
-				isKpressed = true;
-				break;
-			case KeyEvent.VK_P:
-				isPpressed = true;
-				break;
 			case KeyEvent.VK_W:
-				isWpressed = true;
+				isFirstButtonPressed = true;
 				break;
 			case KeyEvent.VK_X:
-				isXpressed = true;
+				isSecondButtonPressed = true;
 				break;
 			case KeyEvent.VK_C:
-				isCpressed = true;
+				isThirdButtonPressed = true;
+				break;
+			case KeyEvent.VK_P:
+				isForthButtonPressed = true;
+				break;
+			case KeyEvent.VK_SPACE:
+				isFifthButtonPressed = true;
 				break;
 			case KeyEvent.VK_V:
-				isVpressed = true;
+				isSixthButtonPressed = true;
 				break;
 		}
 	}
@@ -292,20 +292,18 @@ public class Keyboard extends AbstractThread implements KeyListener {
 				}
 				break;
 
-			case KeyEvent.VK_A:
-				wasAreleased=true;isApressed=false;break;
-			case KeyEvent.VK_K:
-				wasKreleased=true;isKpressed=false;break;
-			case KeyEvent.VK_P:
-				wasPreleased=true;isPpressed=false;break;
 			case KeyEvent.VK_W:
-				wasWreleased=true;isWpressed=false;break;
+				wasFirstButtonReleased=true;isFirstButtonPressed=false;break;
 			case KeyEvent.VK_X:
-				wasXreleased=true;isXpressed=false;break;
+				wasSecondButtonReleased=true;isSecondButtonPressed=false;break;
 			case KeyEvent.VK_C:
-				wasCreleased=true;isCpressed=false;break;
+				wasThirdButtonReleased=true;isThirdButtonPressed=false;break;
+			case KeyEvent.VK_P:
+				wasForthButtonReleased=true;isForthButtonPressed=false;break;
+			case KeyEvent.VK_SPACE:
+				wasFifthButtonReleased=true;isFifthButtonPressed=false;break;
 			case KeyEvent.VK_V:
-				wasVreleased=true;isVpressed=false;break;
+				wasSixthButtonReleased=true;isSixthButtonPressed=false;break;
 		}
 	}
 	public boolean isModeActual()
