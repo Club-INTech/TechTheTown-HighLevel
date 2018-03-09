@@ -85,7 +85,7 @@ public class EthWrapper implements Service {
     public void moveLengthwise(double distance)
     {
         int distanceTruncated=(int)Math.round(distance);
-        eth.communicate(0, ActuatorOrder.MOVE_LENTGHWISE.getSerialOrder(), String.format(Locale.US, "%d", distanceTruncated));
+        eth.communicate(0, ActuatorOrder.MOVE_LENTGHWISE.getEthernetOrder(), String.format(Locale.US, "%d", distanceTruncated));
     }
 
     /**
@@ -107,15 +107,15 @@ public class EthWrapper implements Service {
         // tronque l'angle que l'on envoit a la série pour éviter les overflows
         float angleTruncated = (float)angle;
         if(turning == TurningStrategy.FASTEST) {
-            eth.communicate(0, ActuatorOrder.TURN.getSerialOrder(), String.format(Locale.US, "%.3f", angleTruncated));
+            eth.communicate(0, ActuatorOrder.TURN.getEthernetOrder(), String.format(Locale.US, "%.3f", angleTruncated));
         }
         else if(turning == TurningStrategy.RIGHT_ONLY)
         {
-            eth.communicate(0, ActuatorOrder.TURN_RIGHT_ONLY.getSerialOrder(), String.format(Locale.US, "%.3f", angleTruncated));
+            eth.communicate(0, ActuatorOrder.TURN_RIGHT_ONLY.getEthernetOrder(), String.format(Locale.US, "%.3f", angleTruncated));
         }
         else if(turning == TurningStrategy.LEFT_ONLY)
         {
-            eth.communicate(0, ActuatorOrder.TURN_LEFT_ONLY.getSerialOrder(), String.format(Locale.US, "%.3f", angleTruncated));
+            eth.communicate(0, ActuatorOrder.TURN_LEFT_ONLY.getEthernetOrder(), String.format(Locale.US, "%.3f", angleTruncated));
         }
     }
 
@@ -125,7 +125,7 @@ public class EthWrapper implements Service {
     public void immobilise()
     {
         log.warning("Immobilisation du robot");
-        eth.communicate(0, ActuatorOrder.STOP.getSerialOrder());// On s'asservit sur la position actuelle
+        eth.communicate(0, ActuatorOrder.STOP.getEthernetOrder());// On s'asservit sur la position actuelle
         while(isRobotMoving())
         {
             Sleep.sleep(loopDelay); // On attend d'etre arreté
@@ -153,7 +153,7 @@ public class EthWrapper implements Service {
     {
         // on demande a la carte des information a jour
         // on envois "f" et on lis double (dans l'ordre : bouge, est anormal)
-        String[] infosBuffer = eth.communicate(2, ActuatorOrder.IS_ROBOT_MOVING.getSerialOrder());
+        String[] infosBuffer = eth.communicate(2, ActuatorOrder.IS_ROBOT_MOVING.getEthernetOrder());
         boolean[] parsedInfos = new boolean[2];
         for(int i = 0; i < 2; i++)
         {
@@ -174,7 +174,7 @@ public class EthWrapper implements Service {
      */
     public void setTranslationnalSpeed(float speed)
     {
-        eth.communicate(0, ActuatorOrder.SET_TRANSLATION_SPEED.getSerialOrder(), String.format(Locale.US, "%.3f", speed));
+        eth.communicate(0, ActuatorOrder.SET_TRANSLATION_SPEED.getEthernetOrder(), String.format(Locale.US, "%.3f", speed));
     }
 
     /**
@@ -183,7 +183,7 @@ public class EthWrapper implements Service {
      */
     public void setRotationnalSpeed(double rotationSpeed)
     {
-        eth.communicate(0, ActuatorOrder.SET_ROTATIONNAL_SPEED.getSerialOrder(), String.format(Locale.US, "%.3f", (float)rotationSpeed));
+        eth.communicate(0, ActuatorOrder.SET_ROTATIONNAL_SPEED.getEthernetOrder(), String.format(Locale.US, "%.3f", (float)rotationSpeed));
     }
 
     /**
@@ -191,7 +191,7 @@ public class EthWrapper implements Service {
      * @param speed
      */
     public void setBothSpeed(Speed speed){
-        eth.communicate(0, ActuatorOrder.SET_SPEED.getSerialOrder(), String.format(Locale.US, "%.3f", speed.translationSpeed), String.format(Locale.US, "%.3f", speed.rotationSpeed));
+        eth.communicate(0, ActuatorOrder.SET_SPEED.getEthernetOrder(), String.format(Locale.US, "%.3f", speed.translationSpeed), String.format(Locale.US, "%.3f", speed.rotationSpeed));
     }
 
     /**
@@ -203,7 +203,7 @@ public class EthWrapper implements Service {
     {
         // on demande a la carte des information a jour
         // on envois "?xyo" et on lis double (dans l'ordre : abscisse, ordonnée, orientation)
-        String[] infosBuffer = eth.communicate(3, ActuatorOrder.SEND_POSITION.getSerialOrder());
+        String[] infosBuffer = eth.communicate(3, ActuatorOrder.SEND_POSITION.getEthernetOrder());
         float[] parsedInfos = new float[3];
         for(int i = 0; i < 3; i++)
         {
@@ -225,7 +225,7 @@ public class EthWrapper implements Service {
     public void useActuator(ActuatorOrder order)
     {
         log.debug("Envoi consigne a la carte actionneur : " + order.toString());
-        eth.communicate(0, order.getSerialOrder());
+        eth.communicate(0, order.getEthernetOrder());
     }
 
 
@@ -239,42 +239,42 @@ public class EthWrapper implements Service {
      */
     public void disableSpeedFeedbackLoop()
     {
-        eth.communicate(0, ActuatorOrder.NO_ASSERV_SPEED.getSerialOrder());
+        eth.communicate(0, ActuatorOrder.NO_ASSERV_SPEED.getEthernetOrder());
     }
 
     /**
      * Active l'asservissement en vitesse du robot
      */
     public void enableSpeedFeedbackLoop() {
-        eth.communicate(0, ActuatorOrder.ASSERV_SPEED.getSerialOrder());
+        eth.communicate(0, ActuatorOrder.ASSERV_SPEED.getEthernetOrder());
     }
 
     /**
      * Active l'asservissement en translation du robot
      */
     public void enableTranslationnalFeedbackLoop() {
-        eth.communicate(0, ActuatorOrder.ASSERV_TRANSLATION.getSerialOrder());
+        eth.communicate(0, ActuatorOrder.ASSERV_TRANSLATION.getEthernetOrder());
     }
 
     /**
      * Active l'asservissement en rotation du robot
      */
     public void enableRotationnalFeedbackLoop() {
-        eth.communicate(0, ActuatorOrder.ASSERV_ROTATION.getSerialOrder());
+        eth.communicate(0, ActuatorOrder.ASSERV_ROTATION.getEthernetOrder());
     }
 
     /**
      * Désactive l'asservissement en translation du robot
      */
     public void disableTranslationnalFeedbackLoop() {
-        eth.communicate(0, ActuatorOrder.NO_ASSERV_TRANSLATION.getSerialOrder());
+        eth.communicate(0, ActuatorOrder.NO_ASSERV_TRANSLATION.getEthernetOrder());
     }
 
     /**
      * Désactive l'asservissement en rotation du robot
      */
     public void disableRotationnalFeedbackLoop() {
-        eth.communicate(0, ActuatorOrder.NO_ASSERV_ROTATION.getSerialOrder());
+        eth.communicate(0, ActuatorOrder.NO_ASSERV_ROTATION.getEthernetOrder());
     }
 
 
@@ -294,7 +294,7 @@ public class EthWrapper implements Service {
         float floatX = (float)x;
         float floatY = (float)y;
         float floatO = (float)orientation;
-        eth.communicate(0, ActuatorOrder.SET_POSITION.getSerialOrder(), String.format("%s",floatX), String.format("%s",floatY), String.format("%s",floatO));
+        eth.communicate(0, ActuatorOrder.SET_POSITION.getEthernetOrder(), String.format("%s",floatX), String.format("%s",floatY), String.format("%s",floatO));
     }
 
     /**
@@ -305,7 +305,7 @@ public class EthWrapper implements Service {
     {
         float floatX=(float)x; //On transtype car la serie veut des Floats <3
         eth.getPositionAndOrientation().getPosition().setX(x);
-        eth.communicate(0, ActuatorOrder.SET_X.getSerialOrder(), String.format(Locale.US, "%.3f", floatX));
+        eth.communicate(0, ActuatorOrder.SET_X.getEthernetOrder(), String.format(Locale.US, "%.3f", floatX));
     }
 
     /**
@@ -316,7 +316,7 @@ public class EthWrapper implements Service {
     {
         float floatY=(float)y;//On transtype car la serie veut des Floats
         eth.getPositionAndOrientation().getPosition().setY(y);
-        eth.communicate(0, ActuatorOrder.SET_Y.getSerialOrder(), String.format(Locale.US, "%.3f", floatY));
+        eth.communicate(0, ActuatorOrder.SET_Y.getEthernetOrder(), String.format(Locale.US, "%.3f", floatY));
     }
 
     /**
@@ -327,7 +327,7 @@ public class EthWrapper implements Service {
     {
         float floatOrientation =(float) orientation; //On transtype car la serie veut des Floats (T_T)
         eth.getPositionAndOrientation().setOrientation(orientation);
-        eth.communicate(0, ActuatorOrder.SET_ORIENTATION.getSerialOrder(), String.format(Locale.US, "%.3f", floatOrientation));
+        eth.communicate(0, ActuatorOrder.SET_ORIENTATION.getEthernetOrder(), String.format(Locale.US, "%.3f", floatOrientation));
     }
 
     /**
@@ -337,7 +337,7 @@ public class EthWrapper implements Service {
      * @param order
      */
     public void configureHook(int id, Vec2 posTrigger, int tolerency, String order){
-        eth.communicate(0, ActuatorOrder.INITIALISE_HOOK.getSerialOrder(), String.format("%i", id), posTrigger.toStringEth(), String.format("%t", tolerency), order);
+        eth.communicate(0, ActuatorOrder.INITIALISE_HOOK.getEthernetOrder(), String.format("%i", id), posTrigger.toStringEth(), String.format("%t", tolerency), order);
     }
 
     /**
@@ -345,7 +345,7 @@ public class EthWrapper implements Service {
      * @param hook
      */
     public void enableHook(HookNames hook){
-        eth.communicate(0, ActuatorOrder.ENABLE_HOOK.getSerialOrder(), String.format("%i", hook.getId()));
+        eth.communicate(0, ActuatorOrder.ENABLE_HOOK.getEthernetOrder(), String.format("%i", hook.getId()));
     }
 
     /**
@@ -353,7 +353,7 @@ public class EthWrapper implements Service {
      * @param hook
      */
     public void disableHook(HookNames hook){
-        eth.communicate(0, ActuatorOrder.DISABLE_HOOK.getSerialOrder(), String.format("%i", hook.getId()));
+        eth.communicate(0, ActuatorOrder.DISABLE_HOOK.getEthernetOrder(), String.format("%i", hook.getId()));
     }
 
 
@@ -376,7 +376,7 @@ public class EthWrapper implements Service {
     {
         try {
             // demande a la carte si le jumper est présent, parse sa réponse, et si on lit 1 c'est que le jumper n'est pas/plus la
-            return Integer.parseInt(eth.communicate(1, ActuatorOrder.JUMPER_STATE.getSerialOrder())[0]) != 0;
+            return Integer.parseInt(eth.communicate(1, ActuatorOrder.JUMPER_STATE.getEthernetOrder())[0]) != 0;
         }
         catch (NumberFormatException e)
         {
@@ -412,10 +412,10 @@ public class EthWrapper implements Service {
     public synchronized void setForceMovement(boolean choice)
     {
         if(choice){
-            eth.communicate(0, ActuatorOrder.ENABLE_FORCE_MOVEMENT.getSerialOrder());
+            eth.communicate(0, ActuatorOrder.ENABLE_FORCE_MOVEMENT.getEthernetOrder());
         }
         else{
-            eth.communicate(0, ActuatorOrder.DISABLE_FORCE_MOVEMENT.getSerialOrder());
+            eth.communicate(0, ActuatorOrder.DISABLE_FORCE_MOVEMENT.getEthernetOrder());
         }
     }
 
@@ -425,7 +425,7 @@ public class EthWrapper implements Service {
      */
     public synchronized double[] pfdebug()
     {
-        String[] infosBuffer = eth.communicate(5, ActuatorOrder.DEBUG.getSerialOrder());
+        String[] infosBuffer = eth.communicate(5, ActuatorOrder.DEBUG.getEthernetOrder());
         double[] parsedInfos = new double[5];
         for(int i = 0; i < 5; i++)
         {

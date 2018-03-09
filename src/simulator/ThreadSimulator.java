@@ -104,58 +104,58 @@ public class ThreadSimulator extends AbstractThread implements Service {
         head = messages[0];
 
         /** INFORMATIONS */
-        if (head.equals(ActuatorOrder.IS_ROBOT_MOVING.getSerialOrder())) {
+        if (head.equals(ActuatorOrder.IS_ROBOT_MOVING.getEthernetOrder())) {
             communicate(null, String.format("%s", state.isRobotMoving()), String.format("%s", state.isMoveNormal()));
         }
-        else if (head.equals(ActuatorOrder.SEND_POSITION.getSerialOrder())) {
+        else if (head.equals(ActuatorOrder.SEND_POSITION.getEthernetOrder())) {
             communicate(null, String.format("%s",state.getPosition().getX()),
                     String.format("%s",state.getPosition().getY()),
                     String.format("%s", state.getOrientation()));
         }
 
         /** SETTINGS */
-        else if (head.equals(ActuatorOrder.SET_X.getSerialOrder())) {
+        else if (head.equals(ActuatorOrder.SET_X.getEthernetOrder())) {
             Vec2 newPos = new Vec2((int) Float.parseFloat(messages[1]), state.getPosition().getY());
             state.setPosition(newPos);
         }
-        else if (head.equals(ActuatorOrder.SET_Y.getSerialOrder())) {
+        else if (head.equals(ActuatorOrder.SET_Y.getEthernetOrder())) {
             Vec2 newPos = new Vec2(state.getPosition().getX(), (int) Float.parseFloat(messages[1]));
             state.setPosition(newPos);
         }
-        else if (head.equals(ActuatorOrder.SET_ORIENTATION.getSerialOrder())) {
+        else if (head.equals(ActuatorOrder.SET_ORIENTATION.getEthernetOrder())) {
             state.setOrientation(Float.parseFloat(messages[1]));
         }
-        else if (head.equals(ActuatorOrder.SET_POSITION.getSerialOrder())){
+        else if (head.equals(ActuatorOrder.SET_POSITION.getEthernetOrder())){
             state.setPosition(new Vec2((int) Float.parseFloat(messages[1]), (int) Float.parseFloat(messages[2])));
             state.setOrientation(Float.parseFloat(messages[3]));
         }
-        else if (head.equals(ActuatorOrder.SET_TRANSLATION_SPEED.getSerialOrder())) {
+        else if (head.equals(ActuatorOrder.SET_TRANSLATION_SPEED.getEthernetOrder())) {
             state.setTranslationSpeed((int) Float.parseFloat(messages[1]));
         }
-        else if (head.equals(ActuatorOrder.SET_ROTATIONNAL_SPEED.getSerialOrder())) {
+        else if (head.equals(ActuatorOrder.SET_ROTATIONNAL_SPEED.getEthernetOrder())) {
             state.setRotationnalSpeed(Float.parseFloat(messages[1]));
         }
         //TODO Système des hooks
-        else if (head.equals(ActuatorOrder.INITIALISE_HOOK.getSerialOrder())) {
+        else if (head.equals(ActuatorOrder.INITIALISE_HOOK.getEthernetOrder())) {
 
         }
-        else if (head.equals(ActuatorOrder.ENABLE_HOOK.getSerialOrder())) {
+        else if (head.equals(ActuatorOrder.ENABLE_HOOK.getEthernetOrder())) {
 
         }
-        else if (head.equals(ActuatorOrder.DISABLE_HOOK.getSerialOrder())) {
+        else if (head.equals(ActuatorOrder.DISABLE_HOOK.getEthernetOrder())) {
 
         }
 
         /** MOTION ORDERS */
-        else if (head.equals(ActuatorOrder.MOVE_LENTGHWISE.getSerialOrder()) ||
-                head.equals(ActuatorOrder.TURN.getSerialOrder()) ||
-                head.equals(ActuatorOrder.TURN_RIGHT_ONLY.getSerialOrder()) ||
-                head.equals(ActuatorOrder.TURN_LEFT_ONLY.getSerialOrder())) {
+        else if (head.equals(ActuatorOrder.MOVE_LENTGHWISE.getEthernetOrder()) ||
+                head.equals(ActuatorOrder.TURN.getEthernetOrder()) ||
+                head.equals(ActuatorOrder.TURN_RIGHT_ONLY.getEthernetOrder()) ||
+                head.equals(ActuatorOrder.TURN_LEFT_ONLY.getEthernetOrder())) {
 
             state.setMustStop(false);
             motionOrderBuffer.add(request);
         }
-        else if (head.equals(ActuatorOrder.STOP.getSerialOrder())) {
+        else if (head.equals(ActuatorOrder.STOP.getEthernetOrder())) {
             state.setMustStop(true);
         }
         else {

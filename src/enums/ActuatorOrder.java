@@ -187,7 +187,7 @@ public enum ActuatorOrder implements MotionOrder
 	 * Retrouve la chaine de caractère a envoyer par la série a la carte actionneur pour qu'elle effectue cet ordre
 	 * @return la chaine de caractère à envoyer par la série à la carte actionneur
 	 */
-	public String getSerialOrder()
+	public String getEthernetOrder()
 	{
 		return serialOrder;
 	}

@@ -79,13 +79,13 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
         head = messages[0];
 
         try {
-            if (head.equals(ActuatorOrder.MOVE_LENTGHWISE.getSerialOrder())) {
+            if (head.equals(ActuatorOrder.MOVE_LENTGHWISE.getEthernetOrder())) {
                 state.moveLengthwise(Float.parseFloat(messages[1]));
-            } else if (head.equals(ActuatorOrder.TURN.getSerialOrder())) {
+            } else if (head.equals(ActuatorOrder.TURN.getEthernetOrder())) {
                 state.turn(Float.parseFloat(messages[1]), TurningStrategy.FASTEST);
-            } else if (head.equals(ActuatorOrder.TURN_LEFT_ONLY.getSerialOrder())) {
+            } else if (head.equals(ActuatorOrder.TURN_LEFT_ONLY.getEthernetOrder())) {
                 state.turn(Float.parseFloat(messages[1]), TurningStrategy.LEFT_ONLY);
-            } else if (head.equals(ActuatorOrder.TURN_RIGHT_ONLY.getSerialOrder())) {
+            } else if (head.equals(ActuatorOrder.TURN_RIGHT_ONLY.getEthernetOrder())) {
                 state.turn(Float.parseFloat(messages[1]), TurningStrategy.RIGHT_ONLY);
             } else {
                 log.warning("Ordre Inconnu : " + head);

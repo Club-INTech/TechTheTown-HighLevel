@@ -64,7 +64,7 @@ public class HookFactory implements Service {
                 serialOrder = "ctrv " + ((Speed) hook.getOrder()).translationSpeed + " " + (float) ((Speed) hook.getOrder()).rotationSpeed;
             }
             else if (hook.getOrder() instanceof ActuatorOrder){
-                serialOrder = ((ActuatorOrder) hook.getOrder()).getSerialOrder();
+                serialOrder = ((ActuatorOrder) hook.getOrder()).getEthernetOrder();
             }else{
                 log.critical("Mauvaise enum, la méthode doit implémenter MotionOrder");
                 break;
