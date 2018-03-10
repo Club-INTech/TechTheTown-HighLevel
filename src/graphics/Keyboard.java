@@ -190,8 +190,7 @@ public class Keyboard extends AbstractThread implements KeyListener {
 		else if (isSixthButtonPressed) {
 			if (!isMoving) {
 				if (wasSixthButtonReleased) {
-					if (!takingCube)
-						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false); {
+					if (!takingCube){
 						this.takingCube = true;
 						mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
 						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
