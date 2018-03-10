@@ -736,7 +736,7 @@ public class Locomotion implements Service {
 
         if (symetry) {
             highLevelPosition.setX(-highLevelPosition.getX());
-            highLevelOrientation = Geometry.moduloSpec(lowLevelOrientation - Math.PI, Math.PI);
+            highLevelOrientation = Geometry.moduloSpec(Math.PI - lowLevelOrientation, Math.PI);
         }
     }
 
