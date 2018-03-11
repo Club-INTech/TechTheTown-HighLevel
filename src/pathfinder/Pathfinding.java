@@ -72,6 +72,24 @@ public class Pathfinding implements Service {
             node.removeNeighbour(noeudDepart);
             node.removeNeighbour(noeudArrive);
         }
+        if(config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)){
+            obstacleManager.removeObstacle(circularobstacles.get(TAS_BASE.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS)){
+            obstacleManager.removeObstacle(circularobstacles.get(TAS_CHATEAU_EAU.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS)){
+            obstacleManager.removeObstacle(circularobstacles.get(TAS_STATION_EPURATION.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS)){
+            obstacleManager.removeObstacle(circularobstacles.get(TAS_BASE_ENNEMI.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS)){
+            obstacleManager.removeObstacle(circularobstacles.get(TAS_CHATEAU_EAU_ENNEMI.getID()));
+        }
+        if(config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)){
+            obstacleManager.removeObstacle(circularobstacles.get(TAS_STATION_EPURATION_ENNEMI.getID()));
+        }
         graphe.removeNode(noeudDepart);
         graphe.removeNode(noeudArrive);
     }
@@ -172,24 +190,6 @@ public class Pathfinding implements Service {
 
         long time2 = System.currentTimeMillis() - time1;
         log.debug("Time to execute (ms): " + time2);
-        if(config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)){
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_BASE.getID()));
-        }
-        if(config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS)){
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_CHATEAU_EAU.getID()));
-        }
-        if(config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS)){
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_STATION_EPURATION.getID()));
-        }
-        if(config.getBoolean(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS)){
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_BASE_ENNEMI.getID()));
-        }
-        if(config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS)){
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_CHATEAU_EAU_ENNEMI.getID()));
-        }
-        if(config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)){
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_STATION_EPURATION_ENNEMI.getID()));
-        }
 
         reInitGraphe(noeuddepart, noeudarrive);
 
