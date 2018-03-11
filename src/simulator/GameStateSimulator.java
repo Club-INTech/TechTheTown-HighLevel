@@ -67,7 +67,7 @@ public class GameStateSimulator implements Service {
     public void moveLengthwise(float distance) throws InterruptedException, UnableToMoveException{
 
         long timeRef = System.currentTimeMillis();
-        int done = 0;
+        float done = 0;
         Vec2 finalAim = position.plusNewVector(new Vec2(distance, orientation));
         // Divisé par 100 car move delay en ms, translationSpeed en mm/s et distanceLoop en mm
         float distanceLoop = (float) translationSpeed * moveDelay/(float)1000;
@@ -81,9 +81,13 @@ public class GameStateSimulator implements Service {
             Thread.sleep(moveDelay);
             position.plus(new Vec2(distanceLoop, orientation));
             done += distanceLoop;
+            if (done>distance){
+                done=distance;
+            }
             simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", position.getX(), position.getY(), orientation));
 
             if(table.getObstacleManager().isObstructed(position) || !table.getObstacleManager().isRobotInTable(position)){
+                log.debug("SIMULATOR : UnableToMoveException / Position : "+position);
                 throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
             }
         }
