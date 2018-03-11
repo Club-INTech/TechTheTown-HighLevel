@@ -404,10 +404,8 @@ public class Locomotion implements Service {
         actualRetriesIfBlocked = 0;
         updateCurrentPositionAndOrientation();
 
-        Double dist = (double) distance;
-        Vec2 aim = highLevelPosition.plusNewVector(new Vec2(dist, highLevelOrientation));
+        Vec2 aim = highLevelPosition.plusNewVector(new Vec2((double)distance, highLevelOrientation));
         finalAim = aim;
-        System.out.println(finalAim);
 
         /** TODO A adapté à l'annee en cours */
         int totalTime = 0;
@@ -427,7 +425,7 @@ public class Locomotion implements Service {
             isRobotMovingBackward = true;
         }
 
-        moveToPointHanldeExceptions(aim, distance >= 0, expectWallImpact, false, mustDetect);
+        moveToPointHanldeExceptions(aim, (distance>=0), expectWallImpact, false, mustDetect);
         isRobotMovingForward = false;
         isRobotMovingBackward = false;
     }
@@ -445,7 +443,6 @@ public class Locomotion implements Service {
      */
     private void moveToPointHanldeExceptions(Vec2 aim, boolean isMovementForward, boolean expectWallImpact, boolean turnOnly, boolean mustDetect) throws UnableToMoveException {
         boolean doItAgain;
-
         do {
             doItAgain = false;
             try {
@@ -592,10 +589,11 @@ public class Locomotion implements Service {
             positionSymetrized.setX(-positionSymetrized.getX());
             aimSymetrized.setX(-aimSymetrized.getX());
         }
+
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
         log.debug("HighLevelOrientation: "+highLevelOrientation+" / HighLevelPosition: "+highLevelPosition);
         if (!turnOnly) {
-            double produitScalaire = delta.dot(new Vec2(100, highLevelOrientation));
+            double produitScalaire = delta.dot(new Vec2(100, lowLevelOrientation));
             if (produitScalaire > 0) {
                 moveToPointEthernetOrder(delta.getA(), delta.getR(), turnOnly);
             } else {
