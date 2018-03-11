@@ -21,7 +21,6 @@ public class Graphe implements Service {
 
     private Log log;
     private Config config;
-    int r;
     private ArrayList<ObstacleCircular> listCircu;
     private ArrayList<ObstacleRectangular> listRectangu;
     private Table table;
@@ -108,7 +107,7 @@ public class Graphe implements Service {
             }
         }
         nodesToKeep.addAll(nodestoaddaroundobstacles);
-        Vec2 positionmilieu=new Vec2(0,1000-r);
+        Vec2 positionmilieu=new Vec2(0,1000);
         Noeud nodemilieu=new Noeud(positionmilieu,0,0,null);
         this.addNodeInGraphe(nodemilieu);
         nodesToKeep.add(nodemilieu);
