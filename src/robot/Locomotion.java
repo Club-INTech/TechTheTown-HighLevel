@@ -367,7 +367,7 @@ public class Locomotion implements Service {
             thEvent.isMoving = true;
             log.debug("isMoving variable has been defined to True");
         }
-        log.debug("Tourner de " + Double.toString(angle));
+        log.debug("Tourner vers " + Double.toString(angle));
 
         actualRetriesIfBlocked = 0;
         updateCurrentPositionAndOrientation();

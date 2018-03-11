@@ -82,9 +82,9 @@ public class GameStateSimulator implements Service {
         while (done < Math.abs(distance) && !this.isMustStop()) {
             Thread.sleep(moveDelay);
             if (done+distanceLoop>Math.abs(distance)){
-                double distanceToAdd=distance-done;
+                double distanceToAdd=Math.abs(distance)-done;
                 position.plus(new PreciseVec2(distanceToAdd, orientation));
-                done=distance;
+                done=Math.abs(distance);
             }
             else {
                 position.plus(new PreciseVec2(distanceLoop, orientation));
@@ -136,11 +136,11 @@ public class GameStateSimulator implements Service {
             if (done+Math.abs(angleStep)>angleToTurn){
                 double angleToAdd=angleToTurn-done;
                 done=angleToTurn;
-                orientation = Geometry.moduloSpec((double) (orientation + angleToAdd), Math.PI);
+                orientation = Geometry.moduloSpec((orientation + angleToAdd), Math.PI);
             }
             else {
                 done+=Math.abs(angleStep);
-                orientation = Geometry.moduloSpec((double) (orientation + angleStep), Math.PI);
+                orientation = Geometry.moduloSpec((orientation + angleStep), Math.PI);
             }
             simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", Math.round(position.getX()), Math.round(position.getY()), orientation));
         }

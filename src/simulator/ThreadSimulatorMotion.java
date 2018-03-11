@@ -71,27 +71,25 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
     /**
      * Fonction qui centralise les requete et répond en fonction (copie du main du LL)
      */
-    private void move(String order) throws InterruptedException{
+    private void move(String order) throws InterruptedException {
         String messages[];
         String head;
 
         messages = order.split(" ");
         head = messages[0];
 
-        try {
-            if (head.equals(ActuatorOrder.MOVE_LENTGHWISE.getEthernetOrder())) {
-                state.moveLengthwise(Float.parseFloat(messages[1]));
-            } else if (head.equals(ActuatorOrder.TURN.getEthernetOrder())) {
-                state.turn(Float.parseFloat(messages[1]), TurningStrategy.FASTEST);
-            } else if (head.equals(ActuatorOrder.TURN_LEFT_ONLY.getEthernetOrder())) {
-                state.turn(Float.parseFloat(messages[1]), TurningStrategy.LEFT_ONLY);
-            } else if (head.equals(ActuatorOrder.TURN_RIGHT_ONLY.getEthernetOrder())) {
-                state.turn(Float.parseFloat(messages[1]), TurningStrategy.RIGHT_ONLY);
-            } else {
-                log.warning("Ordre Inconnu : " + head);
-            }
-            simulator.communicate(CommunicationHeaders.EVENT, EventType.STOPPEDMOVING.getEventId());
+        if (head.equals(ActuatorOrder.MOVE_LENTGHWISE.getEthernetOrder())) {
+            state.moveLengthwise(Float.parseFloat(messages[1]));
+        } else if (head.equals(ActuatorOrder.TURN.getEthernetOrder())) {
+            state.turn(Float.parseFloat(messages[1]), TurningStrategy.FASTEST);
+        } else if (head.equals(ActuatorOrder.TURN_LEFT_ONLY.getEthernetOrder())) {
+            state.turn(Float.parseFloat(messages[1]), TurningStrategy.LEFT_ONLY);
+        } else if (head.equals(ActuatorOrder.TURN_RIGHT_ONLY.getEthernetOrder())) {
+            state.turn(Float.parseFloat(messages[1]), TurningStrategy.RIGHT_ONLY);
+        } else {
+            log.warning("Ordre Inconnu : " + head);
         }
+        simulator.communicate(CommunicationHeaders.EVENT, EventType.STOPPEDMOVING.getEventId());
     }
 
     @Override
