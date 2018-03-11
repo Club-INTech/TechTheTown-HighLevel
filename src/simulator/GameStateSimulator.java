@@ -70,7 +70,6 @@ public class GameStateSimulator implements Service {
 
         long timeRef = System.currentTimeMillis();
         double done = 0;
-        PreciseVec2 finalAim = position.plusNewVector(new PreciseVec2(distance, orientation));
         // Divisé par 100 car move delay en ms, translationSpeed en mm/s et distanceLoop en mm
         double distanceLoop = translationSpeed * moveDelay/(double)1000;
 
@@ -79,7 +78,7 @@ public class GameStateSimulator implements Service {
 
         log.debug(String.format("Move delay : %d, DistancePerDelay : %s", moveDelay, distanceLoop));
 
-        while (done < Math.abs(distance) && !this.isMustStop()) {
+        while (done < Math.abs(distance)) {
             Thread.sleep(moveDelay);
             if (done+distanceLoop>Math.abs(distance)){
                 double distanceToAdd=Math.abs(distance)-done;
@@ -98,9 +97,6 @@ public class GameStateSimulator implements Service {
         }
         this.setRobotMoving(false);
 
-        if(!this.isMustStop()) {
-            position = finalAim;
-        }
         log.debug(String.format("Fin du mouvement, position : (%d, %d), temps : %d", Math.round(position.getX()), Math.round(position.getY()), (System.currentTimeMillis() - timeRef)));
     }
 
@@ -110,13 +106,16 @@ public class GameStateSimulator implements Service {
         double done = 0;
         double angleToTurn = orientationAim - orientation;
         double angleStep = rotationnalSpeed*moveDelay/1000;
+        boolean angleStepNegative=false;
 
         if (strat == TurningStrategy.RIGHT_ONLY && orientation > orientationAim){
-            angleToTurn = (float) (2 * Math.PI - Math.abs(angleToTurn));
+            //TODO : tester avec cette stratégie
+            angleToTurn = (2 * Math.PI - Math.abs(angleToTurn));
         }
         else if(strat == TurningStrategy.LEFT_ONLY){
+            //TODO : tester avec cette stratégie
             if(orientation < orientationAim) {
-                angleToTurn = (float) (2 * Math.PI - Math.abs(angleToTurn));
+                angleToTurn = (2 * Math.PI - Math.abs(angleToTurn));
             }
             angleToTurn = Math.abs(angleToTurn);
             angleStep = -angleStep;
@@ -124,6 +123,7 @@ public class GameStateSimulator implements Service {
         else{
             if((Math.abs(angleToTurn) < Math.PI && orientationAim < orientation) || (Math.abs(angleToTurn) > Math.PI && orientationAim > orientation)){
                 angleStep = -angleStep;
+                angleStepNegative=true;
             }
             angleToTurn = Math.min(Math.abs(angleToTurn), Math.abs((2*Math.PI - Math.abs(angleToTurn))));
         }
@@ -131,10 +131,13 @@ public class GameStateSimulator implements Service {
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
 
-        while (done < angleToTurn && !this.isMustStop()){
+        while (done < angleToTurn){
             Thread.sleep(moveDelay);
             if (done+Math.abs(angleStep)>angleToTurn){
-                double angleToAdd=angleToTurn-done;
+                double angleToAdd=(angleToTurn-done);
+                if (angleStepNegative){
+                    angleToAdd*=-1;
+                }
                 done=angleToTurn;
                 orientation = Geometry.moduloSpec((orientation + angleToAdd), Math.PI);
             }
@@ -146,9 +149,6 @@ public class GameStateSimulator implements Service {
         }
         this.setRobotMoving(false);
 
-        if(!this.isMustStop()) {
-            orientation = orientationAim;
-        }
     }
 
     /** Getters & Setters */

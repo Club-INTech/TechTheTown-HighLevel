@@ -324,13 +324,13 @@ public class Locomotion implements Service {
         if (directionStrategy == DirectionStrategy.FASTEST) {
             int sens = move.dot(new Vec2(100, highLevelOrientation));
             if (sens >= 0) {                      //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
-                turn(moveA, expectedWallImpact, mustDetect);
                 log.debug("Angle de rotation: " + moveA);
                 log.debug("Distance de translation: " + moveR);
+                turn(moveA, expectedWallImpact, mustDetect);
                 moveLengthwise(moveR, expectedWallImpact, mustDetect);
             } else                              //si il est orienté vers l'arrière par rapport au point visé
             {
-                moveA = Geometry.moduloSpec(moveA + Math.PI, Math.PI);
+                moveA = Geometry.moduloSpec(Math.PI - moveA, Math.PI);
                 turn(moveA, expectedWallImpact, mustDetect);
                 moveLengthwise(-moveR, expectedWallImpact, mustDetect);
             }
@@ -591,7 +591,7 @@ public class Locomotion implements Service {
             aimSymetrized.setX(-aimSymetrized.getX());
         }
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
-        log.debug("HighLevelOrientation: " + highLevelOrientation);
+        log.debug("HighLevelOrientation: "+highLevelOrientation+" / HighLevelPosition: "+highLevelPosition);
         if (!turnOnly) {
             double produitScalaire = delta.dot(new Vec2(100, highLevelOrientation));
             if (produitScalaire > 0) {
