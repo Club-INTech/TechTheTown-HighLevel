@@ -18,7 +18,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
     /** Position d'entrée du script */
 
     int xEntry=370;
-    int yEntry=300;
+    int yEntry=220;
 
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);

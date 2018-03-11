@@ -28,7 +28,7 @@ public class MatchScript extends AbstractScript {
         gameState.setRecognitionDone(true);
         gameState.setIndicePattern(0);
         TakeCubes tk2=new TakeCubes(config,log,hookFactory);
-        tk2.goToThenExec(2,gameState);
+        tk2.goToThenExec(0,gameState);
         ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
         activeAbeille.goToThenExec(0,gameState);
         TakeCubes tk1=new TakeCubes(config,log,hookFactory);
@@ -36,7 +36,7 @@ public class MatchScript extends AbstractScript {
         DeposeCubes dpCubes0=new DeposeCubes(config,log,hookFactory);
         dpCubes0.goToThenExec(0,gameState);
         TakeCubes tk0=new TakeCubes(config,log,hookFactory);
-        tk0.goToThenExec(0,gameState);
+        tk0.goToThenExec(2,gameState);
         DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
         dpCubes1.goToThenExec(1,gameState);
     }

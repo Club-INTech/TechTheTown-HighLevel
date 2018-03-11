@@ -115,10 +115,6 @@ public class Graphe implements Service {
         Noeud nodepart=new Noeud(positiondepart,0,0,null);
         this.addNodeInGraphe(nodepart);
         nodesToKeep.add(nodepart);
-        Vec2 positioninterrupteur=new Vec2(0, 370);
-        Noeud nodinterrupteur=new Noeud(positioninterrupteur,0,0,null);
-        this.addNodeInGraphe(nodinterrupteur);
-        nodesToKeep.add(nodinterrupteur);
         return nodesToKeep;
 
     }
