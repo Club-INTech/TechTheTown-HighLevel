@@ -154,7 +154,7 @@ public class ObstacleManager implements Service
 		//TODO initialiser tout les obstacles de la table
 
 		//mRectangles.add(new ObstacleRectangular(new Vec2(1300, 325), 400 + 2*mRobotRadius, 650 + 2*mRobotRadius)); //-1446, 678, 108, 472
-		//mRectangles.add(new ObstacleRectangular(new Vec2(-1300, 325),  400 + 2*mRobotRadius, 650 + 2*mRobotRadius));
+		mRectangles.add(new ObstacleRectangular(new Vec2(-1300, 325),  400 + 2*mRobotRadius, 650 + 2*mRobotRadius));
         mRectangles.add(new ObstacleRectangular(new Vec2(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
 
 		/** Tas de cubes*/
