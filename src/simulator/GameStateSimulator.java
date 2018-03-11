@@ -66,7 +66,7 @@ public class GameStateSimulator implements Service {
     }
 
     /** Update la position du robot */
-    public void moveLengthwise(float distance) throws InterruptedException, UnableToMoveException{
+    public void moveLengthwise(float distance) throws InterruptedException{
 
         long timeRef = System.currentTimeMillis();
         double done = 0;
@@ -87,15 +87,13 @@ public class GameStateSimulator implements Service {
                 done=distance;
             }
             else {
-                System.out.println(orientation+" "+done);
                 position.plus(new PreciseVec2(distanceLoop, orientation));
                 done += distanceLoop;
             }
             simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", Math.round(position.getX()), Math.round(position.getY()), orientation));
 
             if(table.getObstacleManager().isObstructed(position.toVec2()) || !table.getObstacleManager().isRobotInTable(position.toVec2())){
-                log.debug("SIMULATOR : UnableToMoveException / Position : "+position);
-                throw new UnableToMoveException(finalAim.toVec2(), UnableToMoveReason.PHYSICALLY_BLOCKED);
+                log.critical("SIMULATOR : Robot dans un obstacle (theorique) : UnableToMoveException / Position : "+position);
             }
         }
         this.setRobotMoving(false);
@@ -107,7 +105,7 @@ public class GameStateSimulator implements Service {
     }
 
     /** Update l'orientation du robot */
-    public void turn(float orientationAim, TurningStrategy strat) throws InterruptedException, UnableToMoveException{
+    public void turn(float orientationAim, TurningStrategy strat) throws InterruptedException{
 
         double done = 0;
         double angleToTurn = orientationAim - orientation;

@@ -91,9 +91,6 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
                 log.warning("Ordre Inconnu : " + head);
             }
             simulator.communicate(CommunicationHeaders.EVENT, EventType.STOPPEDMOVING.getEventId());
-        }catch (UnableToMoveException e){
-            log.critical("SIMULATOR : Robot dans un obstacle (théorique)");
-            e.printStackTrace();
         }
     }
 
