@@ -5,6 +5,7 @@ import enums.CommunicationHeaders;
 import enums.TurningStrategy;
 import enums.UnableToMoveReason;
 import exceptions.Locomotion.UnableToMoveException;
+import org.opencv.core.Mat;
 import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.Vec2;
@@ -69,6 +70,7 @@ public class GameStateSimulator implements Service {
         long timeRef = System.currentTimeMillis();
         float done = 0;
         Vec2 finalAim = position.plusNewVector(new Vec2(distance, orientation));
+        System.out.println(finalAim);
         // Divisé par 100 car move delay en ms, translationSpeed en mm/s et distanceLoop en mm
         float distanceLoop = (float) translationSpeed * moveDelay/(float)1000;
 
@@ -79,10 +81,15 @@ public class GameStateSimulator implements Service {
 
         while (done < Math.abs(distance) && !this.isMustStop()) {
             Thread.sleep(moveDelay);
-            position.plus(new Vec2(distanceLoop, orientation));
-            done += distanceLoop;
-            if (done>distance){
+            if (done+distanceLoop>Math.abs(distance)){
+                float distanceToAdd=distance-done;
+                position.plus(new Vec2(distanceToAdd, orientation));
                 done=distance;
+            }
+            else {
+                System.out.println(orientation+" "+done);
+                position.plus(new Vec2(distanceLoop, orientation));
+                done += distanceLoop;
             }
             simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", position.getX(), position.getY(), orientation));
 
@@ -108,13 +115,15 @@ public class GameStateSimulator implements Service {
 
         if (strat == TurningStrategy.RIGHT_ONLY && orientation > orientationAim){
             angleToTurn = (float) (2 * Math.PI - Math.abs(angleToTurn));
-        }else if(strat == TurningStrategy.LEFT_ONLY){
+        }
+        else if(strat == TurningStrategy.LEFT_ONLY){
             if(orientation < orientationAim) {
                 angleToTurn = (float) (2 * Math.PI - Math.abs(angleToTurn));
             }
             angleToTurn = Math.abs(angleToTurn);
             angleStep = -angleStep;
-        }else{
+        }
+        else{
             if((Math.abs(angleToTurn) < Math.PI && orientationAim < orientation) || (Math.abs(angleToTurn) > Math.PI && orientationAim > orientation)){
                 angleStep = -angleStep;
             }
@@ -126,8 +135,15 @@ public class GameStateSimulator implements Service {
 
         while (done < angleToTurn && !this.isMustStop()){
             Thread.sleep(moveDelay);
-            orientation = (float) Geometry.moduloSpec((double)(orientation + angleStep), Math.PI);
-            done+=Math.abs(angleStep);
+            if (done+Math.abs(angleStep)>angleToTurn){
+                float angleToAdd=angleToTurn-done;
+                done=angleToTurn;
+                orientation = (float) Geometry.moduloSpec((double) (orientation + angleToAdd), Math.PI);
+            }
+            else {
+                done+=Math.abs(angleStep);
+                orientation = (float) Geometry.moduloSpec((double) (orientation + angleStep), Math.PI);
+            }
             simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", position.getX(), position.getY(), orientation));
         }
         this.setRobotMoving(false);

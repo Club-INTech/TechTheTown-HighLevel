@@ -297,6 +297,7 @@ public class Locomotion implements Service {
             updateCurrentPositionAndOrientation();
             Vec2 aim = path.get(i);
             finalAim = aim;
+            log.debug("Pathfinding : going to node of coords "+aim.toStringEth());
             moveToPoint(aim, false, mustDetect);
         }
     }
