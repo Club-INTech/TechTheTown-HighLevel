@@ -62,6 +62,7 @@ public class XYO {
      */
     public void update(String buffer, String splitString){
         String[] infos = buffer.split(splitString);
+        System.out.println(infos[0]+" "+infos[1]+" "+infos[2]);
         this.position = new Vec2((int)Math.round(Double.parseDouble(infos[0])), (int)Math.round(Double.parseDouble(infos[1])));
         this.orientation = Double.parseDouble(infos[2]);
     }
