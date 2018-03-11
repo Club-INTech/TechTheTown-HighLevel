@@ -323,14 +323,14 @@ public class Locomotion implements Service {
 
         if (directionStrategy == DirectionStrategy.FASTEST) {
             int sens = move.dot(new Vec2(100, highLevelOrientation));
-            if (sens >= 0) {                      //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
+            if (sens >= 0) {    //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
                 log.debug("Angle de rotation: " + moveA);
                 log.debug("Distance de translation: " + moveR);
                 turn(moveA, expectedWallImpact, mustDetect);
                 moveLengthwise(moveR, expectedWallImpact, mustDetect);
             } else                              //si il est orienté vers l'arrière par rapport au point visé
             {
-                moveA = Geometry.moduloSpec(Math.PI - moveA, Math.PI);
+                moveA = Geometry.moduloSpec(moveA-Math.PI, Math.PI);
                 turn(moveA, expectedWallImpact, mustDetect);
                 moveLengthwise(-moveR, expectedWallImpact, mustDetect);
             }
@@ -407,6 +407,7 @@ public class Locomotion implements Service {
         Double dist = (double) distance;
         Vec2 aim = highLevelPosition.plusNewVector(new Vec2(dist, highLevelOrientation));
         finalAim = aim;
+        System.out.println(finalAim);
 
         /** TODO A adapté à l'annee en cours */
         int totalTime = 0;
@@ -418,12 +419,13 @@ public class Locomotion implements Service {
             log.debug("Ennemi détecté dans le sens de marche, on attend");
             isEnemy = table.getObstacleManager().isEnnemyForwardOrBackWard(detectionDistance, highLevelPosition, aim, highLevelOrientation);
         }
-        /** */
 
-        if (distance >= 0)
+        if (distance >= 0) {
             isRobotMovingForward = true;
-        else
+        }
+        else {
             isRobotMovingBackward = true;
+        }
 
         moveToPointHanldeExceptions(aim, distance >= 0, expectWallImpact, false, mustDetect);
         isRobotMovingForward = false;
@@ -595,9 +597,9 @@ public class Locomotion implements Service {
         if (!turnOnly) {
             double produitScalaire = delta.dot(new Vec2(100, highLevelOrientation));
             if (produitScalaire > 0) {
-                moveToPointEthernetOrder(delta.getA(), -delta.getR(), turnOnly);
-            } else {
                 moveToPointEthernetOrder(delta.getA(), delta.getR(), turnOnly);
+            } else {
+                moveToPointEthernetOrder(delta.getA(), -delta.getR(), turnOnly);
             }
         } else {
             moveToPointEthernetOrder(delta.getA(), delta.getR(), turnOnly);

@@ -72,7 +72,10 @@ public class GameStateSimulator implements Service {
         double done = 0;
         // Divisé par 100 car move delay en ms, translationSpeed en mm/s et distanceLoop en mm
         double distanceLoop = translationSpeed * moveDelay/(double)1000;
-
+        boolean isMovingBackward=false;
+        if (distance<0){
+            isMovingBackward=true;
+        }
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
 
@@ -82,11 +85,18 @@ public class GameStateSimulator implements Service {
             Thread.sleep(moveDelay);
             if (done+distanceLoop>Math.abs(distance)){
                 double distanceToAdd=Math.abs(distance)-done;
+                if (isMovingBackward){
+                    distanceToAdd*=-1;
+                }
                 position.plus(new PreciseVec2(distanceToAdd, orientation));
                 done=Math.abs(distance);
             }
             else {
-                position.plus(new PreciseVec2(distanceLoop, orientation));
+                double distanceToAdd=distanceLoop;
+                if (isMovingBackward){
+                    distanceToAdd*=-1;
+                }
+                position.plus(new PreciseVec2(distanceToAdd, orientation));
                 done += distanceLoop;
             }
             simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", Math.round(position.getX()), Math.round(position.getY()), orientation));
