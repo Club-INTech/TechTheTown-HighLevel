@@ -716,6 +716,14 @@ public class Robot implements Service {
         return mLocomotion.isRobotMovingBackward;
     }
 
+    public EthWrapper getEthWrapper() {
+        return ethWrapper;
+    }
+
+    public Pathfinding getPathfinding() {
+        return pathfinding;
+    }
+
     /**
      * Met à jour la configuration de la classe via le fichier de configuration fourni par le sysème de container
      * et supprime les espaces (si si c'est utile)
@@ -731,9 +739,5 @@ public class Robot implements Service {
         robotWidth = config.getInt(ConfigInfoRobot.ROBOT_WIDTH);
         position = Table.entryPosition;
         orientation = Math.PI;
-    }
-
-    public EthWrapper getEthWrapper() {
-        return ethWrapper;
     }
 }

@@ -57,7 +57,7 @@ public class TablePanel extends JPanel
 	private ArrayList<Vec2> clics;
 	private Vec2 point;
 	private ArrayList<Noeud> nodes;
-	public static boolean showGraph = false;
+	public static boolean showGraph = true;
 
 	/** Table & robot */
 	private Table table;
@@ -85,9 +85,9 @@ public class TablePanel extends JPanel
 	public TablePanel(Table table, Robot robot)
 	{
 		path = new ArrayList<>();
-		aretes = new ArrayList<>();
 		clics = new ArrayList<>();
-		nodes=new ArrayList<>();
+		nodes = robot.getPathfinding().getGraphe().getNodes();
+		aretes = robot.getPathfinding().getGraphe().getBoneslist();
 		this.table = table;
 		this.robot = robot;
 		this.point=new Vec2();
@@ -205,7 +205,6 @@ public class TablePanel extends JPanel
 			for(Noeud noeud : nodes){
 				pathNode3=changeRefToDisplay(noeud.getPosition());
 				graphics.fillOval(pathNode3.getX()-4,pathNode3.getY()-4,8,8);
-
 			}
 			for (Arete ridge : aretes){
 				pathNode1 = changeRefToDisplay(ridge.noeud1.getPosition());
@@ -214,8 +213,6 @@ public class TablePanel extends JPanel
 				graphics.fillOval(pathNode1.getX() - 4, pathNode1.getY() - 4, 8, 8);
 				graphics.fillOval(pathNode2.getX() - 4, pathNode2.getY() - 4, 8, 8);
 			}
-
-
 		}
 
 		// Print les clics et leur position
