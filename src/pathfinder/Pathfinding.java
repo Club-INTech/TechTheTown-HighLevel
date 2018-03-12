@@ -18,6 +18,7 @@ import utils.Log;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static enums.TasCubes.*;
 
@@ -111,7 +112,7 @@ public class Pathfinding implements Service {
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
         Noeud noeudarrive = new Noeud(positionarrive, 0, 0, new ArrayList<Noeud>());
         Noeud noeudcourant;
-        ArrayList<Noeud> nodes = graphe.getNodes();
+        CopyOnWriteArrayList<Noeud> nodes = graphe.getNodes();
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();

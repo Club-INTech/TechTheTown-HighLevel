@@ -34,6 +34,7 @@ import tests.container.A;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Interface graphique pour faciliter le debugage HL
@@ -133,7 +134,7 @@ public class Window extends JFrame
 	}
 
 	/** Permet d'afficher les aretes/le chemin */
-	public void setArete(ArrayList<Arete> aretes){
+	public void setArete(CopyOnWriteArrayList<Arete> aretes){
 		tablePanel.setAretes(aretes);
 	}
 	public void setPath(ArrayList<Vec2> path){
@@ -143,7 +144,7 @@ public class Window extends JFrame
 		tablePanel.setPoint(point);
 		repaint();
 	}
-	public void setNode(ArrayList<Noeud> nodes){
+	public void setNode(CopyOnWriteArrayList<Noeud> nodes){
 		tablePanel.setNodes(nodes);;
 	}
 

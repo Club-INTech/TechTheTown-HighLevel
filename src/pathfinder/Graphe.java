@@ -13,8 +13,7 @@ import table.obstacles.ObstacleRectangular;
 import utils.Log;
 
 import java.util.ArrayList;
-
-// TODO : changer les listes de noeuds et arretes en CopyOnWriteArrayList (c'est long et chiant mais nécessaire...)
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Graphe implements Service {
 
@@ -23,8 +22,8 @@ public class Graphe implements Service {
     private ArrayList<ObstacleCircular> listCircu;
     private ArrayList<ObstacleRectangular> listRectangu;
     private Table table;
-    private ArrayList<Noeud> nodes;
-    private ArrayList<Arete> boneslist;
+    private CopyOnWriteArrayList<Noeud> nodes;
+    private CopyOnWriteArrayList<Arete> boneslist;
 
     /**
      * Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
@@ -70,7 +69,7 @@ public class Graphe implements Service {
 
     /** Méthode générant des noeuds sur la table   */
 
-    public ArrayList<Noeud> createNodes() {
+    public CopyOnWriteArrayList<Noeud> createNodes() {
         int pasX = 200;
         int pasY = 200;
         int xdebut = -1500;
@@ -78,7 +77,7 @@ public class Graphe implements Service {
         int x;
         int y;
         ArrayList<Noeud> node = new ArrayList<>();
-        ArrayList<Noeud> nodesToKeep = new ArrayList<>();
+        CopyOnWriteArrayList<Noeud> nodesToKeep = new CopyOnWriteArrayList<>();
         ArrayList<Noeud> nodestoaddaroundobstacles=this.createNodesObstaclesCirculaires();
         /*for (int i = 1; i < 3000 / pasX - 1; i++) {
             x = i * pasX + xdebut;
@@ -121,9 +120,9 @@ public class Graphe implements Service {
      */
 
 
-    public ArrayList<Arete> createAretes(ArrayList<Noeud> nodes) {
+    public CopyOnWriteArrayList<Arete> createAretes(CopyOnWriteArrayList<Noeud> nodes) {
         Arete arete;
-        ArrayList<Arete> boneslist = new ArrayList<>();
+        CopyOnWriteArrayList<Arete> boneslist = new CopyOnWriteArrayList<>();
         int n = nodes.size();
         for (int i = 0; i < n; i++) {
             ArrayList<Arete> listaretes = new ArrayList<>();
@@ -179,11 +178,11 @@ public class Graphe implements Service {
     }
 
 
-    public ArrayList<Noeud> getNodes() {
+    public CopyOnWriteArrayList<Noeud> getNodes() {
         return nodes;
     }
 
-    public ArrayList<Arete> getBoneslist() {
+    public CopyOnWriteArrayList<Arete> getBoneslist() {
         return boneslist;
     }
 

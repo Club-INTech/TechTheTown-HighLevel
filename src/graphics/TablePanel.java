@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * panneau sur lequel est dessine la table
@@ -53,10 +54,10 @@ public class TablePanel extends JPanel
 
 	/** Champs pour l'interface Pathfinding : n'ayant pas de robot instancié, on récupère en brut les données */
 	private ArrayList<Vec2> path;
-	private ArrayList<Arete> aretes;
+	private CopyOnWriteArrayList<Arete> aretes;
 	private ArrayList<Vec2> clics;
 	private Vec2 point;
-	private ArrayList<Noeud> nodes;
+	private CopyOnWriteArrayList<Noeud> nodes;
 	public static boolean showGraph = true;
 
 	/** Table & robot */
@@ -105,9 +106,9 @@ public class TablePanel extends JPanel
 	public TablePanel(Table table)
 	{
 		path = new ArrayList<>();
-		aretes = new ArrayList<>();
+		aretes = new CopyOnWriteArrayList<>();
 		clics = new ArrayList<>();
-		nodes=new ArrayList<>();
+		nodes=new CopyOnWriteArrayList<>();
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
@@ -248,7 +249,7 @@ public class TablePanel extends JPanel
 		removeAll();
 		revalidate();
 	}
-	public void setAretes(ArrayList<Arete> aretes) {
+	public void setAretes(CopyOnWriteArrayList<Arete> aretes) {
 		this.aretes = aretes;
 		removeAll();
 		revalidate();
@@ -263,7 +264,7 @@ public class TablePanel extends JPanel
 		removeAll();
 		revalidate();
 	}
-	public void setNodes(ArrayList<Noeud> nodes){
+	public void setNodes(CopyOnWriteArrayList<Noeud> nodes){
 		this.nodes=nodes;
 		removeAll();
 		revalidate();
