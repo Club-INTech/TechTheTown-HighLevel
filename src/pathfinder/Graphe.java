@@ -3,7 +3,6 @@ package pathfinder;
 import container.Service;
 import enums.ConfigInfoRobot;
 import pfg.config.Config;
-import pfg.config.ConfigInfo;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Segment;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 
 public class Graphe implements Service {
 
-
     private Log log;
     private Config config;
     private ArrayList<ObstacleCircular> listCircu;
@@ -26,12 +24,6 @@ public class Graphe implements Service {
     private Table table;
     private ArrayList<Noeud> nodes;
     private ArrayList<Arete> boneslist;
-
-    @Override
-    public void updateConfig() {
-        int r=config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-    }
-
 
     /**
      * Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
@@ -44,15 +36,13 @@ public class Graphe implements Service {
         this.listRectangu = new ArrayList<>();
         listRectangu = table.getObstacleManager().getRectangles();
         this.table = table;
-        this.nodes = new ArrayList<Noeud>();
         this.nodes = createNodes();
         long time1 = System.currentTimeMillis();
-        this.boneslist = new ArrayList<>();
         this.boneslist = createAretes(nodes);
         long time2 = System.currentTimeMillis() - time1;
         this.log = log;
         this.config = config;
-        System.out.println("Time to create graph (ms): " + time2);
+        log.debug("Time to create graph (ms): " + time2);
 
     }
 
@@ -242,7 +232,11 @@ public class Graphe implements Service {
             }
         }
         return nodestoreturn;
+    }
 
+    @Override
+    public void updateConfig() {
+        int r=config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
     }
 }
 
