@@ -42,13 +42,14 @@ public class Pathfinding implements Service {
     private ObstacleManager obstacleManager;
     private ArrayList<ObstacleCircular> circularobstacles;
 
-    public Pathfinding(Log log, Config config, Table table) {
+    public Pathfinding(Log log, Config config, Table table, Graphe graphe) {
         this.log = log;
         this.config = config;
         this.table = table;
         obstacleManager = table.getObstacleManager();
-        circularobstacles= (ArrayList<ObstacleCircular>) obstacleManager.getmCircularObstacle().clone();
-        initGraphe();
+        circularobstacles = (ArrayList<ObstacleCircular>) obstacleManager.getmCircularObstacle().clone();
+        this.graphe = graphe;
+//        initGraphe();
         log.debug("init PATHFINDING");
     }
 
@@ -57,7 +58,7 @@ public class Pathfinding implements Service {
      */
 
     public void initGraphe() {
-        graphe = new Graphe(log,config,table);
+        graphe = new Graphe(log, config, table);
         graphe.updateConfig();
     }
 
@@ -66,33 +67,35 @@ public class Pathfinding implements Service {
      */
 
     public void reInitGraphe(Noeud noeudDepart, Noeud noeudArrive) {
-        for (Noeud node : graphe.getNodes()) {
-            node.setPred(null);
-            node.setCout(-1);
-            node.setHeuristique(999999999);
-            node.removeNeighbour(noeudDepart);
-            node.removeNeighbour(noeudArrive);
-        }
-        if(config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)){
+        if (config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)) {
             obstacleManager.removeObstacle(circularobstacles.get(TAS_BASE.getID()));
-        }
-        if(config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS)){
+            graphe.removeObstacle();
+        } else if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS)) {
             obstacleManager.removeObstacle(circularobstacles.get(TAS_CHATEAU_EAU.getID()));
-        }
-        if(config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS)){
+            graphe.removeObstacle();
+        } else if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS)) {
             obstacleManager.removeObstacle(circularobstacles.get(TAS_STATION_EPURATION.getID()));
-        }
-        if(config.getBoolean(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS)){
+            graphe.removeObstacle();
+        } else if (config.getBoolean(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS)) {
             obstacleManager.removeObstacle(circularobstacles.get(TAS_BASE_ENNEMI.getID()));
-        }
-        if(config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS)){
+            graphe.removeObstacle();
+        } else if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS)) {
             obstacleManager.removeObstacle(circularobstacles.get(TAS_CHATEAU_EAU_ENNEMI.getID()));
-        }
-        if(config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)){
+            graphe.removeObstacle();
+        } else if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)) {
             obstacleManager.removeObstacle(circularobstacles.get(TAS_STATION_EPURATION_ENNEMI.getID()));
+            graphe.removeObstacle();
+        } else {
+            for (Noeud node : graphe.getNodes()) {
+                node.setPred(null);
+                node.setCout(-1);
+                node.setHeuristique(999999999);
+                node.removeNeighbour(noeudDepart);
+                node.removeNeighbour(noeudArrive);
+            }
+            graphe.removeNode(noeudDepart);
+            graphe.removeNode(noeudArrive);
         }
-        graphe.removeNode(noeudDepart);
-        graphe.removeNode(noeudArrive);
     }
 
     /**
@@ -112,7 +115,6 @@ public class Pathfinding implements Service {
         Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
         Noeud noeudarrive = new Noeud(positionarrive, 0, 0, new ArrayList<Noeud>());
         Noeud noeudcourant;
-        CopyOnWriteArrayList<Noeud> nodes = graphe.getNodes();
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
@@ -162,14 +164,13 @@ public class Pathfinding implements Service {
                         }
                     } else {
 //                        voisin.setHeuristique(voisin.getPosition().distance(noeudarrive.getPosition()));
-                        voisin.setHeuristique(k*heuristique);
+                        voisin.setHeuristique(k * heuristique);
                         voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())));
                         openList.add(voisin);
                         voisin.setPred(noeudcourant);
                     }
                 }
                 k++;
-                log.debug(k);
             }
         }
         // pas de chemin trouvé.

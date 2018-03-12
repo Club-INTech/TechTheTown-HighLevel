@@ -203,11 +203,11 @@ public class TablePanel extends JPanel
 		// Le graphe
 		if(showGraph){
 			graphics.setColor(graphColor);
-			for(Noeud noeud : nodes){
+			for(Noeud noeud : robot.getPathfinding().getGraphe().getNodes()){
 				pathNode3=changeRefToDisplay(noeud.getPosition());
 				graphics.fillOval(pathNode3.getX()-4,pathNode3.getY()-4,8,8);
 			}
-			for (Arete ridge : aretes){
+			for (Arete ridge : robot.getPathfinding().getGraphe().getBoneslist()){
 				pathNode1 = changeRefToDisplay(ridge.noeud1.getPosition());
 				pathNode2 = changeRefToDisplay(ridge.noeud2.getPosition());
 				graphics.drawLine(pathNode1.getX(), pathNode1.getY(), pathNode2.getX(), pathNode2.getY());

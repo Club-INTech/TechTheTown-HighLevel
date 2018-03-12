@@ -42,7 +42,7 @@ public class Graphe implements Service {
         this.listCircu = new ArrayList<>();
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = new ArrayList<>();
-        listRectangu = table.getObstacleManager().getRectangles();
+        this.listRectangu = table.getObstacleManager().getRectangles();
         this.table = table;
         this.nodes = new CopyOnWriteArrayList<Noeud>();
         this.nodes = createNodes();
@@ -247,6 +247,13 @@ public class Graphe implements Service {
         }
         return nodestoreturn;
 
+    }
+
+    public void removeObstacle(){
+        this.listCircu = table.getObstacleManager().getmCircularObstacle();
+        this.listRectangu = table.getObstacleManager().getRectangles();
+        this.nodes = createNodes();
+        this.boneslist = createAretes(nodes);
     }
 }
 

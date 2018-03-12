@@ -117,13 +117,13 @@ public class JUnit_Pathfinding extends JUnit_Test {
         window.setArete(graphe.getBoneslist());
         // Thread.sleep(20000);
 
-        Pathfinding pathfinding = new Pathfinding(log, config, table);
+//        Pathfinding pathfinding = new Pathfinding(log, config, table);
         //Pathfinding pathfinding = container.getService(Pathfinding.class);
         ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);
         Vec2 clic = new Vec2();
 
-        pathfinding.initGraphe();
+//        pathfinding.initGraphe();
         Vec2 positionDepart=new Vec2(1252, 455);
         robotReal.setPosition(positionDepart);
         robotReal.setOrientation(Math.PI / 2);
