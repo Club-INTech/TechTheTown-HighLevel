@@ -69,7 +69,6 @@ public class TakeCubes extends AbstractScript {
             //On gère le cas où le cube bonus est encore présent
             if (stateToConsider.isCubeAvantPresent()){
                 additionalCube=Cubes.NULL;
-
             }
             else{
                 additionalCube=Cubes.getCubeNotInPattern(indicePattern);
@@ -178,8 +177,27 @@ public class TakeCubes extends AbstractScript {
                     //Le robot execute les actions pour prendre le cube
                     takeThisCube(stateToConsider, bras);
                 }
+
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
-                Circle aimArcCircle = new Circle(tas.getCoordsVec2(),this.longueurBras+this.largeurCubes*1.5+10,Math.PI/2,3*Math.PI/2,true);
+                Circle aimArcCircle;
+                if (indiceTas==0){
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, 0, Math.PI, true);
+                }
+                else if (indiceTas==1) {
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, Math.PI / 2, 3 * 9 * Math.PI / 20, true);
+                }
+                else if (indiceTas==2) {
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI, 0, true);
+                }
+                else if (indiceTas==3) {
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI, 0, true);
+                }
+                else if (indiceTas==4) {
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, - 9 * Math.PI / 20, Math.PI / 2, true);
+                }
+                else{
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI / 2, Math.PI / 2, true);
+                }
                 Vec2 aim = smartMath.Geometry.closestPointOnCircle(stateToConsider.robot.getPosition(),aimArcCircle);
                 stateToConsider.robot.goTo(aim);
             }
