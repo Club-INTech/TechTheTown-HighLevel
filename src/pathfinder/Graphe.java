@@ -14,6 +14,7 @@ import utils.Log;
 
 import java.util.ArrayList;
 
+// TODO : changer les listes de noeuds et arretes en CopyOnWriteArrayList (c'est long et chiant mais nécessaire...)
 
 public class Graphe implements Service {
 
@@ -43,7 +44,6 @@ public class Graphe implements Service {
         this.log = log;
         this.config = config;
         log.debug("Time to create graph (ms): " + time2);
-
     }
 
     /**
