@@ -36,7 +36,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
         actualState.robot.turn(-Math.PI/2);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.moveLengthwise(135);
-        actualState.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
+        actualState.robot.setLocomotionSpeed(Speed.FAST_ALL);
         actualState.robot.goTo(new Vec2(xEntry,yEntry));
     }
 
