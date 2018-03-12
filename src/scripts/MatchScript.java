@@ -26,7 +26,7 @@ public class MatchScript extends AbstractScript {
 
         ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
         actPD.goToThenExec(0,gameState);
-        gameState.robot.setLocomotionSpeed(Speed.ULTRA_FAST_ALL);
+        gameState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         gameState.setRecognitionDone(true);
         gameState.setIndicePattern(0);
         TakeCubes tk2=new TakeCubes(config,log,hookFactory);

@@ -252,7 +252,7 @@ public class TakeCubes extends AbstractScript {
             aimArcCircle = new Circle(coordsTas, this.longueurBras);
         }
         Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
-        System.out.println("point d'entrée takecubes"+version+aim);
+        log.debug("point d'entrée takecubes"+version+aim);
         this.entryPositionPoint=aim;
         return new Circle(aim);
     }

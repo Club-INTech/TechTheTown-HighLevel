@@ -114,7 +114,12 @@ public class Graphe implements Service {
         Noeud nodepart=new Noeud(positiondepart,0,0,null);
         this.addNodeInGraphe(nodepart);
         nodesToKeep.add(nodepart);
+        Vec2 positioninterr=new Vec2(650,215);
+        Noeud noeudinterr=new Noeud(positioninterr,0,0,null);
+        this.addNodeInGraphe(noeudinterr);
+        nodesToKeep.add(noeudinterr);
         return nodesToKeep;
+
 
     }
 

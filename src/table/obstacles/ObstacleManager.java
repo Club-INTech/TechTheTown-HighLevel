@@ -158,7 +158,7 @@ public class ObstacleManager implements Service
         mRectangles.add(new ObstacleRectangular(new Vec2(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
 
 		/** Tas de cubes*/
-		int d = 1;
+		int d = 10;
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(650, 540), 87 + mRobotRadius + d)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1200, 1190), 87 + mRobotRadius + d)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(400, 1500), 87 + mRobotRadius + d)));

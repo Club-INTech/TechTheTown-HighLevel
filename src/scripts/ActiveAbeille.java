@@ -16,7 +16,7 @@ import utils.Log;
 public class ActiveAbeille extends AbstractScript {
 
     /** Active l'abeille */
-    private int securityDistance = 45; //distance de sécurité pour ne pas cogner le mur en tournant
+    private int securityDistance = 60; //distance de sécurité pour ne pas cogner le mur en tournant
     private int radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS); //rayon du robot
 
     public ActiveAbeille(Config config, Log log, HookFactory hookFactory){
