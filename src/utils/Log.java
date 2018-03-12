@@ -64,11 +64,7 @@ public class Log implements Service
 	/** Vrai s'il faut sauvegarder les logs dans un fichier. */
 	private boolean saveLogs = true;
 
-	/** Stopper le log ? */
 	private static boolean stop = false;
-
-	/** Le singleton */
-	private static Log instance;
 
 	
 	/**
@@ -98,7 +94,7 @@ public class Log implements Service
 				critical(e);
 			}
 		debug("Service de log démarré");
-		instance = this;
+	
 	}
 		
 	/**
@@ -273,8 +269,4 @@ public class Log implements Service
         stop = true;
     }
 
-    /** Le singleton */
-	public static Log getInstance() {
-		return instance;
-	}
 }
