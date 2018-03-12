@@ -181,22 +181,22 @@ public class TakeCubes extends AbstractScript {
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
                 Circle aimArcCircle;
                 if (indiceTas==0){
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras, 0, Math.PI, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, 0, Math.PI, true);
                 }
                 else if (indiceTas==1) {
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras, Math.PI / 2, 3 * 9 * Math.PI / 20, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, Math.PI / 2, 3 * 9 * Math.PI / 20, true);
                 }
                 else if (indiceTas==2) {
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras, -Math.PI, 0, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI, 0, true);
                 }
                 else if (indiceTas==3) {
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras, -Math.PI, 0, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI, 0, true);
                 }
                 else if (indiceTas==4) {
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras, - 9 * Math.PI / 20, Math.PI / 2, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, - 9 * Math.PI / 20, Math.PI / 2, true);
                 }
                 else{
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras, -Math.PI / 2, Math.PI / 2, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI / 2, Math.PI / 2, true);
                 }
                 Vec2 aim = smartMath.Geometry.closestPointOnCircle(stateToConsider.robot.getPosition(),aimArcCircle);
                 stateToConsider.robot.goTo(aim);
