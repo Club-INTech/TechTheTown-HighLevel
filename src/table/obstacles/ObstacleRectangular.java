@@ -22,6 +22,7 @@ package table.obstacles;
 import smartMath.Segment;
 import smartMath.Vec2;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -241,4 +242,5 @@ public class ObstacleRectangular extends Obstacle
 		}
 		return new Vec2();
 	}
+
 }

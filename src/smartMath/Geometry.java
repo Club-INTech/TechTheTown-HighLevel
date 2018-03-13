@@ -19,6 +19,8 @@
 
 package smartMath;
 
+import java.awt.*;
+
 /**
  * classe de calculs de géométrie
  * @author Etienne, Rem
@@ -205,6 +207,16 @@ public class Geometry
 		}
 
 		return val >= a && val <= b;
+	}
+
+	/**
+	 * Cette méthode retourne true s'il y'a une intersection entre un segment et un rectangle
+	 * @param segment
+	 * @param rectangle
+	 * @return
+	 */
+	public boolean intersects(Segment segment, Rectangle rectangle){
+		rectangle.getHeight();
 	}
 
 	/**

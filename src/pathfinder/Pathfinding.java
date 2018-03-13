@@ -108,6 +108,7 @@ public class Pathfinding implements Service {
      */
 
     public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws PointInObstacleException, UnableToMoveException, NoPathFound {
+
         long time1 = System.currentTimeMillis();
 
         /** Dévclaration des variables */

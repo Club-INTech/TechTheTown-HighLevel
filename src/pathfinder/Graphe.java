@@ -3,7 +3,6 @@ package pathfinder;
 import container.Service;
 import enums.ConfigInfoRobot;
 import pfg.config.Config;
-import pfg.config.ConfigInfo;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Segment;
@@ -39,15 +38,11 @@ public class Graphe implements Service {
      */
 
     public Graphe(Log log, Config config, Table table) {
-        this.listCircu = new ArrayList<>();
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
-        this.listRectangu = new ArrayList<>();
         this.listRectangu = table.getObstacleManager().getRectangles();
         this.table = table;
-        this.nodes = new CopyOnWriteArrayList<Noeud>();
         this.nodes = createNodes();
         long time1 = System.currentTimeMillis();
-        this.boneslist = new CopyOnWriteArrayList<>();
         this.boneslist = createAretes(nodes);
         long time2 = System.currentTimeMillis() - time1;
         this.log = log;
@@ -80,47 +75,24 @@ public class Graphe implements Service {
     /** Méthode générant des noeuds sur la table   */
 
     public CopyOnWriteArrayList<Noeud> createNodes() {
-        int pasX = 200;
-        int pasY = 200;
-        int xdebut = -1500;
-        int ydebut = 0;
-        int x;
-        int y;
-        ArrayList<Noeud> node = new ArrayList<>();
+
         CopyOnWriteArrayList<Noeud> nodesToKeep = new CopyOnWriteArrayList<>();
-        ArrayList<Noeud> nodestoaddaroundobstacles=this.createNodesObstaclesCirculaires();
-        /*for (int i = 1; i < 3000 / pasX - 1; i++) {
-            x = i * pasX + xdebut;
-            for (int j = 1; j < 2000 / pasY - 1; j++) {
-                Vec2 nodeposition = new Vec2();
-                nodeposition.setX(x);
-                y = j * pasY + ydebut;
-                nodeposition.setY(y);
-                node.add(new Noeud(nodeposition, 999999999, -1, new ArrayList<Noeud>()));
-            }
-        }*/
-        int k = node.size();
-        for (int i = 0; i < k; i++) {
-            if (!(nodeInObstacle(node.get(i)))) {
-                nodesToKeep.add(node.get(i));
-            }
-        }
+        ArrayList<Noeud> nodestoaddaroundobstacles=this.createNodesAroundCircularObstacles();
         nodesToKeep.addAll(nodestoaddaroundobstacles);
+
         Vec2 positionmilieu=new Vec2(0,1000);
         Noeud nodemilieu=new Noeud(positionmilieu,0,0,null);
-        this.addNodeInGraphe(nodemilieu);
         nodesToKeep.add(nodemilieu);
+
         Vec2 positiondepart=new Vec2(1252, 455);
         Noeud nodepart=new Noeud(positiondepart,0,0,null);
-        this.addNodeInGraphe(nodepart);
         nodesToKeep.add(nodepart);
+
         Vec2 positioninterr=new Vec2(650,215);
         Noeud noeudinterr=new Noeud(positioninterr,0,0,null);
-        this.addNodeInGraphe(noeudinterr);
         nodesToKeep.add(noeudinterr);
+
         return nodesToKeep;
-
-
     }
 
     /**
@@ -222,10 +194,10 @@ public class Graphe implements Service {
      * Cette méthode crée des noeuds autour des obstacles
      * @return
      */
-    public ArrayList<Noeud> createNodesObstaclesCirculaires(){
+    public ArrayList<Noeud> createNodesAroundCircularObstacles(){
         int n=listCircu.size();
         ArrayList<Vec2> pointstoreturn=new ArrayList<>();
-        ArrayList<Noeud> nodes=new ArrayList<>();
+        ArrayList<Noeud> nodestoreturn=new ArrayList<>();
         int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
         for(int i=0;i<n;i++) {
             Circle obstaclecircle=new Circle(listCircu.get(i).getPosition(),listCircu.get(i).getRadius()+d);
@@ -234,15 +206,9 @@ public class Graphe implements Service {
         }
         int m=pointstoreturn.size();
         for(int i=0;i<m;i++){
-            Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,null);
-            this.addNodeInGraphe(nodetoadd);
-            nodes.add(nodetoadd);
-        }
-        int l=nodes.size();
-        ArrayList<Noeud> nodestoreturn=new ArrayList<>();
-        for(int i=0;i<l;i++){
-            if (!(nodeInObstacle(nodes.get(i))) & table.getObstacleManager().isRobotInTable(nodes.get(i).getPosition())) {
-                nodestoreturn.add(nodes.get(i));
+            if(!(nodeInObstacle(new Noeud(pointstoreturn.get(i),0,0,null))) & table.getObstacleManager().isRobotInTable(pointstoreturn.get(i))){
+                Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,null);
+                nodestoreturn.add(nodetoadd);
             }
         }
         return nodestoreturn;
@@ -255,6 +221,7 @@ public class Graphe implements Service {
         this.nodes = createNodes();
         this.boneslist = createAretes(nodes);
     }
+
 }
 
 
