@@ -215,7 +215,7 @@ public class Geometry
 	 * @param rectangle
 	 * @return
 	 */
-	public boolean intersects(Segment segment, Rectangle rectangle){
+	public static boolean intersects(Segment segment, Rectangle rectangle){
 		Vec2 pointhautgauche=new Vec2(rectangle.getLocation().getX(),rectangle.getLocation().getY());
 		Vec2 pointbasgauche=new Vec2(pointhautgauche.getX(),pointhautgauche.getY()-rectangle.getHeight());
 		Vec2 pointhautdroite=new Vec2(pointhautgauche.getX()+rectangle.getWidth(),pointhautgauche.getY());
@@ -224,7 +224,7 @@ public class Geometry
 		Segment segment2=new Segment(pointhautdroite,pointbasdroite);
 		Segment segment3=new Segment(pointbasdroite,pointbasgauche);
 		Segment segment4=new Segment(pointbasgauche,pointhautdroite);
-		return intersects(segment,segment1) ||intersects(segment,segment2) || intersects(segment,segment3) || intersects(segment,segment3);
+		return intersects(segment,segment1) ||intersects(segment,segment2) || intersects(segment,segment3) || intersects(segment,segment4);
 	}
 
 	/**

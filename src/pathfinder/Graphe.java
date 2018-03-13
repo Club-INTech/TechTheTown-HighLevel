@@ -116,20 +116,28 @@ public class Graphe implements Service {
             ArrayList<Noeud> voisins = new ArrayList<>();
             for (int j = i + 1; j < n; j++) {
                 Segment segment = new Segment(nodes.get(i).getPosition(), nodes.get(j).getPosition());
-                boolean isIntersection = false;
+                boolean intersectsWithCircularObstacles = false;
+                boolean intersectsWithRectangularObstacles=false;
                 for (int k = 0; k < listCircu.size(); k++) {
                     if (Geometry.intersects(segment, listCircu.get(k).getCircle())) {
-                        isIntersection = true;
+                        intersectsWithCircularObstacles = true;
                     }
                 }
-                if (!isIntersection) {
+                for(int l=0;l<listRectangu.size();l++){
+                    if(Geometry.intersects(segment,listRectangu.get(l).getRectangle()));{
+                        intersectsWithRectangularObstacles=true;
+                    }
+                }
+                if (!(intersectsWithCircularObstacles)&& !(intersectsWithRectangularObstacles)){
                     double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                     cost = Math.sqrt(cost);
                     arete = new Arete(nodes.get(i), nodes.get(j), cost);
                     listaretes.add(arete);
                     voisins.add(nodes.get(j));
                 }
+
             }
+
             nodes.get(i).setVoisins(voisins);
             boneslist.addAll(listaretes);
         }
