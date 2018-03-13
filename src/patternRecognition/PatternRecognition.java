@@ -644,19 +644,30 @@ public class PatternRecognition extends AbstractThread{
 
         //Ancienne version
         //BufferedImage buffImg=ShootBufferedStill.TakeBufferedPicture();
+        log.debug("1");
         BufferedImage buffImg= ShootBufferedStillWebcam.takeBufferedPicture();
+        log.debug("2");
         movementLocked=false;
+        log.debug("3");
         int[][][] colorMatrix=createColorMatrixFromBufferedImage(buffImg);
+        log.debug("4");
         centerPointPattern=calculateCenterPattern(buffImg, this.zoneToPerformLocalisation);
+        log.debug("5");
         if (!(centerPointPattern[0] == 0 && centerPointPattern[1] == 0)) {
+            log.debug("6a");
             analysePattern(colorMatrix);
         }
         else{
+            log.debug("6b");
             this.finalIndice=-1;
         }
+        log.debug("7");
         gameState.setIndicePattern(this.finalIndice);
+        log.debug("8");
         gameState.setRecognitionDone(true);
+        log.debug("9");
         recognitionDone=true;
+        log.debug("10");
         log.debug("Pattern recognized : " + finalIndice);
         while (!this.isShutdown){
             try {
