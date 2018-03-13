@@ -671,7 +671,7 @@ public class PatternRecognition extends AbstractThread{
         recognitionDone=true;
         log.debug("10");
         log.debug("Pattern recognized : " + finalIndice);
-        while (!this.isShutdown){
+        /*while (!this.isShutdown){
             try {
                 this.sleep(100);
             } catch (InterruptedException e) {
@@ -679,6 +679,8 @@ public class PatternRecognition extends AbstractThread{
                 e.printStackTrace();
             }
         }
+        */
+        this.shutdown();
     }
 
     public int getFinalIndice(){
