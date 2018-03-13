@@ -32,40 +32,52 @@ public class LocatePattern {
      */
     public static int[] locatePattern(BufferedImage buffImg, int[] selectedZone) {
         //Charge la librairie OpenCV
+        System.out.println("411");
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
+        System.out.println("412");
         //Définit un rectange de la zone utilisée, afin de réduire l'image
         Rect zoneUsed = new Rect(selectedZone[0], selectedZone[1], selectedZone[2], selectedZone[3]);
 
+        System.out.println("413");
         //Convertit la BufferedImage en Mat
         Mat src=bufferedImageToMat(buffImg);
 
+        System.out.println("414");
         //Convertit l'image de RGB à BGR
         //Imgproc.cvtColor(src, src, Imgproc.COLOR_RGB2BGR);
 
         //Garde la zone sélectionnée de l'image
         Mat image = new Mat(src, zoneUsed);
+        System.out.println("415");
 
         //Multiples passages pour détecter les rectangles
         int[][][] foundRectangles;
         try {
+            System.out.println("416a");
             //Essentials
             //PiCam
             //int[][] firstRect = findRectangle(image, 10, 20, 9);
             //int[][] secondRect = findRectangle(image, 30, 40, 9);
             //int[][] thirdRect = findRectangle(image, 30, 40, 15);
+            System.out.println("416a1");
             int[][] firstRect = findRectangle(image, 10, 20, 5);
+            System.out.println("416a2");
             int[][] secondRect = findRectangle(image, 30, 40, 5);
+            System.out.println("416a3");
             int[][] thirdRect = findRectangle(image, 30, 40, 9);
             //Add-ons
             //int[][] forthRect = findRectangle(image, 30, 40, 21);
             foundRectangles = new int[][][]{firstRect, secondRect,thirdRect};
+            System.out.println("416a4");
         } catch (Exception e) {
+            System.out.println("416b");
             foundRectangles = null;
             if (debug){
                 System.out.println("Pas de rectangles trouvés");
             }
             e.printStackTrace();
+            System.out.println("416b1");
             return new int[]{0,0,0,0};
         }
 
@@ -74,6 +86,7 @@ public class LocatePattern {
         int ymax = -1;
         int xmin = 10000;
         int ymin = 10000;
+        System.out.println("417");
         for (int i = 0; i < foundRectangles.length; i++) {
             if (foundRectangles[i][0][0] < xmin) {
                 if (foundRectangles[i][0][0] > 0) {
@@ -101,6 +114,7 @@ public class LocatePattern {
 
             //Affiche le centre de la zone de pattern déterminée
             Point center=new Point((int)(xmin+xmax)/2, (int)(ymin+ymax)/2);
+            System.out.println("418");
             Imgproc.drawMarker(image, center, new Scalar(0, 255, 0));
 
             //Enregistre l'image
@@ -108,6 +122,7 @@ public class LocatePattern {
                 Imgcodecs.imwrite("/tmp/LocatedPattern.png", image);
             }
         }
+        System.out.println("419");
         int[] fullCoords;
         //Renvoie les coordonnées de la zone de localisation rognée.
         if (xmax>=0 && ymax >=0 && xmin<10000 && ymin<10000) {

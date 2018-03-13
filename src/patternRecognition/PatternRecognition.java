@@ -517,7 +517,9 @@ public class PatternRecognition extends AbstractThread{
                     "),("+(zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2])+","+(zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3])+"))");
             LocatePattern.setDebug(true);
         }
+        log.debug("41");
         int[] patternZone = LocatePattern.locatePattern(buffImg, zoneToPerformLocalisation);
+        log.debug("42");
         int[] centerPattern=new int[]{(patternZone[0]+patternZone[2])/2,(patternZone[1]+patternZone[3])/2};
         if (debug){
             log.debug("Center found : ("+centerPattern[0]+","+centerPattern[1]+")");
