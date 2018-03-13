@@ -174,6 +174,12 @@ public class LocatePattern {
         MatOfPoint2f approxCurve;
         double maxArea = 0;
         int maxId = -1;
+        int xmin;
+        int xmax;
+        int ymin;
+        int ymax;
+        float maxCosine;
+        float cosine;
         for (int c = 0; c < 3; c++) {
             int ch[] = { c, 0 };
             //Mélange les images grises et floues
@@ -219,10 +225,10 @@ public class LocatePattern {
                     System.out.println("416a124");
                     List<Point> currentContour = contour.toList();
                     System.out.println("416a125");
-                    int xmin=10000;
-                    int xmax=-1;
-                    int ymin=10000;
-                    int ymax=-1;
+                    xmin=10000;
+                    xmax=-1;
+                    ymin=10000;
+                    ymax=-1;
                     System.out.println(currentContour.size());
                     System.out.println("416a125debug");
                     for (int i=0; i<currentContour.size(); i++){
@@ -277,12 +283,12 @@ public class LocatePattern {
                             System.out.println("416a127aa4");
                             if (approxCurve.total() == 4 && area >= maxArea) {
                                 System.out.println("416a127aaa");
-                                float maxCosine = 0;
+                                maxCosine = 0;
                                 List<Point> curves = approxCurve.toList();
                                 System.out.println("416a127aaa1");
                                 for (int j = 2; j < 5; j++) {
                                     System.out.println("416a127aaa2");
-                                    float cosine = (float) Math.abs(angle(curves.get(j % 4),
+                                    cosine = (float) Math.abs(angle(curves.get(j % 4),
                                             curves.get(j - 2), curves.get(j - 1)));
                                     System.out.println("416a127aaa3");
                                     maxCosine = Math.max(maxCosine, cosine);
@@ -307,10 +313,10 @@ public class LocatePattern {
         if (maxId >= 0) {
             System.out.println("416a28a");
             //La zone où les patterns ont étés trouvés est rognée afin de garder toutes les détections en un minimal de place
-            int xmin=10000;
-            int xmax=-1;
-            int ymin=10000;
-            int ymax=-1;
+            xmin=10000;
+            xmax=-1;
+            ymin=10000;
+            ymax=-1;
             List<Point> retainedContours = contours.get(maxId).toList();
             System.out.println("416a28a1");
             for (int i=0; i<retainedContours.size(); i++){
