@@ -157,51 +157,74 @@ public class LocatePattern {
      */
     private static int[][] findRectangle(Mat src, int threesold1Value, int threesold2Value, int ksize){
         Mat blurred = src.clone();
+        System.out.println("416a12");
         Imgproc.medianBlur(src, blurred, ksize);
+        System.out.println("416a13");
         Mat gray0 = new Mat(blurred.size(), CvType.CV_8U), gray = new Mat();
+        System.out.println("416a14");
         List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
         List<Mat> blurredChannel = new ArrayList<Mat>();
+        System.out.println("416a15");
         blurredChannel.add(blurred);
+        System.out.println("416a16");
         List<Mat> gray0Channel = new ArrayList<Mat>();
+        System.out.println("416a17");
         gray0Channel.add(gray0);
+        System.out.println("416a18");
         MatOfPoint2f approxCurve;
         double maxArea = 0;
         int maxId = -1;
         for (int c = 0; c < 3; c++) {
             int ch[] = { c, 0 };
             //Mélange les images grises et floues
+            System.out.println("416a19");
             Core.mixChannels(blurredChannel, gray0Channel, new MatOfInt(ch));
+            System.out.println("416a120");
             int thresholdLevel = 1;
             for (int t = 0; t < thresholdLevel; t++) {
                 if (t == 0) {
                     //Fonction canny : très utile à la reconnaissance
+                    System.out.println("416a120a");
+                    System.out.println("416a120a1");
                     Imgproc.Canny(gray0, gray, threesold1Value, threesold2Value, 3, true); // true ?
+                    System.out.println("416a120a2");
                     //Avant modifications : Imgproc.Canny(gray0, gray, 10, 20, 3, true); // true ?
                     //Fonction dilate : grossi les pixels de l'image
                     Imgproc.dilate(gray, gray, new Mat(), new Point(-1, -1),1); // 1
+                    System.out.println("416a120a3");
                 } else {
+                    System.out.println("416a120b");
                     Imgproc.adaptiveThreshold(gray0, gray, thresholdLevel,
                             Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,
                             Imgproc.THRESH_BINARY,
                             (src.width() + src.height())/200, t);
+                    System.out.println("416a120b1");
                 }
+                System.out.println("416a121");
 
                 //Fonctions permettant de trouver les contours de l'image
                 Imgproc.findContours(gray, contours, new Mat(),
                         Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+                System.out.println("416a122");
                 if (debug) {
                     //Enregistre l'image en gris
+                    System.out.println("416a122a");
                     Imgcodecs.imwrite("/tmp/gray.png", gray);
+                    System.out.println("416a122a1");
                 }
+                System.out.println("416a123");
 
                 //Détermination du meilleur contour
                 for (MatOfPoint contour : contours) {
+                    System.out.println("416a124");
                     List<Point> currentContour = contour.toList();
+                    System.out.println("416a125");
                     double xmin=10000;
                     double xmax=-1;
                     double ymin=10000;
                     double ymax=-1;
                     for (int i=0; i<currentContour.size(); i++){
+                        System.out.println("416a126");
                         if (currentContour.get(i).x<xmin){
                             xmin=currentContour.get(i).x;
                         }
@@ -229,7 +252,9 @@ public class LocatePattern {
                      */
                     //VALEURS PICAM
                     //if (deltaX > 60 && deltaY > 100 && deltaX < 250 && deltaY < 200 && deltaX < deltaY)
+                    System.out.println("416a127");
                     if (deltaX > 10 && deltaY > 30 && deltaX < 50 && deltaY < 75 && deltaX < deltaY) {
+                        System.out.println("416a127a");
 
                         //dimensions relatives interrupteur
                         //valeur plutot bonnes : deltaY>2.1*deltaX  deltaY<2.5*deltaX
@@ -237,23 +262,35 @@ public class LocatePattern {
                         //valeur à test : deltaY>1.9*deltaX  deltaY<2.5*deltaX
                         if (true){
                         //if (!(deltaY>1.9*deltaX && deltaY<2.5*deltaX)){
+                            System.out.println("416a127aa");
                             MatOfPoint2f temp = new MatOfPoint2f(contour.toArray());
+                            System.out.println("416a127aa1");
                             double area = Imgproc.contourArea(contour);
+                            System.out.println("416a127aa2");
                             approxCurve = new MatOfPoint2f();
+                            System.out.println("416a127aa3");
                             //On détecte les rectangles
                             Imgproc.approxPolyDP(temp, approxCurve,
                                     Imgproc.arcLength(temp, true) * 0.02, true);
+                            System.out.println("416a127aa4");
                             if (approxCurve.total() == 4 && area >= maxArea) {
+                                System.out.println("416a127aaa");
                                 double maxCosine = 0;
                                 List<Point> curves = approxCurve.toList();
+                                System.out.println("416a127aaa1");
                                 for (int j = 2; j < 5; j++) {
+                                    System.out.println("416a127aaa2");
                                     double cosine = Math.abs(angle(curves.get(j % 4),
                                             curves.get(j - 2), curves.get(j - 1)));
+                                    System.out.println("416a127aaa3");
                                     maxCosine = Math.max(maxCosine, cosine);
+                                    System.out.println("416a127aaa4");
                                 }
                                 if (maxCosine < 0.4) {
                                     maxArea = area;
+                                    System.out.println("416a127aaa1a");
                                     maxId = contours.indexOf(contour);
+                                    System.out.println("416a127aaa1a1");
                                 }
                             }
                         }
@@ -264,14 +301,18 @@ public class LocatePattern {
 
         int[][] patternZoneCroppedImage;
         //Si un contour a été sélectionné
+        System.out.println("416a28");
         if (maxId >= 0) {
+            System.out.println("416a28a");
             //La zone où les patterns ont étés trouvés est rognée afin de garder toutes les détections en un minimal de place
             double xmin=10000;
             double xmax=-1;
             double ymin=10000;
             double ymax=-1;
             List<Point> retainedContours = contours.get(maxId).toList();
+            System.out.println("416a28a1");
             for (int i=0; i<retainedContours.size(); i++){
+                System.out.println("416a28a2");
                 if (retainedContours.get(i).x<xmin){
                     xmin=retainedContours.get(i).x;
                 }
@@ -285,12 +326,17 @@ public class LocatePattern {
                     ymax=retainedContours.get(i).y;
                 }
             }
-                Imgproc.drawContours(src, contours, maxId, new Scalar(255, 0, 0,.8), 8);
-                patternZoneCroppedImage = new int[][]{{(int) xmin, (int) ymin}, {(int) xmax, (int) ymax}};
+            System.out.println("416a28a3");
+            Imgproc.drawContours(src, contours, maxId, new Scalar(255, 0, 0,.8), 8);
+            System.out.println("416a28a4");
+            patternZoneCroppedImage = new int[][]{{(int) xmin, (int) ymin}, {(int) xmax, (int) ymax}};
+            System.out.println("416a28a5");
         }
         else {
+            System.out.println("416a28b");
             patternZoneCroppedImage=new int[][]{{-1,-1},{-1,-1}};
         }
+        System.out.println("416a29");
         //Renvoie les points permettant de définir un rectangle autour de la zone croppée.
         return patternZoneCroppedImage;
     }
