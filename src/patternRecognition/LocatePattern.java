@@ -49,6 +49,7 @@ public class LocatePattern {
 
         //Garde la zone sélectionnée de l'image
         Mat image = new Mat(src, zoneUsed);
+        src.release();
         System.out.println("415");
 
         //Multiples passages pour détecter les rectangles
@@ -345,6 +346,9 @@ public class LocatePattern {
             patternZoneCroppedImage=new int[][]{{-1,-1},{-1,-1}};
         }
         System.out.println("416a29");
+        blurred.release();
+        gray.release();
+        gray0.release();
         //Renvoie les points permettant de définir un rectangle autour de la zone croppée.
         return patternZoneCroppedImage;
     }
