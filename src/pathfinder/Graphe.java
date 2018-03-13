@@ -123,11 +123,11 @@ public class Graphe implements Service {
                         intersectsWithCircularObstacles = true;
                     }
                 }
-                for(int l=0;l<listRectangu.size();l++){
+                /*for(int l=0;l<listRectangu.size();l++){
                     if(Geometry.intersects(segment,listRectangu.get(l).getRectangle()));{
                         intersectsWithRectangularObstacles=true;
                     }
-                }
+                }*/
                 if (!(intersectsWithCircularObstacles)&& !(intersectsWithRectangularObstacles)){
                     double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                     cost = Math.sqrt(cost);
