@@ -22,7 +22,7 @@ import static org.opencv.imgcodecs.Imgcodecs.imread;
 public class LocatePattern {
 
     //Variable de debug
-    private static boolean debug=true;
+    private static boolean debug=false;
     private static boolean isSavingImages=true;
 
     /** Fonction de localisation du pattern sur l'image prise par la Picam

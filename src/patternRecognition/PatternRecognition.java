@@ -515,7 +515,7 @@ public class PatternRecognition extends AbstractThread{
         if (debug){
             log.debug("Performing pattern localisation on : (("+zoneToPerformLocalisation[0]+","+zoneToPerformLocalisation[1]+
                     "),("+(zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2])+","+(zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3])+"))");
-            LocatePattern.setDebug(true);
+            //LocatePattern.setDebug(true);
         }
         log.debug("41");
         int[] patternZone = LocatePattern.locatePattern(buffImg, zoneToPerformLocalisation);
