@@ -356,5 +356,18 @@ public class Vec2 {
 	public Circle toCircle() {
 		return new Circle(this, 0);
 	}
+
+	public boolean xisbetween(int x1, int x2){
+		if(this.getX()>x1 && this.getX()<x2){
+			return true;
+		}
+		return false;
+	}
+	public boolean yisbetween(int y1,int y2){
+		if(this.getY()>y1 && this.getY()<y2){
+			return true;
+		}
+		return false;
+	}
 }
 

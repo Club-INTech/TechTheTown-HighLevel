@@ -60,11 +60,27 @@ public class Geometry
 		// - le point d'intersection est entre A2 et B2 : (A1B1)^(A1B2) * (A1B1)^(A1A2) < 0
 		// - le point d'intersection est entre A1 et B1 : (A2B2)^(A2B1) * (A2B2)^(A2A1) < 0
 		// ^ = produit vectoriel
+		int xA1=segment1.getA().getX();
+		int yA1=segment1.getA().getY();
+		int xB1=segment1.getB().getX();
+		int yB1=segment1.getB().getY();
+		int xA2=segment2.getA().getX();
+		int yA2=segment2.getA().getY();
+		int xB2=segment2.getB().getX();
+		int yB2=segment2.getB().getY();
+		if(segment1.vecdirecteur().crossProduct(segment2.vecdirecteur()) != 0){
+			Vec2 vecintersection=intersection(segment1,segment2);
+			if(vecintersection.xisbetween(xA1,xB1)&& vecintersection.xisbetween(xB2,xA2) &&vecintersection.yisbetween(yA1,yB1)&& vecintersection.yisbetween(yB2,yA2)  ){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
 
-		return ((double)segment1.getB().getX() - (double)segment1.getA().getX()) * ((double)segment2.getB().getY() - (double)segment2.getA().getY()) - ((double)segment1.getB().getY() - (double)segment1.getA().getY()) * ((double)segment2.getB().getX() - (double)segment2.getA().getX()) != 0
-				&& (((double)segment1.getB().getX() - (double)segment1.getA().getX()) * ((double)segment2.getB().getY() - (double)segment1.getA().getY()) - ((double)segment1.getB().getY() - (double)segment1.getA().getY()) * ((double)segment2.getB().getX() - (double)segment1.getA().getX())) * (((double)segment1.getB().getX() - (double)segment1.getA().getX()) * ((double)segment2.getA().getY() - (double)segment1.getA().getY()) - ((double)segment1.getB().getY() - (double)segment1.getA().getY()) * ((double)segment2.getA().getX() - (double)segment1.getA().getX())) < 0
-				&& (((double)segment2.getB().getX() - (double)segment2.getA().getX()) * ((double)segment1.getB().getY() - (double)segment2.getA().getY()) - ((double)segment2.getB().getY() - (double)segment2.getA().getY()) * ((double)segment1.getB().getX() - (double)segment2.getA().getX())) * (((double)segment2.getB().getX() - (double)segment2.getA().getX()) * ((double)segment1.getA().getY() - (double)segment2.getA().getY()) - ((double)segment2.getB().getY() - (double)segment2.getA().getY()) * ((double)segment1.getA().getX() - (double)segment2.getA().getX())) < 0
-				;
+		else{
+			return false;
+		}
 		/*return  ((segment1.getVector().crossProduct(segment2.getVector()) != 0)
 				&& ((segment1.getVector().crossProduct(segment2.getB().minusNewVector(segment1.getA()))  *  segment1.getVector().crossProduct(segment2.getA().minusNewVector(segment1.getA()))) < 0)
 				&& ((segment2.getVector().crossProduct(segment1.getB().minusNewVector(segment2.getA()))  *  segment2.getVector().crossProduct(segment1.getA().minusNewVector(segment2.getA()))) < 0));
