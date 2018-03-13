@@ -219,31 +219,31 @@ public class LocatePattern {
                     System.out.println("416a124");
                     List<Point> currentContour = contour.toList();
                     System.out.println("416a125");
-                    double xmin=10000;
-                    double xmax=-1;
-                    double ymin=10000;
-                    double ymax=-1;
+                    int xmin=10000;
+                    int xmax=-1;
+                    int ymin=10000;
+                    int ymax=-1;
                     System.out.println(currentContour.size());
                     System.out.println("416a125debug");
                     for (int i=0; i<currentContour.size(); i++){
                         System.out.println("416a126");
                         if (currentContour.get(i).x<xmin){
-                            xmin=currentContour.get(i).x;
+                            xmin=(int)currentContour.get(i).x;
                         }
                         if(currentContour.get(i).x>xmax){
-                            xmax=currentContour.get(i).x;
+                            xmax=(int)currentContour.get(i).x;
                         }
                         if (currentContour.get(i).y<ymin){
-                            ymin=currentContour.get(i).y;
+                            ymin=(int)currentContour.get(i).y;
                         }
                         if(currentContour.get(i).y>ymax){
-                            ymax=currentContour.get(i).y;
+                            ymax=(int)currentContour.get(i).y;
                         }
                     }
                     //Delta X = taille de la zone détectée en X
-                    double deltaX=xmax-xmin;
+                    int deltaX=xmax-xmin;
                     //Delta Y = taille de la zone détectée en Y
-                    double deltaY=ymax-ymin;
+                    int deltaY=ymax-ymin;
                     //On valide le contour s'il correspond aux spécifications du pattern:
                     //deltaX>60 pixels
                     //deltaY>100 pixels
@@ -277,12 +277,12 @@ public class LocatePattern {
                             System.out.println("416a127aa4");
                             if (approxCurve.total() == 4 && area >= maxArea) {
                                 System.out.println("416a127aaa");
-                                double maxCosine = 0;
+                                float maxCosine = 0;
                                 List<Point> curves = approxCurve.toList();
                                 System.out.println("416a127aaa1");
                                 for (int j = 2; j < 5; j++) {
                                     System.out.println("416a127aaa2");
-                                    double cosine = Math.abs(angle(curves.get(j % 4),
+                                    float cosine = (float) Math.abs(angle(curves.get(j % 4),
                                             curves.get(j - 2), curves.get(j - 1)));
                                     System.out.println("416a127aaa3");
                                     maxCosine = Math.max(maxCosine, cosine);
@@ -307,31 +307,31 @@ public class LocatePattern {
         if (maxId >= 0) {
             System.out.println("416a28a");
             //La zone où les patterns ont étés trouvés est rognée afin de garder toutes les détections en un minimal de place
-            double xmin=10000;
-            double xmax=-1;
-            double ymin=10000;
-            double ymax=-1;
+            int xmin=10000;
+            int xmax=-1;
+            int ymin=10000;
+            int ymax=-1;
             List<Point> retainedContours = contours.get(maxId).toList();
             System.out.println("416a28a1");
             for (int i=0; i<retainedContours.size(); i++){
                 System.out.println("416a28a2");
                 if (retainedContours.get(i).x<xmin){
-                    xmin=retainedContours.get(i).x;
+                    xmin=(int)retainedContours.get(i).x;
                 }
                 if(retainedContours.get(i).x>xmax){
-                    xmax=retainedContours.get(i).x;
+                    xmax=(int)retainedContours.get(i).x;
                 }
                 if (retainedContours.get(i).y<ymin){
-                    ymin=retainedContours.get(i).y;
+                    ymin=(int)retainedContours.get(i).y;
                 }
                 if(retainedContours.get(i).y>ymax){
-                    ymax=retainedContours.get(i).y;
+                    ymax=(int)retainedContours.get(i).y;
                 }
             }
             System.out.println("416a28a3");
             Imgproc.drawContours(src, contours, maxId, new Scalar(255, 0, 0,.8), 8);
             System.out.println("416a28a4");
-            patternZoneCroppedImage = new int[][]{{(int) xmin, (int) ymin}, {(int) xmax, (int) ymax}};
+            patternZoneCroppedImage = new int[][]{{xmin, ymin}, {xmax, ymax}};
             System.out.println("416a28a5");
         }
         else {
