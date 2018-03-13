@@ -67,6 +67,22 @@ public class Pathfinding implements Service {
      */
 
     public void reInitGraphe(Noeud noeudDepart, Noeud noeudArrive) {
+        for (Noeud node : graphe.getNodes()) {
+            node.setPred(null);
+            node.setCout(-1);
+            node.setHeuristique(999999999);
+            node.removeNeighbour(noeudDepart);
+            node.removeNeighbour(noeudArrive);
+        }
+        graphe.removeNode(noeudDepart);
+        graphe.removeNode(noeudArrive);
+    }
+
+    /**
+     * Retire un tas de cubes du graphes, si le robot les à récupérés
+     */
+
+    public void removeObstacle() {
         if (config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)) {
             obstacleManager.removeObstacle(circularobstacles.get(TAS_BASE.getID()));
             graphe.removeObstacle();
@@ -85,16 +101,6 @@ public class Pathfinding implements Service {
         } else if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)) {
             obstacleManager.removeObstacle(circularobstacles.get(TAS_STATION_EPURATION_ENNEMI.getID()));
             graphe.removeObstacle();
-        } else {
-            for (Noeud node : graphe.getNodes()) {
-                node.setPred(null);
-                node.setCout(-1);
-                node.setHeuristique(999999999);
-                node.removeNeighbour(noeudDepart);
-                node.removeNeighbour(noeudArrive);
-            }
-            graphe.removeNode(noeudDepart);
-            graphe.removeNode(noeudArrive);
         }
     }
 
@@ -108,6 +114,8 @@ public class Pathfinding implements Service {
      */
 
     public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws PointInObstacleException, UnableToMoveException, NoPathFound {
+        removeObstacle();
+
         long time1 = System.currentTimeMillis();
 
         /** Dévclaration des variables */
