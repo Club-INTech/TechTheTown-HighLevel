@@ -223,6 +223,7 @@ public class LocatePattern {
                     double xmax=-1;
                     double ymin=10000;
                     double ymax=-1;
+                    System.out.println(currentContour.size());
                     for (int i=0; i<currentContour.size(); i++){
                         System.out.println("416a126");
                         if (currentContour.get(i).x<xmin){
