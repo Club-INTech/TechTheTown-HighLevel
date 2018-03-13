@@ -346,9 +346,12 @@ public class LocatePattern {
             patternZoneCroppedImage=new int[][]{{-1,-1},{-1,-1}};
         }
         System.out.println("416a29");
+        gray0Channel.clear();
+        blurredChannel.clear();
         blurred.release();
         gray.release();
         gray0.release();
+        System.gc();
         //Renvoie les points permettant de définir un rectangle autour de la zone croppée.
         return patternZoneCroppedImage;
     }
