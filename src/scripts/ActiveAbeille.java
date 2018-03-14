@@ -28,7 +28,7 @@ public class ActiveAbeille extends AbstractScript {
         //On se tourne vers l'abeille
         actualState.robot.turn(Math.PI/2);
         //ON s'avance vers l'abeille
-        actualState.robot.moveLengthwise(50);
+        actualState.robot.moveLengthwise(config.getInt(ConfigInfoRobot.distance_abeille));
         //On active le bras
         actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,true);
         //On tourne de 90° pour lancer l'abeille

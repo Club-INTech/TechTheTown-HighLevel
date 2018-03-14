@@ -122,6 +122,12 @@ public enum ConfigInfoRobot implements ConfigInfo
     gvert(120),
     bvert(68),
 
+    /**Paramètres scripts*/
+    distance_interrupteur(50),
+    distance_abeille(50),
+    distance_penetration_zone_depose_cubes(70),
+    distance_push_depose_cubes(107),
+
     ;
     private Object defaultValue;
 
