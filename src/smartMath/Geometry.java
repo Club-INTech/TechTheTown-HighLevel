@@ -69,8 +69,7 @@ public class Geometry
 		int yA2=segment2.getA().getY();
 		int xB2=segment2.getB().getX();
 		int yB2=segment2.getB().getY();
-		return Line2D.linesIntersect(xA1, yA1, xA2, yA2, xB1, yB1, xB2, yB2);
-		/*if(segment1.vecdirecteur().crossProduct(segment2.vecdirecteur()) != 0){
+		if(segment1.vecdirecteur().crossProduct(segment2.vecdirecteur()) != 0){
 			Vec2 vecintersection=intersection(segment1,segment2);
 			if(vecintersection.xisbetween(xA1,xB1)&& vecintersection.xisbetween(xB2,xA2) &&vecintersection.yisbetween(yA1,yB1)&& vecintersection.yisbetween(yB2,yA2)  ){
 				return true;
@@ -82,7 +81,7 @@ public class Geometry
 
 		else{
 			return false;
-		}*/
+		}
 		/*return  ((segment1.getVector().crossProduct(segment2.getVector()) != 0)
 				&& ((segment1.getVector().crossProduct(segment2.getB().minusNewVector(segment1.getA()))  *  segment1.getVector().crossProduct(segment2.getA().minusNewVector(segment1.getA()))) < 0)
 				&& ((segment2.getVector().crossProduct(segment1.getB().minusNewVector(segment2.getA()))  *  segment2.getVector().crossProduct(segment1.getA().minusNewVector(segment2.getA()))) < 0));
@@ -242,7 +241,8 @@ public class Geometry
 		Segment segment2=new Segment(pointhautdroite,pointbasdroite);
 		Segment segment3=new Segment(pointbasdroite,pointbasgauche);
 		Segment segment4=new Segment(pointbasgauche,pointhautdroite);
-		return (intersects(segment,segment1) || intersects(segment,segment2) || intersects(segment,segment3) || intersects(segment,segment4));
+		boolean toReturn = (intersects(segment,segment1) || intersects(segment,segment2) || intersects(segment,segment3) || intersects(segment,segment4));
+		return toReturn;
 	}
 
 	/**

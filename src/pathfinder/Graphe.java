@@ -114,21 +114,20 @@ public class Graphe implements Service {
         for (int i = 0; i < n; i++) {
             ArrayList<Arete> listaretes = new ArrayList<>();
             ArrayList<Noeud> voisins = new ArrayList<>();
-            for (int j = i + 1; j < n; j++) {
+            for (int j = 0; j < n; j++) {
                 Segment segment = new Segment(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                 boolean intersectsWithCircularObstacles = false;
                 boolean intersectsWithRectangularObstacles = false;
                 for (int k = 0; k < listCircu.size(); k++) {
-                    if (Geometry.intersects(segment, listCircu.get(k).getCircle())) {
+                    if (Geometry.intersects(segment, listCircu.get(k).getCircle())){
                         intersectsWithCircularObstacles = true;
                     }
                 }
-                for(int l=0;l<listRectangu.size();l++){
-                    if(Geometry.intersects(segment, listRectangu.get(l).getRectangle()));{
+                for (int l = 0; l<listRectangu.size(); l++) {
+                    if(Geometry.intersects(segment, listRectangu.get(l).getRectangle())){
                         intersectsWithRectangularObstacles=true;
                     }
                 }
-                //System.out.println("rect "+intersectsWithRectangularObstacles+" circu "+intersectsWithCircularObstacles);
                 if (!(intersectsWithCircularObstacles) && !(intersectsWithRectangularObstacles)){
                     double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                     cost = Math.sqrt(cost);
@@ -137,15 +136,9 @@ public class Graphe implements Service {
                     voisins.add(nodes.get(j));
                 }
             }
-
             nodes.get(i).setVoisins(voisins);
             boneslist.addAll(listaretes);
         }
-        System.out.println("///////////////////////////////////////////////");
-        for (Noeud a : nodes.get(n-2).getVoisins()){
-            System.out.println(a);
-        }
-        System.out.println("///////////////////////////////////////////////");
         return boneslist;
     }
 
