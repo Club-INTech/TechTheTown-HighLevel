@@ -4,11 +4,15 @@ import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 import patternRecognition.PatternRecognition;
+import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import strategie.GameState;
+import threads.ThreadInterface;
+
+import java.io.File;
 
 public class JUnit_PatternRecognition extends JUnit_Test {
 
@@ -16,8 +20,9 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     private ScriptManager scriptManager;
     private GameState state;
     private HookFactory hookFactory;
-    private ThreadSimulator simulator;
-    private ThreadSimulatorMotion simulatorMotion;
+    private ThreadInterface anInterface;
+    private PatternRecognition patternRecognitionThread;
+    private Locomotion locomotion;
 
     @Before
     public void setUp() {
@@ -25,62 +30,42 @@ public class JUnit_PatternRecognition extends JUnit_Test {
             super.setUp();
             robotReal = container.getService(Robot.class);
             state = container.getService(GameState.class);
-            scriptManager=container.getService(ScriptManager.class);
-            simulator=container.getService(ThreadSimulator.class);
-            simulatorMotion=container.getService(ThreadSimulatorMotion.class);
-            container.startInstanciedThreads();
-        } catch (Exception e){
+            scriptManager = container.getService(ScriptManager.class);
+            patternRecognitionThread = container.getService(PatternRecognition.class);
+            anInterface = container.getService(ThreadInterface.class);
+            locomotion=container.getService(Locomotion.class);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Test
-    public void testReconnaissance(){
-        String results="";
-        int nbMinusOne=0;
-        int nbSuccessful=0;
-        for (int i=1; i<=500; i++) {
-            results+=i+"\t:\t";
-            System.out.println("Image "+i);
-            PatternRecognition patternRecognitionThread = new PatternRecognition(config, robotReal.getEthWrapper(), this.state);
-            patternRecognitionThread.setDebugPatternRecognition(false);
-            log.debug("Starting PatternRecognition thread...");
-            patternRecognitionThread.start();
-
-            int victoryPattern = -2;
-            while (victoryPattern == -2) {
-                victoryPattern = patternRecognitionThread.getFinalIndice();
-            }
-            if (victoryPattern==-1){
-                nbMinusOne+=1;
-            }
-            else if ((i/50)==victoryPattern){
-                nbSuccessful+=1;
-            }
-            results+=victoryPattern+"\n";
-            patternRecognitionThread.shutdown();
-            log.debug("Pattern found : " + victoryPattern);
-        }
-        System.out.println(results);
-        System.out.println("Nombre de -1 : "+nbMinusOne);
-        System.out.println("Nombre de réussites : "+nbSuccessful);
     }
 
     @Test
     public void test() {
-        try {
-            PatternRecognition patternRecognitionThread = new PatternRecognition(config, robotReal.getEthWrapper(), this.state);
-            patternRecognitionThread.start();
-            int finalindice = patternRecognitionThread.getFinalIndice();
-            while (finalindice == -2) {
-                finalindice = patternRecognitionThread.getFinalIndice();
-                patternRecognitionThread.sleep(100);
+        boolean noVideoInput=true;
+        for (int i=0; i<5; i++) {
+            File f = new File("/dev/video"+i);
+            if (f.exists()) {
+                log.critical("/dev/video"+i+" exists");
+                noVideoInput=false;
             }
-            System.out.println(finalindice);
+            else{
+                log.critical("/dev/video"+i+" does not exist");
+            }
         }
-        catch(InterruptedException e){
-            e.printStackTrace();
+        if (!noVideoInput) {
+            try {
+                container.startInstanciedThreads();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        while (true){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                log.critical("Thread cannot sleep");
+            }
         }
     }
-
 }

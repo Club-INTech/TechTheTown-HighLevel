@@ -30,6 +30,7 @@ public class JUnit_MatchScript extends JUnit_Test {
             robotReal = container.getService(Robot.class);
             state = container.getService(GameState.class);
             scriptManager = container.getService(ScriptManager.class);
+            //patternRecognitonThread = container.getService(PatternRecognition.class);
             anInterface = container.getService(ThreadInterface.class);
             locomotion = container.getService(Locomotion.class);
             container.startInstanciedThreads();
