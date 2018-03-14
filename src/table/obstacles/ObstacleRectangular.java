@@ -246,8 +246,8 @@ public class ObstacleRectangular extends Obstacle
 	}
 
 	public Rectangle getRectangle(){
-		int x=this.position.getX()-sizeX/2;
-		int y=this.getPosition().getY()+sizeY/2;
+		int x=this.getPosition().getX()-this.sizeX/2;
+		int y=this.getPosition().getY()+this.sizeY/2;
 		return new Rectangle(x,y,this.sizeX,this.sizeY);
 	}
 }

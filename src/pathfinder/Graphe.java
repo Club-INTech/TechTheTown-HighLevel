@@ -117,30 +117,35 @@ public class Graphe implements Service {
             for (int j = i + 1; j < n; j++) {
                 Segment segment = new Segment(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                 boolean intersectsWithCircularObstacles = false;
-                boolean intersectsWithRectangularObstacles=false;
+                boolean intersectsWithRectangularObstacles = false;
                 for (int k = 0; k < listCircu.size(); k++) {
                     if (Geometry.intersects(segment, listCircu.get(k).getCircle())) {
                         intersectsWithCircularObstacles = true;
                     }
                 }
-                /*for(int l=0;l<listRectangu.size();l++){
-                    if(Geometry.intersects(segment,listRectangu.get(l).getRectangle()));{
+                for(int l=0;l<listRectangu.size();l++){
+                    if(Geometry.intersects(segment, listRectangu.get(l).getRectangle()));{
                         intersectsWithRectangularObstacles=true;
                     }
-                }*/
-                if (!(intersectsWithCircularObstacles)&& !(intersectsWithRectangularObstacles)){
+                }
+                //System.out.println("rect "+intersectsWithRectangularObstacles+" circu "+intersectsWithCircularObstacles);
+                if (!(intersectsWithCircularObstacles) && !(intersectsWithRectangularObstacles)){
                     double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                     cost = Math.sqrt(cost);
                     arete = new Arete(nodes.get(i), nodes.get(j), cost);
                     listaretes.add(arete);
                     voisins.add(nodes.get(j));
                 }
-
             }
 
             nodes.get(i).setVoisins(voisins);
             boneslist.addAll(listaretes);
         }
+        System.out.println("///////////////////////////////////////////////");
+        for (Noeud a : nodes.get(n-2).getVoisins()){
+            System.out.println(a);
+        }
+        System.out.println("///////////////////////////////////////////////");
         return boneslist;
     }
 

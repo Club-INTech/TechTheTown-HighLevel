@@ -61,6 +61,11 @@ public class Noeud {
 
     public void setPred(Noeud pred) {        this.pred = pred;   }
 
+    public String toString(){
+        String toReturn = "Node ("+this.position.getX()+","+this.position.getY()+")";
+        return toReturn;
+    }
+
 
 }
 
