@@ -6,16 +6,11 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 
-
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jdk.nashorn.internal.objects.NativeMath.max;
-import static jdk.nashorn.internal.objects.NativeMath.min;
-import static org.opencv.imgcodecs.Imgcodecs.imread;
 
 /** Permet de localiser le pattern sur l'image prise par la piCam
  */
@@ -30,7 +25,7 @@ public class LocatePattern {
      * @param selectedZone zone de l'image à analyser, de la forme {xstart, ystart, width, height}
      * @return renvoie les coordonnées du pattern sur l'image à analyser
      */
-    public static int[] locatePattern(BufferedImage buffImg, int[] selectedZone) {
+    public static int[] locatePattern(BufferedImage buffImg, int[] selectedZone, String orientation) {
         //Charge la librairie OpenCV
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
@@ -54,9 +49,9 @@ public class LocatePattern {
             //int[][] firstRect = findRectangle(image, 10, 20, 9);
             //int[][] secondRect = findRectangle(image, 30, 40, 9);
             //int[][] thirdRect = findRectangle(image, 30, 40, 15);
-            int[][] firstRect = findRectangle(image, 10, 20, 5);
-            int[][] secondRect = findRectangle(image, 30, 40, 5);
-            int[][] thirdRect = findRectangle(image, 30, 40, 9);
+            int[][] firstRect = findRectangle(image, 10, 20, 5, orientation);
+            int[][] secondRect = findRectangle(image, 30, 40, 5, orientation);
+            int[][] thirdRect = findRectangle(image, 30, 40, 9, orientation);
             //Add-ons
             //int[][] forthRect = findRectangle(image, 30, 40, 21);
             foundRectangles = new int[][][]{firstRect, secondRect,thirdRect};
@@ -140,7 +135,7 @@ public class LocatePattern {
      * @param ksize grossièreté du floutage de l'image (doit être un nombre impair)
      * @return renvoie les coordonnées des 2 points créant un rectangle entourant la zone de pattern déterminé
      */
-    private static int[][] findRectangle(Mat src, int threesold1Value, int threesold2Value, int ksize){
+    private static int[][] findRectangle(Mat src, int threesold1Value, int threesold2Value, int ksize, String orientation){
         Mat blurred = src.clone();
         Imgproc.medianBlur(src, blurred, ksize);
         Mat gray0 = new Mat(blurred.size(), CvType.CV_8U), gray = new Mat();
@@ -214,6 +209,22 @@ public class LocatePattern {
                      */
                     //VALEURS PICAM
                     //if (deltaX > 60 && deltaY > 100 && deltaX < 250 && deltaY < 200 && deltaX < deltaY)
+                    if (orientation.equals("face")) {
+                        int threesoldMaxDeltaX = 50;
+                        int threesoldMinDeltaX = 10;
+                        int threesoldMaxDeltaY = 75;
+                        int threesoldMinDeltaY = 30;
+                        double threesoldRatio = 1;
+                    }
+                    else{
+                        int threesoldMaxDeltaX = 50;
+                        int threesoldMinDeltaX = 10;
+                        int threesoldMaxDeltaY = 75;
+                        int threesoldMinDeltaY = 30;
+                        double threesoldRatio = 1;
+                    }
+
+
                     if (deltaX > 10 && deltaY > 30 && deltaX < 50 && deltaY < 75 && deltaX < deltaY) {
 
                         //dimensions relatives interrupteur

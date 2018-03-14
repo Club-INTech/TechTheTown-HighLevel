@@ -29,7 +29,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
         try {
             super.setUp();
             //robotReal = container.getService(Robot.class);
-            //state = container.getService(GameState.class);
+            state = container.getService(GameState.class);
             //scriptManager = container.getService(ScriptManager.class);
             patternRecognitionThread = container.getService(PatternRecognition.class);
             //anInterface = container.getService(ThreadInterface.class);
@@ -52,14 +52,20 @@ public class JUnit_PatternRecognition extends JUnit_Test {
                 log.debug("/dev/video"+i+" does not exist");
             }
         }
+
+
         if (!noVideoInput) {
             try {
+                patternRecognitionThread.setOrientation("side");
                 container.startInstanciedThreads();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        while (true){
+
+
+
+        while (!state.isRecognitionDone()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {

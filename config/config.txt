@@ -13,7 +13,7 @@ LONGUEUR_BRAS                        = 330
 DIMENSION_PORTES                     = 87
 
 # ETAT INITIAL DES ROBOTS
-COULEUR                              = orange
+COULEUR                              = vert
 SIMULATION                           = true
 ATTENTE_JUMPER                       = false
 

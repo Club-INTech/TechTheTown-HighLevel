@@ -55,6 +55,7 @@ public class PatternRecognition extends AbstractThread{
     private double saturationPreModifier;
     private double brightnessPreModifier;
     private boolean alreadyPreModified;
+    private String orientation;
     private static boolean movementLocked=true;
     private static boolean recognitionDone=false;
 
@@ -67,6 +68,7 @@ public class PatternRecognition extends AbstractThread{
         this.updateConfig();
         this.ethWrapper=ethWrapper;
         this.gameState=stateToConsider;
+        this.orientation="side";
         if (this.symmetry) {
             this.zoneToPerformLocalisation = zoneToPerformLocalisationOrange;
         }
@@ -517,7 +519,7 @@ public class PatternRecognition extends AbstractThread{
                     "),("+(zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2])+","+(zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3])+"))");
             LocatePattern.setDebug(true);
         }
-        int[] patternZone = LocatePattern.locatePattern(buffImg, zoneToPerformLocalisation);
+        int[] patternZone = LocatePattern.locatePattern(buffImg, zoneToPerformLocalisation, this.orientation);
         int[] centerPattern=new int[]{(patternZone[0]+patternZone[2])/2,(patternZone[1]+patternZone[3])/2};
         if (debug){
             log.debug("Center found : ("+centerPattern[0]+","+centerPattern[1]+")");
@@ -719,6 +721,12 @@ public class PatternRecognition extends AbstractThread{
         this.lengthSideOfSquareDetection=length;
     }
 
+    /** Set l'orientation avec laquelle la photo est prise
+     * @param orientation "face" ou "side"
+     */
+    public void setOrientation(String orientation){
+        this.orientation=orientation;
+    }
 
     public void shutdown(){
         this.isShutdown=true;
