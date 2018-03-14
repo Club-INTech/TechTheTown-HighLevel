@@ -28,12 +28,12 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     public void setUp() {
         try {
             super.setUp();
-            robotReal = container.getService(Robot.class);
-            state = container.getService(GameState.class);
-            scriptManager = container.getService(ScriptManager.class);
+            //robotReal = container.getService(Robot.class);
+            //state = container.getService(GameState.class);
+            //scriptManager = container.getService(ScriptManager.class);
             patternRecognitionThread = container.getService(PatternRecognition.class);
-            anInterface = container.getService(ThreadInterface.class);
-            locomotion=container.getService(Locomotion.class);
+            //anInterface = container.getService(ThreadInterface.class);
+            //locomotion=container.getService(Locomotion.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,11 +45,11 @@ public class JUnit_PatternRecognition extends JUnit_Test {
         for (int i=0; i<5; i++) {
             File f = new File("/dev/video"+i);
             if (f.exists()) {
-                log.critical("/dev/video"+i+" exists");
+                log.debug("/dev/video"+i+" exists");
                 noVideoInput=false;
             }
             else{
-                log.critical("/dev/video"+i+" does not exist");
+                log.debug("/dev/video"+i+" does not exist");
             }
         }
         if (!noVideoInput) {

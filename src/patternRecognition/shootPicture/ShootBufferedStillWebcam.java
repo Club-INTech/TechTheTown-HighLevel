@@ -23,7 +23,7 @@ public class ShootBufferedStillWebcam {
 
 
     private static File shootPicture(){
-        String videoFileToRead="/dev/video0";
+        String videoFileToRead="/dev/video1";
 
         List<String> command = new ArrayList<>();
         command.add("fswebcam");
