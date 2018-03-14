@@ -122,8 +122,8 @@ public class Pathfinding implements Service {
 
         /** Dévclaration des variables */
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
-        Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<Noeud>());
-        Noeud noeudarrive = new Noeud(positionarrive, 0, 0, new ArrayList<Noeud>());
+        Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<>());
+        Noeud noeudarrive = new Noeud(positionarrive, 0, 0, new ArrayList<>());
         Noeud noeudcourant;
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();

@@ -13,7 +13,7 @@ public class Noeud {
     private double heuristique;
     private double cout;
     private ArrayList<Noeud> voisins;
-    private Noeud   pred;
+    private Noeud pred;
 
     /** Constructeur*/
     public Noeud(Vec2 position, int heuristique, int cout, ArrayList<Noeud> voisins) {
@@ -56,6 +56,19 @@ public class Noeud {
     public void setHeuristique(double heuristique) { this.heuristique = heuristique;  }
 
     public void setVoisins(ArrayList<Noeud> voisins){ this.voisins = voisins; }
+
+    public void addVoisin(Noeud voisin){
+        if (!this.voisins.contains(voisin)) {
+            this.voisins.add(voisin);
+        }
+    }
+    public void addVoisins(ArrayList<Noeud> voisins){
+        for (Noeud voisin : voisins) {
+            if (!this.voisins.contains(voisin)) {
+                this.voisins.add(voisin);
+            }
+        }
+    }
 
     public void setCout(double cout) {      this.cout = cout;    }
 

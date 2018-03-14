@@ -81,15 +81,15 @@ public class Graphe implements Service {
         nodesToKeep.addAll(nodestoaddaroundobstacles);
 
         Vec2 positionmilieu=new Vec2(0,1000);
-        Noeud nodemilieu=new Noeud(positionmilieu,0,0,null);
+        Noeud nodemilieu=new Noeud(positionmilieu,0,0, new ArrayList<>());
         nodesToKeep.add(nodemilieu);
 
         Vec2 positiondepart=new Vec2(1252, 455);
-        Noeud nodepart=new Noeud(positiondepart,0,0,null);
+        Noeud nodepart=new Noeud(positiondepart,0,0, new ArrayList<>());
         nodesToKeep.add(nodepart);
 
         Vec2 positioninterr=new Vec2(650,215);
-        Noeud noeudinterr=new Noeud(positioninterr,0,0,null);
+        Noeud noeudinterr=new Noeud(positioninterr,0,0, new ArrayList<>());
         nodesToKeep.add(noeudinterr);
 
         return nodesToKeep;
@@ -133,10 +133,10 @@ public class Graphe implements Service {
                     cost = Math.sqrt(cost);
                     arete = new Arete(nodes.get(i), nodes.get(j), cost);
                     listaretes.add(arete);
-                    voisins.add(nodes.get(j));
+                    nodes.get(i).addVoisin(nodes.get(j));
+                    nodes.get(j).addVoisin(nodes.get(i));
                 }
             }
-            nodes.get(i).setVoisins(voisins);
             boneslist.addAll(listaretes);
         }
         return boneslist;
@@ -159,14 +159,13 @@ public class Graphe implements Service {
                 }
             }
             if (!isIntersection) {
-
                 voisins.add(nodes.get(j));
                 ArrayList<Noeud> noeuds = nodes.get(j).getVoisins();
                 noeuds.add(noeud);
-                nodes.get(j).setVoisins(noeuds);
+                nodes.get(j).addVoisins(noeuds);
             }
         }
-        noeud.setVoisins(voisins);
+        noeud.addVoisins(voisins);
         nodes.add(noeud);
     }
 
@@ -212,8 +211,8 @@ public class Graphe implements Service {
         }
         int m=pointstoreturn.size();
         for(int i=0;i<m;i++){
-            if(!(nodeInObstacle(new Noeud(pointstoreturn.get(i),0,0,null))) & table.getObstacleManager().isRobotInTable(pointstoreturn.get(i))){
-                Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,null);
+            if(!(nodeInObstacle(new Noeud(pointstoreturn.get(i),0,0,new ArrayList<>()))) & table.getObstacleManager().isRobotInTable(pointstoreturn.get(i))){
+                Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,new ArrayList<>());
                 nodestoreturn.add(nodetoadd);
             }
         }
