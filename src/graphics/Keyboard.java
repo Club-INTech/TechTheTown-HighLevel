@@ -120,10 +120,8 @@ public class Keyboard extends AbstractThread implements KeyListener {
 			goRight();
 		}
 		else{
-			if (isMoving) {
-				isMoving = false;
-				sstop();
-			}
+			isMoving = false;
+			sstop();
 		}
 
 		if (isFirstButtonPressed){
