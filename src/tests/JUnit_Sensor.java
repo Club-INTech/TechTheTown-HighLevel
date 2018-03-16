@@ -1,5 +1,6 @@
 package tests;
 
+import enums.ActuatorOrder;
 import enums.Speed;
 import hook.HookFactory;
 import org.junit.Before;
@@ -46,6 +47,7 @@ public class JUnit_Sensor extends JUnit_Test {
             while(true){
                 robotReal.getPosition();
                 robotReal.getOrientation();
+                robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             }
 
 
