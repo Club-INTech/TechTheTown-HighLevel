@@ -48,7 +48,7 @@ public class CloseDoors extends AbstractScript
 		super(config, log, hookFactory);
 
 		versions = new Integer[]{0,1,3,4};
-		
+
 	}
 	
 	/**

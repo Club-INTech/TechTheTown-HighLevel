@@ -21,8 +21,13 @@ public class ActivationPanneauDomotique extends AbstractScript{
     int xEntry=370;
     int yEntry=220;
 
+    /** Eléments appelés par la config */
+
+    int distanceInterrupteur;
+
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
+        updateConfig();
     }
 
     @Override
@@ -36,7 +41,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
         actualState.robot.turn(-Math.PI/2);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-        actualState.robot.moveLengthwise(config.getInt(ConfigInfoRobot.distance_interrupteur));
+        actualState.robot.moveLengthwise(distanceInterrupteur);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.goTo(new Vec2(xEntry,yEntry));
     }
@@ -56,5 +61,11 @@ public class ActivationPanneauDomotique extends AbstractScript{
     @Override
     public int remainingScoreOfVersion(int version, GameState state) {
         return 0;
+    }
+
+    @Override
+    public void updateConfig() {
+        super.updateConfig();
+        distanceInterrupteur = config.getInt(ConfigInfoRobot.DISTANCE_INTERRUPTEUR);
     }
 }
