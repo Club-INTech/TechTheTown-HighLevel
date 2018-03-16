@@ -56,7 +56,11 @@ public class JUnit_PatternRecognition extends JUnit_Test {
 
         if (!noVideoInput) {
             try {
-                patternRecognitionThread.setOrientation("side");
+                boolean montlheryActive=true;
+                if (montlheryActive) {
+                    patternRecognitionThread.setOrientation("face");
+                    patternRecognitionThread.setZoneToPerformLocalisation(new int[]{190,155,305,260});
+                }
                 container.startInstanciedThreads();
             } catch (InterruptedException e) {
                 e.printStackTrace();

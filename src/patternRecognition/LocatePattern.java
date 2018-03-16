@@ -1,10 +1,9 @@
 package patternRecognition;
 
+
 import org.opencv.core.*;
-import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -209,24 +208,41 @@ public class LocatePattern {
                      */
                     //VALEURS PICAM
                     //if (deltaX > 60 && deltaY > 100 && deltaX < 250 && deltaY < 200 && deltaX < deltaY)
+                    int threesoldMaxDeltaX=50;
+                    int threesoldMinDeltaX=10;
+                    int threesoldMaxDeltaY=75;
+                    int threesoldMinDeltaY=30;
+                    double threesoldRatio=1;
                     if (orientation.equals("face")) {
-                        int threesoldMaxDeltaX = 50;
-                        int threesoldMinDeltaX = 10;
-                        int threesoldMaxDeltaY = 75;
-                        int threesoldMinDeltaY = 30;
-                        double threesoldRatio = 1;
+                        //ditstance : 50cm, angle d'incidence +-10°
+                        //TODO : à faire
+                        threesoldMaxDeltaX = 100;
+                        threesoldMinDeltaX = 70;
+                        threesoldMaxDeltaY = 100;
+                        threesoldMinDeltaY = 70;
+                        threesoldRatio = 2;
                     }
-                    else{
-                        int threesoldMaxDeltaX = 50;
-                        int threesoldMinDeltaX = 10;
-                        int threesoldMaxDeltaY = 75;
-                        int threesoldMinDeltaY = 30;
-                        double threesoldRatio = 1;
+                    else if (orientation.equals("montlhery")){
+                        //distance : 1m, angle d'incidence : +-10°
+                        threesoldMaxDeltaX = 60;
+                        threesoldMinDeltaX = 30;
+                        threesoldMaxDeltaY = 60;
+                        threesoldMinDeltaY = 30;
+                        threesoldRatio = 2;
+                    }
+                    else if (orientation.equals("side")){
+                        //distance : 1,4m, angle d'incidence : 70°
+                        threesoldMaxDeltaX = 50;
+                        threesoldMinDeltaX = 10;
+                        threesoldMaxDeltaY = 75;
+                        threesoldMinDeltaY = 30;
+                        threesoldRatio = 1;
                     }
 
 
-                    if (deltaX > 10 && deltaY > 30 && deltaX < 50 && deltaY < 75 && deltaX < deltaY) {
-
+                    if (deltaX > threesoldMinDeltaX && deltaY > threesoldMinDeltaY &&
+                        deltaX < threesoldMaxDeltaX && deltaY < threesoldMaxDeltaY &&
+                        deltaX < threesoldRatio*deltaY) {
                         //dimensions relatives interrupteur
                         //valeur plutot bonnes : deltaY>2.1*deltaX  deltaY<2.5*deltaX
                         //valeur à test : deltaY>1.8*deltaX  deltaY<2.3*deltaX
