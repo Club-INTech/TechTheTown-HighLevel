@@ -41,6 +41,7 @@ public class MatchScript extends AbstractScript {
         tk0.goToThenExec(0,gameState);
         DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
         dpCubes1.goToThenExec(1,gameState);
+        log.debug("Fin MatchScript");
     }
 
     @Override

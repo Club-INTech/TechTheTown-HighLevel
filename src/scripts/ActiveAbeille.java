@@ -28,6 +28,7 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
+        updateConfig();
         //On se tourne vers l'abeille
         actualState.robot.turn(Math.PI/2);
         //ON s'avance vers l'abeille
@@ -42,7 +43,6 @@ public class ActiveAbeille extends AbstractScript {
         int yEntry = 2000-radius-securityDistance;
         Vec2 aim =new Vec2(xEntry,yEntry);
         actualState.robot.goTo(aim);
-        updateConfig();
     }
 
     @Override
