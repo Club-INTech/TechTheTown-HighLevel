@@ -187,8 +187,8 @@ public class ThreadSensor extends AbstractThread
              *           Back
              */
 
-            if (sensorFL.getDetectedDistance() > minSensorRange && sensorFL.getDetectedDistance() < maxSensorRange){
-                if (sensorFR.getDetectedDistance() > minSensorRange && sensorFR.getDetectedDistance() < maxSensorRange) {
+            if (sensorFL.getDetectedDistance() > 0){
+                if (sensorFR.getDetectedDistance() != 0) {
 //                    out.write("Detection:Sensor0And1 ");
                     addFrontObstacleBoth();
                 }
@@ -197,12 +197,12 @@ public class ThreadSensor extends AbstractThread
                     addFrontObstacleSingle(true);
                 }
             }
-            else if (sensorFR.getDetectedDistance() > minSensorRange && sensorFR.getDetectedDistance() < maxSensorRange){
+            else if (sensorFR.getDetectedDistance() != 0){
 //              out.write("Detection:Sensor1 ");
                 addBackObstacleSingle(false);
             }
-            if (sensorBL.getDetectedDistance() > minSensorRange && sensorBL.getDetectedDistance() < maxSensorRange){
-                if (sensorBR.getDetectedDistance() > minSensorRange && sensorBR.getDetectedDistance() < maxSensorRange){
+            if (sensorBL.getDetectedDistance() != 0){
+                if (sensorBR.getDetectedDistance() != 0){
 //                    out.write("Detection:Sensor2And3 ");
                     addBackObstacleBoth();
                 }
@@ -211,7 +211,7 @@ public class ThreadSensor extends AbstractThread
                     addBackObstacleSingle(true);
                 }
             }
-            else if (sensorBR.getDetectedDistance() > minSensorRange && sensorBR.getDetectedDistance() < maxSensorRange){
+            else if (sensorBR.getDetectedDistance() != 0){
 //                out.write("Detection:Sensor3 ");
                 addBackObstacleSingle(false);
             }
@@ -399,12 +399,7 @@ public class ThreadSensor extends AbstractThread
 
 
             for(int i=0; i<nbSensors; i++) {
-
                 int distance=Integer.parseInt(valuesSReceived[i]);
-                //Old method
-                //res.add(distance);
-
-                //Préparation du novueau code
                 sensorsArray.get(i).setDetectedDistance(distance);
             }
 
@@ -423,11 +418,11 @@ public class ThreadSensor extends AbstractThread
                 // On met tout les capteurs qui detectent un objet trop proche du robot ou à plus de maxSensorRange a 0
                 // TODO : a passer en traitement de bas niveau ? Non, ce traitement peut dépendre de la façon dont on calcule la position adverse
 
-                if ( sensorsArray.get(i).getDetectedDistance() > maxSensorRange)
+                if ( sensorsArray.get(i).getDetectedDistance() > sensorsArray.get(i).getMaximalValidDetectionDistance())
                 {
                     sensorsArray.get(i).setDetectedDistance(0);
                 }
-                else if(sensorsArray.get(i).getDetectedDistance() < minSensorRange) {
+                else if(sensorsArray.get(i).getDetectedDistance() < sensorsArray.get(i).getMinimalValidDetectionDistance()) {
                     sensorsArray.get(i).setDetectedDistance(0);
                 }
             }
