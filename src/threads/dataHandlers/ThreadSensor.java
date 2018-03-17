@@ -73,13 +73,11 @@ public class ThreadSensor extends AbstractThread
 
     /** Distance maximale fiable pour les capteurs : au dela, valeurs abberentes
 	 * Override par la config */
-	private double maxSensorRange;
+	private int maxSensorRange;
 
 	/** Distance minimale à laquelle on peut se fier aux capteurs : ne pas detecter notre propre root par exemple
      * Override par la config */
-	private double minSensorRangeAv;
-	private double minSensorRangeAr;
-    private double minSensorRange;
+    private int minSensorRange;
 
     /** Incertitude sur la mesure*/
     private double uncertainty;
@@ -152,10 +150,10 @@ public class ThreadSensor extends AbstractThread
         this.valuesReceived = eth.getUltrasoundBuffer();
         this.mTable = table;
         this.ethWrapper = ethWrapper;
-		this.sensorFL=new Sensor(0,-127,100,this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
-		this.sensorFR=new Sensor(1,127,100,-this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
-		this.sensorBL=new Sensor(2,-127,-100,this.sensorOrientationB,this.detectionAngle,this.maxSensorRange,this.uncertainty);
-		this.sensorBR=new Sensor(3,127,-100,-this.sensorOrientationB,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorFL=new Sensor(0,-127,100,this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
+		this.sensorFR=new Sensor(1,127,100,-this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
+		this.sensorBL=new Sensor(2,-127,-100,this.sensorOrientationB,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
+		this.sensorBR=new Sensor(3,127,-100,-this.sensorOrientationB,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
         this.sensorsArray.add(0,sensorFL);
         this.sensorsArray.add(1,sensorFR);
         this.sensorsArray.add(2,sensorBL);
@@ -189,8 +187,8 @@ public class ThreadSensor extends AbstractThread
              *           Back
              */
 
-            if (sensorsArray.get(0).getDetectedDistance() != 0){
-                if (sensorsArray.get(1).getDetectedDistance() != 0) {
+            if (sensorFL.getDetectedDistance() > minSensorRange && sensorFL.getDetectedDistance() < maxSensorRange){
+                if (sensorFR.getDetectedDistance() > minSensorRange && sensorFR.getDetectedDistance() < maxSensorRange) {
 //                    out.write("Detection:Sensor0And1 ");
                     addFrontObstacleBoth();
                 }
@@ -199,12 +197,12 @@ public class ThreadSensor extends AbstractThread
                     addFrontObstacleSingle(true);
                 }
             }
-            else if (sensorsArray.get(1).getDetectedDistance() != 0){
+            else if (sensorFR.getDetectedDistance() > minSensorRange && sensorFR.getDetectedDistance() < maxSensorRange){
 //              out.write("Detection:Sensor1 ");
                 addBackObstacleSingle(false);
             }
-            if (sensorsArray.get(2).getDetectedDistance() != 0){
-                if (sensorsArray.get(3).getDetectedDistance() != 0){
+            if (sensorBL.getDetectedDistance() > minSensorRange && sensorBL.getDetectedDistance() < maxSensorRange){
+                if (sensorBR.getDetectedDistance() > minSensorRange && sensorBR.getDetectedDistance() < maxSensorRange){
 //                    out.write("Detection:Sensor2And3 ");
                     addBackObstacleBoth();
                 }
@@ -213,7 +211,7 @@ public class ThreadSensor extends AbstractThread
                     addBackObstacleSingle(true);
                 }
             }
-            else if (sensorsArray.get(3).getDetectedDistance() != 0){
+            else if (sensorBR.getDetectedDistance() > minSensorRange && sensorBR.getDetectedDistance() < maxSensorRange){
 //                out.write("Detection:Sensor3 ");
                 addBackObstacleSingle(false);
             }
@@ -304,8 +302,8 @@ public class ThreadSensor extends AbstractThread
         // Et on place le robot ennemi sur la ligne de détection maximale : la position calculée n'est pas la position réelle du robot adverse mais elle suffit
 
         Vec2 posEn;
-        Double USFL = sensorFL.getDetectedDistance();
-        Double USFR = sensorFR.getDetectedDistance();
+        Double USFL = (double)sensorFL.getDetectedDistance();
+        Double USFR = (double)sensorFR.getDetectedDistance();
 
         if (isLeft){
             // On choisit le point à l'extrémité de l'arc à coté du capteur pour la position de l'ennemie: à courte distance, la position est réaliste,
@@ -329,8 +327,8 @@ public class ThreadSensor extends AbstractThread
         // De meme qu'avec le front
 
         Vec2 posEn;
-        Double USBL = sensorBL.getDetectedDistance();
-        Double USBF = sensorBR.getDetectedDistance();
+        Double USBL = (double)sensorBL.getDetectedDistance();
+        Double USBF = (double)sensorBR.getDetectedDistance();
 
         if (isLeft){
             Vec2 posDetect = new Vec2(USBL,sensorBL.getSensorOrientation() - sensorBL.getDetectionWideness()/2);     //sensor arrière gauche
@@ -499,8 +497,6 @@ public class ThreadSensor extends AbstractThread
         this.symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
         this.enRadius = config.getInt(ConfigInfoRobot.ROBOT_EN_RADIUS);
         this.maxSensorRange = config.getInt(ConfigInfoRobot.MAX_SENSOR_RANGE);
-        this.minSensorRangeAv = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGEAV);
-        this.minSensorRangeAr = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGEAR);
         this.minSensorRange = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGE);
         this.sensorOrientationF = config.getDouble(ConfigInfoRobot.SENSOR_ORIENTATION_FRONT);
         this.sensorOrientationB = config.getDouble(ConfigInfoRobot.SENSOR_ORIENTATION_BACK);
