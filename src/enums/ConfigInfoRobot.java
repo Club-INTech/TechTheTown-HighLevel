@@ -74,14 +74,15 @@ public enum ConfigInfoRobot implements ConfigInfo
     PEREMP_OBST(5000),
 
     /** Paramètres capteurs */
-    ROBOT_EN_RADIUS(220),
-    MAX_SENSOR_RANGE(670),       //en mm
-    MIN_SENSOR_RANGEAV(30),     //en mm
-    MIN_SENSOR_RANGEAR(30),     //en mm
-    MIN_SENSOR_RANGE(30),       //en mm
-    SENSOR_ORIENTATION_FRONT(0), //en radians
-    SENSOR_ORIENTATION_BACK(0), //en radians
-    SENSOR_ANGLE_WIDENESS(0.73), //en radians
+
+    ROBOT_EN_RADIUS(220),           //en mm
+    MAX_SENSOR_RANGE(700),          //en mm
+    MIN_SENSOR_RANGEAV(30),         //en mm
+    MIN_SENSOR_RANGEAR(30),         //en mm
+    MIN_SENSOR_RANGE(30),           //en mm
+    SENSOR_ORIENTATION_FRONT(0),    //en radians
+    SENSOR_ORIENTATION_BACK(0),     //en radians
+    SENSOR_ANGLE_WIDENESS(0.24),    //en radians
     UNCERTAINTY(1),
     // TODO à compléter
 
