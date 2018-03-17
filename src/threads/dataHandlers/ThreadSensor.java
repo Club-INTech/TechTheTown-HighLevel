@@ -486,7 +486,6 @@ public class ThreadSensor extends AbstractThread
                 return;
             }
             this.getSensorInfos();
-
             this.removeOutDatedObstacle();
             this.addObstacle();
         }

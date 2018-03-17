@@ -95,7 +95,6 @@ public class JUnit_Sensors extends JUnit_Test
 		log.debug("Test de detection");
 		state.robot.setPosition(new Vec2(0,1000));
 		state.robot.setOrientation(Math.PI);
-		state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
 		log.debug ("Orientation :" + state.robot.getOrientation());
 		log.debug("Position :" + state.robot.getPosition());
 //		state.robot.switchSensor();
