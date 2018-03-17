@@ -93,7 +93,7 @@ public class JUnit_Sensors extends JUnit_Test
 	public void testDetect() throws Exception
 	{
 		log.debug("Test de detection");
-		state.robot.setPosition(new Vec2(0,1000));
+		state.robot.setPosition(new Vec2(0,700));
 		state.robot.setOrientation(Math.PI);
 		log.debug ("Orientation :" + state.robot.getOrientation());
 		log.debug("Position :" + state.robot.getPosition());
