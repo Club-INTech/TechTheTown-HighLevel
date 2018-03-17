@@ -400,12 +400,8 @@ public class ThreadSensor extends AbstractThread
 
             for(int i=0; i<nbSensors; i++) {
                 int distance=Integer.parseInt(valuesSReceived[i]);
-                sensorsArray.get(i).setDetectedDistance(distance*10);
+                sensorsArray.get(i).setDetectedDistance(distance*10); //on convertit de cm en mm
             }
-
-            //USvalues = res;
-
-
 
             if(symetry) //Inversion gauche/droite pour symétriser
             {
