@@ -31,10 +31,6 @@ import threads.AbstractThread;
 import threads.ThreadTimer;
 import utils.Log;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -103,8 +99,8 @@ public class ThreadSensor extends AbstractThread
 	 * 
 	 */
 	private double detectionAngle;
-	private double sensorPositionAngleF;
-	private double sensorPositionAngleB;
+	private double sensorOrientationF;
+	private double sensorOrientationB;
 	private int lifetimeForUntestedObstacle = 200;
 
 
@@ -155,10 +151,10 @@ public class ThreadSensor extends AbstractThread
         this.mTable = table;
         this.ethWrapper = ethWrapper;
 		Thread.currentThread().setPriority(6);
-		this.sensorFL=new Sensor(0,-127,100,this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
-		this.sensorFR=new Sensor(1,127,100,-this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
-		this.sensorBL=new Sensor(2,-127,-100,-this.sensorPositionAngleB+Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty);
-		this.sensorBR=new Sensor(3,127,-100,this.sensorPositionAngleB-Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorFL=new Sensor(0,-127,100,this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorFR=new Sensor(1,127,100,-this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorBL=new Sensor(2,-127,-100,this.sensorOrientationB,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorBR=new Sensor(3,127,-100,-this.sensorOrientationB,this.detectionAngle,this.maxSensorRange,this.uncertainty);
         this.sensorsArray.add(0,sensorFL);
         this.sensorsArray.add(1,sensorFR);
         this.sensorsArray.add(2,sensorBL);
@@ -313,13 +309,13 @@ public class ThreadSensor extends AbstractThread
         if (isLeft){
             // On choisit le point à l'extrémité de l'arc à coté du capteur pour la position de l'ennemie: à courte distance, la position est réaliste,
             // à longue distance (>1m au vue des dimensions), l'ennemie est en réalité de l'autre coté
-            Vec2 posDetect = new Vec2(USFL, sensorFL.getDetectionAnglePosition() + detectionAngle/2); //sensor avant gauche
-            double angleEn = sensorFR.getDetectionAnglePosition() + detectionAngle/2;    //sensor avant droit
+            Vec2 posDetect = new Vec2(USFL, sensorFL.getSensorOrientation() + detectionAngle/2); //sensor avant gauche
+            double angleEn = sensorFR.getSensorOrientation() + detectionAngle/2;    //sensor avant droit
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorFL.getVecteur());     //sensor avant gauche
         }
         else{
-            Vec2 posDetect = new Vec2(USFR, sensorFR.getDetectionAnglePosition() - detectionAngle/2); //sensor avant droit
-            double angleEn = sensorFL.getDetectionAnglePosition() - detectionAngle/2; //sensor avant gauche
+            Vec2 posDetect = new Vec2(USFR, sensorFR.getSensorOrientation() - detectionAngle/2); //sensor avant droit
+            double angleEn = sensorFL.getSensorOrientation() - detectionAngle/2; //sensor avant gauche
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorFR.getVecteur());     //sensor avant droit
         }
 
@@ -336,13 +332,13 @@ public class ThreadSensor extends AbstractThread
         Double USBF = sensorBR.getDetectedDistance();
 
         if (isLeft){
-            Vec2 posDetect = new Vec2(USBL,sensorBL.getDetectionAnglePosition() - detectionAngle/2);     //sensor arrière gauche
-            double angleEn = sensorBR.getDetectionAnglePosition() - detectionAngle/2;            //sensor arrière droit
+            Vec2 posDetect = new Vec2(USBL,sensorBL.getSensorOrientation() - detectionAngle/2);     //sensor arrière gauche
+            double angleEn = sensorBR.getSensorOrientation() - detectionAngle/2;            //sensor arrière droit
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorBL.getVecteur());     //sensor arrière gauche
         }
         else{
-            Vec2 posDetect = new Vec2(USBF,sensorBR.getDetectionAnglePosition() + detectionAngle/2);     //sensor arrière droit
-            double angleEn = sensorBL.getDetectionAnglePosition() + detectionAngle/2;            //sensor arrière gauche
+            Vec2 posDetect = new Vec2(USBF,sensorBR.getSensorOrientation() + detectionAngle/2);     //sensor arrière droit
+            double angleEn = sensorBL.getSensorOrientation() + detectionAngle/2;            //sensor arrière gauche
             posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorBR.getVecteur());     //sensor arrière droit
         }
         mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius, lifetimeForUntestedObstacle);
@@ -506,8 +502,8 @@ public class ThreadSensor extends AbstractThread
         this.minSensorRangeAv = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGEAV);
         this.minSensorRangeAr = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGEAR);
         this.minSensorRange = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGE);
-        this.sensorPositionAngleF = config.getInt(ConfigInfoRobot.SENSOR_POSITION_ANGLE_FRONT);
-        this.sensorPositionAngleB = config.getInt(ConfigInfoRobot.SENSOR_POSITION_ANGLE_BACK);
-        this.detectionAngle = config.getInt(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS);
+        this.sensorOrientationF = config.getDouble(ConfigInfoRobot.SENSOR_ORIENTATION_FRONT);
+        this.sensorOrientationB = config.getDouble(ConfigInfoRobot.SENSOR_ORIENTATION_BACK);
+        this.detectionAngle = config.getDouble(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS);
 	}
 }
