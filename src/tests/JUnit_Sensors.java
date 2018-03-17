@@ -19,6 +19,7 @@
 
 package tests;
 
+import enums.ActuatorOrder;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
@@ -30,11 +31,13 @@ import org.junit.Before;
 import org.junit.Test;
 import robot.EthWrapper;
 import robot.Locomotion;
+import robot.Robot;
 import scripts.ScriptManager;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
+import threads.ThreadInterface;
 import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadSensor;
 import utils.Log;
@@ -52,10 +55,14 @@ public class JUnit_Sensors extends JUnit_Test
 {
 
 	/** The capteurs. */
-	private EthWrapper capteurs;
+	private Robot robot;
+	private Table table;
 	private Locomotion mLocomotion;
 	private ScriptManager scriptManager;
 	private GameState state;
+
+	private ThreadSensor threadSensor;
+	private ThreadInterface anInterface;
 
 	/* (non-Javadoc)
 	 * @see tests.JUnit_Test#setUp()
@@ -64,38 +71,39 @@ public class JUnit_Sensors extends JUnit_Test
 	public void setUp() throws Exception 
 	{
 		super.setUp();
+		container.getService(ThreadEth.class);
+		container.getService(Log.class);
 		state = container.getService(GameState.class);
 		scriptManager = container.getService(ScriptManager.class);
-
-		log.debug("JUnit_ActionneursTest.setUp()");
-		capteurs = container.getService(EthWrapper.class);
-				
-		//Locomotion
+		threadSensor = container.getService(ThreadSensor.class);
+		table = container.getService(Table.class);
+		robot = container.getService(Robot.class);
 		mLocomotion = container.getService(Locomotion.class);
+		anInterface = container.getService(ThreadInterface.class);
+
+		container.startInstanciedThreads();
 
 		mLocomotion.setPosition(Table.entryPosition); // milieu de table
 		mLocomotion.setOrientation(Math.PI);
 
-        container.getService(ThreadEth.class);
-		container.getService(ThreadSensor.class);
-        container.getService(Log.class);
-        container.getService(Table.class);
+		log.debug("JUnit_Sensors.setUp()");
 	}
 
 	@Test
 	public void testDetect() throws Exception
 	{
 		log.debug("Test de detection");
-		container.startInstanciedThreads();
-		Sleep.sleep(5000);
-		state.robot.setOrientation(-Math.PI/2);
-
-		Thread.sleep(2000);
+		state.robot.setPosition(new Vec2(0,1000));
+		state.robot.setOrientation(Math.PI);
+		state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
 		log.debug ("Orientation :" + state.robot.getOrientation());
 		log.debug("Position :" + state.robot.getPosition());
-
-		Thread.sleep(1000);
-		state.robot.switchSensor();
+//		state.robot.switchSensor();
+		while(true){
+			robot.getPosition();
+			robot.getOrientation();
+//			robot.useActuator(ActuatorOrder.SEND_POSITION,true);
+		}
 	}
 
 	// @Test
