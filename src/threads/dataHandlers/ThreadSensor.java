@@ -51,7 +51,7 @@ public class ThreadSensor extends AbstractThread
 {
     /** Array de sensor */
     public ArrayList<Sensor> sensorsArray = new ArrayList<Sensor>();
-    private int nbSensors=sensorsArray.size();
+    private int nbSensors;
 
     /** La table */
     private Table mTable;
@@ -155,14 +155,15 @@ public class ThreadSensor extends AbstractThread
         this.mTable = table;
         this.ethWrapper = ethWrapper;
 		Thread.currentThread().setPriority(6);
-		this.sensorFL=new Sensor(0,120,125,this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
-		this.sensorFR=new Sensor(1,120,-125,-this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
-		this.sensorBL=new Sensor(2,-120,125,-this.sensorPositionAngleB+Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty);
-		this.sensorBR=new Sensor(3,-120,-125,this.sensorPositionAngleB-Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorFL=new Sensor(0,-127,100,this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorFR=new Sensor(1,127,100,-this.sensorPositionAngleF,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorBL=new Sensor(2,-127,-100,-this.sensorPositionAngleB+Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty);
+		this.sensorBR=new Sensor(3,127,-100,this.sensorPositionAngleB-Math.PI,this.detectionAngle,this.maxSensorRange,this.uncertainty);
         this.sensorsArray.add(0,sensorFL);
         this.sensorsArray.add(1,sensorFR);
         this.sensorsArray.add(2,sensorBL);
         this.sensorsArray.add(3,sensorBR);
+        nbSensors = sensorsArray.size();
 	}
 
 
@@ -193,30 +194,30 @@ public class ThreadSensor extends AbstractThread
 
             if (sensorsArray.get(0).getDetectedDistance() != 0){
                 if (sensorsArray.get(1).getDetectedDistance() != 0) {
-                 //   out.write("Detection:Sensor0And1 ");
+//                    out.write("Detection:Sensor0And1 ");
                     addFrontObstacleBoth();
                 }
                 else {
-                 //   out.write("Detection:Sensor0 ");
+//                 out.write("Detection:Sensor0 ");
                     addFrontObstacleSingle(true);
                 }
             }
             else if (sensorsArray.get(1).getDetectedDistance() != 0){
-              //  out.write("Detection:Sensor1 ");
+//              out.write("Detection:Sensor1 ");
                 addBackObstacleSingle(false);
             }
             if (sensorsArray.get(2).getDetectedDistance() != 0){
                 if (sensorsArray.get(3).getDetectedDistance() != 0){
-               //     out.write("Detection:Sensor2And3 ");
+//                    out.write("Detection:Sensor2And3 ");
                     addBackObstacleBoth();
                 }
                 else{
-                 //   out.write("Detection:Sensor2 ");
+//                    out.write("Detection:Sensor2 ");
                     addBackObstacleSingle(true);
                 }
             }
             else if (sensorsArray.get(3).getDetectedDistance() != 0){
-            //    out.write("Detection:Sensor3 ");
+//                out.write("Detection:Sensor3 ");
                 addBackObstacleSingle(false);
             }
 
@@ -298,7 +299,7 @@ public class ThreadSensor extends AbstractThread
         }
     }
 
-    /** Ajoute un obstacle devant le robot, avec un seul capteur ayant détecté quelque chose
+    /** Ajoute un obstacle d=sensorsArray.size()evant le robot, avec un seul capteur ayant détecté quelque chose
      * @param isLeft si c'est le capteur gauche */
     private void addFrontObstacleSingle(boolean isLeft)
     {
