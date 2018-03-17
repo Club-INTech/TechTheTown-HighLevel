@@ -7,7 +7,7 @@ public class Sensor{
     private int id;                                     //ID du capteur
     private int x;                                   //en mm
     private int y;                                   //en mm
-    private Vec2 vecteur = new Vec2(x,y);
+    private Vec2 vecteur;
     private double detectionWideness;                   //en radians, angle du cône de détection (peut etre de 0 radians si capteur en ligne droite)
     private double sensorOrientation;                   //en radians, angle du milieu du cône de détection avec la face avant du robot (sens trigonométrique)
     private int maximalValidDetectionDistance;       //en mm
@@ -20,6 +20,7 @@ public class Sensor{
         this.id=id;
         this.x=xRelativeToRobotCenter;
         this.y=yRelativeToRobotCenter;
+        this.vecteur=new Vec2(this.x,this.y);
         this.sensorOrientation = sensorOrientation;
         this.detectionWideness=detectionWideness;
         this.maximalValidDetectionDistance=maximalValidDetectionDistance;
