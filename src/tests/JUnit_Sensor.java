@@ -1,5 +1,6 @@
 package tests;
 
+import enums.ActuatorOrder;
 import enums.Speed;
 import hook.HookFactory;
 import org.junit.Before;
@@ -43,15 +44,15 @@ public class JUnit_Sensor extends JUnit_Test {
     public void testSensor() {
         try {
 
-            while(true){
-                robotReal.getPosition();
-                robotReal.getOrientation();
+            while (true) {
+                robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+                robotReal.switchSensor();
+                String distanceDetected="";
+                for (int i=0; i<4; i++) {
+                    distanceDetected+=i+":"+threadSensor.getSensor(i).getDetectedDistance()+" ";
+                }
+                System.out.println(distanceDetected);
             }
-
-
-
-
-
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -129,10 +129,21 @@ public class ThreadSensor extends AbstractThread
     /** Fichier de debug pour le placement d'obstacles */
     private final boolean debug = true;
 
-    public Sensor sensorFL;//Front left
-    public Sensor sensorFR;//Front right
-    public Sensor sensorBL;//Back left
-    public Sensor sensorBR;//Back right
+    private Sensor sensorFL;//Front left
+    private Sensor sensorFR;//Front right
+    private Sensor sensorBL;//Back left
+    private Sensor sensorBR;//Back right
+
+    public Sensor getSensor(int id){
+        if (id>this.sensorsArray.size()){
+            log.critical("Sensor requested not registered (maxID:"+sensorsArray.size()+", id:"+id+")");
+        }
+        else if (id<0){
+            log.critical("Sensor requested not existing (id<0)");
+        }
+        return this.sensorsArray.get(id);
+    }
+
     /**
 	 * Crée un nouveau thread de capteurs
 	 * @param table La table a l'intérieure de laquelle le thread doit croire évoluer
@@ -152,7 +163,6 @@ public class ThreadSensor extends AbstractThread
         this.sensorsArray.add(1,sensorFR);
         this.sensorsArray.add(2,sensorBL);
         this.sensorsArray.add(3,sensorBR);
-
 	}
 
 
