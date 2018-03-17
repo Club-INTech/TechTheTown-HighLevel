@@ -9,17 +9,17 @@ public class Sensor{
     private double y;                                   //en mm
     private Vec2 vecteur = new Vec2(x,y);
     private double detectionWideness;                   //en radians, angle du cône de détection (peut etre de 0 radians si capteur en ligne droite)
-    private double detectionAnglePosition;              //en radians, angle du milieu du cône de détection avec la face avant du robot
+    private double sensorOrientation;                   //en radians, angle du milieu du cône de détection avec la face avant du robot (sens trigonométrique)
     private double maximalValidDetectionDistance;       //en mm
     private double detectedDistance;                    //en mm
     private double uncertainty;                           //en mm (uncertainty of 2mm <==> +- 2mm)
     private double robotSize;                           //en mm
 
-    public Sensor(int id, double xRelativeToRobotCenter, double yRelativeToRobotCenter, double detectionAnglePosition, double detectionWideness, double maximalValidDetectionDistance, double uncertainty){
+    public Sensor(int id, double xRelativeToRobotCenter, double yRelativeToRobotCenter, double sensorOrientation, double detectionWideness, double maximalValidDetectionDistance, double uncertainty){
         this.id=id;
         this.x=xRelativeToRobotCenter;
         this.y=yRelativeToRobotCenter;
-        this.detectionAnglePosition=detectionAnglePosition;
+        this.sensorOrientation = sensorOrientation;
         this.detectionWideness=detectionWideness;
         this.maximalValidDetectionDistance=maximalValidDetectionDistance;
         this.detectedDistance=0;
@@ -27,11 +27,11 @@ public class Sensor{
         this.robotSize=Double.parseDouble(ConfigInfoRobot.ROBOT_RADIUS.getDefaultValue().toString());
     }
 
-    public Sensor(int id, int xRelativeToRobotCenter, int yRelativeToRobotCenter, int detectionAnglePosition, double detectionWideness, int maximalValidDetectionDistance, double uncertainty){
+    public Sensor(int id, int xRelativeToRobotCenter, int yRelativeToRobotCenter, int sensorOrientation, double detectionWideness, int maximalValidDetectionDistance, double uncertainty){
         this.id=id;
         this.x=(double)xRelativeToRobotCenter;
         this.y=(double)yRelativeToRobotCenter;
-        this.detectionAnglePosition=(double)detectionAnglePosition;
+        this.sensorOrientation =(double) sensorOrientation;
         this.detectionWideness=detectionWideness;
         this.maximalValidDetectionDistance=(double)maximalValidDetectionDistance;
         this.detectedDistance=0;
@@ -39,11 +39,11 @@ public class Sensor{
         this.robotSize=Double.parseDouble(ConfigInfoRobot.ROBOT_RADIUS.getDefaultValue().toString());
     }
 
-    public Sensor(int id, int xRelativeToRobotCenter, int yRelativeToRobotCenter, double detectionAnglePosition, double detectionWideness, int maximalValidDetectionDistance, double uncertainty){
+    public Sensor(int id, int xRelativeToRobotCenter, int yRelativeToRobotCenter, double sensorOrientation, double detectionWideness, int maximalValidDetectionDistance, double uncertainty){
         this.id=id;
         this.x=(double)xRelativeToRobotCenter;
         this.y=(double)yRelativeToRobotCenter;
-        this.detectionAnglePosition=detectionAnglePosition;
+        this.sensorOrientation = sensorOrientation;
         this.detectionWideness=detectionWideness;
         this.maximalValidDetectionDistance=(double)maximalValidDetectionDistance;
         this.detectedDistance=0;
@@ -51,11 +51,11 @@ public class Sensor{
         this.robotSize=Double.parseDouble(ConfigInfoRobot.ROBOT_RADIUS.getDefaultValue().toString());
     }
 
-    public Sensor(int id, int xRelativeToRobotCenter, int yRelativeToRobotCenter, double detectionAnglePosition, double detectionWideness, double maximalValidDetectionDistance, double uncertainty){
+    public Sensor(int id, int xRelativeToRobotCenter, int yRelativeToRobotCenter, double sensorOrientation, double detectionWideness, double maximalValidDetectionDistance, double uncertainty){
         this.id=id;
         this.x=(double)xRelativeToRobotCenter;
         this.y=(double)yRelativeToRobotCenter;
-        this.detectionAnglePosition=detectionAnglePosition;
+        this.sensorOrientation = sensorOrientation;
         this.detectionWideness=detectionWideness;
         this.maximalValidDetectionDistance=(double)maximalValidDetectionDistance;
         this.detectedDistance=0;
@@ -86,9 +86,11 @@ public class Sensor{
     }
     public Vec2 getVecteur(){ return this.vecteur; }
 
-    public double getDetectionAnglePosition(){ return this.detectionAnglePosition; }
+    public double getSensorOrientation(){ return this.sensorOrientation; }
 
     public double getDetectedDistance() { return this.detectedDistance; }
+
+    public double getDetectionWideness() { return this.detectionWideness; }
 
     public int getIntDetectedDistance() {
         Double a = this.detectedDistance;

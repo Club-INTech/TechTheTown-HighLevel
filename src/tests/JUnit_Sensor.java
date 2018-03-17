@@ -43,18 +43,20 @@ public class JUnit_Sensor extends JUnit_Test {
     @Test
     public void testSensor() {
         try {
-
-            while(true){
+            while (true) {
+                robotReal.useActuator(ActuatorOrder.SEND_POSITION, true);
+                robotReal.switchSensor();
+                String distanceDetected = "";
+                for (int i = 0; i < 4; i++) {
+                    distanceDetected += i + ":" + threadSensor.getSensor(i).getDetectedDistance() + " ";
+                }
+                System.out.println(distanceDetected);
+            }
+            /*while(true){
                 robotReal.getPosition();
                 robotReal.getOrientation();
                 robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
-            }
-
-
-
-
-
-
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }

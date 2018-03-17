@@ -79,9 +79,9 @@ public enum ConfigInfoRobot implements ConfigInfo
     MIN_SENSOR_RANGEAV(30),
     MIN_SENSOR_RANGEAR(30),
     MIN_SENSOR_RANGE(30),
-    SENSOR_POSITION_ANGLE_FRONT(1),
-    SENSOR_POSITION_ANGLE_BACK(1),
-    SENSOR_ANGLE_WIDENESS(30),
+    SENSOR_ORIENTATION_FRONT(0), //en radians
+    SENSOR_ORIENTATION_BACK(0), //en radians
+    SENSOR_ANGLE_WIDENESS(0.73), //en radians
     UNCERTAINTY(1),
     // TODO à compléter
 
