@@ -187,7 +187,7 @@ public class ThreadSensor extends AbstractThread
              *           Back
              */
 
-            if (sensorFL.getDetectedDistance() > 0){
+            if (sensorFL.getDetectedDistance() != 0){
                 if (sensorFR.getDetectedDistance() != 0) {
 //                    out.write("Detection:Sensor0And1 ");
                     addFrontObstacleBoth();
@@ -400,7 +400,7 @@ public class ThreadSensor extends AbstractThread
 
             for(int i=0; i<nbSensors; i++) {
                 int distance=Integer.parseInt(valuesSReceived[i]);
-                sensorsArray.get(i).setDetectedDistance(distance);
+                sensorsArray.get(i).setDetectedDistance(distance*10);
             }
 
             //USvalues = res;
