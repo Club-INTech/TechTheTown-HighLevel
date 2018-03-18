@@ -88,23 +88,23 @@ public class JUnit_Sensors extends JUnit_Test
 	{
 		log.debug("Test de detection");
 		robot.setPosition(new Vec2(0,1000));
-		robot.setOrientation(Math.PI/2);
+		robot.setOrientation(-Math.PI);
 		log.debug ("Orientation :" + state.robot.getOrientation());
 		log.debug("Position :" + state.robot.getPosition());
 //		state.robot.switchSensor();
-		//int count=0;
+		int count=0;
 		while(true){
 			robot.getPosition();
 			robot.getOrientation();
-			/*String distanceDetected = "";
+			String distanceDetected = "";
 			count+=1;
-			if (count==50000) {
+			if (count==100000) {
 				for (int i = 0; i < 4; i++) {
 					distanceDetected += i + ":" + threadSensor.getSensor(i).getDetectedDistance() + " ";
 				}
 				System.out.println(distanceDetected);
 				count=0;
-			}*/
+			}
 		}
 	}
 
