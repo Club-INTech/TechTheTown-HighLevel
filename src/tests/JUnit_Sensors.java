@@ -71,8 +71,6 @@ public class JUnit_Sensors extends JUnit_Test
 	public void setUp() throws Exception 
 	{
 		super.setUp();
-		container.getService(ThreadEth.class);
-		container.getService(Log.class);
 		state = container.getService(GameState.class);
 		scriptManager = container.getService(ScriptManager.class);
 		threadSensor = container.getService(ThreadSensor.class);
@@ -82,10 +80,6 @@ public class JUnit_Sensors extends JUnit_Test
 		anInterface = container.getService(ThreadInterface.class);
 
 		container.startInstanciedThreads();
-
-		mLocomotion.setPosition(Table.entryPosition); // milieu de table
-		mLocomotion.setOrientation(Math.PI);
-
 		log.debug("JUnit_Sensors.setUp()");
 	}
 
@@ -93,19 +87,24 @@ public class JUnit_Sensors extends JUnit_Test
 	public void testDetect() throws Exception
 	{
 		log.debug("Test de detection");
-		state.robot.setPosition(new Vec2(0,700));
-		state.robot.setOrientation(Math.PI);
+		robot.setPosition(new Vec2(0,1000));
+		robot.setOrientation(Math.PI);
 		log.debug ("Orientation :" + state.robot.getOrientation());
 		log.debug("Position :" + state.robot.getPosition());
 //		state.robot.switchSensor();
+		//int count=0;
 		while(true){
 			robot.getPosition();
 			robot.getOrientation();
-			String distanceDetected = "";
-			for (int i = 0; i < 4; i++) {
-				distanceDetected += i + ":" + threadSensor.getSensor(i).getDetectedDistance() + " ";
-			}
-			System.out.println(distanceDetected);
+			/*String distanceDetected = "";
+			count+=1;
+			if (count==50000) {
+				for (int i = 0; i < 4; i++) {
+					distanceDetected += i + ":" + threadSensor.getSensor(i).getDetectedDistance() + " ";
+				}
+				System.out.println(distanceDetected);
+				count=0;
+			}*/
 		}
 	}
 
@@ -158,7 +157,6 @@ public class JUnit_Sensors extends JUnit_Test
 			state.robot.moveLengthwise(-600);
 			// state.robot.turn(-Math.PI / 4);
 			Sleep.sleep(5000);
-
 			log.debug("LocomotionSpeed " + state.robot.getLocomotionSpeed());
 		}catch (Exception e){
 			e.printStackTrace();

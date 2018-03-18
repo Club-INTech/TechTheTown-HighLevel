@@ -76,13 +76,13 @@ public enum ConfigInfoRobot implements ConfigInfo
     /** Paramètres capteurs */
 
     ROBOT_EN_RADIUS(220),           //en mm
-    MAX_SENSOR_RANGE(700),          //en mm
+    MAX_SENSOR_RANGE(600),          //en mm
     MIN_SENSOR_RANGEAV(30),         //en mm
     MIN_SENSOR_RANGEAR(30),         //en mm
     MIN_SENSOR_RANGE(30),           //en mm
     SENSOR_ORIENTATION_FRONT(0),    //en radians
     SENSOR_ORIENTATION_BACK(0),     //en radians
-    SENSOR_ANGLE_WIDENESS(0.24),    //en radians
+    SENSOR_ANGLE_WIDENESS(0.48),    //en radians, CONE TOTAL (PAS DEMI CONE)
     UNCERTAINTY(1),
     // TODO à compléter
 
