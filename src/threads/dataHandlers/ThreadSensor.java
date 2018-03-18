@@ -221,58 +221,23 @@ public class ThreadSensor extends AbstractThread
     /** Ajoute un obstacle en face du robot, avec les deux capteurs ayant détecté quelque chose
      * Convention: la droite du robot est l'orientation 0 (on travaille dans le repère du robot, et on garde les memes conventions que pour la table) */
     private void addFrontObstacleBoth() {
-        System.out.println("test");
+        //TODO facteur 0.5 à changer empiriquement
         int a = (int)(sensorFL.getDetectedDistance()+enRadius*0.5);
         int b = (int)(sensorFR.getDetectedDistance()+enRadius*0.5);
-
         int d = Math.abs(sensorFL.getX()-sensorFR.getX());
         double alpha = Math.acos((b*b-a*a-d*d)/(double)(-2*a*d));
         int x = (int)(a*Math.cos(alpha));
         int y = (int)(a*Math.sin(alpha));
         Vec2 posObjectFromSensorFL = new Vec2(x,y);
         Vec2 posObjectFromCenterRobot=posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
-        mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
-
-        /*
-        // On résoud l'équation du second degrée afin de trouver les deux points d'intersections des deux cercles
-        // On joue sur le rayon du robot adverse pour etre sur d'avoir des solutions
-        double robotX;
-        double robotY;
-        double b, delta;
-        double R1, R2;
-        Vec2 vec = new Vec2();
-        boolean isValue = true;
-
-        //TODO : Changer le facteur de 0.8, à tester empiriquement
-        R1 = sensorFL.getDetectedDistance() + (enRadius*0.8);
-        R2 = sensorFR.getDetectedDistance() + (enRadius*0.8);
-        robotY = (R1*R1 - R2*R2)/(double)(4*sensorFR.getY());    //sensor avant droit
-        Integer Y = new Integer((int) robotY);
-
-        b = -2 * sensorFL.getX();                                //sensor avant gauche
-        delta = 2*(R1*R1 + R2*R2) - Math.pow(sensorFL.getY(),2); //sensor avant gauche
-
-        if (delta > 1) {
-            robotX = ((-b + Math.sqrt(delta)) / 2.0);
-            Integer X = new Integer((int) robotX);
-            vec = new Vec2(X, Y);
+        if (posObjectFromCenterRobot.getA()<3*Math.PI/4 && posObjectFromCenterRobot.getA()>Math.PI/4) { // pour éviter les faux obstacles
+            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
         }
-        else if (isBetween(delta, -1, 1)){
-            robotX = -b/2;
-            Integer X = new Integer((int) robotX);
-            vec = new Vec2(X, Y);
-        }
-        else{
-            isValue = false;
-        }
-        if (isValue) {
-            mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius, lifetimeForUntestedObstacle);
-        }*/
     }
     /** Ajoute un obstacle derrière le robot, avec les deux capteurs ayant détecté quelque chose */
     private void addBackObstacleBoth()
     {
-        System.out.println("test2");
+        //TODO facteur 0.5 à changer empiriquement
         int a = (int)(sensorBL.getDetectedDistance()+enRadius*0.5);
         int b = (int)(sensorBR.getDetectedDistance()+enRadius*0.5);
         int d = Math.abs(sensorBL.getX()-sensorBR.getX());
@@ -281,43 +246,10 @@ public class ThreadSensor extends AbstractThread
         int y = (int)(a*Math.sin(alpha));
         Vec2 posObjectFromSensorBL = new Vec2(x,y);
         Vec2 posObjectFromCenterRobot=posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
-        posObjectFromCenterRobot.setY(posObjectFromCenterRobot.getY()*-1);
-        mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
-
-        /*
-        // De meme que le front, seule la selection de la bonne solution change
-        double robotX;
-        double robotY;
-        double b, delta;
-        double R1, R2;
-        Vec2 vec = new Vec2();
-        boolean isValue = true;
-
-        //TODO : Changer le facteur de 0.8, à tester empiriquement
-        R1 = sensorBL.getDetectedDistance() + (enRadius*0.8);
-        R2 = sensorBR.getDetectedDistance() + (enRadius*0.8);
-        robotY = (R1*R1 - R2*R2)/(double)(4*sensorBR.getY());            //position arrière droit
-        Integer Y = new Integer((int) robotY);
-
-        b = -2 * sensorBL.getX();                                        //position arrière gauche
-
-        delta = 2*(R1*R1 + R2*R2) + Math.pow(sensorBL.getY(),2);         //position arrière gauche
-        if (delta > 1) {
-            robotX = (int) ((-b - Math.sqrt(delta)) / 2);
-            Integer X = new Integer((int) robotX);
-            vec = new Vec2(X, Y);
+        if (posObjectFromCenterRobot.getA()<3*Math.PI/4 && posObjectFromCenterRobot.getA()>Math.PI/4) { // pour éviter les faux obstacles
+            posObjectFromCenterRobot.setY(posObjectFromCenterRobot.getY() * -1);
+            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
         }
-        else if(isBetween(delta, -1, 1)){
-            robotX = (int) -b/2;
-            Integer X = new Integer((int) robotX);
-            vec = new Vec2(X, Y);
-        }else{
-            isValue = false;
-        }
-        if (isValue) {
-            mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius, lifetimeForUntestedObstacle);
-        }
-        */
     }
 
     /** Ajoute un obstacle d=sensorsArray.size()evant le robot, avec un seul capteur ayant détecté quelque chose
@@ -334,14 +266,12 @@ public class ThreadSensor extends AbstractThread
         if (isLeft){
             // On choisit le point à l'extrémité de l'arc à coté du capteur pour la position de l'ennemie: à courte distance, la position est réaliste,
             // à longue distance (>1m au vue des dimensions), l'ennemie est en réalité de l'autre coté
-            Vec2 posDetect = new Vec2(USFL, sensorFL.getSensorOrientation() + sensorFL.getDetectionWideness()/2); //sensor avant gauche
-            double angleEn = sensorFL.getSensorOrientation() - sensorFL.getDetectionWideness()/2;    //sensor avant GAUCHE
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorFL.getVecteur());     //sensor avant gauche
+            Vec2 posDetect = new Vec2(USFL+enRadius*0.5, sensorFL.getSensorOrientation() + sensorFL.getDetectionWideness()/2); //sensor avant gauche
+            posEn = posDetect.plusNewVector(sensorFL.getVecteur());     //sensor avant gauche
         }
         else{
-            Vec2 posDetect = new Vec2(USFR, sensorFR.getSensorOrientation() - sensorFR.getDetectionWideness()/2); //sensor avant droit
-            double angleEn = sensorFR.getSensorOrientation() + sensorFR.getDetectionWideness()/2; //sensor avant DROIT
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorFR.getVecteur()); //sensor avant droit
+            Vec2 posDetect = new Vec2(USFR+enRadius*0.5, sensorFR.getSensorOrientation() - sensorFR.getDetectionWideness()/2); //sensor avant droit
+            posEn = posDetect.plusNewVector(sensorFR.getVecteur()); //sensor avant droit
         }
 
         mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius, lifetimeForUntestedObstacle);
@@ -351,20 +281,22 @@ public class ThreadSensor extends AbstractThread
      * @param isLeft si c'est le capteur gauche */
     private void addBackObstacleSingle(boolean isLeft) {
         // De meme qu'avec le front
-
         Vec2 posEn;
-        Double USBL = (double)sensorBL.getDetectedDistance();
-        Double USBF = (double)sensorBR.getDetectedDistance();
-
         if (isLeft){
-            Vec2 posDetect = new Vec2(USBL,sensorBL.getSensorOrientation() - sensorBL.getDetectionWideness()/2);     //sensor arrière gauche
-            double angleEn = sensorBL.getSensorOrientation() + sensorBL.getDetectionWideness()/2;            //sensor arrière GAUCHE
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorBL.getVecteur());     //sensor arrière gauche
+            int distance=(int)(sensorBL.getDetectedDistance()+enRadius*0.5);
+            int x = (int)(distance*Math.cos(sensorBL.getSensorOrientation()-sensorBL.getDetectionWideness()/2));
+            int y = (int)(distance*Math.sin(sensorBL.getSensorOrientation()-sensorBL.getDetectionWideness()/2));
+            /*Vec2 posDetect = new Vec2(USBL+enRadius*0.5,sensorBL.getSensorOrientation() - sensorBL.getDetectionWideness()/2);     //sensor arrière gauche
+            posEn = posDetect.plusNewVector(sensorBL.getVecteur());     //sensor arrière gauche*/
+            posEn = new Vec2(x,y);
         }
         else{
-            Vec2 posDetect = new Vec2(USBF,sensorBR.getSensorOrientation() + sensorBR.getDetectionWideness()/2);     //sensor arrière droit
-            double angleEn = sensorBR.getSensorOrientation() - sensorBR.getDetectionWideness()/2;            //sensor arrière DROIT
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(sensorBR.getVecteur());     //sensor arrière droit
+            int distance=(int)(sensorBR.getDetectedDistance()+enRadius*0.5);
+            int x = (int)(distance*Math.cos(sensorBR.getSensorOrientation()+sensorBR.getDetectionWideness()/2));
+            int y = (int)(distance*Math.sin(sensorBR.getSensorOrientation()+sensorBR.getDetectionWideness()/2));
+            /*Vec2 posDetect = new Vec2(USBF+enRadius*0.5,sensorBR.getSensorOrientation() + sensorBR.getDetectionWideness()/2);     //sensor arrière droit
+            posEn = posDetect.plusNewVector(sensorBR.getVecteur());     //sensor arrière droit*/
+            posEn = new Vec2(x,y);
         }
         mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius, lifetimeForUntestedObstacle);
     }
@@ -393,7 +325,8 @@ public class ThreadSensor extends AbstractThread
      * @param pos la position relative dont on cherche les coordonées absolues */
     private Vec2 changeRef(Vec2 pos)
     {
-        pos.setA(Geometry.moduloSpec(pos.getA()+robotPosAndOr.getPosition().getA(), Math.PI));
+        pos.getA();
+        pos.setA(Geometry.moduloSpec(pos.getA()+robotPosAndOr.getOrientation(), Math.PI));
         return pos.plusNewVector(robotPosAndOr.getPosition());
     }
 
