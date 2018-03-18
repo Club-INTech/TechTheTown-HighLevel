@@ -221,63 +221,39 @@ public class ThreadSensor extends AbstractThread
     /** Ajoute un obstacle en face du robot, avec les deux capteurs ayant détecté quelque chose
      * Convention: la droite du robot est l'orientation 0 (on travaille dans le repère du robot, et on garde les memes conventions que pour la table) */
     private void addFrontObstacleBoth() {
-        //TODO facteur 0.5 à changer empiriquement
         int l = sensorFL.getDetectedDistance();
         int r = sensorFR.getDetectedDistance();
-        //Si les valeurs sont supérieures à celles-ci, la méthode a du mal à fonctionner
-        if (l>500 && r>500){
-            if (l>r){
-                addFrontObstacleSingle(true);
-            }
-            else{
-                addFrontObstacleSingle(false);
-            }
-        }
-        else{
-            //TODO facteur 0.8 à changer empiriquement
-            int a = (int) (l + enRadius * 0.8);
-            int b = (int) (r + enRadius * 0.8);
-            int d = Math.abs(sensorFL.getX() - sensorFR.getX());
-            double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d));
-            int x = (int) (a * Math.cos(alpha));
-            int y = (int) (a * Math.sin(alpha));
-            Vec2 posObjectFromSensorFL = new Vec2(x, y);
-            Vec2 posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
-            if (posObjectFromCenterRobot.getA() < 3 * Math.PI / 4 && posObjectFromCenterRobot.getA() > Math.PI / 4) { // pour éviter les faux obstacles
-                posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA() - Math.PI / 2);
-                mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
-            }
+        //TODO facteur 0.8 à changer empiriquement
+        int a = (int) (l + enRadius * 0.8);
+        int b = (int) (r + enRadius * 0.8);
+        int d = Math.abs(sensorFL.getX() - sensorFR.getX());
+        double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d));
+        int x = (int) (a * Math.cos(alpha));
+        int y = (int) (a * Math.sin(alpha));
+        Vec2 posObjectFromSensorFL = new Vec2(x, y);
+        Vec2 posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
+        if (posObjectFromCenterRobot.getA() < 3 * Math.PI / 4 && posObjectFromCenterRobot.getA() > Math.PI / 4) { // pour éviter les faux obstacles
+            posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA() - Math.PI / 2);
+            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
         }
     }
     /** Ajoute un obstacle derrière le robot, avec les deux capteurs ayant détecté quelque chose */
-    private void addBackObstacleBoth()
-    {
+    private void addBackObstacleBoth() {
         int l = sensorBL.getDetectedDistance();
         int r = sensorBR.getDetectedDistance();
-        //Si les valeurs sont supérieures à celles-ci, la méthode a du mal à fonctionner
-        if (l>500 && r>500){
-            if (l>r){
-                addBackObstacleSingle(true);
-            }
-            else{
-                addBackObstacleSingle(false);
-            }
-        }
-        else {
-            //TODO facteur 0.8 à changer empiriquement
-            int a = (int) (l + enRadius * 0.8);
-            int b = (int) (r + enRadius * 0.8);
-            int d = Math.abs(sensorBL.getX() - sensorBR.getX());
-            double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d));
-            int x = (int) (a * Math.cos(alpha));
-            int y = (int) (a * Math.sin(alpha));
-            Vec2 posObjectFromSensorBL = new Vec2(x, y);
-            Vec2 posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
-            if (posObjectFromCenterRobot.getA() < 3 * Math.PI / 4 && posObjectFromCenterRobot.getA() > Math.PI / 4) { // pour éviter les faux obstacles
-                posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA() - Math.PI / 2);
-                posObjectFromCenterRobot.setX(posObjectFromCenterRobot.getX() * -1);
-                mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
-            }
+        //TODO facteur 0.8 à changer empiriquement
+        int a = (int) (l + enRadius * 0.8);
+        int b = (int) (r + enRadius * 0.8);
+        int d = Math.abs(sensorBL.getX() - sensorBR.getX());
+        double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d));
+        int x = (int) (a * Math.cos(alpha));
+        int y = (int) (a * Math.sin(alpha));
+        Vec2 posObjectFromSensorBL = new Vec2(x, y);
+        Vec2 posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
+        if (posObjectFromCenterRobot.getA() < 3 * Math.PI / 4 && posObjectFromCenterRobot.getA() > Math.PI / 4) { // pour éviter les faux obstacles
+            posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA() - Math.PI / 2);
+            posObjectFromCenterRobot.setX(posObjectFromCenterRobot.getX() * -1);
+            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
         }
     }
 
