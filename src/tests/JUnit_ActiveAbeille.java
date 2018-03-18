@@ -7,6 +7,7 @@ import graphics.Window;
 import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
+import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
@@ -20,6 +21,7 @@ public class JUnit_ActiveAbeille extends JUnit_Test {
     private GameState state;
     private ThreadSimulator anInterface;
     private Table table;
+    private Locomotion locomotion;
     private HookFactory hookFactory;
 
     @Before
@@ -29,8 +31,8 @@ public class JUnit_ActiveAbeille extends JUnit_Test {
             robotReal = container.getService(Robot.class);
             state = container.getService(GameState.class);
             scriptManager = container.getService(ScriptManager.class);
-            table=container.getService(Table.class);
             anInterface=container.getService(ThreadSimulator.class);
+            locomotion=container.getService(Locomotion.class);
             container.startInstanciedThreads();
 
         } catch (Exception e) {
@@ -40,15 +42,12 @@ public class JUnit_ActiveAbeille extends JUnit_Test {
 
     @Test
     public void testScript() {
-        Window window=new Window(table);
         try {
             //Définition des paramètres de base
-            robotReal.setOrientation(Math.PI);
-            Vec2 positionDepart = new Vec2(0, 1000);
-            robotReal.setPosition(positionDepart);
+            robotReal.setOrientation(Table.entryOrientation);
+            robotReal.setPosition(Table.entryPosition);
             robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
-            window.setPoint(new Vec2(1500-210-10,2000-210-10));
-           // scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE).goToThenExec(0, state);
+           scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE).goToThenExec(0, state);
             //Vec2 positionarrivee=new Vec2(890,347);
             //robotReal.goTo(positionarrivee);
 

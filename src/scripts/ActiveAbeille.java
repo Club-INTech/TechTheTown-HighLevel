@@ -16,7 +16,7 @@ import utils.Log;
 public class ActiveAbeille extends AbstractScript {
 
     /** Active l'abeille */
-    private int securityDistance = 200; //distance de sécurité pour ne pas cogner le mur en tournant
+    private int securityDistance = 60; //distance de sécurité pour ne pas cogner le mur en tournant
 
     /** Eléments appelés par la config */
     private int radius ; //rayon du robot
@@ -24,12 +24,19 @@ public class ActiveAbeille extends AbstractScript {
 
     public ActiveAbeille(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
+        updateConfig();
+    }
+    @Override
+    public void updateConfig() {
+        super.updateConfig();
+        distanceAbeille = config.getInt(ConfigInfoRobot.DISTANCE_ABEILLE);
+        radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
     }
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
         //On se tourne vers l'abeille
-        actualState.robot.turn(Math.PI/2);
+        actualState.robot.turn(Math.PI/4);
         //ON s'avance vers l'abeille
         actualState.robot.moveLengthwise(distanceAbeille);
         //On active le bras
@@ -67,10 +74,5 @@ public class ActiveAbeille extends AbstractScript {
         return 0;
     }
 
-    @Override
-    public void updateConfig() {
-        super.updateConfig();
-        distanceAbeille = config.getInt(ConfigInfoRobot.DISTANCE_ABEILLE);
-        radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-    }
+
 }
