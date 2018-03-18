@@ -98,7 +98,7 @@ public class JUnit_Sensors extends JUnit_Test
 			robot.getOrientation();
 			String distanceDetected = "";
 			count+=1;
-			if (count==100000) {
+			if (count==1000000) {
 				for (int i = 0; i < 4; i++) {
 					distanceDetected += i + ":" + threadSensor.getSensor(i).getDetectedDistance() + " ";
 				}

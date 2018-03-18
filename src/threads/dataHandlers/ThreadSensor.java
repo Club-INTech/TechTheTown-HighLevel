@@ -199,7 +199,7 @@ public class ThreadSensor extends AbstractThread
             }
             else if (sensorFR.getDetectedDistance() != 0){
                 //System.out.println("Detection:Sensor1 ");
-                addBackObstacleSingle(false);
+                addFrontObstacleSingle(false);
             }
             if (sensorBL.getDetectedDistance() != 0){
                 if (sensorBR.getDetectedDistance() != 0){
@@ -293,11 +293,13 @@ public class ThreadSensor extends AbstractThread
             // On choisit le point à l'extrémité de l'arc à coté du capteur pour la position de l'ennemie: à courte distance, la position est réaliste,
             // à longue distance (>1m au vue des dimensions), l'ennemie est en réalité de l'autre coté
             double USFL = (double)sensorFL.getDetectedDistance();
+            System.out.println("0:"+USFL);
             Vec2 posObjectFromSensorFL = new Vec2(USFL+enRadius*0.8, sensorFL.getSensorOrientation() + sensorFL.getDetectionWideness()/2); //sensor avant gauche
             posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());     //sensor avant gauche
         }
         else{
             double USFR = (double)sensorFR.getDetectedDistance();
+            System.out.println("1:"+USFR);
             Vec2 posObjectFromSensorFR = new Vec2(USFR+enRadius*0.8, sensorFR.getSensorOrientation() - sensorFR.getDetectionWideness()/2); //sensor avant droit
             posObjectFromCenterRobot = posObjectFromSensorFR.plusNewVector(sensorFR.getVecteur()); //sensor avant droit
         }
@@ -312,6 +314,7 @@ public class ThreadSensor extends AbstractThread
         Vec2 posObjectFromCenterRobot;
         if (isLeft){
             double USBL = (double)sensorBL.getDetectedDistance();
+            System.out.println("2:"+USBL);
             Vec2 posObjectFromSensorBL = new Vec2(USBL+enRadius*0.8, sensorBL.getSensorOrientation() + sensorBL.getDetectionWideness()/2);
             //Vec2 posDetect = new Vec2(USBL+enRadius*0.5,sensorBL.getSensorOrientation() - sensorBL.getDetectionWideness()/2);     //sensor arrière gauche
             posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());     //sensor arrière gauche
@@ -319,6 +322,7 @@ public class ThreadSensor extends AbstractThread
         }
         else{
             double USBR = (double)sensorBR.getDetectedDistance();
+            System.out.println("3:"+USBR);
             Vec2 posObjectFromSensorBR = new Vec2(USBR+enRadius*0.8, sensorBR.getSensorOrientation() - sensorBR.getDetectionWideness()/2);
             //Vec2 posDetect = new Vec2(USBF+enRadius*0.5,sensorBR.getSensorOrientation() + sensorBR.getDetectionWideness()/2);     //sensor arrière droit
             posObjectFromCenterRobot = posObjectFromSensorBR.plusNewVector(sensorBR.getVecteur());     //sensor arrière droit
