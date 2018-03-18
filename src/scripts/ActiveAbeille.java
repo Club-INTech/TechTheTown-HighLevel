@@ -16,7 +16,7 @@ import utils.Log;
 public class ActiveAbeille extends AbstractScript {
 
     /** Active l'abeille */
-    private int securityDistance = 60; //distance de sécurité pour ne pas cogner le mur en tournant
+    private int securityDistance = 200; //distance de sécurité pour ne pas cogner le mur en tournant
 
     /** Eléments appelés par la config */
     private int radius ; //rayon du robot
@@ -28,7 +28,6 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
-        updateConfig();
         //On se tourne vers l'abeille
         actualState.robot.turn(Math.PI/2);
         //ON s'avance vers l'abeille
