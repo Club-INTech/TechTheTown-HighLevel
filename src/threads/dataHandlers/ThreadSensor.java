@@ -222,35 +222,62 @@ public class ThreadSensor extends AbstractThread
      * Convention: la droite du robot est l'orientation 0 (on travaille dans le repère du robot, et on garde les memes conventions que pour la table) */
     private void addFrontObstacleBoth() {
         //TODO facteur 0.5 à changer empiriquement
-        int a = (int)(sensorFL.getDetectedDistance()+enRadius*0.5);
-        int b = (int)(sensorFR.getDetectedDistance()+enRadius*0.5);
-        int d = Math.abs(sensorFL.getX()-sensorFR.getX());
-        double alpha = Math.acos((b*b-a*a-d*d)/(double)(-2*a*d));
-        int x = (int)(a*Math.cos(alpha));
-        int y = (int)(a*Math.sin(alpha));
-        Vec2 posObjectFromSensorFL = new Vec2(x,y);
-        Vec2 posObjectFromCenterRobot=posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
-        if (posObjectFromCenterRobot.getA()<3*Math.PI/4 && posObjectFromCenterRobot.getA()>Math.PI/4) { // pour éviter les faux obstacles
-            posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA()-Math.PI/2);
-            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+        int l = sensorFL.getDetectedDistance();
+        int r = sensorFR.getDetectedDistance();
+        //Si les valeurs sont supérieures à celles-ci, la méthode a du mal à fonctionner
+        if (l>500 && r>500){
+            if (l>r){
+                addFrontObstacleSingle(true);
+            }
+            else{
+                addFrontObstacleSingle(false);
+            }
+        }
+        else{
+            //TODO facteur 0.8 à changer empiriquement
+            int a = (int) (l + enRadius * 0.8);
+            int b = (int) (r + enRadius * 0.8);
+            int d = Math.abs(sensorFL.getX() - sensorFR.getX());
+            double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d));
+            int x = (int) (a * Math.cos(alpha));
+            int y = (int) (a * Math.sin(alpha));
+            Vec2 posObjectFromSensorFL = new Vec2(x, y);
+            Vec2 posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
+            if (posObjectFromCenterRobot.getA() < 3 * Math.PI / 4 && posObjectFromCenterRobot.getA() > Math.PI / 4) { // pour éviter les faux obstacles
+                posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA() - Math.PI / 2);
+                mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+            }
         }
     }
     /** Ajoute un obstacle derrière le robot, avec les deux capteurs ayant détecté quelque chose */
     private void addBackObstacleBoth()
     {
-        //TODO facteur 0.5 à changer empiriquement
-        int a = (int)(sensorBL.getDetectedDistance()+enRadius*0.5);
-        int b = (int)(sensorBR.getDetectedDistance()+enRadius*0.5);
-        int d = Math.abs(sensorBL.getX()-sensorBR.getX());
-        double alpha = Math.acos((b*b-a*a-d*d)/(double)(-2*a*d));
-        int x = (int)(a*Math.cos(alpha));
-        int y = (int)(a*Math.sin(alpha));
-        Vec2 posObjectFromSensorBL = new Vec2(x,y);
-        Vec2 posObjectFromCenterRobot=posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
-        if (posObjectFromCenterRobot.getA()<3*Math.PI/4 && posObjectFromCenterRobot.getA()>Math.PI/4){ // pour éviter les faux obstacles
-            posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA()-Math.PI/2);
-            posObjectFromCenterRobot.setX(posObjectFromCenterRobot.getX()*-1);
-            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+        int l = sensorBL.getDetectedDistance();
+        int r = sensorBR.getDetectedDistance();
+        //Si les valeurs sont supérieures à celles-ci, la méthode a du mal à fonctionner
+        if (l>500 && r>500){
+            if (l>r){
+                addBackObstacleSingle(true);
+            }
+            else{
+                addBackObstacleSingle(false);
+            }
+        }
+        else {
+            //TODO facteur 0.8 à changer empiriquement
+            int a = (int) (l + enRadius * 0.8);
+            int b = (int) (r + enRadius * 0.8);
+            int d = Math.abs(sensorBL.getX() - sensorBR.getX());
+            double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d));
+            int x = (int) (a * Math.cos(alpha));
+            int y = (int) (a * Math.sin(alpha));
+            Vec2 posObjectFromSensorBL = new Vec2(x, y);
+            Vec2 posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
+            if (posObjectFromCenterRobot.getA() < 3 * Math.PI / 4 && posObjectFromCenterRobot.getA() > Math.PI / 4) { // pour éviter les faux obstacles
+                posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA() - Math.PI / 2);
+                posObjectFromCenterRobot.setX(posObjectFromCenterRobot.getX() * -1);
+                mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+            }
         }
     }
 
@@ -266,12 +293,12 @@ public class ThreadSensor extends AbstractThread
             // On choisit le point à l'extrémité de l'arc à coté du capteur pour la position de l'ennemie: à courte distance, la position est réaliste,
             // à longue distance (>1m au vue des dimensions), l'ennemie est en réalité de l'autre coté
             double USFL = (double)sensorFL.getDetectedDistance();
-            Vec2 posObjectFromSensorFL = new Vec2(USFL+enRadius*0.5, sensorFL.getSensorOrientation() + sensorFL.getDetectionWideness()/2); //sensor avant gauche
+            Vec2 posObjectFromSensorFL = new Vec2(USFL+enRadius*0.8, sensorFL.getSensorOrientation() + sensorFL.getDetectionWideness()/2); //sensor avant gauche
             posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());     //sensor avant gauche
         }
         else{
             double USFR = (double)sensorFR.getDetectedDistance();
-            Vec2 posObjectFromSensorFR = new Vec2(USFR+enRadius*0.5, sensorFR.getSensorOrientation() - sensorFR.getDetectionWideness()/2); //sensor avant droit
+            Vec2 posObjectFromSensorFR = new Vec2(USFR+enRadius*0.8, sensorFR.getSensorOrientation() - sensorFR.getDetectionWideness()/2); //sensor avant droit
             posObjectFromCenterRobot = posObjectFromSensorFR.plusNewVector(sensorFR.getVecteur()); //sensor avant droit
         }
 
@@ -285,14 +312,14 @@ public class ThreadSensor extends AbstractThread
         Vec2 posObjectFromCenterRobot;
         if (isLeft){
             double USBL = (double)sensorBL.getDetectedDistance();
-            Vec2 posObjectFromSensorBL = new Vec2(USBL+enRadius*0.5, sensorBL.getSensorOrientation() + sensorBL.getDetectionWideness()/2);
+            Vec2 posObjectFromSensorBL = new Vec2(USBL+enRadius*0.8, sensorBL.getSensorOrientation() + sensorBL.getDetectionWideness()/2);
             //Vec2 posDetect = new Vec2(USBL+enRadius*0.5,sensorBL.getSensorOrientation() - sensorBL.getDetectionWideness()/2);     //sensor arrière gauche
             posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());     //sensor arrière gauche
             posObjectFromCenterRobot.setY(posObjectFromCenterRobot.getY()*-1);
         }
         else{
             double USBR = (double)sensorBR.getDetectedDistance();
-            Vec2 posObjectFromSensorBR = new Vec2(USBR+enRadius*0.5, sensorBR.getSensorOrientation() - sensorBR.getDetectionWideness()/2);
+            Vec2 posObjectFromSensorBR = new Vec2(USBR+enRadius*0.8, sensorBR.getSensorOrientation() - sensorBR.getDetectionWideness()/2);
             //Vec2 posDetect = new Vec2(USBF+enRadius*0.5,sensorBR.getSensorOrientation() + sensorBR.getDetectionWideness()/2);     //sensor arrière droit
             posObjectFromCenterRobot = posObjectFromSensorBR.plusNewVector(sensorBR.getVecteur());     //sensor arrière droit
             posObjectFromCenterRobot.setY(posObjectFromCenterRobot.getY()*-1);
