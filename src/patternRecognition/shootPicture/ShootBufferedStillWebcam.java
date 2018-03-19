@@ -22,7 +22,7 @@ public class ShootBufferedStillWebcam {
     }
 
 
-    private static File shootPicture(){
+    private static void shootPicture(){
         String videoFileToRead="/dev/video0";
 
         List<String> command = new ArrayList<>();
@@ -60,6 +60,6 @@ public class ShootBufferedStillWebcam {
             e.printStackTrace();
             System.out.println("ShootBufferedStillWebcam > Erreur waitfor");
         }
-        return new File("/tmp/Image.jpg");
+        return;
     }
 }
