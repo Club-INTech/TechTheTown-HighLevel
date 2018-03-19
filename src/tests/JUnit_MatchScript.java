@@ -1,5 +1,6 @@
 package tests;
 
+import enums.ActuatorOrder;
 import enums.ScriptNames;
 import enums.Speed;
 import hook.HookFactory;
@@ -51,8 +52,9 @@ public class JUnit_MatchScript extends JUnit_Test {
             robotReal.setOrientation(Table.entryOrientation);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
 
+
 //            robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
-            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
+           scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
 //            robotReal.turn(5*Math.PI/4);
 //            robotReal.moveLengthwise(100);
 

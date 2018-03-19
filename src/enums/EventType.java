@@ -28,8 +28,11 @@ public enum EventType {
 
     //Ne pas mettre d'espaces !
     BLOCKED("unableToMove"),
-    STOPPEDMOVING("stoppedMoving");
+    STOPPEDMOVING("stoppedMoving"),
+    CUBE_PRIS_BRAS_AVANT("cubeDetectedAV"),
+    CUBE_PRIS_BRAS_ARRIERE("cubeDetecetdAR"),
 
+    ;
 
     /** Id de l'event, qui diffère en fonction du type d'event */
     private String eventId;
