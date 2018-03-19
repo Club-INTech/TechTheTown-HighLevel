@@ -91,6 +91,10 @@ public enum ActuatorOrder implements MotionOrder
 
 	ACTIVE_BRAS_AVANT_POUR_ABEILLE("blbAbei",1750),
 
+	ACTIVE_CAPTEURS_BRAS_AVANT("acpAv"),
+	ACTIVE_CAPTEURS_BRAS_ARRIERE("acpAv"),
+	DESACTIVE_CAPTEURS_BRAS("dcp"),
+
 /*			 _____________________
  * 		   *|                     |*
  *		   *|   ASSERVISSEMENTS   |*

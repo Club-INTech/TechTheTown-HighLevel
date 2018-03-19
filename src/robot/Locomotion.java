@@ -939,7 +939,9 @@ public class Locomotion implements Service {
         maxRetriesIfBlocked = config.getInt(ConfigInfoRobot.MAX_RETRIES_IF_BLOCKED);
     }
 
-
+    public ThreadEvents getThEvent() {
+        return thEvent;
+    }
     /**************************************************
      * 					JUNITS                        *
      **************************************************/

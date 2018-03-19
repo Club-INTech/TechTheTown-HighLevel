@@ -43,6 +43,10 @@ public class ThreadEvents extends AbstractThread
     /** Buffer d'envoie des events */
     private ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
 
+    private boolean cubeTakenBrasAV=false;
+
+    private boolean cubeTakenBrasAR=false;
+
     /** Le robot bouge */
     public Boolean isMoving;
 
@@ -83,6 +87,14 @@ public class ThreadEvents extends AbstractThread
                         }
                         log.debug("isMoving variable has been defined to False");
                     }
+                    else if(message[0].equals(EventType.CUBE_PRIS_BRAS_AVANT.getEventId())){
+                        cubeTakenBrasAV=true;
+                        log.debug("Le robot a pris un cube en utilisant le bras AV");
+                    }
+                    else if(message[0].equals(EventType.CUBE_PRIS_BRAS_ARRIERE.getEventId())){
+                        cubeTakenBrasAR=true;
+                        log.debug("Le robot a pris un cube en utilisant le bras AR");
+                    }
                 } else {
                     Thread.sleep(100);
                 }
@@ -95,5 +107,14 @@ public class ThreadEvents extends AbstractThread
     public ConcurrentLinkedQueue<String> getUnableToMoveEvent() {
         return unableToMoveEvent;
     }
+
+    public boolean getCubeTakenBrasAV() {
+        return cubeTakenBrasAV;
+    }
+
+    public boolean getCubeTakenBrasAR() {
+        return cubeTakenBrasAR;
+    }
+
     public void setIsMoving(boolean value){ this.isMoving=value; }
 }
