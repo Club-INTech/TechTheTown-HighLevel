@@ -74,9 +74,7 @@ public class Main {
             // TODO : initialisation des variables globales du robot & objets...
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
-            realState.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
-
-
+            realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
 
             while(patternRecognition.isMovementLocked()) {
                 Thread.sleep(10);

@@ -103,8 +103,8 @@ public class DeposeCubes extends AbstractScript {
         la zone de depose cubes
          */
         else if (version == 1) {
-            int xEntry = 370;
-            int yEntry = 350;
+            int xEntry = 600;
+            int yEntry = 175+radius;
             Vec2 positionentree = new Vec2(xEntry, yEntry);
             return new Circle(positionentree);
         } else {
