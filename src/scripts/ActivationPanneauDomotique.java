@@ -15,7 +15,6 @@ import utils.Log;
 
 
 public class ActivationPanneauDomotique extends AbstractScript{
-
     /** Position d'entrée du script */
 
     int xEntry=370;
@@ -44,7 +43,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
         actualState.robot.moveLengthwise(distanceInterrupteur);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.goTo(new Vec2(xEntry,yEntry));
-        actualState.robot.setLocomotionSpeed(Speed.FAST_ALL);
+        actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
     }
 
     @Override
