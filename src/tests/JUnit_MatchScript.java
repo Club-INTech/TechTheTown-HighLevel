@@ -1,5 +1,6 @@
 package tests;
 
+import enums.ActuatorOrder;
 import enums.ScriptNames;
 import enums.Speed;
 import hook.HookFactory;
@@ -46,19 +47,18 @@ public class JUnit_MatchScript extends JUnit_Test {
 //            robotReal.setOrientation(Math.PI);
 //            Vec2 positionDepart = new Vec2(1252, 455);
 //            robotReal.setPosition(positionDepart);
-            //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+//            robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             robotReal.setPosition(Table.entryPosition);
             robotReal.setOrientation(Table.entryOrientation);
-            robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
 
-//            robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+            robotReal.setLocomotionSpeed(Speed.FAST_ALL);
+//
+//            robotReal.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
+//            robotReal.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
+//            robotReal.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
+//
             scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
-//            robotReal.turn(5*Math.PI/4);
-//            robotReal.moveLengthwise(100);
 
-//            locomotion.moveToPoint(new Vec2(-200, 1000), false, false);
-//            robotReal.turn(0);
-//            robotReal.turn(Math.PI/4);
         } catch (Exception e) {
             e.printStackTrace();
         }

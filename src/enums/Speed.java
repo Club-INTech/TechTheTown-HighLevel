@@ -54,7 +54,7 @@ public enum Speed implements MotionOrder
 	FAST_T_MEDIUM_R(520, 1.8D),
 
 	/** vitesse rapide en translation et rotation */
-	FAST_ALL(600,1.8D),
+	FAST_ALL(750,1.8D),
 
 	/** vitesse ultra rapide en translation et rotation */
 	ULTRA_FAST_ALL(1200,1.8D);
