@@ -740,4 +740,8 @@ public class Robot implements Service {
         position = Table.entryPosition;
         orientation = Math.PI;
     }
+
+    public Locomotion getmLocomotion() {
+        return mLocomotion;
+    }
 }
