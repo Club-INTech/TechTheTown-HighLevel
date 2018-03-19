@@ -51,12 +51,9 @@ public class JUnit_MatchScript extends JUnit_Test {
             robotReal.setPosition(Table.entryPosition);
             robotReal.setOrientation(Table.entryOrientation);
 
+/**          Vitesse du robot (ULTRA_SLOW_ALL, SLOW_ALL, MEDIUM_ALL, FAST_ALL, ULTRA_FAST_ALL) */
             robotReal.setLocomotionSpeed(Speed.FAST_ALL);
-//
-//            robotReal.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
-//            robotReal.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
-//            robotReal.useActuator(ActuatorOrder.ACTIVE_LA_POMPE,true);
-//
+
             scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
 
 

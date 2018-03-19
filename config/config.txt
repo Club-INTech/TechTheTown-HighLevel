@@ -83,9 +83,14 @@ rvert=43
 gvert=120
 bvert=68
 
-####        PARAMETRES SCRIPTS
+############PARAMETRES SCRIPTS############
+
+#ActivationPanneauDomitique
 DISTANCE_INTERRUPTEUR=50
+#ActiveAbeille
 DISTANCE_ABEILLE=70
+#TakeCubes
+#DéposeCube
 DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES=70
 DISTANCE_PUSH_DEPOSE_CUBES=107
 
