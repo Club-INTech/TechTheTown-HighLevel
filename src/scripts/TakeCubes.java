@@ -176,12 +176,11 @@ public class TakeCubes extends AbstractScript {
                 if(indiceTas==2){
                     if (bras.equals(BrasUtilise.AVANT)) {
                         HookNames.ACTIVE_BRAS_AVANT_ABEILLE.setPosition(thirdPosition);
-
                     }
                     if(bras.equals(BrasUtilise.ARRIERE)){
                         HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE.setPosition(thirdPosition);
                     }
-
+                    hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
                 }
                 if(bras.equals(BrasUtilise.AVANT)){
                     scorefinalCubes=scorefinalCubes+calculscore(nbCubesAV,true);
@@ -245,7 +244,7 @@ public class TakeCubes extends AbstractScript {
             log.debug("Exécution script de récupération des cubes avant que le pattern ait été calculé");
             throw new ExecuteException(new PatternNotYetCalculatedException("Le pattern n'a pas encore été calculé"));
         }
-
+        hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
     }
 
     public void takeThisCube(GameState stateToConsider, BrasUtilise bras) throws InterruptedException{
