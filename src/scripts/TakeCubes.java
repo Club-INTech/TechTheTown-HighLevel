@@ -70,7 +70,6 @@ public class TakeCubes extends AbstractScript {
         }
         */
 
-        hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
         //On regarde quel bras on utilise
         if (bras==BrasUtilise.AVANT){
             //On gère le cas où le cube bonus est encore présent
@@ -173,15 +172,7 @@ public class TakeCubes extends AbstractScript {
                 stateToConsider.robot.moveNearPoint(thirdPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
                 takeThisCube(stateToConsider, bras);
-                if(indiceTas==2){
-                    if (bras.equals(BrasUtilise.AVANT)) {
-                        HookNames.ACTIVE_BRAS_AVANT_ABEILLE.setPosition(thirdPosition);
-                    }
-                    if(bras.equals(BrasUtilise.ARRIERE)){
-                        HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE.setPosition(thirdPosition);
-                    }
-                    hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-                }
+
                 if(bras.equals(BrasUtilise.AVANT)){
                     scorefinalCubes=scorefinalCubes+calculscore(nbCubesAV,true);
                     nbCubesAV=0;
@@ -204,7 +195,7 @@ public class TakeCubes extends AbstractScript {
                         nbCubesAV=0;
                     }
                     if(bras.equals(BrasUtilise.ARRIERE)){
-                        calculscore(nbCubesAR,false);
+                        scorefinalCubes=scorefinalCubes+calculscore(nbCubesAR,false);
                         nbCubesAR=0;
                     }
                 }
@@ -244,8 +235,8 @@ public class TakeCubes extends AbstractScript {
             log.debug("Exécution script de récupération des cubes avant que le pattern ait été calculé");
             throw new ExecuteException(new PatternNotYetCalculatedException("Le pattern n'a pas encore été calculé"));
         }
-        hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
     }
+
 
     public void takeThisCube(GameState stateToConsider, BrasUtilise bras) throws InterruptedException{
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
@@ -325,7 +316,7 @@ public class TakeCubes extends AbstractScript {
 
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
-        return 0;
+        return this.scorefinalCubes;
     }
 
     @Override

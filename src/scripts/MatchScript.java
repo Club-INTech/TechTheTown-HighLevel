@@ -26,6 +26,7 @@ public class MatchScript extends AbstractScript {
     @Override
     public void execute(int versionToexecute,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
 
+        hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
 
         ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
         actPD.goToThenExec(0,gameState);
@@ -37,8 +38,23 @@ public class MatchScript extends AbstractScript {
         TakeCubes tk2=new TakeCubes(config,log,hookFactory);
         tk2.goToThenExec(2,gameState);
 
+
         ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
+        Vec2 directionToGo=(activeAbeille.entryPosition(0, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
+        double prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
+        if (prodScal>0) {
+            hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
+        }
+        else{
+            hookFactory.enableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
+        }
         activeAbeille.goToThenExec(0,gameState);
+        if (prodScal>0) {
+            hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
+        }
+        else{
+            hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
+        }
 
         gameState.setTakeCubesBras(BrasUtilise.AVANT);
         TakeCubes tk1=new TakeCubes(config,log,hookFactory);
