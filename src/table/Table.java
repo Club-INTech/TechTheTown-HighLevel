@@ -66,7 +66,7 @@ public class Table implements Service
 	// Au besoin, créer les classes nécessaires dans le package table
 
 	/** point de départ du match à modifier a chaque base roulante */
-	public static Vec2 entryPosition = new Vec2(1269, 455);
+	public static Vec2 entryPosition = new Vec2(1300, 430);
 	public static double entryOrientation = Math.PI;
 
 	/**
