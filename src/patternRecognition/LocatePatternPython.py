@@ -40,7 +40,7 @@ def find_squares(img,threshold1, threshold2, blurSize):
                 if len(cnt) == 4 and area >= maxArea and cv.isContourConvex(cnt):
                     cnt = cnt.reshape(-1, 2)
                     max_cos = np.max([angle_cos( cnt[i], cnt[(i+1) % 4], cnt[(i+2) % 4] ) for i in xrange(4)])
-                    if max_cos < 0.4:
+                    if max_cos < 0.5:
                         maxX=-1
                         minX=10000
                         maxY=-1
@@ -56,7 +56,7 @@ def find_squares(img,threshold1, threshold2, blurSize):
                                 minY=array[1]
                         deltaX=maxX-minX
                         deltaY=maxY-minY
-                        if deltaX>10 and deltaX<40 and deltaY>30 and deltaY<50 and deltaX<deltaY*1:
+                        if deltaX>5 and deltaX<60 and deltaY>15 and deltaY<40 and deltaX<deltaY:
                             maxArea=area
                             squares=cnt
                             oneSquareFound=True
@@ -82,11 +82,11 @@ def find_squares(img,threshold1, threshold2, blurSize):
 if __name__ == '__main__':
     fn='/tmp/ImageRaspi.jpg'
     img = cv.imread(fn)
-    img = img[0:480, 0:640]
-    square = find_squares(img,10,20,5)
+    img = img[300:300+200,300:300+250]
+    square = find_squares(img,0,50,9)
     numpySquares=np.array([[[square[0],square[2]],[square[1],square[2]],[square[1],square[3]], [square[0],square[3]]]])
     if square != [-1,-1,10000,10000]:
-        cv.drawContours( img, numpySquares, -1, (255, 0, 0), 3)
+        cv.drawContours( img, numpySquares, -1, (255, 0, 0), 2)
 
     #Pour saovir où les carrés ont été identifiés
     cv.imshow("DEBUG",img)

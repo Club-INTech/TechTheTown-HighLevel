@@ -26,8 +26,27 @@ public class ShootBufferedStillWebcam {
         String videoFileToRead="/dev/video0";
 
         List<String> command = new ArrayList<>();
+
+        //Camera FishEye
         command.add("fswebcam");
-        //command.add("-q");
+        command.add("-s");
+        command.add("brightness=60%");
+        command.add("-s");
+        command.add("contrast=50%");
+        command.add("-s");
+        command.add("saturation=100%");
+        command.add("-r");
+        command.add("1280x720");
+        command.add("--scale");
+        command.add("1280x720");
+        command.add("--rotate");
+        command.add("180");
+        command.add("--no-banner");
+        command.add("/tmp/ImageRaspi.jpg");
+
+        /*
+        //Caméra pourrav
+        command.add("fswebcam");
         command.add("-p");
         command.add("YUYV");
         command.add("-r");
@@ -38,6 +57,7 @@ public class ShootBufferedStillWebcam {
         command.add(videoFileToRead);
         System.out.println("Using "+videoFileToRead);
         command.add("/tmp/ImageRaspi.jpg");
+        */
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();
 
