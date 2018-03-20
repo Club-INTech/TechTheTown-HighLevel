@@ -48,6 +48,12 @@ public enum ConfigInfoRobot implements ConfigInfo
     /** Paramètres match !*/
     COULEUR("vert"),
     C_DES_FOUS_EN_FACE(false),
+    TAS_BASE_PRIS(false),
+    TAS_CHATEAU_PRIS(false),
+    TAS_STATION_EPURATION_PRIS(false),
+    TAS_BASE_ENNEMI_PRIS(false),
+    TAS_CHATEAU_ENNEMI_PRIS(false),
+    TAS_STATION_EPURATION_ENNEMI_PRIS(false),
 
     /** Dimensions du robot */
     ROBOT_LENGTH(300),
@@ -68,14 +74,15 @@ public enum ConfigInfoRobot implements ConfigInfo
     PEREMP_OBST(5000),
 
     /** Paramètres capteurs */
-    ROBOT_EN_RADIUS(220),
-    MAX_SENSOR_RANGE(800),
-    MIN_SENSOR_RANGEAV(30),
-    MIN_SENSOR_RANGEAR(30),
-    MIN_SENSOR_RANGE(30),
-    SENSOR_POSITION_ANGLE_FRONT(1),
-    SENSOR_POSITION_ANGLE_BACK(1),
-    SENSOR_ANGLE_WIDENESS(30),
+
+    ROBOT_EN_RADIUS(220),           //en mm
+    MAX_SENSOR_RANGE(600),          //en mm
+    MIN_SENSOR_RANGEAV(30),         //en mm
+    MIN_SENSOR_RANGEAR(30),         //en mm
+    MIN_SENSOR_RANGE(30),           //en mm
+    SENSOR_ORIENTATION_FRONT(0),    //en radians
+    SENSOR_ORIENTATION_BACK(0),     //en radians
+    SENSOR_ANGLE_WIDENESS(1.04),    //en radians, CONE TOTAL (PAS DEMI CONE)
     UNCERTAINTY(1),
     // TODO à compléter
 
@@ -95,8 +102,34 @@ public enum ConfigInfoRobot implements ConfigInfo
 
     /** Paramètre simulation */
     SIMULATION(false),
-    ;
 
+    /** Paramètre d'attente du jumper */
+    ATTENTE_JUMPER(true),
+
+    /**Paramètres couleurs*/
+    rorange(183),
+    gorange(107),
+    borange(71),
+    rjaune(184),
+    gjaune(177),
+    bjaune(37),
+    rbleu(50),
+    gbleu(84),
+    bbleu(112),
+    rnoir(13),
+    gnoir(24),
+    bnoir(20),
+    rvert(43),
+    gvert(120),
+    bvert(68),
+
+    /**Paramètres scripts*/
+    DISTANCE_INTERRUPTEUR(50),
+    DISTANCE_ABEILLE(50),
+    DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES(70),
+    DISTANCE_PUSH_DEPOSE_CUBES(107),
+
+    ;
     private Object defaultValue;
 
     /**

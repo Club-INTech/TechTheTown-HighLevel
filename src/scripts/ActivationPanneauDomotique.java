@@ -1,5 +1,6 @@
 package scripts;
 
+import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
@@ -14,14 +15,18 @@ import utils.Log;
 
 
 public class ActivationPanneauDomotique extends AbstractScript{
-
     /** Position d'entrée du script */
 
-    int xEntry=350;
-    int yEntry=370;
+    int xEntry=370;
+    int yEntry=220;
+
+    /** Eléments appelés par la config */
+
+    int distanceInterrupteur;
 
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
+        updateConfig();
     }
 
     @Override
@@ -33,14 +38,12 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
-        //l'accès est scripté
-        Vec2 aim=new Vec2(370,350);
-        actualState.robot.goTo(aim);
         actualState.robot.turn(-Math.PI/2);
-        actualState.robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
-        actualState.robot.moveLengthwise(290);
+        actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+        actualState.robot.moveLengthwise(distanceInterrupteur);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.goTo(new Vec2(xEntry,yEntry));
+        actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
     }
 
     @Override
@@ -58,5 +61,11 @@ public class ActivationPanneauDomotique extends AbstractScript{
     @Override
     public int remainingScoreOfVersion(int version, GameState state) {
         return 0;
+    }
+
+    @Override
+    public void updateConfig() {
+        super.updateConfig();
+        distanceInterrupteur = config.getInt(ConfigInfoRobot.DISTANCE_INTERRUPTEUR);
     }
 }

@@ -46,7 +46,7 @@ public class ThreadInterface extends AbstractThread
         Thread.currentThread().setPriority(3); // C'est le thread le moins prioritaire du lot
         this.log = log;
         this.robot = robot;
-        this.win = new Window(table, state, scriptManager);
+        this.win = new Window(table, state, scriptManager,false);
     }
 
     @Override
@@ -60,5 +60,13 @@ public class ThreadInterface extends AbstractThread
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Getter de window
+     * @return
+     */
+    public Window getWindow() {
+        return win;
     }
 }

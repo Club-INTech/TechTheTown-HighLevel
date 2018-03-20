@@ -77,7 +77,7 @@ public enum ActuatorOrder implements MotionOrder
 	RELEVE_LE_BRAS_AVANT("rlbAv",1750),
 	OUVRE_LA_PORTE_AVANT("olpAv",750),
 	FERME_LA_PORTE_AVANT("flpAv",750),
-	TILT_LA_PORTE_AVANT("tlpAv",500),
+	OUVRE_LA_PORTE_AVANT_UNPEU("olpAvp",500),
 	ACTIVE_ELECTROVANNE_AVANT("aeAv",300),
 	DESACTIVE_ELECTROVANNE_AVANT("deAv",300),
 
@@ -85,11 +85,15 @@ public enum ActuatorOrder implements MotionOrder
 	RELEVE_LE_BRAS_ARRIERE("rlbAr",1750),
 	FERME_LA_PORTE_ARRIERE("flpAr",750),
 	OUVRE_LA_PORTE_ARRIERE("olpAr",750),
-	TILT_LA_PORTE_ARRIERE("tlpAr",500),
+	OUVRE_LA_PORTE_ARRIERE_UNPEU("olpArp",500),
 	ACTIVE_ELECTROVANNE_ARRIERE("aeAr",300),
 	DESACTIVE_ELECTROVANNE_ARRIERE("deAr",300),
 
 	ACTIVE_BRAS_AVANT_POUR_ABEILLE("blbAbei",1750),
+
+	ACTIVE_CAPTEURS_BRAS_AVANT("acpAv"),
+	ACTIVE_CAPTEURS_BRAS_ARRIERE("acpAv"),
+	DESACTIVE_CAPTEURS_BRAS("dcp"),
 
 /*			 _____________________
  * 		   *|                     |*
@@ -187,7 +191,7 @@ public enum ActuatorOrder implements MotionOrder
 	 * Retrouve la chaine de caractère a envoyer par la série a la carte actionneur pour qu'elle effectue cet ordre
 	 * @return la chaine de caractère à envoyer par la série à la carte actionneur
 	 */
-	public String getSerialOrder()
+	public String getEthernetOrder()
 	{
 		return serialOrder;
 	}

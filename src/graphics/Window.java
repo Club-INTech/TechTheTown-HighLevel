@@ -34,6 +34,7 @@ import tests.container.A;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Interface graphique pour faciliter le debugage HL
@@ -60,7 +61,7 @@ public class Window extends JFrame
 	 * @param state
 	 * @param scriptManager
 	 */
-	public Window(Table table, GameState state, ScriptManager scriptManager)
+	public Window(Table table, GameState state, ScriptManager scriptManager, boolean isMontlheryActive)
 	{
 		this.setTitle("Interface - Full");
 	    this.setSize(1300, 950);
@@ -73,10 +74,11 @@ public class Window extends JFrame
 	    
 	    mouse = new Mouse(tablePanel);
 	    addMouseListener(mouse);
-	    
-	    keyboard = new Keyboard(state, scriptManager);
-	    addKeyListener(keyboard);
 
+		if (isMontlheryActive) {
+			keyboard = new Keyboard(state, scriptManager);
+			addKeyListener(keyboard);
+		}
 	    this.setVisible(true);
 	}
 
@@ -132,13 +134,17 @@ public class Window extends JFrame
 	}
 
 	/** Permet d'afficher les aretes/le chemin */
-	public void setArete(ArrayList<Arete> aretes){
+	public void setArete(CopyOnWriteArrayList<Arete> aretes){
 		tablePanel.setAretes(aretes);
 	}
 	public void setPath(ArrayList<Vec2> path){
 		tablePanel.setPath(path);
 	}
-	public void setNode(ArrayList<Noeud> nodes){
+	public void setPoint(Vec2 point){
+		tablePanel.setPoint(point);
+		repaint();
+	}
+	public void setNode(CopyOnWriteArrayList<Noeud> nodes){
 		tablePanel.setNodes(nodes);;
 	}
 

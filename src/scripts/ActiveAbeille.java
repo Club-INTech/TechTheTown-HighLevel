@@ -16,23 +16,39 @@ import utils.Log;
 public class ActiveAbeille extends AbstractScript {
 
     /** Active l'abeille */
-    private int securityDistance = 45; //distance de sécurité pour ne pas cogner le mur en tournant
-    private int radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS); //rayon du robot
+    private int securityDistance = 60; //distance de sécurité pour ne pas cogner le mur en tournant
+
+    /** Eléments appelés par la config */
+    private int radius ; //rayon du robot
+    int distanceAbeille;
 
     public ActiveAbeille(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
+        updateConfig();
+    }
+    @Override
+    public void updateConfig() {
+        super.updateConfig();
+        distanceAbeille = config.getInt(ConfigInfoRobot.DISTANCE_ABEILLE);
+        radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
     }
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
         //On se tourne vers l'abeille
-        actualState.robot.turn(Math.PI/2);
+        actualState.robot.turn(Math.PI/4);
+        //ON s'avance vers l'abeille
+        actualState.robot.moveLengthwise(distanceAbeille);
         //On active le bras
         actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,true);
         //On tourne de 90° pour lancer l'abeille
         actualState.robot.turn(Math.PI,true);
         //On relève le bras
         actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+        int xEntry = 1500-radius-securityDistance;
+        int yEntry = 2000-radius-securityDistance;
+        Vec2 aim =new Vec2(xEntry,yEntry);
+        actualState.robot.goTo(aim);
     }
 
     @Override

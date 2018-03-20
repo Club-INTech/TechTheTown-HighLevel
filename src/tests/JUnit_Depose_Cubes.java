@@ -25,6 +25,7 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
             robotReal = container.getService(Robot.class);
             state=container.getService(GameState.class);
             scriptManager=container.getService(ScriptManager.class);
+            hookFactory=container.getService(HookFactory.class);
             container.startInstanciedThreads();
         }catch (Exception e){
             e.printStackTrace();

@@ -270,8 +270,8 @@ public class Vec2 {
 
 	public void setR(double r) {
 		this.r = r;
-		x = (int) (r * Math.cos(a));
-		y = (int) (r * Math.sin(a));
+		x = (int) Math.round(r * Math.cos(a));
+		y = (int) Math.round(r * Math.sin(a));
 	}
 
 	public double getA() {
@@ -279,9 +279,10 @@ public class Vec2 {
 	}
 
 	public void setA(double a) {
+		//TODO ; utiliser Geometry.moduloSpec ?
 		this.a = a % Math.PI;
-		x = (int) (r * Math.cos(a));
-		y = (int) (r * Math.sin(a));
+		x = (int) Math.round(r * Math.cos(a));
+		y = (int) Math.round(r * Math.sin(a));
 	}
 
 	/** Le hashCode permet d'identifier un objet par un id géneré en fonction des paramètres (ici x et y);
@@ -354,6 +355,19 @@ public class Vec2 {
 	 */
 	public Circle toCircle() {
 		return new Circle(this, 0);
+	}
+
+	public boolean xisbetween(int x1, int x2){
+		if(this.getX()>x1 && this.getX()<x2){
+			return true;
+		}
+		return false;
+	}
+	public boolean yisbetween(int y1,int y2){
+		if(this.getY()>y1 && this.getY()<y2){
+			return true;
+		}
+		return false;
 	}
 }
 

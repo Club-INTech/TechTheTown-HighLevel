@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="TechTheTown-HighLevel" default="all">
+  
+  
+  <property file="build.properties"/>
+
+  <property name="skip.tests" value="true"/>
+
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+    <include name="*.swc"/>
+    <include name="*.war"/>
+    <include name="*.ane"/>
+    <include name="*.zip"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.lib.classpath">
+    <pathelement location="${basedir}/lib/config-1.3.jar"/>
+    <pathelement location="${basedir}/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${basedir}/lib/ini4j-0.5.1.jar"/>
+    <pathelement location="${basedir}/lib/Jama-1.0.2.jar"/>
+    <pathelement location="${basedir}/lib/jcommon-1.0.13.jar"/>
+    <pathelement location="${basedir}/lib/jfreechart-1.0.13.jar"/>
+    <pathelement location="${basedir}/lib/junit-4.12.jar"/>
+    <pathelement location="${basedir}/lib/opencv-340.jar"/>
+  </path>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module TechTheTown-HighLevel -->
+  
+  <dirname property="module.TechTheTown-HighLevel.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.TechTheTown-HighLevel" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="TechTheTown-HighLevel.output.dir" value="${module.TechTheTown-HighLevel.basedir}/out/production/TechTheTown-HighLevel"/>
+  <property name="TechTheTown-HighLevel.testoutput.dir" value="${module.TechTheTown-HighLevel.basedir}/out/test/TechTheTown-HighLevel"/>
+  
+  <path id="TechTheTown-HighLevel.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="TechTheTown-HighLevel.module.production.classpath">
+    <path refid="library.lib.classpath"/>
+    <pathelement location="${basedir}/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${basedir}/lib/junit-4.12.jar"/>
+  </path>
+  
+  <path id="TechTheTown-HighLevel.runtime.production.module.classpath">
+    <pathelement location="${TechTheTown-HighLevel.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+    <pathelement location="${basedir}/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${basedir}/lib/junit-4.12.jar"/>
+  </path>
+  
+  <path id="TechTheTown-HighLevel.classpath">
+    <pathelement location="${TechTheTown-HighLevel.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+    <pathelement location="${basedir}/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${basedir}/lib/junit-4.12.jar"/>
+  </path>
+  
+  <path id="TechTheTown-HighLevel.runtime.module.classpath">
+    <pathelement location="${TechTheTown-HighLevel.testoutput.dir}"/>
+    <pathelement location="${TechTheTown-HighLevel.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+    <pathelement location="${basedir}/lib/hamcrest-core-1.3.jar"/>
+    <pathelement location="${basedir}/lib/junit-4.12.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.TechTheTown-HighLevel">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.TechTheTown-HighLevel">
+    <patternset refid="excluded.from.module.TechTheTown-HighLevel"/>
+  </patternset>
+  
+  <path id="TechTheTown-HighLevel.module.sourcepath">
+    <dirset dir="${module.TechTheTown-HighLevel.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.TechTheTown-HighLevel" depends="compile.module.TechTheTown-HighLevel.production,compile.module.TechTheTown-HighLevel.tests" description="Compile module TechTheTown-HighLevel"/>
+  
+  <target name="compile.module.TechTheTown-HighLevel.production" description="Compile module TechTheTown-HighLevel; production classes">
+    <mkdir dir="${TechTheTown-HighLevel.output.dir}"/>
+    <javac destdir="${TechTheTown-HighLevel.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.TechTheTown-HighLevel}"/>
+      <bootclasspath refid="TechTheTown-HighLevel.module.bootclasspath"/>
+      <classpath refid="TechTheTown-HighLevel.module.production.classpath"/>
+      <src refid="TechTheTown-HighLevel.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.TechTheTown-HighLevel"/>
+    </javac>
+    
+    <copy todir="${TechTheTown-HighLevel.output.dir}">
+      <fileset dir="${module.TechTheTown-HighLevel.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.TechTheTown-HighLevel.tests" depends="compile.module.TechTheTown-HighLevel.production" description="compile module TechTheTown-HighLevel; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.TechTheTown-HighLevel" description="cleanup module">
+    <delete dir="${TechTheTown-HighLevel.output.dir}"/>
+    <delete dir="${TechTheTown-HighLevel.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.TechTheTown-HighLevel" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.TechTheTown-HighLevel" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+
+  <target name="jar" depends="all">
+      <delete file="TechTheTown-HighLevel.jar"/>
+    <jar destfile="TechTheTown-HighLevel.jar" basedir="${TechTheTown-HighLevel.output.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="Main"/>
+      </manifest>
+        <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
+    </jar>
+
+  </target>
+</project>

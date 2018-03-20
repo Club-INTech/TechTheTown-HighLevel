@@ -19,6 +19,9 @@
 
 package smartMath;
 
+import java.awt.*;
+import java.awt.geom.Line2D;
+
 /**
  * classe de calculs de géométrie
  * @author Etienne, Rem
@@ -58,11 +61,28 @@ public class Geometry
 		// - le point d'intersection est entre A2 et B2 : (A1B1)^(A1B2) * (A1B1)^(A1A2) < 0
 		// - le point d'intersection est entre A1 et B1 : (A2B2)^(A2B1) * (A2B2)^(A2A1) < 0
 		// ^ = produit vectoriel
-
-		return ((double)segment1.getB().getX() - (double)segment1.getA().getX()) * ((double)segment2.getB().getY() - (double)segment2.getA().getY()) - ((double)segment1.getB().getY() - (double)segment1.getA().getY()) * ((double)segment2.getB().getX() - (double)segment2.getA().getX()) != 0
-				&& (((double)segment1.getB().getX() - (double)segment1.getA().getX()) * ((double)segment2.getB().getY() - (double)segment1.getA().getY()) - ((double)segment1.getB().getY() - (double)segment1.getA().getY()) * ((double)segment2.getB().getX() - (double)segment1.getA().getX())) * (((double)segment1.getB().getX() - (double)segment1.getA().getX()) * ((double)segment2.getA().getY() - (double)segment1.getA().getY()) - ((double)segment1.getB().getY() - (double)segment1.getA().getY()) * ((double)segment2.getA().getX() - (double)segment1.getA().getX())) < 0
-				&& (((double)segment2.getB().getX() - (double)segment2.getA().getX()) * ((double)segment1.getB().getY() - (double)segment2.getA().getY()) - ((double)segment2.getB().getY() - (double)segment2.getA().getY()) * ((double)segment1.getB().getX() - (double)segment2.getA().getX())) * (((double)segment2.getB().getX() - (double)segment2.getA().getX()) * ((double)segment1.getA().getY() - (double)segment2.getA().getY()) - ((double)segment2.getB().getY() - (double)segment2.getA().getY()) * ((double)segment1.getA().getX() - (double)segment2.getA().getX())) < 0
-				;
+		int xA1=segment1.getA().getX();
+		int yA1=segment1.getA().getY();
+		int xB1=segment1.getB().getX();
+		int yB1=segment1.getB().getY();
+		int xA2=segment2.getA().getX();
+		int yA2=segment2.getA().getY();
+		int xB2=segment2.getB().getX();
+		int yB2=segment2.getB().getY();
+		return Line2D.linesIntersect(xA1,yA1,xB1,yB1,xA2,yA2,xB2,yB2);
+		/*if(segment1.vecdirecteur().crossProduct(segment2.vecdirecteur()) != 0){
+			Vec2 vecintersection=intersection(segment1,segment2);
+			if(vecintersection.xisbetween(xA1,xB1)&& vecintersection.xisbetween(xB2,xA2) &&vecintersection.yisbetween(yA1,yB1)&& vecintersection.yisbetween(yB2,yA2)){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return false;
+		}
+		*/
 		/*return  ((segment1.getVector().crossProduct(segment2.getVector()) != 0)
 				&& ((segment1.getVector().crossProduct(segment2.getB().minusNewVector(segment1.getA()))  *  segment1.getVector().crossProduct(segment2.getA().minusNewVector(segment1.getA()))) < 0)
 				&& ((segment2.getVector().crossProduct(segment1.getB().minusNewVector(segment2.getA()))  *  segment2.getVector().crossProduct(segment1.getA().minusNewVector(segment2.getA()))) < 0));
@@ -197,7 +217,7 @@ public class Geometry
      */
 	public static boolean isBetween(double val, double a, double b)
 	{
-		if(a>b) //Si le singe a mie de pain inf à la place de sup
+		if(a>b) //Si le singe a mie de pain inf à la place de sup (2013-2014)
 		{
 			double temp=b;
 			b=a;
@@ -205,6 +225,24 @@ public class Geometry
 		}
 
 		return val >= a && val <= b;
+	}
+
+	/**
+	 * Cette méthode retourne true s'il y'a une intersection entre un segment et un rectangle
+	 * @param segment
+	 * @param rectangle
+	 * @return
+	 */
+	public static boolean intersects(Segment segment, Rectangle rectangle){
+		Vec2 pointhautgauche=new Vec2(new Integer((int) rectangle.getLocation().getX()),new Integer((int) rectangle.getLocation().getY()));
+		Vec2 pointbasgauche=new Vec2(new Integer((int) pointhautgauche.getX()),new Integer((int) (pointhautgauche.getY()-rectangle.getHeight())));
+		Vec2 pointhautdroite=new Vec2(new Integer((int) (pointhautgauche.getX()+rectangle.getWidth())),new Integer((int) pointhautgauche.getY()));
+		Vec2 pointbasdroite=new Vec2(new Integer((int) (pointhautgauche.getX()+rectangle.getWidth())),new Integer((int) (pointhautgauche.getY()-rectangle.getHeight())));
+		Segment segment1=new Segment(pointhautgauche,pointhautdroite);
+		Segment segment2=new Segment(pointhautdroite,pointbasdroite);
+		Segment segment3=new Segment(pointbasdroite,pointbasgauche);
+		Segment segment4=new Segment(pointbasgauche,pointhautdroite);
+		return (intersects(segment,segment1) || intersects(segment,segment2) || intersects(segment,segment3) || intersects(segment,segment4));
 	}
 
 	/**

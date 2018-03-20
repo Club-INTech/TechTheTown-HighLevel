@@ -6,10 +6,12 @@ import enums.Speed;
 import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
+import patternRecognition.PatternRecognition;
+import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
-import smartMath.Vec2;
 import strategie.GameState;
+import table.Table;
 import threads.ThreadInterface;
 
 public class JUnit_MatchScript extends JUnit_Test {
@@ -18,6 +20,9 @@ public class JUnit_MatchScript extends JUnit_Test {
     private ScriptManager scriptManager;
     private GameState state;
     private HookFactory hookFactory;
+    private PatternRecognition patternRecognitonThread;
+    private ThreadInterface anInterface;
+    private Locomotion locomotion;
 
     @Before
     public void setUp() {
@@ -26,7 +31,9 @@ public class JUnit_MatchScript extends JUnit_Test {
             robotReal = container.getService(Robot.class);
             state = container.getService(GameState.class);
             scriptManager = container.getService(ScriptManager.class);
-            ThreadInterface threadInterface = container.getService(ThreadInterface.class);
+            //patternRecognitonThread = container.getService(PatternRecognition.class);
+            anInterface = container.getService(ThreadInterface.class);
+            locomotion = container.getService(Locomotion.class);
             container.startInstanciedThreads();
         } catch (Exception e) {
             e.printStackTrace();
@@ -37,13 +44,18 @@ public class JUnit_MatchScript extends JUnit_Test {
     public void testScript() {
         try {
             //Définition des paramètres de base
-            robotReal.setOrientation(Math.PI);
-            Vec2 positionDepart = new Vec2(1252, 455);
-            robotReal.setPosition(positionDepart);
-            //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
-            robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+//            robotReal.setOrientation(Math.PI);
+//            Vec2 positionDepart = new Vec2(1252, 455);
+//            robotReal.setPosition(positionDepart);
+//            robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+            robotReal.setPosition(Table.entryPosition);
+            robotReal.setOrientation(Table.entryOrientation);
+
+/**          Vitesse du robot (ULTRA_SLOW_ALL, SLOW_ALL, MEDIUM_ALL, FAST_ALL, ULTRA_FAST_ALL) */
+            robotReal.setLocomotionSpeed(Speed.FAST_ALL);
+
             scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
+
 
         } catch (Exception e) {
             e.printStackTrace();

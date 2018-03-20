@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_techthetown-highlevel" default="compile.module.techthetown-highlevel">
+  <dirname property="module.techthetown-highlevel.basedir" file="${ant.file.module_techthetown-highlevel}"/>
+  
+  
+  <property name="compiler.args.techthetown-highlevel" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="techthetown-highlevel.output.dir" value="${module.techthetown-highlevel.basedir}/out/production/TechTheTown-HighLevel"/>
+  <property name="techthetown-highlevel.testoutput.dir" value="${module.techthetown-highlevel.basedir}/out/test/TechTheTown-HighLevel"/>
+  
+  <path id="techthetown-highlevel.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="techthetown-highlevel.module.production.classpath">
+    <path refid="library.lib.classpath"/>
+    
+    <path refid="library.opencv-340.classpath"/>
+  </path>
+  
+  <path id="techthetown-highlevel.runtime.production.module.classpath">
+    <pathelement location="${techthetown-highlevel.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+    
+    <path refid="library.opencv-340.classpath"/>
+  </path>
+  
+  <path id="techthetown-highlevel.module.classpath">
+    <pathelement location="${techthetown-highlevel.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+    
+    <path refid="library.opencv-340.classpath"/>
+  </path>
+  
+  <path id="techthetown-highlevel.runtime.module.classpath">
+    <pathelement location="${techthetown-highlevel.testoutput.dir}"/>
+    <pathelement location="${techthetown-highlevel.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+    
+    <path refid="library.opencv-340.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.techthetown-highlevel">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.techthetown-highlevel">
+    <patternset refid="excluded.from.module.techthetown-highlevel"/>
+  </patternset>
+  
+  <path id="techthetown-highlevel.module.sourcepath">
+    <dirset dir="${module.techthetown-highlevel.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.techthetown-highlevel" depends="compile.module.techthetown-highlevel.production,compile.module.techthetown-highlevel.tests" description="Compile module TechTheTown-HighLevel"/>
+  
+  <target name="compile.module.techthetown-highlevel.production" description="Compile module TechTheTown-HighLevel; production classes">
+    <mkdir dir="${techthetown-highlevel.output.dir}"/>
+    <javac destdir="${techthetown-highlevel.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.techthetown-highlevel}"/>
+      <bootclasspath refid="techthetown-highlevel.module.bootclasspath"/>
+      <classpath refid="techthetown-highlevel.module.production.classpath"/>
+      <src refid="techthetown-highlevel.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.techthetown-highlevel"/>
+    </javac>
+    
+    <copy todir="${techthetown-highlevel.output.dir}">
+      <fileset dir="${module.techthetown-highlevel.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.techthetown-highlevel.tests" depends="compile.module.techthetown-highlevel.production" description="compile module TechTheTown-HighLevel; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.techthetown-highlevel" description="cleanup module">
+    <delete dir="${techthetown-highlevel.output.dir}"/>
+    <delete dir="${techthetown-highlevel.testoutput.dir}"/>
+  </target>
+</project>

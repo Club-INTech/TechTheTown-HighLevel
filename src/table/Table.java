@@ -66,7 +66,7 @@ public class Table implements Service
 	// Au besoin, créer les classes nécessaires dans le package table
 
 	/** point de départ du match à modifier a chaque base roulante */
-	public static Vec2 entryPosition = new Vec2(590, 176);
+	public static Vec2 entryPosition = new Vec2(1269, 455);
 	public static double entryOrientation = Math.PI;
 
 	/**
@@ -103,7 +103,7 @@ public class Table implements Service
 	@Override
 	public void updateConfig()
 	{
-		symetry = (config.getString(ConfigInfoRobot.COULEUR) == "orange");
+		symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
 		// TODO update config
 	}
 

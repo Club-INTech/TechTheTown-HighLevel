@@ -501,7 +501,7 @@ public class OLDThreadSensor extends AbstractThread
     @Override
     public void updateConfig()
     {
-        symetry = (config.getString(ConfigInfoRobot.COULEUR) == "orange");
+        symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
         enRadius = config.getInt(ConfigInfoRobot.ROBOT_EN_RADIUS);
         maxSensorRange = config.getInt(ConfigInfoRobot.MAX_SENSOR_RANGE);
         minSensorRangeAv = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGEAV);

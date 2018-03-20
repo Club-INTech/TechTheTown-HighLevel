@@ -58,7 +58,8 @@ public class Node {
         if (e == null && this.previous.executed == true) {
             return true;
         } else {
-            return gamestate.getTimeEllapsed() < time && gamestate.robot.getScriptDone().get(script) && !exception.equals(null) || exception == e && this.previous.executed;
+            return false;
+//            return gamestate.getTimeEllapsed() < time && gamestate.robot.getScriptDone().get(script) && !exception.equals(null) || exception == e && this.previous.executed;
         }
 
     }

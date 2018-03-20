@@ -22,149 +22,300 @@ package graphics;
 import enums.ActuatorOrder;
 import enums.TurningStrategy;
 import scripts.ScriptManager;
+import simulator.ThreadSimulator;
 import strategie.GameState;
+import tests.container.A;
+import threads.AbstractThread;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.lang.reflect.Array;
 
 /**
  * Gestionnaire des actions clavier pour l'interface graphique, ajoutez vos actions aux blocks correspondants
  * @author etienne, discord, florian
  */
-public class Keyboard implements KeyListener {
+public class Keyboard extends AbstractThread implements KeyListener {
 	private GameState mRobot;
 	private ScriptManager scriptManager;
 	private TurningStrategy turningStr = TurningStrategy.FASTEST;
 	private boolean modeActual = false;
 	
-	public Keyboard(GameState robot, ScriptManager scriptManager)
-	{
-		mRobot= robot;
+	public Keyboard(GameState robot, ScriptManager scriptManager) {
+		mRobot = robot;
 		this.scriptManager = scriptManager;
 	}
 
-	int isUpPressed = 0;
-	int isDownPressed = 0;
-	int isLeftPressed = 0;
-	int isRightPressed = 0;
-
-	boolean isUpPressedb;
-	boolean isDownPressedb;
-	boolean isLeftPressedb;
-	boolean isRightPressedb;
-	boolean isApressed;
-	boolean isVpressed;
-	boolean isXpressed;
-	boolean isPpressed;
-	boolean isKpressed;
-	boolean isWpressed;
-	boolean isCpressed;
-	int lastEvent;
-
-	void doThat() {
-		if(/*isUpPressed < 15 &&*/ isUpPressedb)
-		{
-			try
-			{
-				mRobot.robot.useActuator(ActuatorOrder.MOVE_FORWARD, false);
-			}
-			catch(Exception exception)
-			{
-				System.out.println("ça marche pas bien trololo");
-			}
-		}
-		else if(/*isDownPressed < 15 &&*/ isDownPressedb)
-		{
-			try
-			{
-				mRobot.robot.useActuator(ActuatorOrder.MOVE_BACKWARD, false);
-			}
-			catch(Exception exception)
-			{
-				System.out.println("ça marche pas bien trololo");
-			}
-		}
-		else if(/*isLeftPressed < 15 &&*/ isLeftPressedb)
-		{
-			try{
-				mRobot.robot.useActuator(ActuatorOrder.TURN_LEFT, false);
-			}catch(Exception e)
-			{
-				e.printStackTrace();
-				System.out.println("ça marche pas bien trololo");
-			}
-		}
-		else if( /*isRightPressed < 15 && */isRightPressedb)
-		{
-			try
-			{
-				mRobot.robot.useActuator(ActuatorOrder.TURN_RIGHT, false);
-			}
-			catch(Exception exception)
-			{
-				System.out.println("ça marche pas bien trololo");
-			}
-		}else {
-			release();
-		}
-
-	}
-
-
-	@Override
-	public void keyPressed(KeyEvent e)
-	{
-		if (e.getKeyCode() != lastEvent) {
-			switch (e.getKeyCode()) {
-				case KeyEvent.VK_UP:
-					isUpPressed++;
-					isUpPressedb = true;
-					lastEvent = e.getKeyCode();
-					break;
-				case KeyEvent.VK_DOWN:
-					isDownPressed++;
-					isDownPressedb = true;
-					lastEvent = e.getKeyCode();
-					break;
-				case KeyEvent.VK_LEFT:
-					isLeftPressed++;
-					isLeftPressedb = true;
-					lastEvent = e.getKeyCode();
-					break;
-				case KeyEvent.VK_RIGHT:
-					isRightPressed++;
-					isRightPressedb = true;
-					lastEvent = e.getKeyCode();
-					break;
-			}
+	public void run(){
+		while(true) {
 			doThat();
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private boolean isUpPressed;
+	private boolean isDownPressed;
+	private boolean isLeftPressed;
+	private boolean isRightPressed;
+	private String lastKeyPressed="none";
+	private boolean isMoving=false;
+
+	//Mappé à : W  (attention si qwerty)
+	private boolean isFirstButtonPressed;
+	private boolean wasFirstButtonReleased=true;
+
+	//Mappé à : X
+	private boolean isSecondButtonPressed;
+	private boolean wasSecondButtonReleased=true;
+
+	//Mappé à : C
+	private boolean isThirdButtonPressed;
+	private boolean wasThirdButtonReleased=true;
+
+	//Mappé à : P
+	private boolean isForthButtonPressed;
+	private boolean wasForthButtonReleased=true;
+
+	//Mappé à : Spacebar
+	private boolean isFifthButtonPressed;
+	private boolean wasFifthButtonReleased=true;
+
+	//Mappé à : V
+	private boolean isSixthButtonPressed;
+	private boolean wasSixthButtonReleased=true;
+
+	private boolean isPompeActivated=false;
+	private boolean isPorteAvantOuverte=false;
+	private boolean isPorteArriereOuverte=false;
+	private boolean takingCube=false;
+
+	private void doThat() {
+		if (lastKeyPressed.equals("up")){
+			goForward();
+		}
+		else if (lastKeyPressed.equals("down")){
+			goBackward();
+		}
+		else if (lastKeyPressed.equals("left")){
+			goLeft();
+		}
+		else if (lastKeyPressed.equals("right")){
+			goRight();
+		}
+
+		else if(isUpPressed) {
+			goForward();
+		}
+		else if(isDownPressed) {
+			goBackward();
+		}
+		else if(isLeftPressed) {
+			goLeft();
+		}
+		else if(isRightPressed) {
+			goRight();
+		}
+		else{
+			isMoving = false;
+			sstop();
+		}
+
+		if (isFirstButtonPressed){
+			if (wasFirstButtonReleased) {
+				if (!isPorteAvantOuverte) {
+					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
+					wasFirstButtonReleased = false;
+					isPorteAvantOuverte = true;
+				}
+				else{
+					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+					wasFirstButtonReleased = false;
+					isPorteAvantOuverte = false;
+				}
+			}
+		}
+		else if (isFifthButtonPressed){
+			if (wasFifthButtonReleased) {
+				if (!isPorteArriereOuverte) {
+					mRobot.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
+					wasFifthButtonReleased = false;
+					isPorteArriereOuverte = true;
+				}
+				else{
+					mRobot.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+					wasFifthButtonReleased = false;
+					isPorteArriereOuverte = false;
+
+				}
+			}
+		}
+		else if (isThirdButtonPressed){
+			if (wasThirdButtonReleased) {
+				if (isPompeActivated) {
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
+					mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
+					isPompeActivated = false;
+				} else {
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
+					mRobot.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, true);
+					isPompeActivated = true;
+				}
+			}
+		}
+
+		else if (isSecondButtonPressed){
+			if (!isMoving) {
+				if (wasSecondButtonReleased) {
+					if (!takingCube) {
+						this.takingCube = true;
+						mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
+						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
+						mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
+						mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+						mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
+						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,false);
+						this.takingCube = false;
+					}
+				}
+			}
+		}
+		else if (isSixthButtonPressed) {
+			if (!isMoving) {
+				if (wasSixthButtonReleased) {
+					if (!takingCube){
+						this.takingCube = true;
+						mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
+						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
+						mRobot.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
+						mRobot.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
+						mRobot.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
+						mRobot.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,false);
+						this.takingCube = false;
+					}
+				}
+			}
 		}
 	}
 
 
-	void release(){
-		try
-		{
+
+	private void goForward(){
+		sstop();
+		isMoving=true;
+		mRobot.robot.useActuator(ActuatorOrder.MOVE_FORWARD, false);
+	}private void goBackward(){
+		sstop();
+		isMoving=true;
+		mRobot.robot.useActuator(ActuatorOrder.MOVE_BACKWARD, false);
+	}private void goLeft(){
+		sstop();
+		isMoving=true;
+		mRobot.robot.useActuator(ActuatorOrder.TURN_LEFT, false);
+	}private void goRight(){
+		sstop();
+		isMoving=true;
+		mRobot.robot.useActuator(ActuatorOrder.TURN_RIGHT, false);
+	}
+
+	private void sstop(){
+		try {
 			mRobot.robot.useActuator(ActuatorOrder.SSTOP,false);
-		}catch(Exception exception)
-		{
+		}
+		catch(Exception exception) {
 			System.out.println("ça marche pas bien trololo");
 		}
 	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+				isUpPressed = true;
+				lastKeyPressed="up";
+				break;
+			case KeyEvent.VK_DOWN:
+				isDownPressed = true;
+				lastKeyPressed="down";
+				break;
+			case KeyEvent.VK_LEFT:
+				isLeftPressed = true;
+				lastKeyPressed="left";
+				break;
+			case KeyEvent.VK_RIGHT:
+				isRightPressed = true;
+				lastKeyPressed="right";
+				break;
+
+			case KeyEvent.VK_W:
+				isFirstButtonPressed = true;
+				break;
+			case KeyEvent.VK_X:
+				isSecondButtonPressed = true;
+				break;
+			case KeyEvent.VK_C:
+				isThirdButtonPressed = true;
+				break;
+			case KeyEvent.VK_P:
+				isForthButtonPressed = true;
+				break;
+			case KeyEvent.VK_SPACE:
+				isFifthButtonPressed = true;
+				break;
+			case KeyEvent.VK_V:
+				isSixthButtonPressed = true;
+				break;
+		}
+	}
+
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
 		switch (e.getKeyCode())
 		{
 			case KeyEvent.VK_UP:
-				lastEvent = 0;isUpPressedb = false;break;
+				this.isUpPressed=false;
+				if (lastKeyPressed.equals("up")){
+					lastKeyPressed="none";
+				}
+				break;
 			case KeyEvent.VK_DOWN:
-				lastEvent = 0;isDownPressedb = false;break;
+				this.isDownPressed=false;
+				if (lastKeyPressed.equals("down")){
+					lastKeyPressed="none";
+				}
+				break;
 			case KeyEvent.VK_LEFT:
-				lastEvent = 0;isLeftPressedb = false;break;
+				this.isLeftPressed=false;
+				if (lastKeyPressed.equals("left")){
+					lastKeyPressed="none";
+				}
+				break;
 			case KeyEvent.VK_RIGHT:
-				lastEvent = 0;isRightPressedb = false;break;
+				this.isRightPressed=false;
+				if (lastKeyPressed.equals("right")){
+					lastKeyPressed="none";
+				}
+				break;
+
+			case KeyEvent.VK_W:
+				wasFirstButtonReleased=true;isFirstButtonPressed=false;break;
+			case KeyEvent.VK_X:
+				wasSecondButtonReleased=true;isSecondButtonPressed=false;break;
+			case KeyEvent.VK_C:
+				wasThirdButtonReleased=true;isThirdButtonPressed=false;break;
+			case KeyEvent.VK_P:
+				wasForthButtonReleased=true;isForthButtonPressed=false;break;
+			case KeyEvent.VK_SPACE:
+				wasFifthButtonReleased=true;isFifthButtonPressed=false;break;
+			case KeyEvent.VK_V:
+				wasSixthButtonReleased=true;isSixthButtonPressed=false;break;
 		}
-		release();
 	}
 	public boolean isModeActual()
     {
@@ -175,7 +326,6 @@ public class Keyboard implements KeyListener {
     {
         modeActual = false;
     }
-
 
     public TurningStrategy getTurningStrategy()
     {

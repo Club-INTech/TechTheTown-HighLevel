@@ -22,6 +22,7 @@ package table.obstacles;
 import smartMath.Segment;
 import smartMath.Vec2;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -36,6 +37,8 @@ public class ObstacleRectangular extends Obstacle
 
 	/** taille du rectangle en mm selon l'axe Y */
 	protected int sizeY;
+
+
 
 	/**
 	 *	crée un nouvel obstacle rectangulaire sur la table a la position désirée.
@@ -240,5 +243,11 @@ public class ObstacleRectangular extends Obstacle
 			}
 		}
 		return new Vec2();
+	}
+
+	public Rectangle getRectangle(){
+		int x=this.getPosition().getX()-this.sizeX/2;
+		int y=this.getPosition().getY()+this.sizeY/2;
+		return new Rectangle(x,y,this.sizeX,this.sizeY);
 	}
 }

@@ -8,14 +8,18 @@ import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
 import scripts.ScriptManager;
+import simulator.ThreadSimulator;
+import simulator.ThreadSimulatorMotion;
 import smartMath.Vec2;
 import strategie.GameState;
+import threads.ThreadInterface;
 
 public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
     private Robot robotReal;
     private ScriptManager scriptManager;
     private GameState state;
     private HookFactory hookFactory;
+    private ThreadInterface anInterface;
 
     @Before
     public void setUp() {
@@ -24,6 +28,7 @@ public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
             robotReal = container.getService(Robot.class);
             state=container.getService(GameState.class);
             scriptManager=container.getService(ScriptManager.class);
+            anInterface = container.getService(ThreadInterface.class);
             container.startInstanciedThreads();
         }catch (Exception e){
             e.printStackTrace();
@@ -34,12 +39,12 @@ public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
         try {
             //Définition des paramètres de base
             robotReal.setOrientation(Math.PI);
-            Vec2 positionDepart=new Vec2(1252,455);
+            Vec2 positionDepart=new Vec2(1252,460);
             robotReal.setPosition(positionDepart);
             robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
-            robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             scriptManager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE).goToThenExec(0,state);
+            //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             //Vec2 positionarrivee=new Vec2(890,347);
             //robotReal.goTo(positionarrivee);
 

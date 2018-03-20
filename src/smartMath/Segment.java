@@ -92,4 +92,37 @@ public class Segment
 		return (pointB.getX() - pointA.getX())*(pointB.getX() - pointA.getX()) + (pointB.getY() - pointA.getY())*(pointB.getY() - pointA.getY());
 
 	}
+
+	/**
+	 * Cette méthode retourne le vecteur directeur du segment
+	 */
+	public Vec2 vecdirecteur(){
+		int a;
+		int b;
+		int xA=this.getA().getX();
+		int xB=this.getB().getX();
+		int yA=this.getA().getY();
+		int yB=this.getB().getY();
+		//Il s'agit d'une droite parallèle à l'axe des ordonnées, la valeur de a peut être qcq
+		if(xA==xB){
+			b=xA;
+			a=1;
+			return new Vec2(b,a);
+		}
+		else{
+			//Il s'agit d'une droite parallèle à l'axe des abcisses
+			if(yA==yB){
+				a=0;
+				b=yA;
+				return new Vec2(a,b);
+			}
+			//Cas général
+			else{
+				a=(yB-yA)/(xB-xA);
+				b=(yA*xB-xA*yB)/(xB-xA);
+				return new Vec2(-b,a);
+			}
+		}
+	}
+
 }

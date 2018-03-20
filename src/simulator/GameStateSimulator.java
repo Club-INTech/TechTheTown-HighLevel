@@ -5,8 +5,10 @@ import enums.CommunicationHeaders;
 import enums.TurningStrategy;
 import enums.UnableToMoveReason;
 import exceptions.Locomotion.UnableToMoveException;
+import org.opencv.core.Mat;
 import pfg.config.Config;
 import smartMath.Geometry;
+import smartMath.PreciseVec2;
 import smartMath.Vec2;
 import table.Table;
 import utils.Log;
@@ -22,14 +24,14 @@ public class GameStateSimulator implements Service {
     private Table table;
 
     /** Position du robot */
-    private Vec2 position;
+    private PreciseVec2 position;
 
     /** Orientation du robot */
-    private float orientation = 0;
+    private double orientation = 0;
 
     /** Vitesse du robot */
     private int translationSpeed = 500;
-    private float rotationnalSpeed = (float) (2*Math.PI/3);
+    private double rotationnalSpeed = (2*Math.PI/3);
 
     /** Dimensions du robot */
     private int robotRay;
@@ -60,77 +62,103 @@ public class GameStateSimulator implements Service {
         this.config = config;
         this.log = log;
         table = new Table(log, config);
-        this.position = new Vec2(0,0);
+        this.position = new PreciseVec2(0,0);
     }
 
     /** Update la position du robot */
-    public void moveLengthwise(float distance) throws InterruptedException, UnableToMoveException{
+    public void moveLengthwise(float distance) throws InterruptedException{
 
         long timeRef = System.currentTimeMillis();
-        int done = 0;
-        Vec2 finalAim = position.plusNewVector(new Vec2(distance, orientation));
+        double done = 0;
         // Divisé par 100 car move delay en ms, translationSpeed en mm/s et distanceLoop en mm
-        float distanceLoop = (float) translationSpeed * moveDelay/(float)1000;
-
+        double distanceLoop = translationSpeed * moveDelay/(double)1000;
+        boolean isMovingBackward=false;
+        if (distance<0){
+            isMovingBackward=true;
+        }
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
 
         log.debug(String.format("Move delay : %d, DistancePerDelay : %s", moveDelay, distanceLoop));
 
-        while (done < Math.abs(distance) && !this.isMustStop()) {
+        while (done < Math.abs(distance)) {
             Thread.sleep(moveDelay);
-            position.plus(new Vec2(distanceLoop, orientation));
-            done += distanceLoop;
-            simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", position.getX(), position.getY(), orientation));
+            if (done+distanceLoop>Math.abs(distance)){
+                double distanceToAdd=Math.abs(distance)-done;
+                if (isMovingBackward){
+                    distanceToAdd*=-1;
+                }
+                position.plus(new PreciseVec2(distanceToAdd, orientation));
+                done=Math.abs(distance);
+            }
+            else {
+                double distanceToAdd=distanceLoop;
+                if (isMovingBackward){
+                    distanceToAdd*=-1;
+                }
+                position.plus(new PreciseVec2(distanceToAdd, orientation));
+                done += distanceLoop;
+            }
+            simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", Math.round(position.getX()), Math.round(position.getY()), orientation));
 
-            if(table.getObstacleManager().isObstructed(position) || !table.getObstacleManager().isRobotInTable(position)){
-                throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
+            if(table.getObstacleManager().isObstructed(position.toVec2()) || !table.getObstacleManager().isRobotInTable(position.toVec2())){
+                log.critical("SIMULATOR : Robot dans un obstacle (theorique) : UnableToMoveException / Position : "+position);
             }
         }
         this.setRobotMoving(false);
 
-        if(!this.isMustStop()) {
-            position = finalAim;
-        }
-        log.debug(String.format("Fin du mouvement, position : (%d, %d), temps : %d", position.getX(), position.getY(), (System.currentTimeMillis() - timeRef)));
+        log.debug(String.format("Fin du mouvement, position : (%d, %d), temps : %d", Math.round(position.getX()), Math.round(position.getY()), (System.currentTimeMillis() - timeRef)));
     }
 
     /** Update l'orientation du robot */
-    public void turn(float orientationAim, TurningStrategy strat) throws InterruptedException, UnableToMoveException{
+    public void turn(float orientationAim, TurningStrategy strat) throws InterruptedException{
 
-        float done = 0;
-        float angleToTurn = orientationAim - orientation;
-        float angleStep = rotationnalSpeed*moveDelay/1000;
+        double done = 0;
+        double angleToTurn = orientationAim - orientation;
+        double angleStep = rotationnalSpeed*moveDelay/1000;
+        boolean angleStepNegative=false;
 
         if (strat == TurningStrategy.RIGHT_ONLY && orientation > orientationAim){
-            angleToTurn = (float) (2 * Math.PI - Math.abs(angleToTurn));
-        }else if(strat == TurningStrategy.LEFT_ONLY){
+            //TODO : tester avec cette stratégie
+            angleToTurn = (2 * Math.PI - Math.abs(angleToTurn));
+        }
+        else if(strat == TurningStrategy.LEFT_ONLY){
+            //TODO : tester avec cette stratégie
             if(orientation < orientationAim) {
-                angleToTurn = (float) (2 * Math.PI - Math.abs(angleToTurn));
+                angleToTurn = (2 * Math.PI - Math.abs(angleToTurn));
             }
             angleToTurn = Math.abs(angleToTurn);
             angleStep = -angleStep;
-        }else{
+        }
+        else{
             if((Math.abs(angleToTurn) < Math.PI && orientationAim < orientation) || (Math.abs(angleToTurn) > Math.PI && orientationAim > orientation)){
                 angleStep = -angleStep;
+                angleStepNegative=true;
             }
-            angleToTurn = Math.min(Math.abs(angleToTurn), Math.abs((float)(2*Math.PI - Math.abs(angleToTurn))));
+            angleToTurn = Math.min(Math.abs(angleToTurn), Math.abs((2*Math.PI - Math.abs(angleToTurn))));
         }
 
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
 
-        while (done < angleToTurn && !this.isMustStop()){
+        while (done < angleToTurn){
             Thread.sleep(moveDelay);
-            orientation = (float) Geometry.moduloSpec((double)(orientation + angleStep), Math.PI);
-            done+=Math.abs(angleStep);
-            simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", position.getX(), position.getY(), orientation));
+            if (done+Math.abs(angleStep)>angleToTurn){
+                double angleToAdd=(angleToTurn-done);
+                if (angleStepNegative){
+                    angleToAdd*=-1;
+                }
+                done=angleToTurn;
+                orientation = Geometry.moduloSpec((orientation + angleToAdd), Math.PI);
+            }
+            else {
+                done+=Math.abs(angleStep);
+                orientation = Geometry.moduloSpec((orientation + angleStep), Math.PI);
+            }
+            simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", Math.round(position.getX()), Math.round(position.getY()), orientation));
         }
         this.setRobotMoving(false);
 
-        if(!this.isMustStop()) {
-            orientation = orientationAim;
-        }
     }
 
     /** Getters & Setters */
@@ -140,13 +168,13 @@ public class GameStateSimulator implements Service {
 
     /** Position */
     public synchronized Vec2 getPosition() {
-        return position;
+        return position.toVec2();
     }
     public synchronized float getOrientation() {
-        return orientation;
+        return (float)orientation;
     }
     public synchronized void setPosition(Vec2 position) {
-        this.position = position;
+        this.position = new PreciseVec2(position.getR(), position.getA());
     }
     public synchronized void setOrientation(float orientation) {
         this.orientation = orientation;

@@ -19,6 +19,8 @@
 
 package smartMath;
 
+import java.util.ArrayList;
+
 /**
  * Classe des cercles, utile pour les points d'entrée des scripts et le Pathfinding
  * @author paul, rem
@@ -26,13 +28,13 @@ package smartMath;
 
 public class Circle {
 
-	/** Position du centre du cercle*/
+	/** Position du centre du cercle */
 	private Vec2 center;
 	
-	/** Rayon du cercle*/
+	/** Rayon du cercle */
 	private double radius;
 
-	/** Etendu de l'arc de cercle (en absolue et dans le sens trigo)*/
+	/** Etendu de l'arc de cercle (en absolue et dans le sens trigo) */
 	private double angleStart;
 	private double angleEnd;
 	
@@ -129,5 +131,20 @@ public class Circle {
 		double dx=point.getX()-this.center.getX();
 		double dy=point.getY()-this.center.getY();
 		return (dx*dx+dy*dy)<=(radius*radius);
+	}
+
+	/**
+	 * Cette méthode retourne des n vecteurs autour d'un cercle
+	 * @return
+	 */
+	public ArrayList<Vec2> pointsaroundcircle(int n){
+		ArrayList<Vec2> l=new ArrayList<>();
+		for(int i=0;i<n;i++){
+			int x=new Integer((int)(this.getRadius()*Math.cos(2*i*Math.PI/n))+this.getCenter().getX());
+			int y=new Integer((int)(this.getRadius()*Math.sin(2*i*Math.PI/n))+this.getCenter().getY());
+			Vec2 vectoadd=new Vec2(x,y);
+			l.add(vectoadd);
+		}
+		return l;
 	}
 }

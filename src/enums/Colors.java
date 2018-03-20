@@ -4,6 +4,8 @@ import java.util.Objects;
 
 //Enum de couleurs des cubes (id, nom et RGB pour chaque couleur) et donc des patterns
 public enum Colors {
+
+
     //Couleurs données par les règles de la coupe
     /*ORANGE(0,"orange", new int[]{208, 93, 40}),
     YELLOW(1,"yellow", new int[]{247,181,0}),
@@ -11,13 +13,31 @@ public enum Colors {
     BLACK(3,"black", new int[]{14,14,16}),
     GREEN(4,"green", new int[]{97,153,59});*/
 
+    /*
     //Couleurs calibrées par rapport à la photo ImageRaspberry1.png
     ORANGE(0,"orange", new int[]{252, 88, 46}),
     YELLOW(1,"yellow", new int[]{254,221,0}),
     BLUE(2,"blue", new int[]{38,109,150}),
     BLACK(3,"black", new int[]{66,68,26}),
     GREEN(4,"green", new int[]{142,196,45}),
-    NULL(-1,"null",new int[]{0,0,0});
+    */
+
+    /*
+    //Couleurs calibrées par rapport à une photo normale au local Intech
+    ORANGE(0,"orange", new int[]{152, 75, 33}),
+    YELLOW(1,"yellow", new int[]{178,151,1}),
+    BLUE(2,"blue", new int[]{47,68,82}),
+    BLACK(3,"black", new int[]{33,29,17}),
+    GREEN(4,"green", new int[]{100,133,17});
+    */
+
+    //Couleurs calibrées par rapport à une photo 1.2*brightness 1*saturation au local Intech
+    ORANGE(0,"orange", new int[3]),
+    YELLOW(1,"yellow", new int[3]),
+    BLUE(2,"blue", new int[3]),
+    BLACK(3,"black", new int[3]),
+    GREEN(4,"green", new int[3]),
+    NULL(-1,"null",new int[3]);
 
     /*
     //Couleurs RGB calibrées par rapport à la photo ImageRaspberry5.png
@@ -31,24 +51,27 @@ public enum Colors {
     private int[] RGB;      //int[3] R,G et B, calibrés
     private String name;    //nom de la couleur
     private int id;         //id de la couleur
+    private ConfigInfoRobot configInfoRobot;
 
     //Constructeur
     Colors(int id, String name, int[] RGB){
         this.name=name;
         this.RGB=RGB;
         this.id=id;
+
     }
 
     //Renvoie le code RGB de la couleur
     public int[] getRGB(){
         return RGB;
     }
+
     //Renvoie le nom de la couleur
     public String getName() {
         return name;
     }
 
-    //renvoie l'ID de la couleur
+    //Renvoie l'ID de la couleur
     public int getID() { return id; }
 
     //Renvoie le RGB d'une couleur en fonction d'un nom de couleur donné
@@ -84,5 +107,11 @@ public enum Colors {
             }
         }
         return name;
+    }
+
+    public void setRGB(int r, int g, int b) {
+        RGB[0]=r;
+        RGB[1]=g;
+        RGB[2]=b;
     }
 }

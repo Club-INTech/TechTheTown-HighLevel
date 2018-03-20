@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * panneau sur lequel est dessine la table
@@ -53,10 +54,11 @@ public class TablePanel extends JPanel
 
 	/** Champs pour l'interface Pathfinding : n'ayant pas de robot instancié, on récupère en brut les données */
 	private ArrayList<Vec2> path;
-	private ArrayList<Arete> aretes;
+	private CopyOnWriteArrayList<Arete> aretes;
 	private ArrayList<Vec2> clics;
-	private ArrayList<Noeud> nodes;
-	public static boolean showGraph = false;
+	private Vec2 point;
+	private CopyOnWriteArrayList<Noeud> nodes;
+	public static boolean showGraph = true;
 
 	/** Table & robot */
 	private Table table;
@@ -84,11 +86,12 @@ public class TablePanel extends JPanel
 	public TablePanel(Table table, Robot robot)
 	{
 		path = new ArrayList<>();
-		aretes = new ArrayList<>();
 		clics = new ArrayList<>();
-		nodes=new ArrayList<>();
+		nodes = robot.getPathfinding().getGraphe().getNodes();
+		aretes = robot.getPathfinding().getGraphe().getBoneslist();
 		this.table = table;
 		this.robot = robot;
+		this.point=new Vec2();
 
 		try{
 			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
@@ -103,12 +106,13 @@ public class TablePanel extends JPanel
 	public TablePanel(Table table)
 	{
 		path = new ArrayList<>();
-		aretes = new ArrayList<>();
+		aretes = new CopyOnWriteArrayList<>();
 		clics = new ArrayList<>();
-		nodes=new ArrayList<>();
+		nodes=new CopyOnWriteArrayList<>();
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
+		this.point=new Vec2();
 
 		try{
 			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
@@ -140,7 +144,8 @@ public class TablePanel extends JPanel
 		graphics.fillRect(0, 600 - wideDisplay, 900, wideDisplay);
 		graphics.fillRect(0, wideDisplay, wideDisplay, 600 - 2*wideDisplay);
 		graphics.fillRect(900 - wideDisplay, wideDisplay, wideDisplay, 600 - 2*wideDisplay);
-	    
+
+
 	    // Obstacles rectangulaires
 	    for(ObstacleRectangular rectangular : table.getObstacleManager().getRectangles())
 	    {
@@ -198,19 +203,17 @@ public class TablePanel extends JPanel
 		// Le graphe
 		if(showGraph){
 			graphics.setColor(graphColor);
-			for(Noeud noeud : nodes){
+			for(Noeud noeud : robot.getPathfinding().getGraphe().getNodes()){
 				pathNode3=changeRefToDisplay(noeud.getPosition());
 				graphics.fillOval(pathNode3.getX()-4,pathNode3.getY()-4,8,8);
-
 			}
-			for (Arete ridge : aretes){
+			for (Arete ridge : robot.getPathfinding().getGraphe().getBoneslist()){
 				pathNode1 = changeRefToDisplay(ridge.noeud1.getPosition());
 				pathNode2 = changeRefToDisplay(ridge.noeud2.getPosition());
 				graphics.drawLine(pathNode1.getX(), pathNode1.getY(), pathNode2.getX(), pathNode2.getY());
 				graphics.fillOval(pathNode1.getX() - 4, pathNode1.getY() - 4, 8, 8);
 				graphics.fillOval(pathNode2.getX() - 4, pathNode2.getY() - 4, 8, 8);
 			}
-
 		}
 
 		// Print les clics et leur position
@@ -227,6 +230,10 @@ public class TablePanel extends JPanel
 		graphics.setColor(Color.DARK_GRAY);
 		graphics.fillRoundRect(920, 20, 360, 580, 20, 20);
 		graphics.fillRoundRect(20, 620, 1260, 275, 20, 20);
+		//afficher le point qu'on veut
+		graphics.setColor(Color.GREEN);
+		Vec2 position=changeRefToDisplay(point);
+		graphics.fillOval(position.getX()-4,position.getY()-4,8,8);
 	}
 
 	/** Conversion en coordonnées d'affichage
@@ -242,7 +249,7 @@ public class TablePanel extends JPanel
 		removeAll();
 		revalidate();
 	}
-	public void setAretes(ArrayList<Arete> aretes) {
+	public void setAretes(CopyOnWriteArrayList<Arete> aretes) {
 		this.aretes = aretes;
 		removeAll();
 		revalidate();
@@ -252,7 +259,12 @@ public class TablePanel extends JPanel
 		removeAll();
 		revalidate();
 	}
-	public void setNodes(ArrayList<Noeud> nodes){
+	public void setPoint(Vec2 point ){
+		this.point=point;
+		removeAll();
+		revalidate();
+	}
+	public void setNodes(CopyOnWriteArrayList<Noeud> nodes){
 		this.nodes=nodes;
 		removeAll();
 		revalidate();

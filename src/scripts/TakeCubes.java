@@ -17,6 +17,9 @@ public class TakeCubes extends AbstractScript {
     private int longueurBras;
     private String direction;
     private Vec2 entryPositionPoint;
+    private int nbCubesAV;
+    private int nbCubesAR;
+    private int scorefinalCubes=0;
 
     public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
@@ -34,23 +37,28 @@ public class TakeCubes extends AbstractScript {
     @Override
     public void execute(int indiceTas, GameState stateToConsider)
             throws InterruptedException, ExecuteException, UnableToMoveException {
+
         BrasUtilise bras;
         Cubes additionalCube;
 
+        while(!stateToConsider.isRecognitionDone()){
+            Thread.sleep(10);
+        }
+
         //On récupère l'indice du pattern
-        int indicePattern=stateToConsider.indicePattern;
+        int indicePattern=stateToConsider.getIndicePattern();
 
         //On récupère le tas correspondant à l'indice
         TasCubes tas = TasCubes.getTasFromID(indiceTas);
 
         //On regarde si la tour avant est remplie
-        if (!stateToConsider.tourAvantRemplie){
-            stateToConsider.tourAvantRemplie=true;
+        if (!stateToConsider.isTourAvantRemplie()){
+            stateToConsider.setTourAvantRemplie(true);
             bras=BrasUtilise.AVANT;
         }
         //On regarde si la tour arrière est remplie
-        else if (!stateToConsider.tourArriereRemplie){
-            stateToConsider.tourArriereRemplie=true;
+        else if (!stateToConsider.isTourArriereRemplie()){
+            stateToConsider.setTourArriereRemplie(true);
             bras=BrasUtilise.ARRIERE;
         }
         //Si les deux tours sont remplies, on renvoie une exception et n'execute pas le script
@@ -58,10 +66,11 @@ public class TakeCubes extends AbstractScript {
             throw new ExecuteException(new BothTowersFullException("Les deux tours sont remplies"));
         }
 
+
         //On regarde quel bras on utilise
         if (bras==BrasUtilise.AVANT){
             //On gère le cas où le cube bonus est encore présent
-            if (stateToConsider.cubeAvantPresent){
+            if (stateToConsider.isCubeAvantPresent()){
                 additionalCube=Cubes.NULL;
             }
             else{
@@ -70,7 +79,7 @@ public class TakeCubes extends AbstractScript {
         }
         else{
             //On gère le cas où le cube bonus est encore présent
-            if (stateToConsider.cubeArrierePresent){
+            if (stateToConsider.isCubeArrierePresent()){
                 additionalCube=Cubes.NULL;
             }
             else{
@@ -78,7 +87,30 @@ public class TakeCubes extends AbstractScript {
             }
         }
 
-
+        if(indiceTas==0){
+            config.override(ConfigInfoRobot.TAS_BASE_PRIS,true);
+            stateToConsider.setTas_base_pris(true);
+        }
+        if(indiceTas==1){
+            config.override(ConfigInfoRobot.TAS_CHATEAU_PRIS,true);
+            stateToConsider.setTas_chateau_eau_pris(true);
+        }
+        if(indiceTas==2){
+            config.override(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS,true);
+            stateToConsider.setTas_station_epuration_pris(true);
+        }
+        if(indiceTas==3){
+            config.override(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS,true);
+            stateToConsider.setTas_base_ennemi_pris(true);
+        }
+        if(indiceTas==4){
+            config.override(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS,true);
+            stateToConsider.setTas_chateau_ennemi_eau_pris(true);
+        }
+        if(indiceTas==5){
+            config.override(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS,true);
+            stateToConsider.setTas_station_epuration_ennemi_pris(true);
+        }
         stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
         //Si indicePattern==-2, c'est que le pattern n'a pas encore été calculé
         if (indicePattern != -2){
@@ -128,6 +160,7 @@ public class TakeCubes extends AbstractScript {
                 //Le robot execute les actions pour prendre le cube
                 takeThisCube(stateToConsider, bras);
 
+
                 //On fait aller le robot à la position pour prendre le deuxième cube du pattern
                 stateToConsider.robot.moveNearPoint(secondPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
@@ -137,7 +170,14 @@ public class TakeCubes extends AbstractScript {
                 stateToConsider.robot.moveNearPoint(thirdPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
                 takeThisCube(stateToConsider, bras);
-
+                if(bras.equals(BrasUtilise.AVANT)){
+                    scorefinalCubes=scorefinalCubes+calculscore(nbCubesAV,true);
+                    nbCubesAV=0;
+                }
+                if(bras.equals(BrasUtilise.ARRIERE)){
+                    scorefinalCubes=scorefinalCubes+calculscore(nbCubesAR,true);
+                    nbCubesAR=0;
+                }
                 //Si un cube additionnel a été précisé
                 if (additionalCube.getColor() != Colors.NULL){
                     //On définit le Vec2 de la position permettant de prendre le cube additionnel
@@ -147,9 +187,37 @@ public class TakeCubes extends AbstractScript {
                     stateToConsider.robot.moveNearPoint(fourthPosition, longueurBras, direction);
                     //Le robot execute les actions pour prendre le cube
                     takeThisCube(stateToConsider, bras);
+                    if(bras.equals(BrasUtilise.AVANT)){
+                        scorefinalCubes=scorefinalCubes+calculscore(nbCubesAV,false);
+                        nbCubesAV=0;
+                    }
+                    if(bras.equals(BrasUtilise.ARRIERE)){
+                        calculscore(nbCubesAR,false);
+                        nbCubesAR=0;
+                    }
                 }
+
+
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
-                Circle aimArcCircle = new Circle(tas.getCoordsVec2(),this.longueurBras+this.largeurCubes*1.5+10,Math.PI/2,3*Math.PI/2,true);
+                Circle aimArcCircle;
+                if (indiceTas==0){
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, 0, Math.PI, true);
+                }
+                else if (indiceTas==1) {
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, Math.PI / 2, 3 * 9 * Math.PI / 20, true);
+                }
+                else if (indiceTas==2) {
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI, 0, true);
+                }
+                else if (indiceTas==3) {
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI, 0, true);
+                }
+                else if (indiceTas==4) {
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, - 9 * Math.PI / 20, Math.PI / 2, true);
+                }
+                else{
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI / 2, Math.PI / 2, true);
+                }
                 Vec2 aim = smartMath.Geometry.closestPointOnCircle(stateToConsider.robot.getPosition(),aimArcCircle);
                 stateToConsider.robot.goTo(aim);
             }
@@ -172,17 +240,31 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.TILT_LA_PORTE_AVANT, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_CAPTEURS_BRAS_AVANT,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_CAPTEURS_BRAS,true);
+            if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
+                nbCubesAV++;
+            }
+
         }
         else if (bras==BrasUtilise.ARRIERE) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.TILT_LA_PORTE_ARRIERE, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_CAPTEURS_BRAS_ARRIERE, true);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_CAPTEURS_BRAS,true);
+            if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
+                nbCubesAR++;
+            }
         }
+
     }
 
     @Override
@@ -193,31 +275,31 @@ public class TakeCubes extends AbstractScript {
         TasCubes tas = TasCubes.getTasFromID(version);
         int[] coords = tas.getCoords();
         Vec2 coordsTas=new Vec2(coords[0],coords[1]);
-        //TODO : ajuster le rayon du cercle si il est trop petit
 
         Circle aimArcCircle;
         if (version==0){
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, 0, Math.PI, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, 0, Math.PI, true);
         }
         else if (version==1) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, Math.PI / 2, 3 * Math.PI / 2, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, Math.PI / 2, 3 * 9 * Math.PI / 20, true);
         }
         else if (version==2) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI, 0, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, -Math.PI, 0, true);
         }
         else if (version==3) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI, 0, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, -Math.PI, 0, true);
         }
         else if (version==4) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI / 2, Math.PI / 2, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, - 9 * Math.PI / 20, Math.PI / 2, true);
         }
         else if (version==5) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10, -Math.PI / 2, Math.PI / 2, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras, -Math.PI / 2, Math.PI / 2, true);
         }
         else{
-            aimArcCircle = new Circle(coordsTas, this.longueurBras + this.largeurCubes * 1.5 + 10);
+            aimArcCircle = new Circle(coordsTas, this.longueurBras);
         }
         Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
+        log.debug("point d'entrée takecubes"+version+aim);
         this.entryPositionPoint=aim;
         return new Circle(aim);
     }
@@ -235,13 +317,31 @@ public class TakeCubes extends AbstractScript {
         return new Integer[]{};
     }
 
-
-
-
     @Override
     public void updateConfig() {
         super.updateConfig();
         this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         this.longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS);
+    }
+
+    public int calculscore(int nbCubes, boolean additionnalCubePresent){
+        int score;
+        if(additionnalCubePresent) {
+            score=1;
+            for (int i = 2; i <= nbCubes+1; i++) {
+                score = score + i;
+            }
+        }
+        else{
+            score=0;
+            for (int i = 1; i <= nbCubes; i++) {
+                score = score + i;
+            }
+        }
+        return score;
+    }
+
+    public int getScorefinalCubes() {
+        return scorefinalCubes;
     }
 }
