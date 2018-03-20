@@ -109,13 +109,19 @@ public class ThreadEvents extends AbstractThread
     }
 
     public boolean getCubeTakenBrasAV() {
-        this.cubeTakenBrasAV=false;
-        return this.cubeTakenBrasAV;
+        return cubeTakenBrasAV;
+    }
+
+    public void setCubeTakenBrasAV(boolean value){
+        this.cubeTakenBrasAV=value;
     }
 
     public boolean getCubeTakenBrasAR() {
-        this.cubeTakenBrasAR=false;
-        return this.cubeTakenBrasAR;
+        return cubeTakenBrasAR;
+    }
+
+    public void setCubeTakenBrasAR(boolean value){
+        this.cubeTakenBrasAR=value;
     }
 
     public void setIsMoving(boolean value){ this.isMoving=value; }

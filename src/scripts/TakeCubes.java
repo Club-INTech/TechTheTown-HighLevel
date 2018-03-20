@@ -251,6 +251,7 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_CAPTEURS_BRAS,true);
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
                 nbCubesAV++;
+                stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
             }
 
         }
@@ -266,6 +267,7 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_CAPTEURS_BRAS,true);
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
                 nbCubesAR++;
+                stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
             }
         }
 
