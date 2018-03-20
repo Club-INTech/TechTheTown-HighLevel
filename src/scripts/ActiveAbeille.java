@@ -2,6 +2,7 @@ package scripts;
 
 import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
+import enums.Speed;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -42,7 +43,9 @@ public class ActiveAbeille extends AbstractScript {
         //On active le bras
         actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,true);
         //On tourne de 90° pour lancer l'abeille
+        actualState.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
         actualState.robot.turn(Math.PI,true);
+        actualState.robot.setLocomotionSpeed(Speed.FAST_ALL);
         //On relève le bras
         actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
         int xEntry = 1500-radius-securityDistance;

@@ -51,6 +51,8 @@ public class TakeCubes extends AbstractScript {
         //On récupère le tas correspondant à l'indice
         TasCubes tas = TasCubes.getTasFromID(indiceTas);
 
+        bras=stateToConsider.getTakeCubesBras();
+        /*
         //On regarde si la tour avant est remplie
         if (!stateToConsider.isTourAvantRemplie()){
             stateToConsider.setTourAvantRemplie(true);
@@ -65,6 +67,7 @@ public class TakeCubes extends AbstractScript {
         else{
             throw new ExecuteException(new BothTowersFullException("Les deux tours sont remplies"));
         }
+        */
 
 
         //On regarde quel bras on utilise
@@ -145,7 +148,6 @@ public class TakeCubes extends AbstractScript {
 
                 if (bras==BrasUtilise.ARRIERE){
                     direction="backward";
-                    stateToConsider.robot.turnRelatively(Math.PI);
                 }
                 else{
                     direction="forward";

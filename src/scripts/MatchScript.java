@@ -1,5 +1,6 @@
 package scripts;
 
+import enums.BrasUtilise;
 import enums.Speed;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
@@ -26,21 +27,31 @@ public class MatchScript extends AbstractScript {
 
         ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
         actPD.goToThenExec(0,gameState);
-//        gameState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+
         gameState.setRecognitionDone(true);
         gameState.setIndicePattern(0);
+
+        gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
         TakeCubes tk2=new TakeCubes(config,log,hookFactory);
         tk2.goToThenExec(2,gameState);
+
         ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
         activeAbeille.goToThenExec(0,gameState);
+
+        gameState.setTakeCubesBras(BrasUtilise.AVANT);
         TakeCubes tk1=new TakeCubes(config,log,hookFactory);
         tk1.goToThenExec(1,gameState);
+
         DeposeCubes dpCubes0=new DeposeCubes(config,log,hookFactory);
         dpCubes0.goToThenExec(0,gameState);
+
+        gameState.setTakeCubesBras(BrasUtilise.AVANT);
         TakeCubes tk0=new TakeCubes(config,log,hookFactory);
         tk0.goToThenExec(0,gameState);
+
         DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
         dpCubes1.goToThenExec(1,gameState);
+        
         log.debug("Fin MatchScript");
     }
 

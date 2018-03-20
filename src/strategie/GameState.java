@@ -20,6 +20,7 @@
 package strategie;
 
 import container.Service;
+import enums.BrasUtilise;
 import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.Robot;
@@ -78,6 +79,7 @@ public class GameState implements Service
     private boolean tas_base_ennemi_pris;
     private boolean tas_chateau_ennemi_eau_pris;
     private boolean tas_station_epuration_ennemi_pris;
+    private BrasUtilise takeCubesBras;
 
 
     private Config config;
@@ -111,6 +113,8 @@ public class GameState implements Service
         //On dit que les cubes bonus sont présents au début du match
         this.cubeAvantPresent=true;
         this.cubeArrierePresent=true;
+
+        this.takeCubesBras= BrasUtilise.AVANT;
 
         this.tas_base_pris=false;
         this.tas_chateau_eau_pris=false;
@@ -155,7 +159,7 @@ public class GameState implements Service
 
 
     public int getObtainedPoints() {
-        return obtainedPoints;
+        return this.obtainedPoints;
     }
 
     public void setObtainedPoints(int obtainedPoints) {
@@ -165,7 +169,7 @@ public class GameState implements Service
 
 
     public int getIndicePattern() {
-        return indicePattern;
+        return this.indicePattern;
     }
 
     public void setIndicePattern(int indicePattern) {
@@ -175,7 +179,7 @@ public class GameState implements Service
 
 
     public boolean isRecognitionDone() {
-        return recognitionDone;
+        return this.recognitionDone;
     }
 
     public void setRecognitionDone(boolean recognitionDone) {
@@ -185,7 +189,7 @@ public class GameState implements Service
 
 
     public boolean isTourAvantRemplie() {
-        return tourAvantRemplie;
+        return this.tourAvantRemplie;
     }
 
     public void setTourAvantRemplie(boolean tourAvantRemplie) {
@@ -222,6 +226,13 @@ public class GameState implements Service
         this.cubeArrierePresent = cubeArrierePresent;
     }
 
+    public BrasUtilise getTakeCubesBras() {
+        return takeCubesBras;
+    }
+
+    public void setTakeCubesBras(BrasUtilise bras){
+	    this.takeCubesBras=bras;
+    }
 
     /**
      * Change le rayon du robot et fait toutes les modifs necesssaires
