@@ -41,7 +41,7 @@ public class ActiveAbeille extends AbstractScript {
         //ON s'avance vers l'abeille
         actualState.robot.moveLengthwise(distanceAbeille);
         //On active le bras
-        actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,true);
+        actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE,true);
         //On tourne de 90° pour lancer l'abeille
         actualState.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
         actualState.robot.turn(Math.PI,true);
