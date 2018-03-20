@@ -45,13 +45,13 @@ public class MatchScript extends AbstractScript {
         DeposeCubes dpCubes0=new DeposeCubes(config,log,hookFactory);
         dpCubes0.goToThenExec(0,gameState);
 
-        gameState.setTakeCubesBras(BrasUtilise.AVANT);
+        gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
         TakeCubes tk0=new TakeCubes(config,log,hookFactory);
         tk0.goToThenExec(0,gameState);
 
         DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
         dpCubes1.goToThenExec(1,gameState);
-        
+
         log.debug("Fin MatchScript");
     }
 

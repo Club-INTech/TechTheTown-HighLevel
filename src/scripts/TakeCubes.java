@@ -221,7 +221,9 @@ public class TakeCubes extends AbstractScript {
                     aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI / 2, Math.PI / 2, true);
                 }
                 Vec2 aim = smartMath.Geometry.closestPointOnCircle(stateToConsider.robot.getPosition(),aimArcCircle);
-                stateToConsider.robot.goTo(aim);
+                if (stateToConsider.robot.getPosition().distance(aim)>20) {
+                    stateToConsider.robot.goTo(aim);
+                }
             }
             else{
                 log.debug("Le pattern n'a pas été reconnu");
@@ -238,14 +240,14 @@ public class TakeCubes extends AbstractScript {
     public void takeThisCube(GameState stateToConsider, BrasUtilise bras) throws InterruptedException{
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
         if (bras==BrasUtilise.AVANT) {
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_CAPTEURS_BRAS_AVANT,true);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERMER_LA_PORTE_AVANT_UNPEU,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_CAPTEURS_BRAS,true);
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
                 nbCubesAV++;
@@ -253,14 +255,14 @@ public class TakeCubes extends AbstractScript {
 
         }
         else if (bras==BrasUtilise.ARRIERE) {
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_CAPTEURS_BRAS_ARRIERE, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERMER_LA_PORTE_ARRIERE_UNPEU,true);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_CAPTEURS_BRAS,true);
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
                 nbCubesAR++;
@@ -326,7 +328,7 @@ public class TakeCubes extends AbstractScript {
         this.longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS);
     }
 
-    public int calculscore(int nbCubes, boolean additionnalCubePresent){
+    private int calculscore(int nbCubes, boolean additionnalCubePresent){
         int score;
         if(additionnalCubePresent) {
             score=1;

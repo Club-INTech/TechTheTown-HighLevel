@@ -78,6 +78,7 @@ public enum ActuatorOrder implements MotionOrder
 	OUVRE_LA_PORTE_AVANT("olpAv",600),
 	FERME_LA_PORTE_AVANT("flpAv",600),
 	OUVRE_LA_PORTE_AVANT_UNPEU("olpAvp",300),
+	FERMER_LA_PORTE_AVANT_UNPEU("flpAv",100),
 	ACTIVE_ELECTROVANNE_AVANT("aeAv",100),
 	DESACTIVE_ELECTROVANNE_AVANT("deAv",100),
 
@@ -86,6 +87,7 @@ public enum ActuatorOrder implements MotionOrder
 	FERME_LA_PORTE_ARRIERE("flpAr",600),
 	OUVRE_LA_PORTE_ARRIERE("olpAr",600),
 	OUVRE_LA_PORTE_ARRIERE_UNPEU("olpArp",300),
+	FERMER_LA_PORTE_ARRIERE_UNPEU("flpAr",100),
 	ACTIVE_ELECTROVANNE_ARRIERE("aeAr",100),
 	DESACTIVE_ELECTROVANNE_ARRIERE("deAr",100),
 
@@ -178,7 +180,7 @@ public enum ActuatorOrder implements MotionOrder
 	}
 
 	/**
-	 * Construit un ordre pour un actionneur avec le temps d'exécution spécifié 
+	 * Construit un ordre pour un actionneur avec le temps d'exécution spécifié
 	 * @param serialString la chaine de caractère à envoyer à la carte actionnneurs
 	 */
     ActuatorOrder(String serialString, int duration)
@@ -186,7 +188,7 @@ public enum ActuatorOrder implements MotionOrder
 		this.serialOrder = serialString;
 		this.duration = duration;
 	}
-	
+
 	/**
 	 * Retrouve la chaine de caractère a envoyer par la série a la carte actionneur pour qu'elle effectue cet ordre
 	 * @return la chaine de caractère à envoyer par la série à la carte actionneur

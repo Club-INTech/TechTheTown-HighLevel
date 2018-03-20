@@ -52,8 +52,10 @@ public class DeposeCubes extends AbstractScript {
             //On recule de la largeur de la porte + de la longueur avancée dans la zone
             stateToConsider.robot.moveLengthwise(d + dimensionporte);
             //On ferme la porte
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, true);
+            stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
             stateToConsider.robot.turn(-Math.PI / 2);
+            stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
             stateToConsider.robot.moveLengthwise(-dimensionporte);
             //On avance de la dimension de la porte + de la distance poussée
             stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
@@ -72,8 +74,10 @@ public class DeposeCubes extends AbstractScript {
             //On recule de la largeur de la porte + de la longueur avancée dans la zone
             stateToConsider.robot.moveLengthwise(d + dimensionporte);
             //On ferme la porte
+            stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
             stateToConsider.robot.turn(-Math.PI / 2);
+            stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
             stateToConsider.robot.moveLengthwise(-dimensionporte);
             //On avance de la dimension de la porte + de la distance poussée
             stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
@@ -95,7 +99,7 @@ public class DeposeCubes extends AbstractScript {
          */
         if (version == 0) {
             int xentry = 970;
-            int yentry = 175 + radius;
+            int yentry = 150 + radius;
             Vec2 position = new Vec2(xentry, yentry);
             return new Circle(position);
         }
@@ -105,7 +109,7 @@ public class DeposeCubes extends AbstractScript {
          */
         else if (version == 1) {
             int xEntry = 600;
-            int yEntry = 175+radius;
+            int yEntry = 150 + radius;
             Vec2 positionentree = new Vec2(xEntry, yEntry);
             return new Circle(positionentree);
         } else {
