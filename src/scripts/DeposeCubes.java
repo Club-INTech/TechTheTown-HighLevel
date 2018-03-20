@@ -2,6 +2,7 @@ package scripts;
 
 import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
+import enums.Speed;
 import exceptions.BadVersionException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.UnableToMoveException;
@@ -41,6 +42,7 @@ public class DeposeCubes extends AbstractScript {
         Vec2 aim = new Vec2(750, 175 + radius);
         //on fait la même suite d'actions, mais pas au même endroit
         if (version == 0) {
+            stateToConsider.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
             //On se tourne vers la zone de construction
             stateToConsider.robot.turn(Math.PI / 2);
             //On rentre dans la zone
@@ -55,15 +57,14 @@ public class DeposeCubes extends AbstractScript {
             stateToConsider.robot.moveLengthwise(-dimensionporte);
             //On avance de la dimension de la porte + de la distance poussée
             stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
+            stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
             stateToConsider.robot.moveLengthwise(d + dimensionporte + distancepush);
             stateToConsider.robot.moveLengthwise(-(dimensionporte + distancepush + d));
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
-            //les deux premières sont déposées
-            stateToConsider.setTourAvantRemplie(false);
-            stateToConsider.setTourArriereRemplie(false);
         }
         //comme la version précédente mais l'accès à la zone est scripté
         else if (version == 1) {
+            stateToConsider.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
             //On se tourne vers la zone de construction
             stateToConsider.robot.turn(Math.PI / 2);
             //On rentre dans la zone
@@ -74,16 +75,18 @@ public class DeposeCubes extends AbstractScript {
             stateToConsider.robot.moveLengthwise(d + dimensionporte);
             //On ferme la porte
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, true);
-            stateToConsider.robot.goTo(aim);
             stateToConsider.robot.turn(-Math.PI / 2);
             stateToConsider.robot.moveLengthwise(-dimensionporte);
             //On avance de la dimension de la porte + de la distance poussée
             stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
             stateToConsider.robot.moveLengthwise(d + dimensionporte + distancepush);
+            stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
             stateToConsider.robot.moveLengthwise(-(dimensionporte + distancepush + d));
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, true);
-            stateToConsider.robot.goTo(aim);
         }
+        //les deux premières sont déposées
+        stateToConsider.setTourAvantRemplie(false);
+        stateToConsider.setTourArriereRemplie(false);
     }
 
     @Override
