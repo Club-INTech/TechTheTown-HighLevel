@@ -10,7 +10,7 @@ ROBOT_RADIUS                         = 210
 ENNEMY_RADIUS                        = 200
 LONGUEUR_CUBE                        =  58
 LONGUEUR_BRAS                        = 330
-DIMENSION_PORTES                     = 87
+DIMENSION_PORTES                     = 100
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
