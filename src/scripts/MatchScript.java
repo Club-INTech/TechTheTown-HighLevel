@@ -8,6 +8,7 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
+import hook.HookNames;
 import org.junit.Before;
 import patternRecognition.PatternRecognition;
 import pfg.config.Config;
@@ -25,6 +26,7 @@ public class MatchScript extends AbstractScript {
     @Override
     public void execute(int versionToexecute,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
 
+        hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
         ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
         actPD.goToThenExec(0,gameState);
 

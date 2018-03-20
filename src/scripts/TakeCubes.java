@@ -4,6 +4,7 @@ import enums.*;
 import exceptions.*;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
+import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
@@ -69,7 +70,7 @@ public class TakeCubes extends AbstractScript {
         }
         */
 
-
+        hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
         //On regarde quel bras on utilise
         if (bras==BrasUtilise.AVANT){
             //On gère le cas où le cube bonus est encore présent
@@ -172,6 +173,16 @@ public class TakeCubes extends AbstractScript {
                 stateToConsider.robot.moveNearPoint(thirdPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
                 takeThisCube(stateToConsider, bras);
+                if(indiceTas==2){
+                    if (bras.equals(BrasUtilise.AVANT)) {
+                        HookNames.ACTIVE_BRAS_AVANT_ABEILLE.setPosition(thirdPosition);
+
+                    }
+                    if(bras.equals(BrasUtilise.ARRIERE)){
+                        HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE.setPosition(thirdPosition);
+                    }
+
+                }
                 if(bras.equals(BrasUtilise.AVANT)){
                     scorefinalCubes=scorefinalCubes+calculscore(nbCubesAV,true);
                     nbCubesAV=0;
