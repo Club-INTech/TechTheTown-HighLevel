@@ -41,19 +41,10 @@ public class Node {
         this.versionToexecute=versionToexecute;
     }
 
-    //lance l'action du noeud
-    public void execute(GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException {
-        this.executed = true;
-        for (Node node : this.nextNodes) {
-            node.executed = false;
-            node.condition = false;
-        }
-        this.script.goToThenExec(this.versionToexecute, gs);
-        this.executed = true;
-    }
 
-    //met à jour la condition pour savoir si ce noeud doit être executé
-    //si aucune exception n'est levée, le noeud doit necessairement etre executée
+    /**met à jour la condition pour savoir si ce noeud doit être executé
+    si aucune exception n'est levée, le noeud doit necessairement etre executée     */
+
     public boolean updateCondition(Exception e) {
         if (e == null && this.previous.executed == true) {
             return true;
@@ -64,16 +55,17 @@ public class Node {
 
     }
 
-    //met à jour la condition de tout les noeuds enfants
+    /** met à jour la condition de tout les noeuds enfants */
+
     public void updateConditions(Exception e) {
         for (Node node : nextNodes) {
             node.updateCondition(e);
         }
     }
 
-    /* Cette méthode retourne le noeud executé parmi les noeuds fils du node pris en
-      paramètre c'est pour l'IA
-     */
+    /** Cette méthode retourne le noeud executé parmi les noeuds fils du node pris en
+      paramètre c'est pour l'IA     */
+
     public Node returnExecutedNode(Node node) {
         for (Node noeud : node.getNextNodes()) {
             if (noeud.getExecuted()) {
@@ -82,6 +74,20 @@ public class Node {
         }
         return null;
     }
+
+    /** lance l'action du noeud */
+
+    public void execute(GameState gs) throws UnableToMoveException, ExecuteException, BlockedActuatorException, PointInObstacleException, BadVersionException {
+        this.executed = true;
+        for (Node node : this.nextNodes) {
+            node.executed = false;
+            node.condition = false;
+        }
+        this.script.goToThenExec(this.versionToexecute, gs);
+        this.executed = true;
+    }
+
+    /** Affiche les noeuds suivants */
 
     public void display() {
         System.out.println(this);
@@ -98,9 +104,6 @@ public class Node {
         return "action=" + action;
     }
 
-    public void setNextNodes(ArrayList<Node> nextNodes) {
-        this.nextNodes = nextNodes;
-    }
 
     public ArrayList<Node> getNextNodes() {
         return nextNodes;
@@ -122,6 +125,9 @@ public class Node {
         return this.score;
     }
 
+    public void setNextNodes(ArrayList<Node> nextNodes) {
+        this.nextNodes = nextNodes;
+    }
 
 
 }

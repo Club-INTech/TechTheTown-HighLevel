@@ -11,11 +11,9 @@ import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import org.classpath.icedtea.Config;
 import robot.EthWrapper;
-import scripts.ActivationPanneauDomotique;
-import scripts.ActiveAbeille;
-import scripts.DeposeCubes;
-import scripts.TakeCubes;
+import scripts.*;
 import strategie.GameState;
+import sun.font.Script;
 import utils.Log;
 
 import java.util.ArrayList;
@@ -26,13 +24,17 @@ public class IA implements Service {
     private GameState gameState;
     private int scorefinal;
     private Container container;
+    private ScriptManager scriptManager;
+    private HookFactory hookFactory;
     //implémenter container et hookfactory
 
-    public IA(Container container, GameState gameState) throws InterruptedException, ContainerException {
+    public IA(Container container, GameState gameState, ScriptManager scriptManager, HookFactory hookFactory) throws InterruptedException, ContainerException {
         this.root = new Node("root", null, 666, 0, null, 0, null, gameState);
         this.gameState = gameState;
         this.scorefinal = 0;
         this.container = container;
+        this.scriptManager = scriptManager;
+        this.hookFactory = hookFactory;
     }
 
     @Override
