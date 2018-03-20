@@ -35,6 +35,8 @@ public class ShootBufferedStillWebcam {
         command.add("contrast=50%");
         command.add("-s");
         command.add("saturation=100%");
+        command.add("-s");
+        command.add("sharpness=6");
         command.add("-r");
         command.add("1280x720");
         command.add("--scale");

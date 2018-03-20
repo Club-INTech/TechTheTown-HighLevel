@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 
 '''
@@ -56,7 +57,7 @@ def find_squares(img,threshold1, threshold2, blurSize):
                                 minY=array[1]
                         deltaX=maxX-minX
                         deltaY=maxY-minY
-                        if deltaX>5 and deltaX<60 and deltaY>15 and deltaY<40 and deltaX<deltaY:
+                        if deltaX>10 and deltaX<60 and deltaY>15 and deltaY<40 and deltaX<deltaY:
                             maxArea=area
                             squares=cnt
                             oneSquareFound=True
@@ -90,7 +91,6 @@ if __name__ == '__main__':
 
     #Pour saovir où les carrés ont été identifiés
     cv.imshow("DEBUG",img)
-
 
     file=open("/tmp/LocalizationInfo.txt","w")
     file.write(str(square[0])+" "+str(square[1])+" "+str(square[2])+" "+str(square[3]))
