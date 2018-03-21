@@ -33,8 +33,8 @@ public enum HookNames {
 
     // Example :
     SPEED_DOWN(1, new Vec2(50, 50), 5 ,0,Math.PI,Speed.SLOW_ALL),
-    ACTIVE_BRAS_AVANT_ABEILLE(2, new Vec2(1400,1900),300,0, Math.PI,ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE),
-    ACTIVE_BRAS_ARRIERE_ABEILLE(3, new Vec2(1400,1900), 300, 0, Math.PI,ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE),
+    ACTIVE_BRAS_AVANT_ABEILLE(2, new Vec2(900,1450),300,0, 2*Math.PI,ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE),
+    ACTIVE_BRAS_ARRIERE_ABEILLE(3, new Vec2(900,1450), 300, 0, 2*Math.PI,ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE),
     ;
 
     /** Ordre du hook */
