@@ -47,7 +47,7 @@ public class JUnit_ActiveAbeille extends JUnit_Test {
             robotReal.setOrientation(Table.entryOrientation);
             robotReal.setPosition(Table.entryPosition);
             robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
-           scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE).goToThenExec(0, state);
+            scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE).goToThenExec(0, state);
             //Vec2 positionarrivee=new Vec2(890,347);
             //robotReal.goTo(positionarrivee);
 

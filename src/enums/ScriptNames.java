@@ -36,5 +36,4 @@ public enum ScriptNames
     DEPOSE_CUBES,
     MATCH_SCRIPT,
     TAKE_CUBES;
-
 }

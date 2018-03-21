@@ -17,8 +17,8 @@ import utils.Log;
 public class ActivationPanneauDomotique extends AbstractScript{
     /** Position d'entrée du script */
 
-    int xEntry=370;
-    int yEntry=220;
+    private int xEntry=370;
+    private int yEntry=220;
 
     /** Eléments appelés par la config */
 
@@ -31,8 +31,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
-
-        Vec2 positionentree=new Vec2(xEntry,yEntry);
+        Vec2 positionentree=new Vec2(this.xEntry,this.yEntry);
         return new Circle(positionentree,0);
     }
 
