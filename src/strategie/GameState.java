@@ -79,6 +79,13 @@ public class GameState implements Service
     private boolean tas_chateau_ennemi_eau_pris;
     private boolean tas_station_epuration_ennemi_pris;
 
+    /** Panneau domotique activé */
+    private boolean panneauActive;
+
+    /** Abeille lancée */
+    private boolean abeilleLancee;
+
+
 
     private Config config;
     private Log log;
@@ -119,6 +126,8 @@ public class GameState implements Service
         this.tas_chateau_ennemi_eau_pris=false;
         this.tas_station_epuration_ennemi_pris=false;
 
+        this.panneauActive = false;
+        this.abeilleLancee = false;
 
         //La reconnaissance de couleurs est faite ou non
         this.recognitionDone=PatternRecognition.isRecognitionDone();
@@ -258,6 +267,10 @@ public class GameState implements Service
         return tas_station_epuration_ennemi_pris;
     }
 
+    public boolean isPanneauActive () { return panneauActive; }
+
+    public boolean isAbeilleLancee () { return abeilleLancee; }
+
     public void setTas_base_pris(boolean tas_base_pris) {
         this.tas_base_pris = tas_base_pris;
     }
@@ -280,5 +293,13 @@ public class GameState implements Service
 
     public void setTas_station_epuration_ennemi_pris(boolean tas_station_epuration_ennemi_pris) {
         this.tas_station_epuration_ennemi_pris = tas_station_epuration_ennemi_pris;
+    }
+
+    public void setPanneauActive(boolean panneauActive) {
+        this.panneauActive = panneauActive;
+    }
+
+    public void setAbeilleLancee(boolean abeilleLancee) {
+        this.abeilleLancee = abeilleLancee;
     }
 }

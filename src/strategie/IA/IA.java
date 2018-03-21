@@ -26,7 +26,6 @@ public class IA implements Service {
     private Container container;
     private ScriptManager scriptManager;
     private HookFactory hookFactory;
-    //implémenter container et hookfactory
 
     public IA(Container container, GameState gameState, ScriptManager scriptManager, HookFactory hookFactory) throws InterruptedException, ContainerException {
         this.root = new Node("root", null, 666, 0, null, 0, null, gameState);

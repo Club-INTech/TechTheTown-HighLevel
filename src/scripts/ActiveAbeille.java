@@ -49,6 +49,7 @@ public class ActiveAbeille extends AbstractScript {
         int yEntry = 2000-radius-securityDistance;
         Vec2 aim =new Vec2(xEntry,yEntry);
         actualState.robot.goTo(aim);
+        actualState.setAbeilleLancee(true);
     }
 
     @Override
