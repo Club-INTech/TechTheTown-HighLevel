@@ -57,6 +57,8 @@ public enum HookNames {
         this.position = position;
         this.tolerency = tolerency;
         this.order = order;
+        this.orientation=orientation;
+        this.tolerencyAngle=tolerencyAngle;
     }
 
     /** Getters & Setters */
