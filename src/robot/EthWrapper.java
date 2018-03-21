@@ -339,7 +339,7 @@ public class EthWrapper implements Service {
 
 
     public void configureHook(int id, Vec2 posTrigger, int tolerency, double orientation,double tolerencyAngle,String order){
-        eth.communicate(0, ActuatorOrder.INITIALISE_HOOK.getEthernetOrder(), String.format("%d", id), posTrigger.toStringEth(), String.format("%d", tolerency),String.format("%d",orientation), String.format("%d",tolerencyAngle),order);
+        eth.communicate(0, ActuatorOrder.INITIALISE_HOOK.getEthernetOrder(), String.format("%d", id), posTrigger.toStringEth(), String.format("%d", tolerency),String.format("%f",orientation), String.format("%f",tolerencyAngle),order);
     }
 
     /**
