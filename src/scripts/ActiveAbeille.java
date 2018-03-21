@@ -42,20 +42,22 @@ public class ActiveAbeille extends AbstractScript {
             //ON s'avance vers l'abeille
             actualState.robot.moveLengthwise(distanceAbeille);
             //On active le bras
-            actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,true);
+            //Déjà fait en hook
+            //actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,false);
             //On tourne de 90° pour lancer l'abeille
-            actualState.robot.turn(Math.PI,true);
+            actualState.robot.turn(Math.PI/2,true);
             //On relève le bras
-            actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+            actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
         }
         else{
             //On refait la même chose avec le bras arrière
-            actualState.robot.turn(5*Math.PI/4);
+            actualState.robot.turn(-3*Math.PI/4);
             actualState.robot.moveLengthwise(-distanceAbeille);
-            actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE,true);
-            actualState.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
+            //Déjà fait en hook
+            //actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE,true);
+            //actualState.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
             actualState.robot.turn(-Math.PI/2,true);
-            actualState.robot.setLocomotionSpeed(Speed.FAST_ALL);
+            //actualState.robot.setLocomotionSpeed(Speed.FAST_ALL);
             actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
         }
 
