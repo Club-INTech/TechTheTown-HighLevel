@@ -22,6 +22,7 @@ import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
@@ -56,20 +57,19 @@ public class MainPattern {
 
     public static void main(String[] args) throws InterruptedException {
         try {
-
             container = new Container();
             config = container.getConfig();
             //AffichageDebug aff = container.getService(AffichageDebug.class);
             realState = container.getService(GameState.class);
-            scriptmanager = container.getService(ScriptManager.class);
+            //scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
-            mLocomotion = container.getService(Locomotion.class);
+            //mLocomotion = container.getService(Locomotion.class);
 
             Thread.currentThread().setPriority(6);
 
             //container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
-            patternRecognition=container.getService(PatternRecognition.class);
+            patternRecognition = container.getService(PatternRecognition.class);
             //container.getService(ThreadInterface.class);
             //container.getService(ThreadTimer.class);
             //patternRecognition=container.getService(PatternRecognition.class);
@@ -79,24 +79,21 @@ public class MainPattern {
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
 
-            while(patternRecognition.isMovementLocked()) {
+            while (patternRecognition.isMovementLocked()) {
                 Thread.sleep(10);
             }
+
+            while (!patternRecognition.isRecognitionDone()) {
+                Thread.sleep(10);
+            }
+
+            System.out.println("Reconnaissance de pattern terminée");
+            container.destructor();
 
         } catch (ContainerException p) {
             System.out.println("bug container");
         }
-        try {
-            System.out.println("Le robot commence le match");
-            waitMatchBegin();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
-
-
-
 
 
     /**

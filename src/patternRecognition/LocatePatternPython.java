@@ -35,7 +35,7 @@ public class LocatePatternPython {
 
     private static void MakeLocalization(){
         List<String> command = new ArrayList<>();
-        command.add("python");
+        command.add("python3");
         command.add("./src/patternRecognition/LocatePatternPython.py");
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();
