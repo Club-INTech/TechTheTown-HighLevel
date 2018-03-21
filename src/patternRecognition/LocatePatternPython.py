@@ -88,10 +88,6 @@ if __name__ == '__main__':
     numpySquares=np.array([[[square[0],square[2]],[square[1],square[2]],[square[1],square[3]], [square[0],square[3]]]])
     if square != [-1,-1,10000,10000]:
         cv.drawContours( img, numpySquares, -1, (255, 0, 0), 2)
-
-    #Pour saovir où les carrés ont été identifiés
-    cv.imshow("DEBUG",img)
-
     file=open("/tmp/LocalizationInfo.txt","w")
     file.write(str(square[0])+" "+str(square[1])+" "+str(square[2])+" "+str(square[3]))
     file.close()
