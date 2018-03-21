@@ -96,7 +96,7 @@ public enum ActuatorOrder implements MotionOrder
 
 
 	ACTIVE_CAPTEURS_BRAS_AVANT("acpAv"),
-	ACTIVE_CAPTEURS_BRAS_ARRIERE("acpAv"),
+	ACTIVE_CAPTEURS_BRAS_ARRIERE("acpAr"),
 	DESACTIVE_CAPTEURS_BRAS("dcp"),
 
 /*			 _____________________
