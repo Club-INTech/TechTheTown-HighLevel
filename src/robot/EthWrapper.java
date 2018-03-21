@@ -345,7 +345,7 @@ public class EthWrapper implements Service {
      * @param hook
      */
     public void enableHook(HookNames hook){
-        eth.communicate(0, ActuatorOrder.ENABLE_HOOK.getEthernetOrder(), String.format("%i", hook.getId()));
+        eth.communicate(0, ActuatorOrder.ENABLE_HOOK.getEthernetOrder(), String.format("%d", hook.getId()));
     }
 
     /**
@@ -353,7 +353,7 @@ public class EthWrapper implements Service {
      * @param hook
      */
     public void disableHook(HookNames hook){
-        eth.communicate(0, ActuatorOrder.DISABLE_HOOK.getEthernetOrder(), String.format("%i", hook.getId()));
+        eth.communicate(0, ActuatorOrder.DISABLE_HOOK.getEthernetOrder(), String.format("%d", hook.getId()));
     }
 
 
