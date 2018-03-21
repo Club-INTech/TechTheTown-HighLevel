@@ -75,6 +75,14 @@ public enum HookNames {
         return id;
     }
 
+    public double getOrientation() {
+        return orientation;
+    }
+
+    public double getTolerencyAngle() {
+        return tolerencyAngle;
+    }
+
     public void setPosition(Vec2 position) {
         this.position = position;
     }

@@ -74,7 +74,7 @@ public class HookFactory implements Service {
                 log.warning("Hook déjà configuré : on ne fait rien");
                 break;
             }
-            eth.configureHook(hook.getId(), hook.getPosition(), hook.getTolerency(), serialOrder);
+            eth.configureHook(hook.getId(), hook.getPosition(), hook.getTolerency(), hook.getOrientation(),hook.getTolerencyAngle(),serialOrder);
             log.debug("Hook " + hook.getDeclaringClass() + " : Configuré");
             configuredHook.add(hook);
         }
