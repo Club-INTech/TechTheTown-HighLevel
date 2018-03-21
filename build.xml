@@ -95,6 +95,16 @@
       </manifest>
       <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
     </jar>
-
   </target>
+
+  <target name="pattern" depends="all">
+    <delete file="Ptechthetown-highlevel.jar"/>
+    <jar destfile="Ptechthetown-highlevel.jar" basedir="${techthetown-highlevel.output.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="MainPattern"/>
+      </manifest>
+      <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
+    </jar>
+  </target>
+
 </project>
