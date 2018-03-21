@@ -56,8 +56,8 @@ public class PatternRecognition extends AbstractThread{
     private double brightnessPreModifier;
     private boolean alreadyPreModified;
     private String orientation;
-    private static boolean movementLocked=true;
-    private static boolean recognitionDone=false;
+    private boolean movementLocked;
+    private boolean recognitionDone;
 
     /** Instanciation du thread de reconnaissance de couleurs
      * @param config passe la config
@@ -84,6 +84,8 @@ public class PatternRecognition extends AbstractThread{
         this.saturationPreModifier=1.2;
         this.brightnessPreModifier=1;
         this.alreadyPreModified=false;
+        this.movementLocked=true;
+        this.recognitionDone=false;
     }
 
     //////////////////////////////////// COLOR MATRIX CREATION /////////////////////////////////////////////
@@ -647,7 +649,7 @@ public class PatternRecognition extends AbstractThread{
         //Ancienne version
         //BufferedImage buffImg=ShootBufferedStill.TakeBufferedPicture();
         BufferedImage buffImg= ShootBufferedStillWebcam.takeBufferedPicture();
-        movementLocked=false;
+        this.movementLocked=false;
         int[][][] colorMatrix=createColorMatrixFromBufferedImage(buffImg);
         centerPointPattern=calculateCenterPattern(buffImg, this.zoneToPerformLocalisation);
         if (!(centerPointPattern[0] == 0 && centerPointPattern[1] == 0)) {
@@ -658,7 +660,7 @@ public class PatternRecognition extends AbstractThread{
         }
         gameState.setIndicePattern(this.finalIndice);
         gameState.setRecognitionDone(true);
-        recognitionDone=true;
+        this.recognitionDone=true;
         log.debug("Pattern recognized : " + finalIndice);
         while (!this.isShutdown){
             try {
@@ -731,11 +733,11 @@ public class PatternRecognition extends AbstractThread{
     public void shutdown(){
         this.isShutdown=true;
     }
-    public static boolean isMovementLocked() {
-        return movementLocked;
+    public boolean isMovementLocked() {
+        return this.movementLocked;
     }
-    public static boolean isRecognitionDone() {
-        return recognitionDone;
+    public boolean isRecognitionDone() {
+        return this.recognitionDone;
     }
 
     @Override

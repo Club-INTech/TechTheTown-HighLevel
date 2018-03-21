@@ -125,7 +125,7 @@ public class GameState implements Service
 
 
         //La reconnaissance de couleurs est faite ou non
-        this.recognitionDone=PatternRecognition.isRecognitionDone();
+        this.recognitionDone=false;
         //On set une valeur de base, qui sera changée par PatternRecognition par la suite
         this.indicePattern=-2;
 
