@@ -42,10 +42,14 @@ public class MatchScript extends AbstractScript {
         Vec2 directionToGo=(activeAbeille.entryPosition(0, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
         double prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
         if (prodScal>0) {
+            hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
             hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
+
         }
         else{
+            hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
             hookFactory.enableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
+
         }
         activeAbeille.goToThenExec(0,gameState);
         if (prodScal>0) {
