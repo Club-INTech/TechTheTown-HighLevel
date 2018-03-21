@@ -22,6 +22,7 @@ package hook;
 import enums.ActuatorOrder;
 import enums.MotionOrder;
 import enums.Speed;
+import org.opencv.core.Mat;
 import smartMath.Vec2;
 
 /**
@@ -31,9 +32,9 @@ import smartMath.Vec2;
 public enum HookNames {
 
     // Example :
-    SPEED_DOWN(1, new Vec2(50, 50), 5, Speed.SLOW_ALL),
-    ACTIVE_BRAS_AVANT_ABEILLE(2, new Vec2(1500,2000), 300, ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE),
-    ACTIVE_BRAS_ARRIERE_ABEILLE(3, new Vec2(1500,2000), 300, ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE),
+    SPEED_DOWN(1, new Vec2(50, 50), 5 ,0,Math.PI,Speed.SLOW_ALL),
+    ACTIVE_BRAS_AVANT_ABEILLE(2, new Vec2(680,1680),5,0, Math.PI,ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE),
+    ACTIVE_BRAS_ARRIERE_ABEILLE(3, new Vec2(1500,2000), 5, 0, Math.PI,ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE),
     ;
 
     /** Ordre du hook */
@@ -48,8 +49,10 @@ public enum HookNames {
     /** Id du hook, utile pour pouvoir l'activer/désactivé manuellement*/
     private int id;
 
+    private double orientation;
+    private double tolerencyAngle;
     /** Constructeur */
-    HookNames(int id, Vec2 position, int tolerency, MotionOrder order){
+    HookNames(int id, Vec2 position, int tolerency, double orientation,double tolerencyAngle, MotionOrder order){
         this.id = id;
         this.position = position;
         this.tolerency = tolerency;

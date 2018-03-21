@@ -38,7 +38,6 @@ public class MatchScript extends AbstractScript {
         TakeCubes tk2=new TakeCubes(config,log,hookFactory);
         tk2.goToThenExec(2,gameState);
 
-
         ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
         Vec2 directionToGo=(activeAbeille.entryPosition(0, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
         double prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
