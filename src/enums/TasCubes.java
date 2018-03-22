@@ -3,7 +3,7 @@ package enums;
 import smartMath.Vec2;
 
 public enum TasCubes{
-    TAS_BASE(0,650,540),
+    TAS_BASE(0,645,540),
     TAS_CHATEAU_EAU(1,1200,1190),
     TAS_STATION_EPURATION(2,400,1500),
     TAS_STATION_EPURATION_ENNEMI(3,-400,1500),
