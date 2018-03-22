@@ -44,9 +44,7 @@ public class MainPattern {
     static Container container;
     static Config config;
     static GameState realState;
-    static ScriptManager scriptmanager;
     static EthWrapper mEthWrapper;
-    static Locomotion mLocomotion;
     static PatternRecognition patternRecognition;
 
 
@@ -59,25 +57,11 @@ public class MainPattern {
         try {
             container = new Container();
             config = container.getConfig();
-            //AffichageDebug aff = container.getService(AffichageDebug.class);
-            realState = container.getService(GameState.class);
-            //scriptmanager = container.getService(ScriptManager.class);
-            mEthWrapper = container.getService(EthWrapper.class);
-            //mLocomotion = container.getService(Locomotion.class);
+            config.override(ConfigInfoRobot.SIMULATION,true);
 
-            Thread.currentThread().setPriority(6);
-
-            //container.getService(ThreadSensor.class);
-            container.getService(ThreadEth.class);
             patternRecognition = container.getService(PatternRecognition.class);
-            //container.getService(ThreadInterface.class);
-            //container.getService(ThreadTimer.class);
-            //patternRecognition=container.getService(PatternRecognition.class);
+            Thread.currentThread().setPriority(6);
             container.startInstanciedThreads();
-            // TODO : initialisation des variables globales du robot & objets...
-            realState.robot.setPosition(Table.entryPosition);
-            realState.robot.setOrientation(Table.entryOrientation);
-            realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
 
             while (patternRecognition.isMovementLocked()) {
                 Thread.sleep(10);

@@ -608,7 +608,7 @@ public class PatternRecognition extends AbstractThread{
                     log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                 }
                 if (isSavingImages) {
-                    saveImage(colorMatrix, "/tmp/imageCenter.png");
+                    saveImage(colorMatrix, "/tmp/ImageCenter.jpg");
                 }
                 analysePattern(colorMatrix);
             }
@@ -646,8 +646,6 @@ public class PatternRecognition extends AbstractThread{
             }
         }*/
 
-        //Ancienne version
-        //BufferedImage buffImg=ShootBufferedStill.TakeBufferedPicture();
         BufferedImage buffImg= ShootBufferedStillWebcam.takeBufferedPicture();
         this.movementLocked=false;
         int[][][] colorMatrix=createColorMatrixFromBufferedImage(buffImg);
