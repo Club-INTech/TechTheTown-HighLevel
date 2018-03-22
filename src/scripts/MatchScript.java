@@ -1,5 +1,6 @@
 package scripts;
 
+import enums.ActuatorOrder;
 import enums.BrasUtilise;
 import enums.Speed;
 import exceptions.BadVersionException;
@@ -15,6 +16,7 @@ import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
+import tests.container.A;
 import utils.Log;
 
 public class MatchScript extends AbstractScript {
@@ -65,6 +67,10 @@ public class MatchScript extends AbstractScript {
         TakeCubes tk1=new TakeCubes(config,log,hookFactory);
         tk1.goToThenExec(1,gameState);
 
+        //Teste pour virer le cube dissident.
+        gameState.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE,true);
+        gameState.robot.turn(0);
+        gameState.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
 
         DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
         directionToGo=(dpCubes0.entryPosition(0, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
