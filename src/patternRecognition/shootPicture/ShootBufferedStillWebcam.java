@@ -13,7 +13,7 @@ public class ShootBufferedStillWebcam {
         BufferedImage picture = null;
         shootPicture();
         try {
-            picture = ImageIO.read(new File("/tmp/ImageRaspi.jpg"));
+            picture = ImageIO.read(new File("/tmp/ImageRaspi.jpeg"));
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("ShootBufferedStillWebcam > Erreur readingSavedPicture");
@@ -23,11 +23,23 @@ public class ShootBufferedStillWebcam {
 
 
     private static void shootPicture(){
-        String videoFileToRead="/dev/video0";
-
+        //String videoFileToRead="/dev/video0";
         List<String> command = new ArrayList<>();
 
         //Camera FishEye
+        command.add("streamer");
+        command.add("-f");
+        command.add("jpeg");
+        command.add("-s");
+        command.add("1280x720");
+        command.add("-j");
+        command.add("100");
+        command.add("-o");
+        command.add("/tmp/ImageRaspi.jpeg");
+
+        /*
+        //fswebcam
+        //CameraFishEye
         command.add("fswebcam");
         command.add("-s");
         command.add("brightness=60%");
@@ -44,7 +56,8 @@ public class ShootBufferedStillWebcam {
         command.add("--rotate");
         command.add("180");
         command.add("--no-banner");
-        command.add("/tmp/ImageRaspi.jpg");
+        command.add("/tmp/ImageRaspi.jpeg");
+        */
 
         /*
         //Caméra pourrav
@@ -58,7 +71,7 @@ public class ShootBufferedStillWebcam {
         command.add("-d");
         command.add(videoFileToRead);
         System.out.println("Using "+videoFileToRead);
-        command.add("/tmp/ImageRaspi.jpg");
+        command.add("/tmp/ImageRaspi.jpeg");
         */
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();

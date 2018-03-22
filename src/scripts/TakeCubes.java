@@ -196,7 +196,7 @@ public class TakeCubes extends AbstractScript {
                 }
 
 
-                stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
+                stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, false);
                 Circle aimArcCircle;
                 if (indiceTas==0){
                     aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, 0, Math.PI, true);
@@ -236,8 +236,6 @@ public class TakeCubes extends AbstractScript {
         if(bras.equals(BrasUtilise.ARRIERE)){
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,false);
         }
-
-
     }
 
 
