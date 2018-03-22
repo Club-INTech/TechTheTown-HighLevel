@@ -12,12 +12,16 @@ public class LocatePatternPython {
 
     public static int[] LocatePattern(int[] zoneToPerformLocalisation, String orientation){
         String data;
+        File file = new File("/tmp/LocalizationDone.lock");
+        if (file.exists()) {
+            file.delete();
+        }
         MakeLocalization();
-        try {
+        try{
             data = new String(Files.readAllBytes(Paths.get("/tmp/LocalizationInfo.txt")));
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("LocatePatternPython > IOException /tmp/LocalizationInfo.info");
+            System.out.println("LocatePatternPython > IOException /tmp/LocalizationInfo.txg");
             data="-1 -1 10000 10000";
         }
         String[] infos = data.split(" ");
