@@ -38,7 +38,9 @@ public class ActiveAbeille extends AbstractScript {
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
         if(actualState.robot.getOrientation()>0 &&actualState.robot.getOrientation()<Math.PI ){
             //On se tourne vers l'abeille
-            actualState.robot.turn(Math.PI/4);
+            if (Math.abs(actualState.robot.getOrientation()-Math.PI/4)>Math.PI/6) {
+                actualState.robot.turn(Math.PI / 4);
+            }
             //ON s'avance vers l'abeille
             actualState.robot.moveLengthwise(distanceAbeille);
             //On active le bras
@@ -51,7 +53,9 @@ public class ActiveAbeille extends AbstractScript {
         }
         else{
             //On refait la même chose avec le bras arrière
-            actualState.robot.turn(-3*Math.PI/4);
+            if (Math.abs(actualState.robot.getOrientation()-(-3*Math.PI/4))>Math.PI/6) {
+                actualState.robot.turn(-3 * Math.PI / 4);
+            }
             actualState.robot.moveLengthwise(-distanceAbeille);
             //Déjà fait en hook
             //actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE,true);
