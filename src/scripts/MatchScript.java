@@ -59,19 +59,37 @@ public class MatchScript extends AbstractScript {
             hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
         }
 
+
+
         gameState.setTakeCubesBras(BrasUtilise.AVANT);
         TakeCubes tk1=new TakeCubes(config,log,hookFactory);
         tk1.goToThenExec(1,gameState);
 
-        DeposeCubes dpCubes0=new DeposeCubes(config,log,hookFactory);
-        dpCubes0.goToThenExec(0,gameState);
+
+
+        directionToGo=(activeAbeille.entryPosition(0, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
+        prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
+        DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
+        if (prodScal>0) {
+            dpCubes0.goToThenExec(0, gameState); //on commence par l'arrière
+        }
+        else{
+            dpCubes0.goToThenExec(1, gameState); //on commence par l'arrière
+        }
 
         gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
         TakeCubes tk0=new TakeCubes(config,log,hookFactory);
         tk0.goToThenExec(0,gameState);
 
+        directionToGo=(activeAbeille.entryPosition(0, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
+        prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
         DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
-        dpCubes1.goToThenExec(1,gameState);
+        if (prodScal>0) {
+            dpCubes1.goToThenExec(2, gameState); //on commence par l'arrière
+        }
+        else{
+            dpCubes1.goToThenExec(3, gameState); //on commence par l'arrière
+        }
 
         log.debug("Fin MatchScript");
     }
