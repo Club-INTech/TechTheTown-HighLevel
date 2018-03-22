@@ -94,11 +94,12 @@ if __name__ == '__main__':
     numpySquares=np.array([[[square[0],square[2]],[square[1],square[2]],[square[1],square[3]], [square[0],square[3]]]])
     #Pour savoir ou les carres ont ete identifies
     #cv.imshow("DEBUG",img)
+    #Array de la forme : (x, y, width, height)
     if square != [-1,-1,10000,10000]:
-        print(str(XSTART+square[0])+" "+str(XSTART+square[1]+WIDTH)+" "+str(YSTART+square[2])+" "+str(YSTART+square[3]+HEIGHT))
+        print(str(XSTART+square[0])+" "+str(YSTART+square[1])+" "+str(XSTART+square[2]+WIDTH)+" "+str(YSTART+square[3]+HEIGHT))
         cv.drawContours( img, numpySquares, -1, (255, 0, 0), 2)
         file=open("/tmp/LocalizationInfo.txt","w")
-        file.write(str(XSTART+square[0])+" "+str(XSTART+square[1]+WIDTH)+" "+str(YSTART+square[2])+" "+str(YSTART+square[3]+HEIGHT))
+        file.write(str(XSTART+square[0])+" "+str(YSTART+square[1])+" "+str(XSTART+square[2]+WIDTH)+" "+str(YSTART+square[3]+HEIGHT))
         file.close()
     else:
         file=open("/tmp/LocalizationInfo.txt","w")
