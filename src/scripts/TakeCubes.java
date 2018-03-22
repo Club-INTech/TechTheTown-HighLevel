@@ -73,6 +73,7 @@ public class TakeCubes extends AbstractScript {
         //On regarde quel bras on utilise
         if (bras==BrasUtilise.AVANT){
             //On gère le cas où le cube bonus est encore présent
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU,false);
             if (stateToConsider.isCubeAvantPresent()){
                 additionalCube=Cubes.NULL;
             }
@@ -81,6 +82,7 @@ public class TakeCubes extends AbstractScript {
             }
         }
         else{
+            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU,false);
             //On gère le cas où le cube bonus est encore présent
             if (stateToConsider.isCubeArrierePresent()){
                 additionalCube=Cubes.NULL;
@@ -228,6 +230,14 @@ public class TakeCubes extends AbstractScript {
             log.debug("Exécution script de récupération des cubes avant que le pattern ait été calculé");
             throw new ExecuteException(new PatternNotYetCalculatedException("Le pattern n'a pas encore été calculé"));
         }
+        if(bras.equals(BrasUtilise.AVANT)){
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);
+        }
+        if(bras.equals(BrasUtilise.ARRIERE)){
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,false);
+        }
+
+
     }
 
 
@@ -239,9 +249,9 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,false);
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, true);
+            //stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERMER_LA_PORTE_AVANT_UNPEU,true);
+            //stateToConsider.robot.useActuator(ActuatorOrder.FERMER_LA_PORTE_AVANT_UNPEU,true);
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
                 nbCubesAV++;
                 log.debug("Nombre de cube avant incrémenté");
@@ -255,9 +265,9 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE, false);
-            stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, true);
+            //stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERMER_LA_PORTE_ARRIERE_UNPEU,true);
+            //stateToConsider.robot.useActuator(ActuatorOrder.FERMER_LA_PORTE_ARRIERE_UNPEU,true);
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
                 nbCubesAR++;
                 log.debug("Nombre de cube arrière incrémenté");
