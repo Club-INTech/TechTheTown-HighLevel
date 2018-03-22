@@ -96,7 +96,7 @@ public class ThreadEvents extends AbstractThread
                         log.debug("Le robot a pris un cube en utilisant le bras AR");
                     }
                 } else {
-                    Thread.sleep(100);
+                    Thread.sleep(20);
                 }
             }catch (InterruptedException e){
                 e.getStackTrace();

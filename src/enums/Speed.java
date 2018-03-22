@@ -54,10 +54,10 @@ public enum Speed implements MotionOrder
 	FAST_T_MEDIUM_R(520, 1.8D),
 
 	/** vitesse rapide en translation et rotation */
-	FAST_ALL(750,1.8D),
+	FAST_ALL(750,2.7D),
 
 	/** vitesse ultra rapide en translation et rotation */
-	ULTRA_FAST_ALL(1200,1.8D);
+	ULTRA_FAST_ALL(1200,3.14D);
     
     /** vitesse des moteurs lors d'une translation, ce sont ces valeurs qui seront envoyées à la STM */
     public int translationSpeed;

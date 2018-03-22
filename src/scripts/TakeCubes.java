@@ -123,7 +123,7 @@ public class TakeCubes extends AbstractScript {
                 //On active la pompe, et ouvre les électrovannes
                 stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
                 stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
-                stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, true);
+                stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, false);
 
                 int[][] successivesPositionsList;
                 //Si additionalCube.getColor()==Colors.NULL, c'est qu'on a choisi de ne prendre que 3 cubes
@@ -192,7 +192,6 @@ public class TakeCubes extends AbstractScript {
                     scorefinalCubes=scorefinalCubes+calculscore(nbCubesAR,true);
                     nbCubesAR=0;
                 }
-
 
 
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);
