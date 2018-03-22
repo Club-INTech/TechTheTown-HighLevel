@@ -37,11 +37,8 @@ public class PatternRecognition extends AbstractThread{
     private int alreadyLitUp; //l'image a déjà été éclairée
     private boolean isSavingImages;
     private boolean symmetry;
-    //VALEURS PICAM
-    //private int imageWidth=2592;
-    //private int imageHeight=1944;
-    private int imageWidth=640;
-    private int imageHeight=480;
+    private int imageWidth;
+    private int imageHeight;
 
     //mediansList est composé de la médiane en R, en G et en B, pour chacune des 3 couleurs de la photo
     //Donc, si on nomme les couleurs 1, 2 et 3, on a :
@@ -49,8 +46,8 @@ public class PatternRecognition extends AbstractThread{
     private int[][] mediansList = new int[3][3];
 
     private int[] zoneToPerformLocalisation;
-    private int[] zoneToPerformLocalisationVert={1,168,296,288};
-    private int[] zoneToPerformLocalisationOrange={(imageWidth-297),168,296,288};
+    private int[] zoneToPerformLocalisationVert;
+    private int[] zoneToPerformLocalisationOrange;
 
     private double saturationPreModifier;
     private double brightnessPreModifier;
@@ -69,14 +66,15 @@ public class PatternRecognition extends AbstractThread{
         this.ethWrapper=ethWrapper;
         this.gameState=stateToConsider;
         this.orientation="side";
+        //TODO : faire en sorte que le script python accepte une certaine zone à localiser
         if (this.symmetry) {
-            this.zoneToPerformLocalisation = zoneToPerformLocalisationOrange;
+            this.zoneToPerformLocalisation = new int[]{(imageWidth-300),300,200,250};
         }
         else {
-            this.zoneToPerformLocalisation = zoneToPerformLocalisationVert;
+            this.zoneToPerformLocalisation = new int[]{300,300,200,250};
         }
         this.lengthSideOfSquareDetection=5; //in pixels
-        this.distanceBetweenTwoColors=40; //in pixels
+        this.distanceBetweenTwoColors=15; //in pixels
         this.debug=true;
         this.alreadyPrintedColorMatchingProba=false;
         this.alreadyLitUp=0;
@@ -86,6 +84,11 @@ public class PatternRecognition extends AbstractThread{
         this.alreadyPreModified=false;
         this.movementLocked=true;
         this.recognitionDone=false;
+        //VALEURS PICAM
+        //private int imageWidth=2592;
+        //private int imageHeight=1944;
+        this.imageWidth=1280;
+        this.imageHeight=720;
     }
 
     //////////////////////////////////// COLOR MATRIX CREATION /////////////////////////////////////////////
@@ -545,7 +548,6 @@ public class PatternRecognition extends AbstractThread{
             colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3],saturationPreModifier,brightnessPreModifier);
             this.alreadyPreModified=true;
         }
-
         int iStartValue = -2;
         for (int i = iStartValue; i <= 2; i++) {
             /**On définit où l'algorithme doit chercher ses couleurs
