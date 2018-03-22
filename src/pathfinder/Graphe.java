@@ -206,7 +206,7 @@ public class Graphe implements Service {
         int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
         for(int i=0;i<n;i++) {
             Circle obstaclecircle=new Circle(listCircu.get(i).getPosition(),listCircu.get(i).getRadius()+d);
-            ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(12);
+            ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
             pointstoreturn.addAll(l);
         }
         int m=pointstoreturn.size();
