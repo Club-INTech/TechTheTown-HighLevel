@@ -173,33 +173,26 @@ public class TakeCubes extends AbstractScript {
                 takeThisCube(stateToConsider, bras);
 
 
-
-                if(bras.equals(BrasUtilise.AVANT)){
-                    scorefinalCubes=scorefinalCubes+calculscore(nbCubesAV,true);
-                    nbCubesAV=0;
-                }
-                else{
-                    scorefinalCubes=scorefinalCubes+calculscore(nbCubesAR,true);
-                    nbCubesAR=0;
-                }
                 //Si un cube additionnel a été précisé
                 if (additionalCube.getColor()!=Colors.NULL){
                     //On définit le Vec2 de la position permettant de prendre le cube additionnel
                     Vec2 fourthPosition = new Vec2(successivesPositionsList[3][0], successivesPositionsList[3][1]);
-
                     //On fait aller le robot à la position pour prendre le cube additionnel.
                     stateToConsider.robot.moveNearPoint(fourthPosition, longueurBras, direction);
                     //Le robot execute les actions pour prendre le cube
                     takeThisCube(stateToConsider, bras);
-                    if(bras.equals(BrasUtilise.AVANT)){
-                        scorefinalCubes=scorefinalCubes+calculscore(nbCubesAV,false);
-                        nbCubesAV=0;
-                    }
-                    else{
-                        scorefinalCubes=scorefinalCubes+calculscore(nbCubesAR,false);
-                        nbCubesAR=0;
-                    }
                 }
+                if (bras.equals(BrasUtilise.AVANT)){
+                    stateToConsider.setTourAvantRemplie(true);
+                    scorefinalCubes=scorefinalCubes+calculscore(nbCubesAV,true);
+                    nbCubesAV=0;
+                }
+                else{
+                    stateToConsider.setTourArriereRemplie(true);
+                    scorefinalCubes=scorefinalCubes+calculscore(nbCubesAR,true);
+                    nbCubesAR=0;
+                }
+
 
 
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, true);

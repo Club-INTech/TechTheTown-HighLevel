@@ -66,10 +66,9 @@ public class MatchScript extends AbstractScript {
         tk1.goToThenExec(1,gameState);
 
 
-
-        directionToGo=(activeAbeille.entryPosition(0, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
-        prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
         DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
+        directionToGo=(dpCubes0.entryPosition(0, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
+        prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
         if (prodScal>0) {
             dpCubes0.goToThenExec(0, gameState); //on commence par l'arrière
         }
@@ -81,9 +80,10 @@ public class MatchScript extends AbstractScript {
         TakeCubes tk0=new TakeCubes(config,log,hookFactory);
         tk0.goToThenExec(0,gameState);
 
-        directionToGo=(activeAbeille.entryPosition(0, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
-        prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
+
         DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
+        directionToGo=(dpCubes1.entryPosition(2, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
+        prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
         if (prodScal>0) {
             dpCubes1.goToThenExec(2, gameState); //on commence par l'arrière
         }
