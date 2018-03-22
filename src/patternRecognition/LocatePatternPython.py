@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
 
 '''
@@ -16,6 +16,14 @@ if PY3:
 import numpy as np
 import cv2 as cv
 
+SUBIMG_X =	300
+SUBIMG_SIZE_X = 200
+SUBIMG_Y = 	300
+SUBIMG_SIZE_Y = 250
+
+APERTURE_SIZE = 3
+LENGTH_MULTIPLIER = 0.02
+
 
 def angle_cos(p0, p1, p2):
     d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
@@ -29,14 +37,14 @@ def find_squares(img,threshold1, threshold2, blurSize):
     for gray in cv.split(img):
         for thrs in xrange(0, 255, 26):
             if thrs == 0:
-                bin = cv.Canny(gray, threshold1, threshold2, apertureSize=3, L2gradient=True)
+                bin = cv.Canny(gray, threshold1, threshold2, apertureSize=APERTURE_SIZE, L2gradient=True)
                 bin = cv.dilate(bin, None)
             else:
                 _retval, bin = cv.threshold(gray, thrs, 255, cv.THRESH_BINARY)
             bin, contours, _hierarchy = cv.findContours(bin, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
             for cnt in contours:
                 cnt_len = cv.arcLength(cnt, True)
-                cnt = cv.approxPolyDP(cnt, 0.02*cnt_len, True)
+                cnt = cv.approxPolyDP(cnt, LENGTH_MULTIPLIER*cnt_len, True)
                 area=cv.contourArea(cnt)
                 if len(cnt) == 4 and area >= maxArea and cv.isContourConvex(cnt):
                     cnt = cnt.reshape(-1, 2)
@@ -83,11 +91,15 @@ def find_squares(img,threshold1, threshold2, blurSize):
 if __name__ == '__main__':
     fn='/tmp/ImageRaspi.jpeg'
     img = cv.imread(fn)
-    xstart=300
-    ystart=300
-    width=200
-    height=250
-    img = img[xstart:xstart+width,ystart:ystart+height]
+    XSTART=300
+    YSTART=300
+    WIDTH=200
+    HEIGHT=250
+    APERTURE_SIZE = 3
+    LENGTH_MULTIPLIER = 0.02
+
+    img = img[XSTART:XSTART+WIDTH,YSTART:YSTART+HEIGHT]
+
     square = find_squares(img,0,50,9)
     numpySquares=np.array([[[square[0],square[2]],[square[1],square[2]],[square[1],square[3]], [square[0],square[3]]]])
     #Pour savoir ou les carres ont ete identifies
@@ -95,7 +107,7 @@ if __name__ == '__main__':
     if square != [-1,-1,10000,10000]:
         cv.drawContours( img, numpySquares, -1, (255, 0, 0), 2)
         file=open("/tmp/LocalizationInfo.txt","w")
-        file.write(str(xstart+square[0])+" "+str(xstart+square[1]+width)+" "+str(ystart+square[2])+" "+str(ystart+square[3]+height))
+        file.write(str(XSTART+square[0])+" "+str(XSTART+square[1]+WIDTH)+" "+str(YSTART+square[2])+" "+str(YSTART+square[3]+HEIGHT))
         file.close()
     else:
         file=open("/tmp/LocalizationInfo.txt","w")
