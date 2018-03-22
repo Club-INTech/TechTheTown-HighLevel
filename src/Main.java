@@ -54,7 +54,6 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         try {
-
             container = new Container();
             config = container.getConfig();
             //AffichageDebug aff = container.getService(AffichageDebug.class);
