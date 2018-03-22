@@ -16,15 +16,6 @@ if PY3:
 import numpy as np
 import cv2 as cv
 
-SUBIMG_X =	300
-SUBIMG_SIZE_X = 200
-SUBIMG_Y = 	300
-SUBIMG_SIZE_Y = 250
-
-APERTURE_SIZE = 3
-LENGTH_MULTIPLIER = 0.02
-
-
 def angle_cos(p0, p1, p2):
     d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
     return abs( np.dot(d1, d2) / np.sqrt( np.dot(d1, d1)*np.dot(d2, d2) ) )
@@ -85,7 +76,6 @@ def find_squares(img,threshold1, threshold2, blurSize):
                 minY=square[1]
             if square[1]>maxY:
                 maxY=square[1]
-        print(minX, maxX, minY, maxY)
         return [minX, maxX, minY, maxY]
 
 if __name__ == '__main__':
@@ -104,6 +94,7 @@ if __name__ == '__main__':
     numpySquares=np.array([[[square[0],square[2]],[square[1],square[2]],[square[1],square[3]], [square[0],square[3]]]])
     #Pour savoir ou les carres ont ete identifies
     cv.imshow("DEBUG",img)
+    print(str(XSTART+square[0])+" "+str(XSTART+square[1]+WIDTH)+" "+str(YSTART+square[2])+" "+str(YSTART+square[3]+HEIGHT))
     if square != [-1,-1,10000,10000]:
         cv.drawContours( img, numpySquares, -1, (255, 0, 0), 2)
         file=open("/tmp/LocalizationInfo.txt","w")
