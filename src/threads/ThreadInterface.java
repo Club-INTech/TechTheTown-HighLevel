@@ -24,6 +24,7 @@ import graphics.Window;
 import pfg.config.Config;
 import robot.Robot;
 import scripts.ScriptManager;
+import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import utils.Log;
@@ -47,6 +48,7 @@ public class ThreadInterface extends AbstractThread
         this.log = log;
         this.robot = robot;
         this.win = new Window(table, state, scriptManager,false);
+        win.setPoint(new Vec2(1500-212-60,2000-212-60));
     }
 
     @Override

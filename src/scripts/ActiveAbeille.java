@@ -22,13 +22,15 @@ public class ActiveAbeille extends AbstractScript {
     /** Eléments appelés par la config */
     private int radius ; //rayon du robot
     int distanceAbeille;
+    int xEntry;
+    int yEntry;
 
-    int xEntry = 1500-radius-securityDistance;
-    int yEntry = 2000-radius-securityDistance;
 
     public ActiveAbeille(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
         updateConfig();
+        xEntry = 1500-radius-securityDistance;
+        yEntry = 2000-radius-securityDistance;
     }
     @Override
     public void updateConfig() {
@@ -39,12 +41,13 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
+
         if(actualState.robot.getOrientation()>0 &&actualState.robot.getOrientation()<Math.PI ){
             //On se tourne vers l'abeille
             if (Math.abs(actualState.robot.getOrientation()-Math.PI/4)>Math.PI/6) {
                 actualState.robot.turn(Math.PI / 4);
             }
-            actualState.robot.goTo(new Vec2(xEntry+distanceAbeille/2,yEntry+distanceAbeille/2));
+            actualState.robot.goTo(new Vec2(xEntry,yEntry));
             //ON s'avance vers l'abeille
             //On active le bras
             //Déjà fait en hook
@@ -59,7 +62,7 @@ public class ActiveAbeille extends AbstractScript {
             if (Math.abs(actualState.robot.getOrientation()-(-3*Math.PI/4))>Math.PI/6) {
                 actualState.robot.turn(-3 * Math.PI / 4);
             }
-            actualState.robot.goTo(new Vec2(xEntry+distanceAbeille/2,yEntry+distanceAbeille/2));
+            actualState.robot.goTo(new Vec2(xEntry,yEntry));
             //Déjà fait en hook
             //actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE,true);
             //actualState.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
@@ -75,7 +78,7 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
-
+        log.debug("Position d'entrée ActiveAbeille"+robotPosition);
         return new Circle(robotPosition);
     }
 
