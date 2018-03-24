@@ -48,7 +48,6 @@ public class ThreadInterface extends AbstractThread
         this.log = log;
         this.robot = robot;
         this.win = new Window(table, state, scriptManager,false);
-        win.setPoint(new Vec2(1500-212-60+35,2000-212-60+35));
     }
 
     @Override

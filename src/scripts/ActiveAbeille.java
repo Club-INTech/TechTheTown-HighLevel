@@ -29,7 +29,7 @@ public class ActiveAbeille extends AbstractScript {
     public ActiveAbeille(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
         updateConfig();
-        xEntry=1320;
+        xEntry=1300;
         yEntry=1765;
     }
     @Override
@@ -72,7 +72,7 @@ public class ActiveAbeille extends AbstractScript {
         }
 
 
-        Vec2 aim =new Vec2(xEntry,yEntry);
+        Vec2 aim =new Vec2(1500-radius-securityDistance,2000-radius-securityDistance);
         actualState.robot.goTo(aim);
     }
 
