@@ -28,7 +28,7 @@ public class ShootBufferedStillWebcam {
         }
         return picture;
     }
-    
+
     private static void shootPicture(){
         Webcam webcam = Webcam.getDefault();
         webcam.setCustomViewSizes( WebcamResolution.HD.getSize());
