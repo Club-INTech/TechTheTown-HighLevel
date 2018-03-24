@@ -3,9 +3,13 @@ package tests;
 import java.awt.*;
 import java.io.IOException;
 
+import au.edu.jcu.v4l4j.V4L4JConstants;
+import com.github.sarxos.v4l4j.V4L4J;
 import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamDriver;
 import com.github.sarxos.webcam.WebcamPanel;
 import org.junit.Test;
+import patternRecognition.shootPicture.TestWebcamCapture.V4l4jDriver;
 
 import javax.swing.*;
 
@@ -19,6 +23,7 @@ public class JUnit_TestWebcamCaputureLib  extends JUnit_Test {
 
     @Test
     public void testPanel(){
+        Webcam.setDriver(new V4l4jDriver());
         Webcam w = Webcam.getDefault();
         w.setCustomViewSizes(new Dimension(1280,720));
         w.setViewSize(new Dimension(1280,720)); // set camera resolution
