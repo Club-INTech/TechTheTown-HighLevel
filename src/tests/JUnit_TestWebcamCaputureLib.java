@@ -1,7 +1,6 @@
 package tests;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import com.github.sarxos.webcam.Webcam;
@@ -20,7 +19,6 @@ public class JUnit_TestWebcamCaputureLib  extends JUnit_Test {
 
     @Test
     public void testPanel(){
-
         Webcam w = Webcam.getDefault();
         w.setCustomViewSizes(new Dimension(1280,720));
         w.setViewSize(new Dimension(1280,720)); // set camera resolution
