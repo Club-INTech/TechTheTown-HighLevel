@@ -29,8 +29,8 @@ public class ActiveAbeille extends AbstractScript {
     public ActiveAbeille(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
         updateConfig();
-        xEntry = 1500-radius-securityDistance;
-        yEntry = 2000-radius-securityDistance;
+        xEntry=1320;
+        yEntry=1765;
     }
     @Override
     public void updateConfig() {
