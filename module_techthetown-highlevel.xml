@@ -2,9 +2,6 @@
 <project name="module_techthetown-highlevel" default="compile.module.techthetown-highlevel">
   <dirname property="module.techthetown-highlevel.basedir" file="${ant.file.module_techthetown-highlevel}"/>
   
-  <property name="module.jdk.home.techthetown-highlevel" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.techthetown-highlevel" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.techthetown-highlevel" value="${project.jdk.classpath}"/>
   
   <property name="compiler.args.techthetown-highlevel" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
   
@@ -16,7 +13,6 @@
   </path>
   
   <path id="techthetown-highlevel.module.production.classpath">
-    <path refid="${module.jdk.classpath.techthetown-highlevel}"/>
     <path refid="library.lib.classpath"/>
   </path>
   
@@ -26,7 +22,6 @@
   </path>
   
   <path id="techthetown-highlevel.module.classpath">
-    <path refid="${module.jdk.classpath.techthetown-highlevel}"/>
     <pathelement location="${techthetown-highlevel.output.dir}"/>
     <path refid="library.lib.classpath"/>
   </path>
@@ -57,7 +52,7 @@
   
   <target name="compile.module.techthetown-highlevel.production" description="Compile module TechTheTown-HighLevel; production classes">
     <mkdir dir="${techthetown-highlevel.output.dir}"/>
-    <javac destdir="${techthetown-highlevel.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.techthetown-highlevel}/javac">
+    <javac destdir="${techthetown-highlevel.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.techthetown-highlevel}"/>
       <bootclasspath refid="techthetown-highlevel.module.bootclasspath"/>
       <classpath refid="techthetown-highlevel.module.production.classpath"/>
