@@ -23,6 +23,9 @@ public class ActiveAbeille extends AbstractScript {
     private int radius ; //rayon du robot
     int distanceAbeille;
 
+    int xEntry = 1500-radius-securityDistance;
+    int yEntry = 2000-radius-securityDistance;
+
     public ActiveAbeille(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
         updateConfig();
@@ -41,8 +44,8 @@ public class ActiveAbeille extends AbstractScript {
             if (Math.abs(actualState.robot.getOrientation()-Math.PI/4)>Math.PI/6) {
                 actualState.robot.turn(Math.PI / 4);
             }
+            actualState.robot.goTo(new Vec2(xEntry+distanceAbeille/2,yEntry+distanceAbeille/2));
             //ON s'avance vers l'abeille
-            actualState.robot.moveLengthwise(distanceAbeille);
             //On active le bras
             //Déjà fait en hook
             //actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,false);
@@ -52,6 +55,7 @@ public class ActiveAbeille extends AbstractScript {
             actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
         }
         else{
+            actualState.robot.goTo(new Vec2(xEntry+distanceAbeille/2,yEntry+distanceAbeille/2));
             //On refait la même chose avec le bras arrière
             if (Math.abs(actualState.robot.getOrientation()-(-3*Math.PI/4))>Math.PI/6) {
                 actualState.robot.turn(-3 * Math.PI / 4);
@@ -66,18 +70,14 @@ public class ActiveAbeille extends AbstractScript {
         }
 
 
-        int xEntry = 1500-radius-securityDistance;
-        int yEntry = 2000-radius-securityDistance;
         Vec2 aim =new Vec2(xEntry,yEntry);
         actualState.robot.goTo(aim);
     }
 
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
-        //Se place tout de suite à la bonne position pour tourner et activer l'abeille
-        int xEntry = 1500-radius-securityDistance;
-        int yEntry = 2000-radius-securityDistance;
-        return new Circle(new Vec2(xEntry,yEntry));
+
+        return new Circle(robotPosition);
     }
 
     @Override
