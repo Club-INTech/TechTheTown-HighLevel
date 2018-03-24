@@ -3,7 +3,6 @@ package patternRecognition.shootPicture;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamImageTransformer;
 import com.github.sarxos.webcam.WebcamResolution;
-import patternRecognition.shootPicture.TestWebcamCapture.FFmpegCliDriver;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,10 +14,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class ShootBufferedStillWebcam {
-
-    static{
-        Webcam.setDriver(new FFmpegCliDriver());
-    }
 
     public static BufferedImage takeBufferedPicture(){
         BufferedImage picture = null;

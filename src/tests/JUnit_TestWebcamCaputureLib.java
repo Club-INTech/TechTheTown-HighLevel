@@ -9,16 +9,11 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDriver;
 import com.github.sarxos.webcam.WebcamPanel;
 import org.junit.Test;
-import patternRecognition.shootPicture.TestWebcamCapture.FFmpegCliDriver;
 
 import javax.swing.*;
 
 
 public class JUnit_TestWebcamCaputureLib  extends JUnit_Test {
-
-    static{
-        Webcam.setDriver(new FFmpegCliDriver());
-    }
 
     @Test
     public void test() throws IOException {
