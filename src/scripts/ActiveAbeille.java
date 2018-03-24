@@ -55,12 +55,11 @@ public class ActiveAbeille extends AbstractScript {
             actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
         }
         else{
-            actualState.robot.goTo(new Vec2(xEntry+distanceAbeille/2,yEntry+distanceAbeille/2));
             //On refait la même chose avec le bras arrière
             if (Math.abs(actualState.robot.getOrientation()-(-3*Math.PI/4))>Math.PI/6) {
                 actualState.robot.turn(-3 * Math.PI / 4);
             }
-            actualState.robot.moveLengthwise(-distanceAbeille);
+            actualState.robot.goTo(new Vec2(xEntry+distanceAbeille/2,yEntry+distanceAbeille/2));
             //Déjà fait en hook
             //actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE,true);
             //actualState.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
