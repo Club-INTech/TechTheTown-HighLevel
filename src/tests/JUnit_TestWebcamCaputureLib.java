@@ -9,12 +9,16 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamDriver;
 import com.github.sarxos.webcam.WebcamPanel;
 import org.junit.Test;
-import patternRecognition.shootPicture.TestWebcamCapture.V4l4jDriver;
+import patternRecognition.shootPicture.TestWebcamCapture.FFmpegCliDriver;
 
 import javax.swing.*;
 
 
 public class JUnit_TestWebcamCaputureLib  extends JUnit_Test {
+
+    static{
+        Webcam.setDriver(new FFmpegCliDriver());
+    }
 
     @Test
     public void test() throws IOException {
@@ -23,7 +27,6 @@ public class JUnit_TestWebcamCaputureLib  extends JUnit_Test {
 
     @Test
     public void testPanel(){
-        Webcam.setDriver(new V4l4jDriver());
         Webcam w = Webcam.getDefault();
         w.setCustomViewSizes(new Dimension(1280,720));
         w.setViewSize(new Dimension(1280,720)); // set camera resolution
