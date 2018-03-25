@@ -42,7 +42,7 @@ public class DeposeCubes extends AbstractScript {
         Vec2 directionToGo=null;
         double prodScal=0;
         try {
-            directionToGo = (this.entryPosition(version, stateToConsider.robot.getPosition()).getCenter()).minusNewVector(stateToConsider.robot.getPosition());
+            directionToGo = (this.entryPosition(version, stateToConsider.robot.getPosition()).getCenter()).plusNewVector(new Vec2(0,-50)).minusNewVector(stateToConsider.robot.getPosition());
             prodScal=directionToGo.dot(new Vec2(100.0,stateToConsider.robot.getOrientation()));
         } catch (BadVersionException e) {
             e.printStackTrace();
