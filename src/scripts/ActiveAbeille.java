@@ -21,9 +21,11 @@ public class ActiveAbeille extends AbstractScript {
 
     /** Eléments appelés par la config */
     private int radius ; //rayon du robot
-    int distanceAbeille;
-    int xEntry;
-    int yEntry;
+    private int distanceAbeille;
+    private int xEntry;
+    private int yEntry;
+    private int xExit;
+    private int yExit;
 
 
     public ActiveAbeille(Config config, Log log, HookFactory hookFactory){
@@ -31,6 +33,8 @@ public class ActiveAbeille extends AbstractScript {
         updateConfig();
         xEntry=1300;
         yEntry=1765;
+        xExit=1500-radius-securityDistance;
+        yExit=2000-radius-securityDistance;
     }
     @Override
     public void updateConfig() {
@@ -43,36 +47,36 @@ public class ActiveAbeille extends AbstractScript {
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
 
         if(actualState.robot.getOrientation()>0 &&actualState.robot.getOrientation()<Math.PI ){
-            //On se tourne vers l'abeille
-            if (Math.abs(actualState.robot.getOrientation()-Math.PI/4)>Math.PI/6) {
-                actualState.robot.turn(Math.PI / 4);
-            }
+            //On s'avance vers l'abeille
             actualState.robot.goTo(new Vec2(xEntry,yEntry));
-            //ON s'avance vers l'abeille
             //On active le bras
             //Déjà fait en hook
             //actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,false);
             //On tourne de 90° pour lancer l'abeille
-            actualState.robot.turn(Math.PI/2,true);
+            Vec2 position = actualState.robot.getPosition();
+            Vec2 aim=new Vec2(xExit,yExit);
+            Vec2 move = aim.minusNewVector(position);
+            double angle = move.getA();
+            actualState.robot.turn(angle,true);
             //On relève le bras
             actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
         }
         else{
             //On refait la même chose avec le bras arrière
-            if (Math.abs(actualState.robot.getOrientation()-(-3*Math.PI/4))>Math.PI/6) {
-                actualState.robot.turn(-3 * Math.PI / 4);
-            }
             actualState.robot.goTo(new Vec2(xEntry,yEntry));
             //Déjà fait en hook
             //actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE,true);
-            //actualState.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
-            actualState.robot.turn(-Math.PI/2,true);
-            //actualState.robot.setLocomotionSpeed(Speed.FAST_ALL);
+            //TODO : à tester
+            Vec2 position = actualState.robot.getPosition();
+            Vec2 aim=new Vec2(xExit,yExit);
+            Vec2 move = aim.minusNewVector(position);
+            move.dotFloat(-1);
+            double angle = move.getA();
+            actualState.robot.turn(angle,true);
             actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
         }
 
-
-        Vec2 aim =new Vec2(1500-radius-securityDistance,2000-radius-securityDistance);
+        Vec2 aim = new Vec2(xExit,yExit);
         actualState.robot.goTo(aim);
     }
 

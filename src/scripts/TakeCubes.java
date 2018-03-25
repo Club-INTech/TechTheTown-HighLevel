@@ -184,6 +184,8 @@ public class TakeCubes extends AbstractScript {
                     //Le robot execute les actions pour prendre le cube
                     takeThisCube(stateToConsider, bras);
                 }
+
+
                 if (bras.equals(BrasUtilise.AVANT)){
                     stateToConsider.setTourAvantRemplie(true);
                     scorefinalCubes=scorefinalCubes+calculscore(nbCubesAV,true);
@@ -194,7 +196,6 @@ public class TakeCubes extends AbstractScript {
                     scorefinalCubes=scorefinalCubes+calculscore(nbCubesAR,true);
                     nbCubesAR=0;
                 }
-
 
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, false);
                 Circle aimArcCircle;
