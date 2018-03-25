@@ -90,7 +90,7 @@ public class Main {
             waitMatchBegin();
 //			         TODO : lancer l'IA
 
-            scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, realState);
+            scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(1, realState);
 
         } catch (Exception e) {
             e.printStackTrace();

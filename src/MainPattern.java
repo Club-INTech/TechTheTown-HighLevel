@@ -22,7 +22,7 @@ import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+//import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
