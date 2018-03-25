@@ -5,12 +5,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ShootBufferedStillWebcam {
 
     public static BufferedImage takeBufferedPicture(){
-        System.out.println("ShootBufferedStillWebcam > Début de la prise de photo");
+        java.util.GregorianCalendar calendar = new GregorianCalendar();
+        String heure = calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
+        System.out.println(heure+" ShootBufferedStillWebcam > Début de la prise de photo");
         BufferedImage picture = null;
         shootPicture();
         try {
