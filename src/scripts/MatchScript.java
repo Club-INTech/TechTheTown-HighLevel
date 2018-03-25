@@ -1,8 +1,6 @@
 package scripts;
 
-import enums.ActuatorOrder;
 import enums.BrasUtilise;
-import enums.Speed;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -10,13 +8,10 @@ import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import hook.HookNames;
-import org.junit.Before;
-import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
-import tests.container.A;
 import utils.Log;
 
 public class MatchScript extends AbstractScript {

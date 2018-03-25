@@ -4,8 +4,16 @@ import cv2
 
 cap = cv2.VideoCapture(0)
 
-cap.set(3,1280)
-cap.set(4,720)
+#Seront adaptes si la camera a une resolution trop faible
+WIDTH=1280
+HEIGHT=720
+
+
+cap.set(3,WIDTH)
+cap.set(4,HEIGHT)
+
+WIDTH=round(cap.get(3))
+HEIGHT=round(cap.get(4))
 
 i=0
 colorValue1=255
@@ -38,7 +46,12 @@ while(True):
         colorValue2=colorValue1
         colorValue1=tmp
         i=0
+    cv2.circle(img, (100,140), 3, (colorValue1,colorValue2,colorValue3),1)
     cv2.circle(img, (120,120), 3, (colorValue1,colorValue2,colorValue3),1)
+    cv2.circle(img, (140,100), 3, (colorValue1,colorValue2,colorValue3),1)
+    cv2.circle(img, (WIDTH-100,140), 3, (colorValue1,colorValue2,colorValue3),1)
+    cv2.circle(img, (WIDTH-120,120), 3, (colorValue1,colorValue2,colorValue3),1)
+    cv2.circle(img, (WIDTH-140,100), 3, (colorValue1,colorValue2,colorValue3),1)
 
     # Display the resulting frame
     cv2.imshow('frame',img)

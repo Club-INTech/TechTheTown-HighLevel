@@ -18,6 +18,7 @@
  */
 
 import container.Container;
+import graphics.AffichageDebug;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
@@ -27,6 +28,7 @@ import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
+import simulator.ThreadSimulator;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
@@ -46,7 +48,6 @@ public class Main {
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
 
-
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
 // PS : Les vérifications et validations c'est pas pour les chiens.
@@ -56,14 +57,14 @@ public class Main {
         try {
             container = new Container();
             config = container.getConfig();
-            //AffichageDebug aff = container.getService(AffichageDebug.class);
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion = container.getService(Locomotion.class);
-
+            if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
+                ThreadInterface anInterface = container.getService(ThreadInterface.class);
+            }
             Thread.currentThread().setPriority(6);
-
             //container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
             //container.getService(ThreadInterface.class);

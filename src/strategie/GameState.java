@@ -21,7 +21,6 @@ package strategie;
 
 import container.Service;
 import enums.BrasUtilise;
-import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.Robot;
 import table.Table;
