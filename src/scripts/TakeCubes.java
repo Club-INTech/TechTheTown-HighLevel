@@ -36,6 +36,8 @@ public class TakeCubes extends AbstractScript {
     public void execute(int indiceTas, GameState stateToConsider)
             throws InterruptedException, ExecuteException, UnableToMoveException {
 
+        log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
+
         BrasUtilise bras;
         Cubes additionalCube;
         String direction;
@@ -226,6 +228,8 @@ public class TakeCubes extends AbstractScript {
         if(bras.equals(BrasUtilise.ARRIERE)){
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,false);
         }
+
+        log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
     }
 
 

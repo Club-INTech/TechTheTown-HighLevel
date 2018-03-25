@@ -39,6 +39,7 @@ public class DeposeCubes extends AbstractScript {
     @Override
     public void execute(int version, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
         //On se tourne vers la zone de construction
+        log.debug("////////// Execution DeposeCubes version "+version+" //////////");
         Vec2 directionToGo=null;
         double prodScal=0;
         try {
@@ -49,6 +50,7 @@ public class DeposeCubes extends AbstractScript {
             log.debug("BadVersionException: version "+version+" specified");
         }
 
+        boolean aDejaDeposeUneTour=false;
         if (prodScal>0){
             if (stateToConsider.isTourAvantRemplie()) {
                 stateToConsider.robot.turn(-Math.PI / 2);
@@ -64,6 +66,7 @@ public class DeposeCubes extends AbstractScript {
 
                 //On ferme la porte
                 stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                aDejaDeposeUneTour=true;
             }
             if (stateToConsider.isTourArriereRemplie()) {
                 stateToConsider.robot.turn(Math.PI / 2);
@@ -71,7 +74,12 @@ public class DeposeCubes extends AbstractScript {
                 //On avance de la dimension de la porte + de la distance poussée
                 stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
                 stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                stateToConsider.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte));
+                if (aDejaDeposeUneTour) {
+                    stateToConsider.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte));
+                }
+                else{
+                    stateToConsider.robot.moveLengthwise(-distancePenetrationZone);
+                }
                 stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
                 stateToConsider.robot.moveLengthwise(dimensionporte + distancePenetrationZone);
                 stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
@@ -90,6 +98,7 @@ public class DeposeCubes extends AbstractScript {
                 stateToConsider.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte);
                 //On ferme la porte
                 stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                aDejaDeposeUneTour=true;
             }
             if (stateToConsider.isTourAvantRemplie()) {
                 stateToConsider.robot.turn(-Math.PI / 2);
@@ -97,7 +106,12 @@ public class DeposeCubes extends AbstractScript {
                 //On avance de la dimension de la porte + de la distance poussée
                 stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
                 stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                stateToConsider.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte);
+                if (aDejaDeposeUneTour) {
+                    stateToConsider.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte);
+                }
+                else{
+                    stateToConsider.robot.moveLengthwise(distancePenetrationZone);
+                }
                 stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
                 stateToConsider.robot.moveLengthwise(-(dimensionporte + distancePenetrationZone));
                 stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
@@ -108,6 +122,8 @@ public class DeposeCubes extends AbstractScript {
         //les deux premières sont déposées
         stateToConsider.setTourAvantRemplie(false);
         stateToConsider.setTourArriereRemplie(false);
+        log.debug("////////// End DeposeCubes version "+version+" //////////");
+
     }
 
     @Override

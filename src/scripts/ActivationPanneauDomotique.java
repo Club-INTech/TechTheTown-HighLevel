@@ -37,12 +37,14 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
+        log.debug("////////// Execution ActivePanneauDomotique version "+versionToExecute+" //////////");
         actualState.robot.turn(-Math.PI/2);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.moveLengthwise(distanceInterrupteur);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.goTo(new Vec2(xEntry,yEntry));
         actualState.robot.setLocomotionSpeed(Speed.FAST_ALL);
+        log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");
     }
 
     @Override

@@ -45,6 +45,7 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
+        log.debug("////////// Execution ActiveAbeille version "+versionToExecute+" //////////");
         //On vérifie quel bras de l'abeille on va devoir utiliser, à l'aide d'un produit scalaire
         Vec2 entry=new Vec2(this.xEntry,this.yEntry);
         Vec2 directionToGo = (entry.minusNewVector(actualState.robot.getPosition()));
@@ -84,6 +85,8 @@ public class ActiveAbeille extends AbstractScript {
         //On retourne à une position atteignable par le pathfinding
         Vec2 aim = new Vec2(xExit,yExit);
         actualState.robot.goTo(aim);
+        log.debug("////////// End ActiveAbeille version "+versionToExecute+" //////////");
+
     }
 
     @Override

@@ -22,7 +22,7 @@ public class MatchScript extends AbstractScript {
 
     @Override
     public void execute(int versionToexecute,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
-
+        log.debug("////////// Execution MatchScript version "+versionToexecute+" //////////");
         if(versionToexecute==0){
             hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
 
@@ -106,7 +106,8 @@ public class MatchScript extends AbstractScript {
             DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
             dpCubes1.goToThenExec(1, gameState);
 
-            log.debug("Fin MatchScript");
+
+            log.debug("////////// End MatchScript version "+versionToexecute+" //////////");
         }
     }
 
