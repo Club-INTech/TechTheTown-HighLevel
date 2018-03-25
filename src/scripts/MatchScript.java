@@ -30,16 +30,20 @@ public class MatchScript extends AbstractScript {
 
         hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
 
+        //On active le panneau domotique
         ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
         actPD.goToThenExec(0,gameState);
 
+        //On palie la reconnaissance de couleurs qui est actuellement en travaux
         gameState.setRecognitionDone(true);
         gameState.setIndicePattern(0);
 
+        //On prend le tas de cubes 2
         gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
         TakeCubes tk2=new TakeCubes(config,log,hookFactory);
         tk2.goToThenExec(2,gameState);
 
+        //On active l'abeille
         ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
         Vec2 directionToGo=(activeAbeille.entryPosition(0, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
         double prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
@@ -61,37 +65,23 @@ public class MatchScript extends AbstractScript {
             hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
         }
 
-
-
+        //On prend le tas de cubes 1
         gameState.setTakeCubesBras(BrasUtilise.AVANT);
         TakeCubes tk1=new TakeCubes(config,log,hookFactory);
         tk1.goToThenExec(1,gameState);
 
-
+        //On dépose les cubes à la première position
         DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
-        directionToGo=(dpCubes0.entryPosition(0, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
-        prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
-        if (prodScal>0) {
-            dpCubes0.goToThenExec(0, gameState); //on commence par l'arrière
-        }
-        else{
-            dpCubes0.goToThenExec(1, gameState); //on commence par l'arrière
-        }
+        dpCubes0.goToThenExec(0, gameState);
 
+        //On prend le tas de cubes 0
         gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
         TakeCubes tk0=new TakeCubes(config,log,hookFactory);
         tk0.goToThenExec(0,gameState);
 
-
+        //On dépose les cubes à la deuxième position
         DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
-        directionToGo=(dpCubes1.entryPosition(2, gameState.robot.getPosition()).getCenter()).minusNewVector(gameState.robot.getPosition());
-        prodScal=directionToGo.dot(new Vec2(100.0,gameState.robot.getOrientation()));
-        if (prodScal>0) {
-            dpCubes1.goToThenExec(2, gameState); //on commence par l'arrière
-        }
-        else{
-            dpCubes1.goToThenExec(3, gameState); //on commence par l'arrière
-        }
+        dpCubes1.goToThenExec(1, gameState);
 
         log.debug("Fin MatchScript");
     }
