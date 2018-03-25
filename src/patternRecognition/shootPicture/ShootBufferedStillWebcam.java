@@ -23,7 +23,8 @@ public class ShootBufferedStillWebcam {
             e.printStackTrace();
             System.out.println("ShootBufferedStillWebcam > Erreur readingSavedPicture");
         }
-        System.out.println("ShootBufferedStillWebcam > Fin de la prise de photo");
+        heure = calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
+        System.out.println(heure+" ShootBufferedStillWebcam > Fin de la prise de photo");
         return picture;
     }
 
