@@ -31,6 +31,10 @@ public class IA implements Service {
         this.scriptManager = scriptManager;
     }
 
+    /*
+    TODO: gérer l'exception UnexpectedObstacleOnPathException() (il s'agit de l'exception
+    qui est thrown quand la basicDetection est activée
+     */
     public void create()  {
         root = new Pattern(0,null,scriptManager,gameState);
         Node abeille = new Abeille(0,null,scriptManager,gameState);
