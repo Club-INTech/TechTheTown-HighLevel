@@ -50,14 +50,23 @@ public class Node {
         int bestScore = 0;
         int i = 0;
         Node currentNode;
+        if (gameState.isTourAvantRemplie()&& gameState.isTourArriereRemplie()){
+            //dépose cube
+        }
         for (int j = 0; j < nextNodes.size(); j++) {
             currentNode = nextNodes.get(j);
-            if (currentNode.getScore() > bestScore) {
+            if (currentNode.getScore() > bestScore && isDone()) {
                 bestScore = currentNode.getScore();
                 i = j;
             }
         }
-        return nextNodes.get(i);
+        if (i!=0){
+            return nextNodes.get(i);
+        }
+        else{
+            return nextNodes.get(0).selectNode();
+        }
+
     }
 
     public boolean isDone() {
