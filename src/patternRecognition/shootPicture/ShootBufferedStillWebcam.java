@@ -1,17 +1,11 @@
 package patternRecognition.shootPicture;
 
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamImageTransformer;
-import com.github.sarxos.webcam.WebcamResolution;
-
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
-import java.awt.image.SampleModel;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShootBufferedStillWebcam {
 
@@ -28,64 +22,26 @@ public class ShootBufferedStillWebcam {
     }
 
     private static void shootPicture(){
-        Webcam webcam = Webcam.getDefault();
-        webcam.setCustomViewSizes( WebcamResolution.HD.getSize());
-        webcam.setViewSize(new Dimension(1280,720));
-        webcam.setImageTransformer(new WebcamImageTransformer(){
-            @Override
-            public BufferedImage transform(BufferedImage input) {
-                int width = input.getWidth();
-                int height = input.getHeight();
-                int[] inputPixelArray = new int[(width)*(height)*3];
-                int[] outputPixelArray = new int[(width)*(height)*3];
-                SampleModel inputSampleModel = input.getData().getSampleModel();
-                input.getData().getPixels(0,0,width,height,inputPixelArray);
+        List<String> command = new ArrayList<>();
+        //Camera FishEye
+        command.add("python");
+        command.add("./src/patternRecognition/shootPicture/CaptureImage.py");
 
-                for (int i=2; i<inputPixelArray.length; i+=3) {
-                    float[] hsv = new float[3];
-                    Color.RGBtoHSB(inputPixelArray[i-2], inputPixelArray[i-1], inputPixelArray[i], hsv);
-
-                    hsv[1] *= 1;
-                    if (hsv[1] > 1) {
-                        hsv[1] = 1;
-                    } else if (hsv[1] < 0) {
-                        hsv[1] = 0;
-                    }
-
-                    hsv[2] *= 1;
-                    if (hsv[2] > 1) {
-                        hsv[2] = 1;
-                    } else if (hsv[2] < 0) {
-                        hsv[2] = 0;
-                    }
-
-                    int rgb = Color.HSBtoRGB(hsv[0],hsv[1],hsv[2]);
-                    Color c = new Color(rgb);
-
-                    int r = c.getRed();
-                    int g = c.getGreen();
-                    int b = c.getBlue();
-
-                    outputPixelArray[i-2]=r;
-                    outputPixelArray[i-1]=g;
-                    outputPixelArray[i]=b;
-                }
-
-                BufferedImage output = new BufferedImage(width,height,1);
-                WritableRaster newRaster= Raster.createWritableRaster(inputSampleModel,new Point(0,0));
-                newRaster.setPixels(0,0,width,height,outputPixelArray);
-                output.setData(newRaster);
-                return output;
-            }
-        });
-        webcam.open();
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.inheritIO();
+        Process p = null;
         try {
-            ImageIO.write(webcam.getImage(), "JPEG", new File("/tmp/ImageRaspi.jpeg"));
+            p = pb.start();
         } catch (IOException e) {
-            System.out.println("Cannot save picture to /tmp");
             e.printStackTrace();
+            System.out.println("ShootBufferedStillWebcam > Erreur processBuilder");
         }
-        webcam.close();
+        try {
+            p.waitFor();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.out.println("ShootBufferedStillWebcam > Erreur waitfor");
+        }
 
         return;
 
