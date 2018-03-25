@@ -245,7 +245,6 @@ public class TakeCubes extends AbstractScript {
                 log.debug("Nombre de cube avant incrémenté");
                 stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
             }
-
         }
         else if (bras==BrasUtilise.ARRIERE) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);

@@ -313,10 +313,9 @@ public class Locomotion implements Service {
      */
 
     public void moveToPoint(Vec2 pointVise, boolean expectedWallImpact, boolean mustDetect) throws UnableToMoveException {
-        synchronized (thEvent.isMoving) {
-            thEvent.isMoving = true;
-            log.debug("isMoving variable has been defined to True");
-        }
+        thEvent.setIsMoving(true);
+        log.debug("isMoving variable has been defined to True");
+
         Vec2 move = pointVise.minusNewVector(highLevelPosition);
         int moveR = (int) move.getR();
         double moveA = move.getA();
@@ -363,10 +362,9 @@ public class Locomotion implements Service {
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
     public void turn(double angle, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException {
-        synchronized (thEvent.isMoving) {
-            thEvent.isMoving = true;
-            log.debug("isMoving variable has been defined to True");
-        }
+        thEvent.setIsMoving(true);
+        log.debug("isMoving variable has been defined to True");
+
         log.debug("Tourner vers " + Double.toString(angle));
 
         actualRetriesIfBlocked = 0;
@@ -395,10 +393,9 @@ public class Locomotion implements Service {
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
     public void moveLengthwise(int distance, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException {
-        synchronized (thEvent.isMoving) {
-            thEvent.isMoving = true;
-            log.debug("isMoving variable has been defined to True");
-        }
+        thEvent.setIsMoving(true);
+        log.debug("isMoving variable has been defined to True");
+
         log.debug("Avancer de " + Integer.toString(distance));
 
         actualRetriesIfBlocked = 0;
@@ -569,7 +566,7 @@ public class Locomotion implements Service {
                 e.printStackTrace();
             }
         }
-        while (thEvent.isMoving.booleanValue());
+        while (thEvent.getIsMoving());
     }
 
     /**
@@ -747,10 +744,8 @@ public class Locomotion implements Service {
     public void immobilise() {
         log.warning("Arrêt du robot en " + lowLevelPosition);
         ethWrapper.immobilise();
-        synchronized (thEvent.isMoving) {
-            thEvent.isMoving = false;
-            log.debug("isMoving variable has been defined to FALSE in Locomotion");
-        }
+        thEvent.setIsMoving(false);
+        log.debug("isMoving variable has been defined to FALSE in Locomotion");
     }
 
 
