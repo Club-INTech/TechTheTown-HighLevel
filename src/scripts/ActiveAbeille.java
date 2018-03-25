@@ -52,9 +52,7 @@ public class ActiveAbeille extends AbstractScript {
             //Déjà fait en hook
             //actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,false);
             //On tourne de 90° pour lancer l'abeille
-            Vec2 position = actualState.robot.getPosition();
-            Vec2 aim=new Vec2(xExit,yExit);
-            actualState.robot.turnTo(aim,true);
+            actualState.robot.turn(Math.PI/2,true);
             //On relève le bras
             actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
         }
@@ -64,12 +62,7 @@ public class ActiveAbeille extends AbstractScript {
             //Déjà fait en hook
             //actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE,true);
             //TODO : à tester
-            Vec2 position = actualState.robot.getPosition();
-            Vec2 aim=new Vec2(xExit,yExit);
-            Vec2 move=aim.minusNewVector(position);
-            move.dotFloat(-1);
-            aim=position.plusNewVector(move);
-            actualState.robot.turnTo(aim,true);
+            actualState.robot.turn(-Math.PI/2,true);
             actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
         }
 
