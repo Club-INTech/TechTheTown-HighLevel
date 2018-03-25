@@ -59,7 +59,7 @@ public class JUnit_BorneArcade extends JUnit_Test
 
 		real_state.robot.setPosition(Table.entryPosition);
 		real_state.robot.setOrientation(Math.PI);
-		real_state.robot.setLocomotionSpeed(Speed.SLOW_T_MEDIUM_R);
+		real_state.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
 
 		real_state.robot.updateConfig();
 		real_state.robot.useActuator(ActuatorOrder.MONTLHERY, false);

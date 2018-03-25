@@ -22,7 +22,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     /** Eléments appelés par la config */
 
-    int distanceInterrupteur;
+    private int distanceInterrupteur;
 
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -31,8 +31,8 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
-        Vec2 positionentree=new Vec2(this.xEntry,this.yEntry);
-        return new Circle(positionentree,0);
+        Vec2 positionEntree=new Vec2(this.xEntry,this.yEntry);
+        return new Circle(positionEntree,0);
     }
 
     @Override
@@ -46,15 +46,12 @@ public class ActivationPanneauDomotique extends AbstractScript{
     }
 
     @Override
-    public void finalize(GameState state, Exception e) throws UnableToMoveException {
-
-    }
+    public void finalize(GameState state, Exception e) throws UnableToMoveException {}
 
     @Override
     public Integer[] getVersion(GameState stateToConsider) {
         return new Integer[0];
     }
-
 
 
     @Override

@@ -4,7 +4,6 @@ import enums.*;
 import exceptions.*;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
-import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
@@ -16,24 +15,22 @@ import utils.Log;
 public class TakeCubes extends AbstractScript {
     private int largeurCubes;
     private int longueurBras;
-    private String direction;
     private Vec2 entryPositionPoint;
     private int nbCubesAV;
     private int nbCubesAR;
-    private int scorefinalCubes=0;
+    private int scorefinalCubes;
 
     public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
         this.updateConfig();
+        this.nbCubesAV=0;
+        this.nbCubesAR=0;
+        this.scorefinalCubes=0;
     }
 
     /** Execution du script de récupération des cubes
-     * @param stateToConsider
-     * @throws InterruptedException
-     * @throws ExecuteException
-     * @throws UnableToMoveException
-     * @throws PatternNotYetCalculatedException
-     * @throws PatternNotRecognizedException
+     * @param indiceTas le numéro du tas à récupérer
+     * @param stateToConsider le GameState permettant de connaître l'état de la partie
      */
     @Override
     public void execute(int indiceTas, GameState stateToConsider)
@@ -41,6 +38,7 @@ public class TakeCubes extends AbstractScript {
 
         BrasUtilise bras;
         Cubes additionalCube;
+        String direction;
 
         while(!stateToConsider.isRecognitionDone()){
             Thread.sleep(10);
@@ -53,22 +51,6 @@ public class TakeCubes extends AbstractScript {
         TasCubes tas = TasCubes.getTasFromID(indiceTas);
 
         bras=stateToConsider.getTakeCubesBras();
-        /*
-        //On regarde si la tour avant est remplie
-        if (!stateToConsider.isTourAvantRemplie()){
-            stateToConsider.setTourAvantRemplie(true);
-            bras=BrasUtilise.AVANT;
-        }
-        //On regarde si la tour arrière est remplie
-        else if (!stateToConsider.isTourArriereRemplie()){
-            stateToConsider.setTourArriereRemplie(true);
-            bras=BrasUtilise.ARRIERE;
-        }
-        //Si les deux tours sont remplies, on renvoie une exception et n'execute pas le script
-        else{
-            throw new ExecuteException(new BothTowersFullException("Les deux tours sont remplies"));
-        }
-        */
 
         //On regarde quel bras on utilise
         if (bras==BrasUtilise.AVANT){
@@ -92,6 +74,7 @@ public class TakeCubes extends AbstractScript {
             }
         }
 
+        //Grâce à la config, on passe au pathfinding quel tas on a pris
         if(indiceTas==0){
             config.override(ConfigInfoRobot.TAS_BASE_PRIS,true);
             stateToConsider.setTas_base_pris(true);
@@ -229,12 +212,12 @@ public class TakeCubes extends AbstractScript {
                 }
             }
             else{
-                log.debug("Le pattern n'a pas été reconnu");
+                log.critical("Le pattern n'a pas été reconnu");
                 throw new ExecuteException(new PatternNotRecognizedException("Le pattern n'a pas été reconnu"));
             }
         }
         else{
-            log.debug("Exécution script de récupération des cubes avant que le pattern ait été calculé");
+            log.critical("Exécution script de récupération des cubes avant que le pattern ait été calculé");
             throw new ExecuteException(new PatternNotYetCalculatedException("Le pattern n'a pas encore été calculé"));
         }
         if(bras.equals(BrasUtilise.AVANT)){
@@ -314,7 +297,7 @@ public class TakeCubes extends AbstractScript {
             aimArcCircle = new Circle(coordsTas, this.longueurBras);
         }
         Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
-        log.debug("point d'entrée takecubes"+version+aim);
+        log.debug("Point d'entrée TakeCubes (version:"+version+") : "+aim);
         this.entryPositionPoint=aim;
         return new Circle(aim);
     }
