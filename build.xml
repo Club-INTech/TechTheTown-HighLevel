@@ -57,7 +57,6 @@
   
   <path id="library.lib.classpath">
     <pathelement location="${basedir}/lib/Jama-1.0.2.jar"/>
-    <pathelement location="${basedir}/lib/bridj-0.7.1-SNAPSHOT.jar"/>
     <pathelement location="${basedir}/lib/config-1.3.jar"/>
     <pathelement location="${basedir}/lib/hamcrest-core-1.3.jar"/>
     <pathelement location="${basedir}/lib/ini4j-0.5.1.jar"/>
@@ -65,10 +64,6 @@
     <pathelement location="${basedir}/lib/jfreechart-1.0.13.jar"/>
     <pathelement location="${basedir}/lib/junit-4.12.jar"/>
     <pathelement location="${basedir}/lib/opencv-340.jar"/>
-    <pathelement location="${basedir}/lib/slf4j-api-1.7.2.jar"/>
-    <pathelement location="${basedir}/lib/slf4j-simple-1.6.1.jar"/>
-    <pathelement location="${basedir}/lib/v4l4j-0.9.1-r507.jar"/>
-    <pathelement location="${basedir}/lib/webcam-capture-0.3.12.jar"/>
   </path>
   
   <!-- Modules -->
