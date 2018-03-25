@@ -33,6 +33,17 @@ public class IA implements Service {
 
     public void create()  {
         root = new Pattern(0,null,scriptManager,gameState);
+        Node abeille = new Abeille(0,null,scriptManager,gameState);
+        Node panneau = new Panneau(0,null,scriptManager,gameState);
+        Node takeCubes = new TakeCubes(0,null,scriptManager,gameState);
+        Node deposeCubes = new DeposeCubes(0,null,scriptManager,gameState);
+
+        ArrayList<Node> a1 = new ArrayList<>();
+        a1.add(panneau);
+        a1.add(abeille);
+        root.setNextNodes(a1);
+
+        ArrayList<Node> a2 = new ArrayList<>();
     }
 
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException {
