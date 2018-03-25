@@ -27,7 +27,6 @@ public class ActiveAbeille extends AbstractScript {
     private int xExit;
     private int yExit;
 
-
     public ActiveAbeille(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
         updateConfig();
