@@ -1,45 +1,43 @@
 package strategie.IA;
 
-import enums.ScriptNames;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import pathfinder.Noeud;
 import scripts.AbstractScript;
 import scripts.ScriptManager;
 import strategie.GameState;
 
 import java.util.ArrayList;
 
-public class Node {
+public abstract class Node {
 
+    ScriptManager scriptManager;
     AbstractScript script;
     int versionToExecute;
     int score;
     int timeLimit;
     int timeToGo;
-    int timeToExexecute;
+    int timeToExecute;
     boolean isDone;
     ArrayList<Node> nextNodes;
     GameState gameState;
 
-    public Node(AbstractScript script, int versionToExecute, int score, ArrayList<Node> nextNodes, GameState gameState) {
-        this.script = script;
+    public Node(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState) {
         this.versionToExecute = versionToExecute;
-        this.score = score;
         this.timeLimit = 0;
         this.timeToGo = 0;
-        this.timeToExexecute = 0;
+        this.timeToExecute = 0;
         this.isDone = false;
         this.nextNodes = nextNodes;
+        this.scriptManager = scriptManager;
         this.gameState = gameState;
     }
 
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException {
         if (e != null) {
-            //gestion des exeptions
+            exception(e);
         } else {
             script.goToThenExec(versionToExecute, gameState);
             setDone(true);
@@ -68,6 +66,9 @@ public class Node {
         }
 
     }
+    /** Gère les exceptions soulevées */
+
+    public abstract void exception(Exception e);
 
     public boolean isDone() {
         return isDone;

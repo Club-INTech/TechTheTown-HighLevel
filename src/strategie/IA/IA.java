@@ -27,18 +27,22 @@ public class IA implements Service {
     ScriptManager scriptManager;
 
     public IA(GameState gameState, ScriptManager scriptManager) {
-        root = new Node(null,0,0,null,gameState);
         this.gameState = gameState;
         this.scriptManager = scriptManager;
     }
 
     public void create()  {
-
+        root = new Pattern(0,null,scriptManager,gameState);
     }
 
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException {
+        if (root.isDone()){
+            root.execute(e);
+        }
+        else {
         Node node = root.selectNode();
         node.execute(e);
+        }
     }
 
 

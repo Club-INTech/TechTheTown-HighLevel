@@ -74,9 +74,8 @@ public class JUnit_IA extends JUnit_Test{
                 robotReal.getPosition();
                 robotReal.getOrientation();
                 ia.create();
-                ia.getRoot().display();
                 while (true){
-                    ia.execute(state, null);
+                    ia.execute(null);
                     Thread.sleep(500);
                 }
             } catch (Exception e) {
