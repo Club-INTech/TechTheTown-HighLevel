@@ -66,7 +66,9 @@ public class ActiveAbeille extends AbstractScript {
             //TODO : à tester
             Vec2 position = actualState.robot.getPosition();
             Vec2 aim=new Vec2(xExit,yExit);
-            aim.dotFloat(-1);
+            Vec2 move=aim.minusNewVector(position);
+            move.dotFloat(-1);
+            aim=position.plusNewVector(move);
             actualState.robot.turnTo(aim,true);
             actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
         }
@@ -83,7 +85,7 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public void finalize(GameState state, Exception e) throws UnableToMoveException {}
-    
+
 
     @Override
     public Integer[] getVersion(GameState stateToConsider) {

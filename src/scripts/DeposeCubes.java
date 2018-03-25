@@ -19,10 +19,9 @@ public class DeposeCubes extends AbstractScript {
     /**
      * Eléments appelés par la config
      */
-    int distancePenetrationZone; //on pénètre la zone de construction de cette distance
-    int dimensionporte;
-    int distancepush;
-    int radius;
+    private int distancePenetrationZone; //on pénètre la zone de construction de cette distance
+    private int dimensionporte;
+    private int radius;
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
@@ -62,9 +61,9 @@ public class DeposeCubes extends AbstractScript {
                 //On avance de la dimension de la porte + de la distance poussée
                 stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
                 stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                stateToConsider.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte + distancepush));
+                stateToConsider.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte));
                 stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
-                stateToConsider.robot.moveLengthwise(dimensionporte + distancepush + distancePenetrationZone);
+                stateToConsider.robot.moveLengthwise(dimensionporte + distancePenetrationZone);
                 stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
             }
         }
@@ -88,9 +87,9 @@ public class DeposeCubes extends AbstractScript {
                 //On avance de la dimension de la porte + de la distance poussée
                 stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
                 stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                stateToConsider.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte + distancepush);
+                stateToConsider.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte);
                 stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
-                stateToConsider.robot.moveLengthwise(-(dimensionporte + distancepush + distancePenetrationZone));
+                stateToConsider.robot.moveLengthwise(-(dimensionporte + distancePenetrationZone));
                 stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
             }
         }
@@ -146,7 +145,6 @@ public class DeposeCubes extends AbstractScript {
         super.updateConfig();
         distancePenetrationZone = config.getInt(ConfigInfoRobot.DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES);
         dimensionporte = config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
-        distancepush = config.getInt(ConfigInfoRobot.DISTANCE_PUSH_DEPOSE_CUBES);
         radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
     }
 }

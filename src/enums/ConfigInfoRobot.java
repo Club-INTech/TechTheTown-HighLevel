@@ -127,7 +127,6 @@ public enum ConfigInfoRobot implements ConfigInfo
     DISTANCE_INTERRUPTEUR(50),
     DISTANCE_ABEILLE(50),
     DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES(70),
-    DISTANCE_PUSH_DEPOSE_CUBES(130),
 
     ;
     private Object defaultValue;
