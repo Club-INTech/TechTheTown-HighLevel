@@ -648,7 +648,9 @@ public class PatternRecognition extends AbstractThread{
             }
         }*/
 
+        log.debug("Début de la prise de photo");
         BufferedImage buffImg= ShootBufferedStillWebcam.takeBufferedPicture();
+        log.debug("Fin de la prise de photo");
         this.movementLocked=false;
         int[][][] colorMatrix=createColorMatrixFromBufferedImage(buffImg);
         centerPointPattern=calculateCenterPattern(buffImg, this.zoneToPerformLocalisation);

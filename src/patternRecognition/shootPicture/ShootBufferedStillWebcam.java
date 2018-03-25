@@ -12,9 +12,6 @@ import java.util.List;
 public class ShootBufferedStillWebcam {
 
     public static BufferedImage takeBufferedPicture(){
-        java.util.GregorianCalendar calendar = new GregorianCalendar();
-        String startTime = calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
-        System.out.println(startTime+" ShootBufferedStillWebcam > Début de la prise de photo");
         BufferedImage picture = null;
         shootPicture();
         try {
@@ -23,8 +20,6 @@ public class ShootBufferedStillWebcam {
             e.printStackTrace();
             System.out.println("ShootBufferedStillWebcam > Erreur readingSavedPicture");
         }
-        String endTime = calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND)+","+calendar.get(Calendar.MILLISECOND);
-        System.out.println(endTime+" ShootBufferedStillWebcam > Fin de la prise de photo");
         return picture;
     }
 
