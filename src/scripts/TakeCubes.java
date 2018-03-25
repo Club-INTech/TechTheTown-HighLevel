@@ -188,7 +188,7 @@ public class TakeCubes extends AbstractScript {
 
                 if (bras.equals(BrasUtilise.AVANT)){
                     if (additionalCube.getColor()==Colors.NULL){
-                        stateToConsider.setCubeAvantPresent(true);
+                        stateToConsider.setCubeAvantPresent(false);
                     }
                     stateToConsider.setTourAvantRemplie(true);
                     scorefinalCubes=scorefinalCubes+calculscore(nbCubesAV,true);
@@ -196,7 +196,7 @@ public class TakeCubes extends AbstractScript {
                 }
                 else{
                     if (additionalCube.getColor()==Colors.NULL){
-                        stateToConsider.setCubeArrierePresent(true);
+                        stateToConsider.setCubeArrierePresent(false);
                     }
                     stateToConsider.setTourArriereRemplie(true);
                     scorefinalCubes=scorefinalCubes+calculscore(nbCubesAR,true);
