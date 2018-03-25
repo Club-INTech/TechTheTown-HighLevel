@@ -36,6 +36,7 @@ public class JUnit_TestWebcamCaputureLib  extends JUnit_Test {
             System.out.println("ShootBufferedStillWebcam > Erreur waitfor");
         }
 
+        System.out.println("Fin de la prise de photo");
         return;
     }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 public class ShootBufferedStillWebcam {
 
     public static BufferedImage takeBufferedPicture(){
+        System.out.println("ShootBufferedStillWebcam > Début de la prise de photo");
         BufferedImage picture = null;
         shootPicture();
         try {
@@ -18,6 +19,7 @@ public class ShootBufferedStillWebcam {
             e.printStackTrace();
             System.out.println("ShootBufferedStillWebcam > Erreur readingSavedPicture");
         }
+        System.out.println("ShootBufferedStillWebcam > Fin de la prise de photo");
         return picture;
     }
 
@@ -42,7 +44,6 @@ public class ShootBufferedStillWebcam {
             e.printStackTrace();
             System.out.println("ShootBufferedStillWebcam > Erreur waitfor");
         }
-
         return;
 
         /*
