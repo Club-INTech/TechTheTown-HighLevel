@@ -6,7 +6,7 @@ import java.util.List;
 import org.junit.Test;
 
 
-public class JUnit_TestWebcamCaputureLib  extends JUnit_Test {
+public class JUnit_TakePicturePython extends JUnit_Test {
 
     @Test
     public void test() throws IOException {
@@ -17,7 +17,7 @@ public class JUnit_TestWebcamCaputureLib  extends JUnit_Test {
     public void testVideo(){
         List<String> command = new ArrayList<>();
         //Camera FishEye
-        command.add("python");
+        command.add("python3");
         command.add("./src/patternRecognition/shootPicture/CaptureVideo.py");
 
         ProcessBuilder pb = new ProcessBuilder(command);
