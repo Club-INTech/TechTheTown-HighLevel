@@ -45,7 +45,7 @@ public class ActiveAbeille extends AbstractScript {
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
 
-        if(actualState.robot.getOrientation()>0 &&actualState.robot.getOrientation()<Math.PI ){
+        if(actualState.robot.getOrientation()>0 &&actualState.robot.getOrientation()<Math.PI){
             //On s'avance vers l'abeille
             actualState.robot.goTo(new Vec2(xEntry,yEntry));
             //On active le bras
@@ -54,9 +54,7 @@ public class ActiveAbeille extends AbstractScript {
             //On tourne de 90° pour lancer l'abeille
             Vec2 position = actualState.robot.getPosition();
             Vec2 aim=new Vec2(xExit,yExit);
-            Vec2 move = aim.minusNewVector(position);
-            double angle = move.getA();
-            actualState.robot.turn(angle,true);
+            actualState.robot.turnTo(aim,true);
             //On relève le bras
             actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
         }
@@ -68,10 +66,8 @@ public class ActiveAbeille extends AbstractScript {
             //TODO : à tester
             Vec2 position = actualState.robot.getPosition();
             Vec2 aim=new Vec2(xExit,yExit);
-            Vec2 move = aim.minusNewVector(position);
-            move.dotFloat(-1);
-            double angle = move.getA();
-            actualState.robot.turn(angle,true);
+            aim.dotFloat(-1);
+            actualState.robot.turnTo(aim,true);
             actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
         }
 
@@ -87,8 +83,7 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public void finalize(GameState state, Exception e) throws UnableToMoveException {}
-
-
+    
 
     @Override
     public Integer[] getVersion(GameState stateToConsider) {
