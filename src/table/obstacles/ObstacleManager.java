@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Traite tout ce qui concerne la gestion des obstacles sur la table.
@@ -629,6 +630,8 @@ public class ObstacleManager implements Service
 		else
 			throw new IllegalArgumentException();
 	}
+
+
 
 	/**
      * Rend le gestionnaire d'obstacle fourni en argument explicite égal a ce gestionnaire.

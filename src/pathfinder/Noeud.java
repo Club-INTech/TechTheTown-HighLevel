@@ -32,7 +32,6 @@ public class Noeud {
             if(this.position.equals(((Noeud) object).position) ){
                 return true;
             }
-        return false;
         }
         return false;
     }
@@ -46,21 +45,6 @@ public class Noeud {
 
 
 
-    public Vec2 getPosition() {  return position;   }
-
-    public double getHeuristique(){  return heuristique;}
-
-    public ArrayList<Noeud> getVoisins() { return voisins;  }
-
-    public double getCout() { return cout; }
-
-    public Noeud getPred() {   return pred;    }
-
-    public void setPosition(Vec2 position) { this.position = position;  }
-
-    public void setHeuristique(double heuristique) { this.heuristique = heuristique;  }
-
-    public void setVoisins(ArrayList<Noeud> voisins){ this.voisins = voisins; }
 
     /**
      * Cette méthode est appelée par createAretes de Graphe afin de set les voisins
@@ -88,14 +72,31 @@ public class Noeud {
         }
     }
 
-    public void setCout(double cout) {      this.cout = cout;    }
-
-    public void setPred(Noeud pred) {        this.pred = pred;   }
-
+    @Override
     public String toString(){
         String toReturn = "Node ("+this.position.getX()+","+this.position.getY()+")";
         return toReturn;
     }
+
+    public void setCout(double cout) {      this.cout = cout;    }
+
+    public void setPred(Noeud pred) {        this.pred = pred;   }
+
+
+    public Vec2 getPosition() {  return position;   }
+
+    public double getHeuristique(){  return heuristique;}
+
+    public ArrayList<Noeud> getVoisins() { return voisins;  }
+
+    public double getCout() { return cout; }
+
+    public Noeud getPred() {   return pred;    }
+
+    public void setPosition(Vec2 position) { this.position = position;  }
+
+    public void setHeuristique(double heuristique) { this.heuristique = heuristique;  }
+
 
 
 }

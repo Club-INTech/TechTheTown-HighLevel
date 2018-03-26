@@ -14,7 +14,7 @@ DIMENSION_PORTES                     = 110
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
-SIMULATION                           = false
+SIMULATION                           = true
 ATTENTE_JUMPER                       = false
 
 # PARAMETRES POUR LES CAPTEUR

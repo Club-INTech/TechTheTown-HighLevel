@@ -42,9 +42,9 @@ public class Graphe implements Service {
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
         this.table = table;
-        this.nodes = createNodes();
+        createNodes();
         long time1 = System.currentTimeMillis();
-        this.boneslist = createAretes();
+        createAretes();
         long time2 = System.currentTimeMillis() - time1;
         this.log = log;
         this.config = config;
@@ -56,25 +56,26 @@ public class Graphe implements Service {
      * esquiver, on rajoute trois autres noeuds afin de choisir les meilleurs chemins
      * pour les actions qu'on veut faire, à savoir l'interrupteur*/
 
-    public CopyOnWriteArrayList<Noeud> createNodes() {
+    public void createNodes() {
 
+        nodes = new CopyOnWriteArrayList<>();
         CopyOnWriteArrayList<Noeud> nodesToKeep = new CopyOnWriteArrayList<>();
-        ArrayList<Noeud> nodestoaddaroundobstacles=this.createNodesAroundCircularObstacles();
-        nodesToKeep.addAll(nodestoaddaroundobstacles);
+        this.createNodesAroundCircularObstacles();
+
 
         Vec2 positionmilieu=new Vec2(0,1000);
         Noeud nodemilieu=new Noeud(positionmilieu,0,0, new ArrayList<>());
-        nodesToKeep.add(nodemilieu);
+        nodes.add(nodemilieu);
 
         Vec2 positiondepart=new Vec2(1252, 455);
         Noeud nodepart=new Noeud(positiondepart,0,0, new ArrayList<>());
-        nodesToKeep.add(nodepart);
+        nodes.add(nodepart);
 
         Vec2 positioninterr=new Vec2(650,215);
         Noeud noeudinterr=new Noeud(positioninterr,0,0, new ArrayList<>());
-        nodesToKeep.add(noeudinterr);
+        nodes.add(noeudinterr);
 
-        return nodesToKeep;
+
     }
 
     /**
@@ -84,9 +85,9 @@ public class Graphe implements Service {
      */
 
 
-    public CopyOnWriteArrayList<Arete> createAretes() {
+    public void createAretes() {
         Arete arete;
-        CopyOnWriteArrayList<Arete> boneslist = new CopyOnWriteArrayList<>();
+        boneslist = new CopyOnWriteArrayList<>();
         int n = nodes.size();
         for (int i = 0; i < n; i++) {
             ArrayList<Arete> listaretes = new ArrayList<>();
@@ -115,7 +116,6 @@ public class Graphe implements Service {
             }
             boneslist.addAll(listaretes);
         }
-        return boneslist;
     }
 
     /** Méthode ajoutant un noeud au graphe. Cela consiste à remplir le champ de ses noeuds voisins.
@@ -148,30 +148,20 @@ public class Graphe implements Service {
     }
 
 
-    public CopyOnWriteArrayList<Noeud> getNodes() {
-        return nodes;
-    }
 
-    public CopyOnWriteArrayList<Arete> getBoneslist() {
-        return boneslist;
-    }
-
-    public boolean traceArete(Noeud noeud1, Noeud noeud2) {
-        Segment segment = new Segment(noeud1.getPosition(), noeud2.getPosition());
-        int n = listCircu.size();
-        for (int i = 0; i < n; i++) {
-            if (Geometry.intersects(segment, listCircu.get(i).getCircle())) {
-                return false;
-            }
-        }
-        return true;
-
-    }
+    /**
+     * Cette méthode supprime un noeud, un noeud a des voisins, ce noeud n'existe plus s'il est supprimé de la liste des voisins de ses voisins
+     * @param noeud
+     */
 
 
     public void removeNode(Noeud noeud){
         ArrayList<Noeud> voisins=noeud.getVoisins();
-        voisins.remove(noeud);
+        for(Noeud node : voisins){
+            if(node.getVoisins().contains(noeud)){
+                node.getVoisins().remove(noeud);
+            }
+        }
         nodes.remove(noeud);
     }
 
@@ -183,11 +173,10 @@ public class Graphe implements Service {
      * dans un obstacle
      * @return
      */
-    public ArrayList<Noeud> createNodesAroundCircularObstacles(){
+    public void createNodesAroundCircularObstacles(){
         int n=listCircu.size();
         int m=listRectangu.size();
         ArrayList<Vec2> pointstoreturn=new ArrayList<>();
-        ArrayList<Noeud> nodestoreturn=new ArrayList<>();
         int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
         /*
         on crée des noeuds autour des obstacles circulaires, puis on ne garde que les noeuds qui
@@ -216,9 +205,9 @@ public class Graphe implements Service {
         int f=pointstoreturn.size();
         for(int i=0;i<f;i++){
             Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,new ArrayList<>());
-            nodestoreturn.add(nodetoadd);
+            nodes.add(nodetoadd);
         }
-        return nodestoreturn;
+
 
     }
 
@@ -228,8 +217,8 @@ public class Graphe implements Service {
     public void removeObstacle(){
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
-        this.nodes = createNodes();
-        this.boneslist = createAretes();
+        createNodes();
+        createAretes();
     }
     /**
      * Méthode réinitialisant le graphe, à appeler après chaque utilisation de findmyway
@@ -245,6 +234,13 @@ public class Graphe implements Service {
         }
         this.removeNode(noeudDepart);
         this.removeNode(noeudArrive);
+    }
+    public CopyOnWriteArrayList<Noeud> getNodes() {
+        return nodes;
+    }
+
+    public CopyOnWriteArrayList<Arete> getBoneslist() {
+        return boneslist;
     }
 
 }
