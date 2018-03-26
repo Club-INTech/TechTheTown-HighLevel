@@ -6,8 +6,8 @@ import cv2
 
 ##### PARAMETRES A CHANGER #####
 #Seront adaptes si la camera a une resolution trop faible
-WIDTH=1280
-HEIGHT=720
+WIDTH=640
+HEIGHT=480
 
 #Modifiers pour le traitement de l'image
 #METTRE DES FLOTTANTS

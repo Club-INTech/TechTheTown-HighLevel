@@ -4,8 +4,8 @@ import cv2
 
 cap = cv2.VideoCapture(0)
 
-cap.set(3,1280) #on set la largeur a 1280
-cap.set(4,720)  #on set la hauteur a 720
+cap.set(3,640) #on set la largeur a 640
+cap.set(4,480)  #on set la hauteur a 480
 
 ret, frame = cap.read()
 hsv = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)

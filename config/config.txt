@@ -19,7 +19,7 @@ COUT_FIXE                            = 42
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
-SIMULATION                           = true
+SIMULATION                           = false
 ATTENTE_JUMPER                       = false
 
 # VERSION DE MATCHSCRIPT TO EXECUTE
