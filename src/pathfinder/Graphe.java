@@ -90,7 +90,6 @@ public class Graphe implements Service {
         int n = nodes.size();
         for (int i = 0; i < n; i++) {
             ArrayList<Arete> listaretes = new ArrayList<>();
-            ArrayList<Noeud> voisins = new ArrayList<>();
             for (int j = i+1; j < n; j++) {
                 Segment segment = new Segment(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                 boolean intersectsWithCircularObstacles = false;
