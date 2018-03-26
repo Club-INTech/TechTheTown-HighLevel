@@ -90,8 +90,8 @@ public class PatternRecognition extends AbstractThread{
 
         //Paramètres permettant à la localisation automatique d'avoir les coordonnées des patterns
         //avec le centre du rectangle détecté
-        this.lengthSideOfSquareDetection=10; //in pixels
-        this.distanceBetweenTwoColors=15; //in pixels
+        this.lengthSideOfSquareDetection=5; //in pixels
+        this.distanceBetweenTwoColors=8; //in pixels
 
         //Paramètres de débug
         this.alreadyPrintedColorMatchingProba=false;
