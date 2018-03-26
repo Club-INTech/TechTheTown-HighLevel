@@ -11,10 +11,11 @@ ENNEMY_RADIUS                        = 200
 LONGUEUR_CUBE                        =  58
 LONGUEUR_BRAS                        = 330
 DIMENSION_PORTES                     = 110
+COUP_FIXE                            = 42
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
-SIMULATION                           = false
+SIMULATION                           = true
 ATTENTE_JUMPER                       = false
 
 # VERSION DE MATCHSCRIPT TO EXECUTE
