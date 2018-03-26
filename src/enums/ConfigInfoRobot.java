@@ -109,6 +109,15 @@ public enum ConfigInfoRobot implements ConfigInfo
     /** Paramètre d'attente du jumper */
     ATTENTE_JUMPER(true),
 
+    /** Paramètre permettant de savoir quel matchscript on execute */
+    MATCHSCRIPT_TO_EXECUTE(0),
+
+    /** Paramètres reconnaissance de couleurs */
+    LOCALIZATION_AUTOMATED(true),
+    FIRST_COLOR(null),
+    SECOND_COLOR(null),
+    THIRD_COLOR(null),
+
     /**Paramètres couleurs*/
     rorange(183),
     gorange(107),
