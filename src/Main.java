@@ -82,7 +82,6 @@ public class Main {
                 Thread.sleep(10);
             }*/
 
-
         } catch (ContainerException p) {
             System.out.println("bug container");
         }

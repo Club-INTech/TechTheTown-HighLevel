@@ -10,7 +10,7 @@ import java.util.List;
 
 public class LocatePatternPython {
 
-    public static int[] LocatePattern(int[] zoneToPerformLocalisation, String orientation){
+    public static int[] LocatePattern(int[] zoneToPerformLocalisation){
         String data;
         File file = new File("/tmp/LocalizationDone.lock");
         if (file.exists()) {
@@ -21,7 +21,7 @@ public class LocatePatternPython {
             data = new String(Files.readAllBytes(Paths.get("/tmp/LocalizationInfo.txt")));
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("LocatePatternPython > IOException /tmp/LocalizationInfo.txg");
+            System.out.println("LocatePatternPython > IOException /tmp/LocalizationInfo.txt");
             data="-1 -1 10000 10000";
         }
         String[] infos = data.split(" ");
