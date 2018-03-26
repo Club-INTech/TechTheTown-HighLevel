@@ -10,16 +10,28 @@ ROBOT_RADIUS                         = 210
 ENNEMY_RADIUS                        = 200
 LONGUEUR_CUBE                        =  58
 LONGUEUR_BRAS                        = 330
-DIMENSION_PORTES                     = 87
+DIMENSION_PORTES                     = 110
+COUP_FIXE                            = 42
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
 SIMULATION                           = true
 ATTENTE_JUMPER                       = false
 
+# VERSION DE MATCHSCRIPT TO EXECUTE
+MATCHSCRIPT_TO_EXECUTE               = 0
+
+# PARAMETRES RECONNAISSANCE DE COULEURS
+LOCALIZATION_AUTOMATED               = false
+
+# Couleurs disponibles : (orange, vert, rouge, noir, bleu, null)
+FIRST_COLOR                          = null
+SECOND_COLOR                         = null
+THIRD_COLOR                          = null
+
 # PARAMETRES POUR LES CAPTEUR
 # horizon_capteurs                   = 500
-# angle_detection_capteur 	         = 0.79
+# angle_detection_capteur            = 0.79
 # angle_position_capteur_av          = 0.01
 # angle_position_capteur_ar          = 0.17
 # duree_peremption_obstacles         = 5000
@@ -86,13 +98,15 @@ bvert=68
 ############PARAMETRES SCRIPTS############
 
 #ActivationPanneauDomitique
-DISTANCE_INTERRUPTEUR=50
+DISTANCE_INTERRUPTEUR=55
+
 #ActiveAbeille
 DISTANCE_ABEILLE=70
+
 #TakeCubes
+
 #DéposeCube
-DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES=70
-DISTANCE_PUSH_DEPOSE_CUBES=107
+DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES=90
 
 
 

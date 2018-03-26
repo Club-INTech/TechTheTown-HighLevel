@@ -33,8 +33,9 @@ public class Graphe implements Service {
 
 
     /**
-     * Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
-     * là où il y'a des obstacles
+     * Constructeur du graphe, un graphe c'est des noeuds reliés par des arêtes,
+     * on utilise la méthode createNodes et createAretes (Voir la documentation de
+     * ces méthodes pour plus de détails)
      */
 
     public Graphe(Log log, Config config, Table table) {
@@ -43,36 +44,17 @@ public class Graphe implements Service {
         this.table = table;
         this.nodes = createNodes();
         long time1 = System.currentTimeMillis();
-        this.boneslist = createAretes(nodes);
+        this.boneslist = createAretes();
         long time2 = System.currentTimeMillis() - time1;
         this.log = log;
         this.config = config;
         log.debug("Time to create graph (ms): " + time2);
     }
 
-    /**
-     * Méthode testant la présence d'un noeud dans un obstacle.
-     */
-
-
-    public boolean nodeInObstacle(Noeud noeud) {
-        int n=listCircu.size();
-        int m=listRectangu.size();
-        boolean inobstacle=false;
-        for(int i=0;i<n;i++){
-            if(table.getObstacleManager().isPositionInObstacle(noeud.getPosition(),listCircu.get(i))){
-                inobstacle=true;
-            }
-        }
-        for(int i=0;i<m;i++){
-            if(table.getObstacleManager().isPositionInObstacle(noeud.getPosition(),listRectangu.get(i))){
-                inobstacle=true;
-            }
-        }
-       return inobstacle;
-    }
-
-    /** Méthode générant des noeuds sur la table   */
+    /** Méthode générant des noeuds sur la table : on crée des noeuds autour
+     * des obstacles circulaires (Méthode nodesaroundobstacles) vu que ce sont ces obstacles-ci qu'on devrait
+     * esquiver, on rajoute trois autres noeuds afin de choisir les meilleurs chemins
+     * pour les actions qu'on veut faire, à savoir l'interrupteur*/
 
     public CopyOnWriteArrayList<Noeud> createNodes() {
 
@@ -96,35 +78,29 @@ public class Graphe implements Service {
     }
 
     /**
-     * Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
-     * l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
-     * ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
-     * déja un chemin à suivre, à chaque noeud, on associe une liste d'arete qui lui est propre
-     * donc implicitement une liste de noeuds, le tout stocké dans un dictionnaire.
-     * <p>
-     * Maj. Cette méthode permet également le compléter pour chaque noeud du graphe
-     * le champ contenant la liste de ses noeuds voisins.
+     * Il s'agit d'une méthode qui crée des aretes, une arete est un segment qui relie deux noeuds,
+     * on ne peut tracer une arete que si le segment ne passe pas par des obstacles
+     * circulaires et rectangulaires
      */
 
 
-    public CopyOnWriteArrayList<Arete> createAretes(CopyOnWriteArrayList<Noeud> nodes) {
+    public CopyOnWriteArrayList<Arete> createAretes() {
         Arete arete;
         CopyOnWriteArrayList<Arete> boneslist = new CopyOnWriteArrayList<>();
         int n = nodes.size();
         for (int i = 0; i < n; i++) {
             ArrayList<Arete> listaretes = new ArrayList<>();
-            ArrayList<Noeud> voisins = new ArrayList<>();
             for (int j = i+1; j < n; j++) {
                 Segment segment = new Segment(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                 boolean intersectsWithCircularObstacles = false;
                 boolean intersectsWithRectangularObstacles = false;
                 for (int k = 0; k < listCircu.size(); k++) {
-                    if (Geometry.intersects(segment, listCircu.get(k).getCircle())){
+                    if (listCircu.get(k).intersects(segment)){
                         intersectsWithCircularObstacles = true;
                     }
                 }
                 for (int l = 0; l<listRectangu.size(); l++) {
-                    if(Geometry.intersects(segment, listRectangu.get(l).getRectangle())){
+                    if(listRectangu.get(l).intersects(segment)){
                         intersectsWithRectangularObstacles=true;
                     }
                 }
@@ -142,7 +118,9 @@ public class Graphe implements Service {
         return boneslist;
     }
 
-    /** Méthode ajoutant un au graphe. Cela consiste à remplir le champ de ses noeuds voisins.   */
+    /** Méthode ajoutant un noeud au graphe. Cela consiste à remplir le champ de ses noeuds voisins.
+     * Cette méthode est appelée par le pathfinding
+     * */
 
     public void addNodeInGraphe(Noeud noeud) {
         ArrayList<Noeud> voisins = new ArrayList<>();
@@ -192,39 +170,81 @@ public class Graphe implements Service {
 
 
     public void removeNode(Noeud noeud){
+        ArrayList<Noeud> voisins=noeud.getVoisins();
+        voisins.remove(noeud);
         nodes.remove(noeud);
     }
 
     /**
-     * Cette méthode crée des noeuds autour des obstacles
+     * Cette méthode crée des noeuds autour des obstacles circulaires
+     * , on crée des points autour des points circualires,
+     * on ne garde donc que les noeuds qui vérifient tous les critères à
+     * savoir le fait d'être à l'intérieur de la table et ne pas être
+     * dans un obstacle
      * @return
      */
     public ArrayList<Noeud> createNodesAroundCircularObstacles(){
         int n=listCircu.size();
+        int m=listRectangu.size();
         ArrayList<Vec2> pointstoreturn=new ArrayList<>();
         ArrayList<Noeud> nodestoreturn=new ArrayList<>();
         int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
+        /*
+        on crée des noeuds autour des obstacles circulaires, puis on ne garde que les noeuds qui
+        remplissent toutes les conditions
+         */
         for(int i=0;i<n;i++) {
             Circle obstaclecircle=new Circle(listCircu.get(i).getPosition(),listCircu.get(i).getRadius()+d);
-            ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(12);
-            pointstoreturn.addAll(l);
-        }
-        int m=pointstoreturn.size();
-        for(int i=0;i<m;i++){
-            if(!(nodeInObstacle(new Noeud(pointstoreturn.get(i),0,0,new ArrayList<>()))) & table.getObstacleManager().isRobotInTable(pointstoreturn.get(i))){
-                Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,new ArrayList<>());
-                nodestoreturn.add(nodetoadd);
+            ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
+            int p=l.size();
+            for(int j=0;j<p;j++){
+                if(!(table.getObstacleManager().isPositionInObstacle(l.get(j),listCircu.get(i)))&& table.getObstacleManager().isRobotInTable(l.get(j))){
+                    pointstoreturn.add(l.get(j));
+                }
             }
+
+        }
+        int p=pointstoreturn.size();
+        ArrayList<Vec2> points=(ArrayList<Vec2> )pointstoreturn.clone();
+        for(int i=0;i<p;i++){
+            for(int j=0;j<m;j++){
+                if((table.getObstacleManager().isPositionInObstacle(points.get(i),listRectangu.get(j)))&& table.getObstacleManager().isRobotInTable(points.get(i))){
+                    pointstoreturn.remove(points.get(i));
+                }
+            }
+        }
+        int f=pointstoreturn.size();
+        for(int i=0;i<f;i++){
+            Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,new ArrayList<>());
+            nodestoreturn.add(nodetoadd);
         }
         return nodestoreturn;
 
     }
 
+    /**
+     * Méthode permettant de supprimer un obstacle
+     */
     public void removeObstacle(){
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
         this.nodes = createNodes();
-        this.boneslist = createAretes(nodes);
+        this.boneslist = createAretes();
+    }
+    /**
+     * Méthode réinitialisant le graphe, à appeler après chaque utilisation de findmyway
+     */
+
+    public void reInitGraphe(Noeud noeudDepart, Noeud noeudArrive) {
+        for (Noeud node :this.getNodes()) {
+            node.setPred(null);
+            node.setCout(-1);
+            node.setHeuristique(999999999);
+            node.removeNeighbour(noeudDepart);
+            node.removeNeighbour(noeudArrive);
+        }
+        this.removeNode(noeudDepart);
+        this.removeNode(noeudArrive);
     }
 
 }

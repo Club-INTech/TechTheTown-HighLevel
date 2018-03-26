@@ -19,6 +19,7 @@
 
 package table.obstacles;
 
+import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
 
@@ -244,7 +245,10 @@ public class ObstacleRectangular extends Obstacle
 		}
 		return new Vec2();
 	}
-
+	@Override
+	public boolean intersects(Segment segment){
+		return Geometry.intersects(segment, this.getRectangle());
+	}
 	public Rectangle getRectangle(){
 		int x=this.getPosition().getX()-this.sizeX/2;
 		int y=this.getPosition().getY()+this.sizeY/2;

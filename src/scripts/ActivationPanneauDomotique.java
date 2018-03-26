@@ -17,12 +17,12 @@ import utils.Log;
 public class ActivationPanneauDomotique extends AbstractScript{
     /** Position d'entrée du script */
 
-    int xEntry=370;
-    int yEntry=220;
+    private int xEntry=370;
+    private int yEntry=220;
 
     /** Eléments appelés par la config */
 
-    int distanceInterrupteur;
+    private int distanceInterrupteur;
 
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -31,32 +31,29 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
-
-        Vec2 positionentree=new Vec2(xEntry,yEntry);
-        return new Circle(positionentree,0);
+        Vec2 positionEntree=new Vec2(this.xEntry,this.yEntry);
+        return new Circle(positionEntree,0);
     }
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
+        log.debug("////////// Execution ActivePanneauDomotique version "+versionToExecute+" //////////");
         actualState.robot.turn(-Math.PI/2);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.moveLengthwise(distanceInterrupteur);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.goTo(new Vec2(xEntry,yEntry));
-        actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-        actualState.setPanneauActive(true);
+        actualState.robot.setLocomotionSpeed(Speed.FAST_ALL);
+        log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");
     }
 
     @Override
-    public void finalize(GameState state, Exception e) throws UnableToMoveException {
-
-    }
+    public void finalize(GameState state, Exception e) throws UnableToMoveException {}
 
     @Override
     public Integer[] getVersion(GameState stateToConsider) {
         return new Integer[0];
     }
-
 
 
     @Override

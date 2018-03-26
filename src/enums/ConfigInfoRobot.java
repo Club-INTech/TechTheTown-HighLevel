@@ -97,6 +97,9 @@ public enum ConfigInfoRobot implements ConfigInfo
     DISTANCE_TO_DISENGAGE(50),
     MAX_RETRIES_IF_BLOCKED(1),
 
+    /** Paramètres Pathfinding */
+    COUP_FIXE(10),
+
     /** Paramètres des scripts */
     VECTEUR_EXAMPLE(new Vec2(50, 60)),
 
@@ -105,6 +108,15 @@ public enum ConfigInfoRobot implements ConfigInfo
 
     /** Paramètre d'attente du jumper */
     ATTENTE_JUMPER(true),
+
+    /** Paramètre permettant de savoir quel matchscript on execute */
+    MATCHSCRIPT_TO_EXECUTE(0),
+
+    /** Paramètres reconnaissance de couleurs */
+    LOCALIZATION_AUTOMATED(true),
+    FIRST_COLOR("null"),
+    SECOND_COLOR("null"),
+    THIRD_COLOR("null"),
 
     /**Paramètres couleurs*/
     rorange(183),
@@ -127,7 +139,6 @@ public enum ConfigInfoRobot implements ConfigInfo
     DISTANCE_INTERRUPTEUR(50),
     DISTANCE_ABEILLE(50),
     DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES(70),
-    DISTANCE_PUSH_DEPOSE_CUBES(107),
 
     ;
     private Object defaultValue;

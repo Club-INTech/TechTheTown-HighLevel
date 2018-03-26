@@ -18,19 +18,19 @@
  */
 
 import container.Container;
-import graphics.AffichageDebug;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
+//import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
-import simulator.ThreadSimulator;
 import strategie.GameState;
 import table.Table;
+import tests.JUnit_PatternRecognition;
 import threads.ThreadInterface;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
@@ -40,68 +40,44 @@ import threads.dataHandlers.ThreadEth;
  *
  * @author 4223, gaelle, rem
  */
-public class Main {
+public class MainPattern {
     static Container container;
     static Config config;
     static GameState realState;
-    static ScriptManager scriptmanager;
     static EthWrapper mEthWrapper;
-    static Locomotion mLocomotion;
+    static PatternRecognition patternRecognition;
+
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
 // PS : Les vérifications et validations c'est pas pour les chiens.
-	//TODO : Aide-mémoire : mettre la lib libopencv_java340.so dans le répertoire /usr/lib de la raspi, et executer execstack -c libopencv_java340.so
+    //TODO : Aide-mémoire : mettre la lib libopencv_java340.so dans le répertoire /usr/lib de la raspi, et executer execstack -c libopencv_java340.so
 
     public static void main(String[] args) throws InterruptedException {
-        int matchScriptVersionToExecute=0;
         try {
             container = new Container();
             config = container.getConfig();
-            realState = container.getService(GameState.class);
-            scriptmanager = container.getService(ScriptManager.class);
-            mEthWrapper = container.getService(EthWrapper.class);
-            mLocomotion = container.getService(Locomotion.class);
-            if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
-                ThreadInterface anInterface = container.getService(ThreadInterface.class);
-            }
-            matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
+            config.override(ConfigInfoRobot.SIMULATION,true);
+
+            patternRecognition = container.getService(PatternRecognition.class);
             Thread.currentThread().setPriority(6);
-            //container.getService(ThreadSensor.class);
-            container.getService(ThreadEth.class);
-            //container.getService(ThreadInterface.class);
-            container.getService(ThreadTimer.class);
-            //PatternRecognition patternRecognition=container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
-            // TODO : initialisation des variables globales du robot & objets...
-            realState.robot.setPosition(Table.entryPosition);
-            realState.robot.setOrientation(Table.entryOrientation);
-            realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
 
-            /*while(patternRecognition.isMovementLocked()) {
+            while (patternRecognition.isMovementLocked()) {
                 Thread.sleep(10);
-            }*/
+            }
 
+            while (!patternRecognition.isRecognitionDone()) {
+                Thread.sleep(10);
+            }
+
+            System.out.println("Reconnaissance de pattern terminée");
+            container.destructor();
 
         } catch (ContainerException p) {
             System.out.println("bug container");
         }
-        try {
-
-            // TODO : initialisation du robot avant retrait du jumper (actionneurs)
-            System.out.println("Le robot commence le match");
-            waitMatchBegin();
-//			         TODO : lancer l'IA
-
-            scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
-
-
-
 
 
     /**

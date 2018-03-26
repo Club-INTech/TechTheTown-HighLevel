@@ -20,7 +20,7 @@
 package strategie;
 
 import container.Service;
-import patternRecognition.PatternRecognition;
+import enums.BrasUtilise;
 import pfg.config.Config;
 import robot.Robot;
 import table.Table;
@@ -78,6 +78,7 @@ public class GameState implements Service
     private boolean tas_base_ennemi_pris;
     private boolean tas_chateau_ennemi_eau_pris;
     private boolean tas_station_epuration_ennemi_pris;
+    private BrasUtilise takeCubesBras;
 
     /** Panneau domotique activé */
     private boolean panneauActive;
@@ -119,6 +120,8 @@ public class GameState implements Service
         this.cubeAvantPresent=true;
         this.cubeArrierePresent=true;
 
+        this.takeCubesBras= BrasUtilise.AVANT;
+
         this.tas_base_pris=false;
         this.tas_chateau_eau_pris=false;
         this.tas_station_epuration_pris=false;
@@ -130,7 +133,7 @@ public class GameState implements Service
         this.abeilleLancee = false;
 
         //La reconnaissance de couleurs est faite ou non
-        this.recognitionDone=PatternRecognition.isRecognitionDone();
+        this.recognitionDone=false;
         //On set une valeur de base, qui sera changée par PatternRecognition par la suite
         this.indicePattern=-2;
 
@@ -164,7 +167,7 @@ public class GameState implements Service
 
 
     public int getObtainedPoints() {
-        return obtainedPoints;
+        return this.obtainedPoints;
     }
 
     public void setObtainedPoints(int obtainedPoints) {
@@ -174,7 +177,7 @@ public class GameState implements Service
 
 
     public int getIndicePattern() {
-        return indicePattern;
+        return this.indicePattern;
     }
 
     public void setIndicePattern(int indicePattern) {
@@ -184,7 +187,7 @@ public class GameState implements Service
 
 
     public boolean isRecognitionDone() {
-        return recognitionDone;
+        return this.recognitionDone;
     }
 
     public void setRecognitionDone(boolean recognitionDone) {
@@ -194,7 +197,7 @@ public class GameState implements Service
 
 
     public boolean isTourAvantRemplie() {
-        return tourAvantRemplie;
+        return this.tourAvantRemplie;
     }
 
     public void setTourAvantRemplie(boolean tourAvantRemplie) {
@@ -231,6 +234,13 @@ public class GameState implements Service
         this.cubeArrierePresent = cubeArrierePresent;
     }
 
+    public BrasUtilise getTakeCubesBras() {
+        return takeCubesBras;
+    }
+
+    public void setTakeCubesBras(BrasUtilise bras){
+	    this.takeCubesBras=bras;
+    }
 
     /**
      * Change le rayon du robot et fait toutes les modifs necesssaires

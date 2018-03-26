@@ -37,11 +37,8 @@ public class PatternRecognition extends AbstractThread{
     private int alreadyLitUp; //l'image a déjà été éclairée
     private boolean isSavingImages;
     private boolean symmetry;
-    //VALEURS PICAM
-    //private int imageWidth=2592;
-    //private int imageHeight=1944;
-    private int imageWidth=640;
-    private int imageHeight=480;
+    private int imageWidth;
+    private int imageHeight;
 
     //mediansList est composé de la médiane en R, en G et en B, pour chacune des 3 couleurs de la photo
     //Donc, si on nomme les couleurs 1, 2 et 3, on a :
@@ -49,15 +46,20 @@ public class PatternRecognition extends AbstractThread{
     private int[][] mediansList = new int[3][3];
 
     private int[] zoneToPerformLocalisation;
-    private int[] zoneToPerformLocalisationVert={1,168,296,288};
-    private int[] zoneToPerformLocalisationOrange={(imageWidth-297),168,296,288};
+    private int[] zoneToPerformLocalisationVert;
+    private int[] zoneToPerformLocalisationOrange;
 
     private double saturationPreModifier;
     private double brightnessPreModifier;
     private boolean alreadyPreModified;
     private String orientation;
-    private static boolean movementLocked=true;
-    private static boolean recognitionDone=false;
+    private boolean movementLocked;
+    private boolean recognitionDone;
+
+    private boolean localizationAutomated;
+    private Colors firstColorShown;
+    private Colors secondColorShown;
+    private Colors thirdColorShown;
 
     /** Instanciation du thread de reconnaissance de couleurs
      * @param config passe la config
@@ -69,14 +71,15 @@ public class PatternRecognition extends AbstractThread{
         this.ethWrapper=ethWrapper;
         this.gameState=stateToConsider;
         this.orientation="side";
+        //TODO : faire en sorte que le script python accepte une certaine zone à localiser
         if (this.symmetry) {
-            this.zoneToPerformLocalisation = zoneToPerformLocalisationOrange;
+            this.zoneToPerformLocalisation = new int[]{(imageWidth-300),300,200,250};
         }
         else {
-            this.zoneToPerformLocalisation = zoneToPerformLocalisationVert;
+            this.zoneToPerformLocalisation = new int[]{300,300,200,250};
         }
         this.lengthSideOfSquareDetection=5; //in pixels
-        this.distanceBetweenTwoColors=40; //in pixels
+        this.distanceBetweenTwoColors=15; //in pixels
         this.debug=true;
         this.alreadyPrintedColorMatchingProba=false;
         this.alreadyLitUp=0;
@@ -84,6 +87,13 @@ public class PatternRecognition extends AbstractThread{
         this.saturationPreModifier=1.2;
         this.brightnessPreModifier=1;
         this.alreadyPreModified=false;
+        this.movementLocked=true;
+        this.recognitionDone=false;
+        //VALEURS PICAM
+        //private int imageWidth=2592;
+        //private int imageHeight=1944;
+        this.imageWidth=1280;
+        this.imageHeight=720;
     }
 
     //////////////////////////////////// COLOR MATRIX CREATION /////////////////////////////////////////////
@@ -519,7 +529,7 @@ public class PatternRecognition extends AbstractThread{
                     "),("+(zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2])+","+(zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3])+"))");
             LocatePattern.setDebug(true);
         }
-        int[] patternZone = LocatePattern.locatePattern(buffImg, zoneToPerformLocalisation, this.orientation);
+        int[] patternZone = LocatePatternPython.LocatePattern(zoneToPerformLocalisation, this.orientation);
         int[] centerPattern=new int[]{(patternZone[0]+patternZone[2])/2,(patternZone[1]+patternZone[3])/2};
         if (debug){
             log.debug("Center found : ("+centerPattern[0]+","+centerPattern[1]+")");
@@ -529,10 +539,10 @@ public class PatternRecognition extends AbstractThread{
 
     //////////////////////////////////// ANALYSE DE PATTERN /////////////////////////////////////////////
 
-    /**Méthode permettant de faire la reconnaissance de pattenrs
+    /**Méthode permettant de faire la reconnaissance de pattenrs, dans le cas où une reconnaissance automatique a due être faite
      * @return l'id du pattern (int de 0 à 9, bornes comprises)
      */
-    private int analysePattern(int[][][] colorMatrix) {
+    private int analysePatternAfterLocalization(int[][][] colorMatrix) {
         double[][] distanceArrays = new double[5][10];
         int halfLengthSideOfSquareDetection = lengthSideOfSquareDetection / 2;
         int halfDistanceBetweenTwoColors = distanceBetweenTwoColors / 2;
@@ -543,7 +553,6 @@ public class PatternRecognition extends AbstractThread{
             colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3],saturationPreModifier,brightnessPreModifier);
             this.alreadyPreModified=true;
         }
-
         int iStartValue = -2;
         for (int i = iStartValue; i <= 2; i++) {
             /**On définit où l'algorithme doit chercher ses couleurs
@@ -606,9 +615,9 @@ public class PatternRecognition extends AbstractThread{
                     log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                 }
                 if (isSavingImages) {
-                    saveImage(colorMatrix, "/tmp/imageCenter.png");
+                    saveImage(colorMatrix, "/tmp/ImageCenter.jpg");
                 }
-                analysePattern(colorMatrix);
+                analysePatternAfterLocalization(colorMatrix);
             }
             else{
                 this.finalIndice = maxJ;
@@ -624,6 +633,9 @@ public class PatternRecognition extends AbstractThread{
 
     //////////////////////////////////// FONCTION RUN DU THREAD /////////////////////////////////////////////
 
+    /**
+     * On run le thread
+     */
     public void run(){
         this.setPriority(5);
 
@@ -644,21 +656,21 @@ public class PatternRecognition extends AbstractThread{
             }
         }*/
 
-        //Ancienne version
-        //BufferedImage buffImg=ShootBufferedStill.TakeBufferedPicture();
+        log.debug("Début de la prise de photo");
         BufferedImage buffImg= ShootBufferedStillWebcam.takeBufferedPicture();
-        movementLocked=false;
+        log.debug("Fin de la prise de photo");
+        this.movementLocked=false;
         int[][][] colorMatrix=createColorMatrixFromBufferedImage(buffImg);
         centerPointPattern=calculateCenterPattern(buffImg, this.zoneToPerformLocalisation);
         if (!(centerPointPattern[0] == 0 && centerPointPattern[1] == 0)) {
-            analysePattern(colorMatrix);
+            analysePatternAfterLocalization(colorMatrix);
         }
         else{
             this.finalIndice=-1;
         }
         gameState.setIndicePattern(this.finalIndice);
         gameState.setRecognitionDone(true);
-        recognitionDone=true;
+        this.recognitionDone=true;
         log.debug("Pattern recognized : " + finalIndice);
         while (!this.isShutdown){
             try {
@@ -731,20 +743,24 @@ public class PatternRecognition extends AbstractThread{
     public void shutdown(){
         this.isShutdown=true;
     }
-    public static boolean isMovementLocked() {
-        return movementLocked;
+    public boolean isMovementLocked() {
+        return this.movementLocked;
     }
-    public static boolean isRecognitionDone() {
-        return recognitionDone;
+    public boolean isRecognitionDone() {
+        return this.recognitionDone;
     }
 
     @Override
     public void updateConfig() {
-        Colors.ORANGE.setRGB(config.getInt(ConfigInfoRobot.rorange),config.getInt(ConfigInfoRobot.gorange),config.getInt(ConfigInfoRobot.borange));
-        Colors.YELLOW.setRGB(config.getInt(ConfigInfoRobot.rjaune),config.getInt(ConfigInfoRobot.gjaune),config.getInt(ConfigInfoRobot.bjaune));
-        Colors.BLUE.setRGB(config.getInt(ConfigInfoRobot.rbleu),config.getInt(ConfigInfoRobot.gbleu),config.getInt(ConfigInfoRobot.bbleu));
-        Colors.BLACK.setRGB(config.getInt(ConfigInfoRobot.rnoir),config.getInt(ConfigInfoRobot.gnoir),config.getInt(ConfigInfoRobot.bnoir));
-        Colors.GREEN.setRGB(config.getInt(ConfigInfoRobot.rvert),config.getInt(ConfigInfoRobot.gvert),config.getInt(ConfigInfoRobot.bvert));
+        Colors.ORANGE.setRGB(this.config.getInt(ConfigInfoRobot.rorange),config.getInt(ConfigInfoRobot.gorange),config.getInt(ConfigInfoRobot.borange));
+        Colors.YELLOW.setRGB(this.config.getInt(ConfigInfoRobot.rjaune),config.getInt(ConfigInfoRobot.gjaune),config.getInt(ConfigInfoRobot.bjaune));
+        Colors.BLUE.setRGB(this.config.getInt(ConfigInfoRobot.rbleu),config.getInt(ConfigInfoRobot.gbleu),config.getInt(ConfigInfoRobot.bbleu));
+        Colors.BLACK.setRGB(this.config.getInt(ConfigInfoRobot.rnoir),config.getInt(ConfigInfoRobot.gnoir),config.getInt(ConfigInfoRobot.bnoir));
+        Colors.GREEN.setRGB(this.config.getInt(ConfigInfoRobot.rvert),config.getInt(ConfigInfoRobot.gvert),config.getInt(ConfigInfoRobot.bvert));
+        this.localizationAutomated=this.config.getBoolean(ConfigInfoRobot.LOCALIZATION_AUTOMATED);
+        this.firstColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
+        this.secondColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
+        this.thirdColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
         this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
     }
 }

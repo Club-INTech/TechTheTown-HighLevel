@@ -48,7 +48,7 @@ public class ThreadEvents extends AbstractThread
     private boolean cubeTakenBrasAR=false;
 
     /** Le robot bouge */
-    public Boolean isMoving;
+    public boolean isMoving;
 
     /**
      * Constructeur
@@ -82,9 +82,7 @@ public class ThreadEvents extends AbstractThread
                     }
                     else if (message[0].equals(EventType.STOPPEDMOVING.getEventId())){
                         log.debug("Le robot a fini de bouger");
-                        synchronized (this.isMoving) {
-                            this.isMoving = false;
-                        }
+                        this.isMoving = false;
                         log.debug("isMoving variable has been defined to False");
                     }
                     else if(message[0].equals(EventType.CUBE_PRIS_BRAS_AVANT.getEventId())){
@@ -96,7 +94,7 @@ public class ThreadEvents extends AbstractThread
                         log.debug("Le robot a pris un cube en utilisant le bras AR");
                     }
                 } else {
-                    Thread.sleep(100);
+                    Thread.sleep(20);
                 }
             }catch (InterruptedException e){
                 e.getStackTrace();
@@ -112,9 +110,19 @@ public class ThreadEvents extends AbstractThread
         return cubeTakenBrasAV;
     }
 
+    public void setCubeTakenBrasAV(boolean value){
+        this.cubeTakenBrasAV=value;
+    }
+
     public boolean getCubeTakenBrasAR() {
         return cubeTakenBrasAR;
     }
 
+    public void setCubeTakenBrasAR(boolean value){
+        this.cubeTakenBrasAR=value;
+    }
+
     public void setIsMoving(boolean value){ this.isMoving=value; }
+
+    public boolean getIsMoving(){ return this.isMoving; }
 }

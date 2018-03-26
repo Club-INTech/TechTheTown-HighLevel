@@ -336,8 +336,10 @@ public class EthWrapper implements Service {
      * @param posTrigger
      * @param order
      */
-    public void configureHook(int id, Vec2 posTrigger, int tolerency, String order){
-        eth.communicate(0, ActuatorOrder.INITIALISE_HOOK.getEthernetOrder(), String.format("%i", id), posTrigger.toStringEth(), String.format("%t", tolerency), order);
+
+
+    public void configureHook(int id, Vec2 posTrigger, int tolerency, double orientation,double tolerencyAngle,String order){
+        eth.communicate(0, ActuatorOrder.INITIALISE_HOOK.getEthernetOrder(), String.format("%d", id), posTrigger.toStringEth(), String.format("%d", tolerency),String.format("%f",orientation), String.format("%f",tolerencyAngle),order);
     }
 
     /**
@@ -345,7 +347,7 @@ public class EthWrapper implements Service {
      * @param hook
      */
     public void enableHook(HookNames hook){
-        eth.communicate(0, ActuatorOrder.ENABLE_HOOK.getEthernetOrder(), String.format("%i", hook.getId()));
+        eth.communicate(0, ActuatorOrder.ENABLE_HOOK.getEthernetOrder(), String.format("%d", hook.getId()));
     }
 
     /**
@@ -353,7 +355,7 @@ public class EthWrapper implements Service {
      * @param hook
      */
     public void disableHook(HookNames hook){
-        eth.communicate(0, ActuatorOrder.DISABLE_HOOK.getEthernetOrder(), String.format("%i", hook.getId()));
+        eth.communicate(0, ActuatorOrder.DISABLE_HOOK.getEthernetOrder(), String.format("%d", hook.getId()));
     }
 
 

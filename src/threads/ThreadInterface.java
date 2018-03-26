@@ -24,6 +24,7 @@ import graphics.Window;
 import pfg.config.Config;
 import robot.Robot;
 import scripts.ScriptManager;
+import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import utils.Log;

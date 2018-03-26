@@ -30,8 +30,9 @@ public enum EventType {
     BLOCKED("unableToMove"),
     STOPPEDMOVING("stoppedMoving"),
     CUBE_PRIS_BRAS_AVANT("cubeDetectedAV"),
-    CUBE_PRIS_BRAS_ARRIERE("cubeDetecetdAR"),
-
+    CUBE_PAS_PRIS_BRAS_AVANT("noCubeDetectedAV"),
+    CUBE_PRIS_BRAS_ARRIERE("cubeDetectedAR"),
+    CUBE_PAS_PRIS_BRAS_ARRIERE("noCubeDetectedAR"),
     ;
 
     /** Id de l'event, qui diffère en fonction du type d'event */

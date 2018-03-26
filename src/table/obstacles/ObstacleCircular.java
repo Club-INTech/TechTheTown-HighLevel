@@ -21,6 +21,7 @@ package table.obstacles;
 
 import pathfinder.Noeud;
 import smartMath.Circle;
+import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
 
@@ -84,6 +85,10 @@ public class ObstacleCircular extends Obstacle
 	public boolean isInObstacle(Vec2 point)
 	{
 		return ((Segment.squaredLength(point, position) < circle.getRadius()*circle.getRadius()));
+	}
+	@Override
+	public boolean intersects(Segment segment){
+		return Geometry.intersects(segment, this.getCircle());
 	}
 
 	/**

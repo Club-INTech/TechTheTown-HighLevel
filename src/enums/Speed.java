@@ -34,30 +34,15 @@ public enum Speed implements MotionOrder
 
 	/** vitesse lente en translation, lente en rotation */
 	SLOW_ALL(300, Math.PI/3),
-	
-	/** vitesse lente en translation, normale en rotation */
-	SLOW_T_MEDIUM_R(300,2*Math.PI/3),
-
-	/** Just for fishing */
-	SLOW_MEDIUM(300, 2*Math.PI/3),
 
 	/** Vitesse standard de déplacement et rotation */
 	MEDIUM_ALL(500,1.6D),
-	
-	/** vitesse standard de déplacement, lente en rotation */
-	MEDIUM_T_SLOW_R(480,Math.PI/3),
-	
-	/** vitesse rapide en translation et lente en rotation */
-	FAST_T_SLOW_R(520, 1.75D),
-
-	/** vitesse rapide en translation et moyen en rotation */
-	FAST_T_MEDIUM_R(520, 1.8D),
 
 	/** vitesse rapide en translation et rotation */
-	FAST_ALL(750,1.8D),
+	FAST_ALL(800,3.2D),
 
 	/** vitesse ultra rapide en translation et rotation */
-	ULTRA_FAST_ALL(1200,1.8D);
+	ULTRA_FAST_ALL(1200,4D);
     
     /** vitesse des moteurs lors d'une translation, ce sont ces valeurs qui seront envoyées à la STM */
     public int translationSpeed;

@@ -283,6 +283,19 @@ public class Robot implements Service {
     }
 
     /**
+     * Méthode pour se tourner vers un point
+     *
+     * @param pointVise
+     * @throws UnableToMoveException
+     */
+    public void turnTo(Vec2 pointVise, boolean expectsWallImpact) throws UnableToMoveException {
+        position = getPosition();
+        Vec2 move = pointVise.minusNewVector(position);
+        double a = move.getA();
+        turn(a,expectsWallImpact);
+    }
+
+    /**
      * Fait tourner le robot (méthode bloquante)
      * Attention: le pivot sera fait en supposant qu'il n'y a pas de hook a vérifier, et qu'on ne s'attends pas a percuter un obstacle.
      *
