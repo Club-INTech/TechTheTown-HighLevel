@@ -73,6 +73,9 @@ public abstract class Node {
 
     public abstract void exception(Exception e);
 
+    @Override
+    public abstract String toString() ;
+
     public boolean isDone() {
         return isDone;
     }

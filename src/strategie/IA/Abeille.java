@@ -18,4 +18,11 @@ public class Abeille extends Node {
     public void exception(Exception e) {
 
     }
+
+    @Override
+    public String toString() {
+        return "Abeille";
+    }
+
+
 }

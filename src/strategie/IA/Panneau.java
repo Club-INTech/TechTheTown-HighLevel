@@ -18,4 +18,9 @@ public class Panneau extends Node {
     public void exception(Exception e) {
 
     }
+
+    @Override
+    public String toString() {
+        return "Panneau";
+    }
 }

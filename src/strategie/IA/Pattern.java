@@ -28,4 +28,9 @@ public class Pattern extends Node{
     public void exception(Exception e) {
 
     }
+
+    @Override
+    public String toString() {
+        return "Pattern";
+    }
 }

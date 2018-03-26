@@ -18,4 +18,9 @@ public class DeposeCubes extends Node {
     public void exception(Exception e) {
 
     }
+
+    @Override
+    public String toString() {
+        return "DeposeCube";
+    }
 }
