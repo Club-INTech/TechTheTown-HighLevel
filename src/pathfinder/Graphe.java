@@ -95,12 +95,12 @@ public class Graphe implements Service {
                 boolean intersectsWithCircularObstacles = false;
                 boolean intersectsWithRectangularObstacles = false;
                 for (int k = 0; k < listCircu.size(); k++) {
-                    if (Geometry.intersects(segment, listCircu.get(k).getCircle())){
+                    if (listCircu.get(k).intersects(segment)){
                         intersectsWithCircularObstacles = true;
                     }
                 }
                 for (int l = 0; l<listRectangu.size(); l++) {
-                    if(Geometry.intersects(segment, listRectangu.get(l).getRectangle())){
+                    if(listRectangu.get(l).intersects(segment)){
                         intersectsWithRectangularObstacles=true;
                     }
                 }

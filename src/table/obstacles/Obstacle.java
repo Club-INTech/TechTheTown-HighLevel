@@ -18,6 +18,7 @@
  */
 
 package table.obstacles;
+import smartMath.Segment;
 import smartMath.Vec2;
 
 /**
@@ -74,5 +75,12 @@ public abstract class Obstacle
 	 * @param vec le vecteur à tester
 	 */
 	public abstract boolean isInObstacle(Vec2 vec);
+
+	/**
+	 * Cette méthode teste si un segment est en intersection avec les obstacles
+	 * @param segment
+	 * @return
+	 */
+	public abstract boolean intersects(Segment segment);
 	
 }
