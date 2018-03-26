@@ -37,6 +37,11 @@ public class Noeud {
         return false;
     }
 
+    /**
+     * Cette méthode supprime un voisin de la liste des voisins, elle est appelée
+     * par le pathfinding
+     * @param noeud
+     */
     public void removeNeighbour(Noeud noeud){ voisins.remove(noeud);}
 
 
@@ -57,11 +62,24 @@ public class Noeud {
 
     public void setVoisins(ArrayList<Noeud> voisins){ this.voisins = voisins; }
 
+    /**
+     * Cette méthode est appelée par createAretes de Graphe afin de set les voisins
+     * de chaque noeud : un voisin est un noeud qu'on pourrait atteindre, c'est à dire
+     * une arete pourrait etre tracée facilement sans qu'elle passe par un obstacle
+     * circulaire ou rectangulaire
+     * @param voisin
+     */
     public void addVoisin(Noeud voisin){
         if (!this.voisins.contains(voisin)) {
             this.voisins.add(voisin);
         }
     }
+
+    /**
+     * Cette méthode ajoute à un noeud un voisin, elle est appelée par le addNodeInGraphe
+     * qui est appelée par le pathfinding
+     * @param voisins
+     */
     public void addVoisins(ArrayList<Noeud> voisins){
         for (Noeud voisin : voisins) {
             if (!this.voisins.contains(voisin)) {
@@ -81,20 +99,3 @@ public class Noeud {
 
 
 }
-
-/*private Vec2 alineate(int xdepart, int ydepart,int xPointoalinate,int yPointoalinate) {
-        Vec2 position = new Vec2();
-        double r = Math.sqrt((Math.pow(xPointoalinate - xdepart, 2)) - Math.pow(yPointoalinate - ydepart, 2));
-        double r1 = 0;
-        double teta = Math.atan(ydepart / xdepart) - Math.atan(yPointoalinate / xPointoalinate);
-        while ((Math.abs(r - r1) > Math.pow(10, -3)) && (Math.pow(r, 2) != ((Math.pow(xPointoalinate - xdepart, 2) + Math.pow(yPointoalinate - ydepart, 2)))))
-            r1 = r1 + 1;
-
-        xPointoalinate = (int) (r * Math.cos(teta));
-        yPointoalinate = (int) (r * Math.sin(teta));
-        position.setX(xPointoalinate);
-        position.setY(yPointoalinate);
-        return position;
-
-
-    }*/

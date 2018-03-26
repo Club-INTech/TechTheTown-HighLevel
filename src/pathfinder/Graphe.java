@@ -33,8 +33,9 @@ public class Graphe implements Service {
 
 
     /**
-     * Méthode qui crée les noeuds : créer un grillage et éliminer les noeuds
-     * là où il y'a des obstacles
+     * Constructeur du graphe, un graphe c'est des noeuds reliés par des arêtes,
+     * on utilise la méthode createNodes et createAretes (Voir la documentation de
+     * ces méthodes pour plus de détails)
      */
 
     public Graphe(Log log, Config config, Table table) {
@@ -72,7 +73,10 @@ public class Graphe implements Service {
        return inobstacle;
     }
 
-    /** Méthode générant des noeuds sur la table   */
+    /** Méthode générant des noeuds sur la table : on crée des noeuds autour
+     * des obstacles circulaires (Méthode nodesaroundobstacles) vu que ce sont ces obstacles-ci qu'on devrait
+     * esquiver, on rajoute trois autres noeuds afin de choisir les meilleurs chemins
+     * pour les actions qu'on veut faire, à savoir l'interrupteur*/
 
     public CopyOnWriteArrayList<Noeud> createNodes() {
 
@@ -96,14 +100,9 @@ public class Graphe implements Service {
     }
 
     /**
-     * Méthode qui crée des aretes : une arete c'est un segment avec un cout qui est pour
-     * l'instant la distance entre les noeuds, on crée les aretes de telle sortes à ce que
-     * ca ne rencontre jamais un obstacles circulaires, donc la ou il y'a une arete il y'a
-     * déja un chemin à suivre, à chaque noeud, on associe une liste d'arete qui lui est propre
-     * donc implicitement une liste de noeuds, le tout stocké dans un dictionnaire.
-     * <p>
-     * Maj. Cette méthode permet également le compléter pour chaque noeud du graphe
-     * le champ contenant la liste de ses noeuds voisins.
+     * Il s'agit d'une méthode qui crée des aretes, une arete est un segment qui relie deux noeuds,
+     * on ne peut tracer une arete que si le segment ne passe pas par des obstacles
+     * circulaires et rectangulaires
      */
 
 
@@ -142,7 +141,9 @@ public class Graphe implements Service {
         return boneslist;
     }
 
-    /** Méthode ajoutant un au graphe. Cela consiste à remplir le champ de ses noeuds voisins.   */
+    /** Méthode ajoutant un noeud au graphe. Cela consiste à remplir le champ de ses noeuds voisins.
+     * Cette méthode est appelée par le pathfinding
+     * */
 
     public void addNodeInGraphe(Noeud noeud) {
         ArrayList<Noeud> voisins = new ArrayList<>();
@@ -196,7 +197,11 @@ public class Graphe implements Service {
     }
 
     /**
-     * Cette méthode crée des noeuds autour des obstacles
+     * Cette méthode crée des noeuds autour des obstacles circulaires
+     * , on crée des points autour des points circualires,
+     * on ne garde donc que les noeuds qui vérifient tous les critères à
+     * savoir le fait d'être à l'intérieur de la table et ne pas être
+     * dans un obstacle
      * @return
      */
     public ArrayList<Noeud> createNodesAroundCircularObstacles(){
@@ -220,6 +225,9 @@ public class Graphe implements Service {
 
     }
 
+    /**
+     * Méthode permettant de supprimer un obstacle
+     */
     public void removeObstacle(){
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
