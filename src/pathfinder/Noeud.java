@@ -29,7 +29,7 @@ public class Noeud {
     @Override
     public boolean equals(Object object){
         if(object instanceof Noeud){
-            if(this.position.equals(((Noeud) object).position) && (this.heuristique==((Noeud) object).heuristique)){
+            if(this.position.equals(((Noeud) object).position) ){
                 return true;
             }
         return false;
