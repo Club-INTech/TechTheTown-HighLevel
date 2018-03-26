@@ -9,7 +9,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class ShootBufferedStillWebcam {
+public class UseWebcam {
+
+    private static String pythonCommand="python3";
 
     public static BufferedImage takeBufferedPicture(){
         BufferedImage picture = null;
@@ -18,15 +20,39 @@ public class ShootBufferedStillWebcam {
             picture = ImageIO.read(new File("/tmp/ImageRaspi.jpeg"));
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("ShootBufferedStillWebcam > Erreur readingSavedPicture");
+            System.out.println("UseWebcam > Erreur readingSavedPicture");
         }
         return picture;
+    }
+
+    public static void setPatternPositionWithVideo(){
+        List<String> command = new ArrayList<>();
+        //Camera FishEye
+        command.add(pythonCommand);
+        command.add("./src/patternRecognition/shootPicture/SetPatternPosition.py");
+
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.inheritIO();
+        Process p = null;
+        try {
+            p = pb.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("UseWebcam > Erreur processBuilder");
+        }
+        try {
+            p.waitFor();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.out.println("UseWebcam > Erreur waitfor");
+        }
+        return;
     }
 
     private static void shootPicture(){
         List<String> command = new ArrayList<>();
         //Camera FishEye
-        command.add("python");
+        command.add(pythonCommand);
         command.add("./src/patternRecognition/shootPicture/CaptureImage.py");
 
         ProcessBuilder pb = new ProcessBuilder(command);
@@ -36,13 +62,13 @@ public class ShootBufferedStillWebcam {
             p = pb.start();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("ShootBufferedStillWebcam > Erreur processBuilder");
+            System.out.println("UseWebcam > Erreur processBuilder");
         }
         try {
             p.waitFor();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            System.out.println("ShootBufferedStillWebcam > Erreur waitfor");
+            System.out.println("UseWebcam > Erreur waitfor");
         }
         return;
 
@@ -107,13 +133,13 @@ public class ShootBufferedStillWebcam {
             p = pb.start();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("ShootBufferedStillWebcam > Erreur processBuilder");
+            System.out.println("UseWebcam > Erreur processBuilder");
         }
         try {
             p.waitFor();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            System.out.println("ShootBufferedStillWebcam > Erreur waitfor");
+            System.out.println("UseWebcam > Erreur waitfor");
         }
         */
     }

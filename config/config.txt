@@ -22,6 +22,7 @@ ATTENTE_JUMPER                       = false
 MATCHSCRIPT_TO_EXECUTE               = 0
 
 # PARAMETRES RECONNAISSANCE DE COULEURS
+# A la main:false // Automatique:true
 LOCALIZATION_AUTOMATED               = false
 
 # Couleurs disponibles : (orange, vert, rouge, noir, bleu, null)
@@ -76,19 +77,19 @@ gorange=107
 borange=71
 
 #RGB pour la couleur jaune
-rjaune=184
-gjaune=177
-bjaune=37
+rjaune=153
+gjaune=117
+bjaune=0
 
 #RGB pour la couleur bleue
-rbleu=50
-gbleu=84
-bbleu=112
+rbleu=0
+gbleu=63
+bbleu=200
 
 #RGB pour la couleur noire
-rnoir=13
-gnoir=24
-bnoir=20
+rnoir=18
+gnoir=49
+bnoir=30
 
 #RGB pour la couleur vert
 rvert=43

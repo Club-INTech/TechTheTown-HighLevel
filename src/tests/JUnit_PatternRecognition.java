@@ -7,8 +7,6 @@ import patternRecognition.PatternRecognition;
 import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
-import simulator.ThreadSimulator;
-import simulator.ThreadSimulatorMotion;
 import strategie.GameState;
 import threads.ThreadInterface;
 
@@ -53,14 +51,16 @@ public class JUnit_PatternRecognition extends JUnit_Test {
             }
         }
 
-
         if (!noVideoInput) {
+
+            patternRecognition.shootPicture.UseWebcam.setPatternPositionWithVideo();
+
+            boolean montlheryActive=false;
+            if (montlheryActive) {
+                patternRecognitionThread.setZoneToPerformLocalisationAutomatic(new int[]{190,155,305,260});
+            }
+
             try {
-                boolean montlheryActive=true;
-                if (montlheryActive) {
-                    patternRecognitionThread.setOrientation("face");
-                    patternRecognitionThread.setZoneToPerformLocalisation(new int[]{190,155,305,260});
-                }
                 container.startInstanciedThreads();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -71,7 +71,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
 
         while (!state.isRecognitionDone()) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 log.critical("Thread cannot sleep");

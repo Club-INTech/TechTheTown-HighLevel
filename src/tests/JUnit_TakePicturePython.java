@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import patternRecognition.shootPicture.UseWebcam;
 
 
 public class JUnit_TakePicturePython extends JUnit_Test {
@@ -21,7 +22,7 @@ public class JUnit_TakePicturePython extends JUnit_Test {
 
     @Test
     public void test() throws IOException {
-        patternRecognition.shootPicture.ShootBufferedStillWebcam.takeBufferedPicture();
+        UseWebcam.takeBufferedPicture();
     }
 
     @Test
@@ -38,13 +39,13 @@ public class JUnit_TakePicturePython extends JUnit_Test {
             p = pb.start();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("ShootBufferedStillWebcam > Erreur processBuilder");
+            System.out.println("UseWebcam > Erreur processBuilder");
         }
         try {
             p.waitFor();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            System.out.println("ShootBufferedStillWebcam > Erreur waitfor");
+            System.out.println("UseWebcam > Erreur waitfor");
         }
 
         System.out.println("Fin de la prise de photo");

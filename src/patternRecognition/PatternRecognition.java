@@ -3,7 +3,7 @@ package patternRecognition;
 import enums.Colors;
 import enums.Patterns;
 import enums.ConfigInfoRobot;
-import patternRecognition.shootPicture.ShootBufferedStillWebcam;
+import patternRecognition.shootPicture.UseWebcam;
 import pfg.config.Config;
 import robot.EthWrapper;
 import strategie.GameState;
@@ -47,7 +47,8 @@ public class PatternRecognition extends AbstractThread{
     //mediansList={{R1,G1,B1},{R2,G2,B2},{R3,G3,B3}}
     private int[][] mediansList = new int[3][3];
 
-    private int[] zoneToPerformLocalisation;
+    private int[] zoneToPerformLocalisationAutomatic;
+    private int[] zoneToPerformLocalisationManual;
     private int[][] positionsColorsOnImage;
 
     private double saturationPreModifier;
@@ -77,21 +78,32 @@ public class PatternRecognition extends AbstractThread{
         //VALEURS PICAM
         //private int imageWidth=2592;
         //private int imageHeight=1944;
+
+        //Webcam caca
+        this.imageWidth=640;
+        this.imageHeight=480;
+
+        /*
+        //Webcam robot
         this.imageWidth=1280;
         this.imageHeight=720;
+        */
         //TODO : faire en sorte que le script python accepte une certaine zone à localiser
 
         //Zone dans laquelle la localisation doit être faite
+        /** De la forme : {xstart, ystart, width, height} */
         if (this.symmetry) {
-            this.zoneToPerformLocalisation = new int[]{(this.imageWidth-1),100,200,250};
+            this.zoneToPerformLocalisationAutomatic = new int[]{(this.imageWidth-1),100,200,250};
+            this.zoneToPerformLocalisationManual = new int[]{(this.imageWidth-1),100,200,250};
         }
         else {
-            this.zoneToPerformLocalisation = new int[]{0,100,500,500};
+            this.zoneToPerformLocalisationAutomatic = new int[]{0,100,200,250};
+            this.zoneToPerformLocalisationManual = new int[]{0,100,200,250};
         }
 
         //Paramètres permettant à la localisation automatique d'avoir les coordonnées des patterns
         //avec le centre du rectangle détecté
-        this.lengthSideOfSquareDetection=5; //in pixels
+        this.lengthSideOfSquareDetection=10; //in pixels
         this.distanceBetweenTwoColors=15; //in pixels
 
         //Paramètres de débug
@@ -510,12 +522,25 @@ public class PatternRecognition extends AbstractThread{
 
     ///////////////////////////// AUGMENTATION DE LUMINOSITE ET CONTRASTE /////////////////////////////
 
-    private int[][][] preModifyImage(int[][][] colorMatrix){
+    private int[][][] preModifyImage(int[][][] colorMatrix, boolean automatedMode){
         if (!(this.alreadyPreModified)) {
             if (debug) {
-                log.debug("Modification");
+                log.debug("Applying pre-modifications");
             }
-            colorMatrix = lightUpSector(colorMatrix, this.zoneToPerformLocalisation[0], this.zoneToPerformLocalisation[1], this.zoneToPerformLocalisation[0] + this.zoneToPerformLocalisation[2], this.zoneToPerformLocalisation[1] + this.zoneToPerformLocalisation[3], this.saturationPreModifier, this.brightnessPreModifier);
+            if (automatedMode) {
+                colorMatrix = lightUpSector(colorMatrix,
+                        this.zoneToPerformLocalisationAutomatic[0], this.zoneToPerformLocalisationAutomatic[1],
+                        this.zoneToPerformLocalisationAutomatic[0] + this.zoneToPerformLocalisationAutomatic[2],
+                        this.zoneToPerformLocalisationAutomatic[1] + this.zoneToPerformLocalisationAutomatic[3],
+                        this.saturationPreModifier, this.brightnessPreModifier);
+            }
+            else{
+                colorMatrix = lightUpSector(colorMatrix,
+                        this.zoneToPerformLocalisationManual[0], this.zoneToPerformLocalisationManual[1],
+                        this.zoneToPerformLocalisationManual[0] + this.zoneToPerformLocalisationManual[2],
+                        this.zoneToPerformLocalisationManual[1] + this.zoneToPerformLocalisationManual[3],
+                        this.saturationPreModifier, this.brightnessPreModifier);
+            }
             this.alreadyPreModified = true;
         }
         return colorMatrix;
@@ -574,7 +599,7 @@ public class PatternRecognition extends AbstractThread{
             double[][] distanceArrays = new double[5][10];
             int halfLengthSideOfSquareDetection = this.lengthSideOfSquareDetection / 2;
             int halfDistanceBetweenTwoColors = this.distanceBetweenTwoColors / 2;
-            colorMatrix=preModifyImage(colorMatrix);
+            colorMatrix=preModifyImage(colorMatrix,localizationAutomated);
             int iStartValue = -2;
             for (int i = iStartValue; i <= 2; i++) {
                 /**On définit où l'algorithme doit chercher ses couleurs
@@ -631,7 +656,7 @@ public class PatternRecognition extends AbstractThread{
             if (maxProba < 0.3) {
                 if (this.alreadyLitUp < 2) {
                     this.alreadyLitUp += 1;
-                    colorMatrix = lightUpSector(colorMatrix, this.zoneToPerformLocalisation[0], this.zoneToPerformLocalisation[1], this.zoneToPerformLocalisation[0] + this.zoneToPerformLocalisation[2], this.zoneToPerformLocalisation[1] + this.zoneToPerformLocalisation[3], 1.2, 1.2);
+                    colorMatrix = lightUpSector(colorMatrix, this.zoneToPerformLocalisationAutomatic[0], this.zoneToPerformLocalisationAutomatic[1], this.zoneToPerformLocalisationAutomatic[0] + this.zoneToPerformLocalisationAutomatic[2], this.zoneToPerformLocalisationAutomatic[1] + this.zoneToPerformLocalisationAutomatic[3], 1.2, 1.2);
                     if (debug) {
                         log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                     }
@@ -663,7 +688,6 @@ public class PatternRecognition extends AbstractThread{
         File file = new File("/tmp/CoordsPatternVideo.txt");
         String data = "";
         if (file.exists()) {
-            colorMatrix=preModifyImage(colorMatrix);
             try {
                 data = new String(Files.readAllBytes(Paths.get("/tmp/CoordsPatternVideo.txt")));
             } catch (Exception e) {
@@ -679,7 +703,13 @@ public class PatternRecognition extends AbstractThread{
             /**Coords de la forme :
              * {xCenterFirstColor, yCenterFirstColor, xCenterSecondColor, yCenterSecondColor, xCenterThirdColor, yCenterSecondColor}
              */
-
+            int maxX=Math.max(Math.max(coords[0],coords[2]),coords[4]);
+            int minX=Math.min(Math.min(coords[0],coords[2]),coords[4]);
+            int maxY=Math.max(Math.max(coords[1],coords[3]),coords[5]);
+            int minY=Math.min(Math.min(coords[1],coords[3]),coords[5]);
+            /** De la forme : {xstart, ystart, width, height} */
+            this.zoneToPerformLocalisationManual=new int[]{Math.max(minX-lengthSideOfSquareDetection,0),Math.max(minY-lengthSideOfSquareDetection,0),Math.min(maxX-minX+lengthSideOfSquareDetection,this.imageWidth-1),Math.min(maxY-minY+lengthSideOfSquareDetection,this.imageHeight-1)};
+            colorMatrix=preModifyImage(colorMatrix,this.localizationAutomated);
             int halfLengthSideOfSquareDetection=this.lengthSideOfSquareDetection/2;
             int imageWidthMinusOne=this.imageWidth-1;
             int imageHeightMinusOne=this.imageHeight-1;
@@ -738,7 +768,7 @@ public class PatternRecognition extends AbstractThread{
             if (maxProba < 0.3) {
                 if (this.alreadyLitUp < 2) {
                     this.alreadyLitUp += 1;
-                    colorMatrix = lightUpSector(colorMatrix, this.zoneToPerformLocalisation[0], this.zoneToPerformLocalisation[1], this.zoneToPerformLocalisation[0] + this.zoneToPerformLocalisation[2], this.zoneToPerformLocalisation[1] + this.zoneToPerformLocalisation[3], 1.2, 1.2);
+                    colorMatrix = lightUpSector(colorMatrix, this.zoneToPerformLocalisationManual[0], this.zoneToPerformLocalisationManual[1], this.zoneToPerformLocalisationManual[0] + this.zoneToPerformLocalisationManual[2], this.zoneToPerformLocalisationManual[1] + this.zoneToPerformLocalisationManual[3], 1.2, 1.2);
                     if (debug) {
                         log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                     }
@@ -762,8 +792,7 @@ public class PatternRecognition extends AbstractThread{
         }
     }
 
-
-        //////////////////////////////////// FONCTION RUN DU THREAD /////////////////////////////////////////////
+    //////////////////////////////////// FONCTION RUN DU THREAD /////////////////////////////////////////////
 
     /**
      * On run le thread
@@ -790,7 +819,7 @@ public class PatternRecognition extends AbstractThread{
 
         if (!this.recognitionDone) {
             log.debug("Début de la prise de photo");
-            BufferedImage buffImg = ShootBufferedStillWebcam.takeBufferedPicture();
+            BufferedImage buffImg = UseWebcam.takeBufferedPicture();
             log.debug("Fin de la prise de photo");
             this.movementLocked = false;
             int[][][] colorMatrix = createColorMatrixFromBufferedImage(buffImg);
@@ -798,7 +827,7 @@ public class PatternRecognition extends AbstractThread{
                 analysePatternAfterManualLocalization(colorMatrix);
             }
             if (this.localizationAutomated) {
-                centerPointPattern = calculateCenterPattern(buffImg, this.zoneToPerformLocalisation);
+                centerPointPattern = calculateCenterPattern(buffImg, this.zoneToPerformLocalisationAutomatic);
                 analysePatternAfterAutomaticLocalization(colorMatrix);
             }
         }
@@ -808,7 +837,7 @@ public class PatternRecognition extends AbstractThread{
         log.debug("Pattern recognized : " + finalIndice);
         while (!this.isShutdown){
             try {
-                Thread.sleep(50);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 log.debug("Le thread a été interrompu");
                 e.printStackTrace();
@@ -817,11 +846,6 @@ public class PatternRecognition extends AbstractThread{
     }
 
     public int getFinalIndice(){
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         return this.finalIndice;
     }
 
@@ -833,10 +857,10 @@ public class PatternRecognition extends AbstractThread{
     }
 
     /** Set la zone dans laquelle faire la localisation
-     * @param zoneToPerformLocalisation {xstart, ystart, width, height}
+     * @param zoneToPerformLocalisationAutomatic {xstart, ystart, width, height}
      */
-    public void setZoneToPerformLocalisation(int[] zoneToPerformLocalisation){
-        this.zoneToPerformLocalisation=zoneToPerformLocalisation;
+    public void setZoneToPerformLocalisationAutomatic(int[] zoneToPerformLocalisationAutomatic){
+        this.zoneToPerformLocalisationAutomatic = zoneToPerformLocalisationAutomatic;
     }
 
     /** Set la modification de saturation avant l'algorithme de reconnaissance de pattern
