@@ -7,14 +7,15 @@ public class Graph {
     private ArrayList<Edge> edges;
 
     public Graph(ArrayList<Node> nodes) {
-        this.nodes = nodes;
         this.edges = new ArrayList<>();
+        this.nodes = nodes;
+        createEdge(nodes);
     }
 
     public void createEdge(ArrayList<Node> nodes){
         int n = nodes.size();
-        for (int i = 0; 0 < n ; i++){
-            for(int j = i+1; j < n; j++){
+        for (int i = 0; i < n ; i++){
+            for(int j = i+1; j < n ; j++){
                 edges.add(new Edge(nodes.get(i),nodes.get(j)));
             }
         }

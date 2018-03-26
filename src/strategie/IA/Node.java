@@ -44,6 +44,7 @@ public abstract class Node {
         }
     }
 
+    //arbre de décision
     public Node selectNode() {
         int bestScore = 0;
         int i = 0;

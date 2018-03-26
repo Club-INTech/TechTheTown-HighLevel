@@ -13,34 +13,41 @@ import java.util.ArrayList;
 
 public class IA implements Service {
 
-    Node root;
-    GameState gameState;
-    ScriptManager scriptManager;
+    private GameState gameState;
+    private ScriptManager scriptManager;
+    private Graph graph;
 
     public IA(GameState gameState, ScriptManager scriptManager) {
         this.gameState = gameState;
         this.scriptManager = scriptManager;
+        this.graph = new Graph(createNodes());
     }
 
-    public void create() {
-        root = new Pattern(0, null, scriptManager, gameState);
+    public ArrayList<Node> createNodes() {
+        Node pattern = new Pattern(0, null, scriptManager, gameState);
         Node abeille = new Abeille(0, null, scriptManager, gameState);
         Node panneau = new Panneau(0, null, scriptManager, gameState);
         Node takeCubes = new TakeCubes(0, null, scriptManager, gameState);
         Node deposeCubes = new DeposeCubes(0, null, scriptManager, gameState);
 
-        ArrayList<Node> a1 = new ArrayList<>();
-        a1.add(panneau);
-        a1.add(abeille);
-        root.setNextNodes(a1);
+        ArrayList<Node> nodes = new ArrayList<>();
+        nodes.add(pattern);
+        nodes.add(abeille);
+        nodes.add(panneau);
+        nodes.add(takeCubes);
+        nodes.add(deposeCubes);
 
-        ArrayList<Node> a2 = new ArrayList<>();
+        return nodes;
     }
+
 
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException {
-        root.selectNode().execute(e);
+//        root.selectNode().execute(e);
     }
 
+    public Graph getGraph() {
+        return graph;
+    }
 
     @Override
     public void updateConfig() {
