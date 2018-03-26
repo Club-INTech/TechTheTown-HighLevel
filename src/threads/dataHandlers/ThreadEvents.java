@@ -38,17 +38,17 @@ public class ThreadEvents extends AbstractThread
     private Log log;
 
     /** Buffer de lecture des events, rempli par ThreadEth */
-    private ConcurrentLinkedQueue<String> events;
+    private volatile ConcurrentLinkedQueue<String> events;
 
     /** Buffer d'envoie des events */
-    private ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
 
     private boolean cubeTakenBrasAV=false;
 
     private boolean cubeTakenBrasAR=false;
 
     /** Le robot bouge */
-    public boolean isMoving;
+    public volatile boolean isMoving;
 
     /**
      * Constructeur
@@ -68,7 +68,7 @@ public class ThreadEvents extends AbstractThread
     public void run()
     {
         String event;
-        Thread.currentThread().setPriority(6);
+        Thread.currentThread().setPriority(8);
         while(!ThreadEth.shutdown)
         {
             try {
