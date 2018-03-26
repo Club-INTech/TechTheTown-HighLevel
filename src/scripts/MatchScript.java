@@ -30,9 +30,8 @@ public class MatchScript extends AbstractScript {
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
             actPD.goToThenExec(0,gameState);
 
-            //On palie la reconnaissance de couleurs qui est actuellement en travaux
-            gameState.setRecognitionDone(true);
-            gameState.setIndicePattern(0);
+            //gameState.setRecognitionDone(true);
+            //gameState.setIndicePattern(0);
 
             //On prend le tas de cubes 2
             gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
