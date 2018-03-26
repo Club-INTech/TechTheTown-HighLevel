@@ -3,10 +3,21 @@ package tests;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class JUnit_TakePicturePython extends JUnit_Test {
+
+    @Before
+    public void setUp(){
+        try{
+            super.setUp();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void test() throws IOException {

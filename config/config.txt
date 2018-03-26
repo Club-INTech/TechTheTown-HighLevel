@@ -17,7 +17,6 @@ COULEUR                              = vert
 SIMULATION                           = false
 ATTENTE_JUMPER                       = false
 
-
 # VERSION DE MATCHSCRIPT TO EXECUTE
 MATCHSCRIPT_TO_EXECUTE               = 0
 
