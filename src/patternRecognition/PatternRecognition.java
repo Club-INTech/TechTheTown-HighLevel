@@ -46,8 +46,7 @@ public class PatternRecognition extends AbstractThread{
     private int[][] mediansList = new int[3][3];
 
     private int[] zoneToPerformLocalisation;
-    private int[] zoneToPerformLocalisationVert;
-    private int[] zoneToPerformLocalisationOrange;
+    private int[][] positionsColorsOnImage;
 
     private double saturationPreModifier;
     private double brightnessPreModifier;
@@ -566,20 +565,20 @@ public class PatternRecognition extends AbstractThread{
              */
             int imageWidthMinusOne=imageWidth-1;
             int imageHeightMinusOne=imageHeight-1;
-            int[][] positionsColorsOnImage = new int[][]
-                    {{Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection - distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
-                      Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
-                      Math.max(Math.min(centerPointPattern[0] - halfLengthSideOfSquareDetection + distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0)},
-                     {Math.max(centerPointPattern[1] - halfLengthSideOfSquareDetection,0),
-                      Math.max(centerPointPattern[1] - halfLengthSideOfSquareDetection,0),
-                      Math.max(centerPointPattern[1] - halfLengthSideOfSquareDetection,0)},
-                     {Math.max(Math.min(centerPointPattern[0] + halfLengthSideOfSquareDetection - distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
-                      Math.max(Math.min(centerPointPattern[0] + halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
-                      Math.max(Math.min(centerPointPattern[0] + halfLengthSideOfSquareDetection + distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0)},
-                     {Math.min(centerPointPattern[1] + halfLengthSideOfSquareDetection,imageHeightMinusOne),
-                      Math.min(centerPointPattern[1] + halfLengthSideOfSquareDetection,imageHeightMinusOne),
-                      Math.min(centerPointPattern[1] + halfLengthSideOfSquareDetection,imageHeightMinusOne)}};
-            distanceArrays[i - iStartValue] = computeProximity(colorMatrix, positionsColorsOnImage);
+            this.positionsColorsOnImage = new int[][]
+                    {{Math.max(Math.min(this.centerPointPattern[0] - halfLengthSideOfSquareDetection - this.distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
+                      Math.max(Math.min(this.centerPointPattern[0] - halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
+                      Math.max(Math.min(this.centerPointPattern[0] - halfLengthSideOfSquareDetection + this.distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0)},
+                     {Math.max(this.centerPointPattern[1] - halfLengthSideOfSquareDetection,0),
+                      Math.max(this.centerPointPattern[1] - halfLengthSideOfSquareDetection,0),
+                      Math.max(this.centerPointPattern[1] - halfLengthSideOfSquareDetection,0)},
+                     {Math.max(Math.min(this.centerPointPattern[0] + halfLengthSideOfSquareDetection - this.distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
+                      Math.max(Math.min(this.centerPointPattern[0] + halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0),
+                      Math.max(Math.min(this.centerPointPattern[0] + halfLengthSideOfSquareDetection + this.distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne),0)},
+                     {Math.min(this.centerPointPattern[1] + halfLengthSideOfSquareDetection,imageHeightMinusOne),
+                      Math.min(this.centerPointPattern[1] + halfLengthSideOfSquareDetection,imageHeightMinusOne),
+                      Math.min(this.centerPointPattern[1] + halfLengthSideOfSquareDetection,imageHeightMinusOne)}};
+            distanceArrays[i - iStartValue] = computeProximity(colorMatrix, this.positionsColorsOnImage);
         }
         double maxProba = 0;
         int maxJ = 0;
@@ -608,9 +607,9 @@ public class PatternRecognition extends AbstractThread{
         }
 
         if (maxProba<0.3){
-            if (alreadyLitUp<2){
-                alreadyLitUp+=1;
-                colorMatrix=lightUpSector(colorMatrix,zoneToPerformLocalisation[0],zoneToPerformLocalisation[1],zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2],zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3],1.2,1.2);
+            if (this.alreadyLitUp<2){
+                this.alreadyLitUp+=1;
+                colorMatrix=lightUpSector(colorMatrix,this.zoneToPerformLocalisation[0],this.zoneToPerformLocalisation[1],this.zoneToPerformLocalisation[0]+this.zoneToPerformLocalisation[2],this.zoneToPerformLocalisation[1]+this.zoneToPerformLocalisation[3],1.2,1.2);
                 if (debug){
                     log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                 }
