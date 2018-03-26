@@ -12,10 +12,10 @@ public class BetterNode implements Comparator<Noeud> {
     @Override
     public int compare(Noeud noeud1, Noeud noeud2){
 
-        if(noeud1.getHeuristique()+noeud1.getCout()>noeud2.getHeuristique()+noeud2.getCout()){
+        if(noeud1.getHeuristique()>noeud2.getHeuristique()){
             return 1;
         }
-        else if(noeud1.getHeuristique()+noeud1.getCout()<noeud2.getHeuristique()+noeud2.getCout()){
+        else if(noeud1.getHeuristique()<noeud2.getHeuristique()){
             return -1;
         }
         else{
