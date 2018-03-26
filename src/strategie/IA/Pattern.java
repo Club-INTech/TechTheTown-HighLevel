@@ -1,9 +1,10 @@
 package strategie.IA;
 
-import enums.ScriptNames;
-import pathfinder.Noeud;
-import patternRecognition.PatternRecognition;
-import scripts.AbstractScript;
+import exceptions.BadVersionException;
+import exceptions.BlockedActuatorException;
+import exceptions.ExecuteException;
+import exceptions.Locomotion.PointInObstacleException;
+import exceptions.Locomotion.UnableToMoveException;
 import scripts.ScriptManager;
 import strategie.GameState;
 
@@ -15,6 +16,12 @@ public class Pattern extends Node{
         super(versionToExecute, nextNodes, scriptManager, gameState);
         this.score = 42;
 //        this.script = scriptManager.getScript(ScriptNames.);
+    }
+
+    @Override
+    public void execute(Exception e) {
+        System.out.println("Patern Recognition");
+        setDone(true);
     }
 
     @Override

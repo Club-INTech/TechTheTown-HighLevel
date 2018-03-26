@@ -48,6 +48,9 @@ public abstract class Node {
         int bestScore = 0;
         int i = 0;
         Node currentNode;
+        if (!isDone() || getNextNodes()==null){
+            return this;
+        }
         if (gameState.isTourAvantRemplie()&& gameState.isTourArriereRemplie()){
             //dépose cube
         }

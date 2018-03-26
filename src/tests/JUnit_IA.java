@@ -71,8 +71,8 @@ public class JUnit_IA extends JUnit_Test{
         public void testScript() {
             try {
                 robotReal = container.getService(Robot.class);
-                robotReal.getPosition();
-                robotReal.getOrientation();
+                robotReal.setPosition(Table.entryPosition);
+                robotReal.setOrientation(Table.entryOrientation);
                 ia.create();
                 while (true){
                     ia.execute(null);
