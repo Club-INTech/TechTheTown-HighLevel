@@ -106,10 +106,10 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Buffers représentant les différents canaux
      */
-    private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
 
     /**
      * Le "canal" position & orientation
