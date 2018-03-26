@@ -71,16 +71,16 @@ public class Main {
             container.getService(ThreadEth.class);
             //container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
-            //PatternRecognition patternRecognition=container.getService(PatternRecognition.class);
+            PatternRecognition patternRecognition=container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
             // TODO : initialisation des variables globales du robot & objets...
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
 
-            /*while(patternRecognition.isMovementLocked()) {
+            while(patternRecognition.isMovementLocked()) {
                 Thread.sleep(10);
-            }*/
+            }
 
         } catch (ContainerException p) {
             System.out.println("bug container");
