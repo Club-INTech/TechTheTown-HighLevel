@@ -43,7 +43,7 @@ public class Graphe implements Service {
         this.table = table;
         this.nodes = createNodes();
         long time1 = System.currentTimeMillis();
-        this.boneslist = createAretes(nodes);
+        this.boneslist = createAretes();
         long time2 = System.currentTimeMillis() - time1;
         this.log = log;
         this.config = config;
@@ -107,7 +107,7 @@ public class Graphe implements Service {
      */
 
 
-    public CopyOnWriteArrayList<Arete> createAretes(CopyOnWriteArrayList<Noeud> nodes) {
+    public CopyOnWriteArrayList<Arete> createAretes() {
         Arete arete;
         CopyOnWriteArrayList<Arete> boneslist = new CopyOnWriteArrayList<>();
         int n = nodes.size();
@@ -224,7 +224,7 @@ public class Graphe implements Service {
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
         this.nodes = createNodes();
-        this.boneslist = createAretes(nodes);
+        this.boneslist = createAretes();
     }
 
 }
