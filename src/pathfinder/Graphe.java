@@ -170,6 +170,8 @@ public class Graphe implements Service {
 
 
     public void removeNode(Noeud noeud){
+        ArrayList<Noeud> voisins=noeud.getVoisins();
+        voisins.remove(noeud);
         nodes.remove(noeud);
     }
 
