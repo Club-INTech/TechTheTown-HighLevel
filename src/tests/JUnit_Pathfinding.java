@@ -216,8 +216,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
         container.startInstanciedThreads();
 //        log.debug("begin script");
 //        pathfinding.initGraphe();
-//        robotReal.setPosition(new Vec2(1252, 455));
-//        robotReal.setOrientation(Math.PI);
+        robotReal.setPosition(new Vec2(1252, 455));
+        robotReal.setOrientation(Math.PI);
         robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
 
         ArrayList<Vec2> pathToFollow = new ArrayList<>();
@@ -257,15 +257,14 @@ public class JUnit_Pathfinding extends JUnit_Test {
         obstacleManager = container.getService(ObstacleManager.class);
         robotReal = container.getService(Robot.class);
         state = container.getService(GameState.class);
-        simulator = container.getService(ThreadSimulator.class);
-        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
+//        simulator = container.getService(ThreadSimulator.class);
+//        simulatorMotion = container.getService(ThreadSimulatorMotion.class);
         //anInterface = container.getService(ThreadInterface.class);
         container.startInstanciedThreads();
 
 
-       Window window = new Window(table);
+        Window window = new Window(table, state,scriptManager,false);
         /*window.setArete(pathfinding.getGraphe().getBoneslist());
-
         ArrayList<Vec2> path = new ArrayList<>();
         window.setPath(path);
         ArrayList<Vec2> clics = new ArrayList<>();*/
@@ -282,13 +281,12 @@ public class JUnit_Pathfinding extends JUnit_Test {
         ArrayList<Vec2> clics = new ArrayList<>();
         ArrayList<Vec2> path = new ArrayList<>();
         window.setArete(pathfinding.getGraphe().getBoneslist());
-        Vec2 positiondepart=new Vec2(1252, 455);
-        Vec2 postionabeille=new Vec2(1500-212-45,2000-212-45);
+        window.repaint();
         while (true) {
 
             try {
-                //clics = window.waitLRClic();
-                path = pathfinding.findmyway(postionabeille,positiondepart );
+                clics = window.waitLRClic();
+                path = pathfinding.findmyway(clics.get(0), clics.get(1));
                 window.setPath(path);
                 window.repaint();
             } catch (PointInObstacleException e) {

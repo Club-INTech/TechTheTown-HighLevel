@@ -54,6 +54,7 @@ public class Main {
 	//TODO : Aide-mémoire : mettre la lib libopencv_java340.so dans le répertoire /usr/lib de la raspi, et executer execstack -c libopencv_java340.so
 
     public static void main(String[] args) throws InterruptedException {
+        int matchScriptVersionToExecute=0;
         try {
             container = new Container();
             config = container.getConfig();
@@ -64,6 +65,7 @@ public class Main {
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
             }
+            matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
             Thread.currentThread().setPriority(6);
             //container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
@@ -91,7 +93,7 @@ public class Main {
             waitMatchBegin();
 //			         TODO : lancer l'IA
 
-            scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(1, realState);
+            scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
 
         } catch (Exception e) {
             e.printStackTrace();

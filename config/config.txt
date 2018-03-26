@@ -11,11 +11,23 @@ ENNEMY_RADIUS                        = 200
 LONGUEUR_CUBE                        =  58
 LONGUEUR_BRAS                        = 330
 DIMENSION_PORTES                     = 110
+COUP_FIXE                            = 42
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
 SIMULATION                           = true
 ATTENTE_JUMPER                       = false
+
+# VERSION DE MATCHSCRIPT TO EXECUTE
+MATCHSCRIPT_TO_EXECUTE               = 0
+
+# PARAMETRES RECONNAISSANCE DE COULEURS
+LOCALIZATION_AUTOMATED               = false
+
+# Couleurs disponibles : (orange, vert, rouge, noir, bleu, null)
+FIRST_COLOR                          = null
+SECOND_COLOR                         = null
+THIRD_COLOR                          = null
 
 # PARAMETRES POUR LES CAPTEUR
 # horizon_capteurs                   = 500
