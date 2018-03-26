@@ -190,10 +190,7 @@ public class Graphe implements Service {
         ArrayList<Vec2> points2=(ArrayList<Vec2>) pointstoreturn.clone();
         for(Vec2 point : points2){
             for(ObstacleCircular obstacleCircular : listCircu){
-                if(!(table.getObstacleManager().isRobotInTable(point))){
-                    pointstoreturn.remove(point);
-                }
-                if(table.getObstacleManager().isPositionInObstacle(point,obstacleCircular)){
+                if(!(table.getObstacleManager().isRobotInTable(point)) || table.getObstacleManager().isPositionInObstacle(point,obstacleCircular )){
                     pointstoreturn.remove(point);
                 }
 
