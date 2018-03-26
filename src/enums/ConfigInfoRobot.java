@@ -98,7 +98,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     MAX_RETRIES_IF_BLOCKED(1),
 
     /** Paramètres Pathfinding */
-    COUP_FIXE(10),
+    COUT_FIXE(10),
 
     /** Paramètres des scripts */
     VECTEUR_EXAMPLE(new Vec2(50, 60)),

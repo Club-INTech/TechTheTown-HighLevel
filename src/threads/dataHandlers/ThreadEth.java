@@ -106,15 +106,15 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Buffers représentant les différents canaux
      */
-    private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
 
     /**
      * Le "canal" position & orientation
      */
-    private XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
+    private volatile XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
     private String splitString = " ";
 
     private boolean symmetry=config.getBoolean(ConfigInfoRobot.COULEUR);
@@ -306,7 +306,6 @@ public class ThreadEth extends AbstractThread implements Service {
             if (debug) {
                 outStandard.write(mess);
                 outStandard.newLine();
-                outStandard.flush();
             }
 
         } catch (SocketException e) {
@@ -335,7 +334,6 @@ public class ThreadEth extends AbstractThread implements Service {
                 if (debug) {
                     outStandard.write("\t" + inputLines[i]);
                     outStandard.newLine();
-                    outStandard.flush();
                 }
 
                 if (inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) {
@@ -343,11 +341,10 @@ public class ThreadEth extends AbstractThread implements Service {
                     if (debug) {
                         outStandard.write("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                         outStandard.newLine();
-                        outStandard.flush();
                     }
 
                     while ((inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) && tries < 5) {
-                        Thread.sleep(200);
+                        Thread.sleep(10);
                         tries += 1;
                         inputLines[i] = waitAndGetResponse();
                     }
@@ -366,7 +363,6 @@ public class ThreadEth extends AbstractThread implements Service {
 
             if (nb_line_response != 0) {
                 outStandard.newLine();
-                outStandard.flush();
             }
 
             waitForAResponse();
@@ -395,7 +391,7 @@ public class ThreadEth extends AbstractThread implements Service {
     @Override
     public void run() {
         String buffer;
-        Thread.currentThread().setPriority(8);
+        Thread.currentThread().setPriority(10);
         createInterface();
         log.debug("ThreadEth started");
 
@@ -405,7 +401,6 @@ public class ThreadEth extends AbstractThread implements Service {
 
                 fullDebug.write(buffer.substring(2));
                 fullDebug.newLine();
-                fullDebug.flush();
                 if (buffer.length() >= 2 && !(buffer.replaceAll(" ", "").equals(""))) {
                     char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
                     String infosFromBuffer=buffer.substring(2);
@@ -413,13 +408,11 @@ public class ThreadEth extends AbstractThread implements Service {
                         eventBuffer.add(infosFromBuffer);
                         outEvent.write(infosFromBuffer);
                         outEvent.newLine();
-                        outEvent.flush();
                         continue;
                     } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
                         ultrasoundBuffer.add(infosFromBuffer);
                         outSensor.write(infosFromBuffer);
                         outSensor.newLine();
-                        outSensor.flush();
                         continue;
                     } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                         synchronized (this.positionAndOrientation) {
@@ -430,14 +423,12 @@ public class ThreadEth extends AbstractThread implements Service {
                             }
                             outPosition.write(infosFromBuffer);
                             outPosition.newLine();
-                            outPosition.flush();
                         }
                         continue;
                     } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
                         comFlag = false;
                         outDebug.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis()-timeRef));
                         outDebug.newLine();
-                        outDebug.flush();
                         continue;
                     } else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]){
                         standardBuffer.add(infosFromBuffer);
@@ -465,6 +456,17 @@ public class ThreadEth extends AbstractThread implements Service {
                 shutdown = true;
                 ioe.printStackTrace();
             }
+        }
+        try{
+            outEvent.flush();
+            outSensor.flush();
+            outPosition.flush();
+            outDebug.flush();
+        }
+        catch(IOException ioe){
+            log.debug("LL ne répond pas, on shutdown");
+            shutdown = true;
+            ioe.printStackTrace();
         }
     }
 

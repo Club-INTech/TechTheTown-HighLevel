@@ -18,7 +18,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
     /** Position d'entrée du script */
 
     private int xEntry=370;
-    private int yEntry=220;
+    private int yEntry=230;
 
     /** Eléments appelés par la config */
 

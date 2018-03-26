@@ -30,8 +30,9 @@ public class Pathfinding implements Service {
     private Graphe graphe;
     private Table table;
     private ObstacleManager obstacleManager;
-    private ArrayList<ObstacleCircular> circularobstacles;/** Coup fixe ajouté à chaque noeud*/
-    private int coupFixe;
+    private ArrayList<ObstacleCircular> circularobstacles;
+    /** Coût fixe ajouté à chaque noeud*/
+    private int coutFixe;
 
     public Pathfinding(Log log, Config config, Table table, Graphe graphe) {
         this.log = log;
@@ -138,26 +139,24 @@ public class Pathfinding implements Service {
                 for (Noeud voisin : noeudcourant.getVoisins()) {
 
                     if (closeList.contains(voisin)) {
-                        if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()) + coupFixe)) {
+                        if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()) + coutFixe)) {
                             closeList.remove(voisin);
                             openList.add(voisin);
                             voisin.setPred(noeudcourant);
-                            voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()) + coupFixe));
+                            voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()) + coutFixe));
                         }
                     } else if (openList.contains(voisin)) {
-                        if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()) + coupFixe)) {
+                        if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()) + coutFixe)) {
                             voisin.setPred(voisin.getPred());
-                            voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())) + coupFixe);
+                            voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())) + coutFixe);
                         }
                     } else {
                         voisin.setHeuristique(voisin.getPosition().distance(noeudarrive.getPosition()));
-//                        voisin.setHeuristique(l * coupFixe);
-                        voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())) + coupFixe);
+                        voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())) + coutFixe);
                         openList.add(voisin);
                         voisin.setPred(noeudcourant);
                     }
                 }
-//                l++;
             }
         }
         // pas de chemin trouvé.
@@ -191,6 +190,6 @@ public class Pathfinding implements Service {
 
     @Override
     public void updateConfig() {
-        coupFixe = config.getInt(ConfigInfoRobot.COUP_FIXE);
+        coutFixe = config.getInt(ConfigInfoRobot.COUT_FIXE);
     }
 }
