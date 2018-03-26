@@ -62,21 +62,7 @@ public class Pathfinding implements Service {
         graphe.updateConfig();
     }
 
-    /**
-     * Méthode réinitialisant le graphe, à appeler après chaque utilisation de findmyway
-     */
 
-    public void reInitGraphe(Noeud noeudDepart, Noeud noeudArrive) {
-        for (Noeud node : graphe.getNodes()) {
-            node.setPred(null);
-            node.setCout(-1);
-            node.setHeuristique(999999999);
-            node.removeNeighbour(noeudDepart);
-            node.removeNeighbour(noeudArrive);
-        }
-        graphe.removeNode(noeudDepart);
-        graphe.removeNode(noeudArrive);
-    }
 
     /**
      * Retire un tas de cubes du graphes, si le robot les à récupérés
@@ -147,7 +133,7 @@ public class Pathfinding implements Service {
                 finalPath.add(positionarrive);
                 long time2 = System.currentTimeMillis() - time1;
                 log.debug("Time to execute (ms): " + time2);
-                reInitGraphe(noeuddepart, noeudarrive);
+                this.getGraphe().reInitGraphe(noeuddepart, noeudarrive);
                 return finalPath;
             }
 
@@ -203,7 +189,7 @@ public class Pathfinding implements Service {
         long time2 = System.currentTimeMillis() - time1;
         log.debug("Time to execute (ms): " + time2);
 
-        reInitGraphe(noeuddepart, noeudarrive);
+        this.getGraphe().reInitGraphe(noeuddepart, noeudarrive);
 
         return finalPath;
     }

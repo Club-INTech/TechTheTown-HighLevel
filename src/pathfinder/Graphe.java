@@ -229,6 +229,21 @@ public class Graphe implements Service {
         this.nodes = createNodes();
         this.boneslist = createAretes();
     }
+    /**
+     * Méthode réinitialisant le graphe, à appeler après chaque utilisation de findmyway
+     */
+
+    public void reInitGraphe(Noeud noeudDepart, Noeud noeudArrive) {
+        for (Noeud node :this.getNodes()) {
+            node.setPred(null);
+            node.setCout(-1);
+            node.setHeuristique(999999999);
+            node.removeNeighbour(noeudDepart);
+            node.removeNeighbour(noeudArrive);
+        }
+        this.removeNode(noeudDepart);
+        this.removeNode(noeudArrive);
+    }
 
 }
 
