@@ -56,7 +56,7 @@ public abstract class Node {
         }
         for (int j = 0; j < nextNodes.size(); j++) {
             currentNode = nextNodes.get(j);
-            if (currentNode.getScore() > bestScore && isDone()) {
+            if (currentNode.getScore() > bestScore && !currentNode.isDone()) {
                 bestScore = currentNode.getScore();
                 i = j;
             }
