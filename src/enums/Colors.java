@@ -58,7 +58,6 @@ public enum Colors {
         this.name=name;
         this.RGB=RGB;
         this.id=id;
-
     }
 
     //Renvoie le code RGB de la couleur
@@ -84,6 +83,17 @@ public enum Colors {
             }
         }
         return RGB;
+    }
+
+    public static Colors getColorFromName(String givenName){
+        Colors colorFound=Colors.NULL;
+        for (Colors color : Colors.values()){
+            if (Objects.equals(givenName, color.name)){
+                colorFound=color;
+                break;
+            }
+        }
+        return colorFound;
     }
 
     //Renvoie le RGB d'une couleur en fonction d'un ID donné

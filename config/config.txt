@@ -17,6 +17,18 @@ COULEUR                              = vert
 SIMULATION                           = false
 ATTENTE_JUMPER                       = false
 
+
+# VERSION DE MATCHSCRIPT TO EXECUTE
+MATCHSCRIPT_TO_EXECUTE               = 0
+
+# PARAMETRES RECONNAISSANCE DE COULEURS
+LOCALIZATION_AUTOMATED               = false
+
+# Couleurs disponibles : (orange, vert, rouge, noir, bleu, null)
+FIRST_COLOR                          = null
+SECOND_COLOR                         = null
+THIRD_COLOR                          = null
+
 # PARAMETRES POUR LES CAPTEUR
 # horizon_capteurs                   = 500
 # angle_detection_capteur            = 0.79

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import numpy as np
 import math
 import cv2
@@ -16,11 +18,11 @@ brightnessMultiplier=1.0
 xCalque1=100
 yCalque1=100
 
-#Position du deuxième point
+#Position du deuxieme point
 xCalque2=120
 yCalque2=120
 
-#Position du troisème point
+#Position du troiseme point
 xCalque3=140
 yCalque3=140
 
@@ -80,7 +82,11 @@ while(True):
     ### On sort de la boucle ici
     if toBreak:
         #SAUVEGARDER L'IMAGE ICI
+        cv2.imwrite("/tmp/ImageRaspi.jpeg",img)
         #SAUVEGARDER LES POSITIONS DES CALQUES ICI
+        file = open("/tmp/CoordsPatternVideo.txt","w")
+        file.write(str(xCalque1)+" "+str(yCalque1)+" "+str(xCalque2)+" "+str(yCalque2)+" "+str(xCalque3)+" "+str(yCalque3))
+        file.close()
         break
 
     ###AJOUT DES ANNOTATIONS SUR L'IMAGE

@@ -56,6 +56,11 @@ public class PatternRecognition extends AbstractThread{
     private boolean movementLocked;
     private boolean recognitionDone;
 
+    private boolean localizationAutomated;
+    private Colors firstColorShown;
+    private Colors secondColorShown;
+    private Colors thirdColorShown;
+
     /** Instanciation du thread de reconnaissance de couleurs
      * @param config passe la config
      * @param ethWrapper passe l'ethWrapper
@@ -534,10 +539,10 @@ public class PatternRecognition extends AbstractThread{
 
     //////////////////////////////////// ANALYSE DE PATTERN /////////////////////////////////////////////
 
-    /**Méthode permettant de faire la reconnaissance de pattenrs
+    /**Méthode permettant de faire la reconnaissance de pattenrs, dans le cas où une reconnaissance automatique a due être faite
      * @return l'id du pattern (int de 0 à 9, bornes comprises)
      */
-    private int analysePattern(int[][][] colorMatrix) {
+    private int analysePatternAfterLocalization(int[][][] colorMatrix) {
         double[][] distanceArrays = new double[5][10];
         int halfLengthSideOfSquareDetection = lengthSideOfSquareDetection / 2;
         int halfDistanceBetweenTwoColors = distanceBetweenTwoColors / 2;
@@ -612,7 +617,7 @@ public class PatternRecognition extends AbstractThread{
                 if (isSavingImages) {
                     saveImage(colorMatrix, "/tmp/ImageCenter.jpg");
                 }
-                analysePattern(colorMatrix);
+                analysePatternAfterLocalization(colorMatrix);
             }
             else{
                 this.finalIndice = maxJ;
@@ -628,6 +633,9 @@ public class PatternRecognition extends AbstractThread{
 
     //////////////////////////////////// FONCTION RUN DU THREAD /////////////////////////////////////////////
 
+    /**
+     * On run le thread
+     */
     public void run(){
         this.setPriority(5);
 
@@ -655,7 +663,7 @@ public class PatternRecognition extends AbstractThread{
         int[][][] colorMatrix=createColorMatrixFromBufferedImage(buffImg);
         centerPointPattern=calculateCenterPattern(buffImg, this.zoneToPerformLocalisation);
         if (!(centerPointPattern[0] == 0 && centerPointPattern[1] == 0)) {
-            analysePattern(colorMatrix);
+            analysePatternAfterLocalization(colorMatrix);
         }
         else{
             this.finalIndice=-1;
@@ -744,11 +752,15 @@ public class PatternRecognition extends AbstractThread{
 
     @Override
     public void updateConfig() {
-        Colors.ORANGE.setRGB(config.getInt(ConfigInfoRobot.rorange),config.getInt(ConfigInfoRobot.gorange),config.getInt(ConfigInfoRobot.borange));
-        Colors.YELLOW.setRGB(config.getInt(ConfigInfoRobot.rjaune),config.getInt(ConfigInfoRobot.gjaune),config.getInt(ConfigInfoRobot.bjaune));
-        Colors.BLUE.setRGB(config.getInt(ConfigInfoRobot.rbleu),config.getInt(ConfigInfoRobot.gbleu),config.getInt(ConfigInfoRobot.bbleu));
-        Colors.BLACK.setRGB(config.getInt(ConfigInfoRobot.rnoir),config.getInt(ConfigInfoRobot.gnoir),config.getInt(ConfigInfoRobot.bnoir));
-        Colors.GREEN.setRGB(config.getInt(ConfigInfoRobot.rvert),config.getInt(ConfigInfoRobot.gvert),config.getInt(ConfigInfoRobot.bvert));
+        Colors.ORANGE.setRGB(this.config.getInt(ConfigInfoRobot.rorange),config.getInt(ConfigInfoRobot.gorange),config.getInt(ConfigInfoRobot.borange));
+        Colors.YELLOW.setRGB(this.config.getInt(ConfigInfoRobot.rjaune),config.getInt(ConfigInfoRobot.gjaune),config.getInt(ConfigInfoRobot.bjaune));
+        Colors.BLUE.setRGB(this.config.getInt(ConfigInfoRobot.rbleu),config.getInt(ConfigInfoRobot.gbleu),config.getInt(ConfigInfoRobot.bbleu));
+        Colors.BLACK.setRGB(this.config.getInt(ConfigInfoRobot.rnoir),config.getInt(ConfigInfoRobot.gnoir),config.getInt(ConfigInfoRobot.bnoir));
+        Colors.GREEN.setRGB(this.config.getInt(ConfigInfoRobot.rvert),config.getInt(ConfigInfoRobot.gvert),config.getInt(ConfigInfoRobot.bvert));
+        this.localizationAutomated=this.config.getBoolean(ConfigInfoRobot.LOCALIZATION_AUTOMATED);
+        this.firstColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
+        this.secondColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
+        this.thirdColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
         this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
     }
 }
