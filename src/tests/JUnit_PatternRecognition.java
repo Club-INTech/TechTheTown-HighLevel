@@ -14,24 +14,15 @@ import java.io.File;
 
 public class JUnit_PatternRecognition extends JUnit_Test {
 
-    private Robot robotReal;
-    private ScriptManager scriptManager;
     private GameState state;
-    private HookFactory hookFactory;
-    private ThreadInterface anInterface;
     private PatternRecognition patternRecognitionThread;
-    private Locomotion locomotion;
 
     @Before
     public void setUp() {
         try {
             super.setUp();
-            //robotReal = container.getService(Robot.class);
             state = container.getService(GameState.class);
-            //scriptManager = container.getService(ScriptManager.class);
             patternRecognitionThread = container.getService(PatternRecognition.class);
-            //anInterface = container.getService(ThreadInterface.class);
-            //locomotion=container.getService(Locomotion.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -40,7 +31,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     @Test
     public void test() {
         boolean noVideoInput=true;
-        for (int i=0; i<5; i++) {
+        for (int i=0; i<3; i++) {
             File f = new File("/dev/video"+i);
             if (f.exists()) {
                 log.debug("/dev/video"+i+" exists");
@@ -52,19 +43,15 @@ public class JUnit_PatternRecognition extends JUnit_Test {
         }
 
         if (!noVideoInput) {
-
             patternRecognition.shootPicture.UseWebcam.setPatternPositionWithVideo();
-
-            boolean montlheryActive=false;
-            if (montlheryActive) {
-                patternRecognitionThread.setZoneToPerformLocalisationAutomatic(new int[]{190,155,305,260});
-            }
-
             try {
                 container.startInstanciedThreads();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+        else{
+            log.critical("NoVideoInput");
         }
 
 

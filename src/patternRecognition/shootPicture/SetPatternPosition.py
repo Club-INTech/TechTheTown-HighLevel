@@ -110,13 +110,13 @@ while(True):
 
     #On ecoute les touches appuyees
     key = cv2.waitKey(1) & 0xFF
-    if key==ord('0'):
+    if key==ord("0") or key==ord(" "):
         currentCalque=0
-    elif key==ord('1'):
+    elif key==ord("1"):
         currentCalque=1
-    elif key==ord('2'):
+    elif key==ord("2"):
         currentCalque=2
-    elif key==ord('3'):
+    elif key==ord("3"):
         currentCalque=3
 
     ### AFFICHAGE DE LA FRAME APRES AJOUT DES ANNOTATIONS

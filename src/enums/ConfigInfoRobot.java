@@ -117,6 +117,8 @@ public enum ConfigInfoRobot implements ConfigInfo
     FIRST_COLOR("null"),
     SECOND_COLOR("null"),
     THIRD_COLOR("null"),
+    IMAGE_WIDTH(1280),
+    IMAGE_HEIGHT(720),
 
     /**Paramètres couleurs*/
     rorange(183),

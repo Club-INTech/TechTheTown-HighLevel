@@ -13,6 +13,10 @@ LONGUEUR_BRAS                        = 330
 DIMENSION_PORTES                     = 110
 COUP_FIXE                            = 42
 
+
+
+
+
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
 SIMULATION                           = true
@@ -21,9 +25,20 @@ ATTENTE_JUMPER                       = false
 # VERSION DE MATCHSCRIPT TO EXECUTE
 MATCHSCRIPT_TO_EXECUTE               = 0
 
+
+
+
+
+
+
+
 # PARAMETRES RECONNAISSANCE DE COULEURS
-# A la main:false // Automatique:true
+# A LA MAIN : FALSE /// AUTOMATIQUE : TRUE
 LOCALIZATION_AUTOMATED               = false
+
+# IMAGE SIZE
+IMAGE_WIDTH                          = 640
+IMAGE_HEIGHT                         = 480
 
 # Couleurs disponibles : (orange, vert, rouge, noir, bleu, null)
 FIRST_COLOR                          = null

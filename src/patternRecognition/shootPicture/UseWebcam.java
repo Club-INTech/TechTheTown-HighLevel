@@ -27,10 +27,8 @@ public class UseWebcam {
 
     public static void setPatternPositionWithVideo(){
         List<String> command = new ArrayList<>();
-        //Camera FishEye
         command.add(pythonCommand);
         command.add("./src/patternRecognition/shootPicture/SetPatternPosition.py");
-
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();
         Process p = null;
@@ -120,13 +118,6 @@ public class UseWebcam {
         command.add("/tmp/ImageRaspi.jpeg");
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();
-
-
-// 		System.out.println("Executed this command:\n\t" + command.toString());
-// 		pb.redirectErrorStream(true);
-// 		pb.redirectOutput(
-// 				new File(System.getProperty("user.home") + File.separator +
-// 						"Desktop" + File.separator + "RPiCamera.RPiCamera.out"));
 
         Process p = null;
         try {

@@ -41,6 +41,7 @@ public class PatternRecognition extends AbstractThread{
     private boolean symmetry;
     private int imageWidth;
     private int imageHeight;
+    private boolean useJumper;
 
     //mediansList est composé de la médiane en R, en G et en B, pour chacune des 3 couleurs de la photo
     //Donc, si on nomme les couleurs 1, 2 et 3, on a :
@@ -74,20 +75,6 @@ public class PatternRecognition extends AbstractThread{
         this.ethWrapper=ethWrapper;
         this.gameState=stateToConsider;
 
-        //Hauteur et largeur de l'image
-        //VALEURS PICAM
-        //private int imageWidth=2592;
-        //private int imageHeight=1944;
-
-        //Webcam caca
-        this.imageWidth=640;
-        this.imageHeight=480;
-
-        /*
-        //Webcam robot
-        this.imageWidth=1280;
-        this.imageHeight=720;
-        */
         //TODO : faire en sorte que le script python accepte une certaine zone à localiser
 
         //Zone dans laquelle la localisation doit être faite
@@ -800,24 +787,26 @@ public class PatternRecognition extends AbstractThread{
     public void run(){
         this.setPriority(5);
 
-        /*while (ethWrapper.isJumperAbsent()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if (this.useJumper) {
+            while (ethWrapper.isJumperAbsent()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // puis attend son retrait
+            while (!ethWrapper.isJumperAbsent()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
-        // puis attend son retrait
-        while (!ethWrapper.isJumperAbsent()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }*/
-
-        if (!this.recognitionDone) {
+        if (this.firstColorShown==Colors.NULL || this.secondColorShown==Colors.NULL || this.thirdColorShown==Colors.NULL) {
             log.debug("Début de la prise de photo");
             BufferedImage buffImg = UseWebcam.takeBufferedPicture();
             log.debug("Fin de la prise de photo");
@@ -831,6 +820,7 @@ public class PatternRecognition extends AbstractThread{
                 analysePatternAfterAutomaticLocalization(colorMatrix);
             }
         }
+
 
         gameState.setIndicePattern(this.finalIndice);
         gameState.setRecognitionDone(true);
@@ -915,10 +905,13 @@ public class PatternRecognition extends AbstractThread{
         Colors.BLUE.setRGB(this.config.getInt(ConfigInfoRobot.rbleu),config.getInt(ConfigInfoRobot.gbleu),config.getInt(ConfigInfoRobot.bbleu));
         Colors.BLACK.setRGB(this.config.getInt(ConfigInfoRobot.rnoir),config.getInt(ConfigInfoRobot.gnoir),config.getInt(ConfigInfoRobot.bnoir));
         Colors.GREEN.setRGB(this.config.getInt(ConfigInfoRobot.rvert),config.getInt(ConfigInfoRobot.gvert),config.getInt(ConfigInfoRobot.bvert));
+        this.imageHeight=this.config.getInt(ConfigInfoRobot.IMAGE_HEIGHT);
+        this.imageWidth=this.config.getInt(ConfigInfoRobot.IMAGE_WIDTH);
         this.localizationAutomated=this.config.getBoolean(ConfigInfoRobot.LOCALIZATION_AUTOMATED);
         this.firstColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
         this.secondColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
         this.thirdColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
         this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
+        this.useJumper=this.config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
     }
 }
