@@ -174,31 +174,36 @@ public class Graphe implements Service {
      * @return
      */
     public void createNodesAroundCircularObstacles(){
-        int n=listCircu.size();
-        int m=listRectangu.size();
         ArrayList<Vec2> pointstoreturn=new ArrayList<>();
         int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
         /*
-        on crée des noeuds autour des obstacles circulaires, puis on ne garde que les noeuds qui
-        remplissent toutes les conditions
+        on crée des noeuds autour des obstacles circulaires
          */
-        for(int i=0;i<n;i++) {
-            Circle obstaclecircle=new Circle(listCircu.get(i).getPosition(),listCircu.get(i).getRadius()+d);
+        for(ObstacleCircular obstacleCircular : listCircu) {
+            Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
             ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
-            int p=l.size();
-            for(int j=0;j<p;j++){
-                if(!(table.getObstacleManager().isPositionInObstacle(l.get(j),listCircu.get(i)))&& table.getObstacleManager().isRobotInTable(l.get(j))){
-                    pointstoreturn.add(l.get(j));
-                }
-            }
-
+            pointstoreturn.addAll(l);
         }
-        int p=pointstoreturn.size();
+        /*
+        On vérifie pour chaque point s'il n'y a pas d'intersection avec les obstacles circulaires
+         */
+        ArrayList<Vec2> points2=(ArrayList<Vec2>) pointstoreturn.clone();
+        for(Vec2 point : points2){
+            for(ObstacleCircular obstacleCircular : listCircu){
+                if(!(table.getObstacleManager().isRobotInTable(point))){
+                    pointstoreturn.remove(point);
+                }
+                if(table.getObstacleManager().isPositionInObstacle(point,obstacleCircular)){
+                    pointstoreturn.remove(point);
+                }
+
+            }
+        }
         ArrayList<Vec2> points=(ArrayList<Vec2> )pointstoreturn.clone();
-        for(int i=0;i<p;i++){
-            for(int j=0;j<m;j++){
-                if((table.getObstacleManager().isPositionInObstacle(points.get(i),listRectangu.get(j)))&& table.getObstacleManager().isRobotInTable(points.get(i))){
-                    pointstoreturn.remove(points.get(i));
+        for(Vec2 point : points){
+            for(ObstacleRectangular obstacleRectangular : listRectangu){
+                if(table.getObstacleManager().isPositionInObstacle(point,obstacleRectangular) ){
+                    pointstoreturn.remove(point);
                 }
             }
         }

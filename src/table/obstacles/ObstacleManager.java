@@ -631,6 +631,25 @@ public class ObstacleManager implements Service
 			throw new IllegalArgumentException();
 	}
 
+	/**
+	 * Cette méthode vérifie si un point est dans un obstacle
+	 * @param position
+	 * @return
+	 */
+	public synchronized boolean isPositionInObstacle(Vec2 position){
+		for(Obstacle obstacle : mCircularObstacle){
+			if(isPositionInObstacle(position,obstacle)){
+				return true;
+			}
+		}
+		for(Obstacle obstacle : mRectangles){
+			if(isPositionInObstacle(position,obstacle)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 
 	/**
