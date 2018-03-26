@@ -114,9 +114,9 @@ public enum ConfigInfoRobot implements ConfigInfo
 
     /** Paramètres reconnaissance de couleurs */
     LOCALIZATION_AUTOMATED(true),
-    FIRST_COLOR(null),
-    SECOND_COLOR(null),
-    THIRD_COLOR(null),
+    FIRST_COLOR("null"),
+    SECOND_COLOR("null"),
+    THIRD_COLOR("null"),
 
     /**Paramètres couleurs*/
     rorange(183),
