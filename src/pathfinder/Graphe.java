@@ -51,28 +51,6 @@ public class Graphe implements Service {
         log.debug("Time to create graph (ms): " + time2);
     }
 
-    /**
-     * Méthode testant la présence d'un noeud dans un obstacle.
-     */
-
-
-    public boolean nodeInObstacle(Noeud noeud) {
-        int n=listCircu.size();
-        int m=listRectangu.size();
-        boolean inobstacle=false;
-        for(int i=0;i<n;i++){
-            if(table.getObstacleManager().isPositionInObstacle(noeud.getPosition(),listCircu.get(i))){
-                inobstacle=true;
-            }
-        }
-        for(int i=0;i<m;i++){
-            if(table.getObstacleManager().isPositionInObstacle(noeud.getPosition(),listRectangu.get(i))){
-                inobstacle=true;
-            }
-        }
-       return inobstacle;
-    }
-
     /** Méthode générant des noeuds sur la table : on crée des noeuds autour
      * des obstacles circulaires (Méthode nodesaroundobstacles) vu que ce sont ces obstacles-ci qu'on devrait
      * esquiver, on rajoute trois autres noeuds afin de choisir les meilleurs chemins
@@ -206,20 +184,38 @@ public class Graphe implements Service {
      */
     public ArrayList<Noeud> createNodesAroundCircularObstacles(){
         int n=listCircu.size();
+        int m=listRectangu.size();
         ArrayList<Vec2> pointstoreturn=new ArrayList<>();
         ArrayList<Noeud> nodestoreturn=new ArrayList<>();
         int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
+        /*
+        on crée des noeuds autour des obstacles circulaires, puis on ne garde que les noeuds qui
+        remplissent toutes les conditions
+         */
         for(int i=0;i<n;i++) {
             Circle obstaclecircle=new Circle(listCircu.get(i).getPosition(),listCircu.get(i).getRadius()+d);
             ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
-            pointstoreturn.addAll(l);
-        }
-        int m=pointstoreturn.size();
-        for(int i=0;i<m;i++){
-            if(!(nodeInObstacle(new Noeud(pointstoreturn.get(i),0,0,new ArrayList<>()))) & table.getObstacleManager().isRobotInTable(pointstoreturn.get(i))){
-                Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,new ArrayList<>());
-                nodestoreturn.add(nodetoadd);
+            int p=l.size();
+            for(int j=0;j<p;j++){
+                if(!(table.getObstacleManager().isPositionInObstacle(l.get(j),listCircu.get(i)))&& table.getObstacleManager().isRobotInTable(l.get(j))){
+                    pointstoreturn.add(l.get(j));
+                }
             }
+
+        }
+        int p=pointstoreturn.size();
+        ArrayList<Vec2> points=(ArrayList<Vec2> )pointstoreturn.clone();
+        for(int i=0;i<p;i++){
+            for(int j=0;j<m;j++){
+                if((table.getObstacleManager().isPositionInObstacle(points.get(i),listRectangu.get(j)))&& table.getObstacleManager().isRobotInTable(points.get(i))){
+                    pointstoreturn.remove(points.get(i));
+                }
+            }
+        }
+        int f=pointstoreturn.size();
+        for(int i=0;i<f;i++){
+            Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,new ArrayList<>());
+            nodestoreturn.add(nodetoadd);
         }
         return nodestoreturn;
 
