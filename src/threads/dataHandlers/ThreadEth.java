@@ -413,13 +413,11 @@ public class ThreadEth extends AbstractThread implements Service {
                         eventBuffer.add(infosFromBuffer);
                         outEvent.write(infosFromBuffer);
                         outEvent.newLine();
-                        outEvent.flush();
                         continue;
                     } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
                         ultrasoundBuffer.add(infosFromBuffer);
                         outSensor.write(infosFromBuffer);
                         outSensor.newLine();
-                        outSensor.flush();
                         continue;
                     } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                         synchronized (this.positionAndOrientation) {
@@ -430,14 +428,12 @@ public class ThreadEth extends AbstractThread implements Service {
                             }
                             outPosition.write(infosFromBuffer);
                             outPosition.newLine();
-                            outPosition.flush();
                         }
                         continue;
                     } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
                         comFlag = false;
                         outDebug.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis()-timeRef));
                         outDebug.newLine();
-                        outDebug.flush();
                         continue;
                     } else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]){
                         standardBuffer.add(infosFromBuffer);
@@ -465,6 +461,17 @@ public class ThreadEth extends AbstractThread implements Service {
                 shutdown = true;
                 ioe.printStackTrace();
             }
+        }
+        try{
+            outEvent.flush();
+            outSensor.flush();
+            outPosition.flush();
+            outDebug.flush();
+        }
+        catch(IOException ioe){
+            log.debug("LL ne répond pas, on shutdown");
+            shutdown = true;
+            ioe.printStackTrace();
         }
     }
 
