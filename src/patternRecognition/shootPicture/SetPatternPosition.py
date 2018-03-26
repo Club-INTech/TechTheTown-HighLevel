@@ -36,7 +36,7 @@ currentCalque=0
 
 def moveCalque(event,x,y,flags,params):
     global xCalque1,yCalque1,xCalque2,yCalque2,xCalque3,yCalque3,currentClaque
-    if event==cv2.EVENT_LBUTTONDOWN:
+    if event==cv2.EVENT_LBUTTONUP:
         if currentCalque==1:
             xCalque1=x
             yCalque1=y
