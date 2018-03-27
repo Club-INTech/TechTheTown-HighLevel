@@ -22,6 +22,8 @@ public class Graphe implements Service {
     private Config config;
     private ArrayList<ObstacleCircular> listCircu;
     private ArrayList<ObstacleRectangular> listRectangu;
+    private ArrayList<ObstacleCircular> mEnnemies;
+
     private Table table;
     private CopyOnWriteArrayList<Noeud> nodes;
     private CopyOnWriteArrayList<Arete> boneslist;
@@ -41,6 +43,7 @@ public class Graphe implements Service {
     public Graphe(Log log, Config config, Table table) {
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
+        this.mEnnemies=table.getObstacleManager().getmEnnemies();
         this.table = table;
         createNodes();
         long time1 = System.currentTimeMillis();
@@ -180,6 +183,14 @@ public class Graphe implements Service {
         on crée des noeuds autour des obstacles circulaires
          */
         for(ObstacleCircular obstacleCircular : listCircu) {
+            Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
+            ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
+            pointstoreturn.addAll(l);
+        }
+        /*
+          On crée des noeuds autour des obstacles mobiles
+         */
+        for(ObstacleCircular obstacleCircular : mEnnemies) {
             Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
             ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
             pointstoreturn.addAll(l);
