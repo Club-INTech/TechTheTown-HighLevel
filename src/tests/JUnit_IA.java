@@ -73,7 +73,7 @@ public class JUnit_IA extends JUnit_Test{
                 robotReal.setOrientation(Table.entryOrientation);
 
                 ia.getGraph().display();
-
+                ia.kruskal();
 //                while (true){
 //                    ia.execute(null);
 //                    Thread.sleep(500);

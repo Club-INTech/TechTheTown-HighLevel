@@ -14,7 +14,7 @@ public class Pattern extends Node{
 
     public Pattern(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) {
         super(versionToExecute, nextNodes, scriptManager, gameState);
-        this.score = 666;
+        this.setScore(666);
 //        this.script = scriptManager.getScript(ScriptNames.);
     }
 

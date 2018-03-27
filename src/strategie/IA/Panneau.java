@@ -10,8 +10,8 @@ public class Panneau extends Node {
 
     public Panneau(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) {
         super(versionToExecute, nextNodes, scriptManager, gameState);
-        this.script = scriptManager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE);
-        this.score = 42;
+        this.setScript(scriptManager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE));
+        this.setScore(42);
     }
 
     @Override

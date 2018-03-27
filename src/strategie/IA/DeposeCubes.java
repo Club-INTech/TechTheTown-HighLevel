@@ -10,8 +10,8 @@ public class DeposeCubes extends Node {
 
     public DeposeCubes(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) {
         super(versionToExecute, nextNodes, scriptManager, gameState);
-        this.script = scriptManager.getScript(ScriptNames.DEPOSE_CUBES);
-        this.score = 42;
+        this.setScript(scriptManager.getScript(ScriptNames.DEPOSE_CUBES));
+        this.setScore(13);
     }
 
     @Override

@@ -16,11 +16,13 @@ public class IA implements Service {
     private GameState gameState;
     private ScriptManager scriptManager;
     private Graph graph;
+    private ArrayList<Edge> orderToExecute;
 
     public IA(GameState gameState, ScriptManager scriptManager) {
         this.gameState = gameState;
         this.scriptManager = scriptManager;
         this.graph = new Graph(createNodes());
+        this.orderToExecute = kruskal();
     }
 
     public ArrayList<Node> createNodes() {

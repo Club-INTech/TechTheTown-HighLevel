@@ -87,6 +87,8 @@ public abstract class Node {
         return nextNodes;
     }
 
+    public ScriptManager getScriptManager() {        return scriptManager;    }
+
     public int getScore(){        return score;    }
 
     public int getId() {        return id;    }
@@ -100,4 +102,8 @@ public abstract class Node {
     public void setNextNodes(ArrayList<Node> nextNodes) {
         this.nextNodes = nextNodes;
     }
+
+    public void setScript(AbstractScript script) {        this.script = script;    }
+
+    public void setScore(int score) {        this.score = score;    }
 }

@@ -10,8 +10,8 @@ public class Abeille extends Node {
 
     public Abeille(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) {
         super(versionToExecute, nextNodes, scriptManager, gameState);
-        this.script = scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE);
-        this.score = 50;
+        this.setScript(scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE));
+        this.setScore(50);
     }
 
     @Override

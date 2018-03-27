@@ -1,13 +1,27 @@
 package strategie.IA;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class Graph {
     private ArrayList<Node> nodes;
-    private ArrayList<Edge> edges;
+    private PriorityQueue<Edge> edges;
 
     public Graph(ArrayList<Node> nodes) {
-        this.edges = new ArrayList<>();
+        this.edges = new PriorityQueue<>(new Comparator<Edge>() {
+            @Override
+            public int compare(Edge edge, Edge t1) {
+                if (edge.getCost()>t1.getCost()){
+                    return 1;
+                }
+                else if (edge.getCost()<t1.getCost()){
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
         this.nodes = nodes;
         createEdge(nodes);
     }
@@ -17,8 +31,8 @@ public class Graph {
         for (int i = 0; i < n ; i++){
             for(int j = i+1; j < n ; j++){
                 edges.add(new Edge(nodes.get(i),nodes.get(j)));
-            }nodes.get(i).setId(i);
-
+            }
+            nodes.get(i).setId(i);
         }
     }
 
@@ -31,5 +45,13 @@ public class Graph {
         for(Edge edge : edges){
             System.out.println(edge);
         }
+    }
+
+    public ArrayList<Node> getNodes() {
+        return nodes;
+    }
+
+    public PriorityQueue<Edge> getEdges() {
+        return edges;
     }
 }
