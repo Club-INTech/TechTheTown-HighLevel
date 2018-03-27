@@ -13,19 +13,21 @@ import java.util.ArrayList;
 
 public abstract class Node {
 
-    ScriptManager scriptManager;
-    AbstractScript script;
-    int versionToExecute;
-    int score;
-    int timeLimit;
-    int timeToGo;
-    int timeToExecute;
-    boolean isDone;
-    ArrayList<Node> nextNodes;
-    GameState gameState;
+    private ScriptManager scriptManager;
+    private AbstractScript script;
+    private int versionToExecute;
+    private int id;
+    private int score;
+    private int timeLimit;
+    private int timeToGo;
+    private int timeToExecute;
+    private boolean isDone;
+    private ArrayList<Node> nextNodes;
+    private GameState gameState;
 
     public Node(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState) {
         this.versionToExecute = versionToExecute;
+        this.id = 0;
         this.timeLimit = 0;
         this.timeToGo = 0;
         this.timeToExecute = 0;
@@ -85,13 +87,15 @@ public abstract class Node {
         return nextNodes;
     }
 
-    public int getScore() {
-        return score;
-    }
+    public int getScore(){        return score;    }
+
+    public int getId() {        return id;    }
 
     public void setDone(boolean done) {
-        isDone = done;
+        this.isDone = done;
     }
+
+    public void setId (int id) { this.id = id;}
 
     public void setNextNodes(ArrayList<Node> nextNodes) {
         this.nextNodes = nextNodes;
