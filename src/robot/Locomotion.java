@@ -557,6 +557,8 @@ public class Locomotion implements Service {
                         catch(InterruptedException e){
                             e.printStackTrace();
                         }
+                        //TODO: appel au pathfinding(Hacker Robot dans Locomotion ?)+supprimer l'obstacle juste après
+
                     } else {
                         try{
                             detectEnemyArroundPosition(detectionRay);
@@ -564,10 +566,12 @@ public class Locomotion implements Service {
                         catch (InterruptedException e){
                             e.printStackTrace();
                         }
+                        //TODO: appel au pathfinding+supprimer l'obstacle juste après
 
                     }
                 } else {
-                    basicDetect(isMovementForward, false);
+                    ethWrapper.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE);
+
                 }
             }
 
@@ -643,7 +647,7 @@ public class Locomotion implements Service {
      * @throws UnexpectedObstacleOnPathException
      */
     private void basicDetect(boolean isMovementForward, boolean turning) throws UnexpectedObstacleOnPathException {
-        /*//TODO : à mettre en LL
+        //TODO : à mettre en LL
         if (isMovementForward || turning) {
             if ((USvalues.get(0) < basicDetectDistance && USvalues.get(0) != 0) || ((USvalues.get(1) < basicDetectDistance && USvalues.get(1) != 0))) {
                 log.warning("Lancement de UnexpectedObstacleOnPathException dans basicDetect : Capteurs avant");
@@ -656,7 +660,7 @@ public class Locomotion implements Service {
                 throw new UnexpectedObstacleOnPathException();
             }
         }
-        */
+
     }
 
     /**
