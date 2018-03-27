@@ -551,9 +551,20 @@ public class Locomotion implements Service {
             if (mustDetect) {
                 if (!basicDetection) {
                     if (!turnOnly) {
-                        detectEnemyAtDistance(detectionDistance, aim.minusNewVector(highLevelPosition));
+                        try{
+                            detectEnemyAtDistance(detectionDistance, aim.minusNewVector(highLevelPosition));
+                        }
+                        catch(InterruptedException e){
+                            e.printStackTrace();
+                        }
                     } else {
-                        detectEnemyArroundPosition(detectionRay);
+                        try{
+                            detectEnemyArroundPosition(detectionRay);
+                        }
+                        catch (InterruptedException e){
+                            e.printStackTrace();
+                        }
+
                     }
                 } else {
                     basicDetect(isMovementForward, false);
@@ -632,7 +643,7 @@ public class Locomotion implements Service {
      * @throws UnexpectedObstacleOnPathException
      */
     private void basicDetect(boolean isMovementForward, boolean turning) throws UnexpectedObstacleOnPathException {
-        //TODO : à mettre en LL
+        /*//TODO : à mettre en LL
         if (isMovementForward || turning) {
             if ((USvalues.get(0) < basicDetectDistance && USvalues.get(0) != 0) || ((USvalues.get(1) < basicDetectDistance && USvalues.get(1) != 0))) {
                 log.warning("Lancement de UnexpectedObstacleOnPathException dans basicDetect : Capteurs avant");
@@ -645,6 +656,7 @@ public class Locomotion implements Service {
                 throw new UnexpectedObstacleOnPathException();
             }
         }
+        */
     }
 
     /**
@@ -653,12 +665,17 @@ public class Locomotion implements Service {
      * @param distance distance jusqu'a un ennemi en mm en dessous de laquelle on doit abandonner le mouvement
      * @throws UnexpectedObstacleOnPathException si obstacle sur le chemin
      */
-    public void detectEnemyArroundPosition(int distance) throws UnexpectedObstacleOnPathException {
+    public void detectEnemyArroundPosition(int distance) throws UnexpectedObstacleOnPathException,InterruptedException {
         int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
         if (closest <= distance && closest > -150) {
             log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de "
                     + table.getObstacleManager().distanceToClosestEnemy(highLevelPosition) + " mm)");
             immobilise();
+            Thread.sleep(1000);
+            //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
+            if(closest <= distance && closest > -15){
+                table.getObstacleManager().getmEnnemies().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
+            }
             throw new UnexpectedObstacleOnPathException();
         }
     }
@@ -669,10 +686,16 @@ public class Locomotion implements Service {
      * @param moveDirection direction du robot
      * @throws UnexpectedObstacleOnPathException si l'obstacle est sur le chemin
      */
-    public void detectEnemyAtDistance(int distance, Vec2 moveDirection) throws UnexpectedObstacleOnPathException {
+    public void detectEnemyAtDistance(int distance, Vec2 moveDirection) throws UnexpectedObstacleOnPathException,InterruptedException{
         if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)) {
             log.debug("DetectEnemyAtDistance voie un ennemi sur le chemin");
             immobilise();
+            Thread.sleep(1000);
+            //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
+            if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
+                    table.getObstacleManager().getmEnnemies().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
+            }
+
             throw new UnexpectedObstacleOnPathException();
         }
     }
