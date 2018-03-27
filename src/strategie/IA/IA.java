@@ -40,6 +40,19 @@ public class IA implements Service {
         return nodes;
     }
 
+    public ArrayList<Edge> kruskal() {
+        ArrayList<Edge> bestEdges = new ArrayList<>();
+        UnionFind u1 = new UnionFind(graph.getNodes().size());
+        Edge curentEdge;
+        while (graph.getEdges().peek() != null){
+            curentEdge = graph.getEdges().poll();
+            if(u1.find(curentEdge.getNode1().getId()) != u1.find(curentEdge.getNode2().getId())){
+                bestEdges.add(curentEdge);
+                u1.union(curentEdge.getNode1().getId(), curentEdge.getNode2().getId());
+            }
+        }
+        return bestEdges;
+    }
 
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException {
 //        root.selectNode().execute(e);
