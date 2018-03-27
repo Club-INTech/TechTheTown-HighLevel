@@ -81,8 +81,8 @@ def find_squares(img,threshold1, threshold2, blurSize):
 if __name__ == '__main__':
     fn='/tmp/ImageRaspi.jpeg'
     img = cv.imread(fn)
-    XSTART=300
-    YSTART=300
+    XSTART=0
+    YSTART=100
     WIDTH=200
     HEIGHT=250
     APERTURE_SIZE = 3
