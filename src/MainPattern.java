@@ -43,7 +43,6 @@ import threads.dataHandlers.ThreadEth;
 public class MainPattern {
     static Container container;
     static Config config;
-    static GameState realState;
     static EthWrapper mEthWrapper;
     static PatternRecognition patternRecognition;
 
@@ -60,6 +59,7 @@ public class MainPattern {
             config.override(ConfigInfoRobot.SIMULATION,true);
 
             patternRecognition = container.getService(PatternRecognition.class);
+            patternRecognition.setDebugPatternRecognition(true);
             Thread.currentThread().setPriority(6);
             container.startInstanciedThreads();
 

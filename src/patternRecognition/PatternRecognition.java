@@ -821,9 +821,8 @@ public class PatternRecognition extends AbstractThread{
             }
         }
 
-
-        gameState.setIndicePattern(this.finalIndice);
-        gameState.setRecognitionDone(true);
+        this.setFinalIndice(this.finalIndice);
+        this.setRecognitionDone(true);
         log.debug("Pattern recognized : " + finalIndice);
         while (!this.isShutdown){
             try {
@@ -837,6 +836,16 @@ public class PatternRecognition extends AbstractThread{
 
     public int getFinalIndice(){
         return this.finalIndice;
+    }
+
+    public void setFinalIndice(int indice){
+        if (indice<-2 || indice>9){
+            log.critical("Bad indice value set");
+        }
+        else{
+            gameState.setIndicePattern(indice);
+            this.finalIndice=indice;
+        }
     }
 
     /** Set la valeur de debug
@@ -896,6 +905,11 @@ public class PatternRecognition extends AbstractThread{
      */
     public boolean isRecognitionDone() {
         return this.recognitionDone;
+    }
+
+    public void setRecognitionDone(boolean value){
+        gameState.setRecognitionDone(value);
+        this.recognitionDone=value;
     }
 
     @Override
