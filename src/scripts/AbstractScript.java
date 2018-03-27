@@ -24,6 +24,7 @@ import enums.ActuatorOrder;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
@@ -74,16 +75,18 @@ public abstract class AbstractScript implements Service
 	 * @throws UnableToMoveException losrque le robot veut se déplacer et que quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws ExecuteException
 	 */
-	public void goToThenExec(int versionToExecute,GameState actualState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException {
+	public void goToThenExec(int versionToExecute,GameState actualState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException,ImmobileEnnemyForOneSecondAtLeast {
 		// va jusqu'au point d'entrée de la version demandée
 		log.debug("Lancement de " + this.toString() + " version " + versionToExecute);
-		try 
+		try
 		{
 			if(actualState.robot.getPosition().minusNewVector(entryPosition(versionToExecute, actualState.robot.getPositionFast()).getCenter()).squaredLength() > 40) {
 
 				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getPosition()).getCenter());
 
-				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPositionFast()), actualState.table);
+					actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPositionFast()), actualState.table);
+
+
 			}
 			actualState.robot.useActuator(ActuatorOrder.SEND_POSITION,true);
 		}
@@ -95,6 +98,9 @@ public abstract class AbstractScript implements Service
 		catch(NoPathFound e){
 			log.debug("pas de chemin trouvé");
 		}
+		catch (ImmobileEnnemyForOneSecondAtLeast e) {
+			throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
+		}
 
 		// exécute la version demandée
 		try{
@@ -104,6 +110,7 @@ public abstract class AbstractScript implements Service
 			log.debug("pour l'instant je sais pas");
 			e.printStackTrace();
 		}
+
 	}
 
 	/**
@@ -113,7 +120,7 @@ public abstract class AbstractScript implements Service
 	 * @throws UnableToMoveException exception levée lorsque le robot ne peut se déplacer (décor ou obstacles détectés par capteurs)
 	 * @throws ExecuteException
 	 */
-	public abstract void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, BadVersionException, PointInObstacleException;
+	public abstract void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, BadVersionException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast;
 
 	/**
 	 * Renvoie le score que peut fournir une version d'un script.

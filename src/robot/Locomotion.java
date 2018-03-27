@@ -22,6 +22,7 @@ package robot;
 import container.Service;
 import enums.*;
 import exceptions.Locomotion.BlockedException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import pfg.config.Config;
@@ -247,6 +248,7 @@ public class Locomotion implements Service {
      */
     private ThreadEvents thEvent;
 
+    private Robot robot;
     /**
      * Constructeur de Locomotion
      *
@@ -255,7 +257,7 @@ public class Locomotion implements Service {
      * @param table      la table de jeu
      * @param ethWrapper protocole de communication série
      */
-    private Locomotion(Log log, Config config, Table table, EthWrapper ethWrapper, ThreadEvents thEvent) {
+    private Locomotion(Log log, Config config, Table table, EthWrapper ethWrapper, ThreadEvents thEvent,Robot robot) {
         this.log = log;
         this.config = config;
         this.ethWrapper = ethWrapper;
@@ -279,8 +281,13 @@ public class Locomotion implements Service {
      * @param path le chemin a suivre (un arraylist de Vec2 qui sont les point de rotation du robot)
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    public void followPath(ArrayList<Vec2> path) throws UnableToMoveException {
-        followPath(path, true);// par defaut, on detecte
+    public void followPath(ArrayList<Vec2> path) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
+        try{
+            followPath(path, true);// par defaut, on detecte
+        }
+        catch(ImmobileEnnemyForOneSecondAtLeast e){
+            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
+        }
     }
 
     /**
@@ -290,7 +297,7 @@ public class Locomotion implements Service {
      * @param mustDetect true si on veut detecter, false sinon.
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    public void followPath(ArrayList<Vec2> path, boolean mustDetect) throws UnableToMoveException {
+    public void followPath(ArrayList<Vec2> path, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
 
         for (int i = 1; i < path.size(); i++) //On enleve le premier point, notre propre position
         {
@@ -298,7 +305,12 @@ public class Locomotion implements Service {
             Vec2 aim = path.get(i);
             finalAim = aim;
             log.debug("Pathfinding : going to node of coords "+aim.toStringEth());
-            moveToPoint(aim, false, mustDetect);
+            try{
+                moveToPoint(aim, false, mustDetect);
+            }
+            catch(ImmobileEnnemyForOneSecondAtLeast e){
+                throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
+            }
         }
     }
 
@@ -312,7 +324,7 @@ public class Locomotion implements Service {
      * @throws UnableToMoveException
      */
 
-    public void moveToPoint(Vec2 pointVise, boolean expectedWallImpact, boolean mustDetect) throws UnableToMoveException {
+    public void moveToPoint(Vec2 pointVise, boolean expectedWallImpact, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         thEvent.setIsMoving(true);
         log.debug("isMoving variable has been defined to True");
 
@@ -325,8 +337,19 @@ public class Locomotion implements Service {
             if (sens >= 0) {    //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
                 log.debug("Angle de rotation: " + moveA);
                 log.debug("Distance de translation: " + moveR);
-                turn(moveA, expectedWallImpact, mustDetect);
-                moveLengthwise(moveR, expectedWallImpact, mustDetect);
+                try{
+                    turn(moveA, expectedWallImpact, mustDetect);
+                }
+                catch(ImmobileEnnemyForOneSecondAtLeast e){
+                    throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
+                }
+                try{
+                    moveLengthwise(moveR, expectedWallImpact, mustDetect);
+                }
+                catch (ImmobileEnnemyForOneSecondAtLeast e){
+                    throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
+                }
+
             } else                              //si il est orienté vers l'arrière par rapport au point visé
             {
                 moveA = Geometry.moduloSpec(moveA-Math.PI, Math.PI);
@@ -361,7 +384,7 @@ public class Locomotion implements Service {
      * @param mustDetect true si on veut detecter, false sinon.
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    public void turn(double angle, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException {
+    public void turn(double angle, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         thEvent.setIsMoving(true);
         log.debug("isMoving variable has been defined to True");
 
@@ -377,7 +400,12 @@ public class Locomotion implements Service {
         Vec2 aim = highLevelPosition.plusNewVector(new Vec2(1000.0, angle));
         finalAim = aim;
 
-        moveToPointHanldeExceptions(aim, true, expectWallImpact, true, mustDetect);
+        try{
+            moveToPointHanldeExceptions(aim, true, expectWallImpact, true, mustDetect);
+        }
+        catch(ImmobileEnnemyForOneSecondAtLeast e){
+            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
+        }
         isRobotMovingForward = false;
         isRobotMovingBackward = false;
     }
@@ -392,7 +420,7 @@ public class Locomotion implements Service {
      * @param mustDetect       true si on veut detecter, false sinon.
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    public void moveLengthwise(int distance, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException {
+    public void moveLengthwise(int distance, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         thEvent.setIsMoving(true);
         log.debug("isMoving variable has been defined to True");
 
@@ -422,7 +450,12 @@ public class Locomotion implements Service {
             isRobotMovingBackward = true;
         }
 
-        moveToPointHanldeExceptions(aim, (distance>=0), expectWallImpact, false, mustDetect);
+        try{
+            moveToPointHanldeExceptions(aim, (distance>=0), expectWallImpact, false, mustDetect);
+        }
+        catch(ImmobileEnnemyForOneSecondAtLeast e){
+            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
+        }
         isRobotMovingForward = false;
         isRobotMovingBackward = false;
     }
@@ -438,7 +471,7 @@ public class Locomotion implements Service {
      * @param mustDetect        true si on veut detecter, false sinon.
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    private void moveToPointHanldeExceptions(Vec2 aim, boolean isMovementForward, boolean expectWallImpact, boolean turnOnly, boolean mustDetect) throws UnableToMoveException {
+    private void moveToPointHanldeExceptions(Vec2 aim, boolean isMovementForward, boolean expectWallImpact, boolean turnOnly, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         boolean doItAgain;
         do {
             doItAgain = false;
@@ -446,7 +479,11 @@ public class Locomotion implements Service {
                 moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
                 isRobotMovingForward = false;
                 isRobotMovingBackward = false;
-            } catch (BlockedException e) {
+            }
+            catch(ImmobileEnnemyForOneSecondAtLeast e){
+                throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
+            }
+            catch (BlockedException e) {
                 log.critical(e.logStack());
                 log.critical("Haut : Catch de " + e + " dans moveToPointException");
 
@@ -497,6 +534,7 @@ public class Locomotion implements Service {
                     log.critical("Lancement de UnableToMoveException dans MoveToPointException, visant " + finalAim.getX() + " :: " + finalAim.getY() + " cause physique");
                     throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
                 }
+
             }
 
             /** TODO A adapté à l'année en cours */ catch (UnexpectedObstacleOnPathException unexpectedObstacle) {
@@ -532,7 +570,7 @@ public class Locomotion implements Service {
      * @throws UnexpectedObstacleOnPathException si le robot rencontre un obstacle inattendu sur son chemin (par les capteurs)
      * @throws BlockedException
      */
-    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws UnexpectedObstacleOnPathException, BlockedException {
+    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws UnexpectedObstacleOnPathException, BlockedException,ImmobileEnnemyForOneSecondAtLeast {
         moveToPointSymmetry(aim, turnOnly);
 
         do {
@@ -557,7 +595,7 @@ public class Locomotion implements Service {
                         catch(InterruptedException e){
                             e.printStackTrace();
                         }
-                        //TODO: appel au pathfinding(Hacker Robot dans Locomotion ?)+supprimer l'obstacle juste après
+                        throw new ImmobileEnnemyForOneSecondAtLeast(aim);
 
                     } else {
                         try{
@@ -566,7 +604,7 @@ public class Locomotion implements Service {
                         catch (InterruptedException e){
                             e.printStackTrace();
                         }
-                        //TODO: appel au pathfinding+supprimer l'obstacle juste après
+                        throw new ImmobileEnnemyForOneSecondAtLeast(aim);
 
                     }
                 } else {
@@ -669,7 +707,7 @@ public class Locomotion implements Service {
      * @param distance distance jusqu'a un ennemi en mm en dessous de laquelle on doit abandonner le mouvement
      * @throws UnexpectedObstacleOnPathException si obstacle sur le chemin
      */
-    public void detectEnemyArroundPosition(int distance) throws UnexpectedObstacleOnPathException,InterruptedException {
+    public void detectEnemyArroundPosition(int distance) throws UnexpectedObstacleOnPathException,InterruptedException,ImmobileEnnemyForOneSecondAtLeast {
         int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
         if (closest <= distance && closest > -150) {
             log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de "
@@ -679,7 +717,9 @@ public class Locomotion implements Service {
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
             if(closest <= distance && closest > -15){
                 table.getObstacleManager().getmEnnemies().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
+                throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
+
             throw new UnexpectedObstacleOnPathException();
         }
     }
@@ -690,7 +730,7 @@ public class Locomotion implements Service {
      * @param moveDirection direction du robot
      * @throws UnexpectedObstacleOnPathException si l'obstacle est sur le chemin
      */
-    public void detectEnemyAtDistance(int distance, Vec2 moveDirection) throws UnexpectedObstacleOnPathException,InterruptedException{
+    public void detectEnemyAtDistance(int distance, Vec2 moveDirection) throws UnexpectedObstacleOnPathException,InterruptedException,ImmobileEnnemyForOneSecondAtLeast{
         if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)) {
             log.debug("DetectEnemyAtDistance voie un ennemi sur le chemin");
             immobilise();
@@ -698,6 +738,7 @@ public class Locomotion implements Service {
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
             if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
                     table.getObstacleManager().getmEnnemies().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
+                    throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
 
             throw new UnexpectedObstacleOnPathException();

@@ -21,6 +21,7 @@ package tests;
 
 import enums.DirectionStrategy;
 import enums.Speed;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
@@ -68,7 +69,7 @@ public class JUnit_Graphics extends JUnit_Test
 	}
 
 	@Test
-	public void testSimpleMove() throws UnableToMoveException, PointInObstacleException {
+	public void testSimpleMove() throws UnableToMoveException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
 		state.robot.setPosition(new Vec2(1200, 400));
 		state.robot.setOrientation(3*Math.PI/4);
 		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
