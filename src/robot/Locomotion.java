@@ -257,7 +257,7 @@ public class Locomotion implements Service {
      * @param table      la table de jeu
      * @param ethWrapper protocole de communication série
      */
-    private Locomotion(Log log, Config config, Table table, EthWrapper ethWrapper, ThreadEvents thEvent,Robot robot) {
+    private Locomotion(Log log, Config config, Table table, EthWrapper ethWrapper, ThreadEvents thEvent) {
         this.log = log;
         this.config = config;
         this.ethWrapper = ethWrapper;
