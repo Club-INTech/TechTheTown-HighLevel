@@ -820,6 +820,20 @@ public class PatternRecognition extends AbstractThread{
                 analysePatternAfterAutomaticLocalization(colorMatrix);
             }
         }
+        else{
+            boolean patternHasBeenFound=false;
+            for (Patterns pattern : Patterns.values()){
+                Colors[] colors = pattern.getPattern();
+                if(colors[0].equals(this.firstColorShown) && colors[1].equals(this.secondColorShown) && colors[2].equals(this.thirdColorShown)){
+                    this.finalIndice=pattern.getNumber();
+                    patternHasBeenFound=true;
+                    break;
+                }
+            }
+            if (!patternHasBeenFound){
+                this.finalIndice=-1;
+            }
+        }
 
 
         gameState.setIndicePattern(this.finalIndice);
