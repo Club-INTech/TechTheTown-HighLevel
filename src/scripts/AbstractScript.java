@@ -24,6 +24,7 @@ import enums.ActuatorOrder;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
@@ -97,9 +98,7 @@ public abstract class AbstractScript implements Service
 		catch(NoPathFound e){
 			log.debug("pas de chemin trouvé");
 		}
-		catch (ImmobileEnnemyForOneSecondAtLeast e) {
-			throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-		}
+
 
 		// exécute la version demandée
 		try{

@@ -21,10 +21,12 @@ package robot;
 
 import container.Service;
 import enums.*;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import pathfinder.Pathfinding;
+import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Geometry;
@@ -192,12 +194,9 @@ public class Robot implements Service {
     public void moveToLocation(Vec2 aim, Table table) throws UnableToMoveException, PointInObstacleException, NoPathFound,ImmobileEnnemyForOneSecondAtLeast {
         log.debug("Appel de Robot.moveToLocation(" + aim + "," + table + ")");
         //On crée bêtement un cercle de rayon nul pour lancer moveToCircle, sachant que la position de ce cercle est extraite pour le pathDiniDing (et après on dit qu'à INTech on code comme des porcs...)
-        try{
+
             moveToCircle(new Circle(aim), table);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
     }
 
     /**
@@ -211,12 +210,10 @@ public class Robot implements Service {
     public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException, NoPathFound,ImmobileEnnemyForOneSecondAtLeast {
         Vec2 aimPosition = Geometry.closestPointOnCircle(this.getPosition(), aim);
         // TODO : Appel du followpath & Pathfinding !
-        try{
+
             followPath(pathfinding.findmyway(position, aimPosition));
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+
     }
 
     /**
@@ -229,12 +226,10 @@ public class Robot implements Service {
     @SuppressWarnings("unchecked")
     public void followPath(ArrayList<Vec2> chemin) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-        try{
+
             mLocomotion.followPath(chemin);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+
     }
 
     /**
@@ -248,12 +243,10 @@ public class Robot implements Service {
     @SuppressWarnings("unchecked")
     protected void followPath(ArrayList<Vec2> chemin, DirectionStrategy direction) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-        try{
+
             mLocomotion.followPath(chemin);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+
     }
 
     /**
@@ -264,12 +257,10 @@ public class Robot implements Service {
      */
 
     public void goTo(Vec2 pointVise) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        try{
+
             goTo(pointVise, false, true);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+
     }
 
     /**
@@ -282,12 +273,10 @@ public class Robot implements Service {
      */
     public void goTo(Vec2 pointVise, boolean expectedWallImpact, boolean isDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         log.debug("Appel de Robot.goTo : " + pointVise);
-        try{
+
             mLocomotion.moveToPoint(pointVise, expectedWallImpact, isDetect);
-        }
-        catch(ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+
     }
 
 
@@ -306,12 +295,8 @@ public class Robot implements Service {
         position = getPosition();
         Vec2 move = pointVise.minusNewVector(position);
         double a = move.getA();
-        try{
-            turn(a);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+        turn(a);
+
     }
 
     /**
@@ -324,12 +309,8 @@ public class Robot implements Service {
         position = getPosition();
         Vec2 move = pointVise.minusNewVector(position);
         double a = move.getA();
-        try{
-            turn(a,expectsWallImpact);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+        turn(a,expectsWallImpact);
+
     }
 
     /**
@@ -340,24 +321,20 @@ public class Robot implements Service {
      * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
      */
     public void turn(double angle) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        try{
+
             turn(angle, false, false);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+
     }
 
     /**
      * Comme turn sauf que les angles sont relatifs, tourne par exemple de Pi/2 à partir de sa position
      **/
     public void turnRelatively(double angle) throws UnableToMoveException ,ImmobileEnnemyForOneSecondAtLeast{
-        try{
+
             turn(angle, false, true);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+
     }
 
     /**
@@ -369,12 +346,10 @@ public class Robot implements Service {
      */
 
     public void turn(double angle, boolean expectsWallImpact) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        try{
+
             turn(angle, expectsWallImpact, false);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+
     }
 
     /**
@@ -386,12 +361,10 @@ public class Robot implements Service {
      * @throws UnableToMoveException
      */
     public void turn(double angle, boolean expectsWallImpact, boolean isTurnRelative) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        try{
+
             turn(angle, expectsWallImpact, isTurnRelative, true);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+
     }
 
     /**
@@ -407,12 +380,9 @@ public class Robot implements Service {
         if (isTurnRelative) {
             angle += getOrientation();
         }
-        try{
+
             mLocomotion.turn(angle, expectsWallImpact, mustDetect);
-        }
-        catch(ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
     }
 
     /**
@@ -426,20 +396,15 @@ public class Robot implements Service {
     public void turnNoSymmetry(double angle) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         log.debug("appel de Robot.turnNoSymmetry(" + angle + ")");
         // Fais la symétrie deux fois (symétrie de symétrie, c'est l'identité)
-        if (symmetry)
-            try{
+        if (symmetry) {
+
             turn(Math.PI - angle, false, false);
-            }
-            catch (ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-            }
-        else
-            try{
-                turn(angle, false, false);
-            }
-            catch (ImmobileEnnemyForOneSecondAtLeast e){
-                throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-            }
+
+        }
+        else{
+            turn(angle, false, false);
+        }
+
 
     }
 
@@ -454,12 +419,9 @@ public class Robot implements Service {
         Vec2 vec = point.minusNewVector(position);
         double angle = vec.getA();
         log.debug("appel de Robot.turnToPoint(" + angle + ")");
-        try{
+
             turn(angle, false, false);
-        }
-        catch(ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
     }
 
     /**
@@ -471,12 +433,9 @@ public class Robot implements Service {
      * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
      */
     public void moveLengthwise(int distance) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        try{
+
             moveLengthwise(distance, false);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
     }
 
     /**
@@ -490,12 +449,9 @@ public class Robot implements Service {
     public void moveLengthwise(int distance, Speed speed) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
 
         log.debug("appel de Robot.moveLengthwise(" + distance + "," + speed + ")");
-        try{
+
             moveLengthwise(distance, false, true, speed);
-        }
-        catch(ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
     }
 
 
@@ -509,12 +465,9 @@ public class Robot implements Service {
      */
     public void moveLengthwise(int distance, boolean expectsWallImpact) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         log.debug("appel de Robot.moveLengthwise(" + distance + "," + expectsWallImpact + ")");
-        try{
+
             moveLengthwise(distance, expectsWallImpact, true);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
     }
 
     /**
@@ -529,12 +482,10 @@ public class Robot implements Service {
     public void moveLengthwise(int distance, boolean expectsWallImpact, Boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         log.debug("appel de Robot.moveLengthwise(" + distance + "," + expectsWallImpact + "," + mustDetect + ")");
         Speed newSpeed = Speed.SLOW_ALL;
-        try{
+
             moveLengthwise(distance, expectsWallImpact, mustDetect, newSpeed);
-        }
-        catch(ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+
     }
 
 
@@ -544,12 +495,10 @@ public class Robot implements Service {
     public void moveLengthwiseWithoutDetection(int distance, boolean expectsWallImpact) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         log.debug("appel de Robot.moveLengthwiseWithoutDetection(" + distance + "," + expectsWallImpact + ")");
         Speed newSpeed = Speed.SLOW_ALL;
-        try{
+
             moveLengthwise(distance, expectsWallImpact, false, newSpeed);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+
     }
 
 
@@ -567,11 +516,9 @@ public class Robot implements Service {
         Speed oldSpeed = speed;
         speed = newSpeed;
         if(mustDetect) {
-            try {
+
                 mLocomotion.moveLengthwise(distance, expectsWallImpact, mustDetect);
-            } catch (ImmobileEnnemyForOneSecondAtLeast e) {
-                throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-            }
+
         }
 
         speed = oldSpeed;
@@ -589,12 +536,9 @@ public class Robot implements Service {
         log.debug("appel de Robot.moveLengthwiseTowardWall(" + distance + ")");
         Speed oldSpeed = speed;
         setLocomotionSpeed(Speed.SLOW_ALL);
-        try{
+
             moveLengthwise(distance, true, false);
-        }
-        catch (ImmobileEnnemyForOneSecondAtLeast e) {
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
 
         setLocomotionSpeed(oldSpeed);
     }
@@ -614,21 +558,14 @@ public class Robot implements Service {
         long distance = Math.round(relativeCoords.getR() - distanceNear);
         if (direction.equals("backward")) {
             System.out.println("testBackward");
-            try {
                 turnTo(getPosition().minusNewVector(relativeCoords));
-            }
-            catch (ImmobileEnnemyForOneSecondAtLeast e) {
-                throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-            }
+
             distance *= -1;
 
         } else {
-            try{
+
                 turnTo(aim);
-            }
-            catch (ImmobileEnnemyForOneSecondAtLeast e) {
-                throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-            }
+
         }
         System.out.println("distance" + distance);
         System.out.println("distanceNear" + distanceNear);

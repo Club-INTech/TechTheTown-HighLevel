@@ -19,18 +19,27 @@
 
 package tests;
 
+import enums.DirectionStrategy;
 import enums.Speed;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
+import graphics.Window;
+import org.junit.Before;
 import org.junit.Test;
+import pathfinder.Arete;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import smartMath.Circle;
+import smartMath.Segment;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class JUnit_Graphics extends JUnit_Test
 {

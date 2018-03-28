@@ -22,6 +22,7 @@ package robot;
 import container.Service;
 import enums.*;
 import exceptions.Locomotion.BlockedException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import pfg.config.Config;
@@ -281,12 +282,10 @@ public class Locomotion implements Service {
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
     public void followPath(ArrayList<Vec2> path) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        try{
-            followPath(path, true);// par defaut, on detecte
-        }
-        catch(ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
+        followPath(path, true);// par defaut, on detecte
+
+
     }
 
     /**
@@ -304,12 +303,9 @@ public class Locomotion implements Service {
             Vec2 aim = path.get(i);
             finalAim = aim;
             log.debug("Pathfinding : going to node of coords "+aim.toStringEth());
-            try{
-                moveToPoint(aim, false, mustDetect);
-            }
-            catch(ImmobileEnnemyForOneSecondAtLeast e){
-                throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-            }
+            moveToPoint(aim, false, mustDetect);
+
+
         }
     }
 
@@ -336,18 +332,9 @@ public class Locomotion implements Service {
             if (sens >= 0) {    //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
                 log.debug("Angle de rotation: " + moveA);
                 log.debug("Distance de translation: " + moveR);
-                try{
-                    turn(moveA, expectedWallImpact, mustDetect);
-                }
-                catch(ImmobileEnnemyForOneSecondAtLeast e){
-                    throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-                }
-                try{
-                    moveLengthwise(moveR, expectedWallImpact, mustDetect);
-                }
-                catch (ImmobileEnnemyForOneSecondAtLeast e){
-                    throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-                }
+                turn(moveA, expectedWallImpact, mustDetect);
+                moveLengthwise(moveR, expectedWallImpact, mustDetect);
+
 
             } else                              //si il est orienté vers l'arrière par rapport au point visé
             {
@@ -399,12 +386,7 @@ public class Locomotion implements Service {
         Vec2 aim = highLevelPosition.plusNewVector(new Vec2(1000.0, angle));
         finalAim = aim;
 
-        try{
             moveToPointHanldeExceptions(aim, true, expectWallImpact, true, mustDetect);
-        }
-        catch(ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
         isRobotMovingForward = false;
         isRobotMovingBackward = false;
     }
@@ -449,12 +431,9 @@ public class Locomotion implements Service {
             isRobotMovingBackward = true;
         }
 
-        try{
+
             moveToPointHanldeExceptions(aim, (distance>=0), expectWallImpact, false, mustDetect);
-        }
-        catch(ImmobileEnnemyForOneSecondAtLeast e){
-            throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-        }
+
         isRobotMovingForward = false;
         isRobotMovingBackward = false;
     }
@@ -478,9 +457,6 @@ public class Locomotion implements Service {
                 moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
                 isRobotMovingForward = false;
                 isRobotMovingBackward = false;
-            }
-            catch(ImmobileEnnemyForOneSecondAtLeast e){
-                throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
             }
             catch (BlockedException e) {
                 log.critical(e.logStack());
@@ -579,9 +555,18 @@ public class Locomotion implements Service {
                 String unableToMoveReason = thEvent.getUnableToMoveEvent().poll();
                 if (unableToMoveReason == UnableToMoveReason.PHYSICALLY_BLOCKED.getSerialOrder()) {
                     throw new BlockedException();
-                } else if (unableToMoveReason == UnableToMoveReason.OBSTACLE_DETECTED.getSerialOrder() && mustDetect && basicDetection) {
-                    throw new UnexpectedObstacleOnPathException();
+                } else if (unableToMoveReason == UnableToMoveReason.OBSTACLE_DETECTED.getSerialOrder() && mustDetect ) {
+
+                    if(basicDetection){
+                        throw new UnexpectedObstacleOnPathException();
+                    }
+                    else{
+                        ImmobileEnnemyForOneSecondAtLeast e=new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
+                        e.setAim(aim);
+                        throw new ImmobileEnnemyForOneSecondAtLeast(aim);
+                    }
                 }
+
             }
 
             /** TODO A adapté à l'année en cours */
@@ -607,7 +592,8 @@ public class Locomotion implements Service {
 
                     }
                 } else {
-                    basicDetect(isMovementForward, false);
+                    ethWrapper.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE);
+                    //basicDetect(isMovementForward, false);
                 }
             }
 
@@ -683,7 +669,7 @@ public class Locomotion implements Service {
      * @throws UnexpectedObstacleOnPathException
      */
     private void basicDetect(boolean isMovementForward, boolean turning) throws UnexpectedObstacleOnPathException {
-        /*//TODO : à mettre en LL
+        //TODO : à mettre en LL
         if (isMovementForward || turning) {
             if ((USvalues.get(0) < basicDetectDistance && USvalues.get(0) != 0) || ((USvalues.get(1) < basicDetectDistance && USvalues.get(1) != 0))) {
                 log.warning("Lancement de UnexpectedObstacleOnPathException dans basicDetect : Capteurs avant");
@@ -696,7 +682,7 @@ public class Locomotion implements Service {
                 throw new UnexpectedObstacleOnPathException();
             }
         }
-        */
+
     }
 
     /**

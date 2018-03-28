@@ -31,15 +31,12 @@ import java.io.StringWriter;
  */
 public class UnexpectedObstacleOnPathException extends Exception
 {
-	/**
-	 * là où on se dirigeait avant que l'exception ne soit déclenchée
-	 */
-	Vec2 aim;
+
 	private static final long serialVersionUID = -3791360446545658528L;
 
-	public UnexpectedObstacleOnPathException(Vec2 aim)
+	public UnexpectedObstacleOnPathException()
 	{ 	super();
-		this.aim=aim;
+
 	}
 	
 	public UnexpectedObstacleOnPathException(String m)
@@ -59,7 +56,4 @@ public class UnexpectedObstacleOnPathException extends Exception
 		return exceptionAsString;
 	}
 
-	public Vec2 getAim() {
-		return aim;
-	}
 }

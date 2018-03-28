@@ -2,6 +2,7 @@ package scripts;
 
 import enums.*;
 import exceptions.*;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import pfg.config.Config;

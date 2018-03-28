@@ -20,6 +20,7 @@
 package tests;
 
 import enums.Speed;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
@@ -29,6 +30,8 @@ import org.junit.Test;
 import robot.Robot;
 import smartMath.Vec2;
 import table.Table;
+
+import java.util.ArrayList;
 
 public class JUnit_Speed extends JUnit_Test {
 

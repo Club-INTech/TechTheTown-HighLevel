@@ -20,12 +20,15 @@
 package tests;
 
 import container.Container;
+import enums.ConfigInfoRobot;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import org.junit.After;
 import org.junit.Before;
 import pfg.config.Config;
+import pfg.config.ConfigInfo;
 import robot.EthWrapper;
 import robot.Robot;
 import smartMath.Vec2;
@@ -33,6 +36,8 @@ import strategie.GameState;
 import table.Table;
 import threads.ThreadTimer;
 import utils.Log;
+
+import java.util.ArrayList;
 
 /**
  * The Class JUnit_Test.
@@ -115,9 +120,7 @@ public abstract class JUnit_Test
 			log.debug("pas de chemin trouvé");
 			e.printStackTrace();
 		}
-		catch (ImmobileEnnemyForOneSecondAtLeast e) {
-			throw new ImmobileEnnemyForOneSecondAtLeast(e.getAim());
-		}
+
 		state.robot.turn(Math.PI-Math.atan(9.0/12));
 		state.robot.moveLengthwise(-150);
 		state.robot.turn(Math.PI);
