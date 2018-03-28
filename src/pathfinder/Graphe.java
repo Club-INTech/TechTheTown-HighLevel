@@ -43,7 +43,7 @@ public class Graphe implements Service {
     public Graphe(Log log, Config config, Table table) {
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
-        this.mEnnemies=table.getObstacleManager().getmEnnemies();
+        this.mEnnemies=new ArrayList<>();
         this.table = table;
         createNodes();
         long time1 = System.currentTimeMillis();
@@ -60,6 +60,7 @@ public class Graphe implements Service {
      * pour les actions qu'on veut faire, à savoir l'interrupteur*/
 
     public void createNodes() {
+
 
         nodes = new CopyOnWriteArrayList<>();
         CopyOnWriteArrayList<Noeud> nodesToKeep = new CopyOnWriteArrayList<>();
@@ -177,6 +178,7 @@ public class Graphe implements Service {
      * @return
      */
     public void createNodesAroundCircularObstacles(){
+        //mEnnemies=table.getObstacleManager().getmEnnemies();
         ArrayList<Vec2> pointstoreturn=new ArrayList<>();
         int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
         /*
@@ -190,11 +192,14 @@ public class Graphe implements Service {
         /*
           On crée des noeuds autour des obstacles mobiles
          */
-        for(ObstacleCircular obstacleCircular : mEnnemies) {
-            Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
-            ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
-            pointstoreturn.addAll(l);
-        }
+
+            /*for(ObstacleCircular obstacleCircular : mEnnemies) {
+                Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
+                ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
+                pointstoreturn.addAll(l);
+            }*/
+
+
         /*
         On vérifie pour chaque point s'il n'y a pas d'intersection avec les obstacles circulaires
          */
