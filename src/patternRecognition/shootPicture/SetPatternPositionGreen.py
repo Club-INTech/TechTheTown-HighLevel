@@ -111,11 +111,11 @@ while(True):
         i=0
 
     #On met les cercles et les numeros
-    cv2.circle(img, (xCalque1,yCalque1),5,(colorValue1,colorValue2,colorValue3),2)
+    cv2.circle(img, (xCalque1,yCalque1),5,(colorValue1,colorValue2,colorValue3),1)
     cv2.putText(img,'1',(xCalque1-8,yCalque1-20),cv2.FONT_HERSHEY_TRIPLEX, 1, (colorValue1,colorValue2,colorValue3))
-    cv2.circle(img, (xCalque2,yCalque2),5,(colorValue1,colorValue2,colorValue3),2)
+    cv2.circle(img, (xCalque2,yCalque2),5,(colorValue1,colorValue2,colorValue3),1)
     cv2.putText(img,'2',(xCalque2-8,yCalque2-20),cv2.FONT_HERSHEY_TRIPLEX, 1, (colorValue1,colorValue2,colorValue3))
-    cv2.circle(img, (xCalque3,yCalque3),5,(colorValue1,colorValue2,colorValue3),2)
+    cv2.circle(img, (xCalque3,yCalque3),5,(colorValue1,colorValue2,colorValue3),1)
     cv2.putText(img,'3',(xCalque3-8,yCalque3-20),cv2.FONT_HERSHEY_TRIPLEX, 1, (colorValue1,colorValue2,colorValue3))
 
 
