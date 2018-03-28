@@ -327,7 +327,7 @@ public class Locomotion implements Service {
         int moveR = (int) move.getR();
         double moveA = move.getA();
 
-        if (directionStrategy == DirectionStrategy.FASTEST) {
+        if (directionStrategy.equals(DirectionStrategy.FASTEST)) {
             int sens = move.dot(new Vec2(100, highLevelOrientation));
             if (sens >= 0) {    //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
                 log.debug("Angle de rotation: " + moveA);
@@ -344,11 +344,11 @@ public class Locomotion implements Service {
             }
         }
 
-        if (directionStrategy == DirectionStrategy.FORCE_BACK_MOTION) {
+        if (directionStrategy.equals(DirectionStrategy.FORCE_BACK_MOTION)) {
             moveA = Geometry.moduloSpec(moveA + Math.PI, Math.PI);
             turn(moveA, expectedWallImpact, mustDetect);
             moveLengthwise(-moveR, expectedWallImpact, mustDetect);
-        } else if (directionStrategy == DirectionStrategy.FORCE_FORWARD_MOTION) {
+        } else if (directionStrategy.equals(DirectionStrategy.FORCE_FORWARD_MOTION)) {
             turn(moveA, expectedWallImpact, mustDetect);
             moveLengthwise(moveR, expectedWallImpact, mustDetect);
         }
@@ -553,9 +553,9 @@ public class Locomotion implements Service {
 
             if (thEvent.getUnableToMoveEvent().peek() != null) {
                 String unableToMoveReason = thEvent.getUnableToMoveEvent().poll();
-                if (unableToMoveReason == UnableToMoveReason.PHYSICALLY_BLOCKED.getSerialOrder()) {
+                if (unableToMoveReason.equals(UnableToMoveReason.PHYSICALLY_BLOCKED.getSerialOrder())) {
                     throw new BlockedException();
-                } else if (unableToMoveReason == UnableToMoveReason.OBSTACLE_DETECTED.getSerialOrder() && mustDetect ) {
+                } else if (unableToMoveReason.equals(UnableToMoveReason.OBSTACLE_DETECTED.getSerialOrder()) && mustDetect ) {
 
                     if(basicDetection){
                         throw new UnexpectedObstacleOnPathException();
