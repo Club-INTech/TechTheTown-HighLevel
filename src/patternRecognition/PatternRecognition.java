@@ -124,8 +124,8 @@ public class PatternRecognition extends AbstractThread{
         int height = picture.getHeight();
         colorMatrix = new short[width][height][3];
         //Méthode pour récupérer les paramètres R, G et B de chaque pixel
-        for (int x=0; x<width-1; x++){
-            for (int y=0; y<height-1; y++) {
+        for (int x=0; x<width; x++){
+            for (int y=0; y<height; y++) {
                 Color color =  new Color(picture.getRGB(x, y));
                 colorMatrix[x][y][0]=(short)color.getRed();
                 colorMatrix[x][y][1]=(short)color.getGreen();
@@ -407,7 +407,7 @@ public class PatternRecognition extends AbstractThread{
         return selectionnedProbabilitiesIndice;
     }
 
-    //////////////////////////////////// DISCRIMINATION IN CASE OF CONFLICT /////////////////////////////////////////////
+    ///////////////////////////// AUGMENTATION DE LUMINOSITE ET CONTRASTE /////////////////////////////
 
     /** Convertit une couleur en HSB à partir d'une couleur en RGB
      * @param hue angle de la couleur (rouge, orange, jaune, vert, bleu, violet...)
@@ -509,8 +509,6 @@ public class PatternRecognition extends AbstractThread{
         }
         return colorMatrixLitUp;
     }
-
-    ///////////////////////////// AUGMENTATION DE LUMINOSITE ET CONTRASTE /////////////////////////////
 
     private short[][][] preModifyImage(short[][][] colorMatrix, boolean automatedMode){
         if (!(this.alreadyPreModified)) {

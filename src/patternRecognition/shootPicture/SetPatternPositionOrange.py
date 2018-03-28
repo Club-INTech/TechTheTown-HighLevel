@@ -21,7 +21,7 @@ HEIGHT=round(cap.get(4))
 
 #############################################
 ##### PARAMETRES #####
-XSTART=WIDTH-300
+XSTART=WIDTH-600
 YSTART=250
 LARGEUR_DISPLAY=300
 HAUTEUR_DISPLAY=350
