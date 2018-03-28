@@ -794,7 +794,7 @@ public class PatternRecognition extends AbstractThread{
         if (this.useJumper) {
             while (ethWrapper.isJumperAbsent()) {
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -803,7 +803,7 @@ public class PatternRecognition extends AbstractThread{
             // puis attend son retrait
             while (!ethWrapper.isJumperAbsent()) {
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -824,6 +824,21 @@ public class PatternRecognition extends AbstractThread{
                 analysePatternAfterAutomaticLocalization(colorMatrix);
             }
         }
+        else{
+            boolean patternHasBeenFound=false;
+            for (Patterns pattern : Patterns.values()){
+                Colors[] colors = pattern.getPattern();
+                if(colors[0].equals(this.firstColorShown) && colors[1].equals(this.secondColorShown) && colors[2].equals(this.thirdColorShown)){
+                    this.finalIndice=pattern.getNumber();
+                    patternHasBeenFound=true;
+                    break;
+                }
+            }
+            if (!patternHasBeenFound){
+                this.finalIndice=-1;
+            }
+        }
+
 
         this.setFinalIndice(this.finalIndice);
         this.setRecognitionDone(true);
@@ -943,8 +958,8 @@ public class PatternRecognition extends AbstractThread{
         this.imageWidth=this.config.getInt(ConfigInfoRobot.IMAGE_WIDTH);
         this.localizationAutomated=this.config.getBoolean(ConfigInfoRobot.LOCALIZATION_AUTOMATED);
         this.firstColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
-        this.secondColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
-        this.thirdColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
+        this.secondColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.SECOND_COLOR));
+        this.thirdColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.THIRD_COLOR));
         this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
         this.useJumper=this.config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
     }
