@@ -10,6 +10,8 @@ import java.util.List;
 
 public class LocatePatternPython {
 
+    private static String pythonCommand="python";
+
     public static int[] LocatePattern(int[] zoneToPerformLocalisation){
         String data;
         File file = new File("/tmp/LocalizationDone.lock");
@@ -39,7 +41,7 @@ public class LocatePatternPython {
 
     private static void MakeLocalization(){
         List<String> command = new ArrayList<>();
-        command.add("python3");
+        command.add(pythonCommand);
         command.add("./src/patternRecognition/LocatePatternPython.py");
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();
