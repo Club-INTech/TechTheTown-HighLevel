@@ -5,7 +5,6 @@ import enums.ConfigInfoRobot;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
-import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import hook.HookNames;
@@ -13,7 +12,6 @@ import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
-import sun.awt.image.ImageAccessException;
 import utils.Log;
 
 public class ActiveAbeille extends AbstractScript {

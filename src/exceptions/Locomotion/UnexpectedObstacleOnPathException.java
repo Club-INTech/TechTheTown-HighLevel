@@ -19,6 +19,8 @@
 
 package exceptions.Locomotion;
 
+import smartMath.Vec2;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -29,12 +31,15 @@ import java.io.StringWriter;
  */
 public class UnexpectedObstacleOnPathException extends Exception
 {
-
+	/**
+	 * là où on se dirigeait avant que l'exception ne soit déclenchée
+	 */
+	Vec2 aim;
 	private static final long serialVersionUID = -3791360446545658528L;
 
-	public UnexpectedObstacleOnPathException()
-	{
-		super();
+	public UnexpectedObstacleOnPathException(Vec2 aim)
+	{ 	super();
+		this.aim=aim;
 	}
 	
 	public UnexpectedObstacleOnPathException(String m)
@@ -52,5 +57,9 @@ public class UnexpectedObstacleOnPathException extends Exception
 		exceptionAsString = exceptionAsString.replaceAll("(\r\n|\n\r|\r|\n)", " -> ");
 		
 		return exceptionAsString;
+	}
+
+	public Vec2 getAim() {
+		return aim;
 	}
 }

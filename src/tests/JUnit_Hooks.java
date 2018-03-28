@@ -20,7 +20,6 @@
 package tests;
 
 import enums.Speed;
-import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import hook.HookNames;

@@ -22,7 +22,6 @@ package robot;
 import container.Service;
 import enums.*;
 import exceptions.Locomotion.BlockedException;
-import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import pfg.config.Config;
