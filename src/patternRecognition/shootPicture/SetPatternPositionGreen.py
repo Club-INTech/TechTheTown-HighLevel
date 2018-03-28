@@ -4,15 +4,37 @@ import numpy as np
 import math
 import cv2
 
-##### PARAMETRES A CHANGER #####
-#Seront adaptes si la camera a une resolution trop faible
+#############################################
 WIDTH=1280
 HEIGHT=720
+cap = cv2.VideoCapture(0)
+
+#On set la largeur et la hateur de l'image
+cap.set(3,WIDTH)
+cap.set(4,HEIGHT)
+
+#Si la résolution de la caméra est trop faible, WIDTH et HEIGHT sont remis aux valeurs de la caméra
+WIDTH=round(cap.get(3))
+HEIGHT=round(cap.get(4))
+#############################################
+
+
+#############################################
+##### PARAMETRES #####
+XSTART=0
+XEND=300
+YSTART=250
+YEND=600
 
 #Modifiers pour le traitement de l'image
 #METTRE DES FLOTTANTS
 saturationMultiplier=1.0
 brightnessMultiplier=1.0
+#############################################
+
+
+
+##### DEBUT DU CODE #####
 
 #Position du premier point
 xCalque1=100
@@ -25,8 +47,6 @@ yCalque2=120
 #Position du troiseme point
 xCalque3=140
 yCalque3=140
-
-##### DEBUT DU CODE #####
 
 #Indique si le while(True) doit break à la prochaine iteration
 toBreak=False
@@ -47,16 +67,6 @@ def moveCalque(event,x,y,flags,params):
             xCalque3=x
             yCalque3=y
 
-cap = cv2.VideoCapture(0)
-
-#On set la largeur et la hateur de l'image
-cap.set(3,WIDTH)
-cap.set(4,HEIGHT)
-
-#Si la résolution de la caméra est trop faible, WIDTH et HEIGHT sont remis aux valeurs de la caméra
-WIDTH=round(cap.get(3))
-HEIGHT=round(cap.get(4))
-
 #On définit les variables permettant le clignotement des couleurs
 i=0
 colorValue1=255
@@ -66,6 +76,7 @@ colorValue3=0
 while(True):
     ### CAPTURE DE LA VIDEO FRAME PAR FRAME
     ret, frame = cap.read()
+    frame=frame[YSTART:YEND,XSTART:XEND]
     cv2.namedWindow('frame')
     cv2.setMouseCallback('frame', moveCalque)
 
@@ -85,7 +96,7 @@ while(True):
         cv2.imwrite("/tmp/ImageRaspi.jpeg",img)
         #SAUVEGARDER LES POSITIONS DES CALQUES ICI
         file = open("/tmp/CoordsPatternVideo.txt","w")
-        file.write(str(xCalque1)+" "+str(yCalque1)+" "+str(xCalque2)+" "+str(yCalque2)+" "+str(xCalque3)+" "+str(yCalque3))
+        file.write(str(xCalque1+XSTART)+" "+str(yCalque1+YSTART)+" "+str(xCalque2+XSTART)+" "+str(yCalque2+YSTART)+" "+str(xCalque3+XSTART)+" "+str(yCalque3+YSTART))
         file.close()
         break
 
