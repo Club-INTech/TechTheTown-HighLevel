@@ -22,9 +22,9 @@ HEIGHT=round(cap.get(4))
 #############################################
 ##### PARAMETRES #####
 XSTART=0
-XEND=300
 YSTART=250
-YEND=600
+LARGEUR_DISPLAY=300
+HAUTEUR_DISPLAY=350
 
 #Modifiers pour le traitement de l'image
 #METTRE DES FLOTTANTS
@@ -76,7 +76,7 @@ colorValue3=0
 while(True):
     ### CAPTURE DE LA VIDEO FRAME PAR FRAME
     ret, frame = cap.read()
-    frame=frame[YSTART:YEND,XSTART:XEND]
+    frame=frame[YSTART:YSTART+HAUTEUR_DISPLAY,XSTART:XSTART+LARGEUR_DISPLAY]
     cv2.namedWindow('frame')
     cv2.setMouseCallback('frame', moveCalque)
 
