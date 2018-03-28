@@ -21,6 +21,7 @@ package tests;
 
 import container.Container;
 import enums.ConfigInfoRobot;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
@@ -110,7 +111,7 @@ public abstract class JUnit_Test
 		robot.setPosition(Table.entryPosition);
 	}
 
-	public void returnToEntryPosition(GameState state) throws UnableToMoveException, PointInObstacleException
+	public void returnToEntryPosition(GameState state) throws UnableToMoveException, PointInObstacleException,ImmobileEnnemyForOneSecondAtLeast
 	{
 		try {
 			state.robot.moveToLocation(new Vec2(Table.entryPosition.getX() - 120, Table.entryPosition.getY() + 90), state.table);
@@ -119,6 +120,7 @@ public abstract class JUnit_Test
 			log.debug("pas de chemin trouvé");
 			e.printStackTrace();
 		}
+
 		state.robot.turn(Math.PI-Math.atan(9.0/12));
 		state.robot.moveLengthwise(-150);
 		state.robot.turn(Math.PI);

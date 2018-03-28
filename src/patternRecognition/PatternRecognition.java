@@ -90,8 +90,8 @@ public class PatternRecognition extends AbstractThread{
 
         //Paramètres permettant à la localisation automatique d'avoir les coordonnées des patterns
         //avec le centre du rectangle détecté
-        this.lengthSideOfSquareDetection=10; //in pixels
-        this.distanceBetweenTwoColors=15; //in pixels
+        this.lengthSideOfSquareDetection=5; //in pixels
+        this.distanceBetweenTwoColors=8; //in pixels
 
         //Paramètres de débug
         this.alreadyPrintedColorMatchingProba=false;
@@ -682,96 +682,100 @@ public class PatternRecognition extends AbstractThread{
                 log.critical("Exception /tmp/CoordsPatternVideo.txt");
                 this.localizationAutomated = true;
             }
-            String[] infos = data.split(" ");
-            int[] coords = new int[6];
-            for (int i = 0; i < 6; i++) {
-                coords[i] = Integer.parseInt(infos[i]);
-            }
-            /**Coords de la forme :
-             * {xCenterFirstColor, yCenterFirstColor, xCenterSecondColor, yCenterSecondColor, xCenterThirdColor, yCenterSecondColor}
-             */
-            int maxX=Math.max(Math.max(coords[0],coords[2]),coords[4]);
-            int minX=Math.min(Math.min(coords[0],coords[2]),coords[4]);
-            int maxY=Math.max(Math.max(coords[1],coords[3]),coords[5]);
-            int minY=Math.min(Math.min(coords[1],coords[3]),coords[5]);
-            /** De la forme : {xstart, ystart, width, height} */
-            this.zoneToPerformLocalisationManual=new int[]{Math.max(minX-lengthSideOfSquareDetection,0),Math.max(minY-lengthSideOfSquareDetection,0),Math.min(maxX-minX+lengthSideOfSquareDetection,this.imageWidth-1),Math.min(maxY-minY+lengthSideOfSquareDetection,this.imageHeight-1)};
-            colorMatrix=preModifyImage(colorMatrix,this.localizationAutomated);
-            int halfLengthSideOfSquareDetection=this.lengthSideOfSquareDetection/2;
-            int imageWidthMinusOne=this.imageWidth-1;
-            int imageHeightMinusOne=this.imageHeight-1;
-            /**On définit où l'algorithme doit chercher ses couleurs
-             * positionColorsOnImage=
-             * {
-             * {xStartFirstColor,xStartSecondColor,xStartThirdColor},
-             * {yStartFirstColor,yStartSecondColor,yStartThirdColor},
-             * {xEndFirstColor,xEndSecondColor,xEndThirdColor},
-             * {yEndFirstColor,yEndSecondColor,yEndThirdColor},
-             * }
-             */
-            this.positionsColorsOnImage = new int[][]{
-                    {Math.max(coords[0] - halfLengthSideOfSquareDetection, 0),
-                     Math.max(coords[2] - halfLengthSideOfSquareDetection, 0),
-                     Math.max(coords[4] - halfLengthSideOfSquareDetection, 0)
-                    },
-                    {Math.max(coords[1] - halfLengthSideOfSquareDetection, 0),
-                     Math.max(coords[3] - halfLengthSideOfSquareDetection, 0),
-                     Math.max(coords[5] - halfLengthSideOfSquareDetection, 0)
-                    },
-                    {Math.min(coords[0] + halfLengthSideOfSquareDetection, imageWidthMinusOne),
-                     Math.min(coords[2] + halfLengthSideOfSquareDetection, imageWidthMinusOne),
-                     Math.min(coords[4] + halfLengthSideOfSquareDetection, imageWidthMinusOne)
-                    },
-                    {Math.min(coords[1] + halfLengthSideOfSquareDetection, imageHeightMinusOne),
-                     Math.min(coords[3] + halfLengthSideOfSquareDetection, imageHeightMinusOne),
-                     Math.min(coords[5] + halfLengthSideOfSquareDetection, imageHeightMinusOne)
-                    }
-            };
-            double[] distanceArray=computeProximity(colorMatrix, this.positionsColorsOnImage);
-            double maxProba = 0;
-            double[] badDistanceArray = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-            int maxI = 0;
-            if (debug) {
-                log.debug("");
-                log.debug("Proximity (Manual detection)");
-            }
-            if (distanceArray==badDistanceArray) {
-                for (int i = 0; i < distanceArray.length; i++) {
-                    distanceArray[i] = 0;
+            if (!this.localizationAutomated) {
+                String[] infos = data.split(" ");
+                int[] coords = new int[6];
+                for (int i = 0; i < 6; i++) {
+                    coords[i] = Integer.parseInt(infos[i]);
                 }
-            }
-            else {
-                for (int i=0; i < distanceArray.length;i++) {
-                    if (distanceArray[i]>maxProba) {
-                        maxProba = distanceArray[i];
-                        maxI=i;
+                /**Coords de la forme :
+                 * {xCenterFirstColor, yCenterFirstColor, xCenterSecondColor, yCenterSecondColor, xCenterThirdColor, yCenterSecondColor}
+                 */
+                int maxX = Math.max(Math.max(coords[0], coords[2]), coords[4]);
+                int minX = Math.min(Math.min(coords[0], coords[2]), coords[4]);
+                int maxY = Math.max(Math.max(coords[1], coords[3]), coords[5]);
+                int minY = Math.min(Math.min(coords[1], coords[3]), coords[5]);
+                /** De la forme : {xstart, ystart, width, height} */
+                this.zoneToPerformLocalisationManual = new int[]{Math.max(minX - lengthSideOfSquareDetection, 0), Math.max(minY - lengthSideOfSquareDetection, 0), Math.min(maxX - minX + lengthSideOfSquareDetection, this.imageWidth - 1), Math.min(maxY - minY + lengthSideOfSquareDetection, this.imageHeight - 1)};
+                colorMatrix = preModifyImage(colorMatrix, this.localizationAutomated);
+                int halfLengthSideOfSquareDetection = this.lengthSideOfSquareDetection / 2;
+                int imageWidthMinusOne = this.imageWidth - 1;
+                int imageHeightMinusOne = this.imageHeight - 1;
+                /**On définit où l'algorithme doit chercher ses couleurs
+                 * positionColorsOnImage=
+                 * {
+                 * {xStartFirstColor,xStartSecondColor,xStartThirdColor},
+                 * {yStartFirstColor,yStartSecondColor,yStartThirdColor},
+                 * {xEndFirstColor,xEndSecondColor,xEndThirdColor},
+                 * {yEndFirstColor,yEndSecondColor,yEndThirdColor},
+                 * }
+                 */
+                this.positionsColorsOnImage = new int[][]{
+                        {Math.max(coords[0] - halfLengthSideOfSquareDetection, 0),
+                                Math.max(coords[2] - halfLengthSideOfSquareDetection, 0),
+                                Math.max(coords[4] - halfLengthSideOfSquareDetection, 0)
+                        },
+                        {Math.max(coords[1] - halfLengthSideOfSquareDetection, 0),
+                                Math.max(coords[3] - halfLengthSideOfSquareDetection, 0),
+                                Math.max(coords[5] - halfLengthSideOfSquareDetection, 0)
+                        },
+                        {Math.min(coords[0] + halfLengthSideOfSquareDetection, imageWidthMinusOne),
+                                Math.min(coords[2] + halfLengthSideOfSquareDetection, imageWidthMinusOne),
+                                Math.min(coords[4] + halfLengthSideOfSquareDetection, imageWidthMinusOne)
+                        },
+                        {Math.min(coords[1] + halfLengthSideOfSquareDetection, imageHeightMinusOne),
+                                Math.min(coords[3] + halfLengthSideOfSquareDetection, imageHeightMinusOne),
+                                Math.min(coords[5] + halfLengthSideOfSquareDetection, imageHeightMinusOne)
+                        }
+                };
+                double[] distanceArray = computeProximity(colorMatrix, this.positionsColorsOnImage);
+                double maxProba = 0;
+                double[] badDistanceArray = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+                int maxI = 0;
+                if (debug) {
+                    log.debug("");
+                    log.debug("Proximity (Manual detection)");
+                }
+                if (distanceArray == badDistanceArray) {
+                    for (int i = 0; i < distanceArray.length; i++) {
+                        distanceArray[i] = 0;
                     }
-                    if (debug) {
-                        log.debug(distanceArray[i]);
+                } else {
+                    for (int i = 0; i < distanceArray.length; i++) {
+                        if (distanceArray[i] > maxProba) {
+                            maxProba = distanceArray[i];
+                            maxI = i;
+                        }
+                        if (debug) {
+                            log.debug(distanceArray[i]);
+                        }
                     }
                 }
-            }
 
-            if (maxProba < 0.3) {
-                if (this.alreadyLitUp < 2) {
-                    this.alreadyLitUp += 1;
-                    colorMatrix = lightUpSector(colorMatrix, this.zoneToPerformLocalisationManual[0], this.zoneToPerformLocalisationManual[1], this.zoneToPerformLocalisationManual[0] + this.zoneToPerformLocalisationManual[2], this.zoneToPerformLocalisationManual[1] + this.zoneToPerformLocalisationManual[3], 1.2, 1.2);
-                    if (debug) {
-                        log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
+                if (maxProba < 0.3) {
+                    if (this.alreadyLitUp < 2) {
+                        this.alreadyLitUp += 1;
+                        colorMatrix = lightUpSector(colorMatrix, this.zoneToPerformLocalisationManual[0], this.zoneToPerformLocalisationManual[1], this.zoneToPerformLocalisationManual[0] + this.zoneToPerformLocalisationManual[2], this.zoneToPerformLocalisationManual[1] + this.zoneToPerformLocalisationManual[3], 1.2, 1.2);
+                        if (debug) {
+                            log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
+                        }
+                        if (isSavingImages) {
+                            saveImage(colorMatrix, "/tmp/ImageCenter.jpg");
+                        }
+                        analysePatternAfterManualLocalization(colorMatrix);
+                    } else {
+                        this.finalIndice = maxI;
+                        return maxI;
                     }
-                    if (isSavingImages) {
-                        saveImage(colorMatrix, "/tmp/ImageCenter.jpg");
-                    }
-                    analysePatternAfterManualLocalization(colorMatrix);
                 } else {
                     this.finalIndice = maxI;
                     return maxI;
                 }
-            } else {
-                this.finalIndice = maxI;
-                return maxI;
+                return -1;
             }
-            return -1;
+            else{
+                return -1;
+            }
         }
         else{
             this.localizationAutomated=true;
@@ -810,7 +814,7 @@ public class PatternRecognition extends AbstractThread{
             log.debug("Début de la prise de photo");
             BufferedImage buffImg = UseWebcam.takeBufferedPicture();
             log.debug("Fin de la prise de photo");
-            this.movementLocked = false;
+            this.setMovementLocked(false);
             int[][][] colorMatrix = createColorMatrixFromBufferedImage(buffImg);
             if (!this.localizationAutomated) {
                 analysePatternAfterManualLocalization(colorMatrix);
@@ -836,8 +840,8 @@ public class PatternRecognition extends AbstractThread{
         }
 
 
-        gameState.setIndicePattern(this.finalIndice);
-        gameState.setRecognitionDone(true);
+        this.setFinalIndice(this.finalIndice);
+        this.setRecognitionDone(true);
         log.debug("Pattern recognized : " + finalIndice);
         while (!this.isShutdown){
             try {
@@ -851,6 +855,16 @@ public class PatternRecognition extends AbstractThread{
 
     public int getFinalIndice(){
         return this.finalIndice;
+    }
+
+    public void setFinalIndice(int indice){
+        if (indice<-2 || indice>9){
+            log.critical("Bad indice value set");
+        }
+        else{
+            gameState.setIndicePattern(indice);
+            this.finalIndice=indice;
+        }
     }
 
     /** Set la valeur de debug
@@ -906,10 +920,31 @@ public class PatternRecognition extends AbstractThread{
         return this.movementLocked;
     }
 
+    public void setMovementLocked(boolean value){
+        if (value){
+            log.debug("Movement locked");
+        }
+        else{
+            log.debug("Movement unlocked");
+        }
+        this.movementLocked=value;
+    }
+
     /** Permet de savoir si la reconnaissance a été faite, car le robot ne doit pas ramasser de cubes avant de savoir quel est le pattern reconnu
      */
     public boolean isRecognitionDone() {
         return this.recognitionDone;
+    }
+
+    public void setRecognitionDone(boolean value){
+        if (value){
+            log.debug("Recognition done");
+        }
+        else{
+            log.debug("Recognition to do");
+        }
+        gameState.setRecognitionDone(value);
+        this.recognitionDone=value;
     }
 
     @Override
@@ -923,8 +958,8 @@ public class PatternRecognition extends AbstractThread{
         this.imageWidth=this.config.getInt(ConfigInfoRobot.IMAGE_WIDTH);
         this.localizationAutomated=this.config.getBoolean(ConfigInfoRobot.LOCALIZATION_AUTOMATED);
         this.firstColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
-        this.secondColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
-        this.thirdColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.FIRST_COLOR));
+        this.secondColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.SECOND_COLOR));
+        this.thirdColorShown=Colors.getColorFromName(this.config.getString(ConfigInfoRobot.THIRD_COLOR));
         this.symmetry=this.config.getString(ConfigInfoRobot.COULEUR).equals("orange");
         this.useJumper=this.config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
     }

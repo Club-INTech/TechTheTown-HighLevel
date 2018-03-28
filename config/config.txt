@@ -12,7 +12,7 @@ LONGUEUR_CUBE                        =  58
 LONGUEUR_BRAS                        = 330
 DIMENSION_PORTES                     = 110
 COUT_FIXE                            = 42
-
+INDICE_PATTERN_SIMULATION            = 0
 
 
 

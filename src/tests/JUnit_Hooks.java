@@ -20,6 +20,7 @@
 package tests;
 
 import enums.Speed;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import hook.HookNames;
@@ -67,8 +68,7 @@ public class JUnit_Hooks extends JUnit_Test
 	}
 
 	@Test
-	public void testSpeed()
-	{
+	public void testSpeed() throws ImmobileEnnemyForOneSecondAtLeast {
 		log.debug("Début de test !");
 		try 
 		{

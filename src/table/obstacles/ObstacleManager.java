@@ -58,8 +58,11 @@ public class ObstacleManager implements Service
     /** Ensemble des obstacles circulaires */
     public ArrayList<ObstacleCircular> mCircularObstacle;
 
+    /**Robot(s) Ennemi(s) qui bouge plus au bout d'une seconde, c'est une liste
+	 * qui sera filée au graphe pour qu'il puise l'ajouter comme obstacle**/
+	public ArrayList<ObstacleCircular> mEnnemies;
 
-    /** Ensemble des obstacles mobiles/temporaires a tester pour les placer sur la table */
+	/** Ensemble des obstacles mobiles/temporaires a tester pour les placer sur la table */
 	private ArrayList<ObstacleProximity> mUntestedMobileObstacles;
 
     /** Ensembles des lignes modélisant les bords de la table */
@@ -1064,5 +1067,9 @@ public class ObstacleManager implements Service
 		mCircularObstacle.clear();
 		mMobileObstacles.clear();
 		mUntestedMobileObstacles.clear();
+	}
+
+	public ArrayList<ObstacleCircular> getmEnnemies() {
+		return mEnnemies;
 	}
 }

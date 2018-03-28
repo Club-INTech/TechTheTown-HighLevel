@@ -2,6 +2,7 @@ package scripts;
 
 import enums.*;
 import exceptions.*;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import pfg.config.Config;
@@ -9,6 +10,8 @@ import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /** Script permettant de récupérer les cubes de n'importe quel tas, selon n'importe quel pattern, dans n'importe quelle direction
  */
@@ -34,17 +37,22 @@ public class TakeCubes extends AbstractScript {
      */
     @Override
     public void execute(int indiceTas, GameState stateToConsider)
-            throws InterruptedException, ExecuteException, UnableToMoveException {
+            throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
 
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
 
         BrasUtilise bras;
         Cubes additionalCube;
         String direction;
-
-        while(!stateToConsider.isRecognitionDone()){
-            Thread.sleep(10);
+        if(!(config.getBoolean(ConfigInfoRobot.SIMULATION))){
+            while(!stateToConsider.isRecognitionDone()){
+                Thread.sleep(10);
+            }
         }
+        else{
+            stateToConsider.setIndicePattern(config.getInt(ConfigInfoRobot.INDICE_PATTERN_SIMULATION));
+        }
+
 
         //On récupère l'indice du pattern
         int indicePattern=stateToConsider.getIndicePattern();

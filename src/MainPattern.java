@@ -28,12 +28,15 @@ import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
+import simulator.ThreadSimulator;
 import strategie.GameState;
 import table.Table;
 import tests.JUnit_PatternRecognition;
 import threads.ThreadInterface;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
+
+import java.nio.file.FileSystemLoopException;
 
 /**
  * Code qui démarre le robot en début de match
@@ -43,40 +46,47 @@ import threads.dataHandlers.ThreadEth;
 public class MainPattern {
     static Container container;
     static Config config;
-    static GameState realState;
     static EthWrapper mEthWrapper;
     static PatternRecognition patternRecognition;
-
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
 // PS : Les vérifications et validations c'est pas pour les chiens.
-    //TODO : Aide-mémoire : mettre la lib libopencv_java340.so dans le répertoire /usr/lib de la raspi, et executer execstack -c libopencv_java340.so
 
     public static void main(String[] args) throws InterruptedException {
         try {
             container = new Container();
+            Thread.currentThread().setPriority(6);
             config = container.getConfig();
             config.override(ConfigInfoRobot.SIMULATION,true);
 
+            container.getService(ThreadSimulator.class);
+            mEthWrapper = container.getService(EthWrapper.class);
+            container.getService(ThreadEth.class);
             patternRecognition = container.getService(PatternRecognition.class);
-            Thread.currentThread().setPriority(6);
+            patternRecognition.setDebugPatternRecognition(true);
             container.startInstanciedThreads();
-
-            while (patternRecognition.isMovementLocked()) {
-                Thread.sleep(20);
-            }
-
-            while (!patternRecognition.isRecognitionDone()) {
-                Thread.sleep(20);
-            }
-
-            System.out.println("Reconnaissance de pattern terminée");
-            container.destructor();
-
         } catch (ContainerException p) {
+            p.printStackTrace();
             System.out.println("bug container");
         }
+
+        while (patternRecognition.isMovementLocked()) {
+            Thread.sleep(10);
+        }
+        while (!patternRecognition.isRecognitionDone()) {
+            Thread.sleep(10);
+        }
+
+        System.out.println("Reconnaissance de pattern terminée");
+
+        try {
+            container.destructor();
+        } catch (ContainerException e) {
+            e.printStackTrace();
+            System.out.println("bug container");
+        }
+
     }
 
 
