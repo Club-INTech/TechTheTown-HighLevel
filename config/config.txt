@@ -18,7 +18,7 @@ INDICE_PATTERN_SIMULATION            = 0
 
 
 # ETAT INITIAL DES ROBOTS
-COULEUR                              = vert
+COULEUR                              = orange
 SIMULATION                           = true
 ATTENTE_JUMPER                       = false
 
