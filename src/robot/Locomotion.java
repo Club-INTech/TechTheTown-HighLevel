@@ -595,21 +595,20 @@ public class Locomotion implements Service {
                         catch(InterruptedException e){
                             e.printStackTrace();
                         }
-                        throw new ImmobileEnnemyForOneSecondAtLeast(aim);
 
-                    } else {
+                        } else {
                         try{
                             detectEnemyArroundPosition(detectionRay);
                         }
                         catch (InterruptedException e){
                             e.printStackTrace();
                         }
-                        throw new ImmobileEnnemyForOneSecondAtLeast(aim);
+
+
 
                     }
                 } else {
-                    ethWrapper.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE);
-
+                    basicDetect(isMovementForward, false);
                 }
             }
 
@@ -685,7 +684,7 @@ public class Locomotion implements Service {
      * @throws UnexpectedObstacleOnPathException
      */
     private void basicDetect(boolean isMovementForward, boolean turning) throws UnexpectedObstacleOnPathException {
-        //TODO : à mettre en LL
+        /*//TODO : à mettre en LL
         if (isMovementForward || turning) {
             if ((USvalues.get(0) < basicDetectDistance && USvalues.get(0) != 0) || ((USvalues.get(1) < basicDetectDistance && USvalues.get(1) != 0))) {
                 log.warning("Lancement de UnexpectedObstacleOnPathException dans basicDetect : Capteurs avant");
@@ -698,7 +697,7 @@ public class Locomotion implements Service {
                 throw new UnexpectedObstacleOnPathException();
             }
         }
-
+        */
     }
 
     /**
