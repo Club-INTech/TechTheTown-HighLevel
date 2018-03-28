@@ -54,6 +54,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     TAS_BASE_ENNEMI_PRIS(false),
     TAS_CHATEAU_ENNEMI_PRIS(false),
     TAS_STATION_EPURATION_ENNEMI_PRIS(false),
+    INDICE_PATTERN_SIMULATION(0),
 
     /** Dimensions du robot */
     ROBOT_LENGTH(300),

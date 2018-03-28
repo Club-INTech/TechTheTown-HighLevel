@@ -11,6 +11,8 @@ import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /** Script permettant de récupérer les cubes de n'importe quel tas, selon n'importe quel pattern, dans n'importe quelle direction
  */
 public class TakeCubes extends AbstractScript {
@@ -42,10 +44,15 @@ public class TakeCubes extends AbstractScript {
         BrasUtilise bras;
         Cubes additionalCube;
         String direction;
-
-        while(!stateToConsider.isRecognitionDone()){
-            Thread.sleep(10);
+        if(!(config.getBoolean(ConfigInfoRobot.SIMULATION))){
+            while(!stateToConsider.isRecognitionDone()){
+                Thread.sleep(10);
+            }
         }
+        else{
+            stateToConsider.setIndicePattern(config.getInt(ConfigInfoRobot.INDICE_PATTERN_SIMULATION));
+        }
+
 
         //On récupère l'indice du pattern
         int indicePattern=stateToConsider.getIndicePattern();
