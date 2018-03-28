@@ -110,6 +110,8 @@ public class ThreadSensor extends AbstractThread
      * Pour éviter de détecter la main du lanceur */
     private static boolean delay = true;
 
+    private boolean usingJumper;
+
 
     /** Valeurs des capteurs US {avant-gauche, avant-droit, arrière gauche, arrière-droit} */
     //ArrayList<Integer> USvalues = new ArrayList<Integer>(4);
@@ -399,22 +401,22 @@ public class ThreadSensor extends AbstractThread
 
         updateConfig();
 
-        /* while(ethWrapper.isJumperAbsent())
-        {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if (this.usingJumper) {
+            while (ethWrapper.isJumperAbsent()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            while (!ethWrapper.isJumperAbsent()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        while(!ethWrapper.isJumperAbsent())
-        {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }*/
 
         // maintenant que le jumper est retiré, le match a commencé
         ThreadTimer.matchEnded = false;
@@ -456,5 +458,6 @@ public class ThreadSensor extends AbstractThread
         this.sensorOrientationF = config.getDouble(ConfigInfoRobot.SENSOR_ORIENTATION_FRONT);
         this.sensorOrientationB = config.getDouble(ConfigInfoRobot.SENSOR_ORIENTATION_BACK);
         this.detectionAngle = config.getDouble(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS);
+        this.usingJumper = config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
 	}
 }

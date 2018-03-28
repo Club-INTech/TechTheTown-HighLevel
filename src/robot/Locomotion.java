@@ -499,7 +499,8 @@ public class Locomotion implements Service {
                 }
             }
 
-            /** TODO A adapté à l'année en cours */ catch (UnexpectedObstacleOnPathException unexpectedObstacle) {
+            // TODO A adapté à l'année en cours
+            catch (UnexpectedObstacleOnPathException unexpectedObstacle) {
                 log.warning("Ennemi detecté : Catch de " + unexpectedObstacle);
                 log.warning(unexpectedObstacle.logStack());
 
@@ -540,9 +541,9 @@ public class Locomotion implements Service {
 
             if (thEvent.getUnableToMoveEvent().peek() != null) {
                 String unableToMoveReason = thEvent.getUnableToMoveEvent().poll();
-                if (unableToMoveReason == UnableToMoveReason.PHYSICALLY_BLOCKED.getSerialOrder()) {
+                if (unableToMoveReason.equals(UnableToMoveReason.PHYSICALLY_BLOCKED.getSerialOrder())) {
                     throw new BlockedException();
-                } else if (unableToMoveReason == UnableToMoveReason.OBSTACLE_DETECTED.getSerialOrder() && mustDetect && basicDetection) {
+                } else if (unableToMoveReason.equals(UnableToMoveReason.OBSTACLE_DETECTED.getSerialOrder()) && mustDetect && basicDetection) {
                     throw new UnexpectedObstacleOnPathException();
                 }
             }
@@ -590,7 +591,7 @@ public class Locomotion implements Service {
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
         log.debug("HighLevelOrientation: "+highLevelOrientation+" / HighLevelPosition: "+highLevelPosition);
         if (!turnOnly) {
-            double produitScalaire = delta.dot(new Vec2(100, lowLevelOrientation));
+            double produitScalaire = delta.dot(new Vec2(100.0, lowLevelOrientation));
             if (produitScalaire > 0) {
                 moveToPointEthernetOrder(delta.getA(), delta.getR(), turnOnly);
             } else {

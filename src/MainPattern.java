@@ -64,11 +64,11 @@ public class MainPattern {
             container.startInstanciedThreads();
 
             while (patternRecognition.isMovementLocked()) {
-                Thread.sleep(10);
+                Thread.sleep(20);
             }
 
             while (!patternRecognition.isRecognitionDone()) {
-                Thread.sleep(10);
+                Thread.sleep(20);
             }
 
             System.out.println("Reconnaissance de pattern terminée");

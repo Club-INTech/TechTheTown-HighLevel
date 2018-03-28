@@ -790,7 +790,7 @@ public class PatternRecognition extends AbstractThread{
         if (this.useJumper) {
             while (ethWrapper.isJumperAbsent()) {
                 try {
-                    Thread.sleep(20);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -799,7 +799,7 @@ public class PatternRecognition extends AbstractThread{
             // puis attend son retrait
             while (!ethWrapper.isJumperAbsent()) {
                 try {
-                    Thread.sleep(20);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
