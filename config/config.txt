@@ -62,6 +62,7 @@ THIRD_COLOR                          = null
 # basic_detection                    = false
 # temps_untested_obstacle            = 250
 # 200 homologation ; 150 match
+SENSOR_ANGLE_WIDENESS                =1.04
 
 # PARAMETRES POUR LES DÉPLACEMENTS
 # hooks_tolerance_mm                 = 20

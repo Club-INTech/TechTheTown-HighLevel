@@ -227,7 +227,7 @@ public class ThreadSensor extends AbstractThread
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
         int d = Math.abs(sensorFL.getX() - sensorFR.getX());
-        double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d));
+        double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d))-Math.PI/2+(config.getDouble(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS)/2);
         int x = (int) (a * Math.cos(alpha));
         int y = (int) (a * Math.sin(alpha));
         Vec2 posObjectFromSensorFL = new Vec2(x, y);
