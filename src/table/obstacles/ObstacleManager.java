@@ -120,7 +120,7 @@ public class ObstacleManager implements Service
         mCircularObstacle = new ArrayList<ObstacleCircular>();
         mLines = new ArrayList<Segment>();
 		mRectangles = new ArrayList<ObstacleRectangular>();
-		
+		mEnnemies=new ArrayList<>();
 		mUntestedMobileObstacles= new ArrayList<ObstacleProximity>();
 
 		updateConfig();

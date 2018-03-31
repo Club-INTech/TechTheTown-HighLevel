@@ -193,11 +193,11 @@ public class Graphe implements Service {
           On crée des noeuds autour des obstacles mobiles
          */
 
-            /*for(ObstacleCircular obstacleCircular : mEnnemies) {
+            for(ObstacleCircular obstacleCircular : mEnnemies) {
                 Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
                 ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
                 pointstoreturn.addAll(l);
-            }*/
+            }
 
 
         /*
