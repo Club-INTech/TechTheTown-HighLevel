@@ -166,21 +166,21 @@ while(True):
         currentCalque=2
     elif key==ord("3"):
         currentCalque=3
-
+        
     #LEFT
-    elif key==37:
-        moveCalqueLeft
+    elif key==ord('q'):
+        moveCalqueLeft()
 
     #UP
-    elif key==38:
+    elif key==ord('z'):
         moveCalqueUp()
 
     #RIGHT
-    elif key==39:
+    elif key==ord('d'):
         moveCalqueRight()
 
     #DOWN
-    elif key==40:
+    elif key==ord('s'):
         moveCalqueDown()
 
 
