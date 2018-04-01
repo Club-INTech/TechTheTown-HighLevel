@@ -21,6 +21,13 @@ public class JUnit_PatternRecognition extends JUnit_Test {
 
     @Before
     public void setUp() {
+        try {
+            super.setUp();
+            state = container.getService(GameState.class);
+            patternRecognitionThread = container.getService(PatternRecognition.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.noVideoInput=true;
         for (int i=0; i<3; i++) {
             File f = new File("/dev/video"+i);
@@ -31,13 +38,6 @@ public class JUnit_PatternRecognition extends JUnit_Test {
             else{
                 log.debug("/dev/video"+i+" does not exist");
             }
-        }
-        try {
-            super.setUp();
-            state = container.getService(GameState.class);
-            patternRecognitionThread = container.getService(PatternRecognition.class);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
