@@ -18,8 +18,8 @@ INDICE_PATTERN_SIMULATION            = 0
 
 
 # ETAT INITIAL DES ROBOTS
-COULEUR                              = orange
-SIMULATION                           = true
+COULEUR                              = vert
+SIMULATION                           = false
 ATTENTE_JUMPER                       = false
 
 # VERSION DE MATCHSCRIPT TO EXECUTE

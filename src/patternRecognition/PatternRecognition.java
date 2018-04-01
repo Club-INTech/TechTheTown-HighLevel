@@ -795,6 +795,7 @@ public class PatternRecognition extends AbstractThread{
         this.setPriority(5);
         //On lance le programme de capture de la webcam
         if (this.firstColorShown==Colors.NULL || this.secondColorShown==Colors.NULL || this.thirdColorShown==Colors.NULL) {
+            log.debug("Ouverture de la caméra");
             UseWebcam.startCapturing();
         }
 
