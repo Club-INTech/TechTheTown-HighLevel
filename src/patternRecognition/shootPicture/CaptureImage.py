@@ -6,6 +6,16 @@ import cv2
 import os.path
 
 #############################################
+########## PARAMETRES A MODIFIER ############
+#UTILISER DES FLOTTANTS
+saturationMultiplier=1.0
+brightnessMultiplier=1.0
+#############################################
+
+
+
+
+#############################################
 WIDTH=1280
 HEIGHT=720
 cap = cv2.VideoCapture(0)
@@ -29,10 +39,6 @@ while (locked):
         locked=False
 
 hsv = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)
-
-#UTILISER DES FLOTTANTS
-#saturationMultiplier=1.0
-#brightnessMultiplier=1.0
 
 hsv[:,:,1]=np.clip(np.around(hsv[:,:,1]*saturationMultiplier,1),0,255)
 hsv[:,:,2]=np.clip(np.around(hsv[:,:,2]*brightnessMultiplier,1),0,255)
