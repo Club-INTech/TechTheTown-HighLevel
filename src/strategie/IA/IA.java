@@ -16,14 +16,18 @@ public class IA implements Service {
     private GameState gameState;
     private ScriptManager scriptManager;
     private Graph graph;
-    private ArrayList<Edge> orderToExecute;
+    private ArrayList<Node> nodesToExecute;
+
+    /** Permet de s'adapter au déroulement d'un match grace à un graphe de décision. */
 
     public IA(GameState gameState, ScriptManager scriptManager) {
         this.gameState = gameState;
         this.scriptManager = scriptManager;
         this.graph = new Graph(createNodes());
-        this.orderToExecute = kruskal();
+        this.nodesToExecute = kruskal();
     }
+
+    /** Créer les noeuds du graphe de décision. */
 
     public ArrayList<Node> createNodes() {
         Node pattern = new Pattern(0, null, scriptManager, gameState);
@@ -42,7 +46,9 @@ public class IA implements Service {
         return nodes;
     }
 
-    public ArrayList<Edge> kruskal() {
+    /** Trouve un parcourt optimal dans l'arbre de décision. */
+
+    public ArrayList<Node> kruskal() {
         ArrayList<Edge> bestEdges = new ArrayList<>();
         UnionFind u1 = new UnionFind(graph.getNodes().size());
         Edge curentEdge;

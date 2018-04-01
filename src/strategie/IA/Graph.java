@@ -5,8 +5,11 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class Graph {
+
     private ArrayList<Node> nodes;
     private PriorityQueue<Edge> edges;
+
+    /** Graphe de décision qui gère les actions à effectuer durant un match. */
 
     public Graph(ArrayList<Node> nodes) {
         this.edges = new PriorityQueue<>(new Comparator<Edge>() {
@@ -26,6 +29,8 @@ public class Graph {
         createEdge(nodes);
     }
 
+    /** Génère les arretes du graphe, est appelé par le constructeur de Graph. */
+
     public void createEdge(ArrayList<Node> nodes){
         int n = nodes.size();
         for (int i = 0; i < n ; i++){
@@ -35,6 +40,8 @@ public class Graph {
             nodes.get(i).setId(i);
         }
     }
+
+    /** Affichre le contenu du graphe. */
 
     public void display(){
         System.out.println("Liste des noeuds");

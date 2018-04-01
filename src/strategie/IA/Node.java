@@ -25,6 +25,15 @@ public abstract class Node {
     private ArrayList<Node> nextNodes;
     private GameState gameState;
 
+    /** Noeud d'action, principale composant du graphe de décision. Il permet de lancer les scripts et de gérer les
+     * exeptions. Il possède plusieurs paramètre utilisé pour calculer le coup d'une arrete en points/s.
+     *
+     * @param versionToExecute
+     * @param nextNodes
+     * @param scriptManager
+     * @param gameState
+     */
+
     public Node(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState) {
         this.versionToExecute = versionToExecute;
         this.id = 0;
@@ -36,6 +45,8 @@ public abstract class Node {
         this.scriptManager = scriptManager;
         this.gameState = gameState;
     }
+
+    /** Permet d'executer le script d'un noeud et de gérer les exeptions si il y en a. */
 
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException {
         if (e != null) {
