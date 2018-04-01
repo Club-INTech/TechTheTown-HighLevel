@@ -793,6 +793,10 @@ public class PatternRecognition extends AbstractThread{
      */
     public void run(){
         this.setPriority(5);
+        //On lance le programme de capture de la webcam
+        if (this.firstColorShown==Colors.NULL || this.secondColorShown==Colors.NULL || this.thirdColorShown==Colors.NULL) {
+            UseWebcam.startCapturing();
+        }
 
         if (this.useJumper) {
             while (ethWrapper.isJumperAbsent()) {
@@ -815,6 +819,7 @@ public class PatternRecognition extends AbstractThread{
 
         if (this.firstColorShown==Colors.NULL || this.secondColorShown==Colors.NULL || this.thirdColorShown==Colors.NULL) {
             log.debug("Début de la prise de photo");
+            //On garde la dernière frame prise par la webcam
             BufferedImage buffImg = UseWebcam.takeBufferedPicture();
             log.debug("Fin de la prise de photo");
             this.setMovementLocked(false);

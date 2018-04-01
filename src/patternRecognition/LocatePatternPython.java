@@ -14,7 +14,7 @@ public class LocatePatternPython {
 
     public static int[] LocatePattern(int[] zoneToPerformLocalisation){
         String data;
-        File file = new File("/tmp/LocalizationDone.lock");
+        File file = new File("/tmp/Localization.done");
         if (file.exists()) {
             file.delete();
         }
@@ -58,7 +58,7 @@ public class LocatePatternPython {
             e.printStackTrace();
             System.out.println("LocatePatternPython > Erreur waitfor");
         }
-        File f = new File("/tmp/LocalizationDone.lock");
+        File f = new File("/tmp/Localization.done");
         while(!f.exists()) {
             try {
                 Thread.sleep(10);

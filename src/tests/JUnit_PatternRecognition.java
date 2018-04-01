@@ -3,6 +3,7 @@ package tests;
 import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.theories.suppliers.TestedOn;
 import patternRecognition.PatternRecognition;
 import robot.Locomotion;
 import robot.Robot;
@@ -16,9 +17,21 @@ public class JUnit_PatternRecognition extends JUnit_Test {
 
     private GameState state;
     private PatternRecognition patternRecognitionThread;
+    private boolean noVideoInput;
 
     @Before
     public void setUp() {
+        this.noVideoInput=true;
+        for (int i=0; i<3; i++) {
+            File f = new File("/dev/video"+i);
+            if (f.exists()) {
+                log.debug("/dev/video"+i+" exists");
+                this.noVideoInput=false;
+            }
+            else{
+                log.debug("/dev/video"+i+" does not exist");
+            }
+        }
         try {
             super.setUp();
             state = container.getService(GameState.class);
@@ -29,20 +42,30 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     }
 
     @Test
-    public void test() {
-        boolean noVideoInput=true;
-        for (int i=0; i<3; i++) {
-            File f = new File("/dev/video"+i);
-            if (f.exists()) {
-                log.debug("/dev/video"+i+" exists");
-                noVideoInput=false;
-            }
-            else{
-                log.debug("/dev/video"+i+" does not exist");
-            }
+    public void testSetPatternPosition() {
+        if (!this.noVideoInput) {
+            patternRecognition.shootPicture.UseWebcam.setPatternPositionWithVideo();
         }
+        else{
+            log.critical("NoVideoInput");
+        }
+    }
 
-        if (!noVideoInput) {
+    @Test
+    public void testCaptureImage(){
+        patternRecognition.shootPicture.UseWebcam.startCapturing();
+        if (!this.noVideoInput){
+            patternRecognition.shootPicture.UseWebcam.takeBufferedPicture();
+        }
+        else{
+            log.critical("NoVideoInput");
+        }
+    }
+
+    @Test
+    public void testReconnaissanceWithSettingPositions(){
+        //On set les positions de patterns
+        if (!this.noVideoInput) {
             patternRecognition.shootPicture.UseWebcam.setPatternPositionWithVideo();
             try {
                 container.startInstanciedThreads();
@@ -54,8 +77,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
             log.critical("NoVideoInput");
         }
 
-
-
+        //On lance la reconnaissance de pattern
         while (!state.isRecognitionDone()) {
             try {
                 Thread.sleep(20);
@@ -65,4 +87,5 @@ public class JUnit_PatternRecognition extends JUnit_Test {
             }
         }
     }
+
 }
