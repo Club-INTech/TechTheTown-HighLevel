@@ -54,7 +54,7 @@ toBreak=False
 #Définit le point qu'on bouge actuellement (1,2 ou 3), mis à défaut sur 0 pour singe-proof
 currentCalque=0
 
-def moveCalque(event,x,y,flags,params):
+def setCalquePosition(event,x,y,flags,params):
     global xCalque1,yCalque1,xCalque2,yCalque2,xCalque3,yCalque3,currentClaque
     if event==cv2.EVENT_LBUTTONUP:
         if currentCalque==1:
@@ -67,6 +67,42 @@ def moveCalque(event,x,y,flags,params):
             xCalque3=x
             yCalque3=y
 
+def moveCalqueLeft():
+    global xCalque1,yCalque1,xCalque2,yCalque2,xCalque3,yCalque3,currentClaque
+    if currentCalque==1:
+        xCalque1-=1
+    elif currentCalque==2:
+        xCalque2-=1
+    elif currentCalque==3:
+        xCalque3-=1
+
+def moveCalqueUp():
+    global xCalque1,yCalque1,xCalque2,yCalque2,xCalque3,yCalque3,currentClaque
+    if currentCalque==1:
+        yCalque1-=1
+    elif currentCalque==2:
+        yCalque2-=1
+    elif currentCalque==3:
+        yCalque3-=1
+
+def moveCalqueRight():
+    global xCalque1,yCalque1,xCalque2,yCalque2,xCalque3,yCalque3,currentClaque
+    if currentCalque==1:
+        xCalque1+=1
+    elif currentCalque==2:
+        xCalque2+=1
+    elif currentCalque==3:
+        xCalque3+=1
+
+def moveCalqueDown():
+    global xCalque1,yCalque1,xCalque2,yCalque2,xCalque3,yCalque3,currentClaque
+    if currentCalque==1:
+        yCalque1+=1
+    elif currentCalque==2:
+        yCalque2+=1
+    elif currentCalque==3:
+        yCalque3+=1
+
 #On définit les variables permettant le clignotement des couleurs
 i=0
 colorValue1=255
@@ -74,13 +110,13 @@ colorValue2=0
 colorValue3=0
 
 while(True):
-    ### CAPTURE DE LA VIDEO FRAME PAR FRAME
+    ##### CAPTURE DE LA VIDEO FRAME PAR FRAME
     ret, frame = cap.read()
     frame=frame[YSTART:YSTART+HAUTEUR_DISPLAY,XSTART:XSTART+LARGEUR_DISPLAY]
     cv2.namedWindow('frame')
-    cv2.setMouseCallback('frame', moveCalque)
+    cv2.setMouseCallback('frame', setCalquePosition)
 
-    ### TRAITEMENT DE L'IMAGE
+    ##### TRAITEMENT DE L'IMAGE
     hsv = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)
 
     #Change la saturation
@@ -90,7 +126,7 @@ while(True):
 
     img=cv2.cvtColor(hsv,cv2.COLOR_HSV2RGB)
 
-    ### On sort de la boucle ici
+    ##### On sort de la boucle ici
     if toBreak:
         #SAUVEGARDER L'IMAGE ICI
         cv2.imwrite("/tmp/ImageRaspi.jpeg",img)
@@ -100,7 +136,7 @@ while(True):
         file.close()
         break
 
-    ###AJOUT DES ANNOTATIONS SUR L'IMAGE
+    ##### AJOUT DES ANNOTATIONS SUR L'IMAGE
     #Assure le clignotement de l'image
     i+=1
     if i==20:
@@ -119,6 +155,7 @@ while(True):
     cv2.putText(img,'3',(xCalque3-8,yCalque3-20),cv2.FONT_HERSHEY_TRIPLEX, 1, (colorValue1,colorValue2,colorValue3))
 
 
+    ##### KEYBOARD LISTENER
     #On ecoute les touches appuyees
     key = cv2.waitKey(1) & 0xFF
     if key==ord("0") or key==ord(" "):
@@ -130,15 +167,33 @@ while(True):
     elif key==ord("3"):
         currentCalque=3
 
-    ### AFFICHAGE DE LA FRAME APRES AJOUT DES ANNOTATIONS
+    #LEFT
+    elif key==37:
+        moveCalqueLeft
+
+    #UP
+    elif key==38:
+        moveCalqueUp()
+
+    #RIGHT
+    elif key==39:
+        moveCalqueRight()
+
+    #DOWN
+    elif key==40:
+        moveCalqueDown()
+
+
+
+    ##### AFFICHAGE DE LA FRAME APRES AJOUT DES ANNOTATIONS
     cv2.imshow('frame',img)
 
-    ###DECLENCHAGE DE LA SORTIE DE LA BOUCLE
+    ##### DECLENCHAGE DE LA SORTIE DE LA BOUCLE
     #On quitte quand on appuye sur Echap
     if key==27:
         toBreak=True
 
-###LIBERATION DES RESSOURCES
+##### LIBERATION DES RESSOURCES
 #On libère la camera
 cap.release()
 #On detruit la fenetre

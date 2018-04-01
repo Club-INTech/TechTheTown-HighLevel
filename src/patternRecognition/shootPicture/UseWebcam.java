@@ -47,7 +47,7 @@ public class UseWebcam {
 
 
         command.add(pythonCommand);
-        command.add("./src/patternRecognition/shootPicture/SetPatternPositionGreen.py");
+        command.add("./src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py");
 
         //On crée le processus qui va lancer python pour set la position des patterns
         ProcessBuilder pb = new ProcessBuilder(command);
