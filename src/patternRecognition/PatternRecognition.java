@@ -54,6 +54,8 @@ public class PatternRecognition extends AbstractThread{
 
     private double saturationPreModifier;
     private double brightnessPreModifier;
+    private double saturationModifierLightingUp;
+    private double brightnessModifierLightingUp;
     private boolean alreadyPreModified;
     private boolean movementLocked;
     private boolean recognitionDone;
@@ -101,8 +103,12 @@ public class PatternRecognition extends AbstractThread{
         //Paramètres de prémodification de l'image avant la reconnaissance
         this.saturationPreModifier=1.2;
         this.brightnessPreModifier=1;
-        this.alreadyLitUp=0;
         this.alreadyPreModified=false;
+
+        //Patramètres de modification de l'image si aucun pattern n'est assez significatif
+        this.saturationModifierLightingUp=1.2;
+        this.brightnessModifierLightingUp=1.2;
+        this.alreadyLitUp=0;
 
         //Locks
         this.movementLocked=true;
@@ -559,11 +565,11 @@ public class PatternRecognition extends AbstractThread{
     /////////////////////////////// CALCULATE CENTER OF PATTERN ///////////////////////////////
 
     /** Localise le pattern et calcule son centre
-     * @param buffImg BufferedImage de l'image pour laquelle le pattern doit être localisé
      * @param zoneToPerformLocalisation zone dans laquelle le pattern doit se trouver sur l'image
      * @return renvoie les coordonnée {x,y} du center de l'image
      */
-    private int[] calculateCenterPattern(BufferedImage buffImg, int[] zoneToPerformLocalisation){
+    private int[] calculateCenterPattern(int[] zoneToPerformLocalisation){
+        //Nom de la photo : "/tmp/ImageRaspi.jpeg"
         if (debug){
             log.debug("Performing automated pattern localisation on : (("+zoneToPerformLocalisation[0]+","+zoneToPerformLocalisation[1]+
                     "),("+(zoneToPerformLocalisation[0]+zoneToPerformLocalisation[2])+","+(zoneToPerformLocalisation[1]+zoneToPerformLocalisation[3])+"))");
@@ -644,7 +650,11 @@ public class PatternRecognition extends AbstractThread{
             if (maxProba < 0.3) {
                 if (this.alreadyLitUp < 2) {
                     this.alreadyLitUp += 1;
-                    colorMatrix = lightUpSector(colorMatrix, this.zoneToPerformLocalisationAutomatic[0], this.zoneToPerformLocalisationAutomatic[1], this.zoneToPerformLocalisationAutomatic[0] + this.zoneToPerformLocalisationAutomatic[2], this.zoneToPerformLocalisationAutomatic[1] + this.zoneToPerformLocalisationAutomatic[3], 1.2, 1.2);
+                    colorMatrix = lightUpSector(colorMatrix,
+                            this.zoneToPerformLocalisationAutomatic[0], this.zoneToPerformLocalisationAutomatic[1],
+                            this.zoneToPerformLocalisationAutomatic[0] + this.zoneToPerformLocalisationAutomatic[2],
+                            this.zoneToPerformLocalisationAutomatic[1] + this.zoneToPerformLocalisationAutomatic[3],
+                            this.saturationModifierLightingUp, this.brightnessModifierLightingUp);
                     if (debug) {
                         log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                     }
@@ -690,8 +700,7 @@ public class PatternRecognition extends AbstractThread{
                     coords[i] = Integer.parseInt(infos[i]);
                 }
                 log.debug("Pattern manally located on: ("+coords[0]+","+coords[1]+"), ("+coords[2]+","+coords[3]+"), ("+coords[4]+","+coords[5]+")");
-
-                /**Coords de la forme :
+                /** Coords de la forme :
                  * {xCenterFirstColor, yCenterFirstColor, xCenterSecondColor, yCenterSecondColor, xCenterThirdColor, yCenterSecondColor}
                  */
                 int maxX = Math.max(Math.max(coords[0], coords[2]), coords[4]);
@@ -704,7 +713,7 @@ public class PatternRecognition extends AbstractThread{
                 int halfLengthSideOfSquareDetection = this.lengthSideOfSquareDetection / 2;
                 int imageWidthMinusOne = this.imageWidth - 1;
                 int imageHeightMinusOne = this.imageHeight - 1;
-                /**On définit où l'algorithme doit chercher ses couleurs
+                /** On définit où l'algorithme doit chercher ses couleurs
                  * positionColorsOnImage=
                  * {
                  * {xStartFirstColor,xStartSecondColor,xStartThirdColor},
@@ -758,7 +767,11 @@ public class PatternRecognition extends AbstractThread{
                 if (maxProba < 0.3) {
                     if (this.alreadyLitUp < 2) {
                         this.alreadyLitUp += 1;
-                        colorMatrix = lightUpSector(colorMatrix, this.zoneToPerformLocalisationManual[0], this.zoneToPerformLocalisationManual[1], this.zoneToPerformLocalisationManual[0] + this.zoneToPerformLocalisationManual[2], this.zoneToPerformLocalisationManual[1] + this.zoneToPerformLocalisationManual[3], 1.2, 1.2);
+                        colorMatrix = lightUpSector(colorMatrix,
+                                this.zoneToPerformLocalisationManual[0], this.zoneToPerformLocalisationManual[1],
+                                this.zoneToPerformLocalisationManual[0] + this.zoneToPerformLocalisationManual[2],
+                                this.zoneToPerformLocalisationManual[1] + this.zoneToPerformLocalisationManual[3],
+                                this.saturationModifierLightingUp, this.brightnessModifierLightingUp);
                         if (debug) {
                             log.debug("///////////////////////////////////////////// LIGHTING UP IMAGE /////////////////////////////////////////////////////");
                         }
@@ -774,14 +787,17 @@ public class PatternRecognition extends AbstractThread{
                     this.finalIndice = maxI;
                     return maxI;
                 }
+                this.finalIndice=-1;
                 return -1;
             }
             else{
+                this.finalIndice=-1;
                 return -1;
             }
         }
         else{
             this.localizationAutomated=true;
+            this.finalIndice=-1;
             return -1;
         }
     }
@@ -829,7 +845,7 @@ public class PatternRecognition extends AbstractThread{
                 analysePatternAfterManualLocalization(colorMatrix);
             }
             if (this.localizationAutomated) {
-                centerPointPattern = calculateCenterPattern(buffImg, this.zoneToPerformLocalisationAutomatic);
+                centerPointPattern = calculateCenterPattern(this.zoneToPerformLocalisationAutomatic);
                 analysePatternAfterAutomaticLocalization(colorMatrix);
             }
         }
