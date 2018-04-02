@@ -386,7 +386,7 @@ public class Locomotion implements Service {
         Vec2 aim = highLevelPosition.plusNewVector(new Vec2(1000.0, angle));
         finalAim = aim;
 
-            moveToPointHanldeExceptions(aim, true, expectWallImpact, true, mustDetect);
+            moveToPointHandledExceptions(aim, true, expectWallImpact, true, mustDetect);
         isRobotMovingForward = false;
         isRobotMovingBackward = false;
     }
@@ -432,7 +432,7 @@ public class Locomotion implements Service {
         }
 
 
-            moveToPointHanldeExceptions(aim, (distance>=0), expectWallImpact, false, mustDetect);
+            moveToPointHandledExceptions(aim, (distance>=0), expectWallImpact, false, mustDetect);
 
         isRobotMovingForward = false;
         isRobotMovingBackward = false;
@@ -449,7 +449,7 @@ public class Locomotion implements Service {
      * @param mustDetect        true si on veut detecter, false sinon.
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    private void moveToPointHanldeExceptions(Vec2 aim, boolean isMovementForward, boolean expectWallImpact, boolean turnOnly, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
+    private void moveToPointHandledExceptions(Vec2 aim, boolean isMovementForward, boolean expectWallImpact, boolean turnOnly, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         boolean doItAgain;
         do {
             doItAgain = false;
@@ -592,8 +592,7 @@ public class Locomotion implements Service {
 
                     }
                 } else {
-                    ethWrapper.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE);
-                    //basicDetect(isMovementForward, false);
+                    basicDetect();
                 }
             }
 
@@ -661,26 +660,14 @@ public class Locomotion implements Service {
 
 
     /**
-     * throw une UnexpectedObstacleOnPathException si la valeurs données par les capteurs est en-dessous d'un certains seuil :
-     * c'est pour ca qu'on a appelle ca BASIC detection
-     *
-     * @param isMovementForward vrai si on va en avant, faux sinon
-     * @param turning           vrai si l'on tourne, faux sinon
+     * Il s'agit d'une méthode qui throw une exception si la basic detection est activée,
+     * que le LL détecte qqch à une distance qu'on set, cette exception sera catched par
+     * le movetopointhandledexceptions qui immobilisera le robot
      * @throws UnexpectedObstacleOnPathException
      */
-    private void basicDetect(boolean isMovementForward, boolean turning) throws UnexpectedObstacleOnPathException {
-        //TODO : à mettre en LL
-        if (isMovementForward || turning) {
-            if ((USvalues.get(0) < basicDetectDistance && USvalues.get(0) != 0) || ((USvalues.get(1) < basicDetectDistance && USvalues.get(1) != 0))) {
-                log.warning("Lancement de UnexpectedObstacleOnPathException dans basicDetect : Capteurs avant");
-                throw new UnexpectedObstacleOnPathException();
-            }
-        }
-        if (!isMovementForward || turning) {
-            if ((USvalues.get(2) < basicDetectDistance && USvalues.get(2) != 0) || ((USvalues.get(3) < basicDetectDistance && USvalues.get(3) != 0))) {
-                log.warning("Lancement de UnexpectedObstacleOnPathException dans basicDetect : Capteurs arrière");
-                throw new UnexpectedObstacleOnPathException();
-            }
+    private void basicDetect() throws UnexpectedObstacleOnPathException {
+        if(thEvent.isSth_detected_basic()){
+            throw new UnexpectedObstacleOnPathException();
         }
 
     }

@@ -47,7 +47,7 @@ public class ThreadEvents extends AbstractThread
 
     private boolean cubeTakenBrasAR=false;
 
-    private boolean basicdetection=false;
+    private boolean sth_detected_basic =false;
 
     /** Le robot bouge */
     public volatile boolean isMoving;
@@ -96,7 +96,7 @@ public class ThreadEvents extends AbstractThread
                         log.debug("Le robot a pris un cube en utilisant le bras AR");
                     }
                     else if(message[0].equals(EventType.BASIC_DETECTION_TRIGGERED)){
-                        basicdetection=true;
+                        sth_detected_basic =true;
                         log.debug("La basic detection a été triggered");
                     }
                 } else {
@@ -131,4 +131,8 @@ public class ThreadEvents extends AbstractThread
     public void setIsMoving(boolean value){ this.isMoving=value; }
 
     public boolean getIsMoving(){ return this.isMoving; }
+
+    public boolean isSth_detected_basic() {
+        return sth_detected_basic;
+    }
 }
