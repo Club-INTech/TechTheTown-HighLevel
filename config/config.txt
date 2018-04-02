@@ -100,7 +100,7 @@ bjaune=0
 #RGB pour la couleur bleue
 rbleu=0
 gbleu=22
-bbleu=170
+bbleu=105
 
 #RGB pour la couleur noire
 rnoir=45
