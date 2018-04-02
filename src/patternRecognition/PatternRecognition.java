@@ -657,7 +657,12 @@ public class PatternRecognition extends AbstractThread{
                     if (isSavingImages) {
                         saveImage(colorMatrix, "/tmp/ImageCenter.jpg");
                     }
-                    analysePatternAfterAutomaticLocalization(colorMatrix);
+                    int finalIndiceAfterLightingUp = analysePatternAfterAutomaticLocalization(colorMatrix);
+                    if (finalIndiceAfterLightingUp>9){
+                        finalIndiceAfterLightingUp-=10;
+                    }
+                    this.finalIndice=finalIndiceAfterLightingUp;
+                    return finalIndiceAfterLightingUp;
                 } else {
                     if (maxJ>9){
                         maxJ-=10;
@@ -672,7 +677,6 @@ public class PatternRecognition extends AbstractThread{
                 this.finalIndice = maxJ;
                 return maxJ;
             }
-            return -1;
         }
         else{
             this.finalIndice=-1;
@@ -785,6 +789,9 @@ public class PatternRecognition extends AbstractThread{
                             saveImage(colorMatrix, "/tmp/ImageCenter.jpg");
                         }
                         int finalIndiceAfterLightingUp = analysePatternAfterManualLocalization(colorMatrix);
+                        if (finalIndiceAfterLightingUp>9){
+                            finalIndiceAfterLightingUp-=10;
+                        }
                         this.finalIndice=finalIndiceAfterLightingUp;
                         return finalIndiceAfterLightingUp;
                     } else {
