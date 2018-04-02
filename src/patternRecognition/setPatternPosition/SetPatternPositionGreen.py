@@ -166,7 +166,7 @@ while(True):
         currentCalque=2
     elif key==ord("3"):
         currentCalque=3
-        
+
     #LEFT
     elif key==ord('q'):
         moveCalqueLeft()
@@ -182,7 +182,6 @@ while(True):
     #DOWN
     elif key==ord('s'):
         moveCalqueDown()
-
 
 
     ##### AFFICHAGE DE LA FRAME APRES AJOUT DES ANNOTATIONS
