@@ -208,10 +208,10 @@ public class PatternRecognition extends AbstractThread{
 
     /**Fonction permettant de comparer les valeurs de RGB des 3 couleurs de la photo à tous les autres patterns
      * @param RGBs valeurs de RGB des 3 couleurs de la photo
-     * @return renvoie la liste (double[nbPatterns=10]) des probabilités que les couleurs de la photo correspondent à un des pattern
+     * @return renvoie la liste (double[nbPatterns=20]) des probabilités que les couleurs de la photo correspondent à un des pattern
      */
     private double[] compareThreeRGBsToAllPatterns(int[][] RGBs){
-        int nbPatterns=10;
+        int nbPatterns=20;
         double[] probabilitiesList= new double[nbPatterns];
         for (int i=0; i<nbPatterns; i++){
             probabilitiesList[i]=compareThreeRGBsToPattern(RGBs, i);
@@ -586,7 +586,7 @@ public class PatternRecognition extends AbstractThread{
      */
     private int analysePatternAfterAutomaticLocalization(short[][][] colorMatrix) {
         if (!(this.centerPointPattern[0] == 0 && this.centerPointPattern[1] == 0)) {
-            double[][] distanceArrays = new double[5][10];
+            double[][] distanceArrays = new double[5][20];
             int halfLengthSideOfSquareDetection = this.lengthSideOfSquareDetection / 2;
             int halfDistanceBetweenTwoColors = this.distanceBetweenTwoColors / 2;
             colorMatrix=preModifyImage(colorMatrix,localizationAutomated);
@@ -659,10 +659,16 @@ public class PatternRecognition extends AbstractThread{
                     }
                     analysePatternAfterAutomaticLocalization(colorMatrix);
                 } else {
+                    if (maxJ>9){
+                        maxJ-=10;
+                    }
                     this.finalIndice = maxJ;
                     return maxJ;
                 }
             } else {
+                if (maxJ>9){
+                    maxJ-=10;
+                }
                 this.finalIndice = maxJ;
                 return maxJ;
             }
@@ -782,10 +788,16 @@ public class PatternRecognition extends AbstractThread{
                         this.finalIndice=finalIndiceAfterLightingUp;
                         return finalIndiceAfterLightingUp;
                     } else {
+                        if (maxI>9){
+                            maxI-=10;
+                        }
                         this.finalIndice = maxI;
                         return maxI;
                     }
                 } else {
+                    if (maxI>9){
+                        maxI-=10;
+                    }
                     this.finalIndice = maxI;
                     return maxI;
                 }
@@ -854,7 +866,11 @@ public class PatternRecognition extends AbstractThread{
             for (Patterns pattern : Patterns.values()){
                 Colors[] colors = pattern.getPattern();
                 if(colors[0].equals(this.firstColorShown) && colors[1].equals(this.secondColorShown) && colors[2].equals(this.thirdColorShown)){
-                    this.finalIndice=pattern.getNumber();
+                    int indice=pattern.getNumber();
+                    if (indice>9){
+                        indice-=10;
+                    }
+                    this.finalIndice=indice;
                     patternHasBeenFound=true;
                     break;
                 }
@@ -882,10 +898,13 @@ public class PatternRecognition extends AbstractThread{
     }
 
     public void setFinalIndice(int indice){
-        if (indice<-2 || indice>9){
+        if (indice<-2 || indice>19){
             log.critical("Bad indice value set");
         }
         else{
+            if (indice>9){
+                indice-=10;
+            }
             this.finalIndice=indice;
             gameState.setIndicePattern(this.finalIndice);
         }
