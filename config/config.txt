@@ -88,29 +88,29 @@ TAS_STATION_EPURATION_ENNEMI_PRIS=false
 
 ### Calibration des couleurs pour l'image prémodifiée
 #RGB pour la couleur orange
-rorange=183
-gorange=107
-borange=71
+rorange=197
+gorange=70
+borange=0
 
 #RGB pour la couleur jaune
-rjaune=216
-gjaune=220
-bjaune=47
+rjaune=175
+gjaune=160
+bjaune=0
 
 #RGB pour la couleur bleue
-rbleu=42
-gbleu=64
-bbleu=151
+rbleu=10
+gbleu=22
+bbleu=120
 
 #RGB pour la couleur noire
-rnoir=18
-gnoir=49
-bnoir=30
+rnoir=65
+gnoir=65
+bnoir=70
 
 #RGB pour la couleur vert
-rvert=104
-gvert=194
-bvert=52
+rvert=98
+gvert=170
+bvert=32
 
 #Modifieurs pour la reconnaissance de couleur
 saturationPreModifier=2

@@ -5,15 +5,6 @@ import math
 import cv2
 import os.path
 
-#############################################
-########## PARAMETRES A MODIFIER ############
-#UTILISER DES FLOTTANTS
-saturationMultiplier=1.0
-brightnessMultiplier=1.0
-#############################################
-
-
-
 
 #############################################
 WIDTH=1280
@@ -37,13 +28,6 @@ while (locked):
     ret, frame = cap.read()
     if os.path.exists(taskFile):
         locked=False
-
-hsv = cv2.cvtColor(frame, cv2.COLOR_RGB2HSV)
-
-hsv[:,:,1]=np.clip(np.around(hsv[:,:,1]*saturationMultiplier,1),0,255)
-hsv[:,:,2]=np.clip(np.around(hsv[:,:,2]*brightnessMultiplier,1),0,255)
-
-img=cv2.cvtColor(hsv,cv2.COLOR_HSV2RGB)
 
 cv2.imwrite("/tmp/ImageRaspi.jpeg",img)
 
