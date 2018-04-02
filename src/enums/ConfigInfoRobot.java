@@ -137,6 +137,10 @@ public enum ConfigInfoRobot implements ConfigInfo
     rvert(43),
     gvert(120),
     bvert(68),
+    saturationPreModifier(1.8),
+    brightnessPreModifier(1.3),
+    saturationModifierLightingUp(1.3),
+    brightnessModifierLightingUp(1.1),
 
     /**Paramètres scripts*/
     DISTANCE_INTERRUPTEUR(50),

@@ -112,6 +112,12 @@ rvert=104
 gvert=194
 bvert=52
 
+#Modifieurs pour la reconnaissance de couleur
+saturationPreModifier=2
+brightnessPreModifier=1.3
+saturationModifierLightingUp=1.3
+brightnessModifierLightingUp=1.1
+
 ############PARAMETRES SCRIPTS############
 
 #ActivationPanneauDomitique

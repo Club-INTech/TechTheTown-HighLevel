@@ -101,13 +101,9 @@ public class PatternRecognition extends AbstractThread{
         this.isSavingImages=true;
 
         //Paramètres de prémodification de l'image avant la reconnaissance
-        this.saturationPreModifier=2;
-        this.brightnessPreModifier=1.3;
         this.alreadyPreModified=false;
 
         //Patramètres de modification de l'image si aucun pattern n'est assez significatif
-        this.saturationModifierLightingUp=1.3;
-        this.brightnessModifierLightingUp=1.1;
         this.alreadyLitUp=0;
 
         //Locks
@@ -982,6 +978,10 @@ public class PatternRecognition extends AbstractThread{
         Colors.BLUE.setRGB(this.config.getInt(ConfigInfoRobot.rbleu),config.getInt(ConfigInfoRobot.gbleu),config.getInt(ConfigInfoRobot.bbleu));
         Colors.BLACK.setRGB(this.config.getInt(ConfigInfoRobot.rnoir),config.getInt(ConfigInfoRobot.gnoir),config.getInt(ConfigInfoRobot.bnoir));
         Colors.GREEN.setRGB(this.config.getInt(ConfigInfoRobot.rvert),config.getInt(ConfigInfoRobot.gvert),config.getInt(ConfigInfoRobot.bvert));
+        this.saturationPreModifier=this.config.getDouble(ConfigInfoRobot.saturationPreModifier);
+        this.brightnessPreModifier=this.config.getDouble(ConfigInfoRobot.brightnessPreModifier);
+        this.saturationModifierLightingUp=this.config.getDouble(ConfigInfoRobot.saturationModifierLightingUp);
+        this.brightnessModifierLightingUp=this.config.getDouble(ConfigInfoRobot.brightnessModifierLightingUp);
         this.imageHeight=this.config.getInt(ConfigInfoRobot.IMAGE_HEIGHT);
         this.imageWidth=this.config.getInt(ConfigInfoRobot.IMAGE_WIDTH);
         this.localizationAutomated=this.config.getBoolean(ConfigInfoRobot.LOCALIZATION_AUTOMATED);
