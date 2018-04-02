@@ -59,7 +59,7 @@ THIRD_COLOR                          = null
 # basic_distance                     = 200
 # portee_mini_capteurs_av            = 60
 # portee_mini_capteurs_ar            = 30
-basic_detection                    = true
+basic_detection                    = false
 # temps_untested_obstacle            = 250
 # 200 homologation ; 150 match
 SENSOR_ANGLE_WIDENESS                =1.04
