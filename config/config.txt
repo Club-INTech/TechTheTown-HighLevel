@@ -19,7 +19,7 @@ INDICE_PATTERN_SIMULATION            = 0
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
-SIMULATION                           = true
+SIMULATION                           = false
 ATTENTE_JUMPER                       = false
 
 # VERSION DE MATCHSCRIPT TO EXECUTE
@@ -59,7 +59,7 @@ THIRD_COLOR                          = null
 # basic_distance                     = 200
 # portee_mini_capteurs_av            = 60
 # portee_mini_capteurs_ar            = 30
-basic_detection                    = false
+basic_detection                    = true
 # temps_untested_obstacle            = 250
 # 200 homologation ; 150 match
 SENSOR_ANGLE_WIDENESS                =1.04

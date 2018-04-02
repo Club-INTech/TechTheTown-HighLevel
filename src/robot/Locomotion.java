@@ -320,6 +320,10 @@ public class Locomotion implements Service {
      */
 
     public void moveToPoint(Vec2 pointVise, boolean expectedWallImpact, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
+
+        if(basicDetection){
+            ethWrapper.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE);
+        }
         thEvent.setIsMoving(true);
         log.debug("isMoving variable has been defined to True");
 
@@ -667,6 +671,7 @@ public class Locomotion implements Service {
      */
     private void basicDetect() throws UnexpectedObstacleOnPathException {
         if(thEvent.isSth_detected_basic()){
+            log.debug("::BasicDetectionEventLL");
             throw new UnexpectedObstacleOnPathException();
         }
 
@@ -965,9 +970,6 @@ public class Locomotion implements Service {
         detectionRay = config.getInt(ConfigInfoRobot.DETECTION_RAY);
         feedbackLoopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
         basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-        if(basicDetection){
-            ethWrapper.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE);
-        }
 
         ennemyLoopDelay = config.getInt(ConfigInfoRobot.ENNEMY_LOOPDELAY);
         ennemyTimeout = config.getInt(ConfigInfoRobot.ENNEMY_TIMEOUT);
