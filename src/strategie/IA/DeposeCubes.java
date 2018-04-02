@@ -1,17 +1,20 @@
 package strategie.IA;
 
 import enums.ScriptNames;
+import exceptions.BadVersionException;
 import scripts.ScriptManager;
+import smartMath.Vec2;
 import strategie.GameState;
 
 import java.util.ArrayList;
 
 public class DeposeCubes extends Node {
 
-    public DeposeCubes(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) {
+    public DeposeCubes(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) throws BadVersionException {
         super(versionToExecute, nextNodes, scriptManager, gameState);
         this.setScript(scriptManager.getScript(ScriptNames.DEPOSE_CUBES));
         this.setScore(13);
+        this.setPosition(updatePosition());
     }
 
     @Override

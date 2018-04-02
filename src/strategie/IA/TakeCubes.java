@@ -1,6 +1,7 @@
 package strategie.IA;
 
 import enums.ScriptNames;
+import exceptions.BadVersionException;
 import scripts.ScriptManager;
 import strategie.GameState;
 
@@ -8,10 +9,11 @@ import java.util.ArrayList;
 
 public class TakeCubes extends Node {
 
-    public TakeCubes(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) {
+    public TakeCubes(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) throws BadVersionException {
         super(versionToExecute, nextNodes, scriptManager, gameState);
         this.setScript(scriptManager.getScript(ScriptNames.TAKE_CUBES));
         this.setScore(20);
+        this.setPosition(updatePosition());
     }
 
     @Override

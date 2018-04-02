@@ -1,5 +1,6 @@
 package strategie.IA;
 
+import enums.ConfigInfoRobot;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -7,7 +8,9 @@ import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import scripts.AbstractScript;
 import scripts.ScriptManager;
+import smartMath.Vec2;
 import strategie.GameState;
+import table.Table;
 
 import java.util.ArrayList;
 
@@ -24,6 +27,7 @@ public abstract class Node {
     private boolean isDone;
     private ArrayList<Node> nextNodes;
     private GameState gameState;
+    private Vec2 position;
 
     /** Noeud d'action, principale composant du graphe de décision. Il permet de lancer les scripts et de gérer les
      * exeptions. Il possède plusieurs paramètre utilisé pour calculer le coup d'une arrete en points/s.
@@ -44,6 +48,7 @@ public abstract class Node {
         this.nextNodes = nextNodes;
         this.scriptManager = scriptManager;
         this.gameState = gameState;
+        this.position = Table.entryPosition;
     }
 
     /** Permet d'executer le script d'un noeud et de gérer les exeptions si il y en a. */
@@ -90,6 +95,11 @@ public abstract class Node {
     @Override
     public abstract String toString() ;
 
+    public Vec2 updatePosition() throws BadVersionException {
+        return getScript().entryPosition(getVersionToExecute(),Table.entryPosition).getCenter();
+    }
+
+
     public boolean isDone() {
         return isDone;
     }
@@ -98,11 +108,15 @@ public abstract class Node {
         return nextNodes;
     }
 
-    public ScriptManager getScriptManager() {        return scriptManager;    }
+    public ScriptManager getScriptManager() {  return scriptManager;    }
 
-    public int getScore(){        return score;    }
+    public int getScore(){   return score;    }
 
-    public int getId() {        return id;    }
+    public int getId() {   return id;    }
+
+    public AbstractScript getScript() {  return script;    }
+
+    public int getVersionToExecute() {  return versionToExecute;    }
 
     public void setDone(boolean done) {
         this.isDone = done;
@@ -114,7 +128,9 @@ public abstract class Node {
         this.nextNodes = nextNodes;
     }
 
-    public void setScript(AbstractScript script) {        this.script = script;    }
+    public void setScript(AbstractScript script) {    this.script = script;    }
 
-    public void setScore(int score) {        this.score = score;    }
+    public void setScore(int score) {   this.score = score;    }
+
+    public void setPosition(Vec2 position) { this.position = position; }
 }

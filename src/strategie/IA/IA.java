@@ -20,7 +20,7 @@ public class IA implements Service {
 
     /** Permet de s'adapter au déroulement d'un match grace à un graphe de décision. */
 
-    public IA(GameState gameState, ScriptManager scriptManager) {
+    public IA(GameState gameState, ScriptManager scriptManager) throws BadVersionException {
         this.gameState = gameState;
         this.scriptManager = scriptManager;
         this.graph = new Graph(createNodes());
@@ -29,7 +29,7 @@ public class IA implements Service {
 
     /** Créer les noeuds du graphe de décision. */
 
-    public ArrayList<Node> createNodes() {
+    public ArrayList<Node> createNodes() throws BadVersionException {
         Node pattern = new Pattern(0, null, scriptManager, gameState);
         Node abeille = new Abeille(0, null, scriptManager, gameState);
         Node panneau = new Panneau(0, null, scriptManager, gameState);

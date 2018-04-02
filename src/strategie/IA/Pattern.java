@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Pattern extends Node{
 
-    public Pattern(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) {
+    public Pattern(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) throws BadVersionException {
         super(versionToExecute, nextNodes, scriptManager, gameState);
         this.setScore(666);
 //        this.script = scriptManager.getScript(ScriptNames.);
