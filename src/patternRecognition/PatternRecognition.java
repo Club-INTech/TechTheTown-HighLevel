@@ -708,7 +708,11 @@ public class PatternRecognition extends AbstractThread{
                 int maxY = Math.max(Math.max(coords[1], coords[3]), coords[5]);
                 int minY = Math.min(Math.min(coords[1], coords[3]), coords[5]);
                 /** De la forme : {xstart, ystart, width, height} */
-                this.zoneToPerformLocalisationManual = new int[]{Math.max(minX - lengthSideOfSquareDetection, 0), Math.max(minY - lengthSideOfSquareDetection, 0), Math.min(maxX - minX + lengthSideOfSquareDetection, this.imageWidth - 1), Math.min(maxY - minY + lengthSideOfSquareDetection, this.imageHeight - 1)};
+                this.zoneToPerformLocalisationManual = new int[]
+                        {Math.min(Math.max(minX-100, 0),this.imageWidth-1),
+                         Math.min(Math.max(minY-100, 0),this.imageHeight-1),
+                         Math.min(Math.max(maxX+100,0), this.imageWidth - 1),
+                         Math.min(Math.max(maxY+100,0), this.imageHeight - 1)};
                 colorMatrix = preModifyImage(colorMatrix, this.localizationAutomated);
                 int halfLengthSideOfSquareDetection = this.lengthSideOfSquareDetection / 2;
                 int imageWidthMinusOne = this.imageWidth - 1;
