@@ -101,13 +101,13 @@ public class PatternRecognition extends AbstractThread{
         this.isSavingImages=true;
 
         //Paramètres de prémodification de l'image avant la reconnaissance
-        this.saturationPreModifier=1.2;
-        this.brightnessPreModifier=1;
+        this.saturationPreModifier=2;
+        this.brightnessPreModifier=1.3;
         this.alreadyPreModified=false;
 
         //Patramètres de modification de l'image si aucun pattern n'est assez significatif
-        this.saturationModifierLightingUp=1.2;
-        this.brightnessModifierLightingUp=1.2;
+        this.saturationModifierLightingUp=1.3;
+        this.brightnessModifierLightingUp=1.1;
         this.alreadyLitUp=0;
 
         //Locks
@@ -763,7 +763,7 @@ public class PatternRecognition extends AbstractThread{
                             maxI = i;
                         }
                         if (debug) {
-                            log.debug(distanceArray[i]);
+                            log.debug(i+": "+distanceArray[i]);
                         }
                     }
                 }
@@ -782,7 +782,9 @@ public class PatternRecognition extends AbstractThread{
                         if (isSavingImages) {
                             saveImage(colorMatrix, "/tmp/ImageCenter.jpg");
                         }
-                        analysePatternAfterManualLocalization(colorMatrix);
+                        int finalIndiceAfterLightingUp = analysePatternAfterManualLocalization(colorMatrix);
+                        this.finalIndice=finalIndiceAfterLightingUp;
+                        return finalIndiceAfterLightingUp;
                     } else {
                         this.finalIndice = maxI;
                         return maxI;
@@ -791,8 +793,6 @@ public class PatternRecognition extends AbstractThread{
                     this.finalIndice = maxI;
                     return maxI;
                 }
-                this.finalIndice=-1;
-                return -1;
             }
             else{
                 this.finalIndice=-1;
@@ -890,8 +890,8 @@ public class PatternRecognition extends AbstractThread{
             log.critical("Bad indice value set");
         }
         else{
-            gameState.setIndicePattern(indice);
             this.finalIndice=indice;
+            gameState.setIndicePattern(this.finalIndice);
         }
     }
 
