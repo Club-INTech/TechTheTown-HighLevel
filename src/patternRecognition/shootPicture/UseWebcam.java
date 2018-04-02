@@ -34,7 +34,7 @@ public class UseWebcam {
 
         //On lit la photo enregistrée pour la transformer en BufferedImage
         try {
-            picture = ImageIO.read(new File("/tmp/ImageRaspi.jpeg"));
+            picture = ImageIO.read(new File("/tmp/ImageRaspi.png"));
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("UseWebcam > Erreur readingSavedPicture");

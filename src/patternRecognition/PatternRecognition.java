@@ -643,7 +643,7 @@ public class PatternRecognition extends AbstractThread{
                 }
             }
 
-            if (maxProba < 0.3) {
+            if (maxProba < 0.2) {
                 if (this.alreadyLitUp < 2) {
                     this.alreadyLitUp += 1;
                     colorMatrix = lightUpSector(colorMatrix,
@@ -764,7 +764,7 @@ public class PatternRecognition extends AbstractThread{
                     }
                 }
 
-                if (maxProba < 0.3) {
+                if (maxProba < 0.2) {
                     if (this.alreadyLitUp < 2) {
                         this.alreadyLitUp += 1;
                         colorMatrix = lightUpSector(colorMatrix,

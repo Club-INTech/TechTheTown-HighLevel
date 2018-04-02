@@ -29,7 +29,7 @@ while (locked):
     if os.path.exists(taskFile):
         locked=False
 
-cv2.imwrite("/tmp/ImageRaspi.jpeg",img)
+cv2.imwrite("/tmp/ImageRaspi.png",img)
 
 doneFile=open("/tmp/TakePicture.done","w")
 doneFile.close()
