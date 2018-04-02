@@ -964,6 +964,10 @@ public class Locomotion implements Service {
         detectionDistance = config.getInt(ConfigInfoRobot.DETECTION_DISTANCE);
         detectionRay = config.getInt(ConfigInfoRobot.DETECTION_RAY);
         feedbackLoopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
+        basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        if(basicDetection){
+            ethWrapper.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE);
+        }
 
         ennemyLoopDelay = config.getInt(ConfigInfoRobot.ENNEMY_LOOPDELAY);
         ennemyTimeout = config.getInt(ConfigInfoRobot.ENNEMY_TIMEOUT);

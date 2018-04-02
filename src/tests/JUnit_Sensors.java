@@ -109,13 +109,13 @@ public class JUnit_Sensors extends JUnit_Test
 		}
 	}
 
-	// @Test
+	@Test
 	public void testStopWhileMove() throws Exception
 	{
+		state.robot.setPosition(Table.entryPosition);
+		state.robot.setOrientation(Table.entryOrientation);
+		state.robot.goTo(new Vec2(0,1000));
 		log.debug("Test d'arret lors de l'execution d'un script");
-		ScriptManager scriptManager = container.getService(ScriptManager.class);
-		container.startInstanciedThreads();
-		state.robot.switchSensor();
 		log.debug("Orientation :" + state.robot.getOrientation());
 	}
 

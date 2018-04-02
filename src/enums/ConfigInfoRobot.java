@@ -92,6 +92,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     DETECTION_DISTANCE(200),
     DETECTION_RAY(250),
     FEEDBACK_LOOPDELAY(50),
+    BASIC_DETECTION(false),
     ENNEMY_LOOPDELAY(500),
     ENNEMY_TIMEOUT(10000),
 
