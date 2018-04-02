@@ -59,7 +59,22 @@ public class IA implements Service {
                 u1.union(curentEdge.getNode1().getId(), curentEdge.getNode2().getId());
             }
         }
-        return bestEdges;
+        return edgeToNode(bestEdges);
+    }
+
+    /** Transforme le parcours optimal composé d'arrete en une liste de noeud à exécuter */
+
+    public ArrayList<Node> edgeToNode(ArrayList<Edge> edges) {
+        ArrayList<Node> nodes = new ArrayList<>();
+        for (Edge edge : edges){
+            if(!nodes.contains(edge.getNode1())){
+                nodes.add(edge.getNode1());
+            }
+            if(!nodes.contains(edge.getNode2())){
+                nodes.add(edge.getNode2());
+            }
+        }
+        return nodes;
     }
 
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException {

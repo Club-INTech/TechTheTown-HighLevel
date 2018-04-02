@@ -104,9 +104,7 @@ public abstract class Node {
         return isDone;
     }
 
-    public ArrayList<Node> getNextNodes() {
-        return nextNodes;
-    }
+    public ArrayList<Node> getNextNodes() { return nextNodes; }
 
     public ScriptManager getScriptManager() {  return scriptManager;    }
 
@@ -117,6 +115,8 @@ public abstract class Node {
     public AbstractScript getScript() {  return script;    }
 
     public int getVersionToExecute() {  return versionToExecute;    }
+
+    public Vec2 getPosition() {return position;}
 
     public void setDone(boolean done) {
         this.isDone = done;

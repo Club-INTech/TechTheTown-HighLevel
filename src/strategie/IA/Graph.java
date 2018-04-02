@@ -19,7 +19,7 @@ public class Graph {
                     return 1;
                 }
                 else if (edge.getCost()<t1.getCost()){
-                    return 1;
+                    return -1;
                 } else {
                     return 0;
                 }

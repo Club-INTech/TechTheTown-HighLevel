@@ -74,10 +74,10 @@ public class JUnit_IA extends JUnit_Test{
 
                 ia.getGraph().display();
                 ia.kruskal();
-//                while (true){
-//                    ia.execute(null);
-//                    Thread.sleep(500);
-//                }
+                while (true){
+                    ia.execute(null);
+                    Thread.sleep(500);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
