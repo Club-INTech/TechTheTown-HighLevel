@@ -8,6 +8,7 @@ public class Graph {
 
     private ArrayList<Node> nodes;
     private PriorityQueue<Edge> edges;
+    private int nb_tas_pris;    //TODO mettre à jour la valeur quand un tas est pris.
 
     /** Graphe de décision qui gère les actions à effectuer durant un match. */
 
@@ -31,6 +32,7 @@ public class Graph {
             }
         });
         this.nodes = nodes;
+        this.nb_tas_pris = 0;
         createEdge(nodes);
     }
 
@@ -50,11 +52,11 @@ public class Graph {
 
     public void updateEdgesCost(){
         for(Edge edge: edges){
-            edge.updateCost();
+            edge.updateCost(nb_tas_pris);
         }
     }
 
-    /** Affichre le contenu du graphe. */
+    /** Affiche le contenu du graphe. */
 
     public void display(){
         System.out.println("Liste des noeuds");

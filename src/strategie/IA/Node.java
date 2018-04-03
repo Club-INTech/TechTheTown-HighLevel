@@ -19,7 +19,7 @@ public abstract class Node {
     private ScriptManager scriptManager;
     private AbstractScript script;
     private int versionToExecute;
-    private int id;
+    private int id;  //utiliser pour la réalisation des classes d'équivalence.
     private int score;
     private int timeLimit;
     private int timeToGo;
@@ -117,6 +117,8 @@ public abstract class Node {
     public int getVersionToExecute() {  return versionToExecute;    }
 
     public Vec2 getPosition() {return position;}
+
+    public GameState getGameState() {return gameState;}
 
     public void setDone(boolean done) {
         this.isDone = done;

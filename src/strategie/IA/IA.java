@@ -75,7 +75,7 @@ public class IA implements Service {
                 nodes.add(edge.getNode2());
             }
         }
-        return nodes;
+         return nodes;
     }
 
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException {
@@ -84,13 +84,11 @@ public class IA implements Service {
         }
     }
 
-    public Graph getGraph() {
-        return graph;
-    }
+    public Graph getGraph() {return graph;}
+
+    public GameState getGameState() {return gameState;}
 
     @Override
-    public void updateConfig() {
-
-    }
+    public void updateConfig() {    }
 
 }

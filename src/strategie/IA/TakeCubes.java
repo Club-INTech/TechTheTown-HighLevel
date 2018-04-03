@@ -2,6 +2,10 @@ package strategie.IA;
 
 import enums.ScriptNames;
 import exceptions.BadVersionException;
+import exceptions.BlockedActuatorException;
+import exceptions.ExecuteException;
+import exceptions.Locomotion.PointInObstacleException;
+import exceptions.Locomotion.UnableToMoveException;
 import scripts.ScriptManager;
 import strategie.GameState;
 
