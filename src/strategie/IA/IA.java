@@ -79,7 +79,9 @@ public class IA implements Service {
     }
 
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException {
-//        root.selectNode().execute(e);
+        for(Node node : nodesToExecute){
+            node.execute(e);
+        }
     }
 
     public Graph getGraph() {

@@ -54,7 +54,7 @@ public class JUnit_IA extends JUnit_Test{
                 scriptManager = container.getService(ScriptManager.class);
                 state = container.getService(GameState.class);
                 table = container.getService(Table.class);
-//                container.getService(ThreadInterface.class);
+                container.getService(ThreadInterface.class);
 
                 ia=container.getService(IA.class);
 
