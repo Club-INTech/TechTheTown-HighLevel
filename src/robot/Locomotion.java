@@ -669,10 +669,9 @@ public class Locomotion implements Service {
      * le movetopointhandledexceptions qui immobilisera le robot
      * @throws UnexpectedObstacleOnPathException
      */
-    private void basicDetect() throws UnexpectedObstacleOnPathException {
+    private void basicDetect() {
         if(thEvent.isSth_detected_basic()){
-            log.debug("::BasicDetectionEventLL");
-            throw new UnexpectedObstacleOnPathException();
+            immobilise();
         }
 
     }

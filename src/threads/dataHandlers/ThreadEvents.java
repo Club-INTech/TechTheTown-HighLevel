@@ -95,7 +95,7 @@ public class ThreadEvents extends AbstractThread
                         cubeTakenBrasAR=true;
                         log.debug("Le robot a pris un cube en utilisant le bras AR");
                     }
-                    else if(message[0].equals(EventType.BASIC_DETECTION_TRIGGERED)){
+                    else if(message[0].equals(EventType.BASIC_DETECTION_TRIGGERED.getEventId())){
                         sth_detected_basic =true;
                         log.debug("La basic detection a été triggered");
                     }
