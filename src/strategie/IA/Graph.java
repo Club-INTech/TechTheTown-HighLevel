@@ -41,6 +41,14 @@ public class Graph {
         }
     }
 
+    /** Met à jour les couts des arretes. */
+
+    public void updateEdgesCost(){
+        for(Edge edge: edges){
+            edge.updateCost();
+        }
+    }
+
     /** Affichre le contenu du graphe. */
 
     public void display(){

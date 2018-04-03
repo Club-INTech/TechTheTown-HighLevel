@@ -46,13 +46,14 @@ public class IA implements Service {
         return nodes;
     }
 
-    /** Trouve un parcourt optimal dans l'arbre de décision. */
+    /** Trouve un parcourt optimal dans le graphe de décision. */
 
     public ArrayList<Node> kruskal() {
         ArrayList<Edge> bestEdges = new ArrayList<>();
         UnionFind u1 = new UnionFind(graph.getNodes().size());
         Edge curentEdge;
         while (graph.getEdges().peek() != null){
+//            graph.updateEdgesCost();
             curentEdge = graph.getEdges().poll();
             if(u1.find(curentEdge.getNode1().getId()) != u1.find(curentEdge.getNode2().getId())){
                 bestEdges.add(curentEdge);

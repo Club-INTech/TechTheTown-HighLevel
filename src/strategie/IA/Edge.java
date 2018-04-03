@@ -15,8 +15,16 @@ public class Edge {
     public Edge(Node node1, Node node2) {
         this.node1 = node1;
         this.node2 = node2;
-//        this.cost = node1.getScore()+node2.getScore();
-        this.cost = node1.getPosition().distance(node2.getPosition());
+        updateCost();
+    }
+
+    /** Met à jour le cout d'une arrete. On peut ainsi modifier le cout pendant le calcule du parcours optimal
+     * du graphe de décision. Peut être utile pour choisir de déposer les cubes lorsque qu'on a ramassé deux tas.
+     */
+
+    public void updateCost(){
+        //        this.cost = node1.getScore()+node2.getScore();
+        setCost(node1.getPosition().distance(node2.getPosition()));
     }
 
     @Override
@@ -29,4 +37,6 @@ public class Edge {
     public Node getNode2() {return node2;}
 
     public double getCost() {return cost;}
+
+    public void setCost(double cost) {this.cost = cost;}
 }
