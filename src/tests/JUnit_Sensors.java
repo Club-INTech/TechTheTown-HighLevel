@@ -114,7 +114,7 @@ public class JUnit_Sensors extends JUnit_Test
 	{
 		state.robot.setPosition(Table.entryPosition);
 		state.robot.setOrientation(Table.entryOrientation);
-		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+		state.robot.setLocomotionSpeed(Speed.FAST_ALL);
 		state.robot.goTo(new Vec2(0,1000));
 		log.debug("Test d'arret lors de l'execution d'un script");
 		log.debug("Orientation :" + state.robot.getOrientation());
