@@ -361,6 +361,7 @@ public class PatternRecognition extends AbstractThread{
      * @return renvoie la valeur (int) médiane de R, G ou B de la couleur choisie
      */
     private int getMedianValue(short[][][] colorMatrix, int xstart, int ystart, int xend, int yend, int posRGB) {
+        log.debug("xend:"+xend+" xstart:"+xstart+" yend:"+yend+" ystart:"+ystart);
         int width = xend - xstart;
         int height = yend - ystart;
         int[] listAllPoints = new int[width*height];
