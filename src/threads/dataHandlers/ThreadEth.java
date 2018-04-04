@@ -399,7 +399,7 @@ public class ThreadEth extends AbstractThread implements Service {
             try {
                 buffer = input.readLine();
 
-                fullDebug.write(buffer.substring(2));
+                fullDebug.write(buffer);
                 fullDebug.newLine();
                 fullDebug.flush();
                 if (buffer.length() >= 2 && !(buffer.replaceAll(" ", "").equals(""))) {
