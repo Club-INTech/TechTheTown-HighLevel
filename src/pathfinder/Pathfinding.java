@@ -30,146 +30,175 @@ public class Pathfinding implements Service {
     private Graphe graphe;
     private Table table;
     private ObstacleManager obstacleManager;
-    private ArrayList<ObstacleCircular> circularobstacles;
+    private ArrayList<ObstacleCircular> circularObstacles;
+    private boolean tasBaseRemoved;
+    private boolean tasChateauRemoved;
+    private boolean tasStationEpurationRemoved;
+    private boolean tasBaseEnnemiRemoved;
+    private boolean tasChateauEnnemiRemoved;
+    private boolean tasStationEpurationEnnemiRemoved;
     /** Coût fixe ajouté à chaque noeud*/
     private int coutFixe;
 
     public Pathfinding(Log log, Config config, Table table, Graphe graphe) {
         this.log = log;
         this.config = config;
+        updateConfig();
         this.table = table;
         obstacleManager = table.getObstacleManager();
-        circularobstacles = (ArrayList<ObstacleCircular>) obstacleManager.getmCircularObstacle().clone();
+        circularObstacles = (ArrayList<ObstacleCircular>) obstacleManager.getmCircularObstacle().clone();
         this.graphe = graphe;
-        updateConfig();
+        this.tasBaseRemoved =false;
+        this.tasChateauRemoved =false;
+        this.tasStationEpurationRemoved =false;
+        this.tasBaseEnnemiRemoved =false;
+        this.tasChateauEnnemiRemoved =false;
+        this.tasStationEpurationEnnemiRemoved =false;
 //        initGraphe();
         log.debug("init PATHFINDING");
     }
 
+
     /**
      * Méthode initialisant le graghe, à appeler au début du match.
      */
-
     public void initGraphe() {
         graphe = new Graphe(log, config, table);
         graphe.updateConfig();
     }
 
 
-
     /**
      * Retire un tas de cubes du graphes, si le robot les a récupérés.
      */
-
     public void removeObstacle() {
-        if (config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)) {
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_BASE.getID()));
-            graphe.removeObstacle();
-        } else if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS)) {
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_CHATEAU_EAU.getID()));
-            graphe.removeObstacle();
-        } else if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS)) {
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_STATION_EPURATION.getID()));
-            graphe.removeObstacle();
-        } else if (config.getBoolean(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS)) {
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_BASE_ENNEMI.getID()));
-            graphe.removeObstacle();
-        } else if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS)) {
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_CHATEAU_EAU_ENNEMI.getID()));
-            graphe.removeObstacle();
-        } else if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)) {
-            obstacleManager.removeObstacle(circularobstacles.get(TAS_STATION_EPURATION_ENNEMI.getID()));
-            graphe.removeObstacle();
+        if (!this.tasBaseRemoved) {
+            if (config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)) {
+                obstacleManager.removeObstacle(circularObstacles.get(TAS_BASE.getID()));
+                graphe.removeObstacle();
+                this.tasBaseRemoved =true;
+            }
+        }
+        if (!this.tasChateauRemoved) {
+            if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS)) {
+                obstacleManager.removeObstacle(circularObstacles.get(TAS_CHATEAU_EAU.getID()));
+                graphe.removeObstacle();
+                this.tasChateauRemoved =true;
+            }
+        }
+        if (!this.tasStationEpurationRemoved) {
+            if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS)) {
+                obstacleManager.removeObstacle(circularObstacles.get(TAS_STATION_EPURATION.getID()));
+                graphe.removeObstacle();
+                this.tasStationEpurationRemoved =true;
+            }
+        }
+        if (!this.tasBaseEnnemiRemoved) {
+            if (config.getBoolean(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS)) {
+                obstacleManager.removeObstacle(circularObstacles.get(TAS_BASE_ENNEMI.getID()));
+                graphe.removeObstacle();
+                this.tasBaseEnnemiRemoved =true;
+            }
+        }
+        if (!this.tasChateauEnnemiRemoved) {
+            if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS)) {
+                obstacleManager.removeObstacle(circularObstacles.get(TAS_CHATEAU_EAU_ENNEMI.getID()));
+                graphe.removeObstacle();
+                this.tasChateauEnnemiRemoved =true;
+            }
+        }
+        if (!this.tasStationEpurationEnnemiRemoved) {
+            if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)) {
+                obstacleManager.removeObstacle(circularObstacles.get(TAS_STATION_EPURATION_ENNEMI.getID()));
+                graphe.removeObstacle();
+                this.tasStationEpurationEnnemiRemoved =true;
+            }
         }
     }
+
 
     /**
      * Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemin le plus rapide
      * entre les deux positions d'entrée.
-     *
-     * @param positiondepart
-     * @param positionarrive
+     * @param positionDepart
+     * @param positionArrive
      * @return
      */
-
-    public ArrayList<Vec2> findmyway(Vec2 positiondepart, Vec2 positionarrive) throws PointInObstacleException, UnableToMoveException, NoPathFound {
+    public ArrayList<Vec2> findmyway(Vec2 positionDepart, Vec2 positionArrive) throws PointInObstacleException, UnableToMoveException, NoPathFound {
 
         removeObstacle();
-
-
         long time1 = System.currentTimeMillis();
 
-        /** Dévclaration des variables */
+        /** Déclaration des variables */
         PriorityQueue<Noeud> openList = new PriorityQueue<Noeud>(new BetterNode());
-        Noeud noeuddepart = new Noeud(positiondepart, 0, 0, new ArrayList<>());
-        Noeud noeudarrive = new Noeud(positionarrive, 0, 0, new ArrayList<>());
-        Noeud noeudcourant;
+        Noeud noeudDepart = new Noeud(positionDepart, 0, 0, new ArrayList<>());
+        Noeud noeudArrive = new Noeud(positionArrive, 0, 0, new ArrayList<>());
+        Noeud noeudCourant;
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
 //        int l = 0;
-        /** exception départ ou arrivée dans un obstacle */
-        if (obstacleManager.isObstructed(noeuddepart.getPosition()) || !obstacleManager.isRobotInTable(noeuddepart.getPosition())) {
-            throw new PointInObstacleException(noeuddepart.getPosition());
-        } else if (obstacleManager.isObstructed(noeudarrive.getPosition())
-                || !obstacleManager.isRobotInTable(noeudarrive.getPosition())) {
-            throw new PointInObstacleException(noeudarrive.getPosition());
+        /** Exception départ ou arrivée dans un obstacle */
+        if (obstacleManager.isObstructed(noeudDepart.getPosition()) || !obstacleManager.isRobotInTable(noeudDepart.getPosition())) {
+            throw new PointInObstacleException(noeudDepart.getPosition());
+        } else if (obstacleManager.isObstructed(noeudArrive.getPosition())
+                || !obstacleManager.isRobotInTable(noeudArrive.getPosition())) {
+            throw new PointInObstacleException(noeudArrive.getPosition());
         }
         //début de l'algorithme
         else {
-            graphe.addNodeInGraphe(noeudarrive);
-            graphe.addNodeInGraphe(noeuddepart);
+            graphe.addNodeInGraphe(noeudArrive);
+            graphe.addNodeInGraphe(noeudDepart);
 
-            if (noeuddepart.getVoisins().contains(noeudarrive)) {
-                finalPath.add(positiondepart);
-                finalPath.add(positionarrive);
+            if (noeudDepart.getVoisins().contains(noeudArrive)) {
+                finalPath.add(positionDepart);
+                finalPath.add(positionArrive);
                 long time2 = System.currentTimeMillis() - time1;
                 log.debug("Time to execute (ms): " + time2);
-                this.getGraphe().reInitGraphe(noeuddepart, noeudarrive);
+                this.getGraphe().reInitGraphe(noeudDepart, noeudArrive);
                 return finalPath;
             }
 
-            openList.add(noeuddepart);
+            openList.add(noeudDepart);
 
-            while (!closeList.contains(noeudarrive) && !openList.isEmpty()) {
+            while (!closeList.contains(noeudArrive) && !openList.isEmpty()) {
 
-                noeudcourant = openList.poll();
-                closeList.add(noeudcourant);
+                noeudCourant = openList.poll();
+                closeList.add(noeudCourant);
 
-                for (Noeud voisin : noeudcourant.getVoisins()) {
-
+                for (Noeud voisin : noeudCourant.getVoisins()) {
                     if (closeList.contains(voisin)) {
-                        if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()) + coutFixe)) {
+                        if (voisin.getCout() > noeudCourant.getCout() + (voisin.getPosition().distance(noeudCourant.getPosition()) + coutFixe)) {
                             closeList.remove(voisin);
                             openList.add(voisin);
-                            voisin.setPred(noeudcourant);
-                            voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()) + coutFixe));
+                            voisin.setPred(noeudCourant);
+                            voisin.setCout(noeudCourant.getCout() + (voisin.getPosition().distance(noeudCourant.getPosition()) + coutFixe));
                         }
                     } else if (openList.contains(voisin)) {
-                        if (voisin.getCout() > noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition()) + coutFixe)) {
+                        if (voisin.getCout() > noeudCourant.getCout() + (voisin.getPosition().distance(noeudCourant.getPosition()) + coutFixe)) {
                             voisin.setPred(voisin.getPred());
-                            voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())) + coutFixe);
+                            voisin.setCout(noeudCourant.getCout() + (voisin.getPosition().distance(noeudCourant.getPosition())) + coutFixe);
                         }
                     } else {
-                        voisin.setHeuristique(voisin.getPosition().distance(noeudarrive.getPosition()));
-                        voisin.setCout(noeudcourant.getCout() + (voisin.getPosition().distance(noeudcourant.getPosition())) + coutFixe);
+                        voisin.setHeuristique(voisin.getPosition().distance(noeudArrive.getPosition()));
+                        voisin.setCout(noeudCourant.getCout() + (voisin.getPosition().distance(noeudCourant.getPosition())) + coutFixe);
                         openList.add(voisin);
-                        voisin.setPred(noeudcourant);
+                        voisin.setPred(noeudCourant);
                     }
                 }
             }
         }
-        // pas de chemin trouvé.
-        if (!closeList.contains(noeudarrive) && openList.isEmpty()) {
+        // Pas de chemin trouvé.
+        if (!closeList.contains(noeudArrive) && openList.isEmpty()) {
             log.debug("No way found");
             throw new NoPathFound(false, true);
         }
-        // fabrique le chemain en partant du noeud d'arrivé
-        finalList.add(noeudarrive);
-        if (noeudarrive.getPred() == null) {
+        // Fabrique le chemin en partant du noeud d'arrivé
+        finalList.add(noeudArrive);
+        if (noeudArrive.getPred() == null) {
             log.debug("prednull");
         }
-        while (noeuddepart != finalList.get(finalList.size() - 1)) {
+        while (noeudDepart != finalList.get(finalList.size() - 1)) {
             finalList.add(finalList.get(finalList.size() - 1).getPred());
         }
         for (int i = 1; i <= finalList.size(); i++) {
@@ -179,7 +208,7 @@ public class Pathfinding implements Service {
         long time2 = System.currentTimeMillis() - time1;
         log.debug("Time to execute (ms): " + time2);
 
-        this.getGraphe().reInitGraphe(noeuddepart, noeudarrive);
+        this.getGraphe().reInitGraphe(noeudDepart, noeudArrive);
 
         return finalPath;
     }
@@ -190,6 +219,6 @@ public class Pathfinding implements Service {
 
     @Override
     public void updateConfig() {
-        coutFixe = config.getInt(ConfigInfoRobot.COUT_FIXE);
+        coutFixe = this.config.getInt(ConfigInfoRobot.COUT_FIXE);
     }
 }

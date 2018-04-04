@@ -19,7 +19,7 @@ INDICE_PATTERN_SIMULATION            = 0
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
-SIMULATION                           = false
+SIMULATION                           = true
 ATTENTE_JUMPER                       = false
 
 # VERSION DE MATCHSCRIPT TO EXECUTE
@@ -32,20 +32,7 @@ MATCHSCRIPT_TO_EXECUTE               = 0
 
 
 
-# PARAMETRES RECONNAISSANCE DE COULEURS
-# A LA MAIN : FALSE /// AUTOMATIQUE : TRUE
-LOCALIZATION_AUTOMATED               = false
-
-# IMAGE SIZE
-IMAGE_WIDTH                          = 640
-IMAGE_HEIGHT                         = 480
-
-# Couleurs disponibles : (orange, vert, rouge, noir, bleu, null)
-FIRST_COLOR                          = null
-SECOND_COLOR                         = null
-THIRD_COLOR                          = null
-
-# PARAMETRES POUR LES CAPTEUR
+################ PARAMETRES POUR LES CAPTEURS ##################
 # horizon_capteurs                   = 500
 # angle_detection_capteur            = 0.79
 # angle_position_capteur_av          = 0.01
@@ -59,12 +46,14 @@ THIRD_COLOR                          = null
 # basic_distance                     = 200
 # portee_mini_capteurs_av            = 60
 # portee_mini_capteurs_ar            = 30
-basic_detection                    = true
 # temps_untested_obstacle            = 250
 # 200 homologation ; 150 match
-SENSOR_ANGLE_WIDENESS                =1.04
 
-# PARAMETRES POUR LES DÉPLACEMENTS
+basic_detection                      = true
+SENSOR_ANGLE_WIDENESS                = 1.04
+
+
+############## PARAMETRES POUR LES DÉPLACEMENTS ################
 # hooks_tolerance_mm                 = 20
 # disque_tolerance_maj               = 100
 # disque_tolerance_consigne          = 40
@@ -80,12 +69,29 @@ SENSOR_ANGLE_WIDENESS                =1.04
 # angle_degagement_robot             = 0.4
 # distance_degagement_robot          = 50
 
+
+# PARAMETRES OBSTACLES
 TAS_BASE_PRIS=false
 TAS_CHATEAU_PRIS=false
 TAS_STATION_EPURATION_PRIS=false
 TAS_BASE_ENNEMI_PRIS=false
 TAS_CHATEAU_ENNEMI_PRIS=false
 TAS_STATION_EPURATION_ENNEMI_PRIS=false
+
+
+
+############ PARAMETRES RECONNAISSANCE DE COULEURS #############
+# A LA MAIN : FALSE /// AUTOMATIQUE : TRUE
+LOCALIZATION_AUTOMATED               = false
+
+# IMAGE SIZE
+IMAGE_WIDTH                          = 1280
+IMAGE_HEIGHT                         = 720
+
+# Couleurs disponibles : (orange, vert, rouge, noir, bleu, null)
+FIRST_COLOR                          = null
+SECOND_COLOR                         = null
+THIRD_COLOR                          = null
 
 ### Calibration des couleurs pour l'image prémodifiée
 #RGB pour la couleur orange
@@ -119,7 +125,7 @@ brightnessPreModifier=1
 saturationModifierLightingUp=1.2
 brightnessModifierLightingUp=1.5
 
-############PARAMETRES SCRIPTS############
+###################### PARAMETRES SCRIPT #######################
 
 #ActivationPanneauDomitique
 DISTANCE_INTERRUPTEUR=55
