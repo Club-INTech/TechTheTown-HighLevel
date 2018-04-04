@@ -197,6 +197,7 @@ public class Pathfinding implements Service {
         finalList.add(noeudArrive);
         if (noeudArrive.getPred() == null) {
             log.debug("prednull");
+            throw new NoPathFound(false, true);
         }
         while (noeudDepart != finalList.get(finalList.size() - 1)) {
             finalList.add(finalList.get(finalList.size() - 1).getPred());
