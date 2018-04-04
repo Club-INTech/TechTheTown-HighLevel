@@ -8,7 +8,6 @@ public class Graph {
 
     private ArrayList<Node> nodes;
     private PriorityQueue<Edge> edges;
-    private int nb_tas_pris;    //TODO mettre à jour la valeur quand un tas est pris.
 
     /** Graphe de décision qui gère les actions à effectuer durant un match. */
 
@@ -16,11 +15,6 @@ public class Graph {
         this.edges = new PriorityQueue<>(new Comparator<Edge>() {
             @Override
             public int compare(Edge edge, Edge t1) {
-//                if (edge.getCost()>t1.getCost()){
-//                    return 1;
-//                }
-//                else if (edge.getCost()<t1.getCost()){
-//                    return -1;
                 if (edge.getCost()<t1.getCost()){
                     return 1;
                 }
@@ -32,7 +26,6 @@ public class Graph {
             }
         });
         this.nodes = nodes;
-        this.nb_tas_pris = 0;
         createEdge(nodes);
     }
 
@@ -50,7 +43,7 @@ public class Graph {
 
     /** Met à jour les couts des arretes. */
 
-    public void updateEdgesCost(){
+    public void updateEdgesCost(int nb_tas_pris){
         for(Edge edge: edges){
             edge.updateCost(nb_tas_pris);
         }

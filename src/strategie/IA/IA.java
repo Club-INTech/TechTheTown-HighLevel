@@ -16,6 +16,7 @@ public class IA implements Service {
     private GameState gameState;
     private ScriptManager scriptManager;
     private Graph graph;
+    private int nb_tas_pris;
     private ArrayList<Node> nodesToExecute;
 
     /** Permet de s'adapter au déroulement d'un match grace à un graphe de décision. */
@@ -24,6 +25,7 @@ public class IA implements Service {
         this.gameState = gameState;
         this.scriptManager = scriptManager;
         this.graph = new Graph(createNodes());
+        this.nb_tas_pris = 0;
         this.nodesToExecute = kruskal();
     }
 
@@ -34,6 +36,7 @@ public class IA implements Service {
         Node abeille = new Abeille(0, null, scriptManager, gameState);
         Node panneau = new Panneau(0, null, scriptManager, gameState);
         Node takeCubes = new TakeCubes(0, null, scriptManager, gameState);
+        Node takeCubes2 = new TakeCubes(0, null, scriptManager, gameState);
         Node deposeCubes = new DeposeCubes(0, null, scriptManager, gameState);
 
         ArrayList<Node> nodes = new ArrayList<>();
@@ -42,6 +45,7 @@ public class IA implements Service {
         nodes.add(panneau);
         nodes.add(takeCubes);
         nodes.add(deposeCubes);
+        nodes.add(takeCubes2);
 
         return nodes;
     }
@@ -58,6 +62,10 @@ public class IA implements Service {
             if(u1.find(curentEdge.getNode1().getId()) != u1.find(curentEdge.getNode2().getId())){
                 bestEdges.add(curentEdge);
                 u1.union(curentEdge.getNode1().getId(), curentEdge.getNode2().getId());
+                if(curentEdge.getNode1().toString().equals("TakeCubes")||curentEdge.getNode2().toString().equals("TakeCubes")){
+                    nb_tas_pris++;
+                    graph.updateEdgesCost(nb_tas_pris);
+                }
             }
         }
         return edgeToNode(bestEdges);
