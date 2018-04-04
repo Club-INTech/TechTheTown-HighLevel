@@ -1,4 +1,4 @@
-package patternRecognition.shootPicture;
+package patternRecognition;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

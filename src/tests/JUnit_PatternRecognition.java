@@ -1,15 +1,10 @@
 package tests;
 
-import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.suppliers.TestedOn;
 import patternRecognition.PatternRecognition;
-import robot.Locomotion;
-import robot.Robot;
-import scripts.ScriptManager;
+import patternRecognition.UseWebcam;
 import strategie.GameState;
-import threads.ThreadInterface;
 
 import java.io.File;
 
@@ -44,7 +39,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     @Test
     public void testSetPatternPosition() {
         if (!this.noVideoInput) {
-            patternRecognition.shootPicture.UseWebcam.setPatternPositionWithVideo();
+            UseWebcam.setPatternPositionWithVideo();
         }
         else{
             log.critical("NoVideoInput");
@@ -53,9 +48,9 @@ public class JUnit_PatternRecognition extends JUnit_Test {
 
     @Test
     public void testCaptureImage(){
-        patternRecognition.shootPicture.UseWebcam.startCapturing();
+        UseWebcam.startCapturing();
         if (!this.noVideoInput){
-            patternRecognition.shootPicture.UseWebcam.takeBufferedPicture();
+            UseWebcam.takeBufferedPicture();
         }
         else{
             log.critical("NoVideoInput");
@@ -66,7 +61,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     public void testReconnaissanceWithSettingPositions(){
         //On set les positions de patterns
         if (!this.noVideoInput) {
-            patternRecognition.shootPicture.UseWebcam.setPatternPositionWithVideo();
+            UseWebcam.setPatternPositionWithVideo();
             try {
                 container.startInstanciedThreads();
             } catch (InterruptedException e) {

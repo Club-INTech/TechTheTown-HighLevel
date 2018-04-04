@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import patternRecognition.shootPicture.UseWebcam;
+import patternRecognition.UseWebcam;
 
 
 public class JUnit_TakePicturePython extends JUnit_Test {

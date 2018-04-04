@@ -3,7 +3,6 @@ package patternRecognition;
 import enums.Colors;
 import enums.Patterns;
 import enums.ConfigInfoRobot;
-import patternRecognition.shootPicture.UseWebcam;
 import pfg.config.Config;
 import robot.EthWrapper;
 import strategie.GameState;
@@ -65,6 +64,9 @@ public class PatternRecognition extends AbstractThread{
     private Colors secondColorShown;
     private Colors thirdColorShown;
 
+    private double tempMaxProba;
+    private int tempMaxIndice;
+
     /** Instanciation du thread de reconnaissance de couleurs
      * @param config passe la config
      * @param ethWrapper passe l'ethWrapper
@@ -109,6 +111,10 @@ public class PatternRecognition extends AbstractThread{
         //Locks
         this.movementLocked=true;
         this.recognitionDone=false;
+
+        //Utiles à la reconnaissance de pattern
+        this.tempMaxIndice=0;
+        this.tempMaxProba=0;
     }
 
     //////////////////////////////////// COLOR MATRIX CREATION /////////////////////////////////////////////
@@ -618,8 +624,8 @@ public class PatternRecognition extends AbstractThread{
                           Math.min(this.centerPointPattern[1] + halfLengthSideOfSquareDetection, imageHeightMinusOne)}};
                 distanceArrays[i - iStartValue] = computeProximity(colorMatrix, this.positionsColorsOnImage);
             }
-            double maxProba = 0;
-            int maxJ = 0;
+            double maxProba = this.tempMaxProba;
+            int maxJ = this.tempMaxIndice;
             double[] badDistanceArray = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
             for (int i = 0; i < distanceArrays.length; i++) {
                 if (debug) {
@@ -642,6 +648,8 @@ public class PatternRecognition extends AbstractThread{
                     }
                 }
             }
+            this.tempMaxProba=maxProba;
+            this.tempMaxIndice=maxJ;
 
             if (maxProba < 0.2) {
                 if (this.alreadyLitUp < 2) {
@@ -751,9 +759,9 @@ public class PatternRecognition extends AbstractThread{
                         }
                 };
                 double[] distanceArray = computeProximity(colorMatrix, this.positionsColorsOnImage);
-                double maxProba = 0;
                 double[] badDistanceArray = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-                int maxI = 0;
+                double maxProba = this.tempMaxProba;
+                int maxI = this.tempMaxIndice;
                 if (debug) {
                     log.debug("");
                     log.debug("Proximity (Manual detection)");
@@ -773,6 +781,9 @@ public class PatternRecognition extends AbstractThread{
                         }
                     }
                 }
+                this.tempMaxProba=maxProba;
+                this.tempMaxIndice=maxI;
+                int finalMaxIndice=this.tempMaxIndice;
 
                 if (maxProba < 0.2) {
                     if (this.alreadyLitUp < 2) {
@@ -795,18 +806,18 @@ public class PatternRecognition extends AbstractThread{
                         this.finalIndice=finalIndiceAfterLightingUp;
                         return finalIndiceAfterLightingUp;
                     } else {
-                        if (maxI>9){
-                            maxI-=10;
+                        if (finalMaxIndice>9){
+                            finalMaxIndice-=10;
                         }
-                        this.finalIndice = maxI;
-                        return maxI;
+                        this.finalIndice = finalMaxIndice;
+                        return finalMaxIndice;
                     }
                 } else {
-                    if (maxI>9){
-                        maxI-=10;
+                    if (finalMaxIndice>9){
+                        finalMaxIndice-=10;
                     }
-                    this.finalIndice = maxI;
-                    return maxI;
+                    this.finalIndice = finalMaxIndice;
+                    return finalMaxIndice;
                 }
             }
             else{
@@ -867,6 +878,8 @@ public class PatternRecognition extends AbstractThread{
                 centerPointPattern = calculateCenterPattern(this.zoneToPerformLocalisationAutomatic);
                 analysePatternAfterAutomaticLocalization(colorMatrix);
             }
+            this.tempMaxProba=0;
+            this.tempMaxIndice=0;
         }
         else{
             boolean patternHasBeenFound=false;

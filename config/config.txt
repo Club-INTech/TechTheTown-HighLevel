@@ -116,7 +116,7 @@ bvert=0
 saturationPreModifier=3
 brightnessPreModifier=1
 saturationModifierLightingUp=1.2
-brightnessModifierLightingUp=1
+brightnessModifierLightingUp=1.5
 
 ############PARAMETRES SCRIPTS############
 
