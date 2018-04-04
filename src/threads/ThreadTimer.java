@@ -136,7 +136,7 @@ public class ThreadTimer extends AbstractThread
 
 		// attends que le jumper soit retiré du robot
 
-		if (usingJumper) {
+		if (this.usingJumper) {
 			while (ethWrapper.isJumperAbsent()) {
 				try {
 					Thread.sleep(100);

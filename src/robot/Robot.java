@@ -553,22 +553,14 @@ public class Robot implements Service {
      * @author Nayht
      */
     public void moveNearPoint(Vec2 aim, double distanceNear, String direction) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-
         Vec2 relativeCoords = aim.minusNewVector(getPosition());
         long distance = Math.round(relativeCoords.getR() - distanceNear);
         if (direction.equals("backward")) {
-            System.out.println("testBackward");
-                turnTo(getPosition().minusNewVector(relativeCoords));
-
+            turnTo(getPosition().minusNewVector(relativeCoords));
             distance *= -1;
-
         } else {
-
-                turnTo(aim);
-
+            turnTo(aim);
         }
-        System.out.println("distance" + distance);
-        System.out.println("distanceNear" + distanceNear);
         moveLengthwise((int) distance);
     }
 

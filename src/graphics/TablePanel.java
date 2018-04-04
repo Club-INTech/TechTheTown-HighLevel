@@ -48,7 +48,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  */
 public class TablePanel extends JPanel
-{	
+{
 	/** numéro pour la serialisation	 */
 	private static final long serialVersionUID = -3033815690221481964L;
 
@@ -137,7 +137,7 @@ public class TablePanel extends JPanel
 		// Bords de la table
 		graphics.setColor(Color.BLACK);
 		graphics.drawRect(0, 0, 899, 599);
-	    
+
 	    // Obstacle de la table
 	    graphics.setColor(obstacleColor);
 		graphics.fillRect(0,0, 900, wideDisplay);
@@ -151,15 +151,15 @@ public class TablePanel extends JPanel
 	    {
 	    	upLeftCorner = changeRefToDisplay(rectangular.getPosition().plusNewVector(new Vec2(-rectangular.getSizeX()/2, rectangular.getSizeY()/2)));
 	    	graphics.fillRect(upLeftCorner.getX(), upLeftCorner.getY(), (int)(rectangular.getSizeX()*0.3), (int)(rectangular.getSizeY()*0.3));
-	    }	    
-	    
+	    }
+
 	    // Obstacles ciculaires
 	    for(ObstacleCircular circular : table.getObstacleManager().getmCircularObstacle())
 	    {
 	    	upLeftCorner = changeRefToDisplay(circular.getPosition().plusNewVector(new Vec2(-circular.getRadius(), circular.getRadius())));
 			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int)(circular.getRadius()*0.6), (int)(circular.getRadius()*0.6));
 	    }
-	    
+
 	    // Robot adverse
 	    graphics.setColor(adverseColor);
 		for(ObstacleProximity adverse : table.getObstacleManager().getMobileObstacles())
@@ -167,7 +167,7 @@ public class TablePanel extends JPanel
 			upLeftCorner = changeRefToDisplay(adverse.getPosition().plusNewVector(new Vec2(-adverse.getRadius(), adverse.getRadius())));
 			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int)(adverse.getRadius()*0.6), (int)(adverse.getRadius()*0.6));
 		}
-	    
+
 	    // Robot adverse non confirmé
 		graphics.setColor(unconfirmedColor);
 		for(ObstacleProximity unconfirmed : table.getObstacleManager().getUntestedArrayList())
@@ -175,7 +175,7 @@ public class TablePanel extends JPanel
 			upLeftCorner = changeRefToDisplay(unconfirmed.getPosition().plusNewVector(new Vec2(-unconfirmed.getRadius(), unconfirmed.getRadius())));
 			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int)(unconfirmed.getRadius()*0.6), (int)(unconfirmed.getRadius()*0.6));
 		}
-	    
+
 		// Notre robot
 	    if(isRobotPresent)
 	    {

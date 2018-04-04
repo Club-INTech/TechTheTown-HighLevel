@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import patternRecognition.shootPicture.UseWebcam;
+import patternRecognition.UseWebcam;
 
 
 public class JUnit_TakePicturePython extends JUnit_Test {
@@ -30,7 +30,7 @@ public class JUnit_TakePicturePython extends JUnit_Test {
         List<String> command = new ArrayList<>();
         //Camera FishEye
         command.add("python3");
-        command.add("./src/patternRecognition/shootPicture/SetPatternPosition.py");
+        command.add("./src/patternRecognition/shootPicture/SetPatternPositionGreen.py");
 
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();

@@ -26,7 +26,7 @@ public class Graphe implements Service {
 
     private Table table;
     private CopyOnWriteArrayList<Noeud> nodes;
-    private CopyOnWriteArrayList<Arete> boneslist;
+    private CopyOnWriteArrayList<Arete> bonesList;
 
     @Override
     public void updateConfig() {
@@ -91,34 +91,39 @@ public class Graphe implements Service {
 
     public void createAretes() {
         Arete arete;
-        boneslist = new CopyOnWriteArrayList<>();
+        bonesList = new CopyOnWriteArrayList<>();
+        Noeud nodeI;
+        Noeud nodeJ;
+        ArrayList<Arete> listAretes;
         int n = nodes.size();
         for (int i = 0; i < n; i++) {
-            ArrayList<Arete> listaretes = new ArrayList<>();
+            nodeI=nodes.get(i);
+            listAretes = new ArrayList<>();
             for (int j = i+1; j < n; j++) {
+                nodeJ=nodes.get(j);
                 Segment segment = new Segment(nodes.get(i).getPosition(), nodes.get(j).getPosition());
                 boolean intersectsWithCircularObstacles = false;
                 boolean intersectsWithRectangularObstacles = false;
-                for (int k = 0; k < listCircu.size(); k++) {
-                    if (listCircu.get(k).intersects(segment)){
+                for (ObstacleCircular obstacleCircular : listCircu) {
+                    if (obstacleCircular.intersects(segment)){
                         intersectsWithCircularObstacles = true;
+                        break;
                     }
                 }
-                for (int l = 0; l<listRectangu.size(); l++) {
-                    if(listRectangu.get(l).intersects(segment)){
+                for (ObstacleRectangular obstacleRectangular : listRectangu) {
+                    if(obstacleRectangular.intersects(segment)){
                         intersectsWithRectangularObstacles=true;
+                        break;
                     }
                 }
                 if (!(intersectsWithCircularObstacles) && !(intersectsWithRectangularObstacles)){
-                    double cost = Segment.squaredLength(nodes.get(i).getPosition(), nodes.get(j).getPosition());
-                    cost = Math.sqrt(cost);
-                    arete = new Arete(nodes.get(i), nodes.get(j), cost);
-                    listaretes.add(arete);
-                    nodes.get(i).addVoisin(nodes.get(j));
-                    nodes.get(j).addVoisin(nodes.get(i));
+                    arete = new Arete(nodeI, nodeJ);
+                    listAretes.add(arete);
+                    nodeI.addVoisin(nodeJ);
+                    nodeJ.addVoisin(nodeI);
                 }
             }
-            boneslist.addAll(listaretes);
+            bonesList.addAll(listAretes);
         }
     }
 
@@ -129,22 +134,21 @@ public class Graphe implements Service {
     public void addNodeInGraphe(Noeud noeud) {
         ArrayList<Noeud> voisins = new ArrayList<>();
 
-        for (int j = 0; j < nodes.size(); j++) {
+        for (Noeud currentNode : nodes) {
 
-            Segment segment = new Segment(noeud.getPosition(), nodes.get(j).getPosition());
+            Segment segment = new Segment(noeud.getPosition(), currentNode.getPosition());
             boolean isIntersection = false;
 
-            for (int k = 0; k < listCircu.size(); k++) {
-
-                if (Geometry.intersects(segment, listCircu.get(k).getCircle())) {
+            for (ObstacleCircular obstacleCircular : listCircu) {
+                if (Geometry.intersects(segment, obstacleCircular.getCircle())) {
                     isIntersection = true;
                 }
             }
             if (!isIntersection) {
-                voisins.add(nodes.get(j));
-                ArrayList<Noeud> noeuds = nodes.get(j).getVoisins();
+                voisins.add(currentNode);
+                ArrayList<Noeud> noeuds = currentNode.getVoisins();
                 noeuds.add(noeud);
-                nodes.get(j).addVoisins(noeuds);
+                currentNode.addVoisins(noeuds);
             }
         }
         noeud.addVoisins(voisins);
@@ -179,7 +183,7 @@ public class Graphe implements Service {
      */
     public void createNodesAroundCircularObstacles(){
         //mEnnemies=table.getObstacleManager().getmEnnemies();
-        ArrayList<Vec2> pointstoreturn=new ArrayList<>();
+        ArrayList<Vec2> pointsToReturn=new ArrayList<>();
         int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
         /*
         on crée des noeuds autour des obstacles circulaires
@@ -187,42 +191,38 @@ public class Graphe implements Service {
         for(ObstacleCircular obstacleCircular : listCircu) {
             Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
             ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
-            pointstoreturn.addAll(l);
+            pointsToReturn.addAll(l);
         }
         /*
           On crée des noeuds autour des obstacles mobiles
          */
 
-            for(ObstacleCircular obstacleCircular : mEnnemies) {
-                Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
-                ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
-                pointstoreturn.addAll(l);
-            }
+        for(ObstacleCircular obstacleCircular : mEnnemies) {
+            Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
+            ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
+            pointsToReturn.addAll(l);
+        }
 
 
         /*
         On vérifie pour chaque point s'il n'y a pas d'intersection avec les obstacles circulaires
          */
-        ArrayList<Vec2> points2=(ArrayList<Vec2>) pointstoreturn.clone();
-        for(Vec2 point : points2){
-            for(ObstacleCircular obstacleCircular : listCircu){
-                if(!(table.getObstacleManager().isRobotInTable(point)) || table.getObstacleManager().isPositionInObstacle(point,obstacleCircular )){
-                    pointstoreturn.remove(point);
-                }
-
-            }
-        }
-        ArrayList<Vec2> points=(ArrayList<Vec2> )pointstoreturn.clone();
+        ArrayList<Vec2> points=(ArrayList<Vec2>)pointsToReturn.clone();
         for(Vec2 point : points){
             for(ObstacleRectangular obstacleRectangular : listRectangu){
                 if(table.getObstacleManager().isPositionInObstacle(point,obstacleRectangular) ){
-                    pointstoreturn.remove(point);
+                    pointsToReturn.remove(point);
+                }
+            }
+            for(ObstacleCircular obstacleCircular : listCircu){
+                if(!(table.getObstacleManager().isRobotInTable(point)) || table.getObstacleManager().isPositionInObstacle(point,obstacleCircular )){
+                    pointsToReturn.remove(point);
                 }
             }
         }
-        int f=pointstoreturn.size();
+        int f=pointsToReturn.size();
         for(int i=0;i<f;i++){
-            Noeud nodetoadd=new Noeud(pointstoreturn.get(i),0,0,new ArrayList<>());
+            Noeud nodetoadd=new Noeud(pointsToReturn.get(i),0,0,new ArrayList<>());
             nodes.add(nodetoadd);
         }
 
@@ -258,7 +258,7 @@ public class Graphe implements Service {
     }
 
     public CopyOnWriteArrayList<Arete> getBoneslist() {
-        return boneslist;
+        return bonesList;
     }
 
 }
