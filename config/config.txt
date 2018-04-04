@@ -87,30 +87,37 @@ TAS_BASE_ENNEMI_PRIS=false
 TAS_CHATEAU_ENNEMI_PRIS=false
 TAS_STATION_EPURATION_ENNEMI_PRIS=false
 
+### Calibration des couleurs pour l'image prémodifiée
 #RGB pour la couleur orange
-rorange=183
-gorange=107
-borange=71
+rorange=173
+gorange=65
+borange=0
 
 #RGB pour la couleur jaune
-rjaune=153
-gjaune=117
+rjaune=173
+gjaune=161
 bjaune=0
 
 #RGB pour la couleur bleue
 rbleu=0
-gbleu=63
-bbleu=200
+gbleu=22
+bbleu=105
 
 #RGB pour la couleur noire
-rnoir=18
-gnoir=49
-bnoir=30
+rnoir=45
+gnoir=60
+bnoir=60
 
 #RGB pour la couleur vert
-rvert=43
-gvert=120
-bvert=68
+rvert=73
+gvert=153
+bvert=0
+
+#Modifieurs pour la reconnaissance de couleur
+saturationPreModifier=3
+brightnessPreModifier=1
+saturationModifierLightingUp=1.2
+brightnessModifierLightingUp=1.5
 
 ############PARAMETRES SCRIPTS############
 

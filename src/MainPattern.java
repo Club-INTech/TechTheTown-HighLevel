@@ -58,9 +58,6 @@ public class MainPattern {
             container = new Container();
             Thread.currentThread().setPriority(6);
             config = container.getConfig();
-            config.override(ConfigInfoRobot.SIMULATION,true);
-
-            container.getService(ThreadSimulator.class);
             mEthWrapper = container.getService(EthWrapper.class);
             container.getService(ThreadEth.class);
             patternRecognition = container.getService(PatternRecognition.class);

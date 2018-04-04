@@ -1,23 +1,40 @@
-package patternRecognition.shootPicture;
+package patternRecognition;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class UseWebcam {
 
-    private static String pythonCommand="python3";
+    private static String pythonCommand = "python";
 
-    public static BufferedImage takeBufferedPicture(){
+    public static BufferedImage takeBufferedPicture() {
         BufferedImage picture = null;
-        shootPicture();
+
+        //On dit au processus qui tourne de prendre la dernière frame qu'il a en tant que photo
+        File taskFile = new File("/tmp/TakePicture.task");
         try {
-            picture = ImageIO.read(new File("/tmp/ImageRaspi.jpeg"));
+            taskFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //On attend que la photo ait été bien enregistrée
+        File doneFile = new File("/tmp/TakePicture.done");
+        while (!doneFile.exists()) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //On lit la photo enregistrée pour la transformer en BufferedImage
+        try {
+            picture = ImageIO.read(new File("/tmp/ImageRaspi.png"));
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("UseWebcam > Erreur readingSavedPicture");
@@ -25,52 +42,64 @@ public class UseWebcam {
         return picture;
     }
 
-    public static void setPatternPositionWithVideo(){
+    public static void setPatternPositionWithVideo() {
         List<String> command = new ArrayList<>();
+
+
         command.add(pythonCommand);
-        command.add("./src/patternRecognition/shootPicture/SetPatternPosition.py");
+        command.add("./src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py");
+
+        //On crée le processus qui va lancer python pour set la position des patterns
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();
         Process p = null;
+
+        //On lance le processus
         try {
             p = pb.start();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("UseWebcam > Erreur processBuilder");
         }
+
+        //On attend que le processus termine
         try {
             p.waitFor();
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.out.println("UseWebcam > Erreur waitfor");
         }
-        return;
     }
 
-    private static void shootPicture(){
+    public static void startCapturing() {
+        File taskFile = new File("/tmp/TakePicture.task");
+        File doneFile = new File("/tmp/TakePicture.done");
+        if (taskFile.exists()){
+            taskFile.delete();
+        }
+        if (doneFile.exists()){
+            doneFile.delete();
+        }
+
         List<String> command = new ArrayList<>();
         //Camera FishEye
         command.add(pythonCommand);
         command.add("./src/patternRecognition/shootPicture/CaptureImage.py");
 
+        //On crée le processus qui va lancer python pour ouvrir la caméra
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();
-        Process p = null;
+
+
+        //On lance ce processus
         try {
-            p = pb.start();
+            pb.start();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("UseWebcam > Erreur processBuilder");
         }
-        try {
-            p.waitFor();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.out.println("UseWebcam > Erreur waitfor");
-        }
-        return;
 
-        /*
+     /*
         List<String> command = new ArrayList<>();
         //Camera FishEye
         command.add("streamer");

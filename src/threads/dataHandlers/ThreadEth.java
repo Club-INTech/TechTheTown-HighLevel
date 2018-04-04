@@ -313,7 +313,7 @@ public class ThreadEth extends AbstractThread implements Service {
             try {
                 if (socket != null) {
                     socket.close();
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                     createInterface();
                 }
             } catch (Exception e1) {
@@ -449,7 +449,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 try {
                     if (socket != null) {
                         socket.close();
-                        Thread.sleep(1000);
+                        Thread.sleep(500);
                         createInterface();
                     }
                 } catch (Exception e) {

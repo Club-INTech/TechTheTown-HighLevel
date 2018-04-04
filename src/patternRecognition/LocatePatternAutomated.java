@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class LocatePatternPython {
+public class LocatePatternAutomated {
+
+    private static String pythonCommand="python";
 
     public static int[] LocatePattern(int[] zoneToPerformLocalisation){
         String data;
-        File file = new File("/tmp/LocalizationDone.lock");
+        File file = new File("/tmp/Localization.done");
         if (file.exists()) {
             file.delete();
         }
@@ -21,7 +23,7 @@ public class LocatePatternPython {
             data = new String(Files.readAllBytes(Paths.get("/tmp/LocalizationInfo.txt")));
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("LocatePatternPython > IOException /tmp/LocalizationInfo.txt");
+            System.out.println("LocatePatternAutomated > IOException /tmp/LocalizationInfo.txt");
             data="-1 -1 10000 10000";
         }
         String[] infos = data.split(" ");
@@ -39,8 +41,8 @@ public class LocatePatternPython {
 
     private static void MakeLocalization(){
         List<String> command = new ArrayList<>();
-        command.add("python3");
-        command.add("./src/patternRecognition/LocatePatternPython.py");
+        command.add(pythonCommand);
+        command.add("./src/patternRecognition/LocatePatternAutomated.py");
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();
         Process p = null;
@@ -48,21 +50,21 @@ public class LocatePatternPython {
             p = pb.start();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("LocatePatternPython > Erreur processBuilder");
+            System.out.println("LocatePatternAutomated > Erreur processBuilder");
         }
         try {
             p.waitFor();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            System.out.println("LocatePatternPython > Erreur waitfor");
+            System.out.println("LocatePatternAutomated > Erreur waitfor");
         }
-        File f = new File("/tmp/LocalizationDone.lock");
+        File f = new File("/tmp/Localization.done");
         while(!f.exists()) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                System.out.println("LocatePatternPython > Erreur interruptedException");
+                System.out.println("LocatePatternAutomated > Erreur interruptedException");
             }
         }
         return;
