@@ -401,9 +401,9 @@ public class PatternRecognition extends AbstractThread{
     private ArrayList<Integer> selectBestProbabilities(double[] probabilitiesList){
         int length=probabilitiesList.length;
         double bestProba=0;
-        for (int i=0; i<length; i++){
-            if (probabilitiesList[i]>bestProba){
-                bestProba=probabilitiesList[i];
+        for (double currentProba : probabilitiesList){
+            if (currentProba>bestProba){
+                bestProba=currentProba;
             }
         }
         ArrayList<Integer> selectionnedProbabilitiesIndice=new ArrayList<>();
@@ -944,20 +944,6 @@ public class PatternRecognition extends AbstractThread{
         this.zoneToPerformLocalisationAutomatic = zoneToPerformLocalisationAutomatic;
     }
 
-    /** Set la modification de saturation avant l'algorithme de reconnaissance de pattern
-     * @param saturationPreModifier multiplicateur de la saturation
-     */
-    public void setSaturationPreModifier(double saturationPreModifier){
-        this.saturationPreModifier=saturationPreModifier;
-    }
-
-    /** Set la modification de luminosité avant l'algorithme de reconnaissance de pattern
-     * @param brightnessPreModifier multiplicateur de la luminosité
-     */
-    public void setBrightnessPreModifier(double brightnessPreModifier){
-        this.brightnessPreModifier=brightnessPreModifier;
-    }
-
     /** Set la distance sur l'axe X (en pixels) sur la photo de 2 centres de carrés adjacents du pattern
      * @param distance distance sur l'axe X en pixels
      */
@@ -971,7 +957,6 @@ public class PatternRecognition extends AbstractThread{
     public void setLengthSideOfSquareDetection(int length){
         this.lengthSideOfSquareDetection=length;
     }
-
 
     public void shutdown(){
         this.isShutdown=true;
