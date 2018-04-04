@@ -672,6 +672,7 @@ public class Locomotion implements Service {
     private void basicDetect() {
         if(thEvent.isSth_detected_basic()){
             immobilise();
+            log.debug("robot arrêté : basic detection");
         }
 
     }
