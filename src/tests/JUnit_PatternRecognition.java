@@ -1,81 +1,86 @@
 package tests;
 
-import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 import patternRecognition.PatternRecognition;
-import robot.Locomotion;
-import robot.Robot;
-import scripts.ScriptManager;
-import simulator.ThreadSimulator;
-import simulator.ThreadSimulatorMotion;
+import patternRecognition.UseWebcam;
 import strategie.GameState;
-import threads.ThreadInterface;
 
 import java.io.File;
 
 public class JUnit_PatternRecognition extends JUnit_Test {
 
-    private Robot robotReal;
-    private ScriptManager scriptManager;
     private GameState state;
-    private HookFactory hookFactory;
-    private ThreadInterface anInterface;
     private PatternRecognition patternRecognitionThread;
-    private Locomotion locomotion;
+    private boolean noVideoInput;
 
     @Before
     public void setUp() {
         try {
             super.setUp();
-            //robotReal = container.getService(Robot.class);
             state = container.getService(GameState.class);
-            //scriptManager = container.getService(ScriptManager.class);
             patternRecognitionThread = container.getService(PatternRecognition.class);
-            //anInterface = container.getService(ThreadInterface.class);
-            //locomotion=container.getService(Locomotion.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Test
-    public void test() {
-        boolean noVideoInput=true;
-        for (int i=0; i<5; i++) {
+        this.noVideoInput=true;
+        for (int i=0; i<3; i++) {
             File f = new File("/dev/video"+i);
             if (f.exists()) {
                 log.debug("/dev/video"+i+" exists");
-                noVideoInput=false;
+                this.noVideoInput=false;
             }
             else{
                 log.debug("/dev/video"+i+" does not exist");
             }
         }
+    }
 
+    @Test
+    public void testSetPatternPosition() {
+        if (!this.noVideoInput) {
+            UseWebcam.setPatternPositionWithVideo();
+        }
+        else{
+            log.critical("NoVideoInput");
+        }
+    }
 
-        if (!noVideoInput) {
+    @Test
+    public void testCaptureImage(){
+        UseWebcam.startCapturing();
+        if (!this.noVideoInput){
+            UseWebcam.takeBufferedPicture();
+        }
+        else{
+            log.critical("NoVideoInput");
+        }
+    }
+
+    @Test
+    public void testReconnaissanceWithSettingPositions(){
+        //On set les positions de patterns
+        if (!this.noVideoInput) {
+            UseWebcam.setPatternPositionWithVideo();
             try {
-                boolean montlheryActive=true;
-                if (montlheryActive) {
-                    patternRecognitionThread.setOrientation("face");
-                    patternRecognitionThread.setZoneToPerformLocalisation(new int[]{190,155,305,260});
-                }
                 container.startInstanciedThreads();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        else{
+            log.critical("NoVideoInput");
+        }
 
-
-
+        //On lance la reconnaissance de pattern
         while (!state.isRecognitionDone()) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 log.critical("Thread cannot sleep");
             }
         }
     }
+
 }

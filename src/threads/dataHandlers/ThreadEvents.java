@@ -38,17 +38,19 @@ public class ThreadEvents extends AbstractThread
     private Log log;
 
     /** Buffer de lecture des events, rempli par ThreadEth */
-    private ConcurrentLinkedQueue<String> events;
+    private volatile ConcurrentLinkedQueue<String> events;
 
     /** Buffer d'envoie des events */
-    private ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
 
     private boolean cubeTakenBrasAV=false;
 
     private boolean cubeTakenBrasAR=false;
 
+    private boolean sth_detected_basic =false;
+
     /** Le robot bouge */
-    public boolean isMoving;
+    public volatile boolean isMoving;
 
     /**
      * Constructeur
@@ -68,7 +70,7 @@ public class ThreadEvents extends AbstractThread
     public void run()
     {
         String event;
-        Thread.currentThread().setPriority(6);
+        Thread.currentThread().setPriority(8);
         while(!ThreadEth.shutdown)
         {
             try {
@@ -93,8 +95,12 @@ public class ThreadEvents extends AbstractThread
                         cubeTakenBrasAR=true;
                         log.debug("Le robot a pris un cube en utilisant le bras AR");
                     }
+                    else if(message[0].equals(EventType.BASIC_DETECTION_TRIGGERED.getEventId())){
+                        sth_detected_basic =true;
+                        log.debug("La basic detection a été triggered");
+                    }
                 } else {
-                    Thread.sleep(20);
+                    Thread.sleep(5);
                 }
             }catch (InterruptedException e){
                 e.getStackTrace();
@@ -125,4 +131,8 @@ public class ThreadEvents extends AbstractThread
     public void setIsMoving(boolean value){ this.isMoving=value; }
 
     public boolean getIsMoving(){ return this.isMoving; }
+
+    public boolean isSth_detected_basic() {
+        return sth_detected_basic;
+    }
 }

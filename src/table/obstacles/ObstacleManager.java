@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Traite tout ce qui concerne la gestion des obstacles sur la table.
@@ -57,8 +58,11 @@ public class ObstacleManager implements Service
     /** Ensemble des obstacles circulaires */
     public ArrayList<ObstacleCircular> mCircularObstacle;
 
+    /**Robot(s) Ennemi(s) qui bouge plus au bout d'une seconde, c'est une liste
+	 * qui sera filée au graphe pour qu'il puise l'ajouter comme obstacle**/
+	public ArrayList<ObstacleCircular> mEnnemies;
 
-    /** Ensemble des obstacles mobiles/temporaires a tester pour les placer sur la table */
+	/** Ensemble des obstacles mobiles/temporaires a tester pour les placer sur la table */
 	private ArrayList<ObstacleProximity> mUntestedMobileObstacles;
 
     /** Ensembles des lignes modélisant les bords de la table */
@@ -116,7 +120,7 @@ public class ObstacleManager implements Service
         mCircularObstacle = new ArrayList<ObstacleCircular>();
         mLines = new ArrayList<Segment>();
 		mRectangles = new ArrayList<ObstacleRectangular>();
-		
+		mEnnemies=new ArrayList<>();
 		mUntestedMobileObstacles= new ArrayList<ObstacleProximity>();
 
 		updateConfig();
@@ -631,6 +635,27 @@ public class ObstacleManager implements Service
 	}
 
 	/**
+	 * Cette méthode vérifie si un point est dans un obstacle
+	 * @param position
+	 * @return
+	 */
+	public synchronized boolean isPositionInObstacle(Vec2 position){
+		for(Obstacle obstacle : mCircularObstacle){
+			if(isPositionInObstacle(position,obstacle)){
+				return true;
+			}
+		}
+		for(Obstacle obstacle : mRectangles){
+			if(isPositionInObstacle(position,obstacle)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+
+	/**
      * Rend le gestionnaire d'obstacle fourni en argument explicite égal a ce gestionnaire.
      * @param other les gestionnaire a modifier
      */
@@ -1042,5 +1067,9 @@ public class ObstacleManager implements Service
 		mCircularObstacle.clear();
 		mMobileObstacles.clear();
 		mUntestedMobileObstacles.clear();
+	}
+
+	public ArrayList<ObstacleCircular> getmEnnemies() {
+		return mEnnemies;
 	}
 }

@@ -110,6 +110,9 @@ public enum ActuatorOrder implements MotionOrder
 	NO_ASSERV_SPEED("cv0"),
 	ASSERV_SPEED("cv1"),
 	DEBUG("pfdebug"),
+	BASIC_DETECTION_ENABLE("bde"),
+	BASIC_DETECTION_DISABLE("bdd"),
+
 
 /*			 _______________________
  * 		   *|                       |*

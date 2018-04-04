@@ -81,8 +81,8 @@ def find_squares(img,threshold1, threshold2, blurSize):
 if __name__ == '__main__':
     fn='/tmp/ImageRaspi.jpeg'
     img = cv.imread(fn)
-    XSTART=300
-    YSTART=300
+    XSTART=0
+    YSTART=100
     WIDTH=200
     HEIGHT=250
     APERTURE_SIZE = 3
@@ -106,8 +106,8 @@ if __name__ == '__main__':
         file.write(str(square[0])+" "+str(square[1])+" "+str(square[2])+" "+str(square[3]))
         file.close()
         print(str(square[0])+" "+str(square[1])+" "+str(square[2])+" "+str(square[3]))
-    file2=open("/tmp/LocalizationDone.lock","w")
+    file2=open("/tmp/Localization.done","w")
     file2.close()
-    ch = cv.waitKey()
-    if ch == 27:
-        cv.destroyAllWindows()
+    #ch = cv.waitKey()
+    #if ch == 27:
+    #    cv.destroyAllWindows()

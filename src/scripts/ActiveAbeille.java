@@ -5,6 +5,7 @@ import enums.ConfigInfoRobot;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import hook.HookNames;
@@ -12,6 +13,7 @@ import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
+import sun.awt.image.ImageAccessException;
 import utils.Log;
 
 public class ActiveAbeille extends AbstractScript {
@@ -44,7 +46,7 @@ public class ActiveAbeille extends AbstractScript {
     }
 
     @Override
-    public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException {
+    public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution ActiveAbeille version "+versionToExecute+" //////////");
         //On vérifie quel bras de l'abeille on va devoir utiliser, à l'aide d'un produit scalaire
         Vec2 entry=new Vec2(this.xEntry,this.yEntry);
@@ -58,7 +60,8 @@ public class ActiveAbeille extends AbstractScript {
             //On enable le kook pour le bras avant
             hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
             //On va vers l'abeille
-            actualState.robot.goTo(new Vec2(xEntry,yEntry));
+            actualState.robot.goTo(new Vec2(xEntry, yEntry));
+
             //On se tourne pour pousser l'abeille avec le bras avant
             actualState.robot.turn(Math.PI/2,true);
             //On relève le bras avant

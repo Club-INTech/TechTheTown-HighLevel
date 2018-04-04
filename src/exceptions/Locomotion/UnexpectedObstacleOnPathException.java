@@ -19,6 +19,8 @@
 
 package exceptions.Locomotion;
 
+import smartMath.Vec2;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -33,8 +35,8 @@ public class UnexpectedObstacleOnPathException extends Exception
 	private static final long serialVersionUID = -3791360446545658528L;
 
 	public UnexpectedObstacleOnPathException()
-	{
-		super();
+	{ 	super();
+
 	}
 	
 	public UnexpectedObstacleOnPathException(String m)
@@ -53,4 +55,5 @@ public class UnexpectedObstacleOnPathException extends Exception
 		
 		return exceptionAsString;
 	}
+
 }

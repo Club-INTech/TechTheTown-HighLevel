@@ -23,6 +23,7 @@ import enums.ActuatorOrder;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
@@ -87,8 +88,8 @@ public class JUnit_Sensors extends JUnit_Test
 	public void testDetect() throws Exception
 	{
 		log.debug("Test de detection");
-		robot.setPosition(new Vec2(0,1000));
-		robot.setOrientation(-Math.PI);
+		robot.setPosition(Table.entryPosition);
+		robot.setOrientation(Table.entryOrientation);
 		log.debug ("Orientation :" + state.robot.getOrientation());
 		log.debug("Position :" + state.robot.getPosition());
 //		state.robot.switchSensor();
@@ -108,13 +109,14 @@ public class JUnit_Sensors extends JUnit_Test
 		}
 	}
 
-	// @Test
+	@Test
 	public void testStopWhileMove() throws Exception
 	{
+		state.robot.setPosition(Table.entryPosition);
+		state.robot.setOrientation(Table.entryOrientation);
+		state.robot.setLocomotionSpeed(Speed.FAST_ALL);
+		state.robot.goTo(new Vec2(0,1000));
 		log.debug("Test d'arret lors de l'execution d'un script");
-		ScriptManager scriptManager = container.getService(ScriptManager.class);
-		container.startInstanciedThreads();
-		state.robot.switchSensor();
 		log.debug("Orientation :" + state.robot.getOrientation());
 	}
 
@@ -165,8 +167,7 @@ public class JUnit_Sensors extends JUnit_Test
 	}
 	
 //	@Test
-	public void testDetectionTournante()
-	{
+	public void testDetectionTournante() throws ImmobileEnnemyForOneSecondAtLeast {
 		log.debug("Test d'évitement");
 		
 	/*	try 
@@ -207,6 +208,8 @@ public class JUnit_Sensors extends JUnit_Test
 		catch (UnableToMoveException e1)
 		{
 			log.critical( e1.logStack());
+		} catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+			immobileEnnemyForOneSecondAtLeast.printStackTrace();
 		}
 		while (true)
 		{
@@ -214,8 +217,7 @@ public class JUnit_Sensors extends JUnit_Test
 	}
 	
 	//@Test
-	public void testMoveForwardBackward()
-	{
+	public void testMoveForwardBackward() throws ImmobileEnnemyForOneSecondAtLeast {
 		
 		try 
 		{
@@ -261,8 +263,7 @@ public class JUnit_Sensors extends JUnit_Test
 	
 	
 	//@Test
-	public void testSensorEnnemyWithMovement()
-	{
+	public void testSensorEnnemyWithMovement() throws ImmobileEnnemyForOneSecondAtLeast {
 		log.debug("Test des capteurs fixe");
 		while(true)
 		{
@@ -298,7 +299,7 @@ public class JUnit_Sensors extends JUnit_Test
 	
 	
    // @Test
-	public void testCapteurDeplacement() throws PointInObstacleException {
+	public void testCapteurDeplacement() throws PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
     	matchSetUp(state.robot, false);
     	try 
     	{

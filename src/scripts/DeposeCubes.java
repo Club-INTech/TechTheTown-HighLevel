@@ -5,6 +5,7 @@ import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.BadVersionException;
 import exceptions.ExecuteException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import pfg.config.Config;
@@ -37,7 +38,7 @@ public class DeposeCubes extends AbstractScript {
      * @throws UnableToMoveException
      */
     @Override
-    public void execute(int version, GameState stateToConsider) throws ExecuteException, UnableToMoveException {
+    public void execute(int version, GameState stateToConsider) throws ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         //On se tourne vers la zone de construction
         log.debug("////////// Execution DeposeCubes version "+version+" //////////");
         Vec2 directionToGo=null;

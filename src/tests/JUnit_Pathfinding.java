@@ -23,6 +23,7 @@ import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.ContainerException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
@@ -92,7 +93,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
      * droit sur le test, 'Run')
      */
     @Test
-    public void testUnit() throws ContainerException, InterruptedException {
+    public void testUnit() throws ContainerException, InterruptedException, ImmobileEnnemyForOneSecondAtLeast {
 
         /** Instanciation des variables */
 
@@ -161,7 +162,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     }
 
     @Test
-    public void pathTest() throws InterruptedException, ContainerException {
+    public void pathTest() throws InterruptedException, ContainerException, ImmobileEnnemyForOneSecondAtLeast {
         pathfinding = container.getService(Pathfinding.class);
         table = container.getService(Table.class);
         obstacleManager = container.getService(ObstacleManager.class);
@@ -201,7 +202,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
     // promenade du robot
     @Test
-    public void randomPathTest() throws InterruptedException, ContainerException {
+    public void randomPathTest() throws InterruptedException, ContainerException, ImmobileEnnemyForOneSecondAtLeast {
         pathfinding = container.getService(Pathfinding.class);
         table = container.getService(Table.class);
         obstacleManager = container.getService(ObstacleManager.class);

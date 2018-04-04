@@ -33,6 +33,7 @@ public enum EventType {
     CUBE_PAS_PRIS_BRAS_AVANT("noCubeDetectedAV"),
     CUBE_PRIS_BRAS_ARRIERE("cubeDetectedAR"),
     CUBE_PAS_PRIS_BRAS_ARRIERE("noCubeDetectedAR"),
+    BASIC_DETECTION_TRIGGERED("basicDetectionTriggered")
     ;
 
     /** Id de l'event, qui diffère en fonction du type d'event */

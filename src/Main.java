@@ -51,7 +51,6 @@ public class Main {
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
 // PS : Les vérifications et validations c'est pas pour les chiens.
-	//TODO : Aide-mémoire : mettre la lib libopencv_java340.so dans le répertoire /usr/lib de la raspi, et executer execstack -c libopencv_java340.so
 
     public static void main(String[] args) throws InterruptedException {
         int matchScriptVersionToExecute=0;
@@ -71,17 +70,16 @@ public class Main {
             container.getService(ThreadEth.class);
             //container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
-            //PatternRecognition patternRecognition=container.getService(PatternRecognition.class);
+            PatternRecognition patternRecognition=container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
             // TODO : initialisation des variables globales du robot & objets...
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
 
-            /*while(patternRecognition.isMovementLocked()) {
+            while(patternRecognition.isMovementLocked()) {
                 Thread.sleep(10);
-            }*/
-
+            }
 
         } catch (ContainerException p) {
             System.out.println("bug container");
