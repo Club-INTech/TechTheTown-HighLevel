@@ -37,16 +37,16 @@ brightnessMultiplier=1.0
 ##### DEBUT DU CODE #####
 
 #Position du premier point
-xCalque1=100
-yCalque1=100
+xCalque1=121
+yCalque1=95
 
 #Position du deuxieme point
-xCalque2=120
-yCalque2=120
+xCalque2=128
+yCalque2=93
 
 #Position du troiseme point
-xCalque3=140
-yCalque3=140
+xCalque3=137
+yCalque3=92
 
 #Indique si le while(True) doit break à la prochaine iteration
 toBreak=False
