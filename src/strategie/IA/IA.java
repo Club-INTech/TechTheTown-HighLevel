@@ -4,6 +4,7 @@ import container.Service;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import scripts.*;
@@ -33,7 +34,7 @@ public class IA implements Service {
 
     public ArrayList<Node> createNodes() throws BadVersionException {
         Node pattern = new Pattern(0, null, scriptManager, gameState);
-        Node abeille = new Abeille(0, null, scriptManager, gameState);
+        Node abeille = new Abeille(1, null, scriptManager, gameState);
         Node panneau = new Panneau(0, null, scriptManager, gameState);
         Node takeCubes = new TakeCubes(0, null, scriptManager, gameState);
         Node takeCubes2 = new TakeCubes(0, null, scriptManager, gameState);
@@ -86,7 +87,7 @@ public class IA implements Service {
          return nodes;
     }
 
-    public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException {
+    public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
         for(Node node : nodesToExecute){
             node.execute(e);
         }

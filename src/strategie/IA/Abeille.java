@@ -14,7 +14,7 @@ public class Abeille extends Node {
         super(versionToExecute, nextNodes, scriptManager, gameState);
         this.setScript(scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE));
         this.setScore(50);
-        this.setPosition(new Vec2(1300,1765));
+        this.setPosition(updatePosition());
     }
 
     @Override
