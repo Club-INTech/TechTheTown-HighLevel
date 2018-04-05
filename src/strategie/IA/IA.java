@@ -7,6 +7,8 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.NoPathFound;
+import pathfinder.Pathfinding;
 import scripts.*;
 import strategie.GameState;
 
@@ -17,14 +19,16 @@ public class IA implements Service {
     private GameState gameState;
     private ScriptManager scriptManager;
     private Graph graph;
+    private Pathfinding pathfinding;
     private int nb_tas_pris;
     private ArrayList<Node> nodesToExecute;
 
     /** Permet de s'adapter au déroulement d'un match grace à un graphe de décision. */
 
-    public IA(GameState gameState, ScriptManager scriptManager) throws BadVersionException {
+    public IA(GameState gameState, ScriptManager scriptManager, Pathfinding pathfinding) throws BadVersionException, UnableToMoveException, PointInObstacleException, NoPathFound {
         this.gameState = gameState;
         this.scriptManager = scriptManager;
+        this.pathfinding = pathfinding;
         this.graph = new Graph(createNodes());
         this.nb_tas_pris = 0;
         this.nodesToExecute = kruskal();
@@ -53,7 +57,8 @@ public class IA implements Service {
 
     /** Trouve un parcourt optimal dans le graphe de décision. */
 
-    public ArrayList<Node> kruskal() {
+    public ArrayList<Node> kruskal() throws UnableToMoveException, PointInObstacleException, NoPathFound {
+        graph.setEdgesCost(pathfinding);
         ArrayList<Edge> bestEdges = new ArrayList<>();
         UnionFind u1 = new UnionFind(graph.getNodes().size());
         Edge curentEdge;

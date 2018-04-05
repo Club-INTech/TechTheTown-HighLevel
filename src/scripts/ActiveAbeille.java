@@ -100,7 +100,7 @@ public class ActiveAbeille extends AbstractScript {
         }
         /** Version utilisée pour l'IA. */
         if (version == 1){
-            return new Circle(new Vec2(xEntry,yEntry));
+            return new Circle(new Vec2(1200,1750));
         }else {
             throw new BadVersionException();
         }

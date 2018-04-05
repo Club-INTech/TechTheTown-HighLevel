@@ -15,7 +15,7 @@ public class Edge {
     public Edge(Node node1, Node node2) {
         this.node1 = node1;
         this.node2 = node2;
-        updateCost(0);
+        this.cost = 0;
     }
 
     /** Met à jour le cout d'une arrete. On peut ainsi modifier le cout pendant le calcule du parcours optimal
@@ -31,9 +31,6 @@ public class Edge {
             else {
                 setCost(0);
             }
-        }
-        else{
-            setCost(node1.getPosition().distance(node2.getPosition()));
         }
     }
 

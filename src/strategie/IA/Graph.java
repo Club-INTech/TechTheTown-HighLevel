@@ -1,5 +1,11 @@
 package strategie.IA;
 
+import exceptions.Locomotion.PointInObstacleException;
+import exceptions.Locomotion.UnableToMoveException;
+import exceptions.NoPathFound;
+import pathfinder.Pathfinding;
+import strategie.GameState;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -38,6 +44,15 @@ public class Graph {
                 edges.add(new Edge(nodes.get(i),nodes.get(j)));
             }
             nodes.get(i).setId(i);
+        }
+    }
+
+    /** Set le couts des arretes. */
+
+    public void setEdgesCost(Pathfinding pathfinding) throws UnableToMoveException, PointInObstacleException, NoPathFound {
+        for(Edge edge: edges){
+//            edge.setCost(edge.getNode1().getPosition().distance(edge.getNode2().getPosition()));
+            edge.setCost(pathfinding.howManyTime(edge.getNode1().getPosition(),edge.getNode2().getPosition()));
         }
     }
 
