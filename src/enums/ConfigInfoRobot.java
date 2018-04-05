@@ -62,6 +62,10 @@ public enum ConfigInfoRobot implements ConfigInfo
     ROBOT_RADIUS(212),
     ENNEMY_RADIUS(400),
 
+    /** Vitesses du robot */
+    ROBOT_LINEAR_SPEED(840),        // mm/s
+    ROBOT_ANGULAR_SPEED(Math.PI),   // rad/s
+
     /**Les cubes*/
     LONGUEUR_CUBE(58),
 

@@ -37,6 +37,10 @@ public class Pathfinding implements Service {
     private boolean tasBaseEnnemiRemoved;
     private boolean tasChateauEnnemiRemoved;
     private boolean tasStationEpurationEnnemiRemoved;
+
+    private int robot_linear_speed;
+    private double robot_angular_speed;
+
     /** Coût fixe ajouté à chaque noeud*/
     private int coutFixe;
 
@@ -214,12 +218,27 @@ public class Pathfinding implements Service {
         return finalPath;
     }
 
+    /** Permet de calculer le temps pour se rendre à une position. */
+
+    public double howManyTime(Vec2 positionDepart, Vec2 positionArrive) throws UnableToMoveException, PointInObstacleException, NoPathFound {
+
+        ArrayList<Vec2> path = findmyway(positionDepart,positionArrive);
+        double time = 0;
+        for(int i = 0; i < path.size(); i++){
+            time += robot_angular_speed*path.get(i).minusNewVector(path.get(i+1)).angle();
+            time += robot_linear_speed*path.get(i).minusNewVector(path.get(i+1)).length();
+        }
+        return time;
+    }
+
     public Graphe getGraphe() {
         return graphe;
     }
 
     @Override
     public void updateConfig() {
-        coutFixe = this.config.getInt(ConfigInfoRobot.COUT_FIXE);
+       this.coutFixe = config.getInt(ConfigInfoRobot.COUT_FIXE);
+       this.robot_linear_speed = config.getInt(ConfigInfoRobot.ROBOT_LINEAR_SPEED);
+       this.robot_angular_speed = config.getDouble(ConfigInfoRobot.ROBOT_ANGULAR_SPEED);
     }
 }
