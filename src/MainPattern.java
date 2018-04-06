@@ -110,8 +110,11 @@ public class MainPattern {
                     e.printStackTrace();
                 }
             }
-            //On attend encore 50ms pour que le jumper soit bien retiré
             gameState.setJumperRemoved(true);
+            //Maintenant que le jumper est retiré, le match a commencé
+            ThreadTimer.matchStarted = true;
+
+            //On attend encore 50ms pour que le jumper soit bien retiré
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -121,9 +124,9 @@ public class MainPattern {
         else{
             mLocomotion.getThEvent().setJumperRemoved(true);
             gameState.setJumperRemoved(true);
+            // maintenant que le jumper est retiré, le match a commencé
+            ThreadTimer.matchStarted = true;
             System.out.println("Robot pret pour le match, pas d'attente du retrait de jumper");
         }
-        // maintenant que le jumper est retiré, le match a commencé
-        ThreadTimer.matchStarted = true;
     }
 }

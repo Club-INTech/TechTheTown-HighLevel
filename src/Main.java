@@ -110,7 +110,6 @@ public class Main {
     static void waitMatchBegin() {
 
         boolean useJumper=config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
-        System.out.println(useJumper);
         if (useJumper) {
             mEthWrapper.waitForJumperRemoval();
             System.out.println("Robot pret pour le match, attente du retrait du jumper");
@@ -122,6 +121,10 @@ public class Main {
                 }
             }
             realState.setJumperRemoved(true);
+            // maintenant que le jumper est retiré, le match a commencé
+            ThreadTimer.matchStarted = true;
+
+            //On attend encore 50ms pour que le jumper soit bien retiré
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -131,9 +134,9 @@ public class Main {
         else{
             mLocomotion.getThEvent().setJumperRemoved(true);
             realState.setJumperRemoved(true);
+            // maintenant que le jumper est retiré, le match a commencé
+            ThreadTimer.matchStarted = true;
             System.out.println("Robot pret pour le match, pas d'attente du retrait de jumper");
         }
-        // maintenant que le jumper est retiré, le match a commencé
-        ThreadTimer.matchStarted = true;
     }
 }

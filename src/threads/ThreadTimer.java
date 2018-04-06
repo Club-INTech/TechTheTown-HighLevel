@@ -139,7 +139,7 @@ public class ThreadTimer extends AbstractThread
 		if (this.usingJumper) {
 			while (!robot.getmLocomotion().getThEvent().wasJumperRemoved()) {
 				try {
-					Thread.sleep(100);
+					Thread.sleep(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
