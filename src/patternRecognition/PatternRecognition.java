@@ -847,16 +847,7 @@ public class PatternRecognition extends AbstractThread{
         }
 
         if (this.useJumper) {
-            while (ethWrapper.isJumperAbsent()) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            // puis attend son retrait
-            while (!ethWrapper.isJumperAbsent()) {
+            while (!gameState.wasJumperRemoved()) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {

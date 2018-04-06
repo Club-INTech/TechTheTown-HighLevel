@@ -51,7 +51,10 @@ public class GameState implements Service
     /** Temps écoulé depuis le début du match en ms */
     private long timeEllapsed;
 
-    /** points marqués depuis le debut du match */
+    /** Je jumper a-t-il été enlevé ?*/
+    private boolean jumperRemoved;
+
+    /** Points marqués depuis le debut du match */
     private int obtainedPoints;
 
     /** Indice du pattern trouvé */
@@ -154,8 +157,6 @@ public class GameState implements Service
     public void setTimeEllapsed(long timeEllapsed) {
         this.timeEllapsed = timeEllapsed;
     }
-
-
 
     public int getObtainedPoints() {
         return this.obtainedPoints;
@@ -290,5 +291,12 @@ public class GameState implements Service
 
     public void setTas_station_epuration_ennemi_pris(boolean tas_station_epuration_ennemi_pris) {
         this.tas_station_epuration_ennemi_pris = tas_station_epuration_ennemi_pris;
+    }
+
+    public void setJumperRemoved(boolean value){
+        this.jumperRemoved=value;
+    }
+    public boolean wasJumperRemoved(){
+        return this.jumperRemoved;
     }
 }

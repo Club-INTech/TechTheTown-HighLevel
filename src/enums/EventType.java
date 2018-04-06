@@ -29,6 +29,7 @@ public enum EventType {
     //Ne pas mettre d'espaces !
     BLOCKED("unableToMove"),
     STOPPEDMOVING("stoppedMoving"),
+    JUMPER_REMOVED("BLITZKRIEG"),
     CUBE_PRIS_BRAS_AVANT("cubeDetectedAV"),
     CUBE_PAS_PRIS_BRAS_AVANT("noCubeDetectedAV"),
     CUBE_PRIS_BRAS_ARRIERE("cubeDetectedAR"),

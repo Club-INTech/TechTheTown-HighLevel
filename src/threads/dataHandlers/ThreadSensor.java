@@ -26,6 +26,7 @@ import sensor.Sensor;
 import smartMath.Geometry;
 import smartMath.Vec2;
 import smartMath.XYO;
+import strategie.GameState;
 import table.Table;
 import threads.AbstractThread;
 import threads.ThreadTimer;
@@ -57,6 +58,9 @@ public class ThreadSensor extends AbstractThread
 
     /** Buffer de valeurs */
     private ConcurrentLinkedQueue<String> valuesReceived;
+
+    /** GameState */
+    private GameState gameState;
 
     /** Si l'on doit symétriser */
     private boolean symetry;
@@ -144,7 +148,7 @@ public class ThreadSensor extends AbstractThread
 	 * Crée un nouveau thread de capteurs
 	 * @param table La table a l'intérieure de laquelle le thread doit croire évoluer
 	 */
-	public ThreadSensor (Config config, Log log, Table table, EthWrapper ethWrapper, ThreadEth eth)
+	public ThreadSensor (Config config, Log log, Table table, EthWrapper ethWrapper, ThreadEth eth, GameState gameState)
 	{
 		super(config, log);
 		this.updateConfig();
@@ -152,6 +156,7 @@ public class ThreadSensor extends AbstractThread
         this.valuesReceived = eth.getUltrasoundBuffer();
         this.mTable = table;
         this.ethWrapper = ethWrapper;
+        this.gameState = gameState;
 		this.sensorFL=new Sensor(0,-127,100,this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
 		this.sensorFR=new Sensor(1,127,100,-this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
 		this.sensorBL=new Sensor(2,-127,-100,this.sensorOrientationB-Math.PI,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
@@ -402,14 +407,7 @@ public class ThreadSensor extends AbstractThread
         updateConfig();
 
         if (this.usingJumper) {
-            while (ethWrapper.isJumperAbsent()) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            while (!ethWrapper.isJumperAbsent()) {
+            while (!gameState.wasJumperRemoved()) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {

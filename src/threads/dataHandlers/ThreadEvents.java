@@ -21,9 +21,11 @@ package threads.dataHandlers;
 
 import enums.EventType;
 import pfg.config.Config;
+import strategie.GameState;
 import threads.AbstractThread;
 import utils.Log;
 
+import java.beans.EventHandler;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
@@ -43,11 +45,15 @@ public class ThreadEvents extends AbstractThread
     /** Buffer d'envoie des events */
     private volatile ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
 
+    /** Le jumper a-t-il été enlevé ?*/
+    private boolean jumperRemoved = false;
+
     private boolean cubeTakenBrasAV=false;
 
     private boolean cubeTakenBrasAR=false;
 
     private boolean sth_detected_basic =false;
+
 
     /** Le robot bouge */
     public volatile boolean isMoving;
@@ -88,16 +94,20 @@ public class ThreadEvents extends AbstractThread
                         log.debug("isMoving variable has been defined to False");
                     }
                     else if(message[0].equals(EventType.CUBE_PRIS_BRAS_AVANT.getEventId())){
-                        cubeTakenBrasAV=true;
+                        this.cubeTakenBrasAV=true;
                         log.debug("Le robot a pris un cube en utilisant le bras AV");
                     }
                     else if(message[0].equals(EventType.CUBE_PRIS_BRAS_ARRIERE.getEventId())){
-                        cubeTakenBrasAR=true;
+                        this.cubeTakenBrasAR=true;
                         log.debug("Le robot a pris un cube en utilisant le bras AR");
                     }
                     else if(message[0].equals(EventType.BASIC_DETECTION_TRIGGERED.getEventId())){
-                        sth_detected_basic =true;
+                        this.sth_detected_basic=true;
                         log.debug("La basic detection a été triggered");
+                    }
+                    else if(message[0].equals(EventType.JUMPER_REMOVED.getEventId())){
+                        this.jumperRemoved=true;
+                        log.debug("Jumper enlevé");
                     }
                 } else {
                     Thread.sleep(5);
@@ -134,5 +144,13 @@ public class ThreadEvents extends AbstractThread
 
     public boolean isSth_detected_basic() {
         return sth_detected_basic;
+    }
+
+    public boolean wasJumperRemoved() {
+        return jumperRemoved;
+    }
+
+    public void setJumperRemoved(boolean value){
+        this.jumperRemoved=value;
     }
 }

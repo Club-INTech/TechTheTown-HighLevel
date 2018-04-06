@@ -33,8 +33,6 @@ import threads.ThreadTimer;
 import utils.Log;
 import utils.Sleep;
 
-import java.util.ArrayList;
-
 /**
  * Code de tracé de graphe pour l'asser'
  * @author PF
@@ -115,28 +113,32 @@ public class MainDebug
     static void waitMatchBegin()
     {
 
-        System.out.println("Robot pret pour le match, attente du retrait du jumper");
+        boolean useJumper=config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
 
         // attend l'insertion du jumper
-        while(mEthWrapper.isJumperAbsent())
-        {
+        if (useJumper) {
+            mEthWrapper.waitForJumperRemoval();
+            System.out.println("Robot pret pour le match, attente du retrait du jumper");
+            while (!mLocomotion.getThEvent().wasJumperRemoved()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            //On attend encore 50ms pour que le jumper soit bien retiré
+            realState.setJumperRemoved(true);
             try {
-                Thread.sleep(100);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
-        // puis attend son retrait
-        while(!mEthWrapper.isJumperAbsent())
-        {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        else{
+            mLocomotion.getThEvent().setJumperRemoved(true);
+            realState.setJumperRemoved(true);
+            System.out.println("Robot pret pour le match, pas d'attente du retrait de jumper");
         }
-
         // maintenant que le jumper est retiré, le match a commencé
         ThreadTimer.matchStarted = true;
     }
