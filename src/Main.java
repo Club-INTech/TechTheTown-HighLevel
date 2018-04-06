@@ -47,6 +47,7 @@ public class Main {
     static ScriptManager scriptmanager;
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
+    static PatternRecognition patternRecognition;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
@@ -70,16 +71,13 @@ public class Main {
             container.getService(ThreadEth.class);
             //container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
-            PatternRecognition patternRecognition=container.getService(PatternRecognition.class);
+            patternRecognition=container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
             // TODO : initialisation des variables globales du robot & objets...
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
 
-            while(patternRecognition.isMovementLocked()) {
-                Thread.sleep(10);
-            }
 
         } catch (ContainerException p) {
             System.out.println("bug container");
@@ -90,7 +88,12 @@ public class Main {
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
             System.out.println("Le robot commence le match");
             waitMatchBegin();
-//			         TODO : lancer l'IA
+
+            while(patternRecognition.isMovementLocked()) {
+                Thread.sleep(10);
+            }
+
+            //TODO : lancer l'IA
 
             scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
 
