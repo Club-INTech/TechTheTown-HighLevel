@@ -9,7 +9,6 @@ import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import pfg.config.Config;
-import pfg.config.ConfigInfo;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -32,7 +31,6 @@ public class DeposeCubes extends AbstractScript {
 
     /**
      * Cette méthode dépose les cubes pris par les deux bras
-     *
      * @param stateToConsider
      * @throws ExecuteException
      * @throws UnableToMoveException
@@ -83,7 +81,9 @@ public class DeposeCubes extends AbstractScript {
                 }
                 stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
                 stateToConsider.robot.moveLengthwise(dimensionporte + distancePenetrationZone);
-                stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                if (stateToConsider.getNbDeposeCubes()==0) {
+                    stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                }
             }
         }
         else{
@@ -115,16 +115,17 @@ public class DeposeCubes extends AbstractScript {
                 }
                 stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
                 stateToConsider.robot.moveLengthwise(-(dimensionporte + distancePenetrationZone));
-                stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                if (stateToConsider.getNbDeposeCubes()==0) {
+                    stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                }
             }
         }
         stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
-
+        stateToConsider.incrementHasAlreadyDeposedCubes();
         //les deux premières sont déposées
         stateToConsider.setTourAvantRemplie(false);
         stateToConsider.setTourArriereRemplie(false);
         log.debug("////////// End DeposeCubes version "+version+" //////////");
-
     }
 
     @Override
