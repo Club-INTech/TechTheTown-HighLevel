@@ -48,6 +48,9 @@ public class MatchScript extends AbstractScript {
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);
             tk1.goToThenExec(1,gameState);
 
+            //On évite que les cubes soient poussés vers la zone de construction
+            gameState.robot.goTo(new Vec2(970,1300));
+
             //On dépose les cubes à la première position
             DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
             dpCubes0.goToThenExec(0, gameState);
@@ -76,6 +79,9 @@ public class MatchScript extends AbstractScript {
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);
             tk1.goToThenExec(1,gameState);
             //Pile cube n°1
+
+            //On évite que les cubes soient poussés vers l'abeille
+            gameState.robot.goTo(new Vec2(970,1100));
 
             //On active l'abeille
             ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
