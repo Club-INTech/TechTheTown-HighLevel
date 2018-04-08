@@ -141,8 +141,8 @@ public class Robot implements Service {
      */
     public Robot(Locomotion deplacements, Config config, Log log, EthWrapper ethWrapper, Pathfinding pathfinding) {
         this.config = config;
-        updateConfig();
         this.log = log;
+        updateConfig();
         this.pathfinding = pathfinding;
         this.ethWrapper = ethWrapper;
         this.mLocomotion = deplacements;
