@@ -436,7 +436,7 @@ public class Locomotion implements Service {
         }
 
 
-            moveToPointHandledExceptions(aim, (distance>=0), expectWallImpact, false, mustDetect);
+        moveToPointHandledExceptions(aim, (distance>=0), expectWallImpact, false, mustDetect);
 
         isRobotMovingForward = false;
         isRobotMovingBackward = false;

@@ -140,14 +140,12 @@ public class Robot implements Service {
      * @param ethWrapper   protocole communication série
      */
     public Robot(Locomotion deplacements, Config config, Log log, EthWrapper ethWrapper, Pathfinding pathfinding) {
-
         this.config = config;
+        updateConfig();
         this.log = log;
         this.pathfinding = pathfinding;
         this.ethWrapper = ethWrapper;
         this.mLocomotion = deplacements;
-
-        updateConfig();
         speed = Speed.SLOW_ALL;
     }
 
@@ -194,9 +192,7 @@ public class Robot implements Service {
     public void moveToLocation(Vec2 aim, Table table) throws UnableToMoveException, PointInObstacleException, NoPathFound,ImmobileEnnemyForOneSecondAtLeast {
         log.debug("Appel de Robot.moveToLocation(" + aim + "," + table + ")");
         //On crée bêtement un cercle de rayon nul pour lancer moveToCircle, sachant que la position de ce cercle est extraite pour le pathDiniDing (et après on dit qu'à INTech on code comme des porcs...)
-
-            moveToCircle(new Circle(aim), table);
-
+        moveToCircle(new Circle(aim), table);
     }
 
     /**
@@ -210,10 +206,7 @@ public class Robot implements Service {
     public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException, NoPathFound,ImmobileEnnemyForOneSecondAtLeast {
         Vec2 aimPosition = Geometry.closestPointOnCircle(this.getPosition(), aim);
         // TODO : Appel du followpath & Pathfinding !
-
-            followPath(pathfinding.findmyway(position, aimPosition));
-
-
+        followPath(pathfinding.findmyway(position, aimPosition));
     }
 
     /**
@@ -226,10 +219,7 @@ public class Robot implements Service {
     @SuppressWarnings("unchecked")
     public void followPath(ArrayList<Vec2> chemin) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-
-            mLocomotion.followPath(chemin);
-
-
+        mLocomotion.followPath(chemin);
     }
 
     /**
@@ -243,10 +233,7 @@ public class Robot implements Service {
     @SuppressWarnings("unchecked")
     protected void followPath(ArrayList<Vec2> chemin, DirectionStrategy direction) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         cheminSuivi = (ArrayList<Vec2>) chemin.clone();
-
-            mLocomotion.followPath(chemin);
-
-
+        mLocomotion.followPath(chemin);
     }
 
     /**
@@ -257,10 +244,7 @@ public class Robot implements Service {
      */
 
     public void goTo(Vec2 pointVise) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-
-            goTo(pointVise, false, true);
-
-
+        goTo(pointVise, false, true);
     }
 
     /**
@@ -273,10 +257,7 @@ public class Robot implements Service {
      */
     public void goTo(Vec2 pointVise, boolean expectedWallImpact, boolean isDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         log.debug("Appel de Robot.goTo : " + pointVise);
-
-            mLocomotion.moveToPoint(pointVise, expectedWallImpact, isDetect);
-
-
+        mLocomotion.moveToPoint(pointVise, expectedWallImpact, isDetect);
     }
 
 
@@ -296,7 +277,6 @@ public class Robot implements Service {
         Vec2 move = pointVise.minusNewVector(position);
         double a = move.getA();
         turn(a);
-
     }
 
     /**
@@ -310,7 +290,6 @@ public class Robot implements Service {
         Vec2 move = pointVise.minusNewVector(position);
         double a = move.getA();
         turn(a,expectsWallImpact);
-
     }
 
     /**
@@ -321,20 +300,14 @@ public class Robot implements Service {
      * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
      */
     public void turn(double angle) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-
-            turn(angle, false, false);
-
-
+        turn(angle, false, false);
     }
 
     /**
      * Comme turn sauf que les angles sont relatifs, tourne par exemple de Pi/2 à partir de sa position
      **/
     public void turnRelatively(double angle) throws UnableToMoveException ,ImmobileEnnemyForOneSecondAtLeast{
-
-            turn(angle, false, true);
-
-
+        turn(angle, false, true);
     }
 
     /**
@@ -344,12 +317,8 @@ public class Robot implements Service {
      * @param expectsWallImpact
      * @throws UnableToMoveException
      */
-
     public void turn(double angle, boolean expectsWallImpact) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-
-            turn(angle, expectsWallImpact, false);
-
-
+        turn(angle, expectsWallImpact, false);
     }
 
     /**
@@ -361,10 +330,7 @@ public class Robot implements Service {
      * @throws UnableToMoveException
      */
     public void turn(double angle, boolean expectsWallImpact, boolean isTurnRelative) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-
-            turn(angle, expectsWallImpact, isTurnRelative, true);
-
-
+        turn(angle, expectsWallImpact, isTurnRelative, true);
     }
 
     /**
@@ -380,9 +346,7 @@ public class Robot implements Service {
         if (isTurnRelative) {
             angle += getOrientation();
         }
-
-            mLocomotion.turn(angle, expectsWallImpact, mustDetect);
-
+        mLocomotion.turn(angle, expectsWallImpact, mustDetect);
     }
 
     /**
@@ -397,15 +361,11 @@ public class Robot implements Service {
         log.debug("appel de Robot.turnNoSymmetry(" + angle + ")");
         // Fais la symétrie deux fois (symétrie de symétrie, c'est l'identité)
         if (symmetry) {
-
             turn(Math.PI - angle, false, false);
-
         }
         else{
             turn(angle, false, false);
         }
-
-
     }
 
     /**
@@ -419,9 +379,7 @@ public class Robot implements Service {
         Vec2 vec = point.minusNewVector(position);
         double angle = vec.getA();
         log.debug("appel de Robot.turnToPoint(" + angle + ")");
-
-            turn(angle, false, false);
-
+        turn(angle, false, false);
     }
 
     /**
@@ -433,9 +391,7 @@ public class Robot implements Service {
      * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
      */
     public void moveLengthwise(int distance) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-
-            moveLengthwise(distance, false);
-
+        moveLengthwise(distance, false);
     }
 
     /**
@@ -447,11 +403,8 @@ public class Robot implements Service {
      * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
      */
     public void moveLengthwise(int distance, Speed speed) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-
         log.debug("appel de Robot.moveLengthwise(" + distance + "," + speed + ")");
-
-            moveLengthwise(distance, false, true, speed);
-
+        moveLengthwise(distance, false, true, speed);
     }
 
 
@@ -465,9 +418,7 @@ public class Robot implements Service {
      */
     public void moveLengthwise(int distance, boolean expectsWallImpact) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         log.debug("appel de Robot.moveLengthwise(" + distance + "," + expectsWallImpact + ")");
-
-            moveLengthwise(distance, expectsWallImpact, true);
-
+        moveLengthwise(distance, expectsWallImpact, true);
     }
 
     /**
@@ -482,10 +433,7 @@ public class Robot implements Service {
     public void moveLengthwise(int distance, boolean expectsWallImpact, Boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         log.debug("appel de Robot.moveLengthwise(" + distance + "," + expectsWallImpact + "," + mustDetect + ")");
         Speed newSpeed = Speed.SLOW_ALL;
-
-            moveLengthwise(distance, expectsWallImpact, mustDetect, newSpeed);
-
-
+        moveLengthwise(distance, expectsWallImpact, mustDetect, newSpeed);
     }
 
 
@@ -495,10 +443,7 @@ public class Robot implements Service {
     public void moveLengthwiseWithoutDetection(int distance, boolean expectsWallImpact) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         log.debug("appel de Robot.moveLengthwiseWithoutDetection(" + distance + "," + expectsWallImpact + ")");
         Speed newSpeed = Speed.SLOW_ALL;
-
-            moveLengthwise(distance, expectsWallImpact, false, newSpeed);
-
-
+        moveLengthwise(distance, expectsWallImpact, false, newSpeed);
     }
 
 
@@ -515,12 +460,7 @@ public class Robot implements Service {
         log.debug("appel de Robot.moveLengthwise(" + distance + "," + expectsWallImpact + "," + mustDetect + "," + newSpeed + ")");
         Speed oldSpeed = speed;
         speed = newSpeed;
-        if(mustDetect) {
-
-                mLocomotion.moveLengthwise(distance, expectsWallImpact, mustDetect);
-
-        }
-
+        mLocomotion.moveLengthwise(distance, expectsWallImpact, mustDetect);
         speed = oldSpeed;
     }
 
@@ -536,10 +476,7 @@ public class Robot implements Service {
         log.debug("appel de Robot.moveLengthwiseTowardWall(" + distance + ")");
         Speed oldSpeed = speed;
         setLocomotionSpeed(Speed.SLOW_ALL);
-
-            moveLengthwise(distance, true, false);
-
-
+        moveLengthwise(distance, true, false);
         setLocomotionSpeed(oldSpeed);
     }
 
@@ -800,7 +737,6 @@ public class Robot implements Service {
      */
     @Override
     public void updateConfig() {
-
         symmetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange")); // TODO : modifier la couleur adverse
         log.debug("contenu de couleur : " + config.getString(ConfigInfoRobot.COULEUR));
         log.debug("symmetry : " + symmetry);

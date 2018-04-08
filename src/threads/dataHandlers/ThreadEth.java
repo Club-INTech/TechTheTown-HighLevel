@@ -299,6 +299,7 @@ public class ThreadEth extends AbstractThread implements Service {
             comFlag = true;
             mess += "\r\n";
             timestamp=System.currentTimeMillis();
+            log.debug("Envoi d'un ordre au LL");
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
             output.write(mess, 0, mess.length());
             output.flush();
