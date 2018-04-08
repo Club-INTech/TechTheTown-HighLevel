@@ -179,7 +179,7 @@ public enum ActuatorOrder implements MotionOrder
     ActuatorOrder(String serialString)
 	{
 		this.serialOrder = serialString;
-		this.duration = 700;	// valeur par défaut de la durée de mouvement d'un actionneur
+		this.duration = 20;	// valeur par défaut de la durée de mouvement d'un actionneur
 	}
 
 	/**
