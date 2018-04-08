@@ -49,7 +49,7 @@ public class MatchScript extends AbstractScript {
             tk1.goToThenExec(1,gameState);
 
             //On évite que les cubes soient poussés vers la zone de construction
-            gameState.robot.goTo(new Vec2(970,1300));
+            gameState.robot.goTo(new Vec2(970,1400));
 
             //On dépose les cubes à la première position
             DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
