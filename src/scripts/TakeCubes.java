@@ -22,7 +22,7 @@ public class TakeCubes extends AbstractScript {
     public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
         this.updateConfig();
-        this.scoreFinalCubes =0;
+        this.scoreFinalCubes=0;
     }
 
     /** Execution du script de récupération des cubes
@@ -147,9 +147,11 @@ public class TakeCubes extends AbstractScript {
 
                 if (bras==BrasUtilise.ARRIERE){
                     direction="backward";
+                    stateToConsider.setTourArriereRemplie(true);
                 }
                 else{
                     direction="forward";
+                    stateToConsider.setTourAvantRemplie(true);
                 }
 
                 //On définit les Vec2 correspondant aux positions où le robot doit aller pour prendre les cubes
@@ -207,6 +209,12 @@ public class TakeCubes extends AbstractScript {
                     scoreFinalCubes = calculScore(false, cubeBonusPresent, stateToConsider);
                 }
 
+
+                //On reset les réussites de tours avant et arrières
+                for (int i=0; i<4; i++) {
+                    stateToConsider.setReussitesTourArrière(-1,i);
+                    stateToConsider.setReussitesTourAvant(-1,i);
+                }
 
 
                 //On se décale du tas
@@ -269,7 +277,6 @@ public class TakeCubes extends AbstractScript {
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
                 stateToConsider.setReussitesTourArrière(1,idealPositionInTower);
                 log.debug("Un cube a été pris avec le bras avant");
-                stateToConsider.setTourAvantRemplie(true);
                 stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
             }
             else{
@@ -288,7 +295,6 @@ public class TakeCubes extends AbstractScript {
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
                 stateToConsider.setReussitesTourArrière(1,idealPositionInTower);
                 log.debug("Un cube a été pris avec le bras arrière");
-                stateToConsider.setTourArriereRemplie(true);
                 stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
             }
             else{

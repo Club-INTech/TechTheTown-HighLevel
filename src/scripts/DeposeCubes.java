@@ -81,9 +81,7 @@ public class DeposeCubes extends AbstractScript {
                 }
                 stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
                 stateToConsider.robot.moveLengthwise(dimensionporte + distancePenetrationZone);
-                if (stateToConsider.getNbDeposeCubes()==0) {
-                    stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
-                }
+                stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
             }
         }
         else{
@@ -115,13 +113,10 @@ public class DeposeCubes extends AbstractScript {
                 }
                 stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
                 stateToConsider.robot.moveLengthwise(-(dimensionporte + distancePenetrationZone));
-                if (stateToConsider.getNbDeposeCubes()==0) {
-                    stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
-                }
+                stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
             }
         }
         stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
-        stateToConsider.incrementHasAlreadyDeposedCubes();
         //les deux premières sont déposées
         stateToConsider.setTourAvantRemplie(false);
         stateToConsider.setTourArriereRemplie(false);

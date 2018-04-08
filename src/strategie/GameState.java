@@ -92,13 +92,8 @@ public class GameState implements Service
     /** Permet de savoir quel bras on utilise pour TakeCubes */
     private BrasUtilise takeCubesBras;
 
-    /** Permet de savoir combien de fois on a déjà exécuté le script DeposeCubes */
-    private int nbDeposeCubes;
-
     private Config config;
     private Log log;
-
-
 
 
     /**
@@ -138,9 +133,6 @@ public class GameState implements Service
         this.tas_base_ennemi_pris=false;
         this.tas_chateau_ennemi_eau_pris=false;
         this.tas_station_epuration_ennemi_pris=false;
-
-        //Nombre de fois qu'on a appelé le script DeposeCubes jusqu'à la fin (pas incrémenté si exception dans DeposeCubes)
-        this.nbDeposeCubes=0;
 
 
         //La reconnaissance de couleurs est faite ou non
@@ -315,13 +307,6 @@ public class GameState implements Service
     }
     public boolean wasJumperRemoved(){
         return this.jumperRemoved;
-    }
-
-    public int getNbDeposeCubes(){
-        return this.nbDeposeCubes;
-    }
-    public void incrementHasAlreadyDeposedCubes(){
-        this.nbDeposeCubes +=1;
     }
 
 
