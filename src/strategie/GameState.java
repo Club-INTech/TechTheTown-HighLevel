@@ -75,6 +75,12 @@ public class GameState implements Service
     /** Cube bonus arrière présent dans la tour */
     private boolean cubeArrierePresent;
 
+    /** Réussites tour avant */
+    private int[] reussitesTourAvant;
+
+    /** Réussites tour arrière */
+    private int[] reussitesTourArriere;
+
     /** Variables permettant de savoir quels tas de cubes on été pris, permet la gestion des obstacles */
     private boolean tas_base_pris;
     private boolean tas_chateau_eau_pris;
@@ -120,6 +126,9 @@ public class GameState implements Service
         //On dit que les cubes bonus sont présents au début du match
         this.cubeAvantPresent=true;
         this.cubeArrierePresent=true;
+
+        this.reussitesTourAvant=new int[]{-1,-1,-1,-1};
+        this.reussitesTourArriere=new int[]{-1,-1,-1,-1};
 
         this.takeCubesBras= BrasUtilise.AVANT;
 
@@ -216,21 +225,21 @@ public class GameState implements Service
 
 
 
-    public boolean isCubeAvantPresent() {
+    public boolean isCubeBonusAvantPresent() {
         return cubeAvantPresent;
     }
 
-    public void setCubeAvantPresent(boolean cubeAvantPresent) {
+    public void setCubeBonusAvantPresent(boolean cubeAvantPresent) {
         this.cubeAvantPresent = cubeAvantPresent;
     }
 
 
 
-    public boolean isCubeArrierePresent() {
+    public boolean isCubeBonusArrierePresent() {
         return cubeArrierePresent;
     }
 
-    public void setCubeArrierePresent(boolean cubeArrierePresent) {
+    public void setCubeBonusArrierePresent(boolean cubeArrierePresent) {
         this.cubeArrierePresent = cubeArrierePresent;
     }
 
@@ -313,5 +322,24 @@ public class GameState implements Service
     }
     public void incrementHasAlreadyDeposedCubes(){
         this.nbDeposeCubes +=1;
+    }
+
+
+    public int[] getReussitesTourAvant(){
+        return this.reussitesTourAvant;
+    }
+    public void setReussitesTourAvant(int value, int positionIdealeDansLaTour){
+        if (positionIdealeDansLaTour>=0 && positionIdealeDansLaTour<=3){
+            this.reussitesTourAvant[positionIdealeDansLaTour] = value;
+        }
+    }
+
+    public int[] getReussitesTourArriere(){
+        return this.reussitesTourArriere;
+    }
+    public void setReussitesTourArrière(int value, int positionIdealeDansLaTour){
+        if (positionIdealeDansLaTour>=0 && positionIdealeDansLaTour<=3){
+            this.reussitesTourArriere[positionIdealeDansLaTour] = value;
+        }
     }
 }

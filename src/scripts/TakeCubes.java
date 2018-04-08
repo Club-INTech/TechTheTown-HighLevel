@@ -11,24 +11,18 @@ import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 /** Script permettant de récupérer les cubes de n'importe quel tas, selon n'importe quel pattern, dans n'importe quelle direction
  */
 public class TakeCubes extends AbstractScript {
     private int largeurCubes;
     private int longueurBras;
     private Vec2 entryPositionPoint;
-    private int nbCubesAV;
-    private int nbCubesAR;
-    private int scorefinalCubes;
+    private int scoreFinalCubes;
 
     public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
         this.updateConfig();
-        this.nbCubesAV=0;
-        this.nbCubesAR=0;
-        this.scorefinalCubes=0;
+        this.scoreFinalCubes =0;
     }
 
     /** Execution du script de récupération des cubes
@@ -38,7 +32,6 @@ public class TakeCubes extends AbstractScript {
     @Override
     public void execute(int indiceTas, GameState stateToConsider)
             throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
-
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
 
         BrasUtilise bras;
@@ -53,20 +46,18 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.setIndicePattern(config.getInt(ConfigInfoRobot.INDICE_PATTERN_SIMULATION));
         }
 
-
         //On récupère l'indice du pattern
         int indicePattern=stateToConsider.getIndicePattern();
 
         //On récupère le tas correspondant à l'indice
         TasCubes tas = TasCubes.getTasFromID(indiceTas);
-
         bras=stateToConsider.getTakeCubesBras();
 
         //On regarde quel bras on utilise
         if (bras==BrasUtilise.AVANT){
             //On gère le cas où le cube bonus est encore présent
             //stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU,false);
-            if (stateToConsider.isCubeAvantPresent()){
+            if (stateToConsider.isCubeBonusAvantPresent()){
                 additionalCube=Cubes.NULL;
             }
             else{
@@ -76,7 +67,7 @@ public class TakeCubes extends AbstractScript {
         else{
             //stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU,false);
             //On gère le cas où le cube bonus est encore présent
-            if (stateToConsider.isCubeArrierePresent()){
+            if (stateToConsider.isCubeBonusArrierePresent()){
                 additionalCube=Cubes.NULL;
             }
             else{
@@ -123,9 +114,21 @@ public class TakeCubes extends AbstractScript {
                 int[][] successivesPositionsList;
                 //Si additionalCube.getColor()==Colors.NULL, c'est qu'on a choisi de ne prendre que 3 cubes
                 //Sinon, la couleur de additionalCube sera correspondra au cube qui sera pris après le pattern
+                int currentIdealPositionInTower=0;
+                boolean cubeBonusPresent;
                 if (additionalCube.getColor() == Colors.NULL) {
+                    cubeBonusPresent=true;
                     successivesPositionsList = new int[3][2];
+                    //On sait que le premier cube dans la pile est le cube bonus, donc on l'indique dans les réussites de la tour
+                    if (bras==BrasUtilise.AVANT) {
+                        stateToConsider.setReussitesTourAvant(1, currentIdealPositionInTower);
+                    }
+                    else{
+                        stateToConsider.setReussitesTourArrière(1, currentIdealPositionInTower);
+                    }
+                    currentIdealPositionInTower++;
                 } else {
+                    cubeBonusPresent=false;
                     successivesPositionsList = new int[4][2];
                     //On calcule les positions du cube additionnel pour x et y :
                     // position = position du tas + position relative du cube choisi par rapport au tas
@@ -148,25 +151,28 @@ public class TakeCubes extends AbstractScript {
                 else{
                     direction="forward";
                 }
+
                 //On définit les Vec2 correspondant aux positions où le robot doit aller pour prendre les cubes
                 Vec2 firstPosition = new Vec2(successivesPositionsList[0][0], successivesPositionsList[0][1]);
                 //On fait aller le robot à la position pour prendre le premier cube du pattern
                 stateToConsider.robot.moveNearPoint(firstPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
-                takeThisCube(stateToConsider, bras);
+                takeThisCube(stateToConsider, bras, currentIdealPositionInTower);
+                currentIdealPositionInTower++;
 
                 Vec2 secondPosition = new Vec2(successivesPositionsList[1][0], successivesPositionsList[1][1]);
                 //On fait aller le robot à la position pour prendre le deuxième cube du pattern
                 stateToConsider.robot.moveNearPoint(secondPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
-                takeThisCube(stateToConsider, bras);
+                takeThisCube(stateToConsider, bras, currentIdealPositionInTower);
+                currentIdealPositionInTower++;
 
                 Vec2 thirdPosition = new Vec2(successivesPositionsList[2][0], successivesPositionsList[2][1]);
                 //On fait aller le robot à la position pour prendre le troisième cube du pattern
                 stateToConsider.robot.moveNearPoint(thirdPosition, longueurBras, direction);
                 //Le robot execute les actions pour prendre le cube
-                takeThisCube(stateToConsider, bras);
-
+                takeThisCube(stateToConsider, bras, currentIdealPositionInTower);
+                currentIdealPositionInTower++;
 
                 //Si un cube additionnel a été précisé
                 if (additionalCube.getColor()!=Colors.NULL){
@@ -175,28 +181,35 @@ public class TakeCubes extends AbstractScript {
                     //On fait aller le robot à la position pour prendre le cube additionnel.
                     stateToConsider.robot.moveNearPoint(fourthPosition, longueurBras, direction);
                     //Le robot execute les actions pour prendre le cube
-                    takeThisCube(stateToConsider, bras);
-                }
-
-
-                if (bras.equals(BrasUtilise.AVANT)){
-                    if (additionalCube.getColor()==Colors.NULL){
-                        stateToConsider.setCubeAvantPresent(false);
-                    }
-                    stateToConsider.setTourAvantRemplie(true);
-                    scorefinalCubes=scorefinalCubes+calculscore(nbCubesAV,true);
-                    nbCubesAV=0;
-                }
-                else{
-                    if (additionalCube.getColor()==Colors.NULL){
-                        stateToConsider.setCubeArrierePresent(false);
-                    }
-                    stateToConsider.setTourArriereRemplie(true);
-                    scorefinalCubes=scorefinalCubes+calculscore(nbCubesAR,true);
-                    nbCubesAR=0;
+                    takeThisCube(stateToConsider, bras, currentIdealPositionInTower);
                 }
 
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, false);
+
+
+                ///// LE SCRIPT A FINI SES MOUVEMENTS /////
+
+
+                if (bras==BrasUtilise.AVANT){
+                    if (cubeBonusPresent){
+                        //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
+                        stateToConsider.setCubeBonusAvantPresent(false);
+                    }
+                    //On calcule le score
+                    scoreFinalCubes = calculScore(true, cubeBonusPresent, stateToConsider);
+                }
+                else{
+                    if (cubeBonusPresent){
+                        //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
+                        stateToConsider.setCubeBonusArrierePresent(false);
+                    }
+                    //On calcule le score
+                    scoreFinalCubes = calculScore(false, cubeBonusPresent, stateToConsider);
+                }
+
+
+
+                //On se décale du tas
                 Circle aimArcCircle;
                 if (indiceTas==0){
                     aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, 0, Math.PI, true);
@@ -217,6 +230,7 @@ public class TakeCubes extends AbstractScript {
                     aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI / 2, Math.PI / 2, true);
                 }
                 Vec2 aim = smartMath.Geometry.closestPointOnCircle(stateToConsider.robot.getPosition(),aimArcCircle);
+                //On ne sort seulement si la distance nous séparant de la position de sortie est supérieure à 2cm
                 if (stateToConsider.robot.getPosition().distance(aim)>20) {
                     stateToConsider.robot.goTo(aim);
                 }
@@ -241,7 +255,7 @@ public class TakeCubes extends AbstractScript {
     }
 
 
-    private void takeThisCube(GameState stateToConsider, BrasUtilise bras) throws InterruptedException{
+    private void takeThisCube(GameState stateToConsider, BrasUtilise bras, int idealPositionInTower) throws InterruptedException{
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
         if (bras==BrasUtilise.AVANT) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
@@ -253,9 +267,13 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.FERMER_LA_PORTE_AVANT_UNPEU,false);
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
-                nbCubesAV++;
-                log.debug("Nombre de cube avant incrémenté");
+                stateToConsider.setReussitesTourArrière(1,idealPositionInTower);
+                log.debug("Un cube a été pris avec le bras avant");
+                stateToConsider.setTourAvantRemplie(true);
                 stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
+            }
+            else{
+                stateToConsider.setReussitesTourArrière(0,idealPositionInTower);
             }
         }
         else if (bras==BrasUtilise.ARRIERE) {
@@ -268,12 +286,15 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.FERMER_LA_PORTE_ARRIERE_UNPEU,false);
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
-                nbCubesAR++;
-                log.debug("Nombre de cube arrière incrémenté");
+                stateToConsider.setReussitesTourArrière(1,idealPositionInTower);
+                log.debug("Un cube a été pris avec le bras arrière");
+                stateToConsider.setTourArriereRemplie(true);
                 stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
             }
+            else{
+                stateToConsider.setReussitesTourArrière(0,idealPositionInTower);
+            }
         }
-
     }
 
     @Override
@@ -318,7 +339,7 @@ public class TakeCubes extends AbstractScript {
 
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
-        return this.scorefinalCubes;
+        return this.scoreFinalCubes;
     }
 
     @Override
@@ -333,24 +354,44 @@ public class TakeCubes extends AbstractScript {
         this.longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS);
     }
 
-    private int calculscore(int nbCubes, boolean additionnalCubePresent){
-        int score;
-        if(additionnalCubePresent) {
-            score=1;
-            for (int i = 2; i <= nbCubes+1; i++) {
-                score = score + i;
+    private int calculScore(boolean pourTourAvant, boolean cubeBonusPresent, GameState state){
+        //On assume que le pattern a été correctement reconnu par la reconnaissance
+        int score=0;
+        int[] reussitesTour;
+
+        //On récupère les réussites de la tour qui nous intéresse
+        if (pourTourAvant){
+            reussitesTour=state.getReussitesTourAvant();
+        }
+        else{
+            reussitesTour=state.getReussitesTourArriere();
+        }
+
+        //Calcul des points du pattern
+        if (cubeBonusPresent) {
+            //Cas où le cube bones est présent
+            //On a besoin que du premier, troisieme et quatrieme cube pour réaliser le pattern
+            //La réalisation du pattern ne dépend pas de la présence du premier cube
+            if (reussitesTour[0] == 1 && reussitesTour[2] == 1 && reussitesTour[3] == 1) {
+                score += 30;
             }
         }
         else{
-            score=0;
-            for (int i = 1; i <= nbCubes; i++) {
-                score = score + i;
+            //Cas où le cube bonus n'est pas présent
+            //Il faut absolument que les trois premiers cubes qu'on a essayé de prendre soient présents dans la tour
+            if (reussitesTour[0] == 1 && reussitesTour[1] == 1 && reussitesTour[2] == 1) {
+                score += 30;
             }
         }
+
+        //Calcul des points de la construction de la tour
+        int sum=reussitesTour[0]+reussitesTour[1]+reussitesTour[2]+reussitesTour[3];
+        score+=sum*(sum+1)/2;
+
         return score;
     }
 
-    public int getScorefinalCubes() {
-        return scorefinalCubes;
+    public int getScoreFinalCubes() {
+        return scoreFinalCubes;
     }
 }
