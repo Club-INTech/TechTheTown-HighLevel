@@ -16,7 +16,7 @@ public class TakeCubes extends Node {
     public TakeCubes(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) throws BadVersionException {
         super(versionToExecute, nextNodes, scriptManager, gameState);
         this.setScript(scriptManager.getScript(ScriptNames.TAKE_CUBES));
-        this.setScore(20);
+        this.setScore(40);
         this.setPosition(updatePosition());
     }
 

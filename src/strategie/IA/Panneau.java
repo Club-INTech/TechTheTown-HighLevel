@@ -12,7 +12,7 @@ public class Panneau extends Node {
     public Panneau(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) throws BadVersionException {
         super(versionToExecute, nextNodes, scriptManager, gameState);
         this.setScript(scriptManager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE));
-        this.setScore(42);
+        this.setScore(25);
         this.setPosition(updatePosition());
     }
 

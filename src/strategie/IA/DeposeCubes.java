@@ -13,7 +13,7 @@ public class DeposeCubes extends Node {
     public DeposeCubes(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) throws BadVersionException {
         super(versionToExecute, nextNodes, scriptManager, gameState);
         this.setScript(scriptManager.getScript(ScriptNames.DEPOSE_CUBES));
-        this.setScore(13);
+        this.setScore(0);
         this.setPosition(updatePosition());
     }
 

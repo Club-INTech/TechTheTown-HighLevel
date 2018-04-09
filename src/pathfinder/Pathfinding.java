@@ -224,7 +224,7 @@ public class Pathfinding implements Service {
 
         ArrayList<Vec2> path = findmyway(positionDepart,positionArrive);
         double time = 0;
-        for(int i = 0; i < path.size(); i++){
+        for(int i = 0; i < path.size() - 1; i++){
             time += robot_angular_speed*path.get(i).minusNewVector(path.get(i+1)).angle();
             time += robot_linear_speed*path.get(i).minusNewVector(path.get(i+1)).length();
         }
