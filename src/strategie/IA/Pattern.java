@@ -19,7 +19,7 @@ public class Pattern extends Node{
     }
 
     @Override
-    public void execute(Exception e) {
+    public void execute(Exception e, GameState gameState) {
         System.out.println("Patern Recognition");
         setDone(true);
     }

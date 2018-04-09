@@ -113,7 +113,7 @@ public class IA implements Service {
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
         hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE, HookNames.ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE);
         for(Node node : nodesToExecute){
-            node.execute(e);
+            node.execute(e,gameState);
         }
     }
 

@@ -24,6 +24,29 @@ public class TakeCubes extends Node {
     }
 
     @Override
+    public void execute(Exception e, GameState gameState) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
+        if (e != null) {
+            exception(e);
+        } else {
+            if (gameState.isTourArriereRemplie() && !gameState.isTourArriereRemplie()){
+                gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
+            }
+            else if(!gameState.isTourArriereRemplie() && gameState.isTourArriereRemplie()){
+                gameState.setTakeCubesBras(BrasUtilise.AVANT);
+            } else {
+                int scalar = gameState.robot.getPosition().minusNewVector(getScript().entryPosition(getVersionToExecute(),gameState.robot.getPosition()).getCenter()).dot(new Vec2(0,42));
+                if(scalar > 0){
+                    gameState.setTakeCubesBras(BrasUtilise.AVANT);
+                } else {
+                    gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
+                }
+            }
+        }
+        getScript().goToThenExec(getVersionToExecute(), gameState);
+        setDone(true);
+    }
+
+    @Override
     public void exception(Exception e) {
 
     }
