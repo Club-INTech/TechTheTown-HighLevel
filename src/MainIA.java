@@ -41,7 +41,7 @@ import threads.dataHandlers.ThreadEth;
  *
  * @author 4223, gaelle, rem
  */
-public class Main {
+public class MainIA {
     static Container container;
     static Config config;
     static GameState realState;
