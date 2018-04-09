@@ -8,6 +8,8 @@ import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
+import hook.HookFactory;
+import hook.HookNames;
 import pathfinder.Pathfinding;
 import scripts.*;
 import strategie.GameState;
@@ -22,13 +24,15 @@ public class IA implements Service {
     private Pathfinding pathfinding;
     private int nb_tas_pris;
     private ArrayList<Node> nodesToExecute;
+    private HookFactory hookFactory;
 
     /** Permet de s'adapter au déroulement d'un match grace à un graphe de décision. */
 
-    public IA(GameState gameState, ScriptManager scriptManager, Pathfinding pathfinding) throws BadVersionException, UnableToMoveException, PointInObstacleException, NoPathFound {
+    public IA(GameState gameState, ScriptManager scriptManager, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException, UnableToMoveException, PointInObstacleException, NoPathFound {
         this.gameState = gameState;
         this.scriptManager = scriptManager;
         this.pathfinding = pathfinding;
+        this.hookFactory = hookFactory;
         this.graph = new Graph(createNodes());
         this.nb_tas_pris = 0;
         this.nodesToExecute = kruskal();
@@ -44,6 +48,7 @@ public class IA implements Service {
         Node takeCubes2 = new TakeCubes(1, null, scriptManager, gameState);
         Node takeCubes3 = new TakeCubes(2, null, scriptManager, gameState);
         Node deposeCubes = new DeposeCubes(0, null, scriptManager, gameState);
+        Node deposeCubes2 = new DeposeCubes(0, null, scriptManager, gameState);
 
         ArrayList<Node> nodes = new ArrayList<>();
         nodes.add(pattern);
@@ -51,6 +56,7 @@ public class IA implements Service {
         nodes.add(panneau);
         nodes.add(takeCubes);
         nodes.add(deposeCubes);
+        nodes.add(deposeCubes2);
         nodes.add(takeCubes2);
         nodes.add(takeCubes3);
 
@@ -65,7 +71,7 @@ public class IA implements Service {
         UnionFind u1 = new UnionFind(graph.getNodes().size());
         Edge curentEdge;
         while (graph.getEdges().peek() != null){
-//            graph.updateEdgesCost();
+            graph.updateEdgesCost(nb_tas_pris);
             curentEdge = graph.getEdges().poll();
             if(u1.find(curentEdge.getNode1().getId()) != u1.find(curentEdge.getNode2().getId())){
                 bestEdges.add(curentEdge);
@@ -105,8 +111,9 @@ public class IA implements Service {
     }
 
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
+        hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE, HookNames.ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE);
         for(Node node : nodesToExecute){
-            node.execute(e);
+            node.execute(e,gameState);
         }
     }
 

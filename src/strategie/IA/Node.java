@@ -62,7 +62,7 @@ public abstract class Node {
 
     /** Permet d'executer le script d'un noeud et de gérer les exeptions si il y en a. */
 
-    public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
+    public void execute(Exception e, GameState gameState) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
         if (e != null) {
             exception(e);
         } else {
