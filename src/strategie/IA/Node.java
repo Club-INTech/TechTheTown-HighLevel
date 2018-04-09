@@ -7,6 +7,12 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
+import exceptions.NoPathFound;
+import hook.HookFactory;
+import hook.HookNames;
+import pathfinder.Pathfinding;
+import pfg.config.Config;
 import scripts.AbstractScript;
 import scripts.ScriptManager;
 import smartMath.Vec2;
@@ -17,18 +23,22 @@ import java.util.ArrayList;
 
 public abstract class Node {
 
-    private ScriptManager scriptManager;
-    private AbstractScript script;
-    private int versionToExecute;
-    private int id;  //utiliser pour la réalisation des classes d'équivalence.
-    private int score;
-    private int timeLimit;
-    private int timeToGo;
-    private int timeToExecute;
-    private boolean isDone;
-    private ArrayList<Node> nextNodes;
-    private GameState gameState;
-    private Vec2 position;
+    protected ScriptManager scriptManager;
+    protected AbstractScript script;
+    protected int versionToExecute;
+    protected int id;  //utiliser pour la réalisation des classes d'équivalence.
+    protected int score;
+    protected int timeLimit;
+    protected int timeToGo;
+    protected int timeToExecute;
+    protected boolean isDone;
+    protected ArrayList<Node> nextNodes;
+    protected GameState gameState;
+    protected Vec2 position;
+    protected Pathfinding pathfinding;
+    protected Config config;
+    protected HookFactory hookFactory;
+
 
     /** Noeud d'action, principale composant du graphe de décision. Il permet de lancer les scripts et de gérer les
      * exeptions. Il possède plusieurs paramètre utilisé pour calculer le coup d'une arrete en points/s.
@@ -39,7 +49,7 @@ public abstract class Node {
      * @param gameState
      */
 
-    public Node(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState) {
+    public Node(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) {
         this.versionToExecute = versionToExecute;
         this.id = 0;
         this.timeLimit = 0;
@@ -50,6 +60,8 @@ public abstract class Node {
         this.scriptManager = scriptManager;
         this.gameState = gameState;
         this.position = Table.entryPosition;
+        this.pathfinding=pathfinding;
+        this.hookFactory=hookFactory;
     }
 
     /** Permet d'executer le script d'un noeud et de gérer les exeptions si il y en a. */
@@ -91,7 +103,45 @@ public abstract class Node {
     }
     /** Gère les exceptions soulevées */
 
-    public abstract void exception(Exception e);
+    public void exception(Exception e){
+        if(e instanceof ImmobileEnnemyForOneSecondAtLeast ){
+            Vec2 positionRobot=gameState.robot.getPosition();
+            Vec2 aim=((ImmobileEnnemyForOneSecondAtLeast) e).getAim();
+            ArrayList<Vec2> pathTofollow= null;
+            try {
+                pathTofollow = pathfinding.findmyway(positionRobot,aim);
+            } catch (PointInObstacleException e1) {
+                e1.printStackTrace();
+            } catch (UnableToMoveException e1) {
+                unableToMoveExceptionHandled(e1);
+            }
+            catch (NoPathFound noPathFound) {
+                noPathFound.printStackTrace();
+            }
+            try {
+                gameState.robot.followPath(pathTofollow);
+            } catch (UnableToMoveException e1) {
+                unableToMoveExceptionHandled(e1);
+            } catch (ImmobileEnnemyForOneSecondAtLeast e1) {
+                exception(e1);
+            }
+        }
+        else if(e instanceof UnexpectedObstacleOnPathException){
+            //On passe à la detection non basique
+            config.override(ConfigInfoRobot.BASIC_DETECTION,false);
+            try {
+                gameState.robot.turn(Math.PI/12);
+            } catch (UnableToMoveException e1) {
+                unableToMoveExceptionHandled(e1);
+            } catch (ImmobileEnnemyForOneSecondAtLeast e1) {
+                exception(e1);
+            }
+
+        }
+
+    }
+
+    public abstract void unableToMoveExceptionHandled(UnableToMoveException e);
 
     @Override
     public abstract String toString() ;

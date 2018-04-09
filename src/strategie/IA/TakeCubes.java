@@ -8,6 +8,8 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import hook.HookFactory;
+import pathfinder.Pathfinding;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -16,8 +18,8 @@ import java.util.ArrayList;
 
 public class TakeCubes extends Node {
 
-    public TakeCubes(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState) throws BadVersionException {
-        super(versionToExecute, nextNodes, scriptManager, gameState);
+    public TakeCubes(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException {
+        super(versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory);
         this.setScript(scriptManager.getScript(ScriptNames.TAKE_CUBES));
         this.setScore(40);
         this.setPosition(updatePosition());
@@ -46,7 +48,7 @@ public class TakeCubes extends Node {
         setDone(true);
     }
 
-    @Override
+
     public void exception(Exception e) {
 
     }
@@ -54,5 +56,10 @@ public class TakeCubes extends Node {
     @Override
     public String toString() {
         return "TakeCubes";
+    }
+
+    @Override
+    public void unableToMoveExceptionHandled(UnableToMoveException e) {
+
     }
 }

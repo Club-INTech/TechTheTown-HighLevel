@@ -41,14 +41,14 @@ public class IA implements Service {
     /** Créer les noeuds du graphe de décision. */
 
     public ArrayList<Node> createNodes() throws BadVersionException {
-        Node pattern = new Pattern(0, null, scriptManager, gameState);
-        Node abeille = new Abeille(1, null, scriptManager, gameState);
-        Node panneau = new Panneau(0, null, scriptManager, gameState);
-        Node takeCubes = new TakeCubes(0, null, scriptManager, gameState);
-        Node takeCubes2 = new TakeCubes(1, null, scriptManager, gameState);
-        Node takeCubes3 = new TakeCubes(2, null, scriptManager, gameState);
-        Node deposeCubes = new DeposeCubes(0, null, scriptManager, gameState);
-        Node deposeCubes2 = new DeposeCubes(0, null, scriptManager, gameState);
+        Node pattern = new Pattern(0, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node abeille = new Abeille(1, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node panneau = new Panneau(0, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node takeCubes = new TakeCubes(0, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node takeCubes2 = new TakeCubes(1, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node takeCubes3 = new TakeCubes(2, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node deposeCubes = new DeposeCubes(0, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node deposeCubes2 = new DeposeCubes(0, null, scriptManager, gameState,pathfinding,hookFactory);
 
         ArrayList<Node> nodes = new ArrayList<>();
         nodes.add(pattern);
