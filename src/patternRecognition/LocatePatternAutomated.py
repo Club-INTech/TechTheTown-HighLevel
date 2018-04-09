@@ -79,7 +79,7 @@ def find_squares(img,threshold1, threshold2, blurSize):
         return [minX, maxX, minY, maxY]
 
 if __name__ == '__main__':
-    fn='/tmp/ImageRaspi.jpeg'
+    fn='/tmp/ImageRaspi.png'
     img = cv.imread(fn)
     XSTART=0
     YSTART=100
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     #Array de la forme : (x, y, width, height)
     if square != [-1,-1,10000,10000]:
         print(str(XSTART+square[0])+" "+str(YSTART+square[1])+" "+str(XSTART+square[2]+WIDTH)+" "+str(YSTART+square[3]+HEIGHT))
-        cv.drawContours( img, numpySquares, -1, (255, 0, 0), 2)
+        cv.drawContours(img, numpySquares, -1, (255, 0, 0), 2)
         file=open("/tmp/LocalizationInfo.txt","w")
         file.write(str(XSTART+square[0])+" "+str(YSTART+square[1])+" "+str(XSTART+square[2]+WIDTH)+" "+str(YSTART+square[3]+HEIGHT))
         file.close()

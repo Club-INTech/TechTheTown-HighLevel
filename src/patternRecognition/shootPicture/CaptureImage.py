@@ -16,8 +16,8 @@ cap.set(3,WIDTH)
 cap.set(4,HEIGHT)
 
 #Si la résolution de la caméra est trop faible, WIDTH et HEIGHT sont remis aux valeurs de la caméra
-WIDTH=round(cap.get(3))
-HEIGHT=round(cap.get(4))
+WIDTH=int(cap.get(3))
+HEIGHT=int(cap.get(4))
 #############################################
 
 locked=True

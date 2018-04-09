@@ -137,17 +137,9 @@ public class ThreadTimer extends AbstractThread
 		// attends que le jumper soit retiré du robot
 
 		if (this.usingJumper) {
-			while (ethWrapper.isJumperAbsent()) {
+			while (!robot.getmLocomotion().getThEvent().wasJumperRemoved()) {
 				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-
-			while (!ethWrapper.isJumperAbsent()) {
-				try {
-					Thread.sleep(100);
+					Thread.sleep(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -226,7 +218,7 @@ public class ThreadTimer extends AbstractThread
 		matchEnded = true;
 		ethWrapper.immobilise();
 
-		// fin du match : on eteint la STM
+		// fin du match : on eteint la STM (RIP STM ?-2017 /// HAIL teensy 2018-?)
 		ethWrapper.disableRotationnalFeedbackLoop();
 		ethWrapper.disableTranslationnalFeedbackLoop();
 		ethWrapper.disableSpeedFeedbackLoop();

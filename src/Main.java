@@ -47,6 +47,7 @@ public class Main {
     static ScriptManager scriptmanager;
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
+    static PatternRecognition patternRecognition;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
@@ -70,26 +71,29 @@ public class Main {
             container.getService(ThreadEth.class);
             //container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
-            PatternRecognition patternRecognition=container.getService(PatternRecognition.class);
+            patternRecognition=container.getService(PatternRecognition.class);
             container.startInstanciedThreads();
             // TODO : initialisation des variables globales du robot & objets...
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
 
-            while(patternRecognition.isMovementLocked()) {
-                Thread.sleep(10);
-            }
 
         } catch (ContainerException p) {
             System.out.println("bug container");
+            p.printStackTrace();
         }
         try {
 
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
             System.out.println("Le robot commence le match");
             waitMatchBegin();
-//			         TODO : lancer l'IA
+
+            while(patternRecognition.isMovementLocked()) {
+                Thread.sleep(10);
+            }
+
+            //TODO : lancer l'IA
 
             scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
 
@@ -109,32 +113,33 @@ public class Main {
     static void waitMatchBegin() {
 
         boolean useJumper=config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
-
         if (useJumper) {
+            mEthWrapper.waitForJumperRemoval();
             System.out.println("Robot pret pour le match, attente du retrait du jumper");
-
-            // attend l'insertion du jumper
-            while (mEthWrapper.isJumperAbsent()) {
+            while (!mLocomotion.getThEvent().wasJumperRemoved()) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+            realState.setJumperRemoved(true);
+            // maintenant que le jumper est retiré, le match a commencé
+            ThreadTimer.matchStarted = true;
 
-            // puis attend son retrait
-            while (!mEthWrapper.isJumperAbsent()) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            //On attend encore 50ms pour que le jumper soit bien retiré
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
         else{
+            mLocomotion.getThEvent().setJumperRemoved(true);
+            realState.setJumperRemoved(true);
+            // maintenant que le jumper est retiré, le match a commencé
+            ThreadTimer.matchStarted = true;
             System.out.println("Robot pret pour le match, pas d'attente du retrait de jumper");
         }
-        // maintenant que le jumper est retiré, le match a commencé
-        ThreadTimer.matchStarted = true;
     }
 }

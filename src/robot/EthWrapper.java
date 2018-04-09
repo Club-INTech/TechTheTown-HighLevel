@@ -370,22 +370,12 @@ public class EthWrapper implements Service {
         return eth.getPositionAndOrientation();
     }
 
+
     /**
-     * Demande a la carte capteurs de nous indiquer si le jumper de début de match est présent ou non
-     * @return vrai si le jumper est absent, faux sinon
+     * On demande au bas niveau de nous envoyer un event quand le jumper a été enlevé
      */
-    public boolean isJumperAbsent()
-    {
-        try {
-            // demande a la carte si le jumper est présent, parse sa réponse, et si on lit 1 c'est que le jumper n'est pas/plus la
-            return Integer.parseInt(eth.communicate(1, ActuatorOrder.JUMPER_STATE.getEthernetOrder())[0]) != 0;
-        }
-        catch (NumberFormatException e)
-        {
-            log.critical("réponse corrompue du jumper !");
-            e.printStackTrace();
-            return false;
-        }
+    public void waitForJumperRemoval(){
+        eth.communicate(0, ActuatorOrder.JUMPER_STATE.getEthernetOrder());
     }
 
     /**

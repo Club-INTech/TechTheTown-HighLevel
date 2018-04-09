@@ -86,8 +86,8 @@ public enum ActuatorOrder implements MotionOrder
 	RELEVE_LE_BRAS_ARRIERE("rlbAr",900),
 	FERME_LA_PORTE_ARRIERE("flpAr",600),
 	OUVRE_LA_PORTE_ARRIERE("olpAr",600),
-	OUVRE_LA_PORTE_ARRIERE_UNPEU("olpArp",300),
-	FERMER_LA_PORTE_ARRIERE_UNPEU("flpAr",100),
+	OUVRE_LA_PORTE_ARRIERE_UNPEU("olpArp",150),
+	FERMER_LA_PORTE_ARRIERE_UNPEU("flpAr",150),
 	ACTIVE_ELECTROVANNE_ARRIERE("aeAr",200),
 	DESACTIVE_ELECTROVANNE_ARRIERE("deAr",100),
 
@@ -179,7 +179,7 @@ public enum ActuatorOrder implements MotionOrder
     ActuatorOrder(String serialString)
 	{
 		this.serialOrder = serialString;
-		this.duration = 700;	// valeur par défaut de la durée de mouvement d'un actionneur
+		this.duration = 20;	// valeur par défaut de la durée de mouvement d'un actionneur
 	}
 
 	/**

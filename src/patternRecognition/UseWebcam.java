@@ -45,7 +45,6 @@ public class UseWebcam {
     public static void setPatternPositionWithVideo() {
         List<String> command = new ArrayList<>();
 
-
         command.add(pythonCommand);
         command.add("./src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py");
 

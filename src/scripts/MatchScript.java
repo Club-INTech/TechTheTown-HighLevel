@@ -25,7 +25,7 @@ public class MatchScript extends AbstractScript {
     public void execute(int versionToexecute,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution MatchScript version "+versionToexecute+" //////////");
         if(versionToexecute==0){
-            hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
+            hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE, HookNames.ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE);
 
             //On active le panneau domotique
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
@@ -47,6 +47,9 @@ public class MatchScript extends AbstractScript {
             gameState.setTakeCubesBras(BrasUtilise.AVANT);
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);
             tk1.goToThenExec(1,gameState);
+
+            //On évite que les cubes soient poussés vers la zone de construction
+            gameState.robot.goTo(new Vec2(970,1400));
 
             //On dépose les cubes à la première position
             DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
@@ -76,6 +79,9 @@ public class MatchScript extends AbstractScript {
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);
             tk1.goToThenExec(1,gameState);
             //Pile cube n°1
+
+            //On évite que les cubes soient poussés vers l'abeille
+            gameState.robot.goTo(new Vec2(970,1100));
 
             //On active l'abeille
             ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);

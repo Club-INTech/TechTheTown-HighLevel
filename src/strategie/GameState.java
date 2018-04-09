@@ -51,7 +51,10 @@ public class GameState implements Service
     /** Temps écoulé depuis le début du match en ms */
     private long timeEllapsed;
 
-    /** points marqués depuis le debut du match */
+    /** Je jumper a-t-il été enlevé ?*/
+    private boolean jumperRemoved;
+
+    /** Points marqués depuis le debut du match */
     private int obtainedPoints;
 
     /** Indice du pattern trouvé */
@@ -72,13 +75,19 @@ public class GameState implements Service
     /** Cube bonus arrière présent dans la tour */
     private boolean cubeArrierePresent;
 
+    /** Réussites tour avant */
+    private int[] reussitesTourAvant;
+
+    /** Réussites tour arrière */
+    private int[] reussitesTourArriere;
+
+    /** Variables permettant de savoir quels tas de cubes on été pris, permet la gestion des obstacles */
     private boolean tas_base_pris;
     private boolean tas_chateau_eau_pris;
     private boolean tas_station_epuration_pris;
     private boolean tas_base_ennemi_pris;
     private boolean tas_chateau_ennemi_eau_pris;
     private boolean tas_station_epuration_ennemi_pris;
-    private BrasUtilise takeCubesBras;
 
     /** Panneau domotique activé */
     private boolean panneauActive;
@@ -86,12 +95,11 @@ public class GameState implements Service
     /** Abeille lancée */
     private boolean abeilleLancee;
 
-
+    /** Permet de savoir quel bras on utilise pour TakeCubes */
+    private BrasUtilise takeCubesBras;
 
     private Config config;
     private Log log;
-
-
 
 
     /**
@@ -119,6 +127,9 @@ public class GameState implements Service
         //On dit que les cubes bonus sont présents au début du match
         this.cubeAvantPresent=true;
         this.cubeArrierePresent=true;
+
+        this.reussitesTourAvant=new int[]{-1,-1,-1,-1};
+        this.reussitesTourArriere=new int[]{-1,-1,-1,-1};
 
         this.takeCubesBras= BrasUtilise.AVANT;
 
@@ -163,8 +174,6 @@ public class GameState implements Service
     public void setTimeEllapsed(long timeEllapsed) {
         this.timeEllapsed = timeEllapsed;
     }
-
-
 
     public int getObtainedPoints() {
         return this.obtainedPoints;
@@ -216,21 +225,21 @@ public class GameState implements Service
 
 
 
-    public boolean isCubeAvantPresent() {
+    public boolean isCubeBonusAvantPresent() {
         return cubeAvantPresent;
     }
 
-    public void setCubeAvantPresent(boolean cubeAvantPresent) {
+    public void setCubeBonusAvantPresent(boolean cubeAvantPresent) {
         this.cubeAvantPresent = cubeAvantPresent;
     }
 
 
 
-    public boolean isCubeArrierePresent() {
+    public boolean isCubeBonusArrierePresent() {
         return cubeArrierePresent;
     }
 
-    public void setCubeArrierePresent(boolean cubeArrierePresent) {
+    public void setCubeBonusArrierePresent(boolean cubeArrierePresent) {
         this.cubeArrierePresent = cubeArrierePresent;
     }
 
@@ -311,5 +320,30 @@ public class GameState implements Service
 
     public void setAbeilleLancee(boolean abeilleLancee) {
         this.abeilleLancee = abeilleLancee;
+    }
+    public void setJumperRemoved(boolean value){
+        this.jumperRemoved=value;
+    }
+    public boolean wasJumperRemoved(){
+        return this.jumperRemoved;
+    }
+
+
+    public int[] getReussitesTourAvant(){
+        return this.reussitesTourAvant;
+    }
+    public void setReussitesTourAvant(int value, int positionIdealeDansLaTour){
+        if (positionIdealeDansLaTour>=0 && positionIdealeDansLaTour<=3){
+            this.reussitesTourAvant[positionIdealeDansLaTour] = value;
+        }
+    }
+
+    public int[] getReussitesTourArriere(){
+        return this.reussitesTourArriere;
+    }
+    public void setReussitesTourArrière(int value, int positionIdealeDansLaTour){
+        if (positionIdealeDansLaTour>=0 && positionIdealeDansLaTour<=3){
+            this.reussitesTourArriere[positionIdealeDansLaTour] = value;
+        }
     }
 }

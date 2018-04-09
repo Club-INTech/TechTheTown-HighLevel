@@ -78,6 +78,8 @@ public class SymmetrizedActuatorOrderMap
         mCorrespondenceMap.put(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE);
         mCorrespondenceMap.put(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE,ActuatorOrder.OUVRE_LA_PORTE_ARRIERE);
         mCorrespondenceMap.put(ActuatorOrder.FERME_LA_PORTE_ARRIERE,ActuatorOrder.FERME_LA_PORTE_ARRIERE);
+        mCorrespondenceMap.put(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT);
+        mCorrespondenceMap.put(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE,ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE);
 
         mCorrespondenceMap.put(ActuatorOrder.NO_ASSERV_TRANSLATION,ActuatorOrder.NO_ASSERV_TRANSLATION);
         mCorrespondenceMap.put(ActuatorOrder.NO_ASSERV_ROTATION,ActuatorOrder.NO_ASSERV_ROTATION);

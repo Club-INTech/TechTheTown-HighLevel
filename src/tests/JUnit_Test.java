@@ -54,6 +54,16 @@ public abstract class JUnit_Test
 	/** The log. */
 	protected Log log;
 
+	/** The EthWrapper */
+	protected EthWrapper mEthWrapper;
+
+	/** The GameState */
+	protected GameState gameState;
+
+	/** On regarde si on utilise ou non le jumper */
+	private boolean usingJumper;
+
+
 	/**
 	 * Sets the up.
 	 *
@@ -65,6 +75,9 @@ public abstract class JUnit_Test
 		container = new Container();
 		config = container.getConfig();
 		log = container.getService(Log.class);
+		mEthWrapper = container.getService(EthWrapper.class);
+		gameState=container.getService(GameState.class);
+		this.usingJumper=config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
 	}
 
 	/**
@@ -79,25 +92,30 @@ public abstract class JUnit_Test
 
 		// attends que le jumper soit retiré du robot
 
-		while(sensorsCard.isJumperAbsent())
-		{
+		if (this.usingJumper) {
+			mEthWrapper.waitForJumperRemoval();
+			System.out.println("Robot pret pour le match, attente du retrait du jumper");
+			while (!gameState.wasJumperRemoved()) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			//On attend encore 50ms pour que le jumper soit bien retiré
+			gameState.setJumperRemoved(true);
 			try {
-				Thread.sleep(100);
+				Thread.sleep(50);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
-		while(!sensorsCard.isJumperAbsent())
-		{
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 
-		// maintenant que le jumper est retiré, le match a commencé
-		log.critical("Jumper Retiré ! ");
+			// maintenant que le jumper est retiré, le match a commencé
+			log.critical("Jumper Retiré ! ");
+		}
+		else{
+			log.critical("Pas de jumper utilisé, on démarre !");
+		}
 		ThreadTimer.matchStarted = true;
 	}
 

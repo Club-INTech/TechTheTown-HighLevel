@@ -19,8 +19,8 @@ INDICE_PATTERN_SIMULATION            = 0
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
-SIMULATION                           = true
-ATTENTE_JUMPER                       = false
+SIMULATION                           = false
+ATTENTE_JUMPER                       = true
 
 # VERSION DE MATCHSCRIPT TO EXECUTE
 MATCHSCRIPT_TO_EXECUTE               = 0
@@ -49,7 +49,7 @@ MATCHSCRIPT_TO_EXECUTE               = 0
 # temps_untested_obstacle            = 250
 # 200 homologation ; 150 match
 
-basic_detection                      = true
+basic_detection                      = false
 SENSOR_ANGLE_WIDENESS                = 1.04
 
 
@@ -128,7 +128,7 @@ brightnessModifierLightingUp=1.5
 ###################### PARAMETRES SCRIPT #######################
 
 #ActivationPanneauDomitique
-DISTANCE_INTERRUPTEUR=55
+DISTANCE_INTERRUPTEUR=58
 
 #ActiveAbeille
 DISTANCE_ABEILLE=70

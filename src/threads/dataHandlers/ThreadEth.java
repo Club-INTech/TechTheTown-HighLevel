@@ -120,11 +120,6 @@ public class ThreadEth extends AbstractThread implements Service {
     private boolean symmetry=config.getBoolean(ConfigInfoRobot.COULEUR);
 
     /**
-     * Horloge pour le temps de réponse du bas-niveau
-     */
-    private static long timestamp=0;
-
-    /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
      *
      * @param log
@@ -298,7 +293,6 @@ public class ThreadEth extends AbstractThread implements Service {
             timeRef = System.currentTimeMillis();
             comFlag = true;
             mess += "\r\n";
-            timestamp=System.currentTimeMillis();
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
             output.write(mess, 0, mess.length());
             output.flush();
@@ -399,7 +393,7 @@ public class ThreadEth extends AbstractThread implements Service {
             try {
                 buffer = input.readLine();
 
-                fullDebug.write(buffer.substring(2));
+                fullDebug.write(buffer);
                 fullDebug.newLine();
                 fullDebug.flush();
                 if (buffer.length() >= 2 && !(buffer.replaceAll(" ", "").equals(""))) {

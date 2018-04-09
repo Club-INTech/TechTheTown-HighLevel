@@ -37,6 +37,7 @@ import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
 
 import java.nio.file.FileSystemLoopException;
+import java.time.LocalDateTime;
 
 /**
  * Code qui démarre le robot en début de match
@@ -48,6 +49,8 @@ public class MainPattern {
     static Config config;
     static EthWrapper mEthWrapper;
     static PatternRecognition patternRecognition;
+    static GameState gameState;
+    static Locomotion mLocomotion;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
@@ -59,6 +62,8 @@ public class MainPattern {
             Thread.currentThread().setPriority(6);
             config = container.getConfig();
             mEthWrapper = container.getService(EthWrapper.class);
+            gameState=container.getService(GameState.class);
+            mLocomotion=container.getService(Locomotion.class);
             container.getService(ThreadEth.class);
             patternRecognition = container.getService(PatternRecognition.class);
             patternRecognition.setDebugPatternRecognition(true);
@@ -96,30 +101,32 @@ public class MainPattern {
         boolean useJumper=config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
 
         if (useJumper) {
+            mEthWrapper.waitForJumperRemoval();
             System.out.println("Robot pret pour le match, attente du retrait du jumper");
-
-            // attend l'insertion du jumper
-            while (mEthWrapper.isJumperAbsent()) {
+            while (!mLocomotion.getThEvent().wasJumperRemoved()) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+            gameState.setJumperRemoved(true);
+            //Maintenant que le jumper est retiré, le match a commencé
+            ThreadTimer.matchStarted = true;
 
-            // puis attend son retrait
-            while (!mEthWrapper.isJumperAbsent()) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            //On attend encore 50ms pour que le jumper soit bien retiré
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
         else{
+            mLocomotion.getThEvent().setJumperRemoved(true);
+            gameState.setJumperRemoved(true);
+            // maintenant que le jumper est retiré, le match a commencé
+            ThreadTimer.matchStarted = true;
             System.out.println("Robot pret pour le match, pas d'attente du retrait de jumper");
         }
-        // maintenant que le jumper est retiré, le match a commencé
-        ThreadTimer.matchStarted = true;
     }
 }
