@@ -1,12 +1,15 @@
 package strategie.IA;
 
+import enums.BrasUtilise;
 import enums.ScriptNames;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import scripts.ScriptManager;
+import smartMath.Vec2;
 import strategie.GameState;
 
 import java.util.ArrayList;
