@@ -21,10 +21,10 @@ public class Graph {
         this.edges = new PriorityQueue<>(new Comparator<Edge>() {
             @Override
             public int compare(Edge edge, Edge t1) {
-                if (edge.getCost()<t1.getCost()){
+                if (edge.getCost()>t1.getCost()){
                     return 1;
                 }
-                else if (edge.getCost()>t1.getCost()){
+                else if (edge.getCost()<t1.getCost()){
                     return -1;
                 } else {
                     return 0;

@@ -71,7 +71,7 @@ public class IA implements Service {
         UnionFind u1 = new UnionFind(graph.getNodes().size());
         Edge curentEdge;
         while (graph.getEdges().peek() != null){
-//            graph.updateEdgesCost();
+            graph.updateEdgesCost(nb_tas_pris);
             curentEdge = graph.getEdges().poll();
             if(u1.find(curentEdge.getNode1().getId()) != u1.find(curentEdge.getNode2().getId())){
                 bestEdges.add(curentEdge);
