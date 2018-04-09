@@ -106,6 +106,7 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.robot.turn(Math.PI/4);
                 actualState.robot.moveLengthwise(distanceAbeille);
                 //Le hook est normalement activé par l'IA
+                actualState.robot.turn(Math.PI/2);
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                 actualState.robot.goTo(new Vec2(xExit,yExit));
             }
@@ -113,6 +114,7 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.robot.turn(5*Math.PI/4);
                 actualState.robot.moveLengthwise(-distanceAbeille);
                 //Le hook est normalement activé par l'IA
+                actualState.robot.turn(-Math.PI/2);
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
                 actualState.robot.goTo(new Vec2(xExit,yExit));
             }
