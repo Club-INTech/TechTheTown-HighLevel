@@ -70,30 +70,32 @@ public enum ActuatorOrder implements MotionOrder
 	ENABLE_HOOK("eh"),
 	DISABLE_HOOK("dh"),
 
-	ACTIVE_LA_POMPE("alp",400),
-	DESACTIVE_LA_POMPE("dlp",400),
+	ACTIVE_LA_POMPE("alp",100),
+	DESACTIVE_LA_POMPE("dlp",100),
 
-	BAISSE_LE_BRAS_AVANT("blbAv",1750),
-	RELEVE_LE_BRAS_AVANT("rlbAv",1750),
-	OUVRE_LA_PORTE_AVANT("olpAv",750),
-	FERME_LA_PORTE_AVANT("flpAv",750),
-	OUVRE_LA_PORTE_AVANT_UNPEU("olpAvp",500),
-	ACTIVE_ELECTROVANNE_AVANT("aeAv",300),
-	DESACTIVE_ELECTROVANNE_AVANT("deAv",300),
+	BAISSE_LE_BRAS_AVANT("blbAv",900),
+	RELEVE_LE_BRAS_AVANT("rlbAv",900),
+	OUVRE_LA_PORTE_AVANT("olpAv",600),
+	FERME_LA_PORTE_AVANT("flpAv",600),
+	OUVRE_LA_PORTE_AVANT_UNPEU("olpAvp",300),
+	FERMER_LA_PORTE_AVANT_UNPEU("flpAv",100),
+	ACTIVE_ELECTROVANNE_AVANT("aeAv",200),
+	DESACTIVE_ELECTROVANNE_AVANT("deAv",100),
 
-	BAISSE_LE_BRAS_ARRIERE("blbAr",1750),
-	RELEVE_LE_BRAS_ARRIERE("rlbAr",1750),
-	FERME_LA_PORTE_ARRIERE("flpAr",750),
-	OUVRE_LA_PORTE_ARRIERE("olpAr",750),
-	OUVRE_LA_PORTE_ARRIERE_UNPEU("olpArp",500),
-	ACTIVE_ELECTROVANNE_ARRIERE("aeAr",300),
-	DESACTIVE_ELECTROVANNE_ARRIERE("deAr",300),
+	BAISSE_LE_BRAS_ARRIERE("blbAr",900),
+	RELEVE_LE_BRAS_ARRIERE("rlbAr",900),
+	FERME_LA_PORTE_ARRIERE("flpAr",600),
+	OUVRE_LA_PORTE_ARRIERE("olpAr",600),
+	OUVRE_LA_PORTE_ARRIERE_UNPEU("olpArp",150),
+	FERMER_LA_PORTE_ARRIERE_UNPEU("flpAr",150),
+	ACTIVE_ELECTROVANNE_ARRIERE("aeAr",200),
+	DESACTIVE_ELECTROVANNE_ARRIERE("deAr",100),
 
-	ACTIVE_BRAS_AVANT_POUR_ABEILLE("blbAbei",1750),
+	ACTIVE_BRAS_AVANT_POUR_ABEILLE("blbAvbei",500),
+	ACTIVE_BRAS_ARRIERE_POUR_ABEILLE("blbArbei",500),
 
-	ACTIVE_CAPTEURS_BRAS_AVANT("acpAv"),
-	ACTIVE_CAPTEURS_BRAS_ARRIERE("acpAv"),
-	DESACTIVE_CAPTEURS_BRAS("dcp"),
+	CHECK_CAPTEURS_CUBE_AVANT("ccAv",25),
+	CHECK_CAPTEURS_CUBE_ARRIERE("ccAr",25),
 
 /*			 _____________________
  * 		   *|                     |*
@@ -108,6 +110,9 @@ public enum ActuatorOrder implements MotionOrder
 	NO_ASSERV_SPEED("cv0"),
 	ASSERV_SPEED("cv1"),
 	DEBUG("pfdebug"),
+	BASIC_DETECTION_ENABLE("bde"),
+	BASIC_DETECTION_DISABLE("bdd"),
+
 
 /*			 _______________________
  * 		   *|                       |*
@@ -174,11 +179,11 @@ public enum ActuatorOrder implements MotionOrder
     ActuatorOrder(String serialString)
 	{
 		this.serialOrder = serialString;
-		this.duration = 700;	// valeur par défaut de la durée de mouvement d'un actionneur
+		this.duration = 20;	// valeur par défaut de la durée de mouvement d'un actionneur
 	}
 
 	/**
-	 * Construit un ordre pour un actionneur avec le temps d'exécution spécifié 
+	 * Construit un ordre pour un actionneur avec le temps d'exécution spécifié
 	 * @param serialString la chaine de caractère à envoyer à la carte actionnneurs
 	 */
     ActuatorOrder(String serialString, int duration)
@@ -186,7 +191,7 @@ public enum ActuatorOrder implements MotionOrder
 		this.serialOrder = serialString;
 		this.duration = duration;
 	}
-	
+
 	/**
 	 * Retrouve la chaine de caractère a envoyer par la série a la carte actionneur pour qu'elle effectue cet ordre
 	 * @return la chaine de caractère à envoyer par la série à la carte actionneur

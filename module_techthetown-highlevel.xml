@@ -14,30 +14,22 @@
   
   <path id="techthetown-highlevel.module.production.classpath">
     <path refid="library.lib.classpath"/>
-    
-    <path refid="library.opencv-340.classpath"/>
   </path>
   
   <path id="techthetown-highlevel.runtime.production.module.classpath">
     <pathelement location="${techthetown-highlevel.output.dir}"/>
     <path refid="library.lib.classpath"/>
-    
-    <path refid="library.opencv-340.classpath"/>
   </path>
   
   <path id="techthetown-highlevel.module.classpath">
     <pathelement location="${techthetown-highlevel.output.dir}"/>
     <path refid="library.lib.classpath"/>
-    
-    <path refid="library.opencv-340.classpath"/>
   </path>
   
   <path id="techthetown-highlevel.runtime.module.classpath">
     <pathelement location="${techthetown-highlevel.testoutput.dir}"/>
     <pathelement location="${techthetown-highlevel.output.dir}"/>
     <path refid="library.lib.classpath"/>
-    
-    <path refid="library.opencv-340.classpath"/>
   </path>
   
   

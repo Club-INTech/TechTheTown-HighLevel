@@ -19,6 +19,7 @@
 
 package hook;
 
+import enums.ActuatorOrder;
 import enums.MotionOrder;
 import enums.Speed;
 import smartMath.Vec2;
@@ -30,7 +31,11 @@ import smartMath.Vec2;
 public enum HookNames {
 
     // Example :
-    SPEED_DOWN(1, new Vec2(50, 50), 5, Speed.SLOW_ALL),
+    SPEED_DOWN(1, new Vec2(50, 50), 5 ,0,Math.PI,Speed.SLOW_ALL),
+    ACTIVE_BRAS_AVANT_ABEILLE(2, new Vec2(1400,1800), 500, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE),
+    ACTIVE_BRAS_ARRIERE_ABEILLE(3, new Vec2(1400,1800), 500, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE),
+    ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE(4, new Vec2(-1400,1800), 500, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE),
+    ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE(5, new Vec2(-1400,1800), 500, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE),
     ;
 
     /** Ordre du hook */
@@ -40,17 +45,22 @@ public enum HookNames {
     private Vec2 position;
 
     /** Tolérence sur la position */
-    private int tolerency;
+    private int tolerency; //en mm
 
     /** Id du hook, utile pour pouvoir l'activer/désactivé manuellement*/
     private int id;
 
+    private double orientation;
+    private double tolerencyAngle; //en radians
+
     /** Constructeur */
-    HookNames(int id, Vec2 position, int tolerency, MotionOrder order){
+    HookNames(int id, Vec2 position, int tolerency, double orientation, double tolerencyAngle, MotionOrder order){
         this.id = id;
         this.position = position;
         this.tolerency = tolerency;
         this.order = order;
+        this.orientation=orientation;
+        this.tolerencyAngle=tolerencyAngle;
     }
 
     /** Getters & Setters */
@@ -65,5 +75,17 @@ public enum HookNames {
     }
     public int getId() {
         return id;
+    }
+
+    public double getOrientation() {
+        return orientation;
+    }
+
+    public double getTolerencyAngle() {
+        return tolerencyAngle;
+    }
+
+    public void setPosition(Vec2 position) {
+        this.position = position;
     }
 }

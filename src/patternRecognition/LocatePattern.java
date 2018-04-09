@@ -297,8 +297,8 @@ public class LocatePattern {
                     ymax=retainedContours.get(i).y;
                 }
             }
-                Imgproc.drawContours(src, contours, maxId, new Scalar(255, 0, 0,.8), 8);
-                patternZoneCroppedImage = new int[][]{{(int) xmin, (int) ymin}, {(int) xmax, (int) ymax}};
+            Imgproc.drawContours(src, contours, maxId, new Scalar(255, 0, 0,.8), 8);
+            patternZoneCroppedImage = new int[][]{{(int) xmin, (int) ymin}, {(int) xmax, (int) ymax}};
         }
         else {
             patternZoneCroppedImage=new int[][]{{-1,-1},{-1,-1}};

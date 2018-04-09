@@ -54,12 +54,17 @@ public enum ConfigInfoRobot implements ConfigInfo
     TAS_BASE_ENNEMI_PRIS(false),
     TAS_CHATEAU_ENNEMI_PRIS(false),
     TAS_STATION_EPURATION_ENNEMI_PRIS(false),
+    INDICE_PATTERN_SIMULATION(0),
 
     /** Dimensions du robot */
     ROBOT_LENGTH(300),
     ROBOT_WIDTH(300),
     ROBOT_RADIUS(212),
     ENNEMY_RADIUS(400),
+
+    /** Vitesses du robot */
+    ROBOT_LINEAR_SPEED(840),        // mm/s
+    ROBOT_ANGULAR_SPEED(Math.PI),   // rad/s
 
     /**Les cubes*/
     LONGUEUR_CUBE(58),
@@ -91,11 +96,15 @@ public enum ConfigInfoRobot implements ConfigInfo
     DETECTION_DISTANCE(200),
     DETECTION_RAY(250),
     FEEDBACK_LOOPDELAY(50),
+    BASIC_DETECTION(false),
     ENNEMY_LOOPDELAY(500),
     ENNEMY_TIMEOUT(10000),
 
     DISTANCE_TO_DISENGAGE(50),
     MAX_RETRIES_IF_BLOCKED(1),
+
+    /** Paramètres Pathfinding */
+    COUT_FIXE(10),
 
     /** Paramètres des scripts */
     VECTEUR_EXAMPLE(new Vec2(50, 60)),
@@ -105,6 +114,17 @@ public enum ConfigInfoRobot implements ConfigInfo
 
     /** Paramètre d'attente du jumper */
     ATTENTE_JUMPER(true),
+
+    /** Paramètre permettant de savoir quel matchscript on execute */
+    MATCHSCRIPT_TO_EXECUTE(0),
+
+    /** Paramètres reconnaissance de couleurs */
+    LOCALIZATION_AUTOMATED(true),
+    FIRST_COLOR("null"),
+    SECOND_COLOR("null"),
+    THIRD_COLOR("null"),
+    IMAGE_WIDTH(1280),
+    IMAGE_HEIGHT(720),
 
     /**Paramètres couleurs*/
     rorange(183),
@@ -122,12 +142,15 @@ public enum ConfigInfoRobot implements ConfigInfo
     rvert(43),
     gvert(120),
     bvert(68),
+    saturationPreModifier(1.8),
+    brightnessPreModifier(1.3),
+    saturationModifierLightingUp(1.3),
+    brightnessModifierLightingUp(1.1),
 
     /**Paramètres scripts*/
     DISTANCE_INTERRUPTEUR(50),
     DISTANCE_ABEILLE(50),
     DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES(70),
-    DISTANCE_PUSH_DEPOSE_CUBES(107),
 
     ;
     private Object defaultValue;

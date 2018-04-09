@@ -106,23 +106,18 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Buffers représentant les différents canaux
      */
-    private ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
 
     /**
      * Le "canal" position & orientation
      */
-    private XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
+    private volatile XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
     private String splitString = " ";
 
     private boolean symmetry=config.getBoolean(ConfigInfoRobot.COULEUR);
-
-    /**
-     * Horloge pour le temps de réponse du bas-niveau
-     */
-    private static long timestamp=0;
 
     /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
@@ -298,7 +293,6 @@ public class ThreadEth extends AbstractThread implements Service {
             timeRef = System.currentTimeMillis();
             comFlag = true;
             mess += "\r\n";
-            timestamp=System.currentTimeMillis();
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
             output.write(mess, 0, mess.length());
             output.flush();
@@ -306,7 +300,6 @@ public class ThreadEth extends AbstractThread implements Service {
             if (debug) {
                 outStandard.write(mess);
                 outStandard.newLine();
-                outStandard.flush();
             }
 
         } catch (SocketException e) {
@@ -314,7 +307,7 @@ public class ThreadEth extends AbstractThread implements Service {
             try {
                 if (socket != null) {
                     socket.close();
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                     createInterface();
                 }
             } catch (Exception e1) {
@@ -335,7 +328,6 @@ public class ThreadEth extends AbstractThread implements Service {
                 if (debug) {
                     outStandard.write("\t" + inputLines[i]);
                     outStandard.newLine();
-                    outStandard.flush();
                 }
 
                 if (inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) {
@@ -343,11 +335,10 @@ public class ThreadEth extends AbstractThread implements Service {
                     if (debug) {
                         outStandard.write("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                         outStandard.newLine();
-                        outStandard.flush();
                     }
 
                     while ((inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) && tries < 5) {
-                        Thread.sleep(200);
+                        Thread.sleep(10);
                         tries += 1;
                         inputLines[i] = waitAndGetResponse();
                     }
@@ -366,7 +357,6 @@ public class ThreadEth extends AbstractThread implements Service {
 
             if (nb_line_response != 0) {
                 outStandard.newLine();
-                outStandard.flush();
             }
 
             waitForAResponse();
@@ -395,7 +385,7 @@ public class ThreadEth extends AbstractThread implements Service {
     @Override
     public void run() {
         String buffer;
-        Thread.currentThread().setPriority(8);
+        Thread.currentThread().setPriority(10);
         createInterface();
         log.debug("ThreadEth started");
 
@@ -403,7 +393,7 @@ public class ThreadEth extends AbstractThread implements Service {
             try {
                 buffer = input.readLine();
 
-                fullDebug.write(buffer.substring(2));
+                fullDebug.write(buffer);
                 fullDebug.newLine();
                 fullDebug.flush();
                 if (buffer.length() >= 2 && !(buffer.replaceAll(" ", "").equals(""))) {
@@ -453,7 +443,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 try {
                     if (socket != null) {
                         socket.close();
-                        Thread.sleep(1000);
+                        Thread.sleep(500);
                         createInterface();
                     }
                 } catch (Exception e) {
@@ -506,6 +496,17 @@ public class ThreadEth extends AbstractThread implements Service {
     @Override
     public void interrupt(){
         super.interrupt();
+        try{
+            outEvent.flush();
+            outSensor.flush();
+            outPosition.flush();
+            outDebug.flush();
+        }
+        catch(IOException ioe){
+            log.debug("LL ne répond pas, on shutdown");
+            shutdown = true;
+            ioe.printStackTrace();
+        }
         try {
             socket.close();
         }catch (IOException e){

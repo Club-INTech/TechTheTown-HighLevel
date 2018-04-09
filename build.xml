@@ -66,13 +66,6 @@
     <pathelement location="${basedir}/lib/opencv-340.jar"/>
   </path>
   
-  
-  <!-- Global Libraries -->
-  
-  <path id="library.opencv-340.classpath">
-    <pathelement location="/home/yousra/intech/TechTheTown-HighLevel/lib/opencv-340.jar"/>
-  </path>
-  
   <!-- Modules -->
   
   <import file="${basedir}/module_techthetown-highlevel.xml"/>
@@ -95,6 +88,26 @@
       </manifest>
       <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
     </jar>
-
   </target>
+
+  <target name="pattern" depends="all">
+    <delete file="Ptechthetown-highlevel.jar"/>
+    <jar destfile="Ptechthetown-highlevel.jar" basedir="${techthetown-highlevel.output.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="MainPattern"/>
+      </manifest>
+      <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
+    </jar>
+  </target>
+
+  <target name="ia" depends="all">
+    <delete file="Atechthetown-highlevel.jar"/>
+    <jar destfile="Atechthetown-highlevel.jar" basedir="${techthetown-highlevel.output.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="MainIA"/>
+      </manifest>
+      <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
+    </jar>
+  </target>
+
 </project>

@@ -21,9 +21,11 @@ package threads.dataHandlers;
 
 import enums.EventType;
 import pfg.config.Config;
+import strategie.GameState;
 import threads.AbstractThread;
 import utils.Log;
 
+import java.beans.EventHandler;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
@@ -38,17 +40,23 @@ public class ThreadEvents extends AbstractThread
     private Log log;
 
     /** Buffer de lecture des events, rempli par ThreadEth */
-    private ConcurrentLinkedQueue<String> events;
+    private volatile ConcurrentLinkedQueue<String> events;
 
     /** Buffer d'envoie des events */
-    private ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> unableToMoveEvent = new ConcurrentLinkedQueue<>();
+
+    /** Le jumper a-t-il été enlevé ?*/
+    private boolean jumperRemoved = false;
 
     private boolean cubeTakenBrasAV=false;
 
     private boolean cubeTakenBrasAR=false;
 
+    private boolean sth_detected_basic =false;
+
+
     /** Le robot bouge */
-    public Boolean isMoving;
+    public volatile boolean isMoving;
 
     /**
      * Constructeur
@@ -68,7 +76,7 @@ public class ThreadEvents extends AbstractThread
     public void run()
     {
         String event;
-        Thread.currentThread().setPriority(6);
+        Thread.currentThread().setPriority(8);
         while(!ThreadEth.shutdown)
         {
             try {
@@ -82,21 +90,27 @@ public class ThreadEvents extends AbstractThread
                     }
                     else if (message[0].equals(EventType.STOPPEDMOVING.getEventId())){
                         log.debug("Le robot a fini de bouger");
-                        synchronized (this.isMoving) {
-                            this.isMoving = false;
-                        }
+                        this.isMoving = false;
                         log.debug("isMoving variable has been defined to False");
                     }
                     else if(message[0].equals(EventType.CUBE_PRIS_BRAS_AVANT.getEventId())){
-                        cubeTakenBrasAV=true;
+                        this.cubeTakenBrasAV=true;
                         log.debug("Le robot a pris un cube en utilisant le bras AV");
                     }
                     else if(message[0].equals(EventType.CUBE_PRIS_BRAS_ARRIERE.getEventId())){
-                        cubeTakenBrasAR=true;
+                        this.cubeTakenBrasAR=true;
                         log.debug("Le robot a pris un cube en utilisant le bras AR");
                     }
+                    else if(message[0].equals(EventType.BASIC_DETECTION_TRIGGERED.getEventId())){
+                        this.sth_detected_basic=true;
+                        log.debug("La basic detection a été triggered");
+                    }
+                    else if(message[0].equals(EventType.JUMPER_REMOVED.getEventId())){
+                        this.jumperRemoved=true;
+                        log.debug("Jumper enlevé");
+                    }
                 } else {
-                    Thread.sleep(100);
+                    Thread.sleep(5);
                 }
             }catch (InterruptedException e){
                 e.getStackTrace();
@@ -112,9 +126,31 @@ public class ThreadEvents extends AbstractThread
         return cubeTakenBrasAV;
     }
 
+    public void setCubeTakenBrasAV(boolean value){
+        this.cubeTakenBrasAV=value;
+    }
+
     public boolean getCubeTakenBrasAR() {
         return cubeTakenBrasAR;
     }
 
+    public void setCubeTakenBrasAR(boolean value){
+        this.cubeTakenBrasAR=value;
+    }
+
     public void setIsMoving(boolean value){ this.isMoving=value; }
+
+    public boolean getIsMoving(){ return this.isMoving; }
+
+    public boolean isSth_detected_basic() {
+        return sth_detected_basic;
+    }
+
+    public boolean wasJumperRemoved() {
+        return jumperRemoved;
+    }
+
+    public void setJumperRemoved(boolean value){
+        this.jumperRemoved=value;
+    }
 }

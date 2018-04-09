@@ -1,7 +1,7 @@
 package tests;
 
 import org.junit.Test;
-import patternRecognition.shootPicture.ShootBufferedStillWebcam;
+import patternRecognition.UseWebcam;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -12,7 +12,7 @@ public class JUnit_ShootBufferedStillWebcam {
 
     @Test
     public void testTakePictureFULLKRAD(){
-        BufferedImage buffImg= ShootBufferedStillWebcam.takeBufferedPicture();
+        BufferedImage buffImg= UseWebcam.takeBufferedPicture();
         try {
             ImageIO.write(buffImg, "jpg", new File("/tmp/retourImage.jpg"));
         } catch (IOException e) {

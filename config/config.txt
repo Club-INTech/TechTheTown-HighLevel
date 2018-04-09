@@ -10,16 +10,31 @@ ROBOT_RADIUS                         = 210
 ENNEMY_RADIUS                        = 200
 LONGUEUR_CUBE                        =  58
 LONGUEUR_BRAS                        = 330
-DIMENSION_PORTES                     = 87
+DIMENSION_PORTES                     = 110
+COUT_FIXE                            = 42
+INDICE_PATTERN_SIMULATION            = 0
+
+
+
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
-SIMULATION                           = true
-ATTENTE_JUMPER                       = false
+SIMULATION                           = false
+ATTENTE_JUMPER                       = true
 
-# PARAMETRES POUR LES CAPTEUR
+# VERSION DE MATCHSCRIPT TO EXECUTE
+MATCHSCRIPT_TO_EXECUTE               = 0
+
+
+
+
+
+
+
+
+################ PARAMETRES POUR LES CAPTEURS ##################
 # horizon_capteurs                   = 500
-# angle_detection_capteur 	         = 0.79
+# angle_detection_capteur            = 0.79
 # angle_position_capteur_av          = 0.01
 # angle_position_capteur_ar          = 0.17
 # duree_peremption_obstacles         = 5000
@@ -31,11 +46,14 @@ ATTENTE_JUMPER                       = false
 # basic_distance                     = 200
 # portee_mini_capteurs_av            = 60
 # portee_mini_capteurs_ar            = 30
-# basic_detection                    = false
 # temps_untested_obstacle            = 250
 # 200 homologation ; 150 match
 
-# PARAMETRES POUR LES DÉPLACEMENTS
+basic_detection                      = false
+SENSOR_ANGLE_WIDENESS                = 1.04
+
+
+############## PARAMETRES POUR LES DÉPLACEMENTS ################
 # hooks_tolerance_mm                 = 20
 # disque_tolerance_maj               = 100
 # disque_tolerance_consigne          = 40
@@ -51,6 +69,8 @@ ATTENTE_JUMPER                       = false
 # angle_degagement_robot             = 0.4
 # distance_degagement_robot          = 50
 
+
+# PARAMETRES OBSTACLES
 TAS_BASE_PRIS=false
 TAS_CHATEAU_PRIS=false
 TAS_STATION_EPURATION_PRIS=false
@@ -58,41 +78,65 @@ TAS_BASE_ENNEMI_PRIS=false
 TAS_CHATEAU_ENNEMI_PRIS=false
 TAS_STATION_EPURATION_ENNEMI_PRIS=false
 
+
+
+############ PARAMETRES RECONNAISSANCE DE COULEURS #############
+# A LA MAIN : FALSE /// AUTOMATIQUE : TRUE
+LOCALIZATION_AUTOMATED               = false
+
+# IMAGE SIZE
+IMAGE_WIDTH                          = 1280
+IMAGE_HEIGHT                         = 720
+
+# Couleurs disponibles : (orange, vert, rouge, noir, bleu, null)
+FIRST_COLOR                          = null
+SECOND_COLOR                         = null
+THIRD_COLOR                          = null
+
+### Calibration des couleurs pour l'image prémodifiée
 #RGB pour la couleur orange
-rorange=183
-gorange=107
-borange=71
+rorange=173
+gorange=65
+borange=0
 
 #RGB pour la couleur jaune
-rjaune=184
-gjaune=177
-bjaune=37
+rjaune=173
+gjaune=161
+bjaune=0
 
 #RGB pour la couleur bleue
-rbleu=50
-gbleu=84
-bbleu=112
+rbleu=0
+gbleu=22
+bbleu=105
 
 #RGB pour la couleur noire
-rnoir=13
-gnoir=24
-bnoir=20
+rnoir=45
+gnoir=60
+bnoir=60
 
 #RGB pour la couleur vert
-rvert=43
-gvert=120
-bvert=68
+rvert=73
+gvert=153
+bvert=0
 
-############PARAMETRES SCRIPTS############
+#Modifieurs pour la reconnaissance de couleur
+saturationPreModifier=3
+brightnessPreModifier=1
+saturationModifierLightingUp=1.2
+brightnessModifierLightingUp=1.5
+
+###################### PARAMETRES SCRIPT #######################
 
 #ActivationPanneauDomitique
-DISTANCE_INTERRUPTEUR=50
+DISTANCE_INTERRUPTEUR=58
+
 #ActiveAbeille
 DISTANCE_ABEILLE=70
+
 #TakeCubes
+
 #DéposeCube
-DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES=70
-DISTANCE_PUSH_DEPOSE_CUBES=107
+DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES=90
 
 
 

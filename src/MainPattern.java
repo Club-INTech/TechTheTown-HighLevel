@@ -18,11 +18,11 @@
  */
 
 import container.Container;
-import graphics.AffichageDebug;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
+//import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
@@ -31,79 +31,65 @@ import scripts.ScriptManager;
 import simulator.ThreadSimulator;
 import strategie.GameState;
 import table.Table;
+import tests.JUnit_PatternRecognition;
 import threads.ThreadInterface;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
+
+import java.nio.file.FileSystemLoopException;
+import java.time.LocalDateTime;
 
 /**
  * Code qui démarre le robot en début de match
  *
  * @author 4223, gaelle, rem
  */
-public class Main {
+public class MainPattern {
     static Container container;
     static Config config;
-    static GameState realState;
-    static ScriptManager scriptmanager;
     static EthWrapper mEthWrapper;
-    static Locomotion mLocomotion;
     static PatternRecognition patternRecognition;
+    static GameState gameState;
+    static Locomotion mLocomotion;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
 // PS : Les vérifications et validations c'est pas pour les chiens.
 
     public static void main(String[] args) throws InterruptedException {
-        int matchScriptVersionToExecute=0;
         try {
             container = new Container();
-            config = container.getConfig();
-            realState = container.getService(GameState.class);
-            scriptmanager = container.getService(ScriptManager.class);
-            mEthWrapper = container.getService(EthWrapper.class);
-            mLocomotion = container.getService(Locomotion.class);
-            if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
-                ThreadInterface anInterface = container.getService(ThreadInterface.class);
-            }
-            matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
             Thread.currentThread().setPriority(6);
-            //container.getService(ThreadSensor.class);
+            config = container.getConfig();
+            mEthWrapper = container.getService(EthWrapper.class);
+            gameState=container.getService(GameState.class);
+            mLocomotion=container.getService(Locomotion.class);
             container.getService(ThreadEth.class);
-            //container.getService(ThreadInterface.class);
-            container.getService(ThreadTimer.class);
-            patternRecognition=container.getService(PatternRecognition.class);
+            patternRecognition = container.getService(PatternRecognition.class);
+            patternRecognition.setDebugPatternRecognition(true);
             container.startInstanciedThreads();
-            // TODO : initialisation des variables globales du robot & objets...
-            realState.robot.setPosition(Table.entryPosition);
-            realState.robot.setOrientation(Table.entryOrientation);
-            realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
-
-
         } catch (ContainerException p) {
-            System.out.println("bug container");
             p.printStackTrace();
+            System.out.println("bug container");
         }
+
+        while (patternRecognition.isMovementLocked()) {
+            Thread.sleep(10);
+        }
+        while (!patternRecognition.isRecognitionDone()) {
+            Thread.sleep(10);
+        }
+
+        System.out.println("Reconnaissance de pattern terminée");
+
         try {
-
-            // TODO : initialisation du robot avant retrait du jumper (actionneurs)
-            System.out.println("Le robot commence le match");
-            waitMatchBegin();
-
-            while(patternRecognition.isMovementLocked()) {
-                Thread.sleep(10);
-            }
-
-            //TODO : lancer l'IA
-
-            scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
-
-        } catch (Exception e) {
+            container.destructor();
+        } catch (ContainerException e) {
             e.printStackTrace();
+            System.out.println("bug container");
         }
+
     }
-
-
-
 
 
     /**
@@ -113,6 +99,7 @@ public class Main {
     static void waitMatchBegin() {
 
         boolean useJumper=config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
+
         if (useJumper) {
             mEthWrapper.waitForJumperRemoval();
             System.out.println("Robot pret pour le match, attente du retrait du jumper");
@@ -123,8 +110,8 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-            realState.setJumperRemoved(true);
-            // maintenant que le jumper est retiré, le match a commencé
+            gameState.setJumperRemoved(true);
+            //Maintenant que le jumper est retiré, le match a commencé
             ThreadTimer.matchStarted = true;
 
             //On attend encore 50ms pour que le jumper soit bien retiré
@@ -136,7 +123,7 @@ public class Main {
         }
         else{
             mLocomotion.getThEvent().setJumperRemoved(true);
-            realState.setJumperRemoved(true);
+            gameState.setJumperRemoved(true);
             // maintenant que le jumper est retiré, le match a commencé
             ThreadTimer.matchStarted = true;
             System.out.println("Robot pret pour le match, pas d'attente du retrait de jumper");

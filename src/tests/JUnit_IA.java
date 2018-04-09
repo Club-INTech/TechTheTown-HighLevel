@@ -1,9 +1,7 @@
 package tests;
 
-import enums.Speed;
 import org.junit.Before;
 import org.junit.Test;
-import pathfinder.Pathfinding;
 import robot.Robot;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
@@ -71,13 +69,11 @@ public class JUnit_IA extends JUnit_Test{
         public void testScript() {
             try {
                 robotReal = container.getService(Robot.class);
-                robotReal.getPosition();
-                robotReal.getOrientation();
-                ia.create();
-                while (true){
-                    ia.execute(null);
-                    Thread.sleep(500);
-                }
+                robotReal.setPosition(Table.entryPosition);
+                robotReal.setOrientation(Table.entryOrientation);
+
+                ia.execute(null);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -19,7 +19,17 @@ public enum Patterns {
     BEOEBK(6, new Colors[] {Colors.BLUE, Colors.ORANGE, Colors.BLACK}),
     GNOEYW(7, new Colors[] {Colors.GREEN, Colors.ORANGE, Colors.YELLOW}),
     BKBEGN(8, new Colors[] {Colors.BLACK, Colors.BLUE, Colors.GREEN}),
-    OEBEYW(9, new Colors[] {Colors.ORANGE, Colors.BLUE, Colors.YELLOW});
+    OEBEYW(9, new Colors[] {Colors.ORANGE, Colors.BLUE, Colors.YELLOW}),
+    OEBKGN2(10, new Colors[] {Colors.GREEN, Colors.BLACK, Colors.ORANGE}),
+    YWBKBE2(11, new Colors[] {Colors.BLUE, Colors.BLACK, Colors.YELLOW}),
+    BEGNOE2(12, new Colors[] {Colors.ORANGE, Colors.GREEN, Colors.BLUE}),
+    YWGNBK2(13, new Colors[] {Colors.BLACK, Colors.GREEN, Colors.YELLOW}),
+    BKYWOE2(14, new Colors[] {Colors.ORANGE, Colors.YELLOW, Colors.BLACK}),
+    GNYWBE2(15, new Colors[] {Colors.BLUE, Colors.YELLOW, Colors.GREEN}),
+    BEOEBK2(16, new Colors[] {Colors.BLACK, Colors.ORANGE, Colors.BLUE}),
+    GNOEYW2(17, new Colors[] {Colors.YELLOW, Colors.ORANGE, Colors.GREEN}),
+    BKBEGN2(18, new Colors[] {Colors.GREEN, Colors.BLUE, Colors.BLACK}),
+    OEBEYW2(19, new Colors[] {Colors.YELLOW, Colors.BLUE, Colors.ORANGE});
 
     private Colors[] pattern;
     private int id;

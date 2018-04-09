@@ -26,6 +26,7 @@ import sensor.Sensor;
 import smartMath.Geometry;
 import smartMath.Vec2;
 import smartMath.XYO;
+import strategie.GameState;
 import table.Table;
 import threads.AbstractThread;
 import threads.ThreadTimer;
@@ -57,6 +58,9 @@ public class ThreadSensor extends AbstractThread
 
     /** Buffer de valeurs */
     private ConcurrentLinkedQueue<String> valuesReceived;
+
+    /** GameState */
+    private GameState gameState;
 
     /** Si l'on doit symétriser */
     private boolean symetry;
@@ -110,6 +114,8 @@ public class ThreadSensor extends AbstractThread
      * Pour éviter de détecter la main du lanceur */
     private static boolean delay = true;
 
+    private boolean usingJumper;
+
 
     /** Valeurs des capteurs US {avant-gauche, avant-droit, arrière gauche, arrière-droit} */
     //ArrayList<Integer> USvalues = new ArrayList<Integer>(4);
@@ -142,7 +148,7 @@ public class ThreadSensor extends AbstractThread
 	 * Crée un nouveau thread de capteurs
 	 * @param table La table a l'intérieure de laquelle le thread doit croire évoluer
 	 */
-	public ThreadSensor (Config config, Log log, Table table, EthWrapper ethWrapper, ThreadEth eth)
+	public ThreadSensor (Config config, Log log, Table table, EthWrapper ethWrapper, ThreadEth eth, GameState gameState)
 	{
 		super(config, log);
 		this.updateConfig();
@@ -150,6 +156,7 @@ public class ThreadSensor extends AbstractThread
         this.valuesReceived = eth.getUltrasoundBuffer();
         this.mTable = table;
         this.ethWrapper = ethWrapper;
+        this.gameState = gameState;
 		this.sensorFL=new Sensor(0,-127,100,this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
 		this.sensorFR=new Sensor(1,127,100,-this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
 		this.sensorBL=new Sensor(2,-127,-100,this.sensorOrientationB-Math.PI,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
@@ -227,7 +234,7 @@ public class ThreadSensor extends AbstractThread
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
         int d = Math.abs(sensorFL.getX() - sensorFR.getX());
-        double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d));
+        double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d))-Math.PI/2+(config.getDouble(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS)/2);
         int x = (int) (a * Math.cos(alpha));
         int y = (int) (a * Math.sin(alpha));
         Vec2 posObjectFromSensorFL = new Vec2(x, y);
@@ -245,7 +252,7 @@ public class ThreadSensor extends AbstractThread
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
         int d = Math.abs(sensorBL.getX() - sensorBR.getX());
-        double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d));
+        double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d))-Math.PI/2+(config.getDouble(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS)/2);
         int x = (int) (a * Math.cos(alpha));
         int y = (int) (a * Math.sin(alpha));
         Vec2 posObjectFromSensorBL = new Vec2(x, y);
@@ -399,22 +406,15 @@ public class ThreadSensor extends AbstractThread
 
         updateConfig();
 
-        /* while(ethWrapper.isJumperAbsent())
-        {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        if (this.usingJumper) {
+            while (!gameState.wasJumperRemoved()) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        while(!ethWrapper.isJumperAbsent())
-        {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }*/
 
         // maintenant que le jumper est retiré, le match a commencé
         ThreadTimer.matchEnded = false;
@@ -456,5 +456,6 @@ public class ThreadSensor extends AbstractThread
         this.sensorOrientationF = config.getDouble(ConfigInfoRobot.SENSOR_ORIENTATION_FRONT);
         this.sensorOrientationB = config.getDouble(ConfigInfoRobot.SENSOR_ORIENTATION_BACK);
         this.detectionAngle = config.getDouble(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS);
+        this.usingJumper = config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
 	}
 }

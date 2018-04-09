@@ -30,6 +30,7 @@ import robot.Locomotion;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
 import strategie.GameState;
+import strategie.IA.IA;
 import table.Table;
 import threads.ThreadInterface;
 import threads.ThreadTimer;
@@ -40,7 +41,7 @@ import threads.dataHandlers.ThreadEth;
  *
  * @author 4223, gaelle, rem
  */
-public class Main {
+public class MainIA {
     static Container container;
     static Config config;
     static GameState realState;
@@ -48,6 +49,7 @@ public class Main {
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
     static PatternRecognition patternRecognition;
+    static IA ia;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
@@ -62,6 +64,7 @@ public class Main {
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion = container.getService(Locomotion.class);
+            ia = container.getService(IA.class);
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
             }
@@ -95,7 +98,7 @@ public class Main {
 
             //TODO : lancer l'IA
 
-            scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
+            ia.execute(null);
 
         } catch (Exception e) {
             e.printStackTrace();
