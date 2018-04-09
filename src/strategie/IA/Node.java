@@ -9,6 +9,8 @@ import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
+import hook.HookFactory;
+import hook.HookNames;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.AbstractScript;
@@ -35,6 +37,7 @@ public abstract class Node {
     protected Vec2 position;
     protected Pathfinding pathfinding;
     protected Config config;
+    protected HookFactory hookFactory;
 
 
     /** Noeud d'action, principale composant du graphe de décision. Il permet de lancer les scripts et de gérer les
@@ -46,7 +49,7 @@ public abstract class Node {
      * @param gameState
      */
 
-    public Node(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding) {
+    public Node(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) {
         this.versionToExecute = versionToExecute;
         this.id = 0;
         this.timeLimit = 0;
@@ -58,6 +61,7 @@ public abstract class Node {
         this.gameState = gameState;
         this.position = Table.entryPosition;
         this.pathfinding=pathfinding;
+        this.hookFactory=hookFactory;
     }
 
     /** Permet d'executer le script d'un noeud et de gérer les exeptions si il y en a. */
