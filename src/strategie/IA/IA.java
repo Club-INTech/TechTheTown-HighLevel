@@ -41,7 +41,8 @@ public class IA implements Service {
         Node abeille = new Abeille(1, null, scriptManager, gameState);
         Node panneau = new Panneau(0, null, scriptManager, gameState);
         Node takeCubes = new TakeCubes(0, null, scriptManager, gameState);
-        Node takeCubes2 = new TakeCubes(0, null, scriptManager, gameState);
+        Node takeCubes2 = new TakeCubes(1, null, scriptManager, gameState);
+        Node takeCubes3 = new TakeCubes(2, null, scriptManager, gameState);
         Node deposeCubes = new DeposeCubes(0, null, scriptManager, gameState);
 
         ArrayList<Node> nodes = new ArrayList<>();
@@ -51,6 +52,7 @@ public class IA implements Service {
         nodes.add(takeCubes);
         nodes.add(deposeCubes);
         nodes.add(takeCubes2);
+        nodes.add(takeCubes3);
 
         return nodes;
     }

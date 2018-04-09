@@ -25,7 +25,7 @@ public class Edge {
     public void updateCost(int nb_tas_pris){
         //        this.cost = node1.getScore()+node2.getScore();
         if(node1.toString().equals("DeposeCube") || node2.toString().equals("DeposeCube")){
-            if(nb_tas_pris == 2){
+            if(nb_tas_pris == 0%2){
                 setCost(666);
             }
             else {
