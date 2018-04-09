@@ -42,13 +42,13 @@ public class IA implements Service {
 
     public ArrayList<Node> createNodes() throws BadVersionException {
         Node pattern = new Pattern(0, null, scriptManager, gameState);
-        Node abeille = new Abeille(1, null, scriptManager, gameState);
-        Node panneau = new Panneau(0, null, scriptManager, gameState);
-        Node takeCubes = new TakeCubes(0, null, scriptManager, gameState);
-        Node takeCubes2 = new TakeCubes(1, null, scriptManager, gameState);
-        Node takeCubes3 = new TakeCubes(2, null, scriptManager, gameState);
-        Node deposeCubes = new DeposeCubes(0, null, scriptManager, gameState);
-        Node deposeCubes2 = new DeposeCubes(0, null, scriptManager, gameState);
+        Node abeille = new Abeille(1, null, scriptManager, gameState,pathfinding);
+        Node panneau = new Panneau(0, null, scriptManager, gameState,pathfinding);
+        Node takeCubes = new TakeCubes(0, null, scriptManager, gameState,pathfinding);
+        Node takeCubes2 = new TakeCubes(1, null, scriptManager, gameState,pathfinding);
+        Node takeCubes3 = new TakeCubes(2, null, scriptManager, gameState,pathfinding);
+        Node deposeCubes = new DeposeCubes(0, null, scriptManager, gameState,pathfinding);
+        Node deposeCubes2 = new DeposeCubes(0, null, scriptManager, gameState,pathfinding);
 
         ArrayList<Node> nodes = new ArrayList<>();
         nodes.add(pattern);
