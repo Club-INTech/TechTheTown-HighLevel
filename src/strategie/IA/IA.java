@@ -82,14 +82,24 @@ public class IA implements Service {
     public ArrayList<Node> edgeToNode(ArrayList<Edge> edges) {
         ArrayList<Node> nodes = new ArrayList<>();
         for (Edge edge : edges){
-            if(!nodes.contains(edge.getNode1())){
-                nodes.add(edge.getNode1());
+            if(edge.getNode1().getScore()>edge.getNode2().getScore()){
+                if(!nodes.contains(edge.getNode1())){
+                    nodes.add(edge.getNode1());
+                }
+                if(!nodes.contains(edge.getNode2())){
+                    nodes.add(edge.getNode2());
+                }
             }
-            if(!nodes.contains(edge.getNode2())){
-                nodes.add(edge.getNode2());
+            else{
+                if(!nodes.contains(edge.getNode2())){
+                    nodes.add(edge.getNode2());
+                }
+                if(!nodes.contains(edge.getNode1())){
+                    nodes.add(edge.getNode1());
+                }
             }
         }
-         return nodes;
+        return nodes;
     }
 
     public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
