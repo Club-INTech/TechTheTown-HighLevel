@@ -2,6 +2,11 @@ package strategie.IA;
 
 import enums.ScriptNames;
 import exceptions.BadVersionException;
+import exceptions.BlockedActuatorException;
+import exceptions.ExecuteException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
+import exceptions.Locomotion.PointInObstacleException;
+import exceptions.Locomotion.UnableToMoveException;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -20,6 +25,20 @@ public class Abeille extends Node {
     @Override
     public void exception(Exception e) {
 
+    }
+
+    /**On override le execute du node, l'idée c'est qu'on puisse déjà enable et
+     * disable les hooks qu'on veut en fonction des bras
+     * */
+    @Override
+    public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
+        if (e != null) {
+            exception(e);
+        }
+
+        else {
+
+        }
     }
 
     @Override
