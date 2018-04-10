@@ -21,6 +21,7 @@ package smartMath;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
+import java.util.Vector;
 
 /**
  * classe de calculs de géométrie
@@ -97,8 +98,9 @@ public class Geometry
 	 */
 	public static boolean intersects(Segment segment, Circle circle)
 	{
+		return Line2D.ptSegDist(segment.getA().getX(), segment.getA().getY(), segment.getB().getX(), segment.getB().getY(), circle.getCenter().getX(), circle.getCenter().getY())<=circle.getRadius();
 		// TODO : expliquer l'algo
-		double area = ((double)circle.getCenter().getX() - (double)segment.getA().getX())*((double)segment.getB().getY() - (double)segment.getA().getY()) - ((double)circle.getCenter().getY() - (double)segment.getA().getY())*((double)segment.getB().getX() - (double)segment.getA().getX());
+		/*double area = ((double)circle.getCenter().getX() - (double)segment.getA().getX())*((double)segment.getB().getY() - (double)segment.getA().getY()) - ((double)circle.getCenter().getY() - (double)segment.getA().getY())*((double)segment.getB().getX() - (double)segment.getA().getX());
 		double distA = ((double)segment.getA().getX() - (double)circle.getCenter().getX())*((double)segment.getA().getX() - (double)circle.getCenter().getX()) + ((double)segment.getA().getY() - (double)circle.getCenter().getY())*((double)segment.getA().getY() - (double)circle.getCenter().getY());
 		double distB = ((double)segment.getB().getX() - (double)circle.getCenter().getX())*((double)segment.getB().getX() - (double)circle.getCenter().getX()) + ((double)segment.getB().getY() - (double)circle.getCenter().getY())*((double)segment.getB().getY() - (double)circle.getCenter().getY());
 		if(distA >= circle.getRadius() * circle.getRadius() && distB < circle.getRadius() * circle.getRadius() || distA < circle.getRadius() * circle.getRadius() && distB >= circle.getRadius() * circle.getRadius())
@@ -108,6 +110,8 @@ public class Geometry
 				&& area * area / (((double)segment.getB().getX() - (double)segment.getA().getX())*((double)segment.getB().getX() - (double)segment.getA().getX())+((double)segment.getB().getY() - (double)segment.getA().getY())*((double)segment.getB().getY() - (double)segment.getA().getY())) <= circle.getRadius() * circle.getRadius()
 				&& ((double)segment.getB().getX() - (double)segment.getA().getX())*((double)circle.getCenter().getX() - (double)segment.getA().getX()) + ((double)segment.getB().getY() - (double)segment.getA().getY())*((double)circle.getCenter().getY() - (double)segment.getA().getY()) >= 0
 				&& ((double)segment.getA().getX() - (double)segment.getB().getX())*((double)circle.getCenter().getX() - (double)segment.getB().getX()) + ((double)segment.getA().getY() - (double)segment.getB().getY())*((double)circle.getCenter().getY() - (double)segment.getB().getY()) >= 0;
+		*/
+
 
 		/*double area = (circle.getCenter().getX() - segment.getA().getX()) * (segment.getB().getY() - segment.getA().getY()) - (circle.getCenter().getY() - segment.getA().getY()) * (segment.getB().getX() - segment.getA().getX());
 		double distA = circle.getCenter().minusNewVector(segment.getA()).squaredLength();

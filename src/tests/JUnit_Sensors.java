@@ -134,25 +134,27 @@ public class JUnit_Sensors extends JUnit_Test
 		} catch (ImmobileEnnemyForOneSecondAtLeast e) {
 			boolean ennemyDodged=false;
 			while (!ennemyDodged) {
-				log.debug("PositionAIMtestEvitement" + e.getAim());
+				log.debug("PositionAIMtestEvitement : " + e.getAim());
 				try {
-					robot.moveLengthwise(-20);
 					ArrayList<Vec2> pathToFollow = state.robot.getPathfinding().findmyway(state.robot.getPosition(), e.getAim());
 					state.robot.followPath(pathToFollow);
 					ennemyDodged=true;
 				} catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
-					log.debug("on n'a pas bien esquivé");
+					log.debug("L'ennemi est toujours là");
+				} catch (PointInObstacleException e1) {
+					e1.printStackTrace();
+				} catch (UnableToMoveException e1) {
+					log.critical("UnableToMoveException");
+					e1.printStackTrace();
+				} catch (NoPathFound noPathFound) {
+					log.critical("NoPathFound");
+					noPathFound.printStackTrace();
+				} finally {
 					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
-				} catch (PointInObstacleException e1) {
-					e1.printStackTrace();
-				} catch (UnableToMoveException e1) {
-					e1.printStackTrace();
-				} catch (NoPathFound noPathFound) {
-					noPathFound.printStackTrace();
 				}
 			}
 

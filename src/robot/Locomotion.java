@@ -342,8 +342,6 @@ public class Locomotion implements Service {
                 log.debug("Distance de translation: " + moveR);
                 turn(moveA, expectedWallImpact, mustDetect);
                 moveLengthwise(moveR, expectedWallImpact, mustDetect);
-
-
             } else                              //si il est orienté vers l'arrière par rapport au point visé
             {
                 moveA = Geometry.moduloSpec(moveA-Math.PI, Math.PI);
@@ -424,13 +422,6 @@ public class Locomotion implements Service {
         /** TODO A adapté à l'annee en cours */
         int totalTime = 0;
         boolean isEnemy = table.getObstacleManager().isEnnemyForwardOrBackWard(detectionDistance, highLevelPosition, aim, highLevelOrientation);
-
-        while (isEnemy && totalTime < ennemyTimeout && mustDetect) {
-            Sleep.sleep(ennemyLoopDelay);
-            totalTime += ennemyLoopDelay;
-            log.debug("Ennemi détecté dans le sens de marche, on attend");
-            isEnemy = table.getObstacleManager().isEnnemyForwardOrBackWard(detectionDistance, highLevelPosition, aim, highLevelOrientation);
-        }
 
         if (distance >= 0) {
             isRobotMovingForward = true;
@@ -684,17 +675,16 @@ public class Locomotion implements Service {
     public void detectEnemyArroundPosition(int distance) throws UnexpectedObstacleOnPathException,InterruptedException,ImmobileEnnemyForOneSecondAtLeast {
         int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
         log.debug("closestEnnemy : "+closest);
-        if (closest <= distance && closest > -150) {
+        if (closest <= distance) {
             log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de "
-                    + table.getObstacleManager().distanceToClosestEnemy(highLevelPosition) + " mm)");
+                    + closest + " mm)");
             immobilise();
             Thread.sleep(1000);
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
-            if(closest <= distance && closest > -150){
+            if(closest <= distance){
                 table.getObstacleManager().getmEnnemies().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
-
             throw new UnexpectedObstacleOnPathException();
         }
     }
@@ -707,7 +697,7 @@ public class Locomotion implements Service {
      */
     public void detectEnemyAtDistance(int distance, Vec2 moveDirection) throws UnexpectedObstacleOnPathException,InterruptedException,ImmobileEnnemyForOneSecondAtLeast{
         if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)) {
-            log.debug("DetectEnemyAtDistance voie un ennemi sur le chemin");
+            log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin");
             immobilise();
             Thread.sleep(1000);
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
@@ -715,7 +705,6 @@ public class Locomotion implements Service {
                 log.debug("l'exception est throw");
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
-
             throw new UnexpectedObstacleOnPathException();
         }
     }

@@ -64,7 +64,7 @@ public class Window extends JFrame
 	public Window(Table table, GameState state, ScriptManager scriptManager, boolean isMontlheryActive)
 	{
 		this.setTitle("Interface - Full");
-	    this.setSize(1300, 950);
+	    this.setSize(1300, 630);
 	    this.setLocationRelativeTo(null);
 	    this.setResizable(false);
 	    this.setBackground(backgroundColor);
@@ -134,7 +134,7 @@ public class Window extends JFrame
 	}
 
 	/** Permet d'afficher les aretes/le chemin */
-	public void setArete(CopyOnWriteArrayList<Arete> aretes){
+	public void setArete(ArrayList<Arete> aretes){
 		tablePanel.setAretes(aretes);
 	}
 	public void setPath(ArrayList<Vec2> path){
@@ -144,7 +144,7 @@ public class Window extends JFrame
 		tablePanel.setPoint(point);
 		repaint();
 	}
-	public void setNode(CopyOnWriteArrayList<Noeud> nodes){
+	public void setNode(ArrayList<Noeud> nodes){
 		tablePanel.setNodes(nodes);;
 	}
 

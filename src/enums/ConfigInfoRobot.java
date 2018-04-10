@@ -76,7 +76,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     DIMENSION_PORTES(87),
 
     /** Paramètres obstacles */
-    PEREMP_OBST(5000),
+    PEREMP_OBST(1000),
 
     /** Paramètres capteurs */
 
@@ -92,9 +92,9 @@ public enum ConfigInfoRobot implements ConfigInfo
     // TODO à compléter
 
     /** Paramètres Locomotion */
-    BASIC_DETECTION_DISTANCE(100),
-    DETECTION_DISTANCE(300),
-    DETECTION_RAY(250),
+    BASIC_DETECTION_DISTANCE(200),
+    DETECTION_DISTANCE(150),
+    DETECTION_RAY(30),
     FEEDBACK_LOOPDELAY(50),
     BASIC_DETECTION(false),
     ENNEMY_LOOPDELAY(500),
