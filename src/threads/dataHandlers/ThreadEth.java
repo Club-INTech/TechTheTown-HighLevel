@@ -442,6 +442,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                close();
             }
         });
 
