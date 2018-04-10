@@ -9,6 +9,7 @@ import smartMath.Segment;
 import smartMath.Vec2;
 import table.Table;
 import table.obstacles.ObstacleCircular;
+import table.obstacles.ObstacleProximity;
 import table.obstacles.ObstacleRectangular;
 import utils.Log;
 
@@ -22,7 +23,7 @@ public class Graphe implements Service {
     private Config config;
     private ArrayList<ObstacleCircular> listCircu;
     private ArrayList<ObstacleRectangular> listRectangu;
-    private ArrayList<ObstacleCircular> mEnnemies;
+    private ArrayList<ObstacleProximity> mobileEnnemies;
 
     private Table table;
     private CopyOnWriteArrayList<Noeud> nodes;
@@ -41,16 +42,17 @@ public class Graphe implements Service {
      */
 
     public Graphe(Log log, Config config, Table table) {
+        this.log = log;
+        this.config = config;
+        updateConfig();
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
-        this.mEnnemies=new ArrayList<>();
+        this.mobileEnnemies =new ArrayList<>();
         this.table = table;
         createNodes();
         long time1 = System.currentTimeMillis();
         createAretes();
         long time2 = System.currentTimeMillis() - time1;
-        this.log = log;
-        this.config = config;
         log.debug("Time to create graph (ms): " + time2);
     }
 
@@ -95,6 +97,8 @@ public class Graphe implements Service {
         Noeud nodeI;
         Noeud nodeJ;
         ArrayList<Arete> listAretes;
+        //On ajoute aux listes des obstacles circulaires les ennemis et on crée les arêtes
+        log.debug("le nombre d'ennemis confirmés"+ mobileEnnemies.size());
         int n = nodes.size();
         for (int i = 0; i < n; i++) {
             nodeI=nodes.get(i);
@@ -115,7 +119,13 @@ public class Graphe implements Service {
                         intersectsWithRectangularObstacles=true;
                         break;
                     }
+                }for (ObstacleCircular obstacleMobile : mobileEnnemies) {
+                    if(obstacleMobile.intersects(segment)){
+                        intersectsWithRectangularObstacles=true;
+                        break;
+                    }
                 }
+
                 if (!(intersectsWithCircularObstacles) && !(intersectsWithRectangularObstacles)){
                     arete = new Arete(nodeI, nodeJ);
                     listAretes.add(arete);
@@ -182,7 +192,7 @@ public class Graphe implements Service {
      * @return
      */
     public void createNodesAroundCircularObstacles(){
-        //mEnnemies=table.getObstacleManager().getmEnnemies();
+        mobileEnnemies=table.getObstacleManager().getMobileObstacles();
         ArrayList<Vec2> pointsToReturn=new ArrayList<>();
         int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
         /*
@@ -196,8 +206,7 @@ public class Graphe implements Service {
         /*
           On crée des noeuds autour des obstacles mobiles
          */
-
-        for(ObstacleCircular obstacleCircular : mEnnemies) {
+        for(ObstacleCircular obstacleCircular : mobileEnnemies) {
             Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
             ArrayList<Vec2> l = obstaclecircle.pointsaroundcircle(10);
             pointsToReturn.addAll(l);
@@ -216,6 +225,11 @@ public class Graphe implements Service {
             }
             for(ObstacleCircular obstacleCircular : listCircu){
                 if(!(table.getObstacleManager().isRobotInTable(point)) || table.getObstacleManager().isPositionInObstacle(point,obstacleCircular )){
+                    pointsToReturn.remove(point);
+                }
+            }
+            for(ObstacleCircular ennemy : mobileEnnemies){
+                if(!(table.getObstacleManager().isRobotInTable(point)) || table.getObstacleManager().isPositionInObstacle(point,ennemy )){
                     pointsToReturn.remove(point);
                 }
             }
@@ -243,6 +257,10 @@ public class Graphe implements Service {
      */
 
     public void reInitGraphe(Noeud noeudDepart, Noeud noeudArrive) {
+        if(mobileEnnemies.size()!=0){
+            createNodes();
+            createAretes();
+        }
         for (Noeud node :this.getNodes()) {
             node.setPred(null);
             node.setCout(-1);
@@ -261,6 +279,9 @@ public class Graphe implements Service {
         return bonesList;
     }
 
+    public ArrayList<ObstacleProximity> getMobileEnnemies() {
+        return mobileEnnemies;
+    }
 }
 
 

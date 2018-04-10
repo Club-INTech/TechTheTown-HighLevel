@@ -26,9 +26,7 @@ import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import pathfinder.Pathfinding;
-import patternRecognition.PatternRecognition;
 import pfg.config.Config;
-import scripts.AbstractScript;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Vec2;
@@ -752,4 +750,5 @@ public class Robot implements Service {
     public Locomotion getmLocomotion() {
         return mLocomotion;
     }
+
 }

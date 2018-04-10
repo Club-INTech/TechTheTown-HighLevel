@@ -222,6 +222,8 @@ public class ObstacleManager implements Service
 						}
 					}
 				}
+
+
 			}
 
 			// on vérifie si l'on ne voit pas un obstacle confirmé déjà présent
@@ -475,7 +477,8 @@ public class ObstacleManager implements Service
 			out.newLine();
 			out.write("Position du robot (table) :" + pos);
 
-			if (Math.abs(ennemyPos.getY()) < (mEnnemyRadius + mRobotRadius + 20) && Math.abs(ennemyPos.getX()) < (distance + mEnnemyRadius + mRobotRadius)) {
+			if (Math.abs(ennemyPos.getY()) < (mEnnemyRadius + 10) &&
+					Math.abs(ennemyPos.getX()) < (distance + mEnnemyRadius)){
 				out.newLine();
 				out.write("Condition rectangle vérifiée");
 				out.newLine();

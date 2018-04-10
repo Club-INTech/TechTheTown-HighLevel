@@ -1,5 +1,11 @@
 package tests;
 
+import exceptions.BadVersionException;
+import exceptions.BlockedActuatorException;
+import exceptions.ExecuteException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
+import exceptions.Locomotion.PointInObstacleException;
+import exceptions.Locomotion.UnableToMoveException;
 import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
@@ -77,6 +83,13 @@ public class JUnit_IA extends JUnit_Test{
 
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+        @Test
+        public void ennemyAvoid(){
+            ia.getGraph().getNodes();
+            for(Node node : ia.getGraph().getNodes()){
+                System.out.println(node);
             }
         }
     }

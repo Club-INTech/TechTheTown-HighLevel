@@ -130,6 +130,7 @@ public class Pathfinding implements Service {
      */
     public ArrayList<Vec2> findmyway(Vec2 positionDepart, Vec2 positionArrive) throws PointInObstacleException, UnableToMoveException, NoPathFound {
 
+
         removeObstacle();
         long time1 = System.currentTimeMillis();
 
@@ -138,6 +139,7 @@ public class Pathfinding implements Service {
         Noeud noeudDepart = new Noeud(positionDepart, 0, 0, new ArrayList<>());
         Noeud noeudArrive = new Noeud(positionArrive, 0, 0, new ArrayList<>());
         Noeud noeudCourant;
+        this.getGraphe().reInitGraphe(noeudDepart, noeudArrive);
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
@@ -213,7 +215,6 @@ public class Pathfinding implements Service {
         long time2 = System.currentTimeMillis() - time1;
         log.debug("Time to execute (ms): " + time2);
 
-        this.getGraphe().reInitGraphe(noeudDepart, noeudArrive);
 
         return finalPath;
     }

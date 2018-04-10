@@ -282,9 +282,13 @@ public class Locomotion implements Service {
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
     public void followPath(ArrayList<Vec2> path) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-
-        followPath(path, true);// par defaut, on detecte
-
+        try {
+            followPath(path, true);// par defaut, on detecte
+        }
+        catch (ImmobileEnnemyForOneSecondAtLeast e){
+            Vec2 aim=path.get(path.size()-1);
+            throw new ImmobileEnnemyForOneSecondAtLeast(aim);
+        }
 
     }
 
@@ -390,7 +394,7 @@ public class Locomotion implements Service {
         Vec2 aim = highLevelPosition.plusNewVector(new Vec2(1000.0, angle));
         finalAim = aim;
 
-            moveToPointHandledExceptions(aim, true, expectWallImpact, true, mustDetect);
+        moveToPointHandledExceptions(aim, true, expectWallImpact, true, mustDetect);
         isRobotMovingForward = false;
         isRobotMovingBackward = false;
     }
@@ -565,11 +569,7 @@ public class Locomotion implements Service {
                     if(basicDetection){
                         throw new UnexpectedObstacleOnPathException();
                     }
-                    else{
-                        ImmobileEnnemyForOneSecondAtLeast e=new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
-                        e.setAim(aim);
-                        throw new ImmobileEnnemyForOneSecondAtLeast(aim);
-                    }
+
                 }
 
             }
@@ -580,22 +580,18 @@ public class Locomotion implements Service {
                     if (!turnOnly) {
                         try{
                             detectEnemyAtDistance(detectionDistance, aim.minusNewVector(highLevelPosition));
-
                         }
                         catch(InterruptedException e){
                             e.printStackTrace();
                         }
-
-                        } else {
+                    }
+                    else {
                         try{
                             detectEnemyArroundPosition(detectionRay);
                         }
                         catch (InterruptedException e){
                             e.printStackTrace();
                         }
-
-
-
                     }
                 } else {
                     basicDetect();
@@ -687,13 +683,14 @@ public class Locomotion implements Service {
      */
     public void detectEnemyArroundPosition(int distance) throws UnexpectedObstacleOnPathException,InterruptedException,ImmobileEnnemyForOneSecondAtLeast {
         int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
+        log.debug("closestEnnemy : "+closest);
         if (closest <= distance && closest > -150) {
             log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de "
                     + table.getObstacleManager().distanceToClosestEnemy(highLevelPosition) + " mm)");
             immobilise();
             Thread.sleep(1000);
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
-            if(closest <= distance && closest > -15){
+            if(closest <= distance && closest > -150){
                 table.getObstacleManager().getmEnnemies().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
@@ -715,9 +712,8 @@ public class Locomotion implements Service {
             Thread.sleep(1000);
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
             if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
-                    table.getObstacleManager().getmEnnemies().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
-                    log.debug("l'exception est throw");
-                    throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
+                log.debug("l'exception est throw");
+                throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
 
             throw new UnexpectedObstacleOnPathException();
