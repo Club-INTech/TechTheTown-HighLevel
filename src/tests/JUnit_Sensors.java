@@ -115,7 +115,7 @@ public class JUnit_Sensors extends JUnit_Test
 	{
 		state.robot.setPosition(Table.entryPosition);
 		state.robot.setOrientation(Table.entryOrientation);
-		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+		state.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
 		state.robot.goTo(new Vec2(0,1000));
 		log.debug("Test d'arret lors de l'execution d'un script");
 		log.debug("Orientation :" + state.robot.getOrientation());
@@ -127,43 +127,51 @@ public class JUnit_Sensors extends JUnit_Test
 		state.robot.setPosition(Table.entryPosition);
 		state.robot.setOrientation(Table.entryOrientation);
 		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-		try {
-			state.robot.followPath(state.robot.getPathfinding().findmyway(state.robot.getPosition(),new Vec2(0,1000)));
-		} catch (UnableToMoveException e) {
-			e.printStackTrace();
-		} catch (ImmobileEnnemyForOneSecondAtLeast e) {
-			boolean ennemyDodged=false;
-			while (!ennemyDodged) {
-				log.debug("PositionAIMtestEvitement : " + e.getAim());
-				try {
-					ArrayList<Vec2> pathToFollow = state.robot.getPathfinding().findmyway(state.robot.getPosition(), e.getAim());
-					state.robot.followPath(pathToFollow);
-					ennemyDodged=true;
-				} catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
-					log.debug("L'ennemi est toujours là");
-				} catch (PointInObstacleException e1) {
-					e1.printStackTrace();
-				} catch (UnableToMoveException e1) {
-					log.critical("UnableToMoveException");
-					e1.printStackTrace();
-				} catch (NoPathFound noPathFound) {
-					log.critical("NoPathFound");
-					noPathFound.printStackTrace();
-				} finally {
+		Vec2[] positionList=new Vec2[]{
+				new Vec2(0,1000),
+				new Vec2(1300,1800),
+				new Vec2(200,500)
+				};
+
+		for (Vec2 position : positionList) {
+			try {
+				state.robot.followPath(state.robot.getPathfinding().findmyway(state.robot.getPosition(), position));
+			} catch (UnableToMoveException e) {
+				e.printStackTrace();
+			} catch (ImmobileEnnemyForOneSecondAtLeast e) {
+				boolean ennemyDodged = false;
+				while (!ennemyDodged) {
+					log.debug("PositionAIMtestEvitement : " + e.getAim());
 					try {
-						Thread.sleep(50);
-					} catch (InterruptedException e1) {
+						ArrayList<Vec2> pathToFollow = state.robot.getPathfinding().findmyway(state.robot.getPosition(), e.getAim());
+						state.robot.followPath(pathToFollow);
+						ennemyDodged = true;
+					} catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+						log.debug("L'ennemi est toujours là");
+					} catch (PointInObstacleException e1) {
 						e1.printStackTrace();
+					} catch (UnableToMoveException e1) {
+						log.critical("UnableToMoveException");
+						e1.printStackTrace();
+					} catch (NoPathFound noPathFound) {
+						log.critical("NoPathFound");
+						noPathFound.printStackTrace();
+					} finally {
+						try {
+							Thread.sleep(50);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
 					}
 				}
-			}
 
-		} catch (PointInObstacleException e) {
-			log.debug("PointInObstacle!!!");
-			e.printStackTrace();
-		} catch (NoPathFound noPathFound) {
-			log.debug("noPathFound");
-			noPathFound.printStackTrace();
+			} catch (PointInObstacleException e) {
+				log.debug("PointInObstacle!!!");
+				e.printStackTrace();
+			} catch (NoPathFound noPathFound) {
+				log.debug("noPathFound");
+				noPathFound.printStackTrace();
+			}
 		}
 	}
 
