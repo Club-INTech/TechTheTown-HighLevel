@@ -320,11 +320,6 @@ public class ThreadEth extends AbstractThread implements Service {
             output.write(mess, 0, mess.length());
             output.flush();
 
-            if (debug) {
-                outOrders.write(mess);
-                outOrders.newLine();
-            }
-
         } catch (SocketException e) {
             log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
             try {
@@ -338,9 +333,19 @@ public class ThreadEth extends AbstractThread implements Service {
             }
             e.printStackTrace();
         } catch (IOException except) {
-            log.debug("LL ne répond pas, on shutdown");
+            log.critical("LL ne répond pas, on shutdown");
             shutdown = true;
             except.printStackTrace();
+        }
+
+        if (debug) {
+            try {
+                outOrders.write(mess);
+                outOrders.newLine();
+            } catch (IOException e) {
+                log.debug("On n'arrive pas à écrire dans le fichier de debug orders");
+                e.printStackTrace();
+            }
         }
 
         /* Réponse du LL (listener dans le run) */
@@ -398,8 +403,7 @@ public class ThreadEth extends AbstractThread implements Service {
             }
             e1.printStackTrace();
         } catch (Exception except2) {
-            log.debug("LL ne répond pas, on shutdown");
-            shutdown = true;
+            log.debug("Exception pour écrire dans les fichiers de debug orders");
             except2.printStackTrace();
         }
         return inputLines;
