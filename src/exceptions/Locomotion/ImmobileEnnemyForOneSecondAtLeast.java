@@ -4,17 +4,17 @@ import smartMath.Vec2;
 
 public class ImmobileEnnemyForOneSecondAtLeast extends Exception {
 
-    Vec2 aim;
+    Vec2 finalAim;
     public ImmobileEnnemyForOneSecondAtLeast(Vec2 aim) {
         super();
-        this.aim=aim;
+        this.finalAim=aim;
     }
 
     public Vec2 getAim() {
-        return aim;
+        return finalAim;
     }
 
     public void setAim(Vec2 aim) {
-        this.aim = aim;
+        this.finalAim = aim;
     }
 }

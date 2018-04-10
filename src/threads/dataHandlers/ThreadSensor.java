@@ -69,6 +69,9 @@ public class ThreadSensor extends AbstractThread
      * INFOS DES SENSORS *
      *********************/
 
+    /** Rayon de notre robot */
+    private int ourRadius;
+
     /** Rayon du robot adverse */
     private int enRadius;
 
@@ -241,7 +244,7 @@ public class ThreadSensor extends AbstractThread
         Vec2 posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
         if (posObjectFromCenterRobot.getA() < 3 * Math.PI / 4 && posObjectFromCenterRobot.getA() > Math.PI / 4) { // pour éviter les faux obstacles
             posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA() - Math.PI / 2);
-            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius+ourRadius+10, lifetimeForUntestedObstacle);
         }
     }
     /** Ajoute un obstacle derrière le robot, avec les deux capteurs ayant détecté quelque chose */
@@ -260,7 +263,7 @@ public class ThreadSensor extends AbstractThread
         if (posObjectFromCenterRobot.getA() < 3 * Math.PI / 4 && posObjectFromCenterRobot.getA() > Math.PI / 4) { // pour éviter les faux obstacles
             posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA() - Math.PI / 2);
             posObjectFromCenterRobot.setX(posObjectFromCenterRobot.getX() * -1);
-            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius+ourRadius+10, lifetimeForUntestedObstacle);
         }
     }
 
@@ -287,7 +290,7 @@ public class ThreadSensor extends AbstractThread
             posObjectFromCenterRobot = posObjectFromSensorFR.plusNewVector(sensorFR.getVecteur()); //sensor avant droit
         }
 
-        mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+        mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius+ourRadius+10, lifetimeForUntestedObstacle);
     }
 
     /** Ajoute un obstacle derrière le robot, avec un seul capteur ayant détecté quelque chose
@@ -311,7 +314,7 @@ public class ThreadSensor extends AbstractThread
             posObjectFromCenterRobot = posObjectFromSensorBR.plusNewVector(sensorBR.getVecteur());     //sensor arrière droit
             posObjectFromCenterRobot.setY(posObjectFromCenterRobot.getY()*-1);
         }
-        mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+        mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius+ourRadius+10, lifetimeForUntestedObstacle);
     }
 
     /** P'tite methode pour print le debug des capteurs
@@ -450,6 +453,7 @@ public class ThreadSensor extends AbstractThread
 	public void updateConfig()
 	{
         this.symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
+        //this.ourRadius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         this.enRadius = config.getInt(ConfigInfoRobot.ROBOT_EN_RADIUS);
         this.maxSensorRange = config.getInt(ConfigInfoRobot.MAX_SENSOR_RANGE);
         this.minSensorRange = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGE);

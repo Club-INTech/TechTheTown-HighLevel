@@ -107,7 +107,7 @@ public abstract class Node {
         if(e instanceof ImmobileEnnemyForOneSecondAtLeast ){
             Vec2 positionRobot=gameState.robot.getPosition();
             Vec2 aim=((ImmobileEnnemyForOneSecondAtLeast) e).getAim();
-            ArrayList<Vec2> pathTofollow= null;
+            ArrayList<Vec2> pathTofollow= new ArrayList<>();
             try {
                 pathTofollow = pathfinding.findmyway(positionRobot,aim);
             } catch (PointInObstacleException e1) {

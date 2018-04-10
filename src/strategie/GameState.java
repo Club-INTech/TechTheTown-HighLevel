@@ -346,4 +346,5 @@ public class GameState implements Service
             this.reussitesTourArriere[positionIdealeDansLaTour] = value;
         }
     }
+
 }

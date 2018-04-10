@@ -282,9 +282,13 @@ public class Locomotion implements Service {
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
     public void followPath(ArrayList<Vec2> path) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-
-        followPath(path, true);// par defaut, on detecte
-
+        try {
+            followPath(path, true);// par defaut, on detecte
+        }
+        catch (ImmobileEnnemyForOneSecondAtLeast e){
+            Vec2 aim=path.get(path.size()-1);
+            throw new ImmobileEnnemyForOneSecondAtLeast(aim);
+        }
 
     }
 
@@ -580,11 +584,6 @@ public class Locomotion implements Service {
                         catch(InterruptedException e){
                             e.printStackTrace();
                         }
-                        catch(ImmobileEnnemyForOneSecondAtLeast e ){
-                            e.setAim(aim);
-                            log.debug("aimImmobileEnnemySecondAtLeast : " + e.getAim());
-                            throw new ImmobileEnnemyForOneSecondAtLeast(aim);
-                        }
                     }
                     else {
                         try{
@@ -593,9 +592,6 @@ public class Locomotion implements Service {
                         catch (InterruptedException e){
                             e.printStackTrace();
                         }
-
-
-
                     }
                 } else {
                     basicDetect();
@@ -716,7 +712,6 @@ public class Locomotion implements Service {
             Thread.sleep(1000);
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
             if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
-                table.getObstacleManager().getmEnnemies().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
                 log.debug("l'exception est throw");
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
