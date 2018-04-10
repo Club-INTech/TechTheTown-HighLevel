@@ -31,7 +31,8 @@ import utils.Log;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.sql.Time;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -79,9 +80,25 @@ public class ThreadEth extends AbstractThread implements Service {
     private long timeRef;
 
     /**
+     * Emplacement des fichiers
+     */
+    private File ordersFileTmp;
+    private File ordersFile;
+    private File debugFileTmp;
+    private File debugFile;
+    private File positionFileTmp;
+    private File positionFile;
+    private File eventFileTmp;
+    private File eventFile;
+    private File fullDebugFileTmp;
+    private File fullDebugFile;
+    private File sensorUSFileTmp;
+    private File sensorUSFile;
+
+    /**
      * Buffer pour fichiers de debug
      */
-    private BufferedWriter outStandard;
+    private BufferedWriter outOrders;
     private BufferedWriter outDebug;
     private BufferedWriter outPosition;
     private BufferedWriter outEvent;
@@ -130,49 +147,55 @@ public class ThreadEth extends AbstractThread implements Service {
         this.name = "Teensy";
         if (debug) {
             try {
-                File file = new File("orders.txt");
-                File fileDebug = new File("debugLL.txt");
-                File position = new File("debugPosition.txt");
-                File event = new File("debugEvent.txt");
-                File fulldebug = new File("fullDebug.txt");
-                File sensorUS = new File("us.txt");
+                this.ordersFileTmp = new File("/tmp/orders.txt");
+                this.ordersFile = new File("./orders.txt");
+                this.debugFileTmp = new File("/tmp/debugLL.txt");
+                this.debugFile = new File("./debugLL.txt");
+                this.positionFileTmp = new File("/tmp/debugPosition.txt");
+                this.positionFile = new File("./debugPosition.txt");
+                this.eventFileTmp = new File("/tmp/debugEvent.txt");
+                this.eventFile = new File("./debugEvent.txt");
+                this.fullDebugFileTmp = new File("/tmp/fullDebug.txt");
+                this.fullDebugFile = new File("./fullDebug.txt");
+                this.sensorUSFileTmp = new File("/tmp/us.txt");
+                this.sensorUSFile = new File("./us.txt");
 
-                if (!file.exists()) {
-                    file.createNewFile();
+                if (!this.ordersFileTmp.exists()) {
+                    this.ordersFileTmp.createNewFile();
                 }
-                if (!fileDebug.exists()) {
-                    fileDebug.createNewFile();
+                if (!this.debugFileTmp.exists()) {
+                    this.debugFileTmp.createNewFile();
                 }
-                if (!position.exists()) {
-                    position.createNewFile();
+                if (!this.positionFileTmp.exists()) {
+                    this.positionFileTmp.createNewFile();
                 }
-                if (!event.exists()) {
-                    event.createNewFile();
+                if (!this.eventFileTmp.exists()) {
+                    this.eventFileTmp.createNewFile();
                 }
-                if (!fulldebug.exists()) {
-                    fulldebug.createNewFile();
+                if (!this.fullDebugFileTmp.exists()) {
+                    this.fullDebugFileTmp.createNewFile();
                 }
-                if (!sensorUS.exists()) {
-                    sensorUS.createNewFile();
+                if (!this.sensorUSFileTmp.exists()) {
+                    this.sensorUSFileTmp.createNewFile();
                 }
-                outStandard = new BufferedWriter(new FileWriter(file));
-                outStandard.newLine();
-                outDebug = new BufferedWriter(new FileWriter(fileDebug));
+                outOrders = new BufferedWriter(new FileWriter(this.ordersFileTmp));
+                outOrders.newLine();
+                outDebug = new BufferedWriter(new FileWriter(this.debugFileTmp));
                 outDebug.newLine();
-                outPosition = new BufferedWriter(new FileWriter(position));
+                outPosition = new BufferedWriter(new FileWriter(this.positionFileTmp));
                 outPosition.newLine();
-                outEvent = new BufferedWriter(new FileWriter(event));
+                outEvent = new BufferedWriter(new FileWriter(this.eventFileTmp));
                 outEvent.newLine();
-                fullDebug = new BufferedWriter(new FileWriter(fulldebug));
+                fullDebug = new BufferedWriter(new FileWriter(this.fullDebugFileTmp));
                 fullDebug.newLine();
-                outSensor = new BufferedWriter(new FileWriter(sensorUS));
-
+                outSensor = new BufferedWriter(new FileWriter(this.sensorUSFileTmp));
+                outSensor.newLine();
             } catch (IOException e) {
                 log.critical("Manque de droits pour l'output");
                 e.printStackTrace();
             }
         } else {
-            this.outStandard = null;
+            this.outOrders = null;
             this.outDebug = null;
         }
         updateConfig();
@@ -298,8 +321,8 @@ public class ThreadEth extends AbstractThread implements Service {
             output.flush();
 
             if (debug) {
-                outStandard.write(mess);
-                outStandard.newLine();
+                outOrders.write(mess);
+                outOrders.newLine();
             }
 
         } catch (SocketException e) {
@@ -326,15 +349,15 @@ public class ThreadEth extends AbstractThread implements Service {
                 inputLines[i] = waitAndGetResponse();
 
                 if (debug) {
-                    outStandard.write("\t" + inputLines[i]);
-                    outStandard.newLine();
+                    outOrders.write("\t" + inputLines[i]);
+                    outOrders.newLine();
                 }
 
                 if (inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) {
                     log.critical("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                     if (debug) {
-                        outStandard.write("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
-                        outStandard.newLine();
+                        outOrders.write("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                        outOrders.newLine();
                     }
 
                     while ((inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) && tries < 5) {
@@ -356,7 +379,7 @@ public class ThreadEth extends AbstractThread implements Service {
             }
 
             if (nb_line_response != 0) {
-                outStandard.newLine();
+                outOrders.newLine();
             }
 
             waitForAResponse();
@@ -388,6 +411,39 @@ public class ThreadEth extends AbstractThread implements Service {
         Thread.currentThread().setPriority(10);
         createInterface();
         log.debug("ThreadEth started");
+        Runtime.getRuntime().addShutdownHook(new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try {
+                    fullDebug.flush();
+                    fullDebug.close();
+                    outEvent.flush();
+                    outEvent.close();
+                    outSensor.flush();
+                    outSensor.close();
+                    outPosition.flush();
+                    outPosition.close();
+                    outDebug.flush();
+                    outDebug.close();
+                    outOrders.flush();
+                    outOrders.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Files.copy(fullDebugFileTmp.toPath(), fullDebugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(eventFileTmp.toPath(), eventFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(sensorUSFileTmp.toPath(), sensorUSFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         while (!shutdown) {
             try {
