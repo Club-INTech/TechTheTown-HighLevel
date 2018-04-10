@@ -51,14 +51,13 @@ public class ActiveAbeille extends AbstractScript {
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution ActiveAbeille version "+versionToExecute+" //////////");
+        Vec2 corner = new Vec2(1500, 2000);
+        Vec2 directionToGo = (corner.minusNewVector(actualState.robot.getPosition()));
+        double prodScal = directionToGo.dot(new Vec2(100.0, actualState.robot.getOrientation()));
         if(versionToExecute==0) {
             //On vérifie quel bras de l'abeille on va devoir utiliser, à l'aide d'un produit scalaire
-            Vec2 entry = new Vec2(this.xEntry, this.yEntry);
-            Vec2 directionToGo = (entry.minusNewVector(actualState.robot.getPosition()));
-            double prodScal = directionToGo.dot(new Vec2(100.0, actualState.robot.getOrientation()));
             if (prodScal > 0) {
                 //ON UTILISE LE BRAS AVANT
-
                 //On disable le hook pour le bras arrière
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE);
@@ -102,10 +101,11 @@ public class ActiveAbeille extends AbstractScript {
          *  on avance un petit peu
          * et on fait la même suite d'actions*/
         else if(versionToExecute==1){
-            if(actualState.robot.getOrientation()>0 &&actualState.robot.getOrientation()<Math.PI ) {
+            if(prodScal>0) {
                 actualState.robot.turn(Math.PI/4);
                 actualState.robot.moveLengthwise(distanceAbeille);
                 //Le hook est normalement activé par l'IA
+                actualState.robot.turn(Math.PI/2);
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                 actualState.robot.goTo(new Vec2(xExit,yExit));
             }
@@ -113,6 +113,7 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.robot.turn(5*Math.PI/4);
                 actualState.robot.moveLengthwise(-distanceAbeille);
                 //Le hook est normalement activé par l'IA
+                actualState.robot.turn(-Math.PI/2);
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
                 actualState.robot.goTo(new Vec2(xExit,yExit));
             }
