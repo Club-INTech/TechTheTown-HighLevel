@@ -1,6 +1,7 @@
 package strategie.IA;
 
 import container.Service;
+import enums.ConfigInfoRobot;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -11,13 +12,17 @@ import exceptions.NoPathFound;
 import hook.HookFactory;
 import hook.HookNames;
 import pathfinder.Pathfinding;
+import pfg.config.Config;
 import scripts.*;
 import strategie.GameState;
+import utils.Log;
 
 import java.util.ArrayList;
 
 public class IA implements Service {
 
+    private Log log;
+    private Config config;
     private GameState gameState;
     private ScriptManager scriptManager;
     private Graph graph;
@@ -28,7 +33,9 @@ public class IA implements Service {
 
     /** Permet de s'adapter au déroulement d'un match grace à un graphe de décision. */
 
-    public IA(GameState gameState, ScriptManager scriptManager, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException, UnableToMoveException, PointInObstacleException, NoPathFound {
+    public IA(Log log, Config config, GameState gameState, ScriptManager scriptManager, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException, UnableToMoveException, PointInObstacleException, NoPathFound {
+        this.log = log;
+        this.config = config;
         this.gameState = gameState;
         this.scriptManager = scriptManager;
         this.pathfinding = pathfinding;
@@ -41,14 +48,14 @@ public class IA implements Service {
     /** Créer les noeuds du graphe de décision. */
 
     public ArrayList<Node> createNodes() throws BadVersionException {
-        Node pattern = new Pattern(0, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node abeille = new Abeille(1, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node panneau = new Panneau(0, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node takeCubes = new TakeCubes(0, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node takeCubes2 = new TakeCubes(1, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node takeCubes3 = new TakeCubes(2, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node deposeCubes = new DeposeCubes(0, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node deposeCubes2 = new DeposeCubes(0, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node pattern = new Pattern("Pattern",0, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node abeille = new Abeille("Abeille",1, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node panneau = new Panneau("Panneau",0, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node takeCubes = new TakeCubes("TakeCubes",0, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node takeCubes2 = new TakeCubes("TakeCubes",1, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node takeCubes3 = new TakeCubes("TakeCubes",2, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node deposeCubes = new DeposeCubes("DeposeCube",0, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node deposeCubes2 = new DeposeCubes("DeposeCube",1, null, scriptManager, gameState,pathfinding,hookFactory);
 
         ArrayList<Node> nodes = new ArrayList<>();
         nodes.add(pattern);
@@ -76,7 +83,7 @@ public class IA implements Service {
             if(u1.find(curentEdge.getNode1().getId()) != u1.find(curentEdge.getNode2().getId())){
                 bestEdges.add(curentEdge);
                 u1.union(curentEdge.getNode1().getId(), curentEdge.getNode2().getId());
-                if(curentEdge.getNode1().toString().equals("TakeCubes")||curentEdge.getNode2().toString().equals("TakeCubes")){
+                if(curentEdge.getNode1().getName().equals("TakeCubes")||curentEdge.getNode2().getName().equals("TakeCubes")){
                     nb_tas_pris++;
                     graph.updateEdgesCost(nb_tas_pris);
                 }
@@ -114,6 +121,13 @@ public class IA implements Service {
         hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE, HookNames.ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE);
         for(Node node : nodesToExecute){
             node.execute(e,gameState);
+        }
+    }
+
+    public void display(){
+        log.debug("Nodes to execute :");
+        for(Node node: nodesToExecute){
+            log.debug(node.toString());
         }
     }
 

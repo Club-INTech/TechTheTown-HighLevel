@@ -24,17 +24,17 @@ public class Edge {
 
     public void updateCost(int nb_tas_pris){
         //        this.cost = node1.getScore()+node2.getScore();
-        if(node1.toString().equals("DeposeCube") || node2.toString().equals("DeposeCube")){
+        if(node1.getName().equals("DeposeCube") || node2.getName().equals("DeposeCube")){
             if(nb_tas_pris == 2){
                 setCost(666666666);
             } else if(nb_tas_pris == 3 || nb_tas_pris ==4){
                 setCost(666666666);
-                if(node1.toString().equals("DeposeCube")){
-                    node1.setVersionToExecute(1);
-                }
-                else {
-                    node2.setVersionToExecute(1);
-                }
+//                if(node1.getName().equals("DeposeCube")){
+//                    node1.setVersionToExecute(1);
+//                }
+//                else {
+//                    node2.setVersionToExecute(1);
+//                }
             }
             else {
                 setCost(0);

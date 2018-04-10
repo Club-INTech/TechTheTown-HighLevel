@@ -77,6 +77,8 @@ public class JUnit_IA extends JUnit_Test{
                 robotReal = container.getService(Robot.class);
                 robotReal.setPosition(Table.entryPosition);
                 robotReal.setOrientation(Table.entryOrientation);
+
+                ia.display();
                 ia.execute(null);
 
             } catch (Exception e) {

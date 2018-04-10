@@ -10,7 +10,6 @@ import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import hook.HookFactory;
-import hook.HookNames;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.AbstractScript;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 
 public abstract class Node {
 
+    protected String name;
     protected ScriptManager scriptManager;
     protected AbstractScript script;
     protected int versionToExecute;
@@ -49,7 +49,8 @@ public abstract class Node {
      * @param gameState
      */
 
-    public Node(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) {
+    public Node(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) {
+        this.name = name;
         this.versionToExecute = versionToExecute;
         this.id = 0;
         this.timeLimit = 0;
@@ -144,12 +145,13 @@ public abstract class Node {
     public abstract void unableToMoveExceptionHandled(UnableToMoveException e);
 
     @Override
-    public abstract String toString() ;
+    public String toString() {
+        return "Nom : "+ getName()+", version : "+getVersionToExecute();
+    }
 
     public Vec2 updatePosition() throws BadVersionException {
         return getScript().entryPosition(getVersionToExecute(),Table.entryPosition).getCenter();
     }
-
 
     public boolean isDone() {
         return isDone;
@@ -170,6 +172,8 @@ public abstract class Node {
     public Vec2 getPosition() {return position;}
 
     public GameState getGameState() {return gameState;}
+
+    public String getName() { return name; }
 
     public void setDone(boolean done) {
         this.isDone = done;

@@ -18,8 +18,8 @@ import java.util.ArrayList;
 
 public class Abeille extends Node {
 
-    public Abeille(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException {
-        super(versionToExecute, nextNodes, scriptManager, gameState, pathfinding, hookFactory);
+    public Abeille(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException {
+        super(name, versionToExecute, nextNodes, scriptManager, gameState, pathfinding, hookFactory);
         this.setScript(scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE));
         this.setScore(50);
         this.setPosition(updatePosition());
@@ -73,12 +73,6 @@ public class Abeille extends Node {
         }
     }
 
-    @Override
-    public String toString () {
-        return "Abeille";
-    }
-
-    @Override
     public void unableToMoveExceptionHandled (UnableToMoveException e){
 
     }

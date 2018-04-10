@@ -18,8 +18,8 @@ import java.util.ArrayList;
 
 public class TakeCubes extends Node {
 
-    public TakeCubes(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException {
-        super(versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory);
+    public TakeCubes(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException {
+        super(name, versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory);
         this.setScript(scriptManager.getScript(ScriptNames.TAKE_CUBES));
         this.setScore(40);
         this.setPosition(updatePosition());
@@ -51,11 +51,6 @@ public class TakeCubes extends Node {
 
     public void exception(Exception e) {
 
-    }
-
-    @Override
-    public String toString() {
-        return "TakeCubes";
     }
 
     @Override
