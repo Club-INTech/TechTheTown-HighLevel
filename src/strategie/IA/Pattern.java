@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class Pattern extends Node{
 
-    public Pattern(int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException {
-        super(versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory);
+    public Pattern(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException {
+        super(name, versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory);
         this.setScore(666);
 //        this.script = scriptManager.getScript(ScriptNames.);
     }
@@ -29,11 +29,6 @@ public class Pattern extends Node{
     @Override
     public void exception(Exception e) {
 
-    }
-
-    @Override
-    public String toString() {
-        return "Pattern";
     }
 
     @Override
