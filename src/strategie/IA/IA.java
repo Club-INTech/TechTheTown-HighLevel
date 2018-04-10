@@ -55,7 +55,7 @@ public class IA implements Service {
         Node takeCubes2 = new TakeCubes("TakeCubes",1, null, scriptManager, gameState,pathfinding,hookFactory);
         Node takeCubes3 = new TakeCubes("TakeCubes",2, null, scriptManager, gameState,pathfinding,hookFactory);
         Node deposeCubes = new DeposeCubes("DeposeCube",0, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node deposeCubes2 = new DeposeCubes("DeposeCube",0, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node deposeCubes2 = new DeposeCubes("DeposeCube",1, null, scriptManager, gameState,pathfinding,hookFactory);
 
         ArrayList<Node> nodes = new ArrayList<>();
         nodes.add(pattern);
@@ -125,6 +125,7 @@ public class IA implements Service {
     }
 
     public void display(){
+        log.debug("Nodes to execute :");
         for(Node node: nodesToExecute){
             log.debug(node.toString());
         }

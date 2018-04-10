@@ -29,12 +29,12 @@ public class Edge {
                 setCost(666666666);
             } else if(nb_tas_pris == 3 || nb_tas_pris ==4){
                 setCost(666666666);
-                if(node1.getName().equals("DeposeCube")){
-                    node1.setVersionToExecute(1);
-                }
-                else {
-                    node2.setVersionToExecute(1);
-                }
+//                if(node1.getName().equals("DeposeCube")){
+//                    node1.setVersionToExecute(1);
+//                }
+//                else {
+//                    node2.setVersionToExecute(1);
+//                }
             }
             else {
                 setCost(0);

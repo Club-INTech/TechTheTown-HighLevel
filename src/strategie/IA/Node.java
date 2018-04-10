@@ -153,7 +153,6 @@ public abstract class Node {
         return getScript().entryPosition(getVersionToExecute(),Table.entryPosition).getCenter();
     }
 
-
     public boolean isDone() {
         return isDone;
     }

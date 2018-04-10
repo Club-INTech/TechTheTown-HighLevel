@@ -8,6 +8,7 @@ import pathfinder.Pathfinding;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
+import table.Table;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,10 @@ public class DeposeCubes extends Node {
         this.setPosition(updatePosition());
     }
 
+    @Override
+    public Vec2 updatePosition() throws BadVersionException {
+        return getScript().entryPosition(0, Table.entryPosition).getCenter();
+    }
 
     public void exception(Exception e) {
 
