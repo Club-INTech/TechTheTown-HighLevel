@@ -95,6 +95,8 @@ public class Graphe implements Service {
         Noeud nodeI;
         Noeud nodeJ;
         ArrayList<Arete> listAretes;
+        //On ajoute aux listes des obstacles circulaires les ennemis et on crée les arêtes
+        listCircu.addAll(mEnnemies);
         int n = nodes.size();
         for (int i = 0; i < n; i++) {
             nodeI=nodes.get(i);
