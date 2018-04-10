@@ -20,6 +20,7 @@
 package threads.dataHandlers;
 
 import enums.ConfigInfoRobot;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import pfg.config.Config;
 import robot.EthWrapper;
 import sensor.Sensor;
@@ -236,7 +237,7 @@ public class ThreadSensor extends AbstractThread
         //TODO facteur 0.8 à changer empiriquement
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
-        int d = Math.abs(sensorFL.getX() - sensorFR.getX());
+        int d = Math.abs(sensorFL.getY() - sensorFR.getY());
         double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d))-Math.PI/2+(config.getDouble(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS)/2);
         int x = (int) (a * Math.cos(alpha));
         int y = (int) (a * Math.sin(alpha));
@@ -254,7 +255,7 @@ public class ThreadSensor extends AbstractThread
         //TODO facteur 0.8 à changer empiriquement
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
-        int d = Math.abs(sensorBL.getX() - sensorBR.getX());
+        int d = Math.abs(sensorBL.getY() - sensorBR.getY());
         double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d))-Math.PI/2+(config.getDouble(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS)/2);
         int x = (int) (a * Math.cos(alpha));
         int y = (int) (a * Math.sin(alpha));
