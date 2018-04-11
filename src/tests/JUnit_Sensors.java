@@ -126,10 +126,10 @@ public class JUnit_Sensors extends JUnit_Test
 	{
 		state.robot.setPosition(Table.entryPosition);
 		state.robot.setOrientation(Table.entryOrientation);
-		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+		state.robot.setLocomotionSpeed(Speed.FAST_ALL);
 		Vec2[] positionList=new Vec2[]{
 				new Vec2(0,1000),
-				new Vec2(200,500)
+				new Vec2(1000,500)
 				};
 
 		for (Vec2 position : positionList) {
@@ -142,7 +142,7 @@ public class JUnit_Sensors extends JUnit_Test
 				while (!ennemyDodged) {
 					log.debug("PositionAIMtestEvitement : " + e.getAim());
 					try {
-						robot.moveLengthwise(-10);
+						robot.moveLengthwise(-20);
 						ArrayList<Vec2> pathToFollow = state.robot.getPathfinding().findmyway(state.robot.getPosition(), e.getAim());
 						state.robot.followPath(pathToFollow);
 						ennemyDodged = true;
@@ -159,7 +159,7 @@ public class JUnit_Sensors extends JUnit_Test
 						noPathFound.printStackTrace();
 					} finally {
 						try {
-							Thread.sleep(50);
+							Thread.sleep(10);
 						} catch (InterruptedException e1) {
 							e1.printStackTrace();
 						}

@@ -60,7 +60,7 @@ public abstract class Obstacle
 	 */
 	public void setPosition(Vec2 position)
 	{
-		this.position = position;
+		this.position = position.clone();
 	}
 	
 	/* (non-Javadoc)

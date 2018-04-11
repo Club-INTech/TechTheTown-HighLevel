@@ -189,7 +189,7 @@ public class ObstacleManager implements Service
 	{
 		//vérification que l'on ne détecte pas un obstacle "normal"
 		if (position.getX()>-1500+mEnnemyRadius && position.getX()<1500-mEnnemyRadius && position.getY()>mEnnemyRadius && position.getY()<2000-mEnnemyRadius  // Hors de la table
-				&& !(position.getX() > 1100 && position.getY() < 600)) // Dans la zone de départ
+				&& !(position.getX() > 1100-mEnnemyRadius && position.getY() < 600+mEnnemyRadius)) // Dans la zone de départ
 		// TODO: Prévoir les cas où l'on détecte des éléments de jeu dans la condition
 		{
 			boolean isThereAnObstacleIntersecting=false;
@@ -198,7 +198,7 @@ public class ObstacleManager implements Service
 				ObstacleProximity obstacle = mUntestedMobileObstacles.get(i);
 
 				//si l'obstacle est deja dans la liste des obstacles non-testés on l'ajoute dans la liste des obstacles
-				if(obstacle.getPosition().distance(position)<obstacle.getRadius())
+				if(obstacle.getPosition().distance(position)<obstacle.getRadius()/3)
 				{
 					isThereAnObstacleIntersecting=true;
 					mUntestedMobileObstacles.get(i).numberOfTimeDetected++;
@@ -225,7 +225,7 @@ public class ObstacleManager implements Service
 			for(int i = 0; i<mMobileObstacles.size(); i++)
 			{
 				ObstacleProximity obstacle = mMobileObstacles.get(i);
-				if(obstacle.getPosition().distance(position) < obstacle.getRadius())
+				if(obstacle.getPosition().distance(position) < obstacle.getRadius()/3)
 				{
 					isThereAnObstacleIntersecting=true;
 
@@ -832,11 +832,6 @@ public class ObstacleManager implements Service
 	public synchronized boolean isObstructed(Vec2 position)
 	{
 		boolean isObstructed = false;
-		for(int i=0; i<mMobileObstacles.size(); i++){
-			if (isPositionInObstacle(position, mMobileObstacles.get(i))) {
-				return true;
-			}
-		}
 		for(int i = 0; i< mCircularObstacle.size(); i++) {
 			if (isPositionInObstacle(position, mCircularObstacle.get(i))) {
 				return true;

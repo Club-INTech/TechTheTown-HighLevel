@@ -36,13 +36,13 @@ public enum Speed implements MotionOrder
 	SLOW_ALL(300, Math.PI/3),
 
 	/** Vitesse standard de déplacement et rotation */
-	MEDIUM_ALL(500,1.6D),
+	MEDIUM_ALL(500,1.6),
 
 	/** vitesse rapide en translation et rotation */
-	FAST_ALL(800,3.2D),
+	FAST_ALL(800,3.2),
 
 	/** vitesse ultra rapide en translation et rotation */
-	ULTRA_FAST_ALL(1200,4D);
+	ULTRA_FAST_ALL(1200,4);
     
     /** vitesse des moteurs lors d'une translation, ce sont ces valeurs qui seront envoyées à la STM */
     public int translationSpeed;
