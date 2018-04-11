@@ -96,6 +96,13 @@ public class ObstacleCircular extends Obstacle
 	 *
 	 * @return le rayon de cet obstacle circulaire.
 	 */
+
+	@Override
+	public void setPosition(Vec2 position){
+		super.setPosition(position);
+		this.circle.getCenter().set(position);
+	}
+
 	public int getRadius()
 	{
 		return (int)circle.getRadius();

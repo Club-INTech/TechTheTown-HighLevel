@@ -400,35 +400,36 @@ public class ThreadSensor extends AbstractThread
             String[] valuesSReceived;
             //ArrayList<Integer> res = new ArrayList<Integer>();
 
-            while(valuesReceived.peek() == null){
+            int attempts=0;
+            while(valuesReceived.peek() == null && attempts<20){
                 Thread.sleep(5);
+                attempts++;
             }
-            String values = valuesReceived.poll();
-            valuesSReceived = values.split(" ");
+            if (attempts<20) {
+                String values = valuesReceived.poll();
+                valuesSReceived = values.split(" ");
 
 
-            for(int i=0; i<nbSensors; i++) {
-                int distance=Integer.parseInt(valuesSReceived[i]);
-                sensorsArray.get(i).setDetectedDistance(distance*10); //on convertit de cm en mm
-            }
-
-            if(symetry) //Inversion gauche/droite pour symétriser
-            {
-                sensorFL.switchValues(sensorFR);
-                sensorBL.switchValues(sensorBR);
-            }
-
-            for(int i=0 ; i<nbSensors ; i++)
-            {
-                // On met tout les capteurs qui detectent un objet trop proche du robot ou à plus de maxSensorRange a 0
-                // TODO : a passer en traitement de bas niveau ? Non, ce traitement peut dépendre de la façon dont on calcule la position adverse
-
-                if ( sensorsArray.get(i).getDetectedDistance() > sensorsArray.get(i).getMaximalValidDetectionDistance())
-                {
-                    sensorsArray.get(i).setDetectedDistance(0);
+                for (int i = 0; i < nbSensors; i++) {
+                    int distance = Integer.parseInt(valuesSReceived[i]);
+                    sensorsArray.get(i).setDetectedDistance(distance * 10); //on convertit de cm en mm
                 }
-                else if(sensorsArray.get(i).getDetectedDistance() < sensorsArray.get(i).getMinimalValidDetectionDistance()) {
-                    sensorsArray.get(i).setDetectedDistance(0);
+
+                if (symetry) //Inversion gauche/droite pour symétriser
+                {
+                    sensorFL.switchValues(sensorFR);
+                    sensorBL.switchValues(sensorBR);
+                }
+
+                for (int i = 0; i < nbSensors; i++) {
+                    // On met tout les capteurs qui detectent un objet trop proche du robot ou à plus de maxSensorRange a 0
+                    // TODO : a passer en traitement de bas niveau ? Non, ce traitement peut dépendre de la façon dont on calcule la position adverse
+
+                    if (sensorsArray.get(i).getDetectedDistance() > sensorsArray.get(i).getMaximalValidDetectionDistance()) {
+                        sensorsArray.get(i).setDetectedDistance(0);
+                    } else if (sensorsArray.get(i).getDetectedDistance() < sensorsArray.get(i).getMinimalValidDetectionDistance()) {
+                        sensorsArray.get(i).setDetectedDistance(0);
+                    }
                 }
             }
         }

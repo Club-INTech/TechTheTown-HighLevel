@@ -171,7 +171,6 @@ public class ObstacleManager implements Service
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-650, 540), 87 + mRobotRadius + d)));
 
 		/**Récupérateur des eaux usées*/
-		/**Récupérateur des eaux usées*/
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 1500,840), 105 + mRobotRadius)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -1500, 840), 105 + mRobotRadius)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 890,2000), 105 + mRobotRadius)));
@@ -199,11 +198,11 @@ public class ObstacleManager implements Service
 				ObstacleProximity obstacle = mUntestedMobileObstacles.get(i);
 
 				//si l'obstacle est deja dans la liste des obstacles non-testés on l'ajoute dans la liste des obstacles
-				if(obstacle.position.distance(position)<obstacle.getRadius()/2)
+				if(obstacle.getPosition().distance(position)<obstacle.getRadius())
 				{
 					isThereAnObstacleIntersecting=true;
 					mUntestedMobileObstacles.get(i).numberOfTimeDetected++;
-					mUntestedMobileObstacles.get(i).position.set(position);
+					mUntestedMobileObstacles.get(i).setPosition(position);
 					mUntestedMobileObstacles.get(i).setRadius(radius);
 					mUntestedMobileObstacles.get(i).setLifeTime(lifetime);
 
@@ -226,12 +225,12 @@ public class ObstacleManager implements Service
 			for(int i = 0; i<mMobileObstacles.size(); i++)
 			{
 				ObstacleProximity obstacle = mMobileObstacles.get(i);
-				if(obstacle.position.distance(position) < obstacle.getRadius()/2)
+				if(obstacle.getPosition().distance(position) < obstacle.getRadius())
 				{
 					isThereAnObstacleIntersecting=true;
 
 					mMobileObstacles.get(i).numberOfTimeDetected++;
-					mMobileObstacles.get(i).position.set(position);
+					mMobileObstacles.get(i).setPosition(position);
 					mMobileObstacles.get(i).setRadius(radius);
 					mMobileObstacles.get(i).setLifeTime(defaultLifetime);
 
@@ -261,14 +260,16 @@ public class ObstacleManager implements Service
 			if(mMobileObstacles.get(i).getOutDatedTime() < System.currentTimeMillis())
 			{
 				log.debug("Retire l'obstacle :" + mMobileObstacles.get(i).getPosition());
-				mMobileObstacles.remove(i--);
+				mMobileObstacles.remove(i);
+				i--;
 			}
 
 		// enlève les obstacles en attente s'ils sont périmés
 		for(int i = 0; i < mUntestedMobileObstacles.size(); i++)
 			if(mUntestedMobileObstacles.get(i).getOutDatedTime() < System.currentTimeMillis())
 			{
-				mUntestedMobileObstacles.remove(i--);
+				mUntestedMobileObstacles.remove(i);
+				i--;
 			}
 	}
 

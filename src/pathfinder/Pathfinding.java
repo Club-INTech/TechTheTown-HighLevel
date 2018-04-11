@@ -76,47 +76,51 @@ public class Pathfinding implements Service {
      * Retire un tas de cubes du graphes, si le robot les a récupérés.
      */
     public void removeObstacle() {
+        boolean grapheHasToBeRecreated=false;
         if (!this.tasBaseRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_BASE.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasBaseRemoved =true;
             }
         }
         if (!this.tasChateauRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_CHATEAU_EAU.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasChateauRemoved =true;
             }
         }
         if (!this.tasStationEpurationRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_STATION_EPURATION.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasStationEpurationRemoved =true;
             }
         }
         if (!this.tasBaseEnnemiRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_BASE_ENNEMI.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasBaseEnnemiRemoved =true;
             }
         }
         if (!this.tasChateauEnnemiRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_CHATEAU_EAU_ENNEMI.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasChateauEnnemiRemoved =true;
             }
         }
         if (!this.tasStationEpurationEnnemiRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_STATION_EPURATION_ENNEMI.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasStationEpurationEnnemiRemoved =true;
             }
+        }
+        if (grapheHasToBeRecreated){
+            graphe.createGraphe();
         }
     }
 
@@ -131,6 +135,7 @@ public class Pathfinding implements Service {
     public ArrayList<Vec2> findmyway(Vec2 positionDepart, Vec2 positionArrive) throws PointInObstacleException, UnableToMoveException, NoPathFound {
 
         removeObstacle();
+        this.graphe.createGraphe();
         long time1 = System.currentTimeMillis();
 
         /** Déclaration des variables */

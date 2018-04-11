@@ -129,7 +129,6 @@ public class JUnit_Sensors extends JUnit_Test
 		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
 		Vec2[] positionList=new Vec2[]{
 				new Vec2(0,1000),
-				new Vec2(1300,1800),
 				new Vec2(200,500)
 				};
 
@@ -143,12 +142,14 @@ public class JUnit_Sensors extends JUnit_Test
 				while (!ennemyDodged) {
 					log.debug("PositionAIMtestEvitement : " + e.getAim());
 					try {
+						robot.moveLengthwise(-10);
 						ArrayList<Vec2> pathToFollow = state.robot.getPathfinding().findmyway(state.robot.getPosition(), e.getAim());
 						state.robot.followPath(pathToFollow);
 						ennemyDodged = true;
 					} catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
 						log.debug("L'ennemi est toujours là");
 					} catch (PointInObstacleException e1) {
+						log.critical("PointInObstacleException");
 						e1.printStackTrace();
 					} catch (UnableToMoveException e1) {
 						log.critical("UnableToMoveException");
