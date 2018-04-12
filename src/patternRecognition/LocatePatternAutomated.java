@@ -10,7 +10,7 @@ import java.util.List;
 
 public class LocatePatternAutomated {
 
-    private static String pythonCommand="python3";
+    private static String pythonCommand="python";
 
     public static int[] LocatePattern(int[] zoneToPerformLocalisation){
         String data;
