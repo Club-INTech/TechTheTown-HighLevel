@@ -179,6 +179,8 @@ public class TakeCubes extends AbstractScript {
 
 
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, false);
+                stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
+                stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
 
                 if(bras.equals(BrasUtilise.AVANT)){
                     stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);
