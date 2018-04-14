@@ -172,7 +172,7 @@ public class TakeCubes extends AbstractScript {
                 //Si un cube additionnel a été précisé
                 if (additionalCube.getColor()!=Colors.NULL){
                     //On fait aller le robot à la position pour prendre le cube additionnel.
-                    stateToConsider.robot.moveNearPoint(successivesPositionsList[4], longueurBras, direction);
+                    stateToConsider.robot.moveNearPoint(successivesPositionsList[3], longueurBras, direction);
                     //Le robot execute les actions pour prendre le cube
                     takeThisCube(stateToConsider, bras, currentIdealPositionInTower);
                 }
@@ -273,6 +273,11 @@ public class TakeCubes extends AbstractScript {
 
             if (indicePattern !=-2){
                 if (indicePattern != -1) {
+
+                    //On active la pompe, et ouvre les électrovannes
+                    state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
+                    state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
+                    state.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, false);
 
                     boolean cubeBonusAvantPresent = state.isCubeBonusAvantPresent();
                     boolean cubeBonusArrierePresent = state.isCubeBonusArrierePresent();
@@ -402,7 +407,9 @@ public class TakeCubes extends AbstractScript {
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,false);
 
 
+
 //////////////////// LE SCRIPT A FINI SES MOUVEMENTS //////////////////////////
+
 
 
                     scoreFinalCubes = calculScore(true, cubeBonusAvantPresent, state);
@@ -418,14 +425,13 @@ public class TakeCubes extends AbstractScript {
                         state.setCubeBonusArrierePresent(false);
                     }
 
-
                     //On reset les réussites de tours avant et arrières
                     for (int i=0; i<4; i++) {
                         state.setReussitesTourArrière(-1,i);
                         state.setReussitesTourAvant(-1,i);
                     }
 
-                    Vec2 exitPoint = new Vec2(1000,1500);
+                    Vec2 exitPoint = new Vec2(800,1300);
                     if (state.robot.getPosition().distance(exitPoint)>20) {
                         state.robot.goTo(exitPoint);
                     }
