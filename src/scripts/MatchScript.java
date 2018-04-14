@@ -106,7 +106,6 @@ public class MatchScript extends AbstractScript {
 
         if (version==99){
             //Pile cube n°1 et n°2
-            gameState.setTakeCubesBras(BrasUtilise.AVANT);
             TakeCubes tk12 = new TakeCubes(config,log,hookFactory);
             tk12.goToThenExec(120,gameState);
             //Pile cube n°1 et n°2

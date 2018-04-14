@@ -21,6 +21,7 @@ package utils;
 
 import container.Service;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
@@ -42,25 +43,25 @@ public class Log implements Service
 	private Config config;
 
 	/** Redirecteur de chaine de caractères vers le fichier de log. */
-	private FileWriter writer = null;
+	private BufferedWriter writer = null;
 
 	/** Préfixe donnant la couleur en console des messages de debug */
 	private String debugPrefix 	= "Dbg - \u001B[32m";
 
 	/** Préfixe donnant la couleur en console des messages de warning */
-	private String 	warningPrefix 	= "Warn - \u001B[30m";
+	private String warningPrefix = "Warn - \u001B[30m";
 
 	/** Préfixe donnant la couleur en console des messages critiques */
-	private String 	criticalPrefix = "Critical - \u001B[31m";
-	
+	private String criticalPrefix = "Critical - \u001B[31m";
+
 	/** Affixe resettant la couleur actuelle */
 	// Actuellement, on ne met rien, mais on est censé reset la couleur avec \u001B[0m a la fin du messsage.
 	// voir http://stackoverflow.com/questions/5762491/how-to-print-color-in-console-using-system-out-println
-	private String resetColor = "";//"\u001B[0m";
+	private String resetColor = "\u001B[0m";
 
 	/** Vrai s'il faut afficher les messages sur la sortie standard (prend du temps CPU), faux sinon. */
 	private boolean printLogs = true;
-	
+
 	/** Vrai s'il faut sauvegarder les logs dans un fichier. */
 	private boolean saveLogs = true;
 
@@ -72,7 +73,7 @@ public class Log implements Service
 
 	private static boolean stop = false;
 
-	
+
 	/**
 	 * Instancie un nouvveau service de log
 	 *
@@ -82,10 +83,10 @@ public class Log implements Service
 	{
 		this.config = config;
 		updateConfig();
-		
+
 		// crée le fichier de log si on spécifie d'écrire dans un fichcier les logs du robot
 		if(saveLogs)
-			try 
+			try
 			{
 				java.util.GregorianCalendar calendar = new GregorianCalendar();
 				String heure = calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
@@ -98,7 +99,7 @@ public class Log implements Service
 					testRepertoire.mkdir();
 				if(!testFinalRepertoire.exists())
 					testFinalRepertoire.mkdir();
-				writer = new FileWriter(saveFile, true);
+				writer = new BufferedWriter(new FileWriter(saveFile, true));
 			}
 			catch(Exception e)
 			{
@@ -106,9 +107,9 @@ public class Log implements Service
 				critical(e);
 			}
 		debug("Service de log démarré");
-	
+
 	}
-		
+
 	/**
 	 * Méthode à appeler uniquement depuis une méthode statique.
 	 *
@@ -118,8 +119,8 @@ public class Log implements Service
 	{
 		writeToLog("AppelStatic: "+message, debugPrefix, System.out);
 	}
-	
-	
+
+
 	/**
 	 * Affichage de debug, en vert. User-friendly
 	 *
@@ -127,9 +128,9 @@ public class Log implements Service
 	 */
 	public void debug(Object message)
 	{
-			writeToLog(message.toString(), debugPrefix, System.out);
+		writeToLog(message.toString(), debugPrefix, System.out);
 	}
-	
+
 	/**
 	 * Affichage de debug, en vert.
 	 *
@@ -137,22 +138,22 @@ public class Log implements Service
 	 */
 	public void debug(String message)
 	{
-			writeToLog(message, debugPrefix, System.out);
+		writeToLog(message, debugPrefix, System.out);
 	}
 
 	/**
 	 * Affichage de warnings, en orange. User-friendly
-	 * 
+	 *
 	 * @param message message a logguer
 	 */
 	public void warning(Object message)
 	{
-			writeToLog(message.toString(), warningPrefix, System.out);
+		writeToLog(message.toString(), warningPrefix, System.out);
 	}
 
 	/**
 	 * Affichage de warnings, en orange.
-	 * 
+	 *
 	 * @param message message a logguer
 	 */
 	public void warning(String message)
@@ -169,7 +170,7 @@ public class Log implements Service
 	{
 		writeToLog(message.toString(), criticalPrefix, System.out);
 	}
-	
+
 	/**
 	 * Affichage d'erreurs critiques, en rouge.
 	 *
@@ -204,7 +205,7 @@ public class Log implements Service
 		if(saveLogs && !Log.stop)
 			writeToFile(prefix+heure+" "+message+resetColor); // suffixe en \u001B[0m pour que la prochiane ligne soit blanche si on ne spécifie rien
 	}
-	
+
 	/**
 	 * Ecrit le message spécifié dans le fichier de log
 	 *
@@ -216,7 +217,8 @@ public class Log implements Service
 		message += "\n";
 		try
 		{
-		     writer.write(message,0,message.length());
+			writer.write(message);
+			writer.flush();
 		}
 		catch(Exception e)
 		{
@@ -231,7 +233,7 @@ public class Log implements Service
 	public void close()
 	{
 		warning("Fin du log");
-		
+
 		if(saveLogs)
 			try {
 				debug("Sauvegarde du fichier de logs");
@@ -243,7 +245,7 @@ public class Log implements Service
 				e.printStackTrace();
 			}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see container.Service#updateConfig()
 	 */
@@ -273,20 +275,20 @@ public class Log implements Service
 		}
 	}
 
-    /**
-     * Arrête les logs
-     */
-    public static void stop()
-    {
-        stop = true;
-    }
-
-    public String getSavePath(){
-    	return this.saveFile;
+	/**
+	 * Arrête les logs
+	 */
+	public static void stop()
+	{
+		stop = true;
 	}
 
-    public String getFinalSavePath(){
-    	return this.finalSaveFile;
+	public String getSavePath(){
+		return this.saveFile;
+	}
+
+	public String getFinalSavePath(){
+		return this.finalSaveFile;
 	}
 
 }

@@ -43,7 +43,11 @@ public class TakeCubes extends AbstractScript {
     }
 
     private void normalVersions(int indiceTas, GameState stateToConsider) throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
-        BrasUtilise bras;
+        //TODO mettre un choix par orientation du robot par rapport au tas
+        BrasUtilise bras=stateToConsider.getTakeCubesBras();
+
+        //On récupère le tas correspondant à l'indice
+        TasCubes tas = TasCubes.getTasFromID(indiceTas);
         Cubes additionalCube;
         String direction;
         if(!(config.getBoolean(ConfigInfoRobot.SIMULATION))){
@@ -57,10 +61,6 @@ public class TakeCubes extends AbstractScript {
 
         //On récupère l'indice du pattern
         int indicePattern=stateToConsider.getIndicePattern();
-
-        //On récupère le tas correspondant à l'indice
-        TasCubes tas = TasCubes.getTasFromID(indiceTas);
-        bras=stateToConsider.getTakeCubesBras();
 
         //On regarde quel bras on utilise
         if (bras==BrasUtilise.AVANT){
@@ -323,6 +323,10 @@ public class TakeCubes extends AbstractScript {
                     state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
                     state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                     state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT, false);
+                    if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
+                        state.setReussitesTourArrière(1,currentIdealPositionInFrontTower);
+                        state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
+                    }
                     currentIdealPositionInFrontTower++;
 
                     state.robot.moveNearPoint(successivesPositionsList[1], longueurBras, "backward");
@@ -333,6 +337,10 @@ public class TakeCubes extends AbstractScript {
                     state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
                     state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
                     state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE, false);
+                    if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
+                        state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
+                        state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
+                    }
                     currentIdealPositionInBackTower++;
 
                     state.robot.moveNearPoint(successivesPositionsList[2], longueurBras, "forward");
@@ -343,6 +351,10 @@ public class TakeCubes extends AbstractScript {
                     state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
                     state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                     state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT, false);
+                    if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
+                        state.setReussitesTourArrière(1,currentIdealPositionInFrontTower);
+                        state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
+                    }
                     currentIdealPositionInFrontTower++;
 
                     state.robot.moveNearPoint(successivesPositionsList[3], longueurBras, "backward");
@@ -353,6 +365,10 @@ public class TakeCubes extends AbstractScript {
                     state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
                     state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
                     state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE, false);
+                    if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
+                        state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
+                        state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
+                    }
                     currentIdealPositionInBackTower++;
 
                     state.robot.moveNearPoint(successivesPositionsList[4], longueurBras, "forward");
@@ -363,6 +379,10 @@ public class TakeCubes extends AbstractScript {
                     state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
                     state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                     state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT, false);
+                    if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
+                        state.setReussitesTourArrière(1,currentIdealPositionInFrontTower);
+                        state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
+                    }
                     currentIdealPositionInFrontTower++;
 
                     state.robot.moveNearPoint(successivesPositionsList[5], longueurBras, "backward");
@@ -373,6 +393,10 @@ public class TakeCubes extends AbstractScript {
                     state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
                     state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
                     state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE, false);
+                    if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
+                        state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
+                        state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
+                    }
                     currentIdealPositionInBackTower++;
 
                     if (successivesPositionsList.length > 6) {
@@ -384,6 +408,10 @@ public class TakeCubes extends AbstractScript {
                         state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
                         state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                         state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT, false);
+                        if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
+                            state.setReussitesTourArrière(1,currentIdealPositionInFrontTower);
+                            state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
+                        }
                         currentIdealPositionInFrontTower++;
                     }
 
@@ -396,6 +424,10 @@ public class TakeCubes extends AbstractScript {
                         state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
                         state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
                         state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE, false);
+                        if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
+                            state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
+                            state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
+                        }
                         currentIdealPositionInBackTower++;
                     }
 
