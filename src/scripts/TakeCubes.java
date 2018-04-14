@@ -488,6 +488,7 @@ public class TakeCubes extends AbstractScript {
 
     private void takeThisCube(GameState stateToConsider, BrasUtilise bras, int idealPositionInTower) throws InterruptedException{
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
+        stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
         if (bras==BrasUtilise.AVANT) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
@@ -524,6 +525,7 @@ public class TakeCubes extends AbstractScript {
                 stateToConsider.setReussitesTourArrière(0,idealPositionInTower);
             }
         }
+        stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
     }
 
     @Override

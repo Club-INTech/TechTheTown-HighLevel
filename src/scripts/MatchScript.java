@@ -1,5 +1,6 @@
 package scripts;
 
+import enums.ActuatorOrder;
 import enums.BrasUtilise;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
@@ -29,8 +30,9 @@ public class MatchScript extends AbstractScript {
 
             //On active le panneau domotique
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
+            gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             actPD.goToThenExec(0,gameState);
-
+            gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             //On prend le tas de cubes 2
             gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
             TakeCubes tk2 = new TakeCubes(config,log,hookFactory);
