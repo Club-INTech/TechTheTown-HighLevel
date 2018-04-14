@@ -21,6 +21,7 @@ package table.obstacles;
 
 import container.Service;
 import enums.ConfigInfoRobot;
+import enums.TasCubes;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Geometry;
@@ -163,14 +164,10 @@ public class ObstacleManager implements Service
 
 		/** Tas de cubes*/
 		int d = 10;
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(650, 540), 87 + mRobotRadius + d)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(1200, 1190), 87 + mRobotRadius + d)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(400, 1500), 87 + mRobotRadius + d)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-400, 1500), 87 + mRobotRadius + d)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-1200, 1190), 87 + mRobotRadius + d)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2(-650, 540), 87 + mRobotRadius + d)));
+		for (int i=0; i<6; i++) {
+			mCircularObstacle.add(new ObstacleCircular(new Circle(TasCubes.getTasFromID(i).getCoordsVec2(), 87 + mRobotRadius + d)));
+		}
 
-		/**Récupérateur des eaux usées*/
 		/**Récupérateur des eaux usées*/
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 1500,840), 105 + mRobotRadius)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -1500, 840), 105 + mRobotRadius)));
