@@ -20,12 +20,11 @@ public enum TasCubes{
     }
 
     public int[] getCoords(){
-        int[] coords={this.x,this.y};
-        return coords;
+        return new int[]{this.x, this.y};
     }
+
     public Vec2 getCoordsVec2(){
-        Vec2 coords = new Vec2(this.x,this.y);
-        return coords;
+        return new Vec2(this.x,this.y);
     }
 
     public int getID(){

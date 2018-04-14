@@ -1,6 +1,6 @@
 package enums;
 
-import java.util.regex.Pattern;
+import smartMath.Vec2;
 
 public enum Cubes{
     ORANGE(-1,0,Colors.ORANGE),
@@ -32,9 +32,14 @@ public enum Cubes{
     public Colors getColor(){
         return this.color;
     }
+
     public int[] getRelativeCoords(){
         int[] toReturn={this.xRelative, this.yRelative};
         return toReturn;
+    }
+
+    public Vec2 getRelativeCoordsVec2(){
+        return new Vec2(this.xRelative, this.yRelative);
     }
     public static Cubes getCubeFromColor(Colors colorToSearch){
         for (Cubes cube : Cubes.values()){
