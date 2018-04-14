@@ -64,6 +64,12 @@ public class Log implements Service
 	/** Vrai s'il faut sauvegarder les logs dans un fichier. */
 	private boolean saveLogs = true;
 
+	/** Nom du fichier dans lequel on sauvegarde les logs */
+	private String saveFile;
+
+	/** Nom du fichier dans lequel on copie les logs sauvegardés à la fin du script */
+	private String finalSaveFile;
+
 	private static boolean stop = false;
 
 	
@@ -83,10 +89,16 @@ public class Log implements Service
 			{
 				java.util.GregorianCalendar calendar = new GregorianCalendar();
 				String heure = calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE)+":"+calendar.get(Calendar.SECOND);
-				File testRepertoire = new File("logs");
+				File testRepertoire = new File("/tmp/logs");
+				File testFinalRepertoire = new File("./logs");
+				//La auvegarde dans le dossier logs du projet est faite dans le ThreadEth
+				this.saveFile="/tmp/logs/LOG-"+heure+".txt";
+				this.finalSaveFile="./logs/LOG-"+heure+".txt";
 				if(!testRepertoire.exists())
 					testRepertoire.mkdir();
-				writer = new FileWriter("logs/LOG-"+heure+".txt", true); 
+				if(!testFinalRepertoire.exists())
+					testFinalRepertoire.mkdir();
+				writer = new FileWriter(saveFile, true);
 			}
 			catch(Exception e)
 			{
@@ -268,5 +280,13 @@ public class Log implements Service
     {
         stop = true;
     }
+
+    public String getSavePath(){
+    	return this.saveFile;
+	}
+
+    public String getFinalSavePath(){
+    	return this.finalSaveFile;
+	}
 
 }

@@ -105,17 +105,13 @@ public class MatchScript extends AbstractScript {
         }
 
         if (version==99){
-            hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-
             //Pile cube n°1 et n°2
             gameState.setTakeCubesBras(BrasUtilise.AVANT);
             TakeCubes tk12 = new TakeCubes(config,log,hookFactory);
             tk12.goToThenExec(120,gameState);
             //Pile cube n°1 et n°2
 
-            //On évite que les cubes soient poussés vers l'abeille
-            gameState.robot.goTo(new Vec2(970,1100));
-
+            hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
             //On active l'abeille
             ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
             activeAbeille.goToThenExec(0,gameState);

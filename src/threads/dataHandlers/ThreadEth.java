@@ -94,6 +94,8 @@ public class ThreadEth extends AbstractThread implements Service {
     private File fullDebugFile;
     private File sensorUSFileTmp;
     private File sensorUSFile;
+    private File logFileTmp;
+    private File logFile;
 
     /**
      * Buffer pour fichiers de debug
@@ -159,6 +161,8 @@ public class ThreadEth extends AbstractThread implements Service {
                 this.fullDebugFile = new File("./fullDebug.txt");
                 this.sensorUSFileTmp = new File("/tmp/us.txt");
                 this.sensorUSFile = new File("./us.txt");
+                this.logFileTmp = new File(log.getSavePath());
+                this.logFile = new File(log.getFinalSavePath());
 
                 if (!this.ordersFileTmp.exists()) {
                     this.ordersFileTmp.createNewFile();
@@ -443,6 +447,8 @@ public class ThreadEth extends AbstractThread implements Service {
                     Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    Log.stop();
+                    Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
