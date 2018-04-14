@@ -4,6 +4,7 @@ import enums.*;
 import exceptions.*;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -31,7 +32,7 @@ public class TakeCubes extends AbstractScript {
      */
     @Override
     public void execute(int indiceTas, GameState stateToConsider)
-            throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+            throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
         if (indiceTas<6){
             this.normalVersions(indiceTas, stateToConsider);
@@ -42,7 +43,7 @@ public class TakeCubes extends AbstractScript {
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
     }
 
-    private void normalVersions(int indiceTas, GameState stateToConsider) throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+    private void normalVersions(int indiceTas, GameState stateToConsider) throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
         //TODO mettre un choix par orientation du robot par rapport au tas
         BrasUtilise bras=stateToConsider.getTakeCubesBras();
 
@@ -259,7 +260,7 @@ public class TakeCubes extends AbstractScript {
     }
 
 
-    private void specialVersions(int indiceTas, GameState state)  throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+    private void specialVersions(int indiceTas, GameState state)  throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
         if (indiceTas==120){
             if(!(config.getBoolean(ConfigInfoRobot.SIMULATION))){
                 while(!state.isRecognitionDone()){

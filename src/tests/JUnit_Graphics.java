@@ -24,6 +24,7 @@ import enums.Speed;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import graphics.Window;
 import org.junit.Before;
@@ -69,7 +70,7 @@ public class JUnit_Graphics extends JUnit_Test
 	}
 
 	@Test
-	public void testSimpleMove() throws UnableToMoveException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
+	public void testSimpleMove() throws UnableToMoveException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
 		state.robot.setPosition(new Vec2(1200, 400));
 		state.robot.setOrientation(3*Math.PI/4);
 		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);

@@ -24,6 +24,7 @@ import enums.ConfigInfoRobot;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import org.junit.After;
 import org.junit.Before;
@@ -129,7 +130,7 @@ public abstract class JUnit_Test
 		robot.setPosition(Table.entryPosition);
 	}
 
-	public void returnToEntryPosition(GameState state) throws UnableToMoveException, PointInObstacleException,ImmobileEnnemyForOneSecondAtLeast
+	public void returnToEntryPosition(GameState state) throws UnableToMoveException, PointInObstacleException,ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException
 	{
 		try {
 			state.robot.moveToLocation(new Vec2(Table.entryPosition.getX() - 120, Table.entryPosition.getY() + 90), state.table);
