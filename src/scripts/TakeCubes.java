@@ -180,6 +180,13 @@ public class TakeCubes extends AbstractScript {
 
                 stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, false);
 
+                if(bras.equals(BrasUtilise.AVANT)){
+                    stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);
+                }
+                if(bras.equals(BrasUtilise.ARRIERE)){
+                    stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,false);
+                }
+
 
 
 //////////////////// LE SCRIPT A FINI SES MOUVEMENTS //////////////////////////
@@ -247,12 +254,6 @@ public class TakeCubes extends AbstractScript {
             log.critical("Exécution script de récupération des cubes avant que le pattern ait été calculé");
             throw new ExecuteException(new PatternNotYetCalculatedException("Le pattern n'a pas encore été calculé"));
         }
-        if(bras.equals(BrasUtilise.AVANT)){
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);
-        }
-        if(bras.equals(BrasUtilise.ARRIERE)){
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,false);
-        }
     }
 
 
@@ -281,7 +282,6 @@ public class TakeCubes extends AbstractScript {
                     Vec2 secondCubeTas1 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[1]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
                     Vec2 thirdCubeTas1 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[2]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
 
-
                     Vec2 firstCubeTas2 = TasCubes.getTasFromID(2).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[0]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
                     Vec2 secondCubeTas2 = TasCubes.getTasFromID(2).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[1]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
                     Vec2 thirdCubeTas2 = TasCubes.getTasFromID(2).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[2]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
@@ -303,7 +303,6 @@ public class TakeCubes extends AbstractScript {
                             successivesPositionsList = new Vec2[]{firstCubeTas1, firstCubeTas2, secondCubeTas1, secondCubeTas2, thirdCubeTas1, thirdCubeTas2};
                         }
                     }
-
 
                     state.setTourAvantRemplie(true);
                     state.setTourArriereRemplie(true);
@@ -399,6 +398,8 @@ public class TakeCubes extends AbstractScript {
                     state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
                     state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
 
+                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);
+                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,false);
 
 
 //////////////////// LE SCRIPT A FINI SES MOUVEMENTS //////////////////////////
@@ -438,9 +439,6 @@ public class TakeCubes extends AbstractScript {
                 log.critical("Exécution script de récupération des cubes avant que le pattern ait été calculé");
                 throw new ExecuteException(new PatternNotYetCalculatedException("Le pattern n'a pas encore été calculé"));
             }
-
-            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);
-            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,false);
         }
     }
 

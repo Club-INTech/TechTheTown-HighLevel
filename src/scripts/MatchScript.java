@@ -22,17 +22,14 @@ public class MatchScript extends AbstractScript {
     }
 
     @Override
-    public void execute(int versionToexecute,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
-        log.debug("////////// Execution MatchScript version "+versionToexecute+" //////////");
-        if(versionToexecute==0){
+    public void execute(int version,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
+        log.debug("////////// Execution MatchScript version "+version+" //////////");
+        if(version==0){
             hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE, HookNames.ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE);
 
             //On active le panneau domotique
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
             actPD.goToThenExec(0,gameState);
-
-            //gameState.setRecognitionDone(true);
-            //gameState.setIndicePattern(0);
 
             //On prend le tas de cubes 2
             gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
@@ -63,16 +60,10 @@ public class MatchScript extends AbstractScript {
             //On dépose les cubes à la deuxième position
             DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
             dpCubes1.goToThenExec(1, gameState);
-
-            log.debug("Fin MatchScript");
         }
 
-        if(versionToexecute==1){
+        if(version==1){
             hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-
-            //On palie la reconnaissance de couleurs qui est actuellement en travaux
-            gameState.setRecognitionDone(true);
-            gameState.setIndicePattern(0);
 
             //Pile cube n°1
             gameState.setTakeCubesBras(BrasUtilise.AVANT);
@@ -111,10 +102,45 @@ public class MatchScript extends AbstractScript {
             //On dépose les cubes à la deuxième position
             DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
             dpCubes1.goToThenExec(1, gameState);
-
-
-            log.debug("////////// End MatchScript version "+versionToexecute+" //////////");
         }
+
+        if (version==99){
+            hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
+
+            //Pile cube n°1 et n°2
+            gameState.setTakeCubesBras(BrasUtilise.AVANT);
+            TakeCubes tk12 = new TakeCubes(config,log,hookFactory);
+            tk12.goToThenExec(120,gameState);
+            //Pile cube n°1 et n°2
+
+            //On évite que les cubes soient poussés vers l'abeille
+            gameState.robot.goTo(new Vec2(970,1100));
+
+            //On active l'abeille
+            ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
+            activeAbeille.goToThenExec(0,gameState);
+
+            //On dépose les cubes à la première position
+            DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
+            dpCubes0.goToThenExec(0, gameState);
+
+            //Pile cube n°0
+            gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
+            TakeCubes tk0 = new TakeCubes(config,log,hookFactory);
+            tk0.goToThenExec(0,gameState);
+            //Pile cube n°0
+
+            //Interrupteur
+            ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
+            actPD.goToThenExec(0,gameState);
+            //Interrupteur
+
+            //On dépose les cubes à la deuxième position
+            DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
+            dpCubes1.goToThenExec(1, gameState);
+
+        }
+        log.debug("////////// End MatchScript version "+version+" //////////");
     }
 
     @Override
