@@ -30,19 +30,19 @@ public enum Speed implements MotionOrder
 	//TODO régler les valeurs de vitesse en translations et rotations avec des phases de test, décider des combinaisons de vitesses inutiles
 	
 	/** Vitesse ultra lente de translation, ultra lente en rotation */
-	ULTRA_SLOW_ALL(85,Math.PI/8),
+	ULTRA_SLOW_ALL(100,0.5D),
 
 	/** vitesse lente en translation, lente en rotation */
-	SLOW_ALL(300, Math.PI/3),
+	SLOW_ALL(300, 1D),
 
 	/** Vitesse standard de déplacement et rotation */
-	MEDIUM_ALL(500,1.6D),
+	MEDIUM_ALL(500,2D),
 
 	/** vitesse rapide en translation et rotation */
-	FAST_ALL(800,3.2D),
+	FAST_ALL(700,2.5D),
 
 	/** vitesse ultra rapide en translation et rotation */
-	ULTRA_FAST_ALL(1200,4D);
+	ULTRA_FAST_ALL(1000,4D);
     
     /** vitesse des moteurs lors d'une translation, ce sont ces valeurs qui seront envoyées à la STM */
     public int translationSpeed;

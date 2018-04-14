@@ -200,7 +200,7 @@ public class TakeCubes extends AbstractScript {
                         stateToConsider.setCubeBonusAvantPresent(false);
                     }
                     //On calcule le score
-                    scoreFinalCubes = calculScore(true, cubeBonusPresent, stateToConsider);
+                    this.scoreFinalCubes = calculScore(true, cubeBonusPresent, stateToConsider);
                 }
                 else{
                     if (cubeBonusPresent){
@@ -208,7 +208,7 @@ public class TakeCubes extends AbstractScript {
                         stateToConsider.setCubeBonusArrierePresent(false);
                     }
                     //On calcule le score
-                    scoreFinalCubes = calculScore(false, cubeBonusPresent, stateToConsider);
+                    this.scoreFinalCubes = calculScore(false, cubeBonusPresent, stateToConsider);
                 }
 
 
@@ -311,6 +311,8 @@ public class TakeCubes extends AbstractScript {
 
                     state.setTourAvantRemplie(true);
                     state.setTourArriereRemplie(true);
+                    state.setTas_station_epuration_pris(true);
+                    state.setTas_chateau_eau_pris(true);
 
                     int currentIdealPositionInFrontTower = 0;
                     int currentIdealPositionInBackTower = 0;
@@ -412,8 +414,8 @@ public class TakeCubes extends AbstractScript {
 
 
 
-                    scoreFinalCubes = calculScore(true, cubeBonusAvantPresent, state);
-                    scoreFinalCubes += calculScore(false, cubeBonusArrierePresent, state);
+                    this.scoreFinalCubes = calculScore(true, cubeBonusAvantPresent, state);
+                    this.scoreFinalCubes += calculScore(false, cubeBonusArrierePresent, state);
 
                     if (cubeBonusAvantPresent){
                         //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
