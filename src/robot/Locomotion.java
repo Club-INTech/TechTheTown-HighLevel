@@ -516,25 +516,6 @@ public class Locomotion implements Service {
 
             }
 
-            // TODO A adapté à l'année en cours
-            catch (UnexpectedObstacleOnPathException unexpectedObstacle) {
-                log.warning("Ennemi detecté : Catch de " + unexpectedObstacle);
-                log.warning(unexpectedObstacle.logStack());
-
-                int sens = -1;
-                if (isRobotMovingForward) {
-                    sens = 1;
-                }
-
-                if (!turnOnly) {
-                    log.debug("On retente une avancée de : " + (int) finalAim.minusNewVector(highLevelPosition).length() * sens + " mm");
-                    moveLengthwise((int) finalAim.minusNewVector(highLevelPosition).length() * sens, expectWallImpact, mustDetect);
-                } else {
-                    //TODO...
-                }
-
-                doItAgain = false;
-            }
         }
         while (doItAgain);
     }
@@ -671,7 +652,7 @@ public class Locomotion implements Service {
      * le movetopointhandledexceptions qui immobilisera le robot
      * @throws UnexpectedObstacleOnPathException
      */
-    private void basicDetect() {
+    private void basicDetect() throws UnexpectedObstacleOnPathException {
         if(thEvent.isSth_detected_basic()){
             immobilise();
             log.debug("robot arrêté : basic detection");
