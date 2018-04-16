@@ -68,6 +68,8 @@ public class DeposeCubes extends AbstractScript {
                 //On ferme la porte
                 state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
                 aDejaDeposeUneTour=true;
+
+                //On calcule les points
                 state.addObtainedPoints(calculScore(true,state.isCubeBonusAvantPresent(),state));
                 if (state.isCubeBonusAvantPresent()){
                     //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
@@ -89,6 +91,8 @@ public class DeposeCubes extends AbstractScript {
                 state.robot.setLocomotionSpeed(Speed.FAST_ALL);
                 state.robot.moveLengthwise(dimensionporte + distancePenetrationZone);
                 state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+
+                //On calcule les points
                 state.addObtainedPoints(calculScore(false,state.isCubeBonusArrierePresent(),state));
                 if (state.isCubeBonusArrierePresent()){
                     //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
@@ -110,7 +114,9 @@ public class DeposeCubes extends AbstractScript {
                 //On ferme la porte
                 state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
                 aDejaDeposeUneTour=true;
-                state.addObtainedPoints(calculScore(true,state.isCubeBonusAvantPresent(),state));
+
+                //On calcule les points
+                state.addObtainedPoints(calculScore(false,state.isCubeBonusAvantPresent(),state));
                 if (state.isCubeBonusAvantPresent()){
                     //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
                     state.setCubeBonusAvantPresent(false);
@@ -131,7 +137,9 @@ public class DeposeCubes extends AbstractScript {
                 state.robot.setLocomotionSpeed(Speed.FAST_ALL);
                 state.robot.moveLengthwise(-(dimensionporte + distancePenetrationZone));
                 state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
-                state.addObtainedPoints(calculScore(false,state.isCubeBonusArrierePresent(),state));
+
+                //On calcule les points
+                state.addObtainedPoints(calculScore(true,state.isCubeBonusArrierePresent(),state));
                 if (state.isCubeBonusArrierePresent()){
                     //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
                     state.setCubeBonusArrierePresent(false);

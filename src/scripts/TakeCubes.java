@@ -18,12 +18,10 @@ public class TakeCubes extends AbstractScript {
     private int largeurCubes;
     private int longueurBras;
     private Vec2 entryPositionPoint;
-    private int scoreFinalCubes;
 
     public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
         this.updateConfig();
-        this.scoreFinalCubes=0;
     }
 
     /** Execution du script de récupération des cubes
@@ -122,9 +120,10 @@ public class TakeCubes extends AbstractScript {
                 stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, false);
 
                 Vec2[] successivesPositionsList;
+                int currentIdealPositionInTower=0;
+
                 //Si additionalCube.getColor()==Colors.NULL, c'est qu'on a choisi de ne prendre que 3 cubes
                 //Sinon, la couleur de additionalCube sera correspondra au cube qui sera pris après le pattern
-                int currentIdealPositionInTower=0;
                 if (additionalCube.getColor() == Colors.NULL) {
                     successivesPositionsList = new Vec2[3];
                     //On sait que le premier cube dans la pile est le cube bonus, donc on l'indique dans les réussites de la tour
@@ -167,6 +166,7 @@ public class TakeCubes extends AbstractScript {
                     takeThisCube(stateToConsider, bras, currentIdealPositionInTower);
                     currentIdealPositionInTower++;
                 }
+
                 //Si un cube additionnel a été précisé
                 if (additionalCube.getColor()!=Colors.NULL){
                     //On fait aller le robot à la position pour prendre le cube additionnel.
@@ -229,6 +229,16 @@ public class TakeCubes extends AbstractScript {
             throw new ExecuteException(new PatternNotYetCalculatedException("Le pattern n'a pas encore été calculé"));
         }
     }
+
+
+
+
+
+    /** VERSIONS SPECIALES */
+
+
+
+
 
 
     private void specialVersions(int indiceTas, GameState state)  throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
@@ -549,7 +559,7 @@ public class TakeCubes extends AbstractScript {
 
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
-        return this.scoreFinalCubes;
+        return 40;
     }
 
     @Override
@@ -562,10 +572,5 @@ public class TakeCubes extends AbstractScript {
         super.updateConfig();
         this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         this.longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS);
-    }
-
-
-    public int getScoreFinalCubes() {
-        return scoreFinalCubes;
     }
 }
