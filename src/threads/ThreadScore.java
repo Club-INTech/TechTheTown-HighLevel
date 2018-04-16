@@ -78,7 +78,7 @@ public class ThreadScore extends AbstractThread {
                 posTextX=70;
             }
             this.panel.getGraphics().clearRect(0,0,this.width,this.height);
-            this.panel.getGraphics().drawString(Integer.toString(this.score),posTextX,120);
+            this.panel.getGraphics().drawString(Integer.toString(this.score),this.frame.getWidth()/3,this.frame.getHeight()/2);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
