@@ -22,6 +22,7 @@ public class ThreadScore extends AbstractThread {
 
     //Java Swing objects
     private JFrame frame;
+    private JPanel panel;
 
     public ThreadScore(Log log, Config config, GameState state){
         super(config, log);
@@ -40,15 +41,22 @@ public class ThreadScore extends AbstractThread {
         this.frame.setSize(this.width, this.height);
         this.frame.setLocationRelativeTo(null);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.panel=new JPanel();
+        this.frame.setVisible(true);
+        this.panel.setVisible(true);
+        this.frame.setContentPane(this.panel);
         if (this.symetry){
+            this.panel.setBackground(Color.ORANGE);
             this.frame.setBackground(Color.ORANGE);
         }
         else{
+            this.panel.setBackground(Color.GREEN);
             this.frame.setBackground(Color.GREEN);
         }
         Font f =new Font("Comic Sans MS", Font.BOLD, 100);
+        this.panel.setFont(f);
         this.frame.setFont(f);
-        this.frame.setVisible(true);
+        this.panel.getGraphics().setColor(Color.BLACK);
         this.frame.getGraphics().setColor(Color.BLACK);
     }
 
@@ -56,10 +64,8 @@ public class ThreadScore extends AbstractThread {
     public void run(){
 
         int posTextX=0;
-
-        while (!shutdown) {
+        while (!shutdown){
             this.score=state.getObtainedPoints();
-            this.frame.getGraphics().clearRect(0,0, this.width, this.height);
             if ((this.score/10)>=1){
                 posTextX=40;
             }
@@ -69,7 +75,8 @@ public class ThreadScore extends AbstractThread {
             else{
                 posTextX=70;
             }
-            this.frame.getGraphics().drawString(Integer.toString(this.score),posTextX,140);
+            this.panel.getGraphics().clearRect(0,0,this.width,this.height);
+            this.panel.getGraphics().drawString(Integer.toString(this.score),posTextX,120);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
