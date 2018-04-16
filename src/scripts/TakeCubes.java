@@ -186,7 +186,7 @@ public class TakeCubes extends AbstractScript {
 
                 //Si un cube additionnel a été précisé
                 if (additionalCube.getColor()!=Colors.NULL){
-                    log.debug("Essaye de prendre le cube "+pattern[3].getName());
+                    log.debug("Essaye de prendre le cube "+additionalCube.getColor().getName());
                     //On fait aller le robot à la position pour prendre le cube additionnel.
                     stateToConsider.robot.moveNearPoint(successivesPositionsList[3], longueurBras, direction);
                     //Le robot execute les actions pour prendre le cube
