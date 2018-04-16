@@ -461,9 +461,9 @@ public class Locomotion implements Service {
             }
             catch (BlockedException e) {
                 log.critical(e.logStack());
-                log.critical("Haut : Catch de " + e + " dans moveToPointException");
+                log.critical("Haut : Catch de " + e.getMessage() + " dans moveToPointException");
 
-                ethWrapper.setBothSpeed(Speed.SLOW_ALL);
+                setBothSpeed(Speed.SLOW_ALL);
 
                 /** Si on ne s'y attendait pas, on réagit en se dégageant légèrement avant de retenter : si on n'y
                  * arrive pas, on balance une UnableToMoveException(PHYSICALLY_BLOCKED) à l'IA
@@ -558,9 +558,8 @@ public class Locomotion implements Service {
                         catch(InterruptedException e){
                             e.printStackTrace();
                         }
-                        catch(ImmobileEnnemyForOneSecondAtLeast e ){
-                            e.setAim(aim);
-                            log.debug("aimImmobileEnnemySecondAtLeast : " + e.getAim());
+                        catch(ImmobileEnnemyForOneSecondAtLeast e){
+                            log.debug("aimImmobileEnnemySecondAtLeast : " + aim);
                             throw new ImmobileEnnemyForOneSecondAtLeast(aim);
                         }
                     }
@@ -919,6 +918,11 @@ public class Locomotion implements Service {
     public void setTranslationnalSpeed(float speed) {
         ethWrapper.setTranslationnalSpeed(speed);
         this.transSpeed = speed;
+    }
+
+    public void setBothSpeed(Speed speed){
+        this.setTranslationnalSpeed(speed.getTranslationSpeed());
+        this.setRotationnalSpeed(speed.getRotationSpeed());
     }
 
     /**

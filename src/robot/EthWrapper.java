@@ -191,7 +191,8 @@ public class EthWrapper implements Service {
      * @param speed
      */
     public void setBothSpeed(Speed speed){
-        eth.communicate(0, ActuatorOrder.SET_SPEED.getEthernetOrder(), String.format(Locale.US, "%.3f", speed.translationSpeed), String.format(Locale.US, "%.3f", speed.rotationSpeed));
+        this.setTranslationnalSpeed(speed.getTranslationSpeed());
+        this.setRotationnalSpeed(speed.getRotationSpeed());
     }
 
     /**
