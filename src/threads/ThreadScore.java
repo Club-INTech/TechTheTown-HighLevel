@@ -5,8 +5,10 @@ import pfg.config.Config;
 import strategie.GameState;
 import utils.Log;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.Font;
 
 public class ThreadScore extends AbstractThread {
 

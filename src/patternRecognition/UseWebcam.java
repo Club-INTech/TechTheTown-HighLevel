@@ -9,7 +9,7 @@ import java.util.List;
 
 public class UseWebcam {
 
-    private static String pythonCommand = "python3";
+    private static String pythonCommand = "python";
 
     public static BufferedImage takeBufferedPicture() {
         BufferedImage picture = null;
