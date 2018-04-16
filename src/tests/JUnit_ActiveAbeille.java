@@ -5,6 +5,7 @@ import enums.ScriptNames;
 import enums.Speed;
 import graphics.Window;
 import hook.HookFactory;
+import hook.HookNames;
 import org.junit.Before;
 import org.junit.Test;
 import robot.Locomotion;
@@ -47,6 +48,7 @@ public class JUnit_ActiveAbeille extends JUnit_Test {
             robotReal.setOrientation(Table.entryOrientation);
             robotReal.setPosition(Table.entryPosition);
             robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
+            hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
             scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE).goToThenExec(0, state);
             //Vec2 positionarrivee=new Vec2(890,347);
             //robotReal.goTo(positionarrivee);
