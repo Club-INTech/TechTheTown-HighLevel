@@ -46,11 +46,12 @@ public class ActivationPanneauDomotique extends AbstractScript{
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.goTo(new Vec2(xEntry,yEntry));
         actualState.robot.setLocomotionSpeed(Speed.FAST_ALL);
+        actualState.addObtainedPoints(25);
         log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");
     }
 
     @Override
-    public void finalize(GameState state, Exception e) throws UnableToMoveException {}
+    public void finalize(GameState state, Exception e) throws UnableToMoveException { }
 
     @Override
     public Integer[] getVersion(GameState stateToConsider) {
@@ -60,7 +61,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     @Override
     public int remainingScoreOfVersion(int version, GameState state) {
-        return 0;
+        return 25;
     }
 
     @Override

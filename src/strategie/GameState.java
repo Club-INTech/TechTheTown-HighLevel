@@ -110,7 +110,6 @@ public class GameState implements Service
         this.config=config;
         this.log=log;
 
-        
         //On n'a marqué aucun point en début de match
         this.obtainedPoints = 0;
 
@@ -175,6 +174,9 @@ public class GameState implements Service
         this.obtainedPoints = obtainedPoints;
     }
 
+    public void addObtainedPoints(int pointsToAdd){
+	    this.obtainedPoints+=pointsToAdd;
+    }
 
 
     public int getIndicePattern() {

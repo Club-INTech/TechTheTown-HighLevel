@@ -122,6 +122,7 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.robot.goTo(new Vec2(xExit,yExit));
             }
         }
+        actualState.addObtainedPoints(50);
     }
 
     @Override
@@ -151,7 +152,7 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public int remainingScoreOfVersion(int version, GameState state) {
-        return 0;
+        return 50;
     }
 
 

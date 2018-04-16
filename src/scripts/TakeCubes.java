@@ -196,32 +196,6 @@ public class TakeCubes extends AbstractScript {
 
 
 
-
-                if (bras==BrasUtilise.AVANT){
-                    if (cubeBonusPresent){
-                        //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
-                        stateToConsider.setCubeBonusAvantPresent(false);
-                    }
-                    //On calcule le score
-                    this.scoreFinalCubes = calculScore(true, cubeBonusPresent, stateToConsider);
-                }
-                else{
-                    if (cubeBonusPresent){
-                        //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
-                        stateToConsider.setCubeBonusArrierePresent(false);
-                    }
-                    //On calcule le score
-                    this.scoreFinalCubes = calculScore(false, cubeBonusPresent, stateToConsider);
-                }
-
-
-                //On reset les réussites de tours avant et arrières
-                for (int i=0; i<4; i++) {
-                    stateToConsider.setReussitesTourArrière(-1,i);
-                    stateToConsider.setReussitesTourAvant(-1,i);
-                }
-
-
                 //On se décale du tas
                 Circle aimArcCircle;
                 if (indiceTas==0){
@@ -327,8 +301,11 @@ public class TakeCubes extends AbstractScript {
                     state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                     state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT, false);
                     if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
-                        state.setReussitesTourArrière(1,currentIdealPositionInFrontTower);
+                        state.setReussitesTourAvant(1,currentIdealPositionInFrontTower);
                         state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
+                    }
+                    else{
+                        state.setReussitesTourAvant(0,currentIdealPositionInFrontTower);
                     }
                     currentIdealPositionInFrontTower++;
 
@@ -344,6 +321,9 @@ public class TakeCubes extends AbstractScript {
                         state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
                         state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
                     }
+                    else{
+                        state.setReussitesTourArrière(0,currentIdealPositionInBackTower);
+                    }
                     currentIdealPositionInBackTower++;
 
                     state.robot.moveNearPoint(successivesPositionsList[2], longueurBras, "forward");
@@ -355,8 +335,11 @@ public class TakeCubes extends AbstractScript {
                     state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                     state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT, false);
                     if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
-                        state.setReussitesTourArrière(1,currentIdealPositionInFrontTower);
+                        state.setReussitesTourAvant(1,currentIdealPositionInFrontTower);
                         state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
+                    }
+                    else{
+                        state.setReussitesTourAvant(0,currentIdealPositionInFrontTower);
                     }
                     currentIdealPositionInFrontTower++;
 
@@ -372,6 +355,9 @@ public class TakeCubes extends AbstractScript {
                         state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
                         state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
                     }
+                    else{
+                        state.setReussitesTourArrière(0,currentIdealPositionInBackTower);
+                    }
                     currentIdealPositionInBackTower++;
 
                     state.robot.moveNearPoint(successivesPositionsList[4], longueurBras, "forward");
@@ -383,8 +369,11 @@ public class TakeCubes extends AbstractScript {
                     state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                     state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT, false);
                     if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
-                        state.setReussitesTourArrière(1,currentIdealPositionInFrontTower);
+                        state.setReussitesTourAvant(1,currentIdealPositionInFrontTower);
                         state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
+                    }
+                    else{
+                        state.setReussitesTourAvant(0,currentIdealPositionInFrontTower);
                     }
                     currentIdealPositionInFrontTower++;
 
@@ -400,6 +389,9 @@ public class TakeCubes extends AbstractScript {
                         state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
                         state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
                     }
+                    else{
+                        state.setReussitesTourArrière(0,currentIdealPositionInBackTower);
+                    }
                     currentIdealPositionInBackTower++;
 
                     if (successivesPositionsList.length > 6) {
@@ -412,8 +404,11 @@ public class TakeCubes extends AbstractScript {
                         state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                         state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT, false);
                         if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
-                            state.setReussitesTourArrière(1,currentIdealPositionInFrontTower);
+                            state.setReussitesTourAvant(1,currentIdealPositionInFrontTower);
                             state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
+                        }
+                        else{
+                            state.setReussitesTourAvant(0,currentIdealPositionInFrontTower);
                         }
                         currentIdealPositionInFrontTower++;
                     }
@@ -430,6 +425,9 @@ public class TakeCubes extends AbstractScript {
                         if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
                             state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
                             state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
+                        }
+                        else{
+                            state.setReussitesTourArrière(0,currentIdealPositionInBackTower);
                         }
                         currentIdealPositionInBackTower++;
                     }
@@ -449,9 +447,6 @@ public class TakeCubes extends AbstractScript {
 
 
 
-                    this.scoreFinalCubes = calculScore(true, cubeBonusAvantPresent, state);
-                    this.scoreFinalCubes += calculScore(false, cubeBonusArrierePresent, state);
-
                     if (cubeBonusAvantPresent){
                         //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
                         state.setCubeBonusAvantPresent(false);
@@ -462,11 +457,6 @@ public class TakeCubes extends AbstractScript {
                         state.setCubeBonusArrierePresent(false);
                     }
 
-                    //On reset les réussites de tours avant et arrières
-                    for (int i=0; i<4; i++) {
-                        state.setReussitesTourArrière(-1,i);
-                        state.setReussitesTourAvant(-1,i);
-                    }
 
                     Vec2 exitPoint = new Vec2(800,1300);
                     if (state.robot.getPosition().distance(exitPoint)>20) {
@@ -501,7 +491,6 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT_UNPEU,false);
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
                 stateToConsider.setReussitesTourArrière(1,idealPositionInTower);
-                log.debug("Un cube a été pris avec le bras avant");
                 stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
             }
             else{
@@ -519,7 +508,6 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE_UNPEU,false);
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
                 stateToConsider.setReussitesTourArrière(1,idealPositionInTower);
-                log.debug("Un cube a été pris avec le bras arrière");
                 stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
             }
             else{
@@ -590,42 +578,6 @@ public class TakeCubes extends AbstractScript {
         this.longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS);
     }
 
-    private int calculScore(boolean pourTourAvant, boolean cubeBonusPresent, GameState state){
-        //On assume que le pattern a été correctement reconnu par la reconnaissance
-        int score=0;
-        int[] reussitesTour;
-
-        //On récupère les réussites de la tour qui nous intéresse
-        if (pourTourAvant){
-            reussitesTour=state.getReussitesTourAvant();
-        }
-        else{
-            reussitesTour=state.getReussitesTourArriere();
-        }
-
-        //Calcul des points du pattern
-        if (cubeBonusPresent) {
-            //Cas où le cube bones est présent
-            //On a besoin que du premier, troisieme et quatrieme cube pour réaliser le pattern
-            //La réalisation du pattern ne dépend pas de la présence du premier cube
-            if (reussitesTour[0] == 1 && reussitesTour[2] == 1 && reussitesTour[3] == 1) {
-                score += 30;
-            }
-        }
-        else{
-            //Cas où le cube bonus n'est pas présent
-            //Il faut absolument que les trois premiers cubes qu'on a essayé de prendre soient présents dans la tour
-            if (reussitesTour[0] == 1 && reussitesTour[1] == 1 && reussitesTour[2] == 1) {
-                score += 30;
-            }
-        }
-
-        //Calcul des points de la construction de la tour
-        int sum=reussitesTour[0]+reussitesTour[1]+reussitesTour[2]+reussitesTour[3];
-        score+=sum*(sum+1)/2;
-
-        return score;
-    }
 
     public int getScoreFinalCubes() {
         return scoreFinalCubes;
