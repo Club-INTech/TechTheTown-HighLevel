@@ -57,7 +57,10 @@ public class ActiveAbeille extends AbstractScript {
         double prodScal = directionToGo.dot(new Vec2(100.0, actualState.robot.getOrientation()));
         if(versionToExecute==0) {
             //On vérifie quel bras de l'abeille on va devoir utiliser, à l'aide d'un produit scalaire
-            actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
+                actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+            }
+
             if (prodScal > 0) {
                 //ON UTILISE LE BRAS AVANT
                 //On disable le hook pour le bras arrière
@@ -92,7 +95,10 @@ public class ActiveAbeille extends AbstractScript {
             //On retourne à une position atteignable par le pathfinding
             Vec2 aim = new Vec2(xExit, yExit);
             actualState.robot.goTo(aim);
-            actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
+                actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+            }
+
             log.debug("////////// End ActiveAbeille version " + versionToExecute + " //////////");
         }
         /**On arrive à la position d'entrée,le hook to enable est enabled au niveau de l'IA

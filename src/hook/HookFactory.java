@@ -82,6 +82,7 @@ public class HookFactory implements Service {
             }
             if(symetry){
                 hook.setPosition(hook.getPosition().symetrize());
+                log.debug("la position envoyée au bas niveau pour le hook"+hook.getPosition());
             }
             eth.configureHook(hook.getId(), hook.getPosition(), hook.getTolerency(), hook.getOrientation(),hook.getTolerencyAngle(),serialOrder);
             log.debug("Hook " + hook.getDeclaringClass() + " : Configuré");
