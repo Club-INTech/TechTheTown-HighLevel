@@ -49,23 +49,12 @@ public class ThreadScore extends AbstractThread {
         Font f =new Font("Comic Sans MS", Font.BOLD, 100);
         this.frame.setFont(f);
         this.frame.setVisible(true);
-        this.frame.getGraphics().clearRect(0,0, this.width, this.height);
         this.frame.getGraphics().setColor(Color.BLACK);
     }
 
     @Override
     public void run(){
 
-        if (this.usingJumper) {
-            while (!this.state.robot.getmLocomotion().getThEvent().wasJumperRemoved()) {
-                this.frame.getGraphics().clearRect(0,0, this.width, this.height);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
         int posTextX=0;
 
         while (!shutdown) {
