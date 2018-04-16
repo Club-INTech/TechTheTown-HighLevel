@@ -122,6 +122,12 @@ public class TakeCubes extends AbstractScript {
                 Vec2[] successivesPositionsList;
                 int currentIdealPositionInTower=0;
 
+                int otherSideMultiplier=1;
+                if (tas.getID()>2) {
+                    otherSideMultiplier=-1;
+                }
+
+
                 //Si additionalCube.getColor()==Colors.NULL, c'est qu'on a choisi de ne prendre que 3 cubes
                 //Sinon, la couleur de additionalCube sera correspondra au cube qui sera pris après le pattern
                 if (additionalCube.getColor() == Colors.NULL) {
@@ -138,7 +144,12 @@ public class TakeCubes extends AbstractScript {
                     successivesPositionsList = new Vec2[4];
                     //On calcule les positions du cube additionnel pour x et y :
                     // position = position du tas + position relative du cube choisi par rapport au tas
-                    successivesPositionsList[3]= tas.getCoordsVec2().plusNewVector(additionalCube.getRelativeCoordsVec2().dotFloat(this.largeurCubes));
+
+                    //La position X relative par rapport au tas change si on passe de l'autre côté de la table
+                    Vec2 additionalCubeRelativePosition = additionalCube.getRelativeCoordsVec2().dotFloat(this.largeurCubes);
+                    additionalCubeRelativePosition.setX(additionalCubeRelativePosition.getX()*otherSideMultiplier);
+
+                    successivesPositionsList[3]=tas.getCoordsVec2().plusNewVector(additionalCubeRelativePosition);
                 }
 
                 //On récupère les couleurs composant le pattern reconnu (le pattern reconnu est identifié grâce à indicePattern)
@@ -146,7 +157,12 @@ public class TakeCubes extends AbstractScript {
                 for (int i = 0; i < 3; i++) {
                     //On calcule les positions des cubes pour x et y :
                     // position = position du tas + position relative du cube choisi par rapport au tas
-                    successivesPositionsList[i]= tas.getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[i]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
+
+                    //La position X relative par rapport au tas change si on passe de l'autre côté de la table
+                    Vec2 cubeRelativePosition = Cubes.getCubeFromColor(pattern[i]).getRelativeCoordsVec2().dotFloat(this.largeurCubes);
+                    cubeRelativePosition.setX(cubeRelativePosition.getX()*otherSideMultiplier);
+
+                    successivesPositionsList[i]= tas.getCoordsVec2().plusNewVector(cubeRelativePosition);
                 }
 
                 if (bras==BrasUtilise.ARRIERE){
@@ -161,6 +177,7 @@ public class TakeCubes extends AbstractScript {
 
                 for (int i=0; i<3; i++) {
                     //On fait aller le robot à la position pour prendre le premier cube du pattern
+                    log.debug("Essaye de prendre le cube "+pattern[i].getName());
                     stateToConsider.robot.moveNearPoint(successivesPositionsList[i], longueurBras, direction);
                     //Le robot execute les actions pour prendre le cube
                     takeThisCube(stateToConsider, bras, currentIdealPositionInTower);
@@ -169,6 +186,7 @@ public class TakeCubes extends AbstractScript {
 
                 //Si un cube additionnel a été précisé
                 if (additionalCube.getColor()!=Colors.NULL){
+                    log.debug("Essaye de prendre le cube "+pattern[3].getName());
                     //On fait aller le robot à la position pour prendre le cube additionnel.
                     stateToConsider.robot.moveNearPoint(successivesPositionsList[3], longueurBras, direction);
                     //Le robot execute les actions pour prendre le cube
