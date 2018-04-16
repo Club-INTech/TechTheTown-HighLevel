@@ -37,7 +37,6 @@ public class ThreadScore extends AbstractThread {
     @Override
     public void run(){
 
-        int posTextX=0;
         while (!shutdown){
             this.frame.repaint();
             try {

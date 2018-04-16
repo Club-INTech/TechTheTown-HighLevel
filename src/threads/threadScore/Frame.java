@@ -16,7 +16,7 @@ public class Frame extends JFrame {
         this.state=state;
         this.symetry=symetry;
         this.setTitle("Score");
-        this.setSize(200, 200);
+        this.setSize(400, 200);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         if (this.symetry) {

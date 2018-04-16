@@ -30,6 +30,6 @@ public class Panel extends JPanel {
         else{
             posTextX=70;
         }
-        g.drawString(Integer.toString(state.getObtainedPoints()),posTextX,120);
+        g.drawString(Integer.toString(state.getObtainedPoints()), posTextX,120);
     }
 }
