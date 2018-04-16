@@ -21,6 +21,7 @@ package hook;
 
 import container.Service;
 import enums.ActuatorOrder;
+import enums.ConfigInfoRobot;
 import enums.Speed;
 import pfg.config.Config;
 import robot.EthWrapper;
@@ -42,6 +43,9 @@ public class HookFactory implements Service {
     /** Wrapper */
     private EthWrapper eth;
 
+    /**symetry*/
+    private boolean symetry;
+
     /** Liste des Hooks */
     private ArrayList<HookNames> configuredHook = new ArrayList<HookNames>();
 
@@ -50,6 +54,7 @@ public class HookFactory implements Service {
         this.eth=eth;
         this.config=config;
         this.log=log;
+        updateConfig();
     }
 
     /**
@@ -59,6 +64,7 @@ public class HookFactory implements Service {
 
         String serialOrder;
         for(HookNames hook:hooks){
+
 
             if (hook.getOrder() instanceof Speed){
                 serialOrder = "ctrv " + ((Speed) hook.getOrder()).translationSpeed + " " + (float) ((Speed) hook.getOrder()).rotationSpeed;
@@ -73,6 +79,9 @@ public class HookFactory implements Service {
             if (configuredHook.contains(hook)){
                 log.warning("Hook déjà configuré : on ne fait rien");
                 break;
+            }
+            if(symetry){
+                hook.setPosition(hook.getPosition().symetrize());
             }
             eth.configureHook(hook.getId(), hook.getPosition(), hook.getTolerency(), hook.getOrientation(),hook.getTolerencyAngle(),serialOrder);
             log.debug("Hook " + hook.getDeclaringClass() + " : Configuré");
@@ -131,5 +140,7 @@ public class HookFactory implements Service {
     }
 
     @Override
-    public void updateConfig(){}
+    public void updateConfig(){
+        symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
+    }
 }

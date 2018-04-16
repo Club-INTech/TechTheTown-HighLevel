@@ -62,10 +62,8 @@ public class ActiveAbeille extends AbstractScript {
                 //ON UTILISE LE BRAS AVANT
                 //On disable le hook pour le bras arrière
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE);
                 //On enable le kook pour le bras avant
                 hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
-                hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE);
                 //On va vers l'abeille
                 actualState.robot.goTo(new Vec2(xEntry, yEntry));
 
@@ -75,15 +73,13 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
                 //On disable le hook du bras avant
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE);
+
             } else {
                 //ON UTILISE LE BRAS ARRIERE
                 //On disable le hook pour le bras avant
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE);
                 //On enable le kook pour le bras arrière
                 hookFactory.enableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-                hookFactory.enableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE);
                 //On va vers l'abeille
                 actualState.robot.goTo(new Vec2(xEntry, yEntry));
                 //On se tourne our pousser l'abeille avec le bras arrière
@@ -92,7 +88,6 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
                 //On disable le hook du bras arrière
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE);
             }
             //On retourne à une position atteignable par le pathfinding
             Vec2 aim = new Vec2(xExit, yExit);

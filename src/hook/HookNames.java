@@ -22,6 +22,7 @@ package hook;
 import enums.ActuatorOrder;
 import enums.MotionOrder;
 import enums.Speed;
+import org.classpath.icedtea.Config;
 import smartMath.Vec2;
 
 /**
@@ -34,8 +35,6 @@ public enum HookNames {
     SPEED_DOWN(1, new Vec2(50, 50), 5 ,0,Math.PI,Speed.SLOW_ALL),
     ACTIVE_BRAS_AVANT_ABEILLE(2, new Vec2(1400,1800), 500, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE),
     ACTIVE_BRAS_ARRIERE_ABEILLE(3, new Vec2(1400,1800), 500, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE),
-    ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE(4, new Vec2(-1400,1800), 500, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE),
-    ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE(5, new Vec2(-1400,1800), 500, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE),
     ;
 
     /** Ordre du hook */
@@ -88,4 +87,5 @@ public enum HookNames {
     public void setPosition(Vec2 position) {
         this.position = position;
     }
+
 }
