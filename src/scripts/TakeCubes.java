@@ -308,6 +308,9 @@ public class TakeCubes extends AbstractScript {
                     Vec2 secondCubeTas2 = TasCubes.getTasFromID(2).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[1]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
                     Vec2 thirdCubeTas2 = TasCubes.getTasFromID(2).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[2]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
 
+                    int currentIdealPositionInFrontTower = 0;
+                    int currentIdealPositionInBackTower = 0;
+
                     Vec2[] successivesPositionsList;
                     if (!cubeBonusAvantPresent) {
                         Vec2 forthCubeTas1 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeNotInPattern(indicePattern).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
@@ -315,13 +318,21 @@ public class TakeCubes extends AbstractScript {
                             Vec2 forthCubeTas2 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeNotInPattern(indicePattern).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
                             successivesPositionsList = new Vec2[]{firstCubeTas1, firstCubeTas2, secondCubeTas1, secondCubeTas2, thirdCubeTas1, thirdCubeTas2, forthCubeTas1, forthCubeTas2};
                         } else {
+                            state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
+                            currentIdealPositionInBackTower++;
                             successivesPositionsList = new Vec2[]{firstCubeTas1, firstCubeTas2, secondCubeTas1, secondCubeTas2, thirdCubeTas1, thirdCubeTas2, forthCubeTas1};
                         }
                     } else {
                         if (!cubeBonusArrierePresent) {
+                            state.setReussitesTourAvant(1,currentIdealPositionInFrontTower);
+                            currentIdealPositionInFrontTower++;
                             Vec2 forthCubeTas2 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeNotInPattern(indicePattern).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
                             successivesPositionsList = new Vec2[]{firstCubeTas1, firstCubeTas2, secondCubeTas1, secondCubeTas2, thirdCubeTas1, thirdCubeTas2, forthCubeTas2};
                         } else {
+                            state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
+                            state.setReussitesTourAvant(1,currentIdealPositionInFrontTower);
+                            currentIdealPositionInBackTower++;
+                            currentIdealPositionInFrontTower++;
                             successivesPositionsList = new Vec2[]{firstCubeTas1, firstCubeTas2, secondCubeTas1, secondCubeTas2, thirdCubeTas1, thirdCubeTas2};
                         }
                     }
@@ -331,8 +342,6 @@ public class TakeCubes extends AbstractScript {
                     state.setTas_station_epuration_pris(true);
                     state.setTas_chateau_eau_pris(true);
 
-                    int currentIdealPositionInFrontTower = 0;
-                    int currentIdealPositionInBackTower = 0;
 
                     state.robot.moveNearPoint(successivesPositionsList[0], longueurBrasAvant, "forward");
                     state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, false);
