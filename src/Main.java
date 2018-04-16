@@ -18,7 +18,6 @@
  */
 
 import container.Container;
-import graphics.AffichageDebug;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
@@ -28,11 +27,10 @@ import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
-import simulator.ThreadSimulator;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
-import threads.ThreadScore;
+import threads.threadScore.ThreadScore;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
 
