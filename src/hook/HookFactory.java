@@ -23,6 +23,7 @@ import container.Service;
 import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.Speed;
+import enums.SymmetrizedActuatorOrderMap;
 import pfg.config.Config;
 import robot.EthWrapper;
 import utils.Log;
@@ -49,6 +50,9 @@ public class HookFactory implements Service {
     /** Liste des Hooks */
     private ArrayList<HookNames> configuredHook = new ArrayList<HookNames>();
 
+    /** Map pour la symétrie des actionneurs */
+    private SymmetrizedActuatorOrderMap mActuatorCorrespondenceMap = new SymmetrizedActuatorOrderMap();
+
     /** Constructeur */
     public HookFactory (EthWrapper eth, Config config, Log log){
         this.eth=eth;
@@ -70,7 +74,12 @@ public class HookFactory implements Service {
                 serialOrder = "ctrv " + ((Speed) hook.getOrder()).translationSpeed + " " + (float) ((Speed) hook.getOrder()).rotationSpeed;
             }
             else if (hook.getOrder() instanceof ActuatorOrder){
-                serialOrder = ((ActuatorOrder) hook.getOrder()).getEthernetOrder();
+                if (symetry) {
+                    serialOrder = mActuatorCorrespondenceMap.getSymmetrizedActuatorOrder((ActuatorOrder) hook.getOrder()).getEthernetOrder();
+                }
+                else {
+                    serialOrder = ((ActuatorOrder) hook.getOrder()).getEthernetOrder();
+                }
             }else{
                 log.critical("Mauvaise enum, la méthode doit implémenter MotionOrder");
                 break;
