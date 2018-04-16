@@ -112,6 +112,7 @@ public class JUnit_Sensors extends JUnit_Test
 	@Test
 	public void testStopWhileMove() throws Exception
 	{
+		state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
 		state.robot.setPosition(Table.entryPosition);
 		state.robot.setOrientation(Table.entryOrientation);
 		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);

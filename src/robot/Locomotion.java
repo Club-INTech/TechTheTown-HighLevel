@@ -321,9 +321,6 @@ public class Locomotion implements Service {
 
     public void moveToPoint(Vec2 pointVise, boolean expectedWallImpact, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
 
-        if(basicDetection){
-            ethWrapper.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE);
-        }
         thEvent.setIsMoving(true);
         log.debug("isMoving variable has been defined to True");
 
@@ -656,6 +653,7 @@ public class Locomotion implements Service {
         if(thEvent.isSth_detected_basic()){
             immobilise();
             log.debug("robot arrêté : basic detection");
+            throw new UnexpectedObstacleOnPathException();
         }
 
     }
