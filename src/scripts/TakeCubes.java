@@ -17,6 +17,7 @@ import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
+import smartMath.Geometry;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -25,12 +26,15 @@ import utils.Log;
  */
 public class TakeCubes extends AbstractScript {
     private int largeurCubes;
-    private int longueurBras;
+    private int longueurBrasAvant;
+    private int longueurBrasArriere;
+    private int longueurBrasUtilise;
     private Vec2 entryPositionPoint;
 
     public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
         this.updateConfig();
+        this.longueurBrasUtilise = (this.longueurBrasAvant+this.longueurBrasArriere)/2;
     }
 
     /** Execution du script de récupération des cubes
@@ -177,17 +181,19 @@ public class TakeCubes extends AbstractScript {
                 if (bras==BrasUtilise.ARRIERE){
                     direction="backward";
                     stateToConsider.setTourArriereRemplie(true);
+                    this.longueurBrasUtilise=this.longueurBrasArriere;
                 }
                 else{
                     direction="forward";
                     stateToConsider.setTourAvantRemplie(true);
+                    this.longueurBrasUtilise=this.longueurBrasAvant;
                 }
 
 
                 for (int i=0; i<3; i++) {
                     //On fait aller le robot à la position pour prendre le premier cube du pattern
                     log.debug("Essaye de prendre le cube "+pattern[i].getName());
-                    stateToConsider.robot.moveNearPoint(successivesPositionsList[i], longueurBras, direction);
+                    stateToConsider.robot.moveNearPoint(successivesPositionsList[i], longueurBrasUtilise, direction);
                     //Le robot execute les actions pour prendre le cube
                     takeThisCube(stateToConsider, bras, currentIdealPositionInTower);
                     currentIdealPositionInTower++;
@@ -197,7 +203,7 @@ public class TakeCubes extends AbstractScript {
                 if (additionalCube.getColor()!=Colors.NULL){
                     log.debug("Essaye de prendre le cube "+additionalCube.getColor().getName());
                     //On fait aller le robot à la position pour prendre le cube additionnel.
-                    stateToConsider.robot.moveNearPoint(successivesPositionsList[3], longueurBras, direction);
+                    stateToConsider.robot.moveNearPoint(successivesPositionsList[3], longueurBrasUtilise, direction);
                     //Le robot execute les actions pour prendre le cube
                     takeThisCube(stateToConsider, bras, currentIdealPositionInTower);
                 }
@@ -223,24 +229,24 @@ public class TakeCubes extends AbstractScript {
                 //On se décale du tas
                 Circle aimArcCircle;
                 if (indiceTas==0){
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, 0, Math.PI, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBrasUtilise+this.largeurCubes*1.5+10, 0, Math.PI, true);
                 }
                 else if (indiceTas==1) {
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, Math.PI / 2, 3 * 9 * Math.PI / 20, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBrasUtilise+this.largeurCubes*1.5+10, Math.PI / 2, 3 * 9 * Math.PI / 20, true);
                 }
                 else if (indiceTas==2) {
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI, 0, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBrasUtilise+this.largeurCubes*1.5+10, -Math.PI, 0, true);
                 }
                 else if (indiceTas==3) {
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI, 0, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBrasUtilise+this.largeurCubes*1.5+10, -Math.PI, 0, true);
                 }
                 else if (indiceTas==4) {
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, - 9 * Math.PI / 20, Math.PI / 2, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBrasUtilise+this.largeurCubes*1.5+10, - 9 * Math.PI / 20, Math.PI / 2, true);
                 }
                 else{
-                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBras+this.largeurCubes*1.5+10, -Math.PI / 2, Math.PI / 2, true);
+                    aimArcCircle = new Circle(tas.getCoordsVec2(), this.longueurBrasUtilise+this.largeurCubes*1.5+10, -Math.PI / 2, Math.PI / 2, true);
                 }
-                Vec2 aim = smartMath.Geometry.closestPointOnCircle(stateToConsider.robot.getPosition(),aimArcCircle);
+                Vec2 aim = Geometry.closestPointOnCircle(stateToConsider.robot.getPosition(),aimArcCircle);
                 //On ne sort seulement si la distance nous séparant de la position de sortie est supérieure à 2cm
                 if (stateToConsider.robot.getPosition().distance(aim)>20) {
                     stateToConsider.robot.goTo(aim);
@@ -328,7 +334,7 @@ public class TakeCubes extends AbstractScript {
                     int currentIdealPositionInFrontTower = 0;
                     int currentIdealPositionInBackTower = 0;
 
-                    state.robot.moveNearPoint(successivesPositionsList[0], longueurBras, "forward");
+                    state.robot.moveNearPoint(successivesPositionsList[0], longueurBrasAvant, "forward");
                     state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, false);
                     state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
                     state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
@@ -343,7 +349,7 @@ public class TakeCubes extends AbstractScript {
                     }
                     currentIdealPositionInFrontTower++;
 
-                    state.robot.moveNearPoint(successivesPositionsList[1], longueurBras, "backward");
+                    state.robot.moveNearPoint(successivesPositionsList[1], longueurBrasArriere, "backward");
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, false);
                     state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
                     state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
@@ -360,7 +366,7 @@ public class TakeCubes extends AbstractScript {
                     }
                     currentIdealPositionInBackTower++;
 
-                    state.robot.moveNearPoint(successivesPositionsList[2], longueurBras, "forward");
+                    state.robot.moveNearPoint(successivesPositionsList[2], longueurBrasAvant, "forward");
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, false);
                     state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
                     state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
@@ -377,7 +383,7 @@ public class TakeCubes extends AbstractScript {
                     }
                     currentIdealPositionInFrontTower++;
 
-                    state.robot.moveNearPoint(successivesPositionsList[3], longueurBras, "backward");
+                    state.robot.moveNearPoint(successivesPositionsList[3], longueurBrasArriere, "backward");
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, false);
                     state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
                     state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
@@ -394,7 +400,7 @@ public class TakeCubes extends AbstractScript {
                     }
                     currentIdealPositionInBackTower++;
 
-                    state.robot.moveNearPoint(successivesPositionsList[4], longueurBras, "forward");
+                    state.robot.moveNearPoint(successivesPositionsList[4], longueurBrasAvant, "forward");
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, false);
                     state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
                     state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
@@ -411,7 +417,7 @@ public class TakeCubes extends AbstractScript {
                     }
                     currentIdealPositionInFrontTower++;
 
-                    state.robot.moveNearPoint(successivesPositionsList[5], longueurBras, "backward");
+                    state.robot.moveNearPoint(successivesPositionsList[5], longueurBrasArriere, "backward");
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, false);
                     state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
                     state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
@@ -429,7 +435,7 @@ public class TakeCubes extends AbstractScript {
                     currentIdealPositionInBackTower++;
 
                     if (successivesPositionsList.length > 6) {
-                        state.robot.moveNearPoint(successivesPositionsList[6], longueurBras, "forward");
+                        state.robot.moveNearPoint(successivesPositionsList[6], longueurBrasAvant, "forward");
                         state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, false);
                         state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
                         state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, true);
@@ -448,7 +454,7 @@ public class TakeCubes extends AbstractScript {
                     }
 
                     if (successivesPositionsList.length > 7) {
-                        state.robot.moveNearPoint(successivesPositionsList[7], longueurBras, "backward");
+                        state.robot.moveNearPoint(successivesPositionsList[7], longueurBrasArriere, "backward");
                         state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, false);
                         state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
                         state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, true);
@@ -555,25 +561,25 @@ public class TakeCubes extends AbstractScript {
 
         Circle aimArcCircle;
         if (version==0){
-            aimArcCircle = new Circle(coordsTas, this.longueurBras, 0, Math.PI, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBrasUtilise, 0, Math.PI, true);
         }
         else if (version==1) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras, Math.PI / 2, 3 * 9 * Math.PI / 20, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBrasUtilise, Math.PI / 2, 3 * 9 * Math.PI / 20, true);
         }
         else if (version==2) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras, -Math.PI, 0, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBrasUtilise, -Math.PI, 0, true);
         }
         else if (version==3) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras, -Math.PI, 0, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBrasUtilise, -Math.PI, 0, true);
         }
         else if (version==4) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras, - 9 * Math.PI / 20, Math.PI / 2, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBrasUtilise, - 9 * Math.PI / 20, Math.PI / 2, true);
         }
         else if (version==5) {
-            aimArcCircle = new Circle(coordsTas, this.longueurBras, -Math.PI / 2, Math.PI / 2, true);
+            aimArcCircle = new Circle(coordsTas, this.longueurBrasUtilise, -Math.PI / 2, Math.PI / 2, true);
         }
         else{
-            aimArcCircle = new Circle(coordsTas, this.longueurBras);
+            aimArcCircle = new Circle(coordsTas, this.longueurBrasUtilise);
         }
         Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
         log.debug("Point d'entrée TakeCubes (version:"+version+") : "+aim);
@@ -598,6 +604,7 @@ public class TakeCubes extends AbstractScript {
     public void updateConfig() {
         super.updateConfig();
         this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
-        this.longueurBras=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS);
+        this.longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
+        this.longueurBrasArriere=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_ARRIERE);
     }
 }
