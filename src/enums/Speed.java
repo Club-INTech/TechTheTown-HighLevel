@@ -50,7 +50,7 @@ public enum Speed implements MotionOrder
     /** Vitesse par défaut (utliser une des vitesses au dessus dans les parenthèses)
      *  Fait pour ne pas avoir à changer la vitesse dans tout le code
      */
-    DEFAULT_SPEED(SLOW_ALL);
+    DEFAULT_SPEED(FAST_ALL);
 
 
     /** Vitesse des moteurs lors d'une translation, ce sont ces valeurs qui seront envoyées à la STM */
