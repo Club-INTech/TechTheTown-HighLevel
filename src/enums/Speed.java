@@ -59,7 +59,7 @@ public enum Speed implements MotionOrder
     /** Vitesse des moteurs lors d'une rotation, ce sont ces valeurs qui seront envoyées à la STM */
     public double rotationSpeed;
 
-        
+
     /**
      * Constructeur d'une vitesse.
      * @param translationSpeed la vitesse de translation ( en mm/s)
