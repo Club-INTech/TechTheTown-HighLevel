@@ -5,7 +5,7 @@ import smartMath.Vec2;
 public enum TasCubes{
     TAS_BASE(0,640,540), //Position pas décalée de -10 en X par rapport à la position théorique
     TAS_CHATEAU_EAU(1,1200,1190),
-    TAS_STATION_EPURATION(2,410,1500), //Position décalée de +10 en X par rapport à la position théorique
+    TAS_STATION_EPURATION(2,390,1500), //Position décalée de -10 en X par rapport à la position théorique
     TAS_STATION_EPURATION_ENNEMI(3,-400,1500),
     TAS_CHATEAU_EAU_ENNEMI(4,-1200,1190),
     TAS_BASE_ENNEMI(5,-650,540);
