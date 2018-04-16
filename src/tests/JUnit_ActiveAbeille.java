@@ -34,6 +34,7 @@ public class JUnit_ActiveAbeille extends JUnit_Test {
             scriptManager = container.getService(ScriptManager.class);
             anInterface=container.getService(ThreadSimulator.class);
             locomotion=container.getService(Locomotion.class);
+            hookFactory=container.getService(HookFactory.class);
             container.startInstanciedThreads();
 
         } catch (Exception e) {
