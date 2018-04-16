@@ -29,25 +29,34 @@ public enum Speed implements MotionOrder
 {
 	//TODO régler les valeurs de vitesse en translations et rotations avec des phases de test, décider des combinaisons de vitesses inutiles
 	
-	/** Vitesse ultra lente de translation, ultra lente en rotation */
+	/** Vitesse ultra lente en translation, ultra lente en rotation */
 	ULTRA_SLOW_ALL(100,0.5D),
 
-	/** vitesse lente en translation, lente en rotation */
+    /** Vitesse très lente en translation, très lenten en rotation */
+    VERY_SLOW_ALL(150,0.75D),
+
+	/** Vitesse lente en translation, lente en rotation */
 	SLOW_ALL(300, 1D),
 
 	/** Vitesse standard de déplacement et rotation */
 	MEDIUM_ALL(500,2D),
 
-	/** vitesse rapide en translation et rotation */
+	/** Vitesse rapide en translation et rotation */
 	FAST_ALL(700,2.5D),
 
-	/** vitesse ultra rapide en translation et rotation */
-	ULTRA_FAST_ALL(1000,4D);
-    
-    /** vitesse des moteurs lors d'une translation, ce sont ces valeurs qui seront envoyées à la STM */
+	/** Vitesse ultra rapide en translation et rotation */
+	ULTRA_FAST_ALL(1000,4D),
+
+    /** Vitesse par défaut (utliser une des vitesses au dessus dans les parenthèses)
+     *  Fait pour ne pas avoir à changer la vitesse dans tout le code
+     */
+    DEFAULT_SPEED(FAST_ALL);
+
+
+    /** Vitesse des moteurs lors d'une translation, ce sont ces valeurs qui seront envoyées à la STM */
     public int translationSpeed;
 
-    /** vitesse des moteurs lors d'une rotation, ce sont ces valeurs qui seront envoyées à la STM */
+    /** Vitesse des moteurs lors d'une rotation, ce sont ces valeurs qui seront envoyées à la STM */
     public double rotationSpeed;
 
         
@@ -60,5 +69,18 @@ public enum Speed implements MotionOrder
     {
         this.translationSpeed = translationSpeed;
         this.rotationSpeed = rotationSpeed;
+    }
+
+    Speed(Speed speed){
+        this.translationSpeed=speed.getTranslationSpeed();
+        this.rotationSpeed=speed.getRotationSpeed();
+    }
+
+    public int getTranslationSpeed() {
+        return translationSpeed;
+    }
+
+    public double getRotationSpeed() {
+        return rotationSpeed;
     }
 }

@@ -72,7 +72,7 @@ public class JUnit_Robot extends JUnit_Test {
 
             robotReal.setPosition(new Vec2(890,840));
             robotReal.setOrientation(Math.PI);
-            robotReal.setLocomotionSpeed(Speed.FAST_ALL);
+            robotReal.setLocomotionSpeed(Speed.DEFAULT_SPEED);
             robotReal.moveLengthwise(200);
             state.setIndicePattern(1);
 

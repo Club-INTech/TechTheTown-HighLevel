@@ -1,7 +1,16 @@
 package scripts;
 
-import enums.*;
-import exceptions.*;
+import enums.TasCubes;
+import enums.Patterns;
+import enums.Colors;
+import enums.ActuatorOrder;
+import enums.ConfigInfoRobot;
+import enums.Cubes;
+import enums.BrasUtilise;
+import exceptions.ExecuteException;
+import exceptions.PatternNotYetCalculatedException;
+import exceptions.BadVersionException;
+import exceptions.PatternNotRecognizedException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;

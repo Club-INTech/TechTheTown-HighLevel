@@ -76,7 +76,7 @@ public class Main {
 
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
-            realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
+            realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
         } catch (ContainerException p) {
             System.out.println("bug container");
             p.printStackTrace();

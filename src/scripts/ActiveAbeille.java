@@ -14,7 +14,6 @@ import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
-import sun.awt.image.ImageAccessException;
 import utils.Log;
 
 public class ActiveAbeille extends AbstractScript {

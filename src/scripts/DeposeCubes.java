@@ -1,7 +1,6 @@
 package scripts;
 
 import enums.ActuatorOrder;
-import enums.BrasUtilise;
 import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.BadVersionException;
@@ -62,7 +61,7 @@ public class DeposeCubes extends AbstractScript {
                 state.robot.moveLengthwise(distancePenetrationZone);
 
                 //On recule de la largeur de la porte + de la longueur avancée dans la zone
-                state.robot.setLocomotionSpeed(Speed.FAST_ALL);
+                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                 state.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte));
 
                 //On ferme la porte
@@ -88,7 +87,7 @@ public class DeposeCubes extends AbstractScript {
                 else{
                     state.robot.moveLengthwise(-distancePenetrationZone);
                 }
-                state.robot.setLocomotionSpeed(Speed.FAST_ALL);
+                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                 state.robot.moveLengthwise(dimensionporte + distancePenetrationZone);
                 state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
 
@@ -109,7 +108,7 @@ public class DeposeCubes extends AbstractScript {
                 //On rentre dans la zone
                 state.robot.moveLengthwise(-distancePenetrationZone);
                 //On recule de la largeur de la porte + de la longueur avancée dans la zone
-                state.robot.setLocomotionSpeed(Speed.FAST_ALL);
+                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                 state.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte);
                 //On ferme la porte
                 state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
@@ -134,7 +133,7 @@ public class DeposeCubes extends AbstractScript {
                 else{
                     state.robot.moveLengthwise(distancePenetrationZone);
                 }
-                state.robot.setLocomotionSpeed(Speed.FAST_ALL);
+                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                 state.robot.moveLengthwise(-(dimensionporte + distancePenetrationZone));
                 state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
 
@@ -146,7 +145,7 @@ public class DeposeCubes extends AbstractScript {
                 }
             }
         }
-        state.robot.setLocomotionSpeed(Speed.FAST_ALL);
+        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
 
         //Les deux premières sont déposées
         state.setTourAvantRemplie(false);
