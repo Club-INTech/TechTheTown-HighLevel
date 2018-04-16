@@ -165,6 +165,7 @@ public class DeposeCubes extends AbstractScript {
         else{
             reussitesTour=state.getReussitesTourArriere();
         }
+        log.debug(reussitesTour[0]+" "+reussitesTour[1]+" "+reussitesTour[2]+" "+reussitesTour[3]);
 
         //On check si on a essayé de construire la tour
         if (reussitesTour[1]!=-1) {

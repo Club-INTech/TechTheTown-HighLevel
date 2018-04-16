@@ -22,7 +22,6 @@ package hook;
 import enums.ActuatorOrder;
 import enums.MotionOrder;
 import enums.Speed;
-import org.classpath.icedtea.Config;
 import smartMath.Vec2;
 
 /**

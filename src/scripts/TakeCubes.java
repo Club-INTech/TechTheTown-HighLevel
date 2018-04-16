@@ -125,9 +125,7 @@ public class TakeCubes extends AbstractScript {
                 //Si additionalCube.getColor()==Colors.NULL, c'est qu'on a choisi de ne prendre que 3 cubes
                 //Sinon, la couleur de additionalCube sera correspondra au cube qui sera pris après le pattern
                 int currentIdealPositionInTower=0;
-                boolean cubeBonusPresent;
                 if (additionalCube.getColor() == Colors.NULL) {
-                    cubeBonusPresent=true;
                     successivesPositionsList = new Vec2[3];
                     //On sait que le premier cube dans la pile est le cube bonus, donc on l'indique dans les réussites de la tour
                     if (bras==BrasUtilise.AVANT) {
@@ -138,7 +136,6 @@ public class TakeCubes extends AbstractScript {
                     }
                     currentIdealPositionInTower++;
                 } else {
-                    cubeBonusPresent=false;
                     successivesPositionsList = new Vec2[4];
                     //On calcule les positions du cube additionnel pour x et y :
                     // position = position du tas + position relative du cube choisi par rapport au tas
@@ -447,17 +444,6 @@ public class TakeCubes extends AbstractScript {
 
 
 
-                    if (cubeBonusAvantPresent){
-                        //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
-                        state.setCubeBonusAvantPresent(false);
-                    }
-
-                    if (cubeBonusArrierePresent){
-                        //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
-                        state.setCubeBonusArrierePresent(false);
-                    }
-
-
                     Vec2 exitPoint = new Vec2(800,1300);
                     if (state.robot.getPosition().distance(exitPoint)>20) {
                         state.robot.goTo(exitPoint);
@@ -490,11 +476,11 @@ public class TakeCubes extends AbstractScript {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT_UNPEU,false);
             if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
-                stateToConsider.setReussitesTourArrière(1,idealPositionInTower);
+                stateToConsider.setReussitesTourAvant(1,idealPositionInTower);
                 stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
             }
             else{
-                stateToConsider.setReussitesTourArrière(0,idealPositionInTower);
+                stateToConsider.setReussitesTourAvant(0,idealPositionInTower);
             }
         }
         else if (bras==BrasUtilise.ARRIERE) {
