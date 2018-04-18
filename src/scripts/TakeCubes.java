@@ -667,12 +667,13 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.FAST_FRONT_ARM, false);
             state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,true);
             if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
+                cubeTakenSuccesfully=true;
+                state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
                 state.robot.useActuator(ActuatorOrder.SLOW_FRONT_ARM, true);
                 state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
                 state.robot.useActuator(ActuatorOrder.FAST_FRONT_ARM, false);
                 state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
                 state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
-                cubeTakenSuccesfully=true;
             }
             else{
                 state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, false);
@@ -689,6 +690,7 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE, true);
             if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
                 cubeTakenSuccesfully=true;
+                state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
                 state.robot.useActuator(ActuatorOrder.SLOW_BACK_ARM,true);
                 state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
                 state.robot.useActuator(ActuatorOrder.FAST_BACK_ARM,false);
