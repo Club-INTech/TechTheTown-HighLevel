@@ -685,9 +685,6 @@ public class Locomotion implements Service {
             }
             throw new UnexpectedObstacleOnPathException();
         }
-        else{
-            log.debug("ah bah je n'ai rien vu");
-        }
     }
 
 
