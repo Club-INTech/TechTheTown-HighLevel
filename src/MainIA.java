@@ -35,6 +35,8 @@ import table.Table;
 import threads.ThreadInterface;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
+import threads.dataHandlers.ThreadSensor;
+import threads.threadScore.ThreadScore;
 
 /**
  * Code qui démarre le robot en début de match
@@ -75,6 +77,7 @@ public class MainIA {
             //container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
             patternRecognition=container.getService(PatternRecognition.class);
+            container.getService(ThreadScore.class);
             container.startInstanciedThreads();
             // TODO : initialisation des variables globales du robot & objets...
             realState.robot.setPosition(Table.entryPosition);
