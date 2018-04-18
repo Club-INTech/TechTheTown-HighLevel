@@ -528,14 +528,13 @@ public class Locomotion implements Service {
                 if (unableToMoveReason.equals(UnableToMoveReason.PHYSICALLY_BLOCKED.getSerialOrder())) {
                     throw new BlockedException();
                 } else if (unableToMoveReason.equals(UnableToMoveReason.OBSTACLE_DETECTED.getSerialOrder()) && mustDetect ) {
-
                     if(basicDetection){
                         throw new UnexpectedObstacleOnPathException();
                     }
-
                 }
 
             }
+
 
             /** TODO A adapté à l'année en cours */
             if (mustDetect) {
@@ -558,6 +557,10 @@ public class Locomotion implements Service {
                         }
                         catch (InterruptedException e){
                             e.printStackTrace();
+                        }
+                        catch(ImmobileEnnemyForOneSecondAtLeast e){
+                            log.debug("aimImmobileEnnemySecondAtLeast : " + aim);
+                            throw new ImmobileEnnemyForOneSecondAtLeast(aim);
                         }
                     }
                 } else {
@@ -640,7 +643,6 @@ public class Locomotion implements Service {
             log.debug("robot arrêté : basic detection");
             throw new UnexpectedObstacleOnPathException();
         }
-
     }
 
     /**
@@ -673,7 +675,7 @@ public class Locomotion implements Service {
      */
     public void detectEnemyAtDistance(int distance, Vec2 moveDirection) throws UnexpectedObstacleOnPathException,InterruptedException,ImmobileEnnemyForOneSecondAtLeast{
         if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)) {
-            log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin");
+            log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin : le robot va s'arrêter");
             immobilise();
             Thread.sleep(1000);
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe

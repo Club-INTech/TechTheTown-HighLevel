@@ -357,7 +357,7 @@ public class ObstacleManager implements Service
 			//si aucun ennemi n'est détecté, on suppose que l'ennemi le plus proche est à 1m)
 
 			int distanceToClosestEnemy = 10000000;
-			int distanceToEnemyTested=10000000 ;
+			int distanceToEnemyTested=10000000;
 
 			ObstacleProximity closestEnnemy = null;
 
@@ -377,6 +377,7 @@ public class ObstacleManager implements Service
 					closestEnnemy = mMobileObstacles.get(i);
 				}
 			}
+
 			return closestEnnemy;
 		}
 		catch(IndexOutOfBoundsException e)
