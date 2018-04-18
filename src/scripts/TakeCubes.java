@@ -231,8 +231,7 @@ public class TakeCubes extends AbstractScript {
                     //On fait aller le robot à la position pour prendre le cube additionnel.
                     state.robot.moveNearPoint(successivesPositionsList[3].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
                     //Le robot execute les actions pour prendre le cube
-                    Cubes currentCube=Cubes.getCubeNotInPattern(this.indicePattern);
-                    takeThisCube(state, currentCube);
+                    takeThisCube(state, additionalCube);
                 }
 
 
