@@ -50,9 +50,23 @@ public class DeposeCubes extends AbstractScript {
             log.debug("BadVersionException: version "+version+" specified");
         }
 
+        state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE,true);
+
         boolean aDejaDeposeUneTour=false;
         if (prodScal>0){
             if (state.isTourAvantRemplie()) {
+
+                //On singe-proof la construction de la tour
+                //Si les 4 cubes sont présents, on les verra avant de déposer les cubes
+                //Et si les 4 cubes sont présents, on les a tous ramassés comme
+                state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,true);
+                if (state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
+                    for (int i=0; i<4; i++) {
+                        state.setReussitesTourAvant(1, i);
+                    }
+                }
+
+
                 state.robot.turn(-Math.PI / 2);
                 state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
                 //On ouvre la porte
@@ -76,6 +90,22 @@ public class DeposeCubes extends AbstractScript {
                 }
             }
             if (state.isTourArriereRemplie()) {
+
+
+
+                //On singe-proof la construction de la tour
+                //Si les 4 cubes sont présents, on les verra avant de déposer les cubes
+                //Et si les 4 cubes sont présents, on les a tous ramassés comme
+                state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE,true);
+                if (state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
+                    for (int i=0; i<4; i++) {
+                        state.setReussitesTourArrière(1, i);
+                    }
+                }
+
+
+
+
                 state.robot.turn(Math.PI / 2);
 
                 //On avance de la dimension de la porte + de la distance poussée
@@ -101,6 +131,19 @@ public class DeposeCubes extends AbstractScript {
         }
         else{
             if (state.isTourArriereRemplie()) {
+
+
+                //On singe-proof la construction de la tour
+                //Si les 4 cubes sont présents, on les verra avant de déposer les cubes
+                //Et si les 4 cubes sont présents, on les a tous ramassés comme
+                state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE,true);
+                if (state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
+                    for (int i=0; i<4; i++) {
+                        state.setReussitesTourArrière(1, i);
+                    }
+                }
+
+
                 state.robot.turn(Math.PI / 2);
                 state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
                 //On ouvre la porte
@@ -122,6 +165,17 @@ public class DeposeCubes extends AbstractScript {
                 }
             }
             if (state.isTourAvantRemplie()) {
+
+                //On singe-proof la construction de la tour
+                //Si les 4 cubes sont présents, on les verra avant de déposer les cubes
+                //Et si les 4 cubes sont présents, on les a tous ramassés comme
+                state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,true);
+                if (state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
+                    for (int i=0; i<4; i++) {
+                        state.setReussitesTourAvant(1, i);
+                    }
+                }
+
                 state.robot.turn(-Math.PI / 2);
 
                 //On avance de la dimension de la porte + de la distance poussée
