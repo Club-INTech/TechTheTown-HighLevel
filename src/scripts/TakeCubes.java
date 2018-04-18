@@ -54,7 +54,7 @@ public class TakeCubes extends AbstractScript {
         this.currentTas=TasCubes.getTasFromID(0);
         this.directionRobot="forward";
         this.brasUtilise=BrasUtilise.AVANT;
-        this.alreadyTriedCorrection=true;
+        this.alreadyTriedCorrection=false;
     }
 
     /** Execution du script de récupération des cubes
