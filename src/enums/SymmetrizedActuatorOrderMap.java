@@ -81,9 +81,13 @@ public class SymmetrizedActuatorOrderMap
 
         //Bras
         mCorrespondenceMap.put(ActuatorOrder.BAISSE_LE_BRAS_AVANT,ActuatorOrder.BAISSE_LE_BRAS_AVANT);
+        mCorrespondenceMap.put(ActuatorOrder.BAISSE_LE_BRAS_AVANT_SLOW,ActuatorOrder.BAISSE_LE_BRAS_AVANT_SLOW);
         mCorrespondenceMap.put(ActuatorOrder.RELEVE_LE_BRAS_AVANT,ActuatorOrder.RELEVE_LE_BRAS_AVANT);
+        mCorrespondenceMap.put(ActuatorOrder.RELEVE_LE_BRAS_AVANT_SLOW,ActuatorOrder.RELEVE_LE_BRAS_AVANT_SLOW);
         mCorrespondenceMap.put(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,ActuatorOrder.BAISSE_LE_BRAS_ARRIERE);
+        mCorrespondenceMap.put(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE_SLOW,ActuatorOrder.BAISSE_LE_BRAS_ARRIERE_SLOW);
         mCorrespondenceMap.put(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,ActuatorOrder.RELEVE_LE_BRAS_ARRIERE);
+        mCorrespondenceMap.put(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE_SLOW,ActuatorOrder.RELEVE_LE_BRAS_ARRIERE_SLOW);
         mCorrespondenceMap.put(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE);
         mCorrespondenceMap.put(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE,ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE);
 
