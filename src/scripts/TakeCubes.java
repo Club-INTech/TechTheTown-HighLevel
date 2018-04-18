@@ -515,44 +515,45 @@ public class TakeCubes extends AbstractScript {
 
 
 
-    private void takeThisCube(GameState stateToConsider, BrasUtilise bras, int idealPositionInTower) throws InterruptedException{
+    private void takeThisCube(GameState stateToConsider, BrasUtilise bras, int idealPositionInTower) throws InterruptedException {
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
-        stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
-        if (bras==BrasUtilise.AVANT) {
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
+        if (config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)) {
+            stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE, true);
+        }
+        if (bras == BrasUtilise.AVANT) {
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, false);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,false);
+            stateToConsider.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT, false);
             stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT_UNPEU,false);
-            if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
-                stateToConsider.setReussitesTourAvant(1,idealPositionInTower);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT_UNPEU, false);
+            if (stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()) {
+                stateToConsider.setReussitesTourAvant(1, idealPositionInTower);
                 stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
+            } else {
+                stateToConsider.setReussitesTourAvant(0, idealPositionInTower);
             }
-            else{
-                stateToConsider.setReussitesTourAvant(0,idealPositionInTower);
-            }
-        }
-        else if (bras==BrasUtilise.ARRIERE) {
-            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
+        } else if (bras == BrasUtilise.ARRIERE) {
+            stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, false);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
             stateToConsider.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
             stateToConsider.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE, false);
             stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, true);
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
-            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE_UNPEU,false);
-            if(stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
-                stateToConsider.setReussitesTourArrière(1,idealPositionInTower);
+            stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE_UNPEU, false);
+            if (stateToConsider.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()) {
+                stateToConsider.setReussitesTourArrière(1, idealPositionInTower);
                 stateToConsider.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
-            }
-            else{
-                stateToConsider.setReussitesTourArrière(0,idealPositionInTower);
+            } else {
+                stateToConsider.setReussitesTourArrière(0, idealPositionInTower);
             }
         }
-        stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+        if (config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)) {
+            stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
+        }
     }
 
     @Override
