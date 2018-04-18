@@ -18,7 +18,14 @@ public class Graph {
     /** Graphe de décision qui gère les actions à effectuer durant un match. */
 
     public Graph(ArrayList<Node> nodes) {
-        this.edges = new PriorityQueue<>(new Comparator<Edge>() {
+        this.nodes = nodes;
+        this.edges = createEdge();
+    }
+
+    /** Génère les arretes du graphe, est appelé par le constructeur de Graph. */
+
+    public PriorityQueue<Edge> createEdge(){
+        PriorityQueue<Edge> edges = new PriorityQueue<>(new Comparator<Edge>() {
             @Override
             public int compare(Edge edge, Edge t1) {
                 if (edge.getCost()>t1.getCost()){
@@ -31,13 +38,6 @@ public class Graph {
                 }
             }
         });
-        this.nodes = nodes;
-        createEdge(nodes);
-    }
-
-    /** Génère les arretes du graphe, est appelé par le constructeur de Graph. */
-
-    public void createEdge(ArrayList<Node> nodes){
         int n = nodes.size();
         for (int i = 0; i < n ; i++){
             for(int j = i+1; j < n ; j++){
@@ -45,6 +45,7 @@ public class Graph {
             }
             nodes.get(i).setId(i);
         }
+        return edges;
     }
 
     /** Set le couts des arretes. */
@@ -62,6 +63,17 @@ public class Graph {
         for(Edge edge: edges){
             edge.updateCost(nb_tas_pris);
         }
+    }
+
+    /** Retire du graphe les noeuds déjà exécuté */
+
+    public void clean(){
+        for(Node node: nodes){
+            if(node.isDone()){
+                nodes.remove(node);
+            }
+        }
+        this.edges = createEdge();
     }
 
     /** Affiche le contenu du graphe. */

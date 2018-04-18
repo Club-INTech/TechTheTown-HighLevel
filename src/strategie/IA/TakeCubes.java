@@ -58,4 +58,15 @@ public class TakeCubes extends Node {
     public void unableToMoveExceptionHandled(UnableToMoveException e) {
 
     }
+
+    @Override
+    public boolean isDone() {
+        if(getVersionToExecute()==0)
+            return getGameState().isTas_base_pris();
+        if(getVersionToExecute()==1)
+            return getGameState().isTas_chateau_eau_pris();
+        if (getVersionToExecute()==2)
+            return getGameState().isTas_station_epuration_pris();
+        else { return false;}
+    }
 }

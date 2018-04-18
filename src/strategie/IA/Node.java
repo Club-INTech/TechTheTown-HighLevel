@@ -153,9 +153,7 @@ public abstract class Node {
         return getScript().entryPosition(getVersionToExecute(),Table.entryPosition).getCenter();
     }
 
-    public boolean isDone() {
-        return isDone;
-    }
+    public abstract boolean isDone();
 
     public ArrayList<Node> getNextNodes() { return nextNodes; }
 
@@ -174,6 +172,8 @@ public abstract class Node {
     public GameState getGameState() {return gameState;}
 
     public String getName() { return name; }
+
+    public boolean getIsDone(){ return isDone; }
 
     public void setDone(boolean done) {
         this.isDone = done;

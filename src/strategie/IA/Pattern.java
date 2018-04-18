@@ -35,4 +35,9 @@ public class Pattern extends Node{
     public void unableToMoveExceptionHandled(UnableToMoveException e) {
 
     }
+
+    @Override
+    public boolean isDone() {
+        return getGameState().isRecognitionDone();
+    }
 }

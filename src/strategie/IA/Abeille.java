@@ -74,4 +74,9 @@ public class Abeille extends Node {
     public void unableToMoveExceptionHandled (UnableToMoveException e){
 
     }
+
+    @Override
+    public boolean isDone() {
+        return getGameState().isAbeilleLancee();
+    }
 }

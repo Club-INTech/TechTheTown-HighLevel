@@ -133,6 +133,7 @@ public class IA implements Service {
     }
 
     public void execute(Exception e) {
+        graph.clean();
         kruskal();
         for(Node node : nodesToExecute){
             try {
