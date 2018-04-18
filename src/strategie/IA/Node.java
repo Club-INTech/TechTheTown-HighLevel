@@ -104,45 +104,42 @@ public abstract class Node {
     }
     /** Gère les exceptions soulevées */
 
-    public void exception(Exception e){
-        if(e instanceof ImmobileEnnemyForOneSecondAtLeast ){
-            Vec2 positionRobot=gameState.robot.getPosition();
-            Vec2 aim=((ImmobileEnnemyForOneSecondAtLeast) e).getAim();
-            ArrayList<Vec2> pathTofollow= new ArrayList<>();
-            try {
-                pathTofollow = pathfinding.findmyway(positionRobot,aim);
-            } catch (PointInObstacleException e1) {
-                e1.printStackTrace();
-            } catch (UnableToMoveException e1) {
-                unableToMoveExceptionHandled(e1);
-            }
-            catch (NoPathFound noPathFound) {
-                noPathFound.printStackTrace();
-            }
-            try {
-                gameState.robot.followPath(pathTofollow);
-            } catch (UnableToMoveException e1) {
-                unableToMoveExceptionHandled(e1);
-            } catch (ImmobileEnnemyForOneSecondAtLeast e1) {
-                exception(e1);
-            }
-        }
-        else if(e instanceof UnexpectedObstacleOnPathException){
-            //On passe à la detection non basique
-            config.override(ConfigInfoRobot.BASIC_DETECTION,false);
-            try {
-                gameState.robot.turn(Math.PI/12);
-            } catch (UnableToMoveException e1) {
-                unableToMoveExceptionHandled(e1);
-            } catch (ImmobileEnnemyForOneSecondAtLeast e1) {
-                exception(e1);
+    public void exception(Exception e) {
+        if (e instanceof ImmobileEnnemyForOneSecondAtLeast) {
+            boolean ennemyDodged = false;
+            while (!ennemyDodged) {
+                try {
+                    gameState.robot.moveLengthwise(-20);
+                    ArrayList<Vec2> pathToFollow = gameState.robot.getPathfinding().findmyway(gameState.robot.getPosition(), ((ImmobileEnnemyForOneSecondAtLeast) e).getAim());
+                    gameState.robot.followPath(pathToFollow);
+                    ennemyDodged = true;
+                } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+                    System.out.println("L'ennemi est toujours là");
+                } catch (PointInObstacleException e1) {
+                    System.out.println("PointInObstacleException");
+                    e1.printStackTrace();
+                } catch (UnableToMoveException e1) {
+                    System.out.println("UnableToMoveException");
+                    e1.printStackTrace();
+                } catch (NoPathFound noPathFound) {
+                    System.out.println("NoPathFound");
+                    noPathFound.printStackTrace();
+                } finally {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                }
             }
 
         }
-
     }
 
+
     public abstract void unableToMoveExceptionHandled(UnableToMoveException e);
+
+
 
     @Override
     public String toString() {
@@ -192,5 +189,7 @@ public abstract class Node {
     public void setPosition(Vec2 position) { this.position = position; }
 
     public void setVersionToExecute(int versionToExecute) { this.versionToExecute = versionToExecute; }
+
+
 
 }
