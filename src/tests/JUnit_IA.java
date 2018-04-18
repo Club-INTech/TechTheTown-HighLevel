@@ -1,6 +1,7 @@
 package tests;
 
 import enums.ScriptNames;
+import enums.Speed;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -17,6 +18,7 @@ import strategie.GameState;
 import table.Table;
 import strategie.IA.*;
 import threads.ThreadInterface;
+import threads.dataHandlers.ThreadSensor;
 
 /*
  * Copyright (c) 2016, INTech.
@@ -45,6 +47,7 @@ public class JUnit_IA extends JUnit_Test{
         private GameState state;
         private ThreadSimulator simulator;
         private ThreadSimulatorMotion simulatorMotion;
+        private ThreadSensor threadSensor;
         private Table table;
 
         private IA ia;
@@ -56,11 +59,11 @@ public class JUnit_IA extends JUnit_Test{
         public void setUp() {
             try {
                 super.setUp();
-
                 robotReal = container.getService(Robot.class);
                 scriptManager = container.getService(ScriptManager.class);
                 state = container.getService(GameState.class);
                 table = container.getService(Table.class);
+                threadSensor=container.getService(ThreadSensor.class);
                 container.getService(ThreadInterface.class);
 
                 ia=container.getService(IA.class);
@@ -76,16 +79,10 @@ public class JUnit_IA extends JUnit_Test{
         public void testScript() {
             robotReal.setPosition(Table.entryPosition);
             robotReal.setOrientation(Table.entryOrientation);
-
-            try {
-                state.setRecognitionDone(true);
-                state.setIndicePattern(2);
-                ia.start(ScriptNames.MATCH_SCRIPT,0);
-            }catch (Exception e){
-                e.printStackTrace();
-                ia.execute(e);
-            }
-
+            state.setRecognitionDone(true);
+            state.setIndicePattern(2);
+            state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+            ia.start(ScriptNames.MATCH_SCRIPT,0);
         }
         @Test
         public void ennemyAvoid(){

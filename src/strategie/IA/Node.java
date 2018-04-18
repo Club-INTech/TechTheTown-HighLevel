@@ -115,6 +115,7 @@ public abstract class Node {
                     gameState.robot.followPath(pathToFollow);
                     ennemyDodged = true;
                 } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+                    immobileEnnemyForOneSecondAtLeast.printStackTrace();
                     System.out.println("L'ennemi est toujours là");
                 } catch (PointInObstacleException e1) {
                     System.out.println("PointInObstacleException");
@@ -135,7 +136,6 @@ public abstract class Node {
                     }
                 }
             }
-
         }
     }
 
