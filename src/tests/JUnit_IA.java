@@ -78,6 +78,8 @@ public class JUnit_IA extends JUnit_Test{
             robotReal.setOrientation(Table.entryOrientation);
 
             try {
+                state.setRecognitionDone(true);
+                state.setIndicePattern(2);
                 ia.start(ScriptNames.MATCH_SCRIPT,0);
             }catch (Exception e){
                 e.printStackTrace();
