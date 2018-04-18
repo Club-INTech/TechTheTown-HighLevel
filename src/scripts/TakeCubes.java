@@ -584,9 +584,9 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
             state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
             state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
-            state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,false);
             state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, true);
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
+            state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,false);
             state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT_UNPEU,false);
             if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
                 cubeSuccessfullyTaken=true;
@@ -606,9 +606,9 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
             state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
             state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
-            state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE, false);
             state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, true);
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
+            state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE, false);
             state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE_UNPEU,false);
             if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
                 cubeSuccessfullyTaken=true;
@@ -644,25 +644,25 @@ public class TakeCubes extends AbstractScript {
         Vec2 tableCoordsCurrentCube = this.currentTas.getCoordsVec2().plusNewVector(relativeCoordsCurrentCube.dotFloat(this.largeurCubes));
         Vec2[] correctionVectorList=new Vec2[4];
         int val=this.largeurCubes/3;
-        if (relativeCoordsCurrentCube==new Vec2(1,0)){
+        if (relativeCoordsCurrentCube.equals(new Vec2(1,0))){
             correctionVectorList[0]=new Vec2(val,val);
             correctionVectorList[1]=new Vec2(val,-val);
             correctionVectorList[2]=new Vec2(-val,-val);
             correctionVectorList[3]=new Vec2(-val,val);
         }
-        else if (relativeCoordsCurrentCube==new Vec2(-1,0)){
+        else if (relativeCoordsCurrentCube.equals(new Vec2(-1,0))){
             correctionVectorList[0]=new Vec2(-val,val);
             correctionVectorList[1]=new Vec2(val,val);
             correctionVectorList[2]=new Vec2(val,-val);
             correctionVectorList[3]=new Vec2(-val,-val);
         }
-        else if (relativeCoordsCurrentCube==new Vec2(0,1)){
+        else if (relativeCoordsCurrentCube.equals(new Vec2(0,1))){
             correctionVectorList[0]=new Vec2(val,-val);
             correctionVectorList[1]=new Vec2(-val,-val);
             correctionVectorList[2]=new Vec2(-val,val);
             correctionVectorList[3]=new Vec2(val,val);
         }
-        else if (relativeCoordsCurrentCube==new Vec2(0,-1)){
+        else if (relativeCoordsCurrentCube.equals(new Vec2(0,-1))){
             correctionVectorList[0]=new Vec2(-val,-val);
             correctionVectorList[1]=new Vec2(-val,val);
             correctionVectorList[2]=new Vec2(val,val);
