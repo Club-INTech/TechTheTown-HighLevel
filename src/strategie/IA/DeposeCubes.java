@@ -26,6 +26,11 @@ public class DeposeCubes extends Node {
         return getScript().entryPosition(0, Table.entryPosition).getCenter();
     }
 
+    @Override
+    public boolean isDone() {
+        return isDone;
+    }
+
     public void exception(Exception e) {
 
     }

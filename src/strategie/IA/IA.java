@@ -123,16 +123,17 @@ public class IA implements Service {
         return nodes;
     }
 
-    public void start(ScriptNames scriptNames, int versionToExecute) throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+    public void start(ScriptNames scriptNames, int versionToExecute)  {
         try {
             scriptManager.getScript(scriptNames).goToThenExec(versionToExecute,gameState);
-        } catch (UnexpectedObstacleOnPathException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             execute(e);
         }
     }
 
     public void execute(Exception e) {
+        graph.clean();
         kruskal();
         for(Node node : nodesToExecute){
             try {
