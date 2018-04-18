@@ -650,19 +650,19 @@ public class TakeCubes extends AbstractScript {
             correctionVectorList[2]=new Vec2(-val,-val);
             correctionVectorList[3]=new Vec2(-val,val);
         }
-        else if (relativeCoordsCurrentCube.equals(new Vec2(-1,0))){
+        else if (relativeCoordsCurrentCube.equals(new Vec2(0,1))){
             correctionVectorList[0]=new Vec2(-val,val);
             correctionVectorList[1]=new Vec2(val,val);
             correctionVectorList[2]=new Vec2(val,-val);
             correctionVectorList[3]=new Vec2(-val,-val);
         }
-        else if (relativeCoordsCurrentCube.equals(new Vec2(0,1))){
+        else if (relativeCoordsCurrentCube.equals(new Vec2(0,-1))){
             correctionVectorList[0]=new Vec2(val,-val);
             correctionVectorList[1]=new Vec2(-val,-val);
             correctionVectorList[2]=new Vec2(-val,val);
             correctionVectorList[3]=new Vec2(val,val);
         }
-        else if (relativeCoordsCurrentCube.equals(new Vec2(0,-1))){
+        else if (relativeCoordsCurrentCube.equals(new Vec2(-1,0))){
             correctionVectorList[0]=new Vec2(-val,-val);
             correctionVectorList[1]=new Vec2(-val,val);
             correctionVectorList[2]=new Vec2(val,val);
