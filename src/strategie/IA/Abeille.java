@@ -35,7 +35,7 @@ public class Abeille extends Node {
      * disable les hooks qu'on veut en fonction des bras
      */
     @Override
-    public void execute(Exception e, GameState gameState) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
+    public void execute(Exception e, GameState gameState) throws BadVersionException, BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, ImmobileEnnemyForOneSecondAtLeast {
         if (e != null) {
             exception(e);
         }

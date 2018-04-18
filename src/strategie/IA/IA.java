@@ -43,7 +43,7 @@ public class IA implements Service {
         this.hookFactory = hookFactory;
         this.graph = new Graph(createNodes());
         this.nb_tas_pris = 0;
-        this.nodesToExecute = new ArrayList<Node>();
+        this.nodesToExecute = kruskal();
     }
 
     /** Créer les noeuds du graphe de décision. */
@@ -73,8 +73,12 @@ public class IA implements Service {
 
     /** Trouve un parcourt optimal dans le graphe de décision. */
 
-    public ArrayList<Node> kruskal() throws UnableToMoveException, PointInObstacleException, NoPathFound {
-        graph.setEdgesCost(pathfinding);
+    public ArrayList<Node> kruskal()  {
+        try {
+            graph.setEdgesCost(pathfinding);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         ArrayList<Edge> bestEdges = new ArrayList<>();
         UnionFind u1 = new UnionFind(graph.getNodes().size());
         Edge curentEdge;
@@ -119,13 +123,18 @@ public class IA implements Service {
     }
 
     public void start(ScriptNames scriptNames, int versionToExecute) throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
-        scriptManager.getScript(scriptNames).goToThenExec(0,gameState);
+        scriptManager.getScript(scriptNames).goToThenExec(versionToExecute,gameState);
     }
 
-    public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast, NoPathFound {
+    public void execute(Exception e) {
         kruskal();
         for(Node node : nodesToExecute){
-            node.execute(e,gameState);
+            try {
+                node.execute(e,gameState);
+            } catch (Exception e1){
+                e1.printStackTrace();
+                node.exception(e1);
+            }
         }
     }
 

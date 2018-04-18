@@ -98,7 +98,7 @@ public class MainIA {
 
             //TODO : lancer l'IA
 
-            ia.execute(null);
+            ia.start(ScriptNames.MATCH_SCRIPT,0);
 
         } catch (Exception e) {
             e.printStackTrace();
