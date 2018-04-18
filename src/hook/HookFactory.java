@@ -21,7 +21,9 @@ package hook;
 
 import container.Service;
 import enums.ActuatorOrder;
+import enums.ConfigInfoRobot;
 import enums.Speed;
+import enums.SymmetrizedActuatorOrderMap;
 import pfg.config.Config;
 import robot.EthWrapper;
 import utils.Log;
@@ -42,14 +44,21 @@ public class HookFactory implements Service {
     /** Wrapper */
     private EthWrapper eth;
 
+    /**symetry*/
+    private boolean symetry;
+
     /** Liste des Hooks */
     private ArrayList<HookNames> configuredHook = new ArrayList<HookNames>();
+
+    /** Map pour la symétrie des actionneurs */
+    private SymmetrizedActuatorOrderMap mActuatorCorrespondenceMap = new SymmetrizedActuatorOrderMap();
 
     /** Constructeur */
     public HookFactory (EthWrapper eth, Config config, Log log){
         this.eth=eth;
         this.config=config;
         this.log=log;
+        updateConfig();
     }
 
     /**
@@ -60,11 +69,17 @@ public class HookFactory implements Service {
         String serialOrder;
         for(HookNames hook:hooks){
 
+
             if (hook.getOrder() instanceof Speed){
                 serialOrder = "ctrv " + ((Speed) hook.getOrder()).translationSpeed + " " + (float) ((Speed) hook.getOrder()).rotationSpeed;
             }
             else if (hook.getOrder() instanceof ActuatorOrder){
-                serialOrder = ((ActuatorOrder) hook.getOrder()).getEthernetOrder();
+                if (symetry) {
+                    serialOrder = mActuatorCorrespondenceMap.getSymmetrizedActuatorOrder((ActuatorOrder) hook.getOrder()).getEthernetOrder();
+                }
+                else {
+                    serialOrder = ((ActuatorOrder) hook.getOrder()).getEthernetOrder();
+                }
             }else{
                 log.critical("Mauvaise enum, la méthode doit implémenter MotionOrder");
                 break;
@@ -73,6 +88,10 @@ public class HookFactory implements Service {
             if (configuredHook.contains(hook)){
                 log.warning("Hook déjà configuré : on ne fait rien");
                 break;
+            }
+            if(symetry){
+                hook.setPosition(hook.getPosition().symetrize());
+                log.debug("la position envoyée au bas niveau pour le hook"+hook.getPosition());
             }
             eth.configureHook(hook.getId(), hook.getPosition(), hook.getTolerency(), hook.getOrientation(),hook.getTolerencyAngle(),serialOrder);
             log.debug("Hook " + hook.getDeclaringClass() + " : Configuré");
@@ -131,5 +150,7 @@ public class HookFactory implements Service {
     }
 
     @Override
-    public void updateConfig(){}
+    public void updateConfig(){
+        symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
+    }
 }

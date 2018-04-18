@@ -8,8 +8,9 @@ ROBOT_LENGTH                         = 300
 ROBOT_WIDTH                          = 380
 ROBOT_RADIUS                         = 210
 ENNEMY_RADIUS                        = 200
-LONGUEUR_CUBE                        =  58
-LONGUEUR_BRAS                        = 330
+LONGUEUR_CUBE                        = 58
+LONGUEUR_BRAS_AVANT                  = 317
+LONGUEUR_BRAS_ARRIERE                = 333
 DIMENSION_PORTES                     = 110
 COUT_FIXE                            = 42
 INDICE_PATTERN_SIMULATION            = 0
@@ -20,7 +21,7 @@ INDICE_PATTERN_SIMULATION            = 0
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
 SIMULATION                           = false
-ATTENTE_JUMPER                       = false
+ATTENTE_JUMPER                       = true
 
 # VERSION DE MATCHSCRIPT TO EXECUTE
 MATCHSCRIPT_TO_EXECUTE               = 0

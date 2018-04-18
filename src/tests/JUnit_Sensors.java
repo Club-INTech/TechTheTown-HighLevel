@@ -113,6 +113,7 @@ public class JUnit_Sensors extends JUnit_Test
 	@Test
 	public void testStopWhileMove() throws Exception
 	{
+		state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
 		state.robot.setPosition(Table.entryPosition);
 		state.robot.setOrientation(Table.entryOrientation);
 		state.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
@@ -157,6 +158,8 @@ public class JUnit_Sensors extends JUnit_Test
 					} catch (NoPathFound noPathFound) {
 						log.critical("NoPathFound");
 						noPathFound.printStackTrace();
+					} catch (UnexpectedObstacleOnPathException e1) {
+						e1.printStackTrace();
 					} finally {
 						try {
 							Thread.sleep(10);
@@ -172,6 +175,8 @@ public class JUnit_Sensors extends JUnit_Test
 			} catch (NoPathFound noPathFound) {
 				log.debug("noPathFound");
 				noPathFound.printStackTrace();
+			} catch (UnexpectedObstacleOnPathException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -197,8 +202,8 @@ public class JUnit_Sensors extends JUnit_Test
 		state.robot.switchSensor();
 	}
 
-	//	@Test
-	public void testDetectionTournante() throws ImmobileEnnemyForOneSecondAtLeast {
+//	@Test
+	public void testDetectionTournante() throws ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
 		log.debug("Test d'évitement");
 		
 	/*	try 
@@ -228,7 +233,7 @@ public class JUnit_Sensors extends JUnit_Test
 	}
 
 	//@Test
-	public void testMoveThenDetect()
+	public void testMoveThenDetect() throws UnexpectedObstacleOnPathException
 	{
 
 		try
@@ -248,9 +253,10 @@ public class JUnit_Sensors extends JUnit_Test
 	}
 
 	//@Test
-	public void testMoveForwardBackward() throws ImmobileEnnemyForOneSecondAtLeast {
 
-		try
+	public void testMoveForwardBackward() throws ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+		
+		try 
 		{
 			state.robot.moveLengthwiseWithoutDetection(500, false);
 		}
@@ -294,7 +300,7 @@ public class JUnit_Sensors extends JUnit_Test
 
 
 	//@Test
-	public void testSensorEnnemyWithMovement() throws ImmobileEnnemyForOneSecondAtLeast {
+	public void testSensorEnnemyWithMovement() throws ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
 		log.debug("Test des capteurs fixe");
 		while(true)
 		{
@@ -327,13 +333,11 @@ public class JUnit_Sensors extends JUnit_Test
 		}
 	}
 
-
-
-	// @Test
-	public void testCapteurDeplacement() throws PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
-		matchSetUp(state.robot, false);
-		try
-		{
+   // @Test
+	public void testCapteurDeplacement() throws PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+    	matchSetUp(state.robot, false);
+    	try 
+    	{
 			state.robot.moveLengthwise(300);
 		}
 		catch (UnableToMoveException e2)

@@ -3,9 +3,9 @@ package enums;
 import smartMath.Vec2;
 
 public enum TasCubes{
-    TAS_BASE(0,635,540), //Position pas décalée de -15 en X pa rapport à la position théorique
+    TAS_BASE(0,640,540), //Position pas décalée de -10 en X par rapport à la position théorique
     TAS_CHATEAU_EAU(1,1200,1190),
-    TAS_STATION_EPURATION(2,400,1500),
+    TAS_STATION_EPURATION(2,390,1500), //Position décalée de -10 en X par rapport à la position théorique
     TAS_STATION_EPURATION_ENNEMI(3,-400,1500),
     TAS_CHATEAU_EAU_ENNEMI(4,-1200,1190),
     TAS_BASE_ENNEMI(5,-650,540);
@@ -20,12 +20,11 @@ public enum TasCubes{
     }
 
     public int[] getCoords(){
-        int[] coords={this.x,this.y};
-        return coords;
+        return new int[]{this.x, this.y};
     }
+
     public Vec2 getCoordsVec2(){
-        Vec2 coords = new Vec2(this.x,this.y);
-        return coords;
+        return new Vec2(this.x,this.y);
     }
 
     public int getID(){

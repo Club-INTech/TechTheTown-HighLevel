@@ -8,6 +8,7 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import pathfinder.Pathfinding;
 import scripts.ScriptManager;
@@ -26,7 +27,7 @@ public class TakeCubes extends Node {
     }
 
     @Override
-    public void execute(Exception e, GameState gameState) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
+    public void execute(Exception e, GameState gameState) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast, UnexpectedObstacleOnPathException {
         if (e != null) {
             exception(e);
         } else {

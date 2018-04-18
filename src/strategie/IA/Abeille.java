@@ -7,6 +7,7 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import hook.HookNames;
 import pathfinder.Pathfinding;
@@ -35,7 +36,7 @@ public class Abeille extends Node {
      * disable les hooks qu'on veut en fonction des bras
      */
     @Override
-    public void execute(Exception e, GameState gameState) throws BadVersionException, BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, ImmobileEnnemyForOneSecondAtLeast {
+    public void execute(Exception e, GameState gameState) throws BadVersionException, BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, ImmobileEnnemyForOneSecondAtLeast, UnexpectedObstacleOnPathException {
         if (e != null) {
             exception(e);
         }
@@ -50,13 +51,10 @@ public class Abeille extends Node {
                 //ON UTILISE LE BRAS AVANT
                 //On disable le hook pour le bras arrière
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE);
                 //On enable le kook pour le bras avant
                 hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
-                hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE);
                 this.script.goToThenExec(1, gameState);
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE);
             }
             if (prodScal < 0) {
                 //ON UTILISE LE BRAS AVANT

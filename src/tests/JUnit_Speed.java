@@ -23,6 +23,7 @@ import enums.Speed;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import org.junit.After;
 import org.junit.Before;
@@ -59,7 +60,7 @@ public class JUnit_Speed extends JUnit_Test {
 	}
 
 	@Test
-	public void test() throws UnableToMoveException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
+	public void test() throws UnableToMoveException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
 		robot.moveLengthwise(250);
 		
 		for (Speed speed : Speed.values())

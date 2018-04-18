@@ -7,6 +7,7 @@ import exceptions.BadVersionException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -31,19 +32,19 @@ public class DeposeCubes extends AbstractScript {
 
     /**
      * Cette méthode dépose les cubes pris par les deux bras
-     * @param stateToConsider
+     * @param state
      * @throws ExecuteException
      * @throws UnableToMoveException
      */
     @Override
-    public void execute(int version, GameState stateToConsider) throws ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+    public void execute(int version, GameState state) throws ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
         //On se tourne vers la zone de construction
         log.debug("////////// Execution DeposeCubes version "+version+" //////////");
         Vec2 directionToGo=null;
         double prodScal=0;
         try {
-            directionToGo = (this.entryPosition(version, stateToConsider.robot.getPosition()).getCenter()).plusNewVector(new Vec2(0,-50)).minusNewVector(stateToConsider.robot.getPosition());
-            prodScal=directionToGo.dot(new Vec2(100.0,stateToConsider.robot.getOrientation()));
+            directionToGo = (this.entryPosition(version, state.robot.getPosition()).getCenter()).plusNewVector(new Vec2(0,-50)).minusNewVector(state.robot.getPosition());
+            prodScal=directionToGo.dot(new Vec2(100.0,state.robot.getOrientation()));
         } catch (BadVersionException e) {
             e.printStackTrace();
             log.debug("BadVersionException: version "+version+" specified");
@@ -51,77 +52,158 @@ public class DeposeCubes extends AbstractScript {
 
         boolean aDejaDeposeUneTour=false;
         if (prodScal>0){
-            if (stateToConsider.isTourAvantRemplie()) {
-                stateToConsider.robot.turn(-Math.PI / 2);
-                stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+            if (state.isTourAvantRemplie()) {
+                state.robot.turn(-Math.PI / 2);
+                state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
                 //On ouvre la porte
-                stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
+                state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
 
-                stateToConsider.robot.moveLengthwise(distancePenetrationZone);
+                state.robot.moveLengthwise(distancePenetrationZone);
 
                 //On recule de la largeur de la porte + de la longueur avancée dans la zone
-                stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
-                stateToConsider.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte));
+                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                state.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte));
 
                 //On ferme la porte
-                stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
                 aDejaDeposeUneTour=true;
+
+                //On calcule les points
+                state.addObtainedPoints(calculScore(true,state.isCubeBonusAvantPresent(),state));
+                if (state.isCubeBonusAvantPresent()){
+                    //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
+                    state.setCubeBonusAvantPresent(false);
+                }
             }
-            if (stateToConsider.isTourArriereRemplie()) {
-                stateToConsider.robot.turn(Math.PI / 2);
+            if (state.isTourArriereRemplie()) {
+                state.robot.turn(Math.PI / 2);
 
                 //On avance de la dimension de la porte + de la distance poussée
-                stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
-                stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+                state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
+                state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
                 if (aDejaDeposeUneTour) {
-                    stateToConsider.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte));
+                    state.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte));
                 }
                 else{
-                    stateToConsider.robot.moveLengthwise(-distancePenetrationZone);
+                    state.robot.moveLengthwise(-distancePenetrationZone);
                 }
-                stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
-                stateToConsider.robot.moveLengthwise(dimensionporte + distancePenetrationZone);
-                stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                state.robot.moveLengthwise(dimensionporte + distancePenetrationZone);
+                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+
+                //On calcule les points
+                state.addObtainedPoints(calculScore(false,state.isCubeBonusArrierePresent(),state));
+                if (state.isCubeBonusArrierePresent()){
+                    //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
+                    state.setCubeBonusArrierePresent(false);
+                }
             }
         }
         else{
-            if (stateToConsider.isTourArriereRemplie()) {
-                stateToConsider.robot.turn(Math.PI / 2);
-                stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+            if (state.isTourArriereRemplie()) {
+                state.robot.turn(Math.PI / 2);
+                state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
                 //On ouvre la porte
-                stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
+                state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
                 //On rentre dans la zone
-                stateToConsider.robot.moveLengthwise(-distancePenetrationZone);
+                state.robot.moveLengthwise(-distancePenetrationZone);
                 //On recule de la largeur de la porte + de la longueur avancée dans la zone
-                stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
-                stateToConsider.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte);
+                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                state.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte);
                 //On ferme la porte
-                stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
                 aDejaDeposeUneTour=true;
+
+                //On calcule les points
+                state.addObtainedPoints(calculScore(false,state.isCubeBonusAvantPresent(),state));
+                if (state.isCubeBonusAvantPresent()){
+                    //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
+                    state.setCubeBonusAvantPresent(false);
+                }
             }
-            if (stateToConsider.isTourAvantRemplie()) {
-                stateToConsider.robot.turn(-Math.PI / 2);
+            if (state.isTourAvantRemplie()) {
+                state.robot.turn(-Math.PI / 2);
 
                 //On avance de la dimension de la porte + de la distance poussée
-                stateToConsider.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
-                stateToConsider.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+                state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
+                state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
                 if (aDejaDeposeUneTour) {
-                    stateToConsider.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte);
+                    state.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte);
                 }
                 else{
-                    stateToConsider.robot.moveLengthwise(distancePenetrationZone);
+                    state.robot.moveLengthwise(distancePenetrationZone);
                 }
-                stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
-                stateToConsider.robot.moveLengthwise(-(dimensionporte + distancePenetrationZone));
-                stateToConsider.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                state.robot.moveLengthwise(-(dimensionporte + distancePenetrationZone));
+                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+
+                //On calcule les points
+                state.addObtainedPoints(calculScore(true,state.isCubeBonusArrierePresent(),state));
+                if (state.isCubeBonusArrierePresent()){
+                    //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
+                    state.setCubeBonusArrierePresent(false);
+                }
             }
         }
-        stateToConsider.robot.setLocomotionSpeed(Speed.FAST_ALL);
-        //les deux premières sont déposées
-        stateToConsider.setTourAvantRemplie(false);
-        stateToConsider.setTourArriereRemplie(false);
+        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+
+        //Les deux premières sont déposées
+        state.setTourAvantRemplie(false);
+        state.setTourArriereRemplie(false);
+
+        //On reset les réussites de tours avant et arrières
+        for (int i=0; i<4; i++) {
+            state.setReussitesTourArrière(-1,i);
+            state.setReussitesTourAvant(-1,i);
+        }
+
         log.debug("////////// End DeposeCubes version "+version+" //////////");
     }
+
+    private int calculScore(boolean pourTourAvant, boolean cubeBonusPresent, GameState state){
+        //On assume que le pattern a été correctement reconnu par la reconnaissance
+        int score=0;
+        int[] reussitesTour;
+
+        //On récupère les réussites de la tour qui nous intéresse
+        if (pourTourAvant){
+            reussitesTour=state.getReussitesTourAvant();
+        }
+        else{
+            reussitesTour=state.getReussitesTourArriere();
+        }
+        log.debug(reussitesTour[0]+" "+reussitesTour[1]+" "+reussitesTour[2]+" "+reussitesTour[3]);
+
+        //On check si on a essayé de construire la tour
+        if (reussitesTour[1]!=-1) {
+
+            //Calcul des points du pattern
+            if (cubeBonusPresent) {
+                //Cas où le cube bones est présent
+                //On a besoin que du premier, troisieme et quatrieme cube pour réaliser le pattern
+                //La réalisation du pattern ne dépend pas de la présence du premier cube
+                if (reussitesTour[0] == 1 && reussitesTour[2] == 1 && reussitesTour[3] == 1) {
+                    score += 30;
+                }
+            } else {
+                //Cas où le cube bonus n'est pas présent
+                //Il faut absolument que les trois premiers cubes qu'on a essayé de prendre soient présents dans la tour
+                if (reussitesTour[0] == 1 && reussitesTour[1] == 1 && reussitesTour[2] == 1) {
+                    score += 30;
+                }
+            }
+
+            //Calcul des points de la construction de la tour
+            int sum = reussitesTour[0] + reussitesTour[1] + reussitesTour[2] + reussitesTour[3];
+            score += sum * (sum + 1) / 2;
+
+            return score;
+        }
+        else{
+            return 0;
+        }
+    }
+
 
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
@@ -157,6 +239,8 @@ public class DeposeCubes extends AbstractScript {
     public Integer[] getVersion(GameState stateToConsider) {
         return versions;
     }
+
+
 
     @Override
     public void updateConfig() {

@@ -94,6 +94,8 @@ public class ThreadEth extends AbstractThread implements Service {
     private File fullDebugFile;
     private File sensorUSFileTmp;
     private File sensorUSFile;
+    private File logFileTmp;
+    private File logFile;
 
     /**
      * Buffer pour fichiers de debug
@@ -159,6 +161,8 @@ public class ThreadEth extends AbstractThread implements Service {
                 this.fullDebugFile = new File("./fullDebug.txt");
                 this.sensorUSFileTmp = new File("/tmp/us.txt");
                 this.sensorUSFile = new File("./us.txt");
+                this.logFileTmp = new File(log.getSavePath());
+                this.logFile = new File(log.getFinalSavePath());
 
                 if (!this.ordersFileTmp.exists()) {
                     this.ordersFileTmp.createNewFile();
@@ -320,11 +324,6 @@ public class ThreadEth extends AbstractThread implements Service {
             output.write(mess, 0, mess.length());
             output.flush();
 
-            if (debug) {
-                outOrders.write(mess);
-                outOrders.newLine();
-            }
-
         } catch (SocketException e) {
             log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
             try {
@@ -338,9 +337,19 @@ public class ThreadEth extends AbstractThread implements Service {
             }
             e.printStackTrace();
         } catch (IOException except) {
-            log.debug("LL ne répond pas, on shutdown");
+            log.critical("LL ne répond pas, on shutdown");
             shutdown = true;
             except.printStackTrace();
+        }
+
+        if (debug) {
+            try {
+                outOrders.write(mess);
+                outOrders.newLine();
+            } catch (IOException e) {
+                log.debug("On n'arrive pas à écrire dans le fichier de debug orders");
+                e.printStackTrace();
+            }
         }
 
         /* Réponse du LL (listener dans le run) */
@@ -398,8 +407,7 @@ public class ThreadEth extends AbstractThread implements Service {
             }
             e1.printStackTrace();
         } catch (Exception except2) {
-            log.debug("LL ne répond pas, on shutdown");
-            shutdown = true;
+            log.debug("Exception pour écrire dans les fichiers de debug orders");
             except2.printStackTrace();
         }
         return inputLines;
@@ -439,6 +447,8 @@ public class ThreadEth extends AbstractThread implements Service {
                     Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    Log.stop();
+                    Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

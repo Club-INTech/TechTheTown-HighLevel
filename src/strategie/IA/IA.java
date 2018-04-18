@@ -9,6 +9,7 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import hook.HookFactory;
 import hook.HookNames;
@@ -123,7 +124,12 @@ public class IA implements Service {
     }
 
     public void start(ScriptNames scriptNames, int versionToExecute) throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
-        scriptManager.getScript(scriptNames).goToThenExec(versionToExecute,gameState);
+        try {
+            scriptManager.getScript(scriptNames).goToThenExec(versionToExecute,gameState);
+        } catch (UnexpectedObstacleOnPathException e) {
+            e.printStackTrace();
+            execute(e);
+        }
     }
 
     public void execute(Exception e) {

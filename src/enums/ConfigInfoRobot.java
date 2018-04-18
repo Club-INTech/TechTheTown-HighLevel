@@ -70,7 +70,8 @@ public enum ConfigInfoRobot implements ConfigInfo
     LONGUEUR_CUBE(58),
 
     /**Longueur bras*/
-    LONGUEUR_BRAS(330),
+    LONGUEUR_BRAS_AVANT(317),
+    LONGUEUR_BRAS_ARRIERE(333),
 
     /**Dimension portes*/
     DIMENSION_PORTES(87),

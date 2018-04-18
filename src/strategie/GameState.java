@@ -116,9 +116,8 @@ public class GameState implements Service
         this.config=config;
         this.log=log;
 
-        
         //On n'a marqué aucun point en début de match
-        this.obtainedPoints = 0;
+        this.obtainedPoints = 10;
 
         //Aucun des tours n'est remplie en début de match
         this.tourAvantRemplie=false;
@@ -183,6 +182,9 @@ public class GameState implements Service
         this.obtainedPoints = obtainedPoints;
     }
 
+    public void addObtainedPoints(int pointsToAdd){
+	    this.obtainedPoints+=pointsToAdd;
+    }
 
 
     public int getIndicePattern() {

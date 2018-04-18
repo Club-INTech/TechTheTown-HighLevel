@@ -67,7 +67,8 @@ public abstract class Node {
 
     /** Permet d'executer le script d'un noeud et de gérer les exeptions si il y en a. */
 
-    public void execute(Exception e, GameState gameState) throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+    public void execute(Exception e, GameState gameState)
+            throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast, UnexpectedObstacleOnPathException {
         if (e != null) {
             exception(e);
         } else {
@@ -124,6 +125,8 @@ public abstract class Node {
                 } catch (NoPathFound noPathFound) {
                     System.out.println("NoPathFound");
                     noPathFound.printStackTrace();
+                } catch (UnexpectedObstacleOnPathException e1) {
+                    e1.printStackTrace();
                 } finally {
                     try {
                         Thread.sleep(10);

@@ -7,6 +7,7 @@ import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -37,19 +38,20 @@ public class ActivationPanneauDomotique extends AbstractScript{
     }
 
     @Override
-    public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, ImmobileEnnemyForOneSecondAtLeast {
+    public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
         log.debug("////////// Execution ActivePanneauDomotique version "+versionToExecute+" //////////");
         actualState.robot.turn(-Math.PI/2);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.moveLengthwise(distanceInterrupteur);
         actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         actualState.robot.goTo(new Vec2(xEntry,yEntry));
-        actualState.robot.setLocomotionSpeed(Speed.FAST_ALL);
+        actualState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+        actualState.addObtainedPoints(25);
         log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");
     }
 
     @Override
-    public void finalize(GameState state, Exception e) throws UnableToMoveException {}
+    public void finalize(GameState state, Exception e) throws UnableToMoveException { }
 
     @Override
     public Integer[] getVersion(GameState stateToConsider) {
@@ -59,7 +61,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     @Override
     public int remainingScoreOfVersion(int version, GameState state) {
-        return 0;
+        return 25;
     }
 
     @Override

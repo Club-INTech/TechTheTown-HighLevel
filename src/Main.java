@@ -18,7 +18,6 @@
  */
 
 import container.Container;
-import graphics.AffichageDebug;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
@@ -28,10 +27,10 @@ import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
-import simulator.ThreadSimulator;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
+import threads.threadScore.ThreadScore;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
 
@@ -56,12 +55,14 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         int matchScriptVersionToExecute=0;
         try {
+            // TODO : initialisation des variables globales du robot & objets...
             container = new Container();
             config = container.getConfig();
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion = container.getService(Locomotion.class);
+            patternRecognition = container.getService(PatternRecognition.class);
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
             }
@@ -69,16 +70,13 @@ public class Main {
             Thread.currentThread().setPriority(6);
             //container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
-            //container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
-            patternRecognition=container.getService(PatternRecognition.class);
+            container.getService(ThreadScore.class);
             container.startInstanciedThreads();
-            // TODO : initialisation des variables globales du robot & objets...
+
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
-            realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
-
-
+            realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
         } catch (ContainerException p) {
             System.out.println("bug container");
             p.printStackTrace();

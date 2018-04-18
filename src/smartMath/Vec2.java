@@ -229,6 +229,11 @@ public class Vec2 {
 		return r;
 	}
 
+	public Vec2 symetrize(){
+		this.x=-x;
+		return new Vec2(x,y);
+	}
+
 	public boolean isNull() {
 		return (this.x == 0 && this.y == 0);
 	}
