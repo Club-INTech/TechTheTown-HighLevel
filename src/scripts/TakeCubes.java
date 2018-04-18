@@ -662,10 +662,14 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
             state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
             state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
+            state.robot.useActuator(ActuatorOrder.SLOW_FRONT_ARM, true);
             state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
+            state.robot.useActuator(ActuatorOrder.FAST_FRONT_ARM, false);
             state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,true);
             if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
+                state.robot.useActuator(ActuatorOrder.SLOW_FRONT_ARM, true);
                 state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
+                state.robot.useActuator(ActuatorOrder.FAST_FRONT_ARM, false);
                 state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
                 state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                 cubeTakenSuccesfully=true;
@@ -679,11 +683,15 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
             state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
             state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
+            state.robot.useActuator(ActuatorOrder.SLOW_BACK_ARM, true);
             state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
+            state.robot.useActuator(ActuatorOrder.FAST_BACK_ARM, false);
             state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE, true);
             if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
                 cubeTakenSuccesfully=true;
+                state.robot.useActuator(ActuatorOrder.SLOW_BACK_ARM,true);
                 state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
+                state.robot.useActuator(ActuatorOrder.FAST_BACK_ARM,false);
                 state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
                 state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
             }
@@ -760,6 +768,9 @@ public class TakeCubes extends AbstractScript {
             finalOffsetVector=new Vec2(0,val);
         }
 
+        log.debug("CheckList: "+cubeTakenSuccessfullyList[0]+" "+cubeTakenSuccessfullyList[1]+" "+cubeTakenSuccessfullyList[2]+" "+cubeTakenSuccessfullyList[3]);
+        log.debug("OffsetVector: "+finalOffsetVector);
+        this.alreadyTriedCorrection=true;
         return finalOffsetVector;
     }
 

@@ -97,6 +97,14 @@ public enum ActuatorOrder implements MotionOrder
 	CHECK_CAPTEURS_CUBE_AVANT("ccAv",50),
 	CHECK_CAPTEURS_CUBE_ARRIERE("ccAr",50),
 
+
+
+	SLOW_FRONT_ARM("AXGs 0 100",50),
+	FAST_FRONT_ARM("AXGs 0 250",50),
+	SLOW_BACK_ARM("AXGs 1 100",50),
+	FAST_BACK_ARM("AXGs 1 250",50),
+
+
 /*			 _____________________
  * 		   *|                     |*
  *		   *|   ASSERVISSEMENTS   |*
