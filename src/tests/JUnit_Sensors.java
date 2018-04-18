@@ -111,12 +111,12 @@ public class JUnit_Sensors extends JUnit_Test
 	}
 
 	@Test
-	public void testStopWhileMove() throws Exception
+	public void testStopWhileMoveBasic() throws Exception
 	{
 		state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
 		state.robot.setPosition(Table.entryPosition);
 		state.robot.setOrientation(Table.entryOrientation);
-		state.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
+		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
 		state.robot.goTo(new Vec2(0,1000));
 		log.debug("Test d'arret lors de l'execution d'un script");
 		log.debug("Orientation :" + state.robot.getOrientation());
@@ -126,7 +126,7 @@ public class JUnit_Sensors extends JUnit_Test
 	public void testStopWhileMoveNonBasic() throws Exception{
 		state.robot.setPosition(Table.entryPosition);
 		state.robot.setOrientation(Table.entryOrientation);
-		state.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
+		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
 		state.robot.goTo(new Vec2(0,1000));
 	}
 
