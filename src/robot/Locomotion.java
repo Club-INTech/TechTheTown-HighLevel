@@ -640,7 +640,6 @@ public class Locomotion implements Service {
             log.debug("robot arrêté : basic detection");
             throw new UnexpectedObstacleOnPathException();
         }
-
     }
 
     /**

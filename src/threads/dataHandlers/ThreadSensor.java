@@ -236,15 +236,14 @@ public class ThreadSensor extends AbstractThread
     /** Ajoute un obstacle en face du robot, avec les deux capteurs ayant détecté quelque chose
      * Convention: la droite du robot est l'orientation 0 (on travaille dans le repère du robot, et on garde les memes conventions que pour la table) */
     private void addFrontObstacleBoth() {
-        /*int l = sensorFL.getDetectedDistance();
+        int l = sensorFL.getDetectedDistance();
         int r = sensorFR.getDetectedDistance();
         //TODO facteur 0.8 à changer empiriquement
         int d = Math.abs(sensorFL.getY()) + Math.abs(sensorFR.getY());
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
-        double toAcos=(b * b - a * a - d * d)/(-2.0 * a * d);*/
-        addFrontObstacleSingleMiddle();
-        /*if (!(Math.abs(toAcos)<=1)){
+        double toAcos=(b * b - a * a - d * d)/(-2.0 * a * d);
+        if (!(Math.abs(toAcos)<=1)){
             addFrontObstacleSingleMiddle();
         }
         else {
@@ -256,18 +255,17 @@ public class ThreadSensor extends AbstractThread
             if (posObjectFromCenterRobot.getA() > -Math.PI / 3 && posObjectFromCenterRobot.getA() < Math.PI / 3) { // pour éviter les faux obstacles
                 mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius + ourRadius + 10, lifetimeForUntestedObstacle);
             }
-        }*/
+        }
     }
     /** Ajoute un obstacle derrière le robot, avec les deux capteurs ayant détecté quelque chose */
     private void addBackObstacleBoth() {
-        /*int l = sensorBL.getDetectedDistance();
+        int l = sensorBL.getDetectedDistance();
         int r = sensorBR.getDetectedDistance();
         //TODO facteur 0.8 à changer empiriquement
         int d = Math.abs(sensorBL.getY()) + Math.abs(sensorBR.getY());
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
-        double toAcos=(b * b - a * a - d * d)/(-2.0 * a * d);*/
-        addBackObstacleSingleMiddle();/*
+        double toAcos=(b * b - a * a - d * d)/(-2.0 * a * d);
         if (!(Math.abs(toAcos)<=1)){
             addBackObstacleSingleMiddle();
         }
@@ -282,7 +280,7 @@ public class ThreadSensor extends AbstractThread
                 posObjectFromCenterRobot.setX(posObjectFromCenterRobot.getX() * -1);
                 mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius + ourRadius + 10, lifetimeForUntestedObstacle);
             }
-        }*/
+        }
     }
 
     private void addBackObstacleSingleMiddle(){

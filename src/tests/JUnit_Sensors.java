@@ -123,6 +123,14 @@ public class JUnit_Sensors extends JUnit_Test
 	}
 
 	@Test
+	public void testStopWhileMoveNonBasic() throws Exception{
+		state.robot.setPosition(Table.entryPosition);
+		state.robot.setOrientation(Table.entryOrientation);
+		state.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
+		state.robot.goTo(new Vec2(0,1000));
+	}
+
+	@Test
 	public void testEvitement()
 	{
 		state.robot.setPosition(Table.entryPosition);
