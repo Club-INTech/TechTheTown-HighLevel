@@ -22,6 +22,8 @@ import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 
+import java.util.Arrays;
+
 /** Script permettant de récupérer les cubes de n'importe quel tas, selon n'importe quel pattern, dans n'importe quelle direction
  */
 public class TakeCubes extends AbstractScript {
@@ -743,30 +745,30 @@ public class TakeCubes extends AbstractScript {
         Vec2 finalOffsetVector=new Vec2(0,0);
 
         //Cas où on ciblait un coin du cube
-        if(cubeTakenSuccessfullyList==new boolean[]{true, true, false, true}){
+        if(Arrays.equals(cubeTakenSuccessfullyList, new boolean[]{true, true, false, true})){
             finalOffsetVector=new Vec2(val,val);
         }
-        else if (cubeTakenSuccessfullyList==new boolean[]{true,true,true,false}){
+        else if (Arrays.equals(cubeTakenSuccessfullyList, new boolean[]{true,true,true,false})){
             finalOffsetVector=new Vec2(val,-val);
         }
-        else if (cubeTakenSuccessfullyList==new boolean[]{true,false,false,false}){
+        else if (Arrays.equals(cubeTakenSuccessfullyList, new boolean[]{true,false,false,false})){
             finalOffsetVector=new Vec2(-val,-val);
         }
-        else if (cubeTakenSuccessfullyList==new boolean[]{false,true,false,true}){
+        else if (Arrays.equals(cubeTakenSuccessfullyList, new boolean[]{false,true,false,true})){
             finalOffsetVector=new Vec2(-val,val);
         }
 
         //Cas où on ciblait le milieu d'une arête du cube
-        else if (cubeTakenSuccessfullyList==new boolean[]{true,true,true,true}){
+        else if (Arrays.equals(cubeTakenSuccessfullyList, new boolean[]{true,true,true,true})){
             finalOffsetVector=currentCube.getRelativeCoordsVec2().dotFloat(val);
         }
-        else if (cubeTakenSuccessfullyList==new boolean[]{true,false,true,false}){
+        else if (Arrays.equals(cubeTakenSuccessfullyList, new boolean[]{true,false,true,false})){
             finalOffsetVector=new Vec2(0,-val);
         }
-        else if (cubeTakenSuccessfullyList==new boolean[]{true,true,false,false}){
+        else if (Arrays.equals(cubeTakenSuccessfullyList, new boolean[]{true,true,false,false})){
             finalOffsetVector=new Vec2(-val,0);
         }
-        else if (cubeTakenSuccessfullyList==new boolean[]{false,true,false,true}){
+        else if (Arrays.equals(cubeTakenSuccessfullyList, new boolean[]{false,true,false,true})){
             finalOffsetVector=new Vec2(0,val);
         }
 
