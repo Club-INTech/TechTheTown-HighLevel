@@ -20,8 +20,11 @@ import utils.Log;
 
 public class MatchScript extends AbstractScript {
 
+    private boolean basicDetection;
+
     public MatchScript(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
+        updateConfig();
     }
 
     @Override
@@ -32,12 +35,11 @@ public class MatchScript extends AbstractScript {
 
             //On active le panneau domotique
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
-            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
+            if(basicDetection){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             }
-
             actPD.goToThenExec(0,gameState);
-            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)) {
+            if(basicDetection) {
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
             }
             //On prend le tas de cubes 2
@@ -162,6 +164,9 @@ public class MatchScript extends AbstractScript {
         return new Circle(robotPosition);
     }
 
+    public void updateConfig(){
+        this.basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+    }
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
         return 0;

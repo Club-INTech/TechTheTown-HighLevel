@@ -30,6 +30,7 @@ public class TakeCubes extends AbstractScript {
     private int longueurBrasArriere;
     private int longueurBrasUtilise;
     private Vec2 entryPositionPoint;
+    private boolean basicDetection;
 
     public TakeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
@@ -517,7 +518,7 @@ public class TakeCubes extends AbstractScript {
 
     private void takeThisCube(GameState stateToConsider, BrasUtilise bras, int idealPositionInTower) throws InterruptedException {
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
-        if (config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)) {
+        if (basicDetection) {
             stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE, true);
         }
         if (bras == BrasUtilise.AVANT) {
@@ -551,7 +552,7 @@ public class TakeCubes extends AbstractScript {
                 stateToConsider.setReussitesTourArrière(0, idealPositionInTower);
             }
         }
-        if (config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)) {
+        if (basicDetection) {
             stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
         }
     }
@@ -616,5 +617,6 @@ public class TakeCubes extends AbstractScript {
         this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         this.longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
         this.longueurBrasArriere=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_ARRIERE);
+        this.basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
     }
 }
