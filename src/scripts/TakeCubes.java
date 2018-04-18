@@ -594,11 +594,12 @@ public class TakeCubes extends AbstractScript {
                 state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAV(false);
             }
             else{
-                if (!this.alreadyTriedCorrection) {
-                    this.correctionVectorTas = correctPosition(state, currentCube);
-                }
                 cubeSuccessfullyTaken=false;
                 state.setReussitesTourAvant(0,this.currentIdealPositionInTower);
+                if (!this.alreadyTriedCorrection) {
+                    log.debug("Lancement de la correction de position du tas "+currentTas.getID());
+                    this.correctionVectorTas = correctPosition(state, currentCube);
+                }
             }
         }
         else if (this.brasUtilise==BrasUtilise.ARRIERE){
@@ -616,11 +617,12 @@ public class TakeCubes extends AbstractScript {
                 state.robot.getmLocomotion().getThEvent().setCubeTakenBrasAR(false);
             }
             else{
-                if (!this.alreadyTriedCorrection) {
-                    this.correctionVectorTas = correctPosition(state, currentCube);
-                }
                 cubeSuccessfullyTaken=false;
                 state.setReussitesTourArrière(0,this.currentIdealPositionInTower);
+                if (!this.alreadyTriedCorrection) {
+                    log.debug("Lancement de la correction de position du tas "+currentTas.getID());
+                    this.correctionVectorTas = correctPosition(state, currentCube);
+                }
             }
         }
         state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
