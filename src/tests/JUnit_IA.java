@@ -1,5 +1,6 @@
 package tests;
 
+import enums.ScriptNames;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -73,17 +74,16 @@ public class JUnit_IA extends JUnit_Test{
 
         @Test
         public void testScript() {
+            robotReal.setPosition(Table.entryPosition);
+            robotReal.setOrientation(Table.entryOrientation);
+
             try {
-                robotReal = container.getService(Robot.class);
-                robotReal.setPosition(Table.entryPosition);
-                robotReal.setOrientation(Table.entryOrientation);
-
-                ia.display();
-                ia.execute(null);
-
-            } catch (Exception e) {
+                ia.start(ScriptNames.MATCH_SCRIPT,0);
+            }catch (Exception e){
                 e.printStackTrace();
+                ia.execute(e);
             }
+
         }
         @Test
         public void ennemyAvoid(){

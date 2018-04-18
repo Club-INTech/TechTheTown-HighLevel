@@ -2,6 +2,7 @@ package strategie.IA;
 
 import container.Service;
 import enums.ConfigInfoRobot;
+import enums.ScriptNames;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -42,7 +43,7 @@ public class IA implements Service {
         this.hookFactory = hookFactory;
         this.graph = new Graph(createNodes());
         this.nb_tas_pris = 0;
-        this.nodesToExecute = kruskal();
+        this.nodesToExecute = new ArrayList<Node>();
     }
 
     /** Créer les noeuds du graphe de décision. */
@@ -117,8 +118,12 @@ public class IA implements Service {
         return nodes;
     }
 
-    public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
-        hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE, HookNames.ACTIVE_BRAS_AVANT_ABEILLE_SYMETRIQUE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE_SYMETRIQUE);
+    public void start(ScriptNames scriptNames, int versionToExecute) throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+        scriptManager.getScript(scriptNames).goToThenExec(0,gameState);
+    }
+
+    public void execute(Exception e) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast, NoPathFound {
+        kruskal();
         for(Node node : nodesToExecute){
             node.execute(e,gameState);
         }
