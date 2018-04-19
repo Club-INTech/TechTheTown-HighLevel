@@ -72,6 +72,7 @@ public class JUnit_IA extends JUnit_Test{
 
             } catch (Exception e) {
                 e.printStackTrace();
+                ia.execute(e);
             }
         }
 
