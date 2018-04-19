@@ -19,7 +19,6 @@
 
 package tests;
 
-import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.ContainerException;
@@ -30,9 +29,7 @@ import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import graphics.Window;
 import hook.HookFactory;
-import org.junit.Before;
 import org.junit.Test;
-import pathfinder.Noeud;
 import pathfinder.Pathfinding;
 import pathfinder.Graphe;
 import robot.Robot;
@@ -40,7 +37,6 @@ import scripts.ScriptManager;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import smartMath.Circle;
-import smartMath.Geometry;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;

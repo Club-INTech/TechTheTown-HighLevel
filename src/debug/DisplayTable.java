@@ -22,8 +22,12 @@ package debug;
 import smartMath.Vec2;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Graphics;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

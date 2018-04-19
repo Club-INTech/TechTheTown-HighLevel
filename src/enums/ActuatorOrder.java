@@ -19,8 +19,6 @@
 
 package enums;
 
-//import scripts.TakeCubes;
-
 /**
  * Protocole des actionneurs.
  * contient pour chaque actionneur le nom des consignes java, la chaine à transmetttre à la carte actionneurs et la durée que cette action prend

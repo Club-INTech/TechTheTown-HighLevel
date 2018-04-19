@@ -1,6 +1,5 @@
 package threads.threadScore;
 
-import graphics.TablePanel;
 import strategie.GameState;
 
 import javax.swing.JFrame;

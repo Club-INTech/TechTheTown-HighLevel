@@ -1,17 +1,8 @@
 package pathfinder;
 
-import smartMath.Geometry;
-import smartMath.Segment;
-import smartMath.Vec2;
-import tests.container.A;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
 public class Arete {
     public Noeud noeud1;
     public Noeud noeud2;
-    public double cout;
 
     /**
      * Constructeur

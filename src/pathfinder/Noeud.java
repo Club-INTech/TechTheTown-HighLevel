@@ -1,10 +1,6 @@
 package pathfinder;
 
-import smartMath.Segment;
 import smartMath.Vec2;
-import table.obstacles.ObstacleCircular;
-import table.obstacles.ObstacleRectangular;
-import tests.container.A;
 
 import java.util.ArrayList;
 

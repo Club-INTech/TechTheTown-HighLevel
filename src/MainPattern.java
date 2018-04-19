@@ -19,25 +19,14 @@
 
 import container.Container;
 import enums.ConfigInfoRobot;
-import enums.ScriptNames;
-import enums.Speed;
 import exceptions.ContainerException;
-//import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
-import scripts.ScriptManager;
-import simulator.ThreadSimulator;
 import strategie.GameState;
-import table.Table;
-import tests.JUnit_PatternRecognition;
-import threads.ThreadInterface;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
-
-import java.nio.file.FileSystemLoopException;
-import java.time.LocalDateTime;
 
 /**
  * Code qui démarre le robot en début de match

@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
 import scripts.ScriptManager;
-import simulator.ThreadSimulator;
-import simulator.ThreadSimulatorMotion;
 import smartMath.Vec2;
 import strategie.GameState;
 import threads.ThreadInterface;

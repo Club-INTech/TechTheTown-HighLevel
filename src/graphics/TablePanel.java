@@ -24,22 +24,20 @@ package graphics;
 import pathfinder.Arete;
 import pathfinder.Noeud;
 import robot.Robot;
-import smartMath.Segment;
 import smartMath.Vec2;
 import table.Table;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleProximity;
 import table.obstacles.ObstacleRectangular;
-import tests.container.A;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.Image;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**

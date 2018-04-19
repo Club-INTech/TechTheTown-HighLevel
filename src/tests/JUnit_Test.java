@@ -29,7 +29,6 @@ import exceptions.NoPathFound;
 import org.junit.After;
 import org.junit.Before;
 import pfg.config.Config;
-import pfg.config.ConfigInfo;
 import robot.EthWrapper;
 import robot.Robot;
 import smartMath.Vec2;
@@ -37,8 +36,6 @@ import strategie.GameState;
 import table.Table;
 import threads.ThreadTimer;
 import utils.Log;
-
-import java.util.ArrayList;
 
 /**
  * The Class JUnit_Test.
