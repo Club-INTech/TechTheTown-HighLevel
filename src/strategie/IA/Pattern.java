@@ -10,13 +10,14 @@ import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.ScriptManager;
 import strategie.GameState;
+import utils.Log;
 
 import java.util.ArrayList;
 
 public class Pattern extends Node{
 
-    public Pattern(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config) throws BadVersionException {
-        super(name, versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory,config);
+    public Pattern(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
+        super(name, versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory,config, log);
         this.setScore(666);
 //        this.script = scriptManager.getScript(ScriptNames.);
     }

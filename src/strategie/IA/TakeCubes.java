@@ -15,13 +15,14 @@ import pfg.config.Config;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
+import utils.Log;
 
 import java.util.ArrayList;
 
 public class TakeCubes extends Node {
 
-    public TakeCubes(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config) throws BadVersionException {
-        super(name, versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory,config);
+    public TakeCubes(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
+        super(name, versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory,config, log);
         this.setScript(scriptManager.getScript(ScriptNames.TAKE_CUBES));
         this.setScore(40);
         this.setPosition(updatePosition());

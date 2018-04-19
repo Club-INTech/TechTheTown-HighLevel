@@ -17,6 +17,7 @@ import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
+import utils.Log;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,8 @@ public abstract class Node {
     protected ArrayList<Node> nextNodes;
     protected GameState gameState;
     protected Vec2 position;
-    protected Pathfinding pathfinding;
+    protected Pathfinding pathfinding;;
+    protected Log log;
     protected Config config;
     protected HookFactory hookFactory;
     protected int basicDetectionDistance;
@@ -50,7 +52,7 @@ public abstract class Node {
      * @param gameState
      */
 
-    public Node(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding, HookFactory hookFactory,Config config) {
+    public Node(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding, HookFactory hookFactory,Config config, Log log) {
         this.name = name;
         this.versionToExecute = versionToExecute;
         this.id = 0;
@@ -65,6 +67,7 @@ public abstract class Node {
         this.pathfinding=pathfinding;
         this.hookFactory=hookFactory;
         this.config=config;
+        this.log = log;
         updateConfig();
     }
 
@@ -113,6 +116,7 @@ public abstract class Node {
             boolean ennemyDodged = false;
             while (!ennemyDodged) {
                 try {
+                    log.debug("Début esquive");
                     gameState.robot.moveLengthwise(-20);
                     ArrayList<Vec2> pathToFollow = gameState.robot.getPathfinding().findmyway(gameState.robot.getPosition(), ((ImmobileEnnemyForOneSecondAtLeast) e).getAim());
                     gameState.robot.followPath(pathToFollow);
@@ -143,6 +147,7 @@ public abstract class Node {
         //exception qui est throw quand on est en basicDetection et qu'on croise un ennemi
         else if(e instanceof UnexpectedObstacleOnPathException ){
             //L'ennemi est toujours là : on esquive
+            log.debug("Début esquive avec basic detection");
             if(gameState.table.getObstacleManager().distanceToClosestEnemy(gameState.robot.getPosition())<basicDetectionDistance){
                 //on attend une seconde
                 try{
