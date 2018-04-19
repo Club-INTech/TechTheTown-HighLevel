@@ -75,6 +75,7 @@ public class ActiveAbeille extends AbstractScript {
 
                 //On se tourne pour pousser l'abeille avec le bras avant
                 actualState.robot.turn(Math.PI / 2, true);
+                actualState.addObtainedPoints(50);
                 //On relève le bras avant
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
                 //On disable le hook du bras avant
@@ -90,6 +91,7 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.robot.goTo(new Vec2(xEntry, yEntry));
                 //On se tourne our pousser l'abeille avec le bras arrière
                 actualState.robot.turn(-Math.PI / 2, true);
+                actualState.addObtainedPoints(50);
                 //On relève le bras arrière
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
                 //On disable le hook du bras arrière
@@ -115,6 +117,7 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.robot.moveLengthwise(distanceAbeille);
                 //Le hook est normalement activé par l'IA
                 actualState.robot.turn(Math.PI/2);
+                actualState.addObtainedPoints(50);
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
                 actualState.robot.goTo(new Vec2(xExit,yExit));
             }
@@ -123,11 +126,11 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.robot.moveLengthwise(-distanceAbeille);
                 //Le hook est normalement activé par l'IA
                 actualState.robot.turn(-Math.PI/2);
+                actualState.addObtainedPoints(50);
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
                 actualState.robot.goTo(new Vec2(xExit,yExit));
             }
         }
-        actualState.addObtainedPoints(50);
     }
 
         @Override
