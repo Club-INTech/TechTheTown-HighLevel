@@ -72,7 +72,7 @@ public class MainIA {
             }
             matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
             Thread.currentThread().setPriority(6);
-            //container.getService(ThreadSensor.class);
+            container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
             //container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
