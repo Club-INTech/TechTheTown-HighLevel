@@ -105,6 +105,7 @@ public class MainIA {
 
         } catch (Exception e) {
             e.printStackTrace();
+            ia.execute(e);
         }
     }
 
