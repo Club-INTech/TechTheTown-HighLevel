@@ -529,7 +529,7 @@ public class Locomotion implements Service {
                     throw new BlockedException();
                 } else if (unableToMoveReason.equals(UnableToMoveReason.OBSTACLE_DETECTED.getSerialOrder()) && mustDetect ) {
                     if(basicDetection){
-                        throw new UnexpectedObstacleOnPathException();
+                        throw new UnexpectedObstacleOnPathException(aim);
                     }
                 }
 
@@ -564,7 +564,13 @@ public class Locomotion implements Service {
                         }
                     }
                 } else {
-                    basicDetect();
+                    try{
+                        basicDetect();
+                    }
+                    catch (UnexpectedObstacleOnPathException e){
+                        log.debug("aimAvecLaBasicDetection : " + aim);
+                        throw new ImmobileEnnemyForOneSecondAtLeast(aim);
+                    }
                 }
             }
 
@@ -641,7 +647,7 @@ public class Locomotion implements Service {
         if(thEvent.isSth_detected_basic()){
             immobilise();
             log.debug("robot arrêté : basic detection");
-            throw new UnexpectedObstacleOnPathException();
+            throw new UnexpectedObstacleOnPathException(new Vec2());
         }
     }
 
@@ -663,7 +669,7 @@ public class Locomotion implements Service {
                 table.getObstacleManager().getMobileObstacles().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
-            throw new UnexpectedObstacleOnPathException();
+            throw new UnexpectedObstacleOnPathException(new Vec2());
         }
     }
 
@@ -683,7 +689,7 @@ public class Locomotion implements Service {
                 log.debug("l'exception est throw");
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
-            throw new UnexpectedObstacleOnPathException();
+            throw new UnexpectedObstacleOnPathException(new Vec2());
         }
     }
 

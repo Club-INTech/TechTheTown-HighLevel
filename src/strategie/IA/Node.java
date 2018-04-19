@@ -38,6 +38,7 @@ public abstract class Node {
     protected Pathfinding pathfinding;
     protected Config config;
     protected HookFactory hookFactory;
+    protected int basicDetectionDistance;
 
 
     /** Noeud d'action, principale composant du graphe de décision. Il permet de lancer les scripts et de gérer les
@@ -49,7 +50,7 @@ public abstract class Node {
      * @param gameState
      */
 
-    public Node(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) {
+    public Node(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding, HookFactory hookFactory,Config config) {
         this.name = name;
         this.versionToExecute = versionToExecute;
         this.id = 0;
@@ -63,6 +64,8 @@ public abstract class Node {
         this.position = Table.entryPosition;
         this.pathfinding=pathfinding;
         this.hookFactory=hookFactory;
+        this.config=config;
+        updateConfig();
     }
 
     /** Permet d'executer le script d'un noeud et de gérer les exeptions si il y en a. */
@@ -139,7 +142,14 @@ public abstract class Node {
         }
         //exception qui est throw quand on est en basicDetection et qu'on croise un ennemi
         else if(e instanceof UnexpectedObstacleOnPathException ){
+            //L'ennemi est toujours là : on esquive
+            if(gameState.table.getObstacleManager().distanceToClosestEnemy(gameState.robot.getPosition())<basicDetectionDistance){
 
+            }
+            //L'ennemi a bougé, on  bouge aussi
+            else{
+
+            }
         }
     }
 
@@ -155,6 +165,9 @@ public abstract class Node {
 
     public Vec2 updatePosition() throws BadVersionException {
         return getScript().entryPosition(getVersionToExecute(),Table.entryPosition).getCenter();
+    }
+    public void updateConfig(){
+        this.basicDetectionDistance=config.getInt(ConfigInfoRobot.BASIC_DETECTION_DISTANCE);
     }
 
     public abstract boolean isDone();

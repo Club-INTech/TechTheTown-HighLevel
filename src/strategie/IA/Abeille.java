@@ -11,6 +11,7 @@ import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import hook.HookNames;
 import pathfinder.Pathfinding;
+import pfg.config.Config;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -19,8 +20,8 @@ import java.util.ArrayList;
 
 public class Abeille extends Node {
 
-    public Abeille(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException {
-        super(name, versionToExecute, nextNodes, scriptManager, gameState, pathfinding, hookFactory);
+    public Abeille(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config) throws BadVersionException {
+        super(name, versionToExecute, nextNodes, scriptManager, gameState, pathfinding, hookFactory,config);
         this.setScript(scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE));
         this.setScore(50);
         this.setPosition(updatePosition());

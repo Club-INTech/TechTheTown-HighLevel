@@ -50,14 +50,14 @@ public class IA implements Service {
     /** Créer les noeuds du graphe de décision. */
 
     public ArrayList<Node> createNodes() throws BadVersionException {
-        Node pattern = new Pattern("Pattern",0, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node abeille = new Abeille("Abeille",1, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node panneau = new Panneau("Panneau",0, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node takeCubes = new TakeCubes("TakeCubes",0, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node takeCubes2 = new TakeCubes("TakeCubes",1, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node takeCubes3 = new TakeCubes("TakeCubes",2, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node deposeCubes = new DeposeCubes("DeposeCube",0, null, scriptManager, gameState,pathfinding,hookFactory);
-        Node deposeCubes2 = new DeposeCubes("DeposeCube",1, null, scriptManager, gameState,pathfinding,hookFactory);
+        Node pattern = new Pattern("Pattern",0, null, scriptManager, gameState,pathfinding,hookFactory,config);
+        Node abeille = new Abeille("Abeille",1, null, scriptManager, gameState,pathfinding,hookFactory,config);
+        Node panneau = new Panneau("Panneau",0, null, scriptManager, gameState,pathfinding,hookFactory,config);
+        Node takeCubes = new TakeCubes("TakeCubes",0, null, scriptManager, gameState,pathfinding,hookFactory,config);
+        Node takeCubes2 = new TakeCubes("TakeCubes",1, null, scriptManager, gameState,pathfinding,hookFactory,config);
+        Node takeCubes3 = new TakeCubes("TakeCubes",2, null, scriptManager, gameState,pathfinding,hookFactory,config);
+        Node deposeCubes = new DeposeCubes("DeposeCube",0, null, scriptManager, gameState,pathfinding,hookFactory,config);
+        Node deposeCubes2 = new DeposeCubes("DeposeCube",1, null, scriptManager, gameState,pathfinding,hookFactory,config);
 
         ArrayList<Node> nodes = new ArrayList<>();
         nodes.add(pattern);

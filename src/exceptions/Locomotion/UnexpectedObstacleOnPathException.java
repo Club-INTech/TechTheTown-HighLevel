@@ -34,9 +34,10 @@ public class UnexpectedObstacleOnPathException extends Exception
 
 	private static final long serialVersionUID = -3791360446545658528L;
 
-	public UnexpectedObstacleOnPathException()
+	private Vec2 finalAim;
+	public UnexpectedObstacleOnPathException(Vec2 finalAim)
 	{ 	super();
-
+		this.finalAim=finalAim;
 	}
 	
 	public UnexpectedObstacleOnPathException(String m)

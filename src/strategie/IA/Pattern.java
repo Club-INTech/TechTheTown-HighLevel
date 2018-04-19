@@ -7,6 +7,7 @@ import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import pathfinder.Pathfinding;
+import pfg.config.Config;
 import scripts.ScriptManager;
 import strategie.GameState;
 
@@ -14,8 +15,8 @@ import java.util.ArrayList;
 
 public class Pattern extends Node{
 
-    public Pattern(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException {
-        super(name, versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory);
+    public Pattern(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config) throws BadVersionException {
+        super(name, versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory,config);
         this.setScore(666);
 //        this.script = scriptManager.getScript(ScriptNames.);
     }

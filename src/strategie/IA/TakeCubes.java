@@ -11,6 +11,7 @@ import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import pathfinder.Pathfinding;
+import pfg.config.Config;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -19,8 +20,8 @@ import java.util.ArrayList;
 
 public class TakeCubes extends Node {
 
-    public TakeCubes(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory) throws BadVersionException {
-        super(name, versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory);
+    public TakeCubes(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config) throws BadVersionException {
+        super(name, versionToExecute, nextNodes, scriptManager, gameState,pathfinding,hookFactory,config);
         this.setScript(scriptManager.getScript(ScriptNames.TAKE_CUBES));
         this.setScore(40);
         this.setPosition(updatePosition());
