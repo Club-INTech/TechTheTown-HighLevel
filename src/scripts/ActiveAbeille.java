@@ -60,6 +60,8 @@ public class ActiveAbeille extends AbstractScript {
             //On vérifie quel bras de l'abeille on va devoir utiliser, à l'aide d'un produit scalaire
             if(basicDetection){
                 actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+            } else {
+                actualState.robot.useActuator(ActuatorOrder.SUS,true);
             }
 
             if (prodScal > 0) {
@@ -98,6 +100,8 @@ public class ActiveAbeille extends AbstractScript {
             actualState.robot.goTo(aim);
             if(basicDetection){
                 actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+            } else {
+                actualState.robot.useActuator(ActuatorOrder.SUS,true);
             }
 
             log.debug("////////// End ActiveAbeille version " + versionToExecute + " //////////");

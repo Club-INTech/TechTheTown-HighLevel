@@ -72,6 +72,8 @@ public class TakeCubes extends AbstractScript {
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
         if(basicDetection){
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        } else {
+            state.robot.useActuator(ActuatorOrder.SUS,true);
         }
         if (indiceTas<6){
             this.normalVersions(indiceTas, state);
@@ -81,6 +83,8 @@ public class TakeCubes extends AbstractScript {
         }
         if(basicDetection){
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+        } else {
+            state.robot.useActuator(ActuatorOrder.SUS,true);
         }
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
     }
@@ -580,8 +584,9 @@ public class TakeCubes extends AbstractScript {
         boolean cubeSuccessfullyTaken=false;
         if (basicDetection) {
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE, true);
+        } else {
+            state.robot.useActuator(ActuatorOrder.SUS,true);
         }
-        state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
         if (this.brasUtilise==BrasUtilise.AVANT){
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
             state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
@@ -630,6 +635,8 @@ public class TakeCubes extends AbstractScript {
         }
         if (basicDetection) {
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
+        } else {
+            state.robot.useActuator(ActuatorOrder.SUS,true);
         }
         return cubeSuccessfullyTaken;
     }

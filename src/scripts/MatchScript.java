@@ -37,14 +37,14 @@ public class MatchScript extends AbstractScript {
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
             if(basicDetection){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+            } else {
+                gameState.robot.useActuator(ActuatorOrder.SUS,true);
             }
-            // On désactive les capteurs avant de faire le panneau domotique
-            gameState.robot.useActuator(ActuatorOrder.SUS,true);
             actPD.goToThenExec(0,gameState);
-            gameState.robot.useActuator(ActuatorOrder.SUS,true);
-
             if(basicDetection) {
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
+            } else {
+                gameState.robot.useActuator(ActuatorOrder.SUS,true);
             }
             //On prend le tas de cubes 2
             gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
@@ -113,10 +113,14 @@ public class MatchScript extends AbstractScript {
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
             if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+            } else {
+                gameState.robot.useActuator(ActuatorOrder.SUS,true);
             }
             actPD.goToThenExec(0,gameState);
             if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+            } else {
+                gameState.robot.useActuator(ActuatorOrder.SUS,true);
             }
             //On dépose les cubes à la deuxième position
             DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
@@ -148,10 +152,14 @@ public class MatchScript extends AbstractScript {
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
             if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+            } else {
+                gameState.robot.useActuator(ActuatorOrder.SUS,true);
             }
             actPD.goToThenExec(0,gameState);
             if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+            } else {
+                gameState.robot.useActuator(ActuatorOrder.SUS,true);
             }
             //Interrupteur
 
