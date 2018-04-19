@@ -38,7 +38,11 @@ public class MatchScript extends AbstractScript {
             if(basicDetection){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             }
+            // On désactive les capteurs avant de faire le panneau domotique
+            gameState.robot.useActuator(ActuatorOrder.SUS,true);
             actPD.goToThenExec(0,gameState);
+            gameState.robot.useActuator(ActuatorOrder.SUS,true);
+
             if(basicDetection) {
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
             }

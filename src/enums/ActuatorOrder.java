@@ -152,7 +152,7 @@ public enum ActuatorOrder implements MotionOrder
 	DIST_US_BACK_LEFT("usarg"),
 	DIST_US_FRONT_RIGHT("usavd"),
 	DIST_US_FRONT_LEFT("usavg"),
-
+	SUS("sus"),
 
 /*			 _____________________
  * 		   *|                     |*
