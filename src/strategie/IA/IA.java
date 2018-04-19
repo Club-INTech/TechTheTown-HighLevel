@@ -135,6 +135,7 @@ public class IA implements Service {
     public void execute(Exception e) {
         graph.clean();
         kruskal();
+        display();
         for(Node node : nodesToExecute){
             try {
                 node.execute(e,gameState);
