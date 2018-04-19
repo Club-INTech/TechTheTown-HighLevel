@@ -61,7 +61,7 @@ public class ActiveAbeille extends AbstractScript {
             if(basicDetection){
                 actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             } else {
-                actualState.robot.useActuator(ActuatorOrder.SUS,true);
+                actualState.robot.useActuator(ActuatorOrder.SUS_ON,true);
             }
 
             if (prodScal > 0) {
@@ -101,7 +101,7 @@ public class ActiveAbeille extends AbstractScript {
             if(basicDetection){
                 actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             } else {
-                actualState.robot.useActuator(ActuatorOrder.SUS,true);
+                actualState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
             }
 
             log.debug("////////// End ActiveAbeille version " + versionToExecute + " //////////");

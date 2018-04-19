@@ -118,7 +118,8 @@ public class SymmetrizedActuatorOrderMap
         //BasicDetection
         mCorrespondenceMap.put(ActuatorOrder.BASIC_DETECTION_ENABLE,ActuatorOrder.BASIC_DETECTION_ENABLE);
         mCorrespondenceMap.put(ActuatorOrder.BASIC_DETECTION_DISABLE,ActuatorOrder.BASIC_DETECTION_DISABLE);
-
+        mCorrespondenceMap.put(ActuatorOrder.SUS_ON,ActuatorOrder.SUS_ON);
+        mCorrespondenceMap.put(ActuatorOrder.SUS_OFF,ActuatorOrder.SUS_OFF);
 
         //Asservissement
         mCorrespondenceMap.put(ActuatorOrder.NO_ASSERV_TRANSLATION,ActuatorOrder.NO_ASSERV_TRANSLATION);

@@ -38,13 +38,13 @@ public class MatchScript extends AbstractScript {
             if(basicDetection){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             } else {
-                gameState.robot.useActuator(ActuatorOrder.SUS,true);
+                gameState.robot.useActuator(ActuatorOrder.SUS_ON,true);
             }
             actPD.goToThenExec(0,gameState);
             if(basicDetection) {
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
             } else {
-                gameState.robot.useActuator(ActuatorOrder.SUS,true);
+                gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
             }
             //On prend le tas de cubes 2
             gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
@@ -114,13 +114,13 @@ public class MatchScript extends AbstractScript {
             if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             } else {
-                gameState.robot.useActuator(ActuatorOrder.SUS,true);
+                gameState.robot.useActuator(ActuatorOrder.SUS_ON,true);
             }
             actPD.goToThenExec(0,gameState);
             if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             } else {
-                gameState.robot.useActuator(ActuatorOrder.SUS,true);
+                gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
             }
             //On dépose les cubes à la deuxième position
             DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
@@ -153,13 +153,13 @@ public class MatchScript extends AbstractScript {
             if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             } else {
-                gameState.robot.useActuator(ActuatorOrder.SUS,true);
+                gameState.robot.useActuator(ActuatorOrder.SUS_ON,true);
             }
             actPD.goToThenExec(0,gameState);
             if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             } else {
-                gameState.robot.useActuator(ActuatorOrder.SUS,true);
+                gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
             }
             //Interrupteur
 
