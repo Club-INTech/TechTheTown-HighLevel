@@ -142,6 +142,12 @@ public class ThreadEth extends AbstractThread implements Service {
     private volatile XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
     private String splitString = " ";
 
+    /**
+     * Nombre de fois qu'on a renvoyé le message
+     */
+
+    private int nbRepeatMessage;
+
     private boolean symmetry=config.getBoolean(ConfigInfoRobot.COULEUR);
 
     /**
@@ -151,8 +157,10 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     private ThreadEth(Log log, Config config) {
         super(config, log);
+        updateConfig();
         this.positionAndOrientation = new XYO(Table.entryPosition,Table.entryOrientation);
         this.name = "Teensy";
+        this.nbRepeatMessage=0;
         if (debug) {
             try {
                 this.ordersFileTmp = new File("/tmp/orders.txt");
@@ -208,7 +216,6 @@ public class ThreadEth extends AbstractThread implements Service {
             this.outOrders = null;
             this.outDebug = null;
         }
-        updateConfig();
     }
 
     /**
@@ -228,7 +235,7 @@ public class ThreadEth extends AbstractThread implements Service {
             interfaceCreated = true;
 
         } catch (IOException e) {
-            log.critical("Manque de droit pour l'output");
+            log.critical("L'interface n'a pas pu être créée");
             e.printStackTrace();
         }
     }
@@ -260,7 +267,9 @@ public class ThreadEth extends AbstractThread implements Service {
 
         while ((System.currentTimeMillis() - startTime) < TIMEOUT) {
             try {
-                if ((response = standardBuffer.peek()) != null) break;
+                if ((response = standardBuffer.peek()) != null) {
+                    break;
+                }
                 Thread.sleep(2);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -278,10 +287,20 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Attend que le LL réponde sur le canal debug lors d'un envoie d'ordre
      */
-    private synchronized void waitForAResponse() {
-        while (comFlag){
+    private synchronized void waitForAResponse() throws SocketException {
+        int nbTimesHasBeenWaiting=0;
+        int maxTimesWaiting=500;
+        boolean socketExceptionThrown=false;
+        while (comFlag && !socketExceptionThrown){
             try {
                 Thread.sleep(1);
+                nbTimesHasBeenWaiting+=1;
+                if (nbTimesHasBeenWaiting==maxTimesWaiting){
+                    log.critical("Waiting too long for a response (>"+maxTimesWaiting+"ms)... SocketException thrown");
+                    socketExceptionThrown=true;
+                    this.nbRepeatMessage+=1;
+                    throw new SocketException();
+                }
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
@@ -296,7 +315,7 @@ public class ThreadEth extends AbstractThread implements Service {
             shutdown = true;
             socket.close();
         } catch (IOException e) {
-            log.debug("Socket refuses to get closed !");
+            log.critical("La socket n'a pas pu être fermée");
             e.printStackTrace();
         }
     }
@@ -321,7 +340,7 @@ public class ThreadEth extends AbstractThread implements Service {
             mess += m + " ";
         }
 
-        /* Envoie de l'ordre */
+        /* Envoi de l'ordre */
         try {
             timeRef = System.currentTimeMillis();
             comFlag = true;
@@ -332,16 +351,20 @@ public class ThreadEth extends AbstractThread implements Service {
 
         } catch (SocketException e) {
             log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
+            e.printStackTrace();
             try {
                 if (socket != null) {
                     socket.close();
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                     createInterface();
                 }
-            } catch (Exception e1) {
+            } catch (InterruptedException e1) {
+                log.critical("Thread.sleep a été interrompu");
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                log.critical("La socket n'a pas pu être fermée");
                 e1.printStackTrace();
             }
-            e.printStackTrace();
         } catch (IOException except) {
             log.critical("LL ne répond pas, on shutdown");
             shutdown = true;
@@ -400,22 +423,35 @@ public class ThreadEth extends AbstractThread implements Service {
             waitForAResponse();
 
         } catch (SocketException e1) {
-            log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
+            log.critical("SocketException: LL ne répond pas, on ferme la socket et on en recrée une...");
+            e1.printStackTrace();
             try {
                 if (socket != null) {
                     socket.close();
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
+                    this.nbRepeatMessage += 1;
                     createInterface();
-                    communicate(nb_line_response, message);
+                    if (this.nbRepeatMessage < 10) {
+                        communicate(nb_line_response, message);
+                    } else {
+                        log.critical("On a renvoyé le message plus de 10 fois, y a un gros problème poto, mais dans le doute on continue le match");
+                    }
                 }
-            } catch (Exception e2) {
-                e1.printStackTrace();
+            } catch (InterruptedException e) {
+                log.critical("Thread.sleep a été interrompu");
+                e.printStackTrace();
+            } catch (IOException e) {
+                log.critical("La socket n'a pas pu être fermée");
+                e.printStackTrace();
             }
-            e1.printStackTrace();
-        } catch (Exception except2) {
-            log.debug("Exception pour écrire dans les fichiers de debug orders");
-            except2.printStackTrace();
+        } catch (InterruptedException e) {
+            log.debug("InterruptedException");
+            e.printStackTrace();
+        } catch (IOException e) {
+            log.debug("IOException");
+            e.printStackTrace();
         }
+        this.nbRepeatMessage=0;
         return inputLines;
     }
 
@@ -516,10 +552,14 @@ public class ThreadEth extends AbstractThread implements Service {
                 try {
                     if (socket != null) {
                         socket.close();
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                         createInterface();
                     }
-                } catch (Exception e) {
+                } catch (InterruptedException e) {
+                    log.critical("Thread.sleep a été interrompu");
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    log.critical("La socket n'a pas pu être fermée");
                     e.printStackTrace();
                 }
                 se.printStackTrace();
@@ -583,6 +623,7 @@ public class ThreadEth extends AbstractThread implements Service {
         try {
             socket.close();
         }catch (IOException e){
+            log.critical("La socket n'a pas pu être fermée");
             e.printStackTrace();
         }
     }
