@@ -46,11 +46,17 @@ public class TakeCubes extends AbstractScript {
     public void execute(int indiceTas, GameState stateToConsider)
             throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
+        if(basicDetection){
+            stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        }
         if (indiceTas<6){
             this.normalVersions(indiceTas, stateToConsider);
         }
         else{
             this.specialVersions(indiceTas, stateToConsider);
+        }
+        if(basicDetection){
+            stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
         }
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
     }
@@ -518,9 +524,6 @@ public class TakeCubes extends AbstractScript {
 
     private void takeThisCube(GameState stateToConsider, BrasUtilise bras, int idealPositionInTower) throws InterruptedException {
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
-        if (basicDetection) {
-            stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE, true);
-        }
         if (bras == BrasUtilise.AVANT) {
             stateToConsider.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, false);
             stateToConsider.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
@@ -551,9 +554,6 @@ public class TakeCubes extends AbstractScript {
             } else {
                 stateToConsider.setReussitesTourArrière(0, idealPositionInTower);
             }
-        }
-        if (basicDetection) {
-            stateToConsider.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
         }
     }
 
