@@ -144,11 +144,31 @@ public abstract class Node {
         else if(e instanceof UnexpectedObstacleOnPathException ){
             //L'ennemi est toujours là : on esquive
             if(gameState.table.getObstacleManager().distanceToClosestEnemy(gameState.robot.getPosition())<basicDetectionDistance){
-
+                //on attend une seconde
+                try{
+                    Thread.sleep(1000);
+                }
+                catch(InterruptedException interruptedException){
+                    interruptedException.printStackTrace();
+                }
+                //on esquive
+                exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException) e).getFinalAim()));
             }
-            //L'ennemi a bougé, on  bouge aussi
+            //L'ennemi a bougé, on  reprend ce qu'on faisait
             else{
-
+                try {
+                    gameState.robot.goTo(((UnexpectedObstacleOnPathException) e).getFinalAim());
+                } catch (UnableToMoveException e1) {
+                    e1.printStackTrace();
+                }
+                //si on le revoit, on tente encore d'esquiver
+                catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+                    exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException) e).getFinalAim()));
+                }
+                //on tente d'esquiver
+                catch (UnexpectedObstacleOnPathException e1) {
+                    exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException) e).getFinalAim()));;
+                }
             }
         }
     }

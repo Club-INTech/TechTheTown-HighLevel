@@ -57,4 +57,7 @@ public class UnexpectedObstacleOnPathException extends Exception
 		return exceptionAsString;
 	}
 
+	public Vec2 getFinalAim() {
+		return finalAim;
+	}
 }
