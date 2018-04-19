@@ -35,17 +35,8 @@ public class MatchScript extends AbstractScript {
 
             //On active le panneau domotique
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
-            if(basicDetection){
-                gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
-            } else {
-                gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-            }
             actPD.goToThenExec(0,gameState);
-            if(basicDetection) {
-                gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
-            } else {
-                gameState.robot.useActuator(ActuatorOrder.SUS_ON,true);
-            }
+
             //On prend le tas de cubes 2
             gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
             TakeCubes tk2 = new TakeCubes(config,log,hookFactory);
