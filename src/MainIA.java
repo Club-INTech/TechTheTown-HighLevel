@@ -38,6 +38,7 @@ import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadSensor;
 import threads.threadScore.ThreadScore;
+import utils.Log;
 
 /**
  * Code qui démarre le robot en début de match
@@ -52,6 +53,7 @@ public class MainIA {
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
     static PatternRecognition patternRecognition;
+    static Log log;
     static IA ia;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
@@ -68,6 +70,7 @@ public class MainIA {
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion = container.getService(Locomotion.class);
             ia = container.getService(IA.class);
+            log = container.getService(Log.class);
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
             }
@@ -90,13 +93,13 @@ public class MainIA {
 
 
         } catch (ContainerException p) {
-            System.out.println("bug container");
+            log.debug("bug container");
             p.printStackTrace();
         }
         try {
 
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
-            System.out.println("Le robot commence le match");
+            log.debug("Le robot commence le match");
             waitMatchBegin();
 
             while(patternRecognition.isMovementLocked()) {
@@ -109,6 +112,7 @@ public class MainIA {
 
         } catch (Exception e) {
             e.printStackTrace();
+            log.debug("////////////Exeption////////////");
             ia.execute(e);
         }
     }
