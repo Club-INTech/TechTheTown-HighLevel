@@ -432,7 +432,7 @@ public class ThreadEth extends AbstractThread implements Service {
                     this.nbRepeatMessage += 1;
                     createInterface();
                     if (this.nbRepeatMessage < 10) {
-                        communicate(nb_line_response, message);
+                        inputLines=communicate(nb_line_response, message);
                     } else {
                         log.critical("On a renvoyé le message plus de 10 fois, y a un gros problème poto, mais dans le doute on continue le match");
                     }
