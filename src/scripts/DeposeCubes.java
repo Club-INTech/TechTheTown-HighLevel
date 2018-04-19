@@ -50,8 +50,6 @@ public class DeposeCubes extends AbstractScript {
             log.debug("BadVersionException: version "+version+" specified");
         }
 
-        state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE,true);
-
         boolean aDejaDeposeUneTour=false;
         if (prodScal>0){
             if (state.isTourAvantRemplie()) {

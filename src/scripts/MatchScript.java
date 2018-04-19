@@ -2,6 +2,7 @@ package scripts;
 
 import enums.ActuatorOrder;
 import enums.BrasUtilise;
+import enums.ConfigInfoRobot;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -19,8 +20,11 @@ import utils.Log;
 
 public class MatchScript extends AbstractScript {
 
+    private boolean basicDetection;
+
     public MatchScript(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
+        updateConfig();
     }
 
     @Override
@@ -31,10 +35,13 @@ public class MatchScript extends AbstractScript {
 
             //On active le panneau domotique
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
-            gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+            if(basicDetection){
+                gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+            }
             actPD.goToThenExec(0,gameState);
-            gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
-
+            if(basicDetection) {
+                gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
+            }
             //On prend le tas de cubes 2
             gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
             TakeCubes tk2 = new TakeCubes(config,log,hookFactory);
@@ -100,9 +107,13 @@ public class MatchScript extends AbstractScript {
 
             //Interrupteur
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
+            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
+                gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+            }
             actPD.goToThenExec(0,gameState);
-            //Interrupteur
-
+            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
+                gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+            }
             //On dépose les cubes à la deuxième position
             DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
             dpCubes1.goToThenExec(1, gameState);
@@ -131,7 +142,13 @@ public class MatchScript extends AbstractScript {
 
             //Interrupteur
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
+            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
+                gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+            }
             actPD.goToThenExec(0,gameState);
+            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
+                gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+            }
             //Interrupteur
 
             //On dépose les cubes à la deuxième position
@@ -147,6 +164,9 @@ public class MatchScript extends AbstractScript {
         return new Circle(robotPosition);
     }
 
+    public void updateConfig(){
+        this.basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+    }
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
         return 0;

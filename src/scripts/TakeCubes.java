@@ -31,6 +31,8 @@ public class TakeCubes extends AbstractScript {
     private int longueurBrasArriere;
     private int longueurBrasUtilise;
 
+    private boolean basicDetection;
+
     private int indicePattern;
     private TasCubes currentTas;
     private String directionRobot;
@@ -578,6 +580,9 @@ public class TakeCubes extends AbstractScript {
     private boolean takeThisCube(GameState state, Cubes currentCube) throws InterruptedException, UnableToMoveException, UnexpectedObstacleOnPathException, ImmobileEnnemyForOneSecondAtLeast {
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
         boolean cubeSuccessfullyTaken=false;
+        if (basicDetection) {
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE, true);
+        }
         state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
         if (this.brasUtilise==BrasUtilise.AVANT){
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
@@ -625,7 +630,9 @@ public class TakeCubes extends AbstractScript {
                 }
             }
         }
-        state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+        if (basicDetection) {
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
+        }
         return cubeSuccessfullyTaken;
     }
 
@@ -641,52 +648,46 @@ public class TakeCubes extends AbstractScript {
      * @throws InterruptedException
      */
     private Vec2 correctPosition(GameState state, Cubes currentCube) throws UnableToMoveException, UnexpectedObstacleOnPathException, ImmobileEnnemyForOneSecondAtLeast, InterruptedException {
-        this.alreadyTriedCorrection=true;
+        this.alreadyTriedCorrection = true;
         Vec2 relativeCoordsCurrentCube = currentCube.getRelativeCoordsVec2();
         Vec2 tableCoordsCurrentCube = this.currentTas.getCoordsVec2().plusNewVector(relativeCoordsCurrentCube.dotFloat(this.largeurCubes));
-        Vec2[] correctionVectorList=new Vec2[4];
-        int val=this.largeurCubes/3;
-        if (relativeCoordsCurrentCube.equals(new Vec2(1,0))){
-            correctionVectorList[0]=new Vec2(val,val);
-            correctionVectorList[1]=new Vec2(val,-val);
-            correctionVectorList[2]=new Vec2(-val,-val);
-            correctionVectorList[3]=new Vec2(-val,val);
-        }
-        else if (relativeCoordsCurrentCube.equals(new Vec2(0,1))){
-            correctionVectorList[0]=new Vec2(-val,val);
-            correctionVectorList[1]=new Vec2(val,val);
-            correctionVectorList[2]=new Vec2(val,-val);
-            correctionVectorList[3]=new Vec2(-val,-val);
-        }
-        else if (relativeCoordsCurrentCube.equals(new Vec2(0,-1))){
-            correctionVectorList[0]=new Vec2(val,-val);
-            correctionVectorList[1]=new Vec2(-val,-val);
-            correctionVectorList[2]=new Vec2(-val,val);
-            correctionVectorList[3]=new Vec2(val,val);
-        }
-        else if (relativeCoordsCurrentCube.equals(new Vec2(-1,0))){
-            correctionVectorList[0]=new Vec2(-val,-val);
-            correctionVectorList[1]=new Vec2(-val,val);
-            correctionVectorList[2]=new Vec2(val,val);
-            correctionVectorList[3]=new Vec2(val,-val);
+        Vec2[] correctionVectorList = new Vec2[4];
+        int val = this.largeurCubes / 3;
+        if (relativeCoordsCurrentCube.equals(new Vec2(1, 0))) {
+            correctionVectorList[0] = new Vec2(val, val);
+            correctionVectorList[1] = new Vec2(val, -val);
+            correctionVectorList[2] = new Vec2(-val, -val);
+            correctionVectorList[3] = new Vec2(-val, val);
+        } else if (relativeCoordsCurrentCube.equals(new Vec2(0, 1))) {
+            correctionVectorList[0] = new Vec2(-val, val);
+            correctionVectorList[1] = new Vec2(val, val);
+            correctionVectorList[2] = new Vec2(val, -val);
+            correctionVectorList[3] = new Vec2(-val, -val);
+        } else if (relativeCoordsCurrentCube.equals(new Vec2(0, -1))) {
+            correctionVectorList[0] = new Vec2(val, -val);
+            correctionVectorList[1] = new Vec2(-val, -val);
+            correctionVectorList[2] = new Vec2(-val, val);
+            correctionVectorList[3] = new Vec2(val, val);
+        } else if (relativeCoordsCurrentCube.equals(new Vec2(-1, 0))) {
+            correctionVectorList[0] = new Vec2(-val, -val);
+            correctionVectorList[1] = new Vec2(-val, val);
+            correctionVectorList[2] = new Vec2(val, val);
+            correctionVectorList[3] = new Vec2(val, -val);
         }
 
-        Vec2 finalOffsetVector = new Vec2(0,0);
-        for (int i=0; i<correctionVectorList.length; i++){
-            state.robot.moveNearPoint(tableCoordsCurrentCube.plusNewVector(correctionVectorList[i]),this.longueurBrasUtilise,this.directionRobot);
+        Vec2 finalOffsetVector = new Vec2(0, 0);
+        for (int i = 0; i < correctionVectorList.length; i++) {
+            state.robot.moveNearPoint(tableCoordsCurrentCube.plusNewVector(correctionVectorList[i]), this.longueurBrasUtilise, this.directionRobot);
             boolean cubeTakenSuccessfully = takeThisCube(state, currentCube);
-            if (cubeTakenSuccessfully){
-                finalOffsetVector=correctionVectorList[i];
+            if (cubeTakenSuccessfully) {
+                finalOffsetVector = correctionVectorList[i];
                 break;
             }
         }
 
-        log.debug("OffsetVector: "+finalOffsetVector);
+        log.debug("OffsetVector: " + finalOffsetVector);
         return finalOffsetVector;
     }
-
-
-
 
     /**
      * @param version version dont on veut le point d'entrée
@@ -771,5 +772,6 @@ public class TakeCubes extends AbstractScript {
         this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         this.longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
         this.longueurBrasArriere=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_ARRIERE);
+        this.basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
     }
 }
