@@ -166,12 +166,6 @@ public class TakeCubes extends AbstractScript {
 
                 Vec2[] successivesPositionsList;
 
-                //Permet de symétriser les tas de cubes si on passe de l'autre côté de la table
-                int otherSideMultiplier=1;
-                if (this.currentTas.getID()>2) {
-                    otherSideMultiplier=-1;
-                }
-
 
                 //Si additionalCube.getColor()==Colors.NULL, c'est qu'on a choisi de ne prendre que 3 cubes
                 //Sinon, la couleur de additionalCube sera correspondra au cube qui sera pris après le pattern
@@ -190,8 +184,7 @@ public class TakeCubes extends AbstractScript {
                     //On calcule les positions du cube additionnel pour x et y :
                     // position = position du tas + position relative du cube choisi par rapport au tas
                     //La position X relative par rapport au tas change si on passe de l'autre côté de la table
-                    Vec2 additionalCubeRelativePosition = additionalCube.getRelativeCoordsVec2().dotFloat(this.largeurCubes);
-                    additionalCubeRelativePosition.setX(additionalCubeRelativePosition.getX()*otherSideMultiplier);
+                    Vec2 additionalCubeRelativePosition = additionalCube.getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes);
                     successivesPositionsList[3]=this.currentTas.getCoordsVec2().plusNewVector(additionalCubeRelativePosition);
                 }
 
@@ -201,8 +194,7 @@ public class TakeCubes extends AbstractScript {
                     //On calcule les positions des cubes pour x et y :
                     // position = position du tas + position relative du cube choisi par rapport au tas
                     //La position X relative par rapport au tas change si on passe de l'autre côté de la table
-                    Vec2 cubeRelativePosition = Cubes.getCubeFromColor(pattern[i]).getRelativeCoordsVec2().dotFloat(this.largeurCubes);
-                    cubeRelativePosition.setX(cubeRelativePosition.getX()*otherSideMultiplier);
+                    Vec2 cubeRelativePosition = Cubes.getCubeFromColor(pattern[i]).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes);
                     successivesPositionsList[i]= this.currentTas.getCoordsVec2().plusNewVector(cubeRelativePosition);
                 }
 
@@ -353,22 +345,22 @@ public class TakeCubes extends AbstractScript {
                     boolean cubeBonusArrierePresent = state.isCubeBonusArrierePresent();
 
                     Colors[] pattern = Patterns.getPatternFromID(this.indicePattern);
-                    Vec2 firstCubeTas1 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[0]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
-                    Vec2 secondCubeTas1 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[1]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
-                    Vec2 thirdCubeTas1 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[2]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
+                    Vec2 firstCubeTas1 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[0]).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes));
+                    Vec2 secondCubeTas1 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[1]).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes));
+                    Vec2 thirdCubeTas1 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[2]).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes));
 
-                    Vec2 firstCubeTas2 = TasCubes.getTasFromID(2).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[0]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
-                    Vec2 secondCubeTas2 = TasCubes.getTasFromID(2).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[1]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
-                    Vec2 thirdCubeTas2 = TasCubes.getTasFromID(2).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[2]).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
+                    Vec2 firstCubeTas2 = TasCubes.getTasFromID(2).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[0]).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes));
+                    Vec2 secondCubeTas2 = TasCubes.getTasFromID(2).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[1]).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes));
+                    Vec2 thirdCubeTas2 = TasCubes.getTasFromID(2).getCoordsVec2().plusNewVector(Cubes.getCubeFromColor(pattern[2]).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes));
 
                     int currentIdealPositionInFrontTower = 0;
                     int currentIdealPositionInBackTower = 0;
 
                     Vec2[] successivesPositionsList;
                     if (!cubeBonusAvantPresent) {
-                        Vec2 forthCubeTas1 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeNotInPattern(this.indicePattern).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
+                        Vec2 forthCubeTas1 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeNotInPattern(this.indicePattern).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes));
                         if (!cubeBonusArrierePresent) {
-                            Vec2 forthCubeTas2 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeNotInPattern(this.indicePattern).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
+                            Vec2 forthCubeTas2 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeNotInPattern(this.indicePattern).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes));
                             successivesPositionsList = new Vec2[]{firstCubeTas1, firstCubeTas2, secondCubeTas1, secondCubeTas2, thirdCubeTas1, thirdCubeTas2, forthCubeTas1, forthCubeTas2};
                         } else {
                             state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
@@ -379,7 +371,7 @@ public class TakeCubes extends AbstractScript {
                         if (!cubeBonusArrierePresent) {
                             state.setReussitesTourAvant(1,currentIdealPositionInFrontTower);
                             currentIdealPositionInFrontTower++;
-                            Vec2 forthCubeTas2 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeNotInPattern(this.indicePattern).getRelativeCoordsVec2().dotFloat(this.largeurCubes));
+                            Vec2 forthCubeTas2 = TasCubes.getTasFromID(1).getCoordsVec2().plusNewVector(Cubes.getCubeNotInPattern(this.indicePattern).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes));
                             successivesPositionsList = new Vec2[]{firstCubeTas1, firstCubeTas2, secondCubeTas1, secondCubeTas2, thirdCubeTas1, thirdCubeTas2, forthCubeTas2};
                         } else {
                             state.setReussitesTourArrière(1,currentIdealPositionInBackTower);
@@ -649,7 +641,7 @@ public class TakeCubes extends AbstractScript {
      */
     private Vec2 correctPosition(GameState state, Cubes currentCube) throws UnableToMoveException, UnexpectedObstacleOnPathException, ImmobileEnnemyForOneSecondAtLeast, InterruptedException {
         this.alreadyTriedCorrection = true;
-        Vec2 relativeCoordsCurrentCube = currentCube.getRelativeCoordsVec2();
+        Vec2 relativeCoordsCurrentCube = currentCube.getRelativeCoordsVec2(this.currentTas);
         Vec2 tableCoordsCurrentCube = this.currentTas.getCoordsVec2().plusNewVector(relativeCoordsCurrentCube.dotFloat(this.largeurCubes));
         Vec2[] correctionVectorList = new Vec2[4];
         int val = this.largeurCubes / 3;
