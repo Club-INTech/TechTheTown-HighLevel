@@ -81,11 +81,23 @@ public class SymmetrizedActuatorOrderMap
 
         //Bras
         mCorrespondenceMap.put(ActuatorOrder.BAISSE_LE_BRAS_AVANT,ActuatorOrder.BAISSE_LE_BRAS_AVANT);
+        mCorrespondenceMap.put(ActuatorOrder.BAISSE_LE_BRAS_AVANT_SLOW,ActuatorOrder.BAISSE_LE_BRAS_AVANT_SLOW);
         mCorrespondenceMap.put(ActuatorOrder.RELEVE_LE_BRAS_AVANT,ActuatorOrder.RELEVE_LE_BRAS_AVANT);
+        mCorrespondenceMap.put(ActuatorOrder.RELEVE_LE_BRAS_AVANT_SLOW,ActuatorOrder.RELEVE_LE_BRAS_AVANT_SLOW);
         mCorrespondenceMap.put(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE,ActuatorOrder.BAISSE_LE_BRAS_ARRIERE);
+        mCorrespondenceMap.put(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE_SLOW,ActuatorOrder.BAISSE_LE_BRAS_ARRIERE_SLOW);
         mCorrespondenceMap.put(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,ActuatorOrder.RELEVE_LE_BRAS_ARRIERE);
+        mCorrespondenceMap.put(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE_SLOW,ActuatorOrder.RELEVE_LE_BRAS_ARRIERE_SLOW);
         mCorrespondenceMap.put(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE);
         mCorrespondenceMap.put(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE,ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE);
+
+        //Vitesse des bras
+        mCorrespondenceMap.put(ActuatorOrder.SLOW_FRONT_ARM,ActuatorOrder.SLOW_FRONT_ARM);
+        mCorrespondenceMap.put(ActuatorOrder.FAST_FRONT_ARM,ActuatorOrder.FAST_FRONT_ARM);
+        mCorrespondenceMap.put(ActuatorOrder.SLOW_BACK_ARM,ActuatorOrder.SLOW_BACK_ARM);
+        mCorrespondenceMap.put(ActuatorOrder.FAST_BACK_ARM,ActuatorOrder.FAST_BACK_ARM);
+
+
 
         //Portes
         //AVANT
@@ -106,6 +118,8 @@ public class SymmetrizedActuatorOrderMap
         //BasicDetection
         mCorrespondenceMap.put(ActuatorOrder.BASIC_DETECTION_ENABLE,ActuatorOrder.BASIC_DETECTION_ENABLE);
         mCorrespondenceMap.put(ActuatorOrder.BASIC_DETECTION_DISABLE,ActuatorOrder.BASIC_DETECTION_DISABLE);
+
+
         //Asservissement
         mCorrespondenceMap.put(ActuatorOrder.NO_ASSERV_TRANSLATION,ActuatorOrder.NO_ASSERV_TRANSLATION);
         mCorrespondenceMap.put(ActuatorOrder.NO_ASSERV_ROTATION,ActuatorOrder.NO_ASSERV_ROTATION);

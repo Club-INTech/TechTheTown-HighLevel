@@ -74,7 +74,9 @@ public enum ActuatorOrder implements MotionOrder
 	DESACTIVE_LA_POMPE("dlp",250),
 
 	BAISSE_LE_BRAS_AVANT("blbAv",900),
+	BAISSE_LE_BRAS_AVANT_SLOW("blbAv",3000),
 	RELEVE_LE_BRAS_AVANT("rlbAv",900),
+	RELEVE_LE_BRAS_AVANT_SLOW("rlbAv",3000),
 	OUVRE_LA_PORTE_AVANT("olpAv",600),
 	FERME_LA_PORTE_AVANT("flpAv",600),
 	OUVRE_LA_PORTE_AVANT_UNPEU("olpAvp",150),
@@ -83,7 +85,9 @@ public enum ActuatorOrder implements MotionOrder
 	DESACTIVE_ELECTROVANNE_AVANT("deAv",100),
 
 	BAISSE_LE_BRAS_ARRIERE("blbAr",900),
+	BAISSE_LE_BRAS_ARRIERE_SLOW("blbAr",3000),
 	RELEVE_LE_BRAS_ARRIERE("rlbAr",900),
+	RELEVE_LE_BRAS_ARRIERE_SLOW("rlbAr",3000),
 	FERME_LA_PORTE_ARRIERE("flpAr",600),
 	OUVRE_LA_PORTE_ARRIERE("olpAr",600),
 	OUVRE_LA_PORTE_ARRIERE_UNPEU("olpArp",150),
@@ -94,8 +98,16 @@ public enum ActuatorOrder implements MotionOrder
 	ACTIVE_BRAS_AVANT_POUR_ABEILLE("blbAvbei",500),
 	ACTIVE_BRAS_ARRIERE_POUR_ABEILLE("blbArbei",500),
 
-	CHECK_CAPTEURS_CUBE_AVANT("ccAv",25),
-	CHECK_CAPTEURS_CUBE_ARRIERE("ccAr",25),
+	CHECK_CAPTEURS_CUBE_AVANT("ccAv",50),
+	CHECK_CAPTEURS_CUBE_ARRIERE("ccAr",50),
+
+
+
+	SLOW_FRONT_ARM("AXGs 0 175",50),
+	FAST_FRONT_ARM("AXGs 0 250",50),
+	SLOW_BACK_ARM("AXGs 1 175",50),
+	FAST_BACK_ARM("AXGs 1 250",50),
+
 
 /*			 _____________________
  * 		   *|                     |*

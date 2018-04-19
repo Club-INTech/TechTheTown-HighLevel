@@ -11,9 +11,9 @@ public enum Patterns {
     //D'où B lu E, O rang E, B lac K
     //En gardant ces lettres, on trouve : BEOEBK, ce qui correspond au pattern 6
     OEBKGN(0, new Colors[] {Colors.ORANGE, Colors.BLACK, Colors.GREEN}),
-    YWBKBE(1, new Colors[] {Colors.YELLOW, Colors.BLACK, Colors.BLUE}),
+    YWBKBE(1, new Colors[] {Colors.BLUE, Colors.BLACK, Colors.YELLOW}), //Ordre des couleurs inversés pour éviter que le jaune soit en premier
     BEGNOE(2, new Colors[] {Colors.BLUE, Colors.GREEN, Colors.ORANGE}),
-    YWGNBK(3, new Colors[] {Colors.YELLOW, Colors.GREEN, Colors.BLACK}),
+    YWGNBK(3, new Colors[] {Colors.BLACK, Colors.GREEN, Colors.YELLOW}), //Ordre des couleurs inversés pour éviter que le jaune soit en premier
     BKYWOE(4, new Colors[] {Colors.BLACK, Colors.YELLOW, Colors.ORANGE}),
     GNYWBE(5, new Colors[] {Colors.GREEN, Colors.YELLOW, Colors.BLUE}),
     BEOEBK(6, new Colors[] {Colors.BLUE, Colors.ORANGE, Colors.BLACK}),
@@ -21,9 +21,9 @@ public enum Patterns {
     BKBEGN(8, new Colors[] {Colors.BLACK, Colors.BLUE, Colors.GREEN}),
     OEBEYW(9, new Colors[] {Colors.ORANGE, Colors.BLUE, Colors.YELLOW}),
     OEBKGN2(10, new Colors[] {Colors.GREEN, Colors.BLACK, Colors.ORANGE}),
-    YWBKBE2(11, new Colors[] {Colors.BLUE, Colors.BLACK, Colors.YELLOW}),
+    YWBKBE2(11, new Colors[] {Colors.YELLOW, Colors.BLACK, Colors.BLUE}),  //Ordre des couleurs inversés pour éviter que le jaune soit en premier dans le pattern 1
     BEGNOE2(12, new Colors[] {Colors.ORANGE, Colors.GREEN, Colors.BLUE}),
-    YWGNBK2(13, new Colors[] {Colors.BLACK, Colors.GREEN, Colors.YELLOW}),
+    YWGNBK2(13, new Colors[] {Colors.YELLOW, Colors.GREEN, Colors.BLACK}),  //Ordre des couleurs inversés pour éviter que le jaune soit en premier dans le pattern 3
     BKYWOE2(14, new Colors[] {Colors.ORANGE, Colors.YELLOW, Colors.BLACK}),
     GNYWBE2(15, new Colors[] {Colors.BLUE, Colors.YELLOW, Colors.GREEN}),
     BEOEBK2(16, new Colors[] {Colors.BLACK, Colors.ORANGE, Colors.BLUE}),
