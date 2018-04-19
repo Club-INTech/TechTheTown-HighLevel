@@ -42,25 +42,12 @@ public class ActivationPanneauDomotique extends AbstractScript{
     @Override
     public void execute(int versionToExecute, GameState state) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
         log.debug("////////// Execution ActivePanneauDomotique version "+versionToExecute+" //////////");
-
-        if(basicDetection){
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
-        } else {
-            state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-        }
-
         state.robot.turn(-Math.PI/2);
         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         state.robot.moveLengthwise(distanceInterrupteur);
         state.addObtainedPoints(25);
         state.robot.goTo(new Vec2(xEntry,yEntry));
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-
-        if(basicDetection) {
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
-        } else {
-            state.robot.useActuator(ActuatorOrder.SUS_ON,true);
-        }
         log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");
     }
 
