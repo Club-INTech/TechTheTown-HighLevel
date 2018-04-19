@@ -112,7 +112,9 @@ public abstract class Node {
     /** Gère les exceptions soulevées */
 
     public void exception(Exception e) {
+        log.debug("on est dans Exception du Node Abstrait");
         if (e instanceof ImmobileEnnemyForOneSecondAtLeast) {
+            log.debug("j'ai bien catch immmobileEnnemy et je tente d'esquiver : je suis bien intelligent");
             boolean ennemyDodged = false;
             while (!ennemyDodged) {
                 try {
