@@ -394,40 +394,41 @@ public class ThreadSensor extends AbstractThread
         try
         {
             robotPosAndOr = ethWrapper.updatePositionAndOrientation();
-
             String[] valuesSReceived;
-            //ArrayList<Integer> res = new ArrayList<Integer>();
 
             int attempts=0;
-            while(valuesReceived.peek() == null && attempts<20){
+            while(valuesReceived.peek() == null && attempts<50){
                 Thread.sleep(5);
                 attempts++;
             }
-            if (attempts<20) {
+            if (attempts<50) {
                 String values = valuesReceived.poll();
                 valuesSReceived = values.split(" ");
 
-
                 for (int i = 0; i < nbSensors; i++) {
                     int distance = Integer.parseInt(valuesSReceived[i]);
-                    sensorsArray.get(i).setDetectedDistance(distance * 10); //on convertit de cm en mm
+                    sensorsArray.get(i).setDetectedDistance(distance * 10); //on convertit des cm en mm
                 }
 
-                if (symetry) //Inversion gauche/droite pour symétriser
-                {
+                //Inversion gauche/droite pour symétriser
+                if (symetry){
                     sensorFL.switchValues(sensorFR);
                     sensorBL.switchValues(sensorBR);
                 }
 
-                for (int i = 0; i < nbSensors; i++) {
+                for (Sensor sensor : sensorsArray) {
                     // On met tout les capteurs qui detectent un objet trop proche du robot ou à plus de maxSensorRange a 0
-                    // TODO : a passer en traitement de bas niveau ? Non, ce traitement peut dépendre de la façon dont on calcule la position adverse
-
-                    if (sensorsArray.get(i).getDetectedDistance() > sensorsArray.get(i).getMaximalValidDetectionDistance()) {
-                        sensorsArray.get(i).setDetectedDistance(0);
-                    } else if (sensorsArray.get(i).getDetectedDistance() < sensorsArray.get(i).getMinimalValidDetectionDistance()) {
-                        sensorsArray.get(i).setDetectedDistance(0);
+                    if (sensor.getDetectedDistance() > sensor.getMaximalValidDetectionDistance()) {
+                        sensor.setDetectedDistance(0);
+                    } else if (sensor.getDetectedDistance() < sensor.getMinimalValidDetectionDistance()) {
+                        sensor.setDetectedDistance(0);
                     }
+                }
+            }
+            //Si on ne reçoit pas d'informations sur les capteurs du bas niveau au bout de 250ms, on met les distances détectées par les sensor à 0
+            else {
+                for (Sensor sensor : sensorsArray) {
+                    sensor.setDetectedDistance(0);
                 }
             }
         }
