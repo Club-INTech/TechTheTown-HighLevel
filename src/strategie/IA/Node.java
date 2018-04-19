@@ -137,6 +137,10 @@ public abstract class Node {
                 }
             }
         }
+        //exception qui est throw quand on est en basicDetection et qu'on croise un ennemi
+        else if(e instanceof UnexpectedObstacleOnPathException ){
+
+        }
     }
 
 
