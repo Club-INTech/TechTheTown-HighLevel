@@ -24,6 +24,7 @@ public class ActiveAbeille extends AbstractScript {
     private int yEntry;
     private int xExit; //position de sortie permettant au pathfinding d'être lancé
     private int yExit;
+    private boolean basicDetection;
 
     /** Eléments appelés par la config */
     private int radius; //rayon du robot
@@ -46,6 +47,7 @@ public class ActiveAbeille extends AbstractScript {
         super.updateConfig();
         distanceAbeille = config.getInt(ConfigInfoRobot.DISTANCE_ABEILLE);
         radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+        basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
     }
 
     @Override
@@ -56,7 +58,7 @@ public class ActiveAbeille extends AbstractScript {
         double prodScal = directionToGo.dot(new Vec2(100.0, actualState.robot.getOrientation()));
         if(versionToExecute==0) {
             //On vérifie quel bras de l'abeille on va devoir utiliser, à l'aide d'un produit scalaire
-            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
+            if(basicDetection){
                 actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             }
 
@@ -94,7 +96,7 @@ public class ActiveAbeille extends AbstractScript {
             //On retourne à une position atteignable par le pathfinding
             Vec2 aim = new Vec2(xExit, yExit);
             actualState.robot.goTo(aim);
-            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
+            if(basicDetection){
                 actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             }
 
