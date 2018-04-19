@@ -101,7 +101,7 @@ public class MainIA {
 
             //TODO : lancer l'IA
 
-            ia.start(ScriptNames.MATCH_SCRIPT,0);
+            ia.start(ScriptNames.MATCH_SCRIPT,config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE));
 
         } catch (Exception e) {
             e.printStackTrace();
