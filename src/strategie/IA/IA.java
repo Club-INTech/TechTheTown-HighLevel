@@ -1,18 +1,12 @@
 package strategie.IA;
 
 import container.Service;
-import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import exceptions.BadVersionException;
-import exceptions.BlockedActuatorException;
-import exceptions.ExecuteException;
-import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import hook.HookFactory;
-import hook.HookNames;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.*;

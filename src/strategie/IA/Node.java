@@ -7,7 +7,6 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import hook.HookFactory;
 import pathfinder.Pathfinding;
@@ -74,7 +73,7 @@ public abstract class Node {
     /** Permet d'executer le script d'un noeud et de gérer les exeptions si il y en a. */
 
     public void execute(Exception e, GameState gameState)
-            throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast, UnexpectedObstacleOnPathException {
+            throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         if (e != null) {
             exception(e);
         } else {
@@ -135,46 +134,12 @@ public abstract class Node {
                 } catch (NoPathFound noPathFound) {
                     System.out.println("NoPathFound");
                     noPathFound.printStackTrace();
-                } catch (UnexpectedObstacleOnPathException e1) {
-                    e1.printStackTrace();
                 } finally {
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
-                }
-            }
-        }
-        //exception qui est throw quand on est en basicDetection et qu'on croise un ennemi
-        else if(e instanceof UnexpectedObstacleOnPathException ){
-            //L'ennemi est toujours là : on esquive
-            log.debug("Début esquive avec basic detection");
-            if(gameState.table.getObstacleManager().distanceToClosestEnemy(gameState.robot.getPosition())<basicDetectionDistance){
-                //on attend une seconde
-                try{
-                    Thread.sleep(1000);
-                }
-                catch(InterruptedException interruptedException){
-                    interruptedException.printStackTrace();
-                }
-                //on esquive
-                exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException) e).getFinalAim()));
-            }
-            //L'ennemi a bougé, on  reprend ce qu'on faisait
-            else{
-                try {
-                    gameState.robot.goTo(((UnexpectedObstacleOnPathException) e).getFinalAim());
-                } catch (UnableToMoveException e1) {
-                    e1.printStackTrace();
-                }
-                //si on le revoit, on tente encore d'esquiver
-                catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
-                    exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException) e).getFinalAim()));
-                }
-                //on tente d'esquiver
-                catch (UnexpectedObstacleOnPathException e1) {
-                    exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException) e).getFinalAim()));;
                 }
             }
         }

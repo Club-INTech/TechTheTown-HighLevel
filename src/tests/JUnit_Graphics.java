@@ -19,28 +19,19 @@
 
 package tests;
 
-import enums.DirectionStrategy;
 import enums.Speed;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
-import graphics.Window;
-import org.junit.Before;
 import org.junit.Test;
-import pathfinder.Arete;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import smartMath.Circle;
-import smartMath.Segment;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 
 public class JUnit_Graphics extends JUnit_Test
 {
@@ -70,7 +61,7 @@ public class JUnit_Graphics extends JUnit_Test
 	}
 
 	@Test
-	public void testSimpleMove() throws UnableToMoveException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+	public void testSimpleMove() throws UnableToMoveException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
 		state.robot.setPosition(new Vec2(1200, 400));
 		state.robot.setOrientation(3*Math.PI/4);
 		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
