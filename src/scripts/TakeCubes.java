@@ -609,8 +609,12 @@ public class TakeCubes extends AbstractScript {
                 state.setReussitesTourAvant(0,this.currentIdealPositionInTower);
                 if (!this.alreadyTriedCorrection) {
                     log.debug("Lancement de la correction de position du tas "+currentTas.getID());
-                    this.correctionVectorTas = correctPosition(state, currentCube);
+                    //s'il nous reste plus que 5 secondes, on part déposer les cubes
+                    if(state.getTimeEllapsed()<95000) {
+                        this.correctionVectorTas = correctPosition(state, currentCube);
+                    }
                 }
+
             }
         }
         else if (this.brasUtilise.equals(BrasUtilise.ARRIERE)){
