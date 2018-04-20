@@ -39,8 +39,8 @@ public class TakeCubes extends Node {
             else if(gameState.isTourArriereRemplie() && !gameState.isTourAvantRemplie()){
                 gameState.setTakeCubesBras(BrasUtilise.AVANT);
             } else {
-                int scalar = gameState.robot.getPosition().minusNewVector(getScript().entryPosition(getVersionToExecute(),gameState.robot.getPosition()).getCenter()).dot(new Vec2(0,42));
-                if(scalar < 0){
+                float scalar = gameState.robot.getPosition().minusNewVector(getScript().entryPosition(getVersionToExecute(),gameState.robot.getPosition()).getCenter()).dot(new Vec2(0,42));
+                if(scalar > 0){
                     gameState.setTakeCubesBras(BrasUtilise.AVANT);
                 } else {
                     gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
