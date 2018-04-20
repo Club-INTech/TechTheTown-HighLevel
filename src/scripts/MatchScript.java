@@ -36,6 +36,7 @@ public class MatchScript extends AbstractScript {
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             } else {
                 gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
+                gameState.setCapteursActivés(false);
             }
 
             //On active le panneau domotique
@@ -45,7 +46,7 @@ public class MatchScript extends AbstractScript {
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
             } else {
                 gameState.robot.useActuator(ActuatorOrder.SUS_ON,true);
-
+                gameState.setCapteursActivés(true);
             }
             //On prend le tas de cubes 2
             gameState.setTakeCubesBras(BrasUtilise.ARRIERE);

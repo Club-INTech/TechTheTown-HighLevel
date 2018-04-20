@@ -248,6 +248,10 @@ public class Robot implements Service {
         goTo(pointVise, false, true);
     }
 
+    public void goToWithoutDetection(Vec2 pointVise ) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+        goTo(pointVise, false, false);
+    }
+
     /**
      * Effectue un mouvement en ligne droite jusqu'au point désiré.
      *
@@ -278,6 +282,12 @@ public class Robot implements Service {
         Vec2 move = pointVise.minusNewVector(position);
         double a = move.getA();
         turn(a);
+    }
+    public void turnToWithoutDetection(Vec2 pointVise) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+        position = getPosition();
+        Vec2 move = pointVise.minusNewVector(position);
+        double a = move.getA();
+        turnWithoutDetection(a,false,false);
     }
 
     /**
@@ -332,6 +342,9 @@ public class Robot implements Service {
      */
     public void turn(double angle, boolean expectsWallImpact, boolean isTurnRelative) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
         turn(angle, expectsWallImpact, isTurnRelative, true);
+    }
+    public void turnWithoutDetection(double angle, boolean expectsWallImpact, boolean isTurnRelative) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+        turn(angle, expectsWallImpact, isTurnRelative, false);
     }
 
     /**
@@ -501,6 +514,18 @@ public class Robot implements Service {
         }
         moveLengthwise((int) distance);
     }
+    public void moveNearPointWithoutDetection(Vec2 aim, double distanceNear, String direction) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+        Vec2 relativeCoords = aim.minusNewVector(getPosition());
+        long distance = Math.round(relativeCoords.getR() - distanceNear);
+        if (direction.equals("backward")) {
+            turnToWithoutDetection(getPosition().minusNewVector(relativeCoords));
+            distance *= -1;
+        } else {
+            turnToWithoutDetection(aim);
+        }
+        moveLengthwiseWithoutDetection((int) distance,false);
+    }
+
 
 
     /********************************

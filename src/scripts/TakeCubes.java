@@ -74,6 +74,7 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
         } else {
             state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
+            state.setCapteursActivés(false);
         }
         if (indiceTas<6){
             this.normalVersions(indiceTas, state);
@@ -85,6 +86,7 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
         } else {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
+            state.setCapteursActivés(true);
         }
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
     }
@@ -222,7 +224,7 @@ public class TakeCubes extends AbstractScript {
                 for (int i=0; i<3; i++) {
                     //On fait aller le robot à la position pour prendre le premier cube du pattern
                     log.debug("Essaye de prendre le cube "+pattern[i].getName());
-                    state.robot.moveNearPoint(successivesPositionsList[i].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
+                    state.robot.moveNearPointWithoutDetection(successivesPositionsList[i].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
                     //Le robot execute les actions pour prendre le cube
                     Cubes currentCube=Cubes.getCubeFromColor(pattern[i]);
                     takeThisCube(state, currentCube);
@@ -233,7 +235,7 @@ public class TakeCubes extends AbstractScript {
                 if (additionalCube.getColor()!=Colors.NULL){
                     log.debug("Essaye de prendre le cube "+additionalCube.getColor().getName());
                     //On fait aller le robot à la position pour prendre le cube additionnel.
-                    state.robot.moveNearPoint(successivesPositionsList[3].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
+                    state.robot.moveNearPointWithoutDetection(successivesPositionsList[3].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
                     //Le robot execute les actions pour prendre le cube
                     takeThisCube(state, additionalCube);
                 }
@@ -586,6 +588,7 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE, true);
         } else {
             state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
+            state.setCapteursActivés(false);
         }
         if (this.brasUtilise==BrasUtilise.AVANT){
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
@@ -637,6 +640,7 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
         } else {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
+            state.setCapteursActivés(true);
         }
         return cubeSuccessfullyTaken;
     }
@@ -682,7 +686,7 @@ public class TakeCubes extends AbstractScript {
 
         Vec2 finalOffsetVector = new Vec2(0, 0);
         for (int i = 0; i < correctionVectorList.length; i++) {
-            state.robot.moveNearPoint(tableCoordsCurrentCube.plusNewVector(correctionVectorList[i]), this.longueurBrasUtilise, this.directionRobot);
+            state.robot.moveNearPointWithoutDetection(tableCoordsCurrentCube.plusNewVector(correctionVectorList[i]), this.longueurBrasUtilise, this.directionRobot);
             boolean cubeTakenSuccessfully = takeThisCube(state, currentCube);
             if (cubeTakenSuccessfully) {
                 finalOffsetVector = correctionVectorList[i];

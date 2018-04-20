@@ -44,9 +44,19 @@ public class ActivationPanneauDomotique extends AbstractScript{
         log.debug("////////// Execution ActivePanneauDomotique version "+versionToExecute+" //////////");
         state.robot.turn(-Math.PI/2);
         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-        state.robot.moveLengthwise(distanceInterrupteur);
+        if(!(state.isCapteursActivés())){
+            state.robot.moveLengthwiseWithoutDetection(distanceInterrupteur,false);
+        }
+        else{
+            state.robot.moveLengthwise(distanceInterrupteur);
+        }
         state.addObtainedPoints(25);
-        state.robot.goTo(new Vec2(xEntry,yEntry));
+        if(!(state.isCapteursActivés())){
+            state.robot.goToWithoutDetection(new Vec2(xEntry,yEntry));
+        }
+        else {
+            state.robot.goTo(new Vec2(xEntry, yEntry));
+        }
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
         log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");
     }

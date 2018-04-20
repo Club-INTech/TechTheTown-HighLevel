@@ -62,6 +62,7 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             } else {
                 actualState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
+                actualState.setCapteursActivés(false);
             }
 
             if (prodScal > 0) {
@@ -71,10 +72,21 @@ public class ActiveAbeille extends AbstractScript {
                 //On enable le kook pour le bras avant
                 hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
                 //On va vers l'abeille
-                actualState.robot.goTo(new Vec2(xEntry, yEntry));
-
+                if(!(actualState.isCapteursActivés())){
+                    actualState.robot.goToWithoutDetection(new Vec2(xEntry, yEntry));
+                }
+                else {
+                    actualState.robot.goTo(new Vec2(xEntry, yEntry));
+                }
                 //On se tourne pour pousser l'abeille avec le bras avant
-                actualState.robot.turn(Math.PI / 2, true);
+                if(!(actualState.isCapteursActivés())){
+                    actualState.robot.turnWithoutDetection(Math.PI/2,true, false);
+                }
+                else{
+
+                    actualState.robot.turn(Math.PI / 2, true);
+                }
+
                 actualState.addObtainedPoints(50);
                 //On relève le bras avant
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
@@ -90,7 +102,12 @@ public class ActiveAbeille extends AbstractScript {
                 //On va vers l'abeille
                 actualState.robot.goTo(new Vec2(xEntry, yEntry));
                 //On se tourne our pousser l'abeille avec le bras arrière
-                actualState.robot.turn(-Math.PI / 2, true);
+                if(!(actualState.isCapteursActivés())){
+                    actualState.robot.turnWithoutDetection(-Math.PI/2,true, false);
+                }
+                else {
+                    actualState.robot.turn(-Math.PI / 2, true);
+                }
                 actualState.addObtainedPoints(50);
                 //On relève le bras arrière
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
@@ -99,11 +116,17 @@ public class ActiveAbeille extends AbstractScript {
             }
             //On retourne à une position atteignable par le pathfinding
             Vec2 aim = new Vec2(xExit, yExit);
-            actualState.robot.goTo(aim);
+            if(!(actualState.isCapteursActivés())){
+                actualState.robot.goToWithoutDetection(aim);
+            }
+            else {
+                actualState.robot.goTo(aim);
+            }
             if(basicDetection){
                 actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             } else {
                 actualState.robot.useActuator(ActuatorOrder.SUS_ON,true);
+                actualState.setCapteursActivés(true);
             }
 
             log.debug("////////// End ActiveAbeille version " + versionToExecute + " //////////");
