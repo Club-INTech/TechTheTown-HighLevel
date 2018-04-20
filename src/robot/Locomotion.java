@@ -640,12 +640,14 @@ public class Locomotion implements Service {
      */
     public void detectEnemyArroundPosition(int distance) throws InterruptedException,ImmobileEnnemyForOneSecondAtLeast {
         int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
-        if (closest <= distance && closest > -150) {
+        if (closest <= distance) {
             log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de "
                     + closest + " mm)");
             immobilise();
             Thread.sleep(1000);
+
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
+            closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
             if(closest <= distance){
                 table.getObstacleManager().getMobileObstacles().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
