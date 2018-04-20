@@ -22,6 +22,7 @@ package threads.dataHandlers;
 import container.Service;
 import enums.CommunicationHeaders;
 import enums.ConfigInfoRobot;
+import enums.SymmetrizedSensorNamesMap;
 import pfg.config.Config;
 import smartMath.XYO;
 import table.Table;
@@ -288,7 +289,9 @@ public class ThreadEth extends AbstractThread implements Service {
     public synchronized void close() {
         try {
             shutdown = true;
+            System.out.println("On close le socket...");
             socket.close();
+            System.out.println("Le socket a été fermé correctement");
         } catch (IOException e) {
             log.debug("Socket refuses to get closed !");
             e.printStackTrace();
@@ -437,6 +440,7 @@ public class ThreadEth extends AbstractThread implements Service {
                     outDebug.close();
                     outOrders.flush();
                     outOrders.close();
+                    log.debug("Fichiers de debug bien fermés");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -447,6 +451,7 @@ public class ThreadEth extends AbstractThread implements Service {
                     Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    log.debug("Fichiers de debug bien copiés dans le répertoire courant");
                     Log.stop();
                     Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
