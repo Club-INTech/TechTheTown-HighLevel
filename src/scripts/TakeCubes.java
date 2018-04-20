@@ -120,7 +120,7 @@ public class TakeCubes extends AbstractScript {
         this.indicePattern=state.getIndicePattern();
 
         //On regarde quel bras on utilise
-        if (this.brasUtilise==BrasUtilise.AVANT){
+        if (this.brasUtilise.equals(BrasUtilise.AVANT)){
             //On gère le cas où le cube bonus est encore présent
             if (state.isCubeBonusAvantPresent()){
                 additionalCube=Cubes.NULL;
@@ -181,10 +181,10 @@ public class TakeCubes extends AbstractScript {
 
                 //Si additionalCube.getColor()==Colors.NULL, c'est qu'on a choisi de ne prendre que 3 cubes
                 //Sinon, la couleur de additionalCube sera correspondra au cube qui sera pris après le pattern
-                if (additionalCube.getColor() == Colors.NULL) {
+                if (additionalCube.getColor().equals(Colors.NULL)) {
                     successivesPositionsList = new Vec2[3];
                     //On sait que le premier cube dans la pile est le cube bonus, donc on l'indique dans les réussites de la tour
-                    if (this.brasUtilise==BrasUtilise.AVANT) {
+                    if (this.brasUtilise.equals(BrasUtilise.AVANT)) {
                         state.setReussitesTourAvant(1, this.currentIdealPositionInTower);
                     }
                     else{
@@ -210,7 +210,7 @@ public class TakeCubes extends AbstractScript {
                     successivesPositionsList[i]= this.currentTas.getCoordsVec2().plusNewVector(cubeRelativePosition);
                 }
 
-                if (this.brasUtilise==BrasUtilise.ARRIERE){
+                if (this.brasUtilise.equals(BrasUtilise.ARRIERE)){
                     this.directionRobot="backward";
                     state.setTourArriereRemplie(true);
                     this.longueurBrasUtilise=this.longueurBrasArriere;
@@ -245,10 +245,10 @@ public class TakeCubes extends AbstractScript {
                 state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
                 state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
 
-                if(this.brasUtilise==BrasUtilise.AVANT){
+                if(this.brasUtilise.equals(BrasUtilise.AVANT)){
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);
                 }
-                if(this.brasUtilise==BrasUtilise.ARRIERE){
+                if(this.brasUtilise.equals(BrasUtilise.ARRIERE)){
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,false);
                 }
 
@@ -590,7 +590,7 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
             state.setCapteursActivés(false);
         }
-        if (this.brasUtilise==BrasUtilise.AVANT){
+        if (this.brasUtilise.equals(BrasUtilise.AVANT)){
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
             state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
             state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
@@ -613,7 +613,7 @@ public class TakeCubes extends AbstractScript {
                 }
             }
         }
-        else if (this.brasUtilise==BrasUtilise.ARRIERE){
+        else if (this.brasUtilise.equals(BrasUtilise.ARRIERE)){
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
             state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
             state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);

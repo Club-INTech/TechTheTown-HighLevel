@@ -391,51 +391,53 @@ public class ThreadSensor extends AbstractThread
     @SuppressWarnings("unchecked")
     public void getSensorInfos()
     {
-        try
-        {
-            robotPosAndOr = ethWrapper.updatePositionAndOrientation();
-            String[] valuesSReceived;
+        if(gameState.isCapteursActivés()) {
+            try {
+                robotPosAndOr = ethWrapper.updatePositionAndOrientation();
+                String[] valuesSReceived;
 
-            int attempts=0;
-            while(valuesReceived.peek() == null && attempts<50){
-                Thread.sleep(5);
-                attempts++;
-            }
-            if (attempts<50) {
-                String values = valuesReceived.poll();
-                valuesSReceived = values.split(" ");
-
-                for (int i = 0; i < nbSensors; i++) {
-                    int distance = Integer.parseInt(valuesSReceived[i]);
-                    sensorsArray.get(i).setDetectedDistance(distance * 10); //on convertit des cm en mm
+                int attempts = 0;
+                while (valuesReceived.peek() == null && attempts < 50) {
+                    Thread.sleep(5);
+                    attempts++;
                 }
+                if (attempts < 50) {
+                    String values = valuesReceived.poll();
+                    valuesSReceived = values.split(" ");
 
-                //Inversion gauche/droite pour symétriser
-                if (symetry){
-                    sensorFL.switchValues(sensorFR);
-                    sensorBL.switchValues(sensorBR);
-                }
+                    for (int i = 0; i < nbSensors; i++) {
+                        int distance = Integer.parseInt(valuesSReceived[i]);
+                        sensorsArray.get(i).setDetectedDistance(distance * 10); //on convertit des cm en mm
+                    }
 
-                for (Sensor sensor : sensorsArray) {
-                    // On met tout les capteurs qui detectent un objet trop proche du robot ou à plus de maxSensorRange a 0
-                    if (sensor.getDetectedDistance() > sensor.getMaximalValidDetectionDistance()) {
-                        sensor.setDetectedDistance(0);
-                    } else if (sensor.getDetectedDistance() < sensor.getMinimalValidDetectionDistance()) {
-                        sensor.setDetectedDistance(0);
+                    //Inversion gauche/droite pour symétriser
+                    if (symetry) {
+                        sensorFL.switchValues(sensorFR);
+                        sensorBL.switchValues(sensorBR);
+                    }
+
+                    for (Sensor sensor : sensorsArray) {
+                        // On met tout les capteurs qui detectent un objet trop proche du robot ou à plus de maxSensorRange a 0
+                        if (sensor.getDetectedDistance() > sensor.getMaximalValidDetectionDistance()) {
+                            sensor.setDetectedDistance(0);
+                        } else if (sensor.getDetectedDistance() < sensor.getMinimalValidDetectionDistance()) {
+                            sensor.setDetectedDistance(0);
+                        }
                     }
                 }
             }
-            //Si on ne reçoit pas d'informations sur les capteurs du bas niveau au bout de 250ms, on met les distances détectées par les sensor à 0
-            else {
-                for (Sensor sensor : sensorsArray) {
+            catch(InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //Si on éteint les capteurs
+        else {
+            for (Sensor sensor : sensorsArray) {
                     sensor.setDetectedDistance(0);
                 }
             }
         }
-        catch(InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @Override
     public void run()
