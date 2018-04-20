@@ -22,6 +22,7 @@ package threads.dataHandlers;
 import container.Service;
 import enums.CommunicationHeaders;
 import enums.ConfigInfoRobot;
+import enums.SymmetrizedSensorNamesMap;
 import pfg.config.Config;
 import smartMath.XYO;
 import table.Table;
@@ -288,7 +289,9 @@ public class ThreadEth extends AbstractThread implements Service {
     public synchronized void close() {
         try {
             shutdown = true;
+            System.out.println("On close le socket...");
             socket.close();
+            System.out.println("Le socket a été fermé correctement");
         } catch (IOException e) {
             log.debug("Socket refuses to get closed !");
             e.printStackTrace();
