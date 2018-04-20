@@ -34,18 +34,19 @@ public enum EventType {
     CUBE_PAS_PRIS_BRAS_AVANT("noCubeDetectedAV"),
     CUBE_PRIS_BRAS_ARRIERE("cubeDetectedAR"),
     CUBE_PAS_PRIS_BRAS_ARRIERE("noCubeDetectedAR"),
-    BASIC_DETECTION_TRIGGERED("basicDetectionTriggered")
+    BASIC_DETECTION_TRIGGERED("basicDetectionTriggered"),
+    BASIC_DETECTION_FINISHED("basicDetectionFinished")
     ;
 
     /** Id de l'event, qui diffère en fonction du type d'event */
-    private String eventId;
+    private String eventName;
 
     /** Constructeur de base */
-    EventType(String eventId){
-        this.eventId=eventId;
+    EventType(String eventName){
+        this.eventName = eventName;
     }
 
-    public String getEventId() {
-        return eventId;
+    public String getEventName() {
+        return eventName;
     }
 }

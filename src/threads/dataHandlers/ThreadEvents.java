@@ -21,11 +21,9 @@ package threads.dataHandlers;
 
 import enums.EventType;
 import pfg.config.Config;
-import strategie.GameState;
 import threads.AbstractThread;
 import utils.Log;
 
-import java.beans.EventHandler;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
@@ -52,7 +50,7 @@ public class ThreadEvents extends AbstractThread
 
     private boolean cubeTakenBrasAR=false;
 
-    private boolean sth_detected_basic =false;
+    private boolean obstacleBasicDetected =false;
 
 
     /** Le robot bouge */
@@ -84,28 +82,37 @@ public class ThreadEvents extends AbstractThread
                     event = events.poll();
                     String[] message = event.split(" ");
 
-                    if (message[0].equals(EventType.BLOCKED.getEventId())) {
+                    if (message[0].equals(EventType.BLOCKED.getEventName())) {
                         log.critical("Event du LL : UnableToMove");
                         unableToMoveEvent.add(message[1]);
                     }
-                    else if (message[0].equals(EventType.STOPPEDMOVING.getEventId())){
-                        log.debug("Le robot a fini de bouger");
+                    else if (message[0].equals(EventType.STOPPEDMOVING.getEventName())){
+                        log.debug("StoppedMoving : Le robot a fini de bouger");
                         this.isMoving = false;
-                        log.debug("isMoving variable has been defined to False");
                     }
-                    else if(message[0].equals(EventType.CUBE_PRIS_BRAS_AVANT.getEventId())){
+                    else if(message[0].equals(EventType.CUBE_PRIS_BRAS_AVANT.getEventName())){
                         this.cubeTakenBrasAV=true;
-                        log.debug("Le robot a pris un cube en utilisant le bras AV");
+                        log.debug("Prise de cube bras avant : REUSSITE");
                     }
-                    else if(message[0].equals(EventType.CUBE_PRIS_BRAS_ARRIERE.getEventId())){
+                    else if(message[0].equals(EventType.CUBE_PAS_PRIS_BRAS_AVANT.getEventName())){
+                        log.debug("Prise de cube bras avant : ECHEC");
+                    }
+                    else if(message[0].equals(EventType.CUBE_PRIS_BRAS_ARRIERE.getEventName())){
                         this.cubeTakenBrasAR=true;
-                        log.debug("Le robot a pris un cube en utilisant le bras AR");
+                        log.debug("Prise de cube bras arrière : REUSSITE");
                     }
-                    else if(message[0].equals(EventType.BASIC_DETECTION_TRIGGERED.getEventId())){
-                        this.sth_detected_basic=true;
+                    else if (message[0].equals(EventType.CUBE_PAS_PRIS_BRAS_ARRIERE.getEventName())){
+                        log.debug("Prise de cube bras arrière : ECHEC");
+                    }
+                    else if(message[0].equals(EventType.BASIC_DETECTION_TRIGGERED.getEventName())){
+                        this.obstacleBasicDetected =true;
                         log.debug("La basic detection a été triggered");
                     }
-                    else if(message[0].equals(EventType.JUMPER_REMOVED.getEventId())){
+                    else if(message[0].equals(EventType.BASIC_DETECTION_FINISHED.getEventName())){
+                        this.obstacleBasicDetected=false;
+                        log.debug("La basicDetection ne détecte plus rien");
+                    }
+                    else if(message[0].equals(EventType.JUMPER_REMOVED.getEventName())){
                         this.jumperRemoved=true;
                         log.debug("Jumper enlevé");
                     }
@@ -142,8 +149,8 @@ public class ThreadEvents extends AbstractThread
 
     public boolean getIsMoving(){ return this.isMoving; }
 
-    public boolean isSth_detected_basic() {
-        return sth_detected_basic;
+    public boolean isObstacleBasicDetected() {
+        return obstacleBasicDetected;
     }
 
     public boolean wasJumperRemoved() {

@@ -24,7 +24,6 @@ import enums.ActuatorOrder;
 import enums.CommunicationHeaders;
 import enums.EventType;
 import enums.TurningStrategy;
-import exceptions.Locomotion.UnableToMoveException;
 import pfg.config.Config;
 import threads.AbstractThread;
 import utils.Log;
@@ -89,7 +88,7 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
         } else {
             log.warning("Ordre Inconnu : " + head);
         }
-        simulator.communicate(CommunicationHeaders.EVENT, EventType.STOPPEDMOVING.getEventId());
+        simulator.communicate(CommunicationHeaders.EVENT, EventType.STOPPEDMOVING.getEventName());
     }
 
     @Override

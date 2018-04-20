@@ -24,6 +24,7 @@ import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Robot;
 import table.Table;
+import threads.dataHandlers.ThreadEth;
 import utils.Log;
 
 import java.io.BufferedWriter;
@@ -223,9 +224,7 @@ public class ThreadTimer extends AbstractThread
 		ethWrapper.disableTranslationnalFeedbackLoop();
 		ethWrapper.disableSpeedFeedbackLoop();
 
-		//mLocomotionCardWrapper.shutdownSTM();
-		Log.stop();
-
+		ethWrapper.close();
 		// et on coupe la connexion avec la carte d'asser comme ca on est sur qu'aucune partie du code ne peut faire quoi que ce soit pour faire bouger le robot
 	}
 

@@ -13,7 +13,6 @@ import exceptions.BadVersionException;
 import exceptions.PatternNotRecognizedException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -70,7 +69,7 @@ public class TakeCubes extends AbstractScript {
      */
     @Override
     public void execute(int indiceTas, GameState state)
-            throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+            throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
         if(basicDetection){
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
@@ -100,9 +99,8 @@ public class TakeCubes extends AbstractScript {
      * @throws ExecuteException
      * @throws UnableToMoveException
      * @throws ImmobileEnnemyForOneSecondAtLeast
-     * @throws UnexpectedObstacleOnPathException
      */
-    private void normalVersions(int indiceTas, GameState state) throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+    private void normalVersions(int indiceTas, GameState state) throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         //TODO mettre un choix par orientation du robot par rapport au tas
         this.brasUtilise=state.getTakeCubesBras();
 
@@ -353,9 +351,8 @@ public class TakeCubes extends AbstractScript {
      * @throws ExecuteException
      * @throws UnableToMoveException
      * @throws ImmobileEnnemyForOneSecondAtLeast
-     * @throws UnexpectedObstacleOnPathException
      */
-    private void specialVersions(int indiceTas, GameState state)  throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+    private void specialVersions(int indiceTas, GameState state)  throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         if (indiceTas==120){
             if(!(config.getBoolean(ConfigInfoRobot.SIMULATION))){
                 while(!state.isRecognitionDone()){
@@ -602,10 +599,9 @@ public class TakeCubes extends AbstractScript {
      * @return
      * @throws InterruptedException
      * @throws UnableToMoveException
-     * @throws UnexpectedObstacleOnPathException
      * @throws ImmobileEnnemyForOneSecondAtLeast
      */
-    private boolean takeThisCube(GameState state, Cubes currentCube) throws InterruptedException, UnableToMoveException, UnexpectedObstacleOnPathException, ImmobileEnnemyForOneSecondAtLeast {
+    private boolean takeThisCube(GameState state, Cubes currentCube) throws InterruptedException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         boolean cubeSuccessfullyTaken=false;
 
 
@@ -685,11 +681,10 @@ public class TakeCubes extends AbstractScript {
      * @param currentCube
      * @return
      * @throws UnableToMoveException
-     * @throws UnexpectedObstacleOnPathException
      * @throws ImmobileEnnemyForOneSecondAtLeast
      * @throws InterruptedException
      */
-    private Vec2 correctPosition(GameState state, Cubes currentCube) throws UnableToMoveException, UnexpectedObstacleOnPathException, ImmobileEnnemyForOneSecondAtLeast, InterruptedException {
+    private Vec2 correctPosition(GameState state, Cubes currentCube) throws UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast, InterruptedException {
         this.alreadyTriedCorrection = true;
         Vec2 relativeCoordsCurrentCube = currentCube.getRelativeCoordsVec2(this.currentTas);
         Vec2 tableCoordsCurrentCube = this.currentTas.getCoordsVec2().plusNewVector(relativeCoordsCurrentCube.dotFloat(this.largeurCubes));

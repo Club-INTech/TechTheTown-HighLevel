@@ -7,7 +7,6 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import hook.HookNames;
 import pathfinder.Pathfinding;
@@ -38,7 +37,7 @@ public class Abeille extends Node {
      * disable les hooks qu'on veut en fonction des bras
      */
     @Override
-    public void execute(Exception e, GameState gameState) throws BadVersionException, BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, ImmobileEnnemyForOneSecondAtLeast, UnexpectedObstacleOnPathException {
+    public void execute(Exception e, GameState gameState) throws BadVersionException, BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, ImmobileEnnemyForOneSecondAtLeast {
         if (e != null) {
             exception(e);
         }
