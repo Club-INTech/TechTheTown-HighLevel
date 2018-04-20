@@ -122,12 +122,14 @@ public class IA implements Service {
             scriptManager.getScript(scriptNames).goToThenExec(versionToExecute,gameState);
         } catch (Exception e) {
             e.printStackTrace();
+            log.debug("////////////Exeption////////////");
             execute(e);
         }
     }
 
     public void execute(Exception e) {
         graph.clean();
+        log.debug("Clean du graphe");
         kruskal();
         display();
         for(Node node : nodesToExecute){
@@ -135,7 +137,7 @@ public class IA implements Service {
                 node.execute(e,gameState);
             } catch (Exception e1){
                 e1.printStackTrace();
-                node.exception(e1);
+                execute(e1);
             }
         }
     }
