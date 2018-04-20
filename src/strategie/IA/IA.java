@@ -130,7 +130,7 @@ public class IA implements Service {
     public void execute(Exception e) {
         graph.clean();
         log.debug("Clean du graphe");
-        kruskal();
+        setNodesToExecute(kruskal());
         display();
         for(Node node : nodesToExecute){
             try {
@@ -152,6 +152,8 @@ public class IA implements Service {
     public Graph getGraph() {return graph;}
 
     public GameState getGameState() {return gameState;}
+
+    public void setNodesToExecute(ArrayList<Node> nodesToExecute) {this.nodesToExecute = nodesToExecute;}
 
     @Override
     public void updateConfig() {    }
