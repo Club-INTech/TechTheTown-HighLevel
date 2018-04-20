@@ -68,12 +68,14 @@ public class Graph {
     /** Retire du graphe les noeuds déjà exécuté */
 
     public void clean(){
+        ArrayList<Node> lst = new ArrayList<>();
         for(Node node: nodes){
-            if(node.isDone()){
-                nodes.remove(node);
+            if(!node.isDone()){
+                lst.add(node);
             }
         }
-        this.edges = createEdge();
+        setNodes(lst);
+        setEdges(createEdge());
     }
 
     /** Affiche le contenu du graphe. */
@@ -96,4 +98,8 @@ public class Graph {
     public PriorityQueue<Edge> getEdges() {
         return edges;
     }
+
+    public void setNodes(ArrayList<Node> nodes){ this.nodes=nodes;}
+
+    public void setEdges(PriorityQueue<Edge> edges){ this.edges=edges;}
 }

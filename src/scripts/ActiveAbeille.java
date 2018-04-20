@@ -35,7 +35,7 @@ public class ActiveAbeille extends AbstractScript {
         updateConfig();
         this.securityDistance=60;
         this.xEntry=1300;
-        this.yEntry=1765;
+        this.yEntry=1745;
         this.xExit=1500-radius-securityDistance;
         this.yExit=2000-radius-securityDistance;
         /**2 versions, l'une pour l'IA(si jamais on a à appeler le pathfinding pour
@@ -69,7 +69,7 @@ public class ActiveAbeille extends AbstractScript {
                 //ON UTILISE LE BRAS AVANT
                 //On disable le hook pour le bras arrière
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-                //On enable le kook pour le bras avant
+                //On enable le hook pour le bras avant
                 hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
                 //On va vers l'abeille
                 if(!(actualState.isCapteursActivés())){
