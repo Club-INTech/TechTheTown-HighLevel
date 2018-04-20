@@ -147,4 +147,20 @@ public class Circle {
 		}
 		return l;
 	}
+
+	/**
+	 * Cette méthode retourne true si un cercle est contenu dans un autre:
+	 * on a intersection entre les deux cercles si la distance entre les deux centres
+	 * est inférieure au plus grand des deux rayons
+	 */
+
+	public boolean isSuperposedWith(Circle circle){
+		double maxradius=Math.max(this.radius,circle.getRadius());
+		if(this.getCenter().distance(circle.getCenter())<maxradius){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 }

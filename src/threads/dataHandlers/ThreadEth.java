@@ -22,7 +22,6 @@ package threads.dataHandlers;
 import container.Service;
 import enums.CommunicationHeaders;
 import enums.ConfigInfoRobot;
-import enums.SymmetrizedSensorNamesMap;
 import pfg.config.Config;
 import smartMath.XYO;
 import table.Table;
@@ -221,9 +220,9 @@ public class ThreadEth extends AbstractThread implements Service {
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             interfaceCreated = true;
-
         } catch (IOException e) {
-            log.critical("Manque de droit pour l'output");
+
+            log.critical("On n'a pas réussi à créer la socket");
             e.printStackTrace();
         }
     }
@@ -283,17 +282,55 @@ public class ThreadEth extends AbstractThread implements Service {
         }
     }
 
+
+    /**
+     * On shutdown le ThreadEth
+     */
+    public synchronized void shutdown(){
+        shutdown=true;
+        try {
+            fullDebug.flush();
+            fullDebug.close();
+            outEvent.flush();
+            outEvent.close();
+            outSensor.flush();
+            outSensor.close();
+            outPosition.flush();
+            outPosition.close();
+            outDebug.flush();
+            outDebug.close();
+            outOrders.flush();
+            outOrders.close();
+            log.debug("Fichiers de debug bien fermés");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            Files.copy(fullDebugFileTmp.toPath(), fullDebugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(eventFileTmp.toPath(), eventFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(sensorUSFileTmp.toPath(), sensorUSFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            log.debug("Fichiers de debug bien copiés dans le répertoire courant");
+            Log.stop();
+            Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        closeSocket();
+    }
+
     /**
      * Ferme la socket !
      */
-    public synchronized void close() {
+    private synchronized void closeSocket() {
+        shutdown = true;
         try {
-            shutdown = true;
-            System.out.println("On close le socket...");
             socket.close();
-            System.out.println("Le socket a été fermé correctement");
+            System.out.println("La socket a été fermée correctement");
         } catch (IOException e) {
-            log.debug("Socket refuses to get closed !");
+            System.out.println("IOException à la fermeture de la socket");
             e.printStackTrace();
         }
     }
@@ -301,7 +338,6 @@ public class ThreadEth extends AbstractThread implements Service {
     /*******************************************
      * FONCTION COMMUNICATION & RUN (LISTENER) *
      *******************************************/
-
 
     /**
      * Fonction pour envoyer un message au LL
@@ -326,7 +362,6 @@ public class ThreadEth extends AbstractThread implements Service {
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
             output.write(mess, 0, mess.length());
             output.flush();
-
         } catch (SocketException e) {
             log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
             try {
@@ -422,44 +457,7 @@ public class ThreadEth extends AbstractThread implements Service {
         Thread.currentThread().setPriority(10);
         createInterface();
         log.debug("ThreadEth started");
-        Runtime.getRuntime().addShutdownHook(new Thread()
-        {
-            @Override
-            public void run()
-            {
-                try {
-                    fullDebug.flush();
-                    fullDebug.close();
-                    outEvent.flush();
-                    outEvent.close();
-                    outSensor.flush();
-                    outSensor.close();
-                    outPosition.flush();
-                    outPosition.close();
-                    outDebug.flush();
-                    outDebug.close();
-                    outOrders.flush();
-                    outOrders.close();
-                    log.debug("Fichiers de debug bien fermés");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Files.copy(fullDebugFileTmp.toPath(), fullDebugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    Files.copy(eventFileTmp.toPath(), eventFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    Files.copy(sensorUSFileTmp.toPath(), sensorUSFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    log.debug("Fichiers de debug bien copiés dans le répertoire courant");
-                    Log.stop();
-                    Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                close();
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
 
         while (!shutdown) {
             try {
@@ -560,30 +558,6 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     public boolean isInterfaceCreated() {
         return interfaceCreated;
-    }
-
-    /**
-     * Permet la fermeture de la socket à la fin du programme
-     */
-    @Override
-    public void interrupt(){
-        super.interrupt();
-        try{
-            outEvent.flush();
-            outSensor.flush();
-            outPosition.flush();
-            outDebug.flush();
-        }
-        catch(IOException ioe){
-            log.debug("LL ne répond pas, on shutdown");
-            shutdown = true;
-            ioe.printStackTrace();
-        }
-        try {
-            socket.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     @Override

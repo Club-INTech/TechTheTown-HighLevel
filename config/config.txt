@@ -21,7 +21,7 @@ INDICE_PATTERN_SIMULATION            = 0
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
 SIMULATION                           = false
-ATTENTE_JUMPER                       = true
+ATTENTE_JUMPER                       = false
 
 # VERSION DE MATCHSCRIPT TO EXECUTE
 MATCHSCRIPT_TO_EXECUTE               = 0
@@ -128,7 +128,7 @@ brightnessModifierLightingUp=1.5
 
 ###################### PARAMETRES SCRIPT #######################
 
-#ActivationPanneauDomitique
+#ActivationPanneauDomotique
 DISTANCE_INTERRUPTEUR=68
 
 #ActiveAbeille
