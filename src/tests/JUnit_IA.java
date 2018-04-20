@@ -82,7 +82,7 @@ public class JUnit_IA extends JUnit_Test{
             robotReal.setOrientation(Table.entryOrientation);
             state.setRecognitionDone(true);
             state.setIndicePattern(2);
-            state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+            state.robot.setLocomotionSpeed(Speed.FAST_ALL);
             ia.start(ScriptNames.MATCH_SCRIPT,0);
         }
         @Test
