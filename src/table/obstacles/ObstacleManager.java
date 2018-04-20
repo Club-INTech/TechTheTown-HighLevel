@@ -208,17 +208,22 @@ public class ObstacleManager implements Service
 
 					// si on valide sa vision et qu'il n'y a pas d'intersection avec un obstacle qui existe déjà
 					if (obstacleMobileUntested.numberOfTimeDetected >= obstacleMobileUntested.getThresholdConfirmedOrUnconfirmed()) {
-						obstacleMobileUntested.setLifeTime(defaultLifetime);
-						mMobileObstacles.add(obstacleMobileUntested);
-						mUntestedMobileObstacles.remove(obstacleMobileUntested);
-					}
-					for(ObstacleCircular obstacleCircularFixe : mCircularObstacle){
-						if(!(obstacleMobileUntested.getCircle().isSuperposedWith(obstacleCircularFixe.getCircle()))){
+						boolean intersection=false;
+						for(ObstacleCircular obstacleCircularFixe : mCircularObstacle) {
+							if(obstacleMobileUntested.getCircle().isSuperposedWith(obstacleCircularFixe.getCircle())){
+								intersection=true;
+								break;
+							}
+						}
+						if(!intersection){
+							obstacleMobileUntested.setLifeTime(defaultLifetime);
 							mMobileObstacles.add(obstacleMobileUntested);
+							mUntestedMobileObstacles.remove(obstacleMobileUntested);
 						}
 					}
 				}
 			}
+
 			// on vérifie si l'on ne voit pas un obstacle confirmé déjà présent
 			for (ObstacleProximity obstacleMobile : mMobileObstacles) {
 				ObstacleProximity obstacle = obstacleMobile;
@@ -408,8 +413,9 @@ public class ObstacleManager implements Service
 			int squaredDistanceToClosestEnemy = 10000000;
 			int squaredDistanceToEnemyTested;
 			ObstacleCircular closestEnnemy = null;
-			if(mMobileObstacles.size() == 0 && mUntestedMobileObstacles.size()==0)
+			if(mMobileObstacles.size() == 0) {
 				return 1000;
+			}
 			//trouve l'ennemi le plus proche parmis les obstacles confirmés
 			for(int i=0; i<mMobileObstacles.size(); i++)
 			{
@@ -422,8 +428,9 @@ public class ObstacleManager implements Service
 				}
 			}
 
-			if(squaredDistanceToClosestEnemy <= 0)
+			if(squaredDistanceToClosestEnemy <= 0) {
 				return 0;
+			}
 
 			if(closestEnnemy != null)
 			{
