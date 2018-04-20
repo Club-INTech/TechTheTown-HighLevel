@@ -98,6 +98,12 @@ public class GameState implements Service
     /** Permet de savoir quel bras on utilise pour TakeCubes */
     private BrasUtilise takeCubesBras;
 
+    /**Permet de savoir si on a acrivé ou désactivé les capteurs comme ça si on
+     * a à faire des movelenghtwise par exemple, on les fait mais sans se soucier
+     * de la détection de l'ennemi
+     */
+    private boolean capteursActivés;
+
     private Config config;
     private Log log;
 
@@ -146,6 +152,8 @@ public class GameState implements Service
         this.recognitionDone=false;
         //On set une valeur de base, qui sera changée par PatternRecognition par la suite
         this.indicePattern=-2;
+        //au début, le threadSensor est lancé, donc les capteurs sont bien activés au début
+        this.capteursActivés=true;
 
     }
 
@@ -351,4 +359,13 @@ public class GameState implements Service
         }
     }
 
+    public boolean isCapteursActivés() {
+        return capteursActivés;
+    }
+
+    public void setCapteursActivés(boolean capteursActivés) {
+        this.capteursActivés = capteursActivés;
+    }
 }
+
+

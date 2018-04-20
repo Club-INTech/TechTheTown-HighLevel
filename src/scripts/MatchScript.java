@@ -45,6 +45,7 @@ public class MatchScript extends AbstractScript {
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
             } else {
                 gameState.robot.useActuator(ActuatorOrder.SUS_ON,true);
+
             }
             //On prend le tas de cubes 2
             gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
