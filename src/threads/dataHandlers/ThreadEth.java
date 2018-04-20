@@ -437,6 +437,7 @@ public class ThreadEth extends AbstractThread implements Service {
                     outDebug.close();
                     outOrders.flush();
                     outOrders.close();
+                    log.debug("Fichiers de debug bien fermés");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -447,6 +448,7 @@ public class ThreadEth extends AbstractThread implements Service {
                     Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                     Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    log.debug("Fichiers de debug bien copiés dans le répertoire courant");
                     Log.stop();
                     Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
