@@ -87,17 +87,22 @@ public class ThreadEvents extends AbstractThread
                         unableToMoveEvent.add(message[1]);
                     }
                     else if (message[0].equals(EventType.STOPPEDMOVING.getEventName())){
-                        log.debug("Le robot a fini de bouger");
+                        log.debug("StoppedMoving : Le robot a fini de bouger");
                         this.isMoving = false;
-                        log.debug("isMoving variable has been defined to False");
                     }
                     else if(message[0].equals(EventType.CUBE_PRIS_BRAS_AVANT.getEventName())){
                         this.cubeTakenBrasAV=true;
-                        log.debug("Le robot a pris un cube en utilisant le bras AV");
+                        log.debug("Prise de cube bras avant : REUSSITE");
+                    }
+                    else if(message[0].equals(EventType.CUBE_PAS_PRIS_BRAS_AVANT.getEventName())){
+                        log.debug("Prise de cube bras avant : ECHEC");
                     }
                     else if(message[0].equals(EventType.CUBE_PRIS_BRAS_ARRIERE.getEventName())){
                         this.cubeTakenBrasAR=true;
-                        log.debug("Le robot a pris un cube en utilisant le bras AR");
+                        log.debug("Prise de cube bras arrière : REUSSITE");
+                    }
+                    else if (message[0].equals(EventType.CUBE_PAS_PRIS_BRAS_ARRIERE.getEventName())){
+                        log.debug("Prise de cube bras arrière : ECHEC");
                     }
                     else if(message[0].equals(EventType.BASIC_DETECTION_TRIGGERED.getEventName())){
                         this.obstacleBasicDetected =true;
