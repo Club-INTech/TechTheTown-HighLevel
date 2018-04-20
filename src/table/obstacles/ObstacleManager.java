@@ -245,7 +245,14 @@ public class ObstacleManager implements Service
     		 *on ne detecte pas les plots ni les gobelets (et si on les detectes on prefere ne pas prendre le risque et on les evites)
     		 * et si on detecte une deuxieme fois l'ennemi on rajoute un obstacle sur lui
     		 */
+		/*
+		On vérifie si l'obstacle mobile confirmé qu'on a détecté n'est pas un élément de jeu,
+		si c'est le cas, on le remove de la liste des obstacles mobiles confirmés
+		 */
 		}
+
+
+
 	}
 
 	/**
