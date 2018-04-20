@@ -690,6 +690,7 @@ public class TakeCubes extends AbstractScript {
         Vec2 tableCoordsCurrentCube = this.currentTas.getCoordsVec2().plusNewVector(relativeCoordsCurrentCube.dotFloat(this.largeurCubes));
         Vec2[] correctionVectorList = new Vec2[4];
         int val = this.largeurCubes / 3;
+        Vec2 finalOffsetVector = new Vec2(0, 0);
         if (relativeCoordsCurrentCube.equals(new Vec2(1, 0))) {
             correctionVectorList[0] = new Vec2(val, val);
             correctionVectorList[1] = new Vec2(val, -val);
@@ -710,9 +711,10 @@ public class TakeCubes extends AbstractScript {
             correctionVectorList[1] = new Vec2(-val, val);
             correctionVectorList[2] = new Vec2(val, val);
             correctionVectorList[3] = new Vec2(val, -val);
+        } else if (relativeCoordsCurrentCube.equals(new Vec2(0, 0))){
+            return finalOffsetVector;
         }
 
-        Vec2 finalOffsetVector = new Vec2(0, 0);
         for (int i = 0; i < correctionVectorList.length; i++) {
             if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
                 state.robot.moveNearPointWithoutDetection(tableCoordsCurrentCube.plusNewVector(correctionVectorList[i]), this.longueurBrasUtilise, this.directionRobot);
