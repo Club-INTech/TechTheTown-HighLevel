@@ -35,7 +35,7 @@ public class ActiveAbeille extends AbstractScript {
         updateConfig();
         this.securityDistance=60;
         this.xEntry=1300;
-        this.yEntry=1745;
+        this.yEntry=1733;
         this.xExit=1500-radius-securityDistance;
         this.yExit=2000-radius-securityDistance;
         /**2 versions, l'une pour l'IA(si jamais on a à appeler le pathfinding pour
