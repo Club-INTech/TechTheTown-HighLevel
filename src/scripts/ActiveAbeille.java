@@ -127,7 +127,7 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.robot.useActuator(ActuatorOrder.SUS_ON,true);
                 actualState.setCapteursActivés(true);
             }
-
+            actualState.setAbeilleLancee(true);
             log.debug("////////// End ActiveAbeille version " + versionToExecute + " //////////");
         }
         /**On arrive à la position d'entrée,le hook to enable est enabled au niveau de l'IA

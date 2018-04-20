@@ -54,7 +54,7 @@ public class IA implements Service {
         Node deposeCubes2 = new DeposeCubes("DeposeCube",1, null, scriptManager, gameState,pathfinding,hookFactory,config, log);
 
         ArrayList<Node> nodes = new ArrayList<>();
-        nodes.add(pattern);
+//        nodes.add(pattern);
         nodes.add(abeille);
         nodes.add(panneau);
         nodes.add(takeCubes);
