@@ -22,7 +22,6 @@ package threads.dataHandlers;
 import container.Service;
 import enums.CommunicationHeaders;
 import enums.ConfigInfoRobot;
-import enums.SymmetrizedSensorNamesMap;
 import pfg.config.Config;
 import smartMath.XYO;
 import table.Table;
@@ -286,11 +285,12 @@ public class ThreadEth extends AbstractThread implements Service {
      * Ferme la socket !
      */
     public synchronized void close() {
+        shutdown = true;
         try {
-            shutdown = true;
-            System.out.println("On close le socket...");
-            output.close();
             input.close();
+            System.out.println("Input closed");
+            output.close();
+            System.out.println("Output closed");
             socket.close();
             System.out.println("La socket a été fermée correctement");
         } catch (IOException e) {
@@ -302,7 +302,6 @@ public class ThreadEth extends AbstractThread implements Service {
     /*******************************************
      * FONCTION COMMUNICATION & RUN (LISTENER) *
      *******************************************/
-
 
     /**
      * Fonction pour envoyer un message au LL
@@ -423,6 +422,7 @@ public class ThreadEth extends AbstractThread implements Service {
         createInterface();
         log.debug("ThreadEth started");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            shutdown=true;
             try {
                 fullDebug.flush();
                 fullDebug.close();
@@ -555,30 +555,6 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     public boolean isInterfaceCreated() {
         return interfaceCreated;
-    }
-
-    /**
-     * Permet la fermeture de la socket à la fin du programme
-     */
-    @Override
-    public void interrupt(){
-        super.interrupt();
-        try{
-            outEvent.flush();
-            outSensor.flush();
-            outPosition.flush();
-            outDebug.flush();
-        }
-        catch(IOException ioe){
-            log.debug("LL ne répond pas, on shutdown");
-            shutdown = true;
-            ioe.printStackTrace();
-        }
-        try {
-            socket.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     @Override
