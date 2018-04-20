@@ -221,6 +221,7 @@ public class ThreadEth extends AbstractThread implements Service {
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             interfaceCreated = true;
         } catch (IOException e) {
+
             log.critical("On n'a pas réussi à créer la socket");
             e.printStackTrace();
         }
@@ -281,16 +282,51 @@ public class ThreadEth extends AbstractThread implements Service {
         }
     }
 
+
+    /**
+     * On shutdown le ThreadEth
+     */
+    public synchronized void shutdown(){
+        shutdown=true;
+        try {
+            fullDebug.flush();
+            fullDebug.close();
+            outEvent.flush();
+            outEvent.close();
+            outSensor.flush();
+            outSensor.close();
+            outPosition.flush();
+            outPosition.close();
+            outDebug.flush();
+            outDebug.close();
+            outOrders.flush();
+            outOrders.close();
+            log.debug("Fichiers de debug bien fermés");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            Files.copy(fullDebugFileTmp.toPath(), fullDebugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(eventFileTmp.toPath(), eventFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(sensorUSFileTmp.toPath(), sensorUSFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            log.debug("Fichiers de debug bien copiés dans le répertoire courant");
+            Log.stop();
+            Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        closeSocket();
+    }
+
     /**
      * Ferme la socket !
      */
-    public synchronized void close() {
+    private synchronized void closeSocket() {
         shutdown = true;
         try {
-            input.close();
-            System.out.println("Input closed");
-            output.close();
-            System.out.println("Output closed");
             socket.close();
             System.out.println("La socket a été fermée correctement");
         } catch (IOException e) {
@@ -421,40 +457,7 @@ public class ThreadEth extends AbstractThread implements Service {
         Thread.currentThread().setPriority(10);
         createInterface();
         log.debug("ThreadEth started");
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            shutdown=true;
-            try {
-                fullDebug.flush();
-                fullDebug.close();
-                outEvent.flush();
-                outEvent.close();
-                outSensor.flush();
-                outSensor.close();
-                outPosition.flush();
-                outPosition.close();
-                outDebug.flush();
-                outDebug.close();
-                outOrders.flush();
-                outOrders.close();
-                log.debug("Fichiers de debug bien fermés");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                Files.copy(fullDebugFileTmp.toPath(), fullDebugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                Files.copy(eventFileTmp.toPath(), eventFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                Files.copy(sensorUSFileTmp.toPath(), sensorUSFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                log.debug("Fichiers de debug bien copiés dans le répertoire courant");
-                Log.stop();
-                Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            close();
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
 
         while (!shutdown) {
             try {
