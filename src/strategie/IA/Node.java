@@ -147,7 +147,7 @@ public abstract class Node {
             }
         }
         //exception qui est throw quand on est en basicDetection et qu'on croise un ennemi
-        else if(e instanceof UnexpectedObstacleOnPathException ){
+        else if(e instanceof UnexpectedObstacleOnPathException){
             //L'ennemi est toujours là : on esquive
             log.debug("Début esquive avec basic detection");
             if(gameState.table.getObstacleManager().distanceToClosestEnemy(gameState.robot.getPosition())<basicDetectionDistance){
@@ -159,7 +159,7 @@ public abstract class Node {
                     interruptedException.printStackTrace();
                 }
                 //on esquive
-                exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException) e).getFinalAim()));
+                exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException)e).getFinalAim()));
             }
             //L'ennemi a bougé, on  reprend ce qu'on faisait
             else{
@@ -170,11 +170,11 @@ public abstract class Node {
                 }
                 //si on le revoit, on tente encore d'esquiver
                 catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
-                    exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException) e).getFinalAim()));
+                    exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException)e).getFinalAim()));
                 }
                 //on tente d'esquiver
                 catch (UnexpectedObstacleOnPathException e1) {
-                    exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException) e).getFinalAim()));;
+                    exception(new ImmobileEnnemyForOneSecondAtLeast(((UnexpectedObstacleOnPathException)e).getFinalAim()));
                 }
             }
         }

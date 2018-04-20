@@ -569,7 +569,7 @@ public class Locomotion implements Service {
                     }
                     catch (UnexpectedObstacleOnPathException e){
                         log.debug("aimAvecLaBasicDetection : " + aim);
-                        throw new ImmobileEnnemyForOneSecondAtLeast(aim);
+                        throw new UnexpectedObstacleOnPathException(aim);
                     }
                 }
             }
@@ -655,9 +655,8 @@ public class Locomotion implements Service {
      * Lance une exception si un ennemi se trouve a une distance inférieure a celle spécifiée
      *
      * @param distance distance jusqu'a un ennemi en mm en dessous de laquelle on doit abandonner le mouvement
-     * @throws UnexpectedObstacleOnPathException si obstacle sur le chemin
      */
-    public void detectEnemyArroundPosition(int distance) throws UnexpectedObstacleOnPathException,InterruptedException,ImmobileEnnemyForOneSecondAtLeast {
+    public void detectEnemyArroundPosition(int distance) throws InterruptedException,ImmobileEnnemyForOneSecondAtLeast {
         int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
         if (closest <= distance && closest > -150) {
             log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de "
@@ -669,7 +668,6 @@ public class Locomotion implements Service {
                 table.getObstacleManager().getMobileObstacles().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
-            throw new UnexpectedObstacleOnPathException(new Vec2());
         }
     }
 
@@ -677,9 +675,8 @@ public class Locomotion implements Service {
      * Lance une exception si un ennemi se trouve sur le chemin à "detection Distance"
      *
      * @param moveDirection direction du robot
-     * @throws UnexpectedObstacleOnPathException si l'obstacle est sur le chemin
      */
-    public void detectEnemyAtDistance(int distance, Vec2 moveDirection) throws UnexpectedObstacleOnPathException,InterruptedException,ImmobileEnnemyForOneSecondAtLeast{
+    public void detectEnemyAtDistance(int distance, Vec2 moveDirection) throws InterruptedException,ImmobileEnnemyForOneSecondAtLeast{
         if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)) {
             log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin : le robot va s'arrêter");
             immobilise();
@@ -689,7 +686,6 @@ public class Locomotion implements Service {
                 log.debug("l'exception est throw");
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
-            throw new UnexpectedObstacleOnPathException(new Vec2());
         }
     }
 
