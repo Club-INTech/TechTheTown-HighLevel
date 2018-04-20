@@ -82,11 +82,11 @@ public class MainIA {
             container.getService(ThreadTimer.class);
             patternRecognition=container.getService(PatternRecognition.class);
             container.getService(ThreadScore.class);
+            container.startInstanciedThreads();
+            // TODO : initialisation des variables globales du robot & objets...
             if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
                 realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             }
-            container.startInstanciedThreads();
-            // TODO : initialisation des variables globales du robot & objets...
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
