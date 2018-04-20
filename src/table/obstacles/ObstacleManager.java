@@ -183,59 +183,60 @@ public class ObstacleManager implements Service
 	 * @param lifetime durée de vie (en ms) de l'obstace a ajouter
 	 * TODO A réadapter à l'année en cours
 	 */
-	public synchronized void addObstacle(final Vec2 position, final int radius, final int lifetime)
-	{
+	public synchronized void addObstacle(final Vec2 position, final int radius, final int lifetime) {
 		//vérification que l'on ne détecte pas un obstacle "normal"
-		if (position.getX()>-1500+mEnnemyRadius && position.getX()<1500-mEnnemyRadius && position.getY()>mEnnemyRadius && position.getY()<2000-mEnnemyRadius  // Hors de la table
-				&& !(position.getX() > 1100-mEnnemyRadius && position.getY() < 600+mEnnemyRadius)) // Dans la zone de départ
+		if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius && position.getY() > mEnnemyRadius && position.getY() < 2000 - mEnnemyRadius  // Hors de la table
+				&& !(position.getX() > 1100 - mEnnemyRadius && position.getY() < 600 + mEnnemyRadius)) // Dans la zone de départ
 		// TODO: Prévoir les cas où l'on détecte des éléments de jeu dans la condition
 		{
-			boolean isThereAnObstacleIntersecting=false;
-			for (int i = 0; i<mUntestedMobileObstacles.size(); i++)
-			{
-				ObstacleProximity obstacle = mUntestedMobileObstacles.get(i);
+			boolean isThereAnObstacleIntersecting = false;
+			for (ObstacleProximity obstacleMobileUntested : mUntestedMobileObstacles) {
+				ObstacleProximity obstacle = obstacleMobileUntested;
 
 				//si l'obstacle est deja dans la liste des obstacles non-testés on l'ajoute dans la liste des obstacles
-				if(obstacle.getPosition().distance(position)<obstacle.getRadius()/3)
-				{
-					isThereAnObstacleIntersecting=true;
-					mUntestedMobileObstacles.get(i).numberOfTimeDetected++;
-					mUntestedMobileObstacles.get(i).setPosition(position);
-					mUntestedMobileObstacles.get(i).setRadius(radius);
-					mUntestedMobileObstacles.get(i).setLifeTime(lifetime);
+				if (obstacle.getPosition().distance(position) < obstacle.getRadius() / 3) {
+					isThereAnObstacleIntersecting = true;
+					obstacleMobileUntested.numberOfTimeDetected++;
+					obstacleMobileUntested.setPosition(position);
+					obstacleMobileUntested.setRadius(radius);
+					obstacleMobileUntested.setLifeTime(lifetime);
 
 					// si on l'a deja vu plein de fois
-					if(mUntestedMobileObstacles.get(i).numberOfTimeDetected >= mUntestedMobileObstacles.get(i).getMaxNumberOfTimeDetected()) {
-						mUntestedMobileObstacles.get(i).numberOfTimeDetected = mUntestedMobileObstacles.get(i).getMaxNumberOfTimeDetected();
+					if (obstacleMobileUntested.numberOfTimeDetected >= obstacleMobileUntested.getMaxNumberOfTimeDetected()) {
+						obstacleMobileUntested.numberOfTimeDetected = obstacleMobileUntested.getMaxNumberOfTimeDetected();
 					}
 
-					// si on valide sa vision
-					if(mUntestedMobileObstacles.get(i).numberOfTimeDetected >= mUntestedMobileObstacles.get(i).getThresholdConfirmedOrUnconfirmed())
-					{
-						mUntestedMobileObstacles.get(i).setLifeTime(defaultLifetime);
-						mMobileObstacles.add(mUntestedMobileObstacles.get(i));
-						mUntestedMobileObstacles.remove(i);
+					// si on valide sa vision et qu'il n'y a pas d'intersection avec un obstacle qui existe déjà
+					if (obstacleMobileUntested.numberOfTimeDetected >= obstacleMobileUntested.getThresholdConfirmedOrUnconfirmed()) {
+						obstacleMobileUntested.setLifeTime(defaultLifetime);
+						mMobileObstacles.add(obstacleMobileUntested);
+						mUntestedMobileObstacles.remove(obstacleMobileUntested);
+					}
+					for(ObstacleCircular obstacleCircularFixe : mCircularObstacle){
+						if(!(obstacleMobileUntested.getCircle().isSuperposedWith(obstacleCircularFixe.getCircle()))){
+							mMobileObstacles.add(obstacleMobileUntested);
+						}
 					}
 				}
 			}
-
 			// on vérifie si l'on ne voit pas un obstacle confirmé déjà présent
-			for(int i = 0; i<mMobileObstacles.size(); i++)
-			{
-				ObstacleProximity obstacle = mMobileObstacles.get(i);
-				if(obstacle.getPosition().distance(position) < obstacle.getRadius()/3)
-				{
-					isThereAnObstacleIntersecting=true;
+			for (ObstacleProximity obstacleMobile : mMobileObstacles) {
+				ObstacleProximity obstacle = obstacleMobile;
+				if (obstacle.getPosition().distance(position) < obstacle.getRadius() / 3) {
+					isThereAnObstacleIntersecting = true;
 
-					mMobileObstacles.get(i).numberOfTimeDetected++;
-					mMobileObstacles.get(i).setPosition(position);
-					mMobileObstacles.get(i).setRadius(radius);
-					mMobileObstacles.get(i).setLifeTime(defaultLifetime);
+					obstacleMobile.numberOfTimeDetected++;
+					obstacleMobile.setPosition(position);
+					obstacleMobile.setRadius(radius);
+					obstacleMobile.setLifeTime(defaultLifetime);
 
 					// si on l'a deja vu plein de fois
-					if(mMobileObstacles.get(i).numberOfTimeDetected >= mMobileObstacles.get(i).getMaxNumberOfTimeDetected())
-						mMobileObstacles.get(i).numberOfTimeDetected = mMobileObstacles.get(i).getMaxNumberOfTimeDetected();
+					if (obstacleMobile.numberOfTimeDetected >= obstacleMobile.getMaxNumberOfTimeDetected()) {
+						obstacleMobile.numberOfTimeDetected = obstacleMobile.getMaxNumberOfTimeDetected();
+					}
 				}
+
+
 			}
 			if (!isThereAnObstacleIntersecting) {
 				mUntestedMobileObstacles.add(new ObstacleProximity(new Circle(position, radius), timeToTestObstacle));
@@ -249,12 +250,10 @@ public class ObstacleManager implements Service
 		On vérifie si l'obstacle mobile confirmé qu'on a détecté n'est pas un élément de jeu,
 		si c'est le cas, on le remove de la liste des obstacles mobiles confirmés
 		 */
+
+
 		}
-
-
-
 	}
-
 	/**
 	 * Supprime du gestionnaire tout les obstacles dont la date de péremption est antérieure à la date fournie
 	 */
@@ -346,6 +345,7 @@ public class ObstacleManager implements Service
 			throw e;
 
 		}
+
 	}
 
 
