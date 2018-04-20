@@ -360,7 +360,7 @@ public class GameState implements Service
     }
 
     public boolean isCapteursActivés() {
-        return capteursActivés;
+        return this.capteursActivés;
     }
 
     public void setCapteursActivés(boolean capteursActivés) {

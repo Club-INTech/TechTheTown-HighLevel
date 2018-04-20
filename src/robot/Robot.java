@@ -456,8 +456,7 @@ public class Robot implements Service {
      */
     public void moveLengthwiseWithoutDetection(int distance, boolean expectsWallImpact) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
         log.debug("appel de Robot.moveLengthwiseWithoutDetection(" + distance + "," + expectsWallImpact + ")");
-        Speed newSpeed = Speed.SLOW_ALL;
-        moveLengthwise(distance, expectsWallImpact, false, newSpeed);
+        moveLengthwise(distance, expectsWallImpact, false);
     }
 
 
@@ -514,6 +513,7 @@ public class Robot implements Service {
         }
         moveLengthwise((int) distance);
     }
+
     public void moveNearPointWithoutDetection(Vec2 aim, double distanceNear, String direction) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
         Vec2 relativeCoords = aim.minusNewVector(getPosition());
         long distance = Math.round(relativeCoords.getR() - distanceNear);

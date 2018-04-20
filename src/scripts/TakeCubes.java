@@ -38,6 +38,7 @@ public class TakeCubes extends AbstractScript {
     private String directionRobot;
     private BrasUtilise brasUtilise;
     private int currentIdealPositionInTower;
+    private int timeAfterTakeCubesMustBeStopped;
 
     private boolean alreadyTriedCorrection;
     private Vec2 correctionVectorTas;
@@ -60,6 +61,7 @@ public class TakeCubes extends AbstractScript {
         this.brasUtilise=BrasUtilise.AVANT;
         this.alreadyTriedCorrection=false;
         this.currentIdealPositionInTower=0;
+        this.timeAfterTakeCubesMustBeStopped=90000;
     }
 
     /** Execution du script de récupération des cubes
@@ -222,24 +224,46 @@ public class TakeCubes extends AbstractScript {
                 }
 
                 for (int i=0; i<3; i++) {
-                    //On fait aller le robot à la position pour prendre le premier cube du pattern
-                    log.debug("Essaye de prendre le cube "+pattern[i].getName());
-                    state.robot.moveNearPointWithoutDetection(successivesPositionsList[i].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
-                    //Le robot execute les actions pour prendre le cube
-                    Cubes currentCube=Cubes.getCubeFromColor(pattern[i]);
-                    takeThisCube(state, currentCube);
-                    this.currentIdealPositionInTower++;
+                    //Si on n'a plus le temps pour prendre le reste des cubes, on va déposer ce qu'on a déjà
+                    if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
+                        //On fait aller le robot à la position pour prendre le premier cube du pattern
+                        log.debug("Essaye de prendre le cube " + pattern[i].getName());
+                        state.robot.moveNearPointWithoutDetection(successivesPositionsList[i].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
+                        //Le robot execute les actions pour prendre le cube
+                        Cubes currentCube = Cubes.getCubeFromColor(pattern[i]);
+                        takeThisCube(state, currentCube);
+                        this.currentIdealPositionInTower++;
+                    }
+                    else {
+                        if (brasUtilise==BrasUtilise.AVANT) {
+                            state.setReussitesTourAvant(0,this.currentIdealPositionInTower);
+                        }
+                        else {
+                            state.setReussitesTourArrière(0,this.currentIdealPositionInTower);
+                        }
+                        this.currentIdealPositionInTower++;
+                    }
                 }
 
                 //Si un cube additionnel a été précisé
                 if (additionalCube.getColor()!=Colors.NULL){
-                    log.debug("Essaye de prendre le cube "+additionalCube.getColor().getName());
-                    //On fait aller le robot à la position pour prendre le cube additionnel.
-                    state.robot.moveNearPointWithoutDetection(successivesPositionsList[3].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
-                    //Le robot execute les actions pour prendre le cube
-                    takeThisCube(state, additionalCube);
+                    //Si on n'a plus le temps pour prendre le reste des cubes, on va déposer ce qu'on a déjà
+                    if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
+                        log.debug("Essaye de prendre le cube " + additionalCube.getColor().getName());
+                        //On fait aller le robot à la position pour prendre le cube additionnel.
+                        state.robot.moveNearPointWithoutDetection(successivesPositionsList[3].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
+                        //Le robot execute les actions pour prendre le cube
+                        takeThisCube(state, additionalCube);
+                    }
+                    else {
+                        if (brasUtilise==BrasUtilise.AVANT) {
+                            state.setReussitesTourAvant(0,this.currentIdealPositionInTower);
+                        }
+                        else {
+                            state.setReussitesTourArrière(0,this.currentIdealPositionInTower);
+                        }
+                    }
                 }
-
 
                 state.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, false);
                 state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
@@ -582,15 +606,19 @@ public class TakeCubes extends AbstractScript {
      * @throws ImmobileEnnemyForOneSecondAtLeast
      */
     private boolean takeThisCube(GameState state, Cubes currentCube) throws InterruptedException, UnableToMoveException, UnexpectedObstacleOnPathException, ImmobileEnnemyForOneSecondAtLeast {
-        //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
         boolean cubeSuccessfullyTaken=false;
+
+
         if (basicDetection) {
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE, true);
         } else {
             state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
             state.setCapteursActivés(false);
         }
+
+
         if (this.brasUtilise.equals(BrasUtilise.AVANT)){
+            //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
             state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
             state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_AVANT, true);
@@ -607,17 +635,14 @@ public class TakeCubes extends AbstractScript {
             else{
                 cubeSuccessfullyTaken=false;
                 state.setReussitesTourAvant(0,this.currentIdealPositionInTower);
-                if (!this.alreadyTriedCorrection) {
+                if (!this.alreadyTriedCorrection){
                     log.debug("Lancement de la correction de position du tas "+currentTas.getID());
-                    //s'il nous reste plus que 5 secondes, on part déposer les cubes
-                    if(state.getTimeEllapsed()<95000) {
-                        this.correctionVectorTas = correctPosition(state, currentCube);
-                    }
+                    this.correctionVectorTas = correctPosition(state, currentCube);
                 }
-
             }
         }
         else if (this.brasUtilise.equals(BrasUtilise.ARRIERE)){
+            //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
             state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
             state.robot.useActuator(ActuatorOrder.BAISSE_LE_BRAS_ARRIERE, true);
@@ -634,18 +659,22 @@ public class TakeCubes extends AbstractScript {
             else{
                 cubeSuccessfullyTaken=false;
                 state.setReussitesTourArrière(0,this.currentIdealPositionInTower);
-                if (!this.alreadyTriedCorrection) {
+                if (!this.alreadyTriedCorrection){
                     log.debug("Lancement de la correction de position du tas "+currentTas.getID());
                     this.correctionVectorTas = correctPosition(state, currentCube);
                 }
             }
         }
+
+
         if (basicDetection) {
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
         } else {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
             state.setCapteursActivés(true);
         }
+
+
         return cubeSuccessfullyTaken;
     }
 
@@ -690,10 +719,15 @@ public class TakeCubes extends AbstractScript {
 
         Vec2 finalOffsetVector = new Vec2(0, 0);
         for (int i = 0; i < correctionVectorList.length; i++) {
-            state.robot.moveNearPointWithoutDetection(tableCoordsCurrentCube.plusNewVector(correctionVectorList[i]), this.longueurBrasUtilise, this.directionRobot);
-            boolean cubeTakenSuccessfully = takeThisCube(state, currentCube);
-            if (cubeTakenSuccessfully) {
-                finalOffsetVector = correctionVectorList[i];
+            if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
+                state.robot.moveNearPointWithoutDetection(tableCoordsCurrentCube.plusNewVector(correctionVectorList[i]), this.longueurBrasUtilise, this.directionRobot);
+                boolean cubeTakenSuccessfully = takeThisCube(state, currentCube);
+                if (cubeTakenSuccessfully) {
+                    finalOffsetVector = correctionVectorList[i];
+                    break;
+                }
+            }
+            else{
                 break;
             }
         }
