@@ -5,6 +5,7 @@ import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import pathfinder.Pathfinding;
 import strategie.GameState;
+import utils.Log;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,12 +15,14 @@ public class Graph {
 
     private ArrayList<Node> nodes;
     private PriorityQueue<Edge> edges;
+    private Log log;
 
     /** Graphe de décision qui gère les actions à effectuer durant un match. */
 
-    public Graph(ArrayList<Node> nodes) {
+    public Graph(ArrayList<Node> nodes, Log log) {
         this.nodes = nodes;
         this.edges = createEdge();
+        this.log = log;
     }
 
     /** Génère les arretes du graphe, est appelé par le constructeur de Graph. */
@@ -70,6 +73,7 @@ public class Graph {
     public void clean(){
         ArrayList<Node> lst = new ArrayList<>();
         for(Node node: nodes){
+            log.debug(node.isDone());
             if(!node.isDone()){
                 lst.add(node);
             }

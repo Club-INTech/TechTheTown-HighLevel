@@ -36,7 +36,7 @@ public class IA implements Service {
         this.scriptManager = scriptManager;
         this.pathfinding = pathfinding;
         this.hookFactory = hookFactory;
-        this.graph = new Graph(createNodes());
+        this.graph = new Graph(createNodes(),log);
         this.nb_tas_pris = 0;
         this.nodesToExecute = kruskal();
     }
