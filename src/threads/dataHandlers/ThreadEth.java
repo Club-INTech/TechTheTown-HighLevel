@@ -221,9 +221,8 @@ public class ThreadEth extends AbstractThread implements Service {
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             interfaceCreated = true;
-
         } catch (IOException e) {
-            log.critical("Manque de droit pour l'output");
+            log.critical("On n'a pas réussi à créer la socket");
             e.printStackTrace();
         }
     }
@@ -290,10 +289,12 @@ public class ThreadEth extends AbstractThread implements Service {
         try {
             shutdown = true;
             System.out.println("On close le socket...");
+            output.close();
+            input.close();
             socket.close();
-            System.out.println("Le socket a été fermé correctement");
+            System.out.println("La socket a été fermée correctement");
         } catch (IOException e) {
-            log.debug("Socket refuses to get closed !");
+            System.out.println("IOException à la fermeture de la socket");
             e.printStackTrace();
         }
     }
