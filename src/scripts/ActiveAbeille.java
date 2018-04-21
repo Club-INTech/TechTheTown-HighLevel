@@ -57,17 +57,17 @@ public class ActiveAbeille extends AbstractScript {
         double prodScal = directionToGo.dot(new Vec2(100.0, actualState.robot.getOrientation()));
         if(versionToExecute==0) {
             //On vérifie quel bras de l'abeille on va devoir utiliser, à l'aide d'un produit scalaire
-            if(basicDetection){
-                actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
-            } else {
-                actualState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-                actualState.setCapteursActivés(false);
-            }
 
             if (prodScal > 0) {
                 //ON UTILISE LE BRAS AVANT
                 //On disable le hook pour le bras arrière
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
+                if(basicDetection){
+                    actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+                } else {
+                    actualState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
+                    actualState.setCapteursActivés(false);
+                }
                 //On enable le hook pour le bras avant
                 hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
                 //On va vers l'abeille
@@ -96,6 +96,12 @@ public class ActiveAbeille extends AbstractScript {
                 //ON UTILISE LE BRAS ARRIERE
                 //On disable le hook pour le bras avant
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
+                if(basicDetection){
+                    actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+                } else {
+                    actualState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
+                    actualState.setCapteursActivés(false);
+                }
                 //On enable le kook pour le bras arrière
                 hookFactory.enableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
                 //On va vers l'abeille
