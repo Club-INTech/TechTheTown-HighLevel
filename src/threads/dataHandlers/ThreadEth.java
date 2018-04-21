@@ -240,6 +240,7 @@ public class ThreadEth extends AbstractThread implements Service {
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             interfaceCreated = true;
+            log.debug("Socket créée");
         } catch (IOException e) {
             log.critical("On n'a pas réussi à créer la socket");
             e.printStackTrace();
@@ -612,7 +613,7 @@ public class ThreadEth extends AbstractThread implements Service {
                         }
                     }
                 }
-                else if (CommunicationHeaders.ACKNOWLEDGE.getFirstHeader() == headers[0] && CommunicationHeaders.ACKNOWLEDGE.getSecondHeader() == headers[1]){
+                else if (CommunicationHeaders.ACKNOWLEDGEMENT.getFirstHeader() == headers[0] && CommunicationHeaders.ACKNOWLEDGEMENT.getSecondHeader() == headers[1]){
                     comFlag=false;
                     try {
                         outAcknowledge.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis() - timeRef));
