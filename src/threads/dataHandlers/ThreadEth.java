@@ -474,14 +474,14 @@ public class ThreadEth extends AbstractThread implements Service {
                         outEvent.write(infosFromBuffer);
                         outEvent.newLine();
                         outEvent.flush();
-                        continue;
-                    } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
+                    }
+                    else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
                         ultrasoundBuffer.add(infosFromBuffer);
                         outSensor.write(infosFromBuffer);
                         outSensor.newLine();
                         outSensor.flush();
-                        continue;
-                    } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
+                    }
+                    else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                         synchronized (this.positionAndOrientation) {
                             positionAndOrientation.update(infosFromBuffer,splitString);
                             if(symmetry){
@@ -492,20 +492,23 @@ public class ThreadEth extends AbstractThread implements Service {
                             outPosition.newLine();
                             outPosition.flush();
                         }
-                        continue;
-                    } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
+                    }
+                    else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
                         comFlag = false;
                         outDebug.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis()-timeRef));
                         outDebug.newLine();
                         outDebug.flush();
-                        continue;
-                    } else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]){
+                    }
+                    else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]){
                         standardBuffer.add(infosFromBuffer);
-                        continue;
+                    }
+                    else{
+                        log.critical("///////// MESSAGE SANS HEADER ///////////");
+                        log.critical(infosFromBuffer);
+                        log.critical("/////// FIN MESSAGE SANS HEADER /////////");
                     }
                 } else if (!(buffer.replaceAll(" ", "").equals(""))) {
                     standardBuffer.add(buffer);
-                    continue;
                 }
 
             } catch (SocketException se) {
