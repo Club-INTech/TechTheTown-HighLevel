@@ -122,7 +122,7 @@ public class IA implements Service {
             scriptManager.getScript(scriptNames).goToThenExec(versionToExecute,gameState);
         } catch (Exception e) {
             e.printStackTrace();
-            log.debug("////////////Exeption////////////");
+            log.debug("Exception");
             execute(e);
         }
     }
