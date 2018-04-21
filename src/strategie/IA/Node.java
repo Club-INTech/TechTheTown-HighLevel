@@ -114,29 +114,61 @@ public abstract class Node {
         log.debug("on est dans Exception du Node Abstrait");
         if (e instanceof ImmobileEnnemyForOneSecondAtLeast) {
             log.debug("j'ai bien catch immmobileEnnemy et je tente d'esquiver : je suis bien intelligent");
+            Vec2 aim = ((ImmobileEnnemyForOneSecondAtLeast) e).getAim();
             boolean ennemyDodged = false;
-            while (!ennemyDodged) {
+            int attemps=0;
+            while (!ennemyDodged && attemps<10) {
+                attemps++;
                 try {
                     log.debug("Début esquive");
-                    gameState.robot.moveLengthwise(-20);
-                    ArrayList<Vec2> pathToFollow = gameState.robot.getPathfinding().findmyway(gameState.robot.getPosition(), ((ImmobileEnnemyForOneSecondAtLeast) e).getAim());
+
+                    //On s'éloigne de l'aim
+                    Vec2 directionToGo = (aim.minusNewVector(gameState.robot.getPosition()));
+                    double prodScal = directionToGo.dot(new Vec2(100.0, gameState.robot.getOrientation()));
+                    Vec2 pointToGo;
+                    //On regarde si le point où l'on veut reculer est dans un obstacle, si c'est le cas, on throw PointInObstacleException
+                    if (prodScal>0) {
+                        Vec2 wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new Vec2(-50.0,gameState.robot.getOrientation()));
+                        if (!gameState.table.getObstacleManager().isPositionInObstacle(wantToBackUpTo)) {
+                            gameState.robot.moveLengthwise(-50);
+                        }
+                        else{
+                            log.debug("Point in obstacle");
+                            //on renvoie une exception avec notre objectif initial en paramètre
+                            throw new PointInObstacleException(aim);
+                        }
+                    }
+                    else{
+                        Vec2 wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new Vec2(50.0,gameState.robot.getOrientation()));
+                        if (!gameState.table.getObstacleManager().isPositionInObstacle(wantToBackUpTo)) {
+                            gameState.robot.moveLengthwise(50);
+                        }
+                        else{
+                            log.debug("Point in obstacle");
+                            //on renvoie une exception avec notre objectif initial en paramètre
+                            throw new PointInObstacleException(aim);
+                        }
+                    }
+
+                    //On cherche un nouveau chemin pour y aller
+                    ArrayList<Vec2> pathToFollow = gameState.robot.getPathfinding().findmyway(gameState.robot.getPosition(), aim);
                     gameState.robot.followPath(pathToFollow);
                     ennemyDodged = true;
                 } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
                     immobileEnnemyForOneSecondAtLeast.printStackTrace();
-                    System.out.println("L'ennemi est toujours là");
+                    log.debug("L'ennemi est toujours là");
                 } catch (PointInObstacleException e1) {
-                    System.out.println("PointInObstacleException");
+                    log.debug("PointInObstacleException");
                     e1.printStackTrace();
                 } catch (UnableToMoveException e1) {
-                    System.out.println("UnableToMoveException");
+                    log.debug("UnableToMoveException");
                     e1.printStackTrace();
                 } catch (NoPathFound noPathFound) {
-                    System.out.println("NoPathFound");
+                    log.debug("NoPathFound");
                     noPathFound.printStackTrace();
                 } finally {
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(250);
                     } catch (InterruptedException e1) {
                         e1.printStackTrace();
                     }
