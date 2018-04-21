@@ -88,7 +88,7 @@ public class ThreadSimulatorMotion extends AbstractThread implements Service {
         } else {
             log.warning("Ordre Inconnu : " + head);
         }
-        simulator.communicate(CommunicationHeaders.EVENT, EventType.STOPPEDMOVING.getEventId());
+        simulator.communicate(CommunicationHeaders.EVENT, EventType.STOPPEDMOVING.getEventName());
     }
 
     @Override
