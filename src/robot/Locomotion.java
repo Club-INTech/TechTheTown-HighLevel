@@ -517,10 +517,10 @@ public class Locomotion implements Service {
                     boolean obstacleDetected=basicDetect();
                     boolean wasImmobilised=false;
                     if (obstacleDetected){
+                        immobilise();
                         wasImmobilised=true;
                     }
                     while (obstacleDetected){
-                        immobilise();
                         try {
                             Thread.sleep(500);
                             obstacleDetected=basicDetect();
