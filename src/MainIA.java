@@ -112,7 +112,7 @@ public class MainIA {
 
         } catch (Exception e) {
             e.printStackTrace();
-            log.debug("////////////Exeption////////////");
+            log.debug("Exception");
             ia.execute(e);
         }
     }
