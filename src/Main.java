@@ -18,6 +18,7 @@
  */
 
 import container.Container;
+import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
@@ -73,6 +74,9 @@ public class Main {
             container.getService(ThreadTimer.class);
             container.getService(ThreadScore.class);
             container.startInstanciedThreads();
+            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
+                realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+            }
 
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
