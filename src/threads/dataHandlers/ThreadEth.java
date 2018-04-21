@@ -86,6 +86,8 @@ public class ThreadEth extends AbstractThread implements Service {
     private File ordersFile;
     private File debugFileTmp;
     private File debugFile;
+    private File acknowledgeFileTmp;
+    private File acknowledgeFile;
     private File positionFileTmp;
     private File positionFile;
     private File eventFileTmp;
@@ -102,6 +104,7 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     private BufferedWriter outOrders;
     private BufferedWriter outDebug;
+    private BufferedWriter outAcknowledge;
     private BufferedWriter outPosition;
     private BufferedWriter outEvent;
     private BufferedWriter fullDebug;
@@ -153,6 +156,8 @@ public class ThreadEth extends AbstractThread implements Service {
                 this.ordersFile = new File("./orders.txt");
                 this.debugFileTmp = new File("/tmp/debugLL.txt");
                 this.debugFile = new File("./debugLL.txt");
+                this.acknowledgeFileTmp = new File("/tmp/acknowledge.txt");
+                this.acknowledgeFile = new File("./acknowldge.txt");
                 this.positionFileTmp = new File("/tmp/debugPosition.txt");
                 this.positionFile = new File("./debugPosition.txt");
                 this.eventFileTmp = new File("/tmp/debugEvent.txt");
@@ -186,6 +191,8 @@ public class ThreadEth extends AbstractThread implements Service {
                 outOrders.newLine();
                 outDebug = new BufferedWriter(new FileWriter(this.debugFileTmp));
                 outDebug.newLine();
+                outAcknowledge = new BufferedWriter(new FileWriter(this.acknowledgeFileTmp));
+                outAcknowledge.newLine();
                 outPosition = new BufferedWriter(new FileWriter(this.positionFileTmp));
                 outPosition.newLine();
                 outEvent = new BufferedWriter(new FileWriter(this.eventFileTmp));
@@ -210,7 +217,7 @@ public class ThreadEth extends AbstractThread implements Service {
      *
      * @throws IOException
      */
-    private void createInterface() {
+    private void createSocket() {
         try {
             if (simulation) {
                 socket = new Socket(localAdress, 23500);
@@ -221,7 +228,6 @@ public class ThreadEth extends AbstractThread implements Service {
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             interfaceCreated = true;
         } catch (IOException e) {
-
             log.critical("On n'a pas réussi à créer la socket");
             e.printStackTrace();
         }
@@ -276,7 +282,8 @@ public class ThreadEth extends AbstractThread implements Service {
         while (comFlag){
             try {
                 Thread.sleep(1);
-            }catch (InterruptedException e){
+            } catch (InterruptedException e){
+                log.warning("Thread waitForAResponse interrupted");
                 e.printStackTrace();
             }
         }
@@ -291,29 +298,87 @@ public class ThreadEth extends AbstractThread implements Service {
         try {
             fullDebug.flush();
             fullDebug.close();
-            outEvent.flush();
-            outEvent.close();
-            outSensor.flush();
-            outSensor.close();
-            outPosition.flush();
-            outPosition.close();
-            outDebug.flush();
-            outDebug.close();
-            outOrders.flush();
-            outOrders.close();
-            log.debug("Fichiers de debug bien fermés");
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
+            outEvent.flush();
+            outEvent.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            outSensor.flush();
+            outSensor.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            outPosition.flush();
+            outPosition.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            outDebug.flush();
+            outDebug.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            outAcknowledge.flush();
+            outAcknowledge.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            outOrders.flush();
+            outOrders.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        log.debug("Fichiers de debug fermés");
+        try {
             Files.copy(fullDebugFileTmp.toPath(), fullDebugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
             Files.copy(eventFileTmp.toPath(), eventFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        try{
             Files.copy(sensorUSFileTmp.toPath(), sensorUSFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
             Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
             Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            Files.copy(acknowledgeFileTmp.toPath(), acknowledgeFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
             Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            log.debug("Fichiers de debug bien copiés dans le répertoire courant");
-            Log.stop();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        log.debug("Fichiers de debug bien copiés dans le répertoire courant");
+        Log.stop();
+        try {
             Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
@@ -362,19 +427,21 @@ public class ThreadEth extends AbstractThread implements Service {
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
             output.write(mess, 0, mess.length());
             output.flush();
-        } catch (SocketException e) {
+        }
+        catch (SocketException e) {
             log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
             try {
                 if (socket != null) {
                     socket.close();
                     Thread.sleep(500);
-                    createInterface();
+                    createSocket();
                 }
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
             e.printStackTrace();
-        } catch (IOException except) {
+        }
+        catch (IOException except) {
             log.critical("LL ne répond pas, on shutdown");
             shutdown = true;
             except.printStackTrace();
@@ -391,71 +458,73 @@ public class ThreadEth extends AbstractThread implements Service {
         }
 
         /* Réponse du LL (listener dans le run) */
-        try {
-            for (int i = 0; i < nb_line_response; i++) {
-                inputLines[i] = waitAndGetResponse();
+        for (int i = 0; i < nb_line_response; i++) {
+            inputLines[i] = waitAndGetResponse();
 
-                if (debug) {
+            if (debug) {
+                try {
                     outOrders.write("\t" + inputLines[i]);
                     outOrders.newLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+            }
 
-                if (inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) {
-                    log.critical("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
-                    if (debug) {
+            if (inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) {
+                log.critical("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                if (debug) {
+                    try {
                         outOrders.write("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                         outOrders.newLine();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+                }
 
-                    while ((inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) && tries < 5) {
+                while ((inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) && tries < 5) {
+                    try {
                         Thread.sleep(10);
-                        tries += 1;
-                        inputLines[i] = waitAndGetResponse();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-
-                    if (tries == 5) {
-                        throw new SocketException("Pas de réponse...");
-                    }
+                    tries += 1;
+                    inputLines[i] = waitAndGetResponse();
                 }
 
-            /*    if(!isAsciiExtended(inputLines[i]))
-                {
-                    log.critical("Reception de "+inputLines[i]+" (non Ascii) , en réponse à "+ message[0].replaceAll("\r", "").replaceAll("\n", "") + " envoi du message a nouveau");
-                    communicate(nb_line_response, message); // On retente
-                }   */
-            }
-
-            if (nb_line_response != 0) {
-                outOrders.newLine();
-            }
-
-            waitForAResponse();
-
-        } catch (SocketException e1) {
-            log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
-            try {
-                if (socket != null) {
-                    socket.close();
-                    Thread.sleep(500);
-                    createInterface();
-                    communicate(nb_line_response, message);
+                if (tries == 5) {
+                    log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
+                    try {
+                        if (socket != null) {
+                            socket.close();
+                            Thread.sleep(500);
+                            createSocket();
+                            communicate(nb_line_response, message);
+                        }
+                    } catch (Exception e) {
+                        log.critical("On n'arrive pas à recréer la socket");
+                        e.printStackTrace();
+                    }
                 }
-            } catch (Exception e2) {
-                e1.printStackTrace();
             }
-            e1.printStackTrace();
-        } catch (Exception except2) {
-            log.debug("Exception pour écrire dans les fichiers de debug orders");
-            except2.printStackTrace();
         }
+
+        if (nb_line_response != 0) {
+            try {
+                outOrders.newLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        waitForAResponse();
+
         return inputLines;
     }
 
     @Override
     public void run() {
-        String buffer="";
+        String buffer;
         Thread.currentThread().setPriority(10);
-        createInterface();
+        createSocket();
         log.debug("ThreadEth started");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
 
@@ -517,8 +586,19 @@ public class ThreadEth extends AbstractThread implements Service {
                         }
                     }
                 }
+                else if (CommunicationHeaders.ACKNOWLEDGE.getFirstHeader() == headers[0] && CommunicationHeaders.ACKNOWLEDGE.getSecondHeader() == headers[1]){
+                    comFlag=false;
+                    try {
+                        outDebug.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis() - timeRef));
+                        outDebug.newLine();
+                        outDebug.flush();
+                    }
+                    catch (IOException e) {
+                        log.critical("IOException pour le debugLL");
+                        e.printStackTrace();
+                    }
+                }
                 else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
-                    comFlag = false;
                     try {
                         outDebug.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis() - timeRef));
                         outDebug.newLine();
