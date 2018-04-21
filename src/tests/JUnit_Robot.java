@@ -19,15 +19,14 @@
 
 package tests;
 
-import enums.*;
-import exceptions.Locomotion.UnableToMoveException;
+import enums.ScriptNames;
+import enums.TasCubes;
+import enums.Speed;
+import enums.ActuatorOrder;
 import org.junit.Before;
 import org.junit.Test;
-import pathfinder.Pathfinding;
 import robot.Robot;
 import scripts.ScriptManager;
-import simulator.ThreadSimulator;
-import simulator.ThreadSimulatorMotion;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;

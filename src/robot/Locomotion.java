@@ -20,7 +20,11 @@
 package robot;
 
 import container.Service;
-import enums.*;
+import enums.TurningStrategy;
+import enums.DirectionStrategy;
+import enums.Speed;
+import enums.UnableToMoveReason;
+import enums.ConfigInfoRobot;
 import exceptions.Locomotion.BlockedException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;

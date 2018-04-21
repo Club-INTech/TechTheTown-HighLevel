@@ -21,7 +21,6 @@ package scripts;
 
 import enums.Speed;
 import exceptions.BadVersionException;
-import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
@@ -30,8 +29,6 @@ import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
-
-import java.util.ArrayList;
 
 
 /**

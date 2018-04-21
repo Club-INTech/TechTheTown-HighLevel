@@ -28,7 +28,13 @@ import table.Table;
 import threads.AbstractThread;
 import utils.Log;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.file.Files;
@@ -139,6 +145,12 @@ public class ThreadEth extends AbstractThread implements Service {
     private volatile XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
     private String splitString = " ";
 
+    /**
+     * Nombre de fois qu'on a renvoyé le message
+     */
+
+    private int nbRepeatMessage;
+
     private boolean symmetry=config.getBoolean(ConfigInfoRobot.COULEUR);
 
     /**
@@ -148,8 +160,10 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     private ThreadEth(Log log, Config config) {
         super(config, log);
+        updateConfig();
         this.positionAndOrientation = new XYO(Table.entryPosition,Table.entryOrientation);
         this.name = "Teensy";
+        this.nbRepeatMessage=0;
         if (debug) {
             try {
                 this.ordersFileTmp = new File("/tmp/orders.txt");
@@ -209,7 +223,6 @@ public class ThreadEth extends AbstractThread implements Service {
             this.outOrders = null;
             this.outDebug = null;
         }
-        updateConfig();
     }
 
     /**
@@ -260,7 +273,9 @@ public class ThreadEth extends AbstractThread implements Service {
 
         while ((System.currentTimeMillis() - startTime) < TIMEOUT) {
             try {
-                if ((response = standardBuffer.peek()) != null) break;
+                if ((response = standardBuffer.peek()) != null) {
+                    break;
+                }
                 Thread.sleep(2);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -278,12 +293,20 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Attend que le LL réponde sur le canal debug lors d'un envoie d'ordre
      */
-    private synchronized void waitForAResponse() {
-        while (comFlag){
+    private synchronized void waitForAResponse() throws SocketException {
+        int nbTimesHasBeenWaiting=0;
+        int maxTimesWaiting=500;
+        boolean socketExceptionThrown=false;
+        while (comFlag && !socketExceptionThrown){
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException e){
-                log.warning("Thread waitForAResponse interrupted");
+                nbTimesHasBeenWaiting+=1;
+                if (nbTimesHasBeenWaiting==maxTimesWaiting){
+                    log.critical("Waiting too long for a response (>"+maxTimesWaiting+"ms)... SocketException thrown");
+                    socketExceptionThrown=true;
+                    throw new SocketException();
+                }
+            }catch (InterruptedException e){
                 e.printStackTrace();
             }
         }
@@ -400,6 +423,28 @@ public class ThreadEth extends AbstractThread implements Service {
         }
     }
 
+
+    /**
+     * Recrée le socket
+     */
+    private void recreateSocket() {
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                log.critical("IOException : problème pour fermer le socket");
+                e.printStackTrace();
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                log.critical("InterruptedException : le thread de recréation de socket a été interrompu");
+                e.printStackTrace();
+            }
+            createSocket();
+        }
+    }
+
     /*******************************************
      * FONCTION COMMUNICATION & RUN (LISTENER) *
      *******************************************/
@@ -419,7 +464,7 @@ public class ThreadEth extends AbstractThread implements Service {
             mess += m + " ";
         }
 
-        /* Envoie de l'ordre */
+        /* Envoi de l'ordre */
         try {
             timeRef = System.currentTimeMillis();
             comFlag = true;
@@ -427,21 +472,23 @@ public class ThreadEth extends AbstractThread implements Service {
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
             output.write(mess, 0, mess.length());
             output.flush();
-        }
-        catch (SocketException e) {
+        } catch (SocketException e) {
             log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
+            e.printStackTrace();
             try {
                 if (socket != null) {
                     socket.close();
                     Thread.sleep(500);
                     createSocket();
                 }
-            } catch (Exception e1) {
+            } catch (InterruptedException e1) {
+                log.critical("Thread.sleep a été interrompu");
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                log.critical("La socket n'a pas pu être fermée");
                 e1.printStackTrace();
             }
-            e.printStackTrace();
-        }
-        catch (IOException except) {
+        } catch (IOException except) {
             log.critical("LL ne répond pas, on shutdown");
             shutdown = true;
             except.printStackTrace();
@@ -457,68 +504,70 @@ public class ThreadEth extends AbstractThread implements Service {
             }
         }
 
+        try{
         /* Réponse du LL (listener dans le run) */
-        for (int i = 0; i < nb_line_response; i++) {
-            inputLines[i] = waitAndGetResponse();
+            for (int i = 0; i < nb_line_response; i++) {
+                inputLines[i] = waitAndGetResponse();
 
-            if (debug) {
-                try {
-                    outOrders.write("\t" + inputLines[i]);
-                    outOrders.newLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) {
-                log.critical("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                 if (debug) {
                     try {
-                        outOrders.write("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                        outOrders.write("\t" + inputLines[i]);
                         outOrders.newLine();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
 
-                while ((inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) && tries < 5) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    tries += 1;
-                    inputLines[i] = waitAndGetResponse();
-                }
-
-                if (tries == 5) {
-                    log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
-                    try {
-                        if (socket != null) {
-                            socket.close();
-                            Thread.sleep(500);
-                            createSocket();
-                            communicate(nb_line_response, message);
+                if (inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) {
+                    log.critical("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                    if (debug) {
+                        try {
+                            outOrders.write("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                            outOrders.newLine();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        log.critical("On n'arrive pas à recréer la socket");
-                        e.printStackTrace();
+                    }
+
+                    while ((inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("")) && tries < 5) {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        tries += 1;
+                        inputLines[i] = waitAndGetResponse();
+                    }
+
+                    if (tries == 5) {
+                        log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
+                        throw new SocketException();
                     }
                 }
             }
-        }
 
-        if (nb_line_response != 0) {
-            try {
-                outOrders.newLine();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (nb_line_response != 0) {
+                try {
+                    outOrders.newLine();
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+            }
+            waitForAResponse();
+        } catch (SocketException e) {
+            log.critical("On a pas reçu de réponse de la part du LL, on renvoie le message");
+            e.printStackTrace();
+            this.nbRepeatMessage += 1;
+            if (this.nbRepeatMessage < 10) {
+                inputLines = communicate(nb_line_response, message);
+            } else {
+                log.critical("On a renvoyé le message plus de 10 fois, y a un gros problème poto, mais dans le doute on continue le match");
             }
         }
-        waitForAResponse();
-
+        this.nbRepeatMessage = 0;
         return inputLines;
     }
+
 
     @Override
     public void run() {
@@ -589,12 +638,12 @@ public class ThreadEth extends AbstractThread implements Service {
                 else if (CommunicationHeaders.ACKNOWLEDGE.getFirstHeader() == headers[0] && CommunicationHeaders.ACKNOWLEDGE.getSecondHeader() == headers[1]){
                     comFlag=false;
                     try {
-                        outDebug.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis() - timeRef));
-                        outDebug.newLine();
-                        outDebug.flush();
+                        outAcknowledge.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis() - timeRef));
+                        outAcknowledge.newLine();
+                        outAcknowledge.flush();
                     }
                     catch (IOException e) {
-                        log.critical("IOException pour le debugLL");
+                        log.critical("IOException pour acknowledge");
                         e.printStackTrace();
                     }
                 }

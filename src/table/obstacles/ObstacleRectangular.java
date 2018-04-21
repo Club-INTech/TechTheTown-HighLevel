@@ -23,7 +23,7 @@ import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
 
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 /**

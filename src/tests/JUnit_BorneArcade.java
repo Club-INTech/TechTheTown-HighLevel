@@ -28,7 +28,6 @@ import org.junit.runner.JUnitCore;
 import scripts.ScriptManager;
 import strategie.GameState;
 import table.Table;
-import threads.ThreadInterface;
 import threads.dataHandlers.ThreadSensor;
 
 /**

@@ -26,8 +26,6 @@ import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
 
-import java.util.ArrayList;
-
 public class JUnit_Symetry extends JUnit_Test
 {
 	GameState real_state;

@@ -36,8 +36,6 @@ import utils.Log;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static smartMath.Geometry.isBetween;
-
 /**
  * Thread qui ajoute en continu les obstacles détectés par les capteurs,
  * Et enleve ceux qui ont disparu, de meme que verifie les capteurs de contact

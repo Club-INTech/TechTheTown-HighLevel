@@ -20,7 +20,15 @@
 package robot;
 
 import container.Service;
-import enums.*;
+import enums.Speed;
+import enums.SymmetrizedTurningStrategy;
+import enums.SymmetrizedActuatorOrderMap;
+import enums.SymmetrizedSensorNamesMap;
+import enums.ActuatorOrder;
+import enums.DirectionStrategy;
+import enums.TurningStrategy;
+import enums.ConfigInfoRobot;
+import enums.ContactSensors;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
