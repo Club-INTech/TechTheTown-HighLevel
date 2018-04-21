@@ -742,6 +742,9 @@ public class Locomotion implements Service {
         log.warning("Arrêt du robot en " + lowLevelPosition);
         ethWrapper.immobilise();
         thEvent.setIsMoving(false);
+        ethWrapper.useActuator(ActuatorOrder.ASSERV_TRANSLATION);
+        ethWrapper.useActuator(ActuatorOrder.ASSERV_ROTATION);
+        ethWrapper.useActuator(ActuatorOrder.ASSERV_SPEED);
         log.debug("isMoving variable has been defined to FALSE in Locomotion");
     }
 
