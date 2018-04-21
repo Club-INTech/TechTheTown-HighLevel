@@ -129,7 +129,7 @@ brightnessModifierLightingUp=1.5
 ###################### PARAMETRES SCRIPT #######################
 
 #ActivationPanneauDomitique
-DISTANCE_INTERRUPTEUR=58
+DISTANCE_INTERRUPTEUR=68
 
 #ActiveAbeille
 DISTANCE_ABEILLE=70
