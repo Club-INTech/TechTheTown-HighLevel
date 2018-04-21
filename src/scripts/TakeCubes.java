@@ -70,11 +70,17 @@ public class TakeCubes extends AbstractScript {
     public void execute(int indiceTas, GameState state)
             throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
+        if(basicDetection){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        }
         if (indiceTas<6){
             this.normalVersions(indiceTas, state);
         }
         else{
             this.specialVersions(indiceTas, state);
+        }
+        if(basicDetection){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
         }
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
     }
@@ -572,9 +578,6 @@ public class TakeCubes extends AbstractScript {
     private boolean takeThisCube(GameState state, Cubes currentCube) throws InterruptedException, UnableToMoveException, UnexpectedObstacleOnPathException, ImmobileEnnemyForOneSecondAtLeast {
         //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
         boolean cubeSuccessfullyTaken=false;
-        if (basicDetection) {
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE, true);
-        }
         state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
         if (this.brasUtilise==BrasUtilise.AVANT){
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
@@ -621,9 +624,6 @@ public class TakeCubes extends AbstractScript {
                     this.correctionVectorTas = correctPosition(state, currentCube);
                 }
             }
-        }
-        if (basicDetection) {
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
         }
         return cubeSuccessfullyTaken;
     }

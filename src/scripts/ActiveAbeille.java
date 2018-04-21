@@ -58,9 +58,6 @@ public class ActiveAbeille extends AbstractScript {
         double prodScal = directionToGo.dot(new Vec2(100.0, actualState.robot.getOrientation()));
         if(versionToExecute==0) {
             //On vérifie quel bras de l'abeille on va devoir utiliser, à l'aide d'un produit scalaire
-            if(basicDetection){
-                actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
-            }
 
             if (prodScal > 0) {
                 //ON UTILISE LE BRAS AVANT
@@ -70,7 +67,9 @@ public class ActiveAbeille extends AbstractScript {
                 hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
                 //On va vers l'abeille
                 actualState.robot.goTo(new Vec2(xEntry, yEntry));
-
+                if(basicDetection){
+                    actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+                }
                 //On se tourne pour pousser l'abeille avec le bras avant
                 actualState.robot.turn(Math.PI / 2, true);
                 //On relève le bras avant
@@ -87,6 +86,9 @@ public class ActiveAbeille extends AbstractScript {
                 //On va vers l'abeille
                 actualState.robot.goTo(new Vec2(xEntry, yEntry));
                 //On se tourne our pousser l'abeille avec le bras arrière
+                if(basicDetection){
+                    actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+                }
                 actualState.robot.turn(-Math.PI / 2, true);
                 //On relève le bras arrière
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);

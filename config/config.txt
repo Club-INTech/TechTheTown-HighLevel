@@ -50,7 +50,7 @@ MATCHSCRIPT_TO_EXECUTE               = 0
 # temps_untested_obstacle            = 250
 # 200 homologation ; 150 match
 
-basic_detection                      = false
+basic_detection                      = true
 SENSOR_ANGLE_WIDENESS                = 1.04
 
 

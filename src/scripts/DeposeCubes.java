@@ -23,6 +23,7 @@ public class DeposeCubes extends AbstractScript {
     private int distancePenetrationZone; //on pénètre la zone de construction de cette distance
     private int dimensionporte;
     private int radius;
+    private boolean basicDetection;
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
@@ -41,6 +42,9 @@ public class DeposeCubes extends AbstractScript {
         //On se tourne vers la zone de construction
         log.debug("////////// Execution DeposeCubes version "+version+" //////////");
         Vec2 directionToGo=null;
+        if(basicDetection){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        }
         double prodScal=0;
         try {
             directionToGo = (this.entryPosition(version, state.robot.getPosition()).getCenter()).plusNewVector(new Vec2(0,-50)).minusNewVector(state.robot.getPosition());
@@ -208,6 +212,9 @@ public class DeposeCubes extends AbstractScript {
             state.setReussitesTourArrière(-1,i);
             state.setReussitesTourAvant(-1,i);
         }
+        if(basicDetection){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        }
 
         log.debug("////////// End DeposeCubes version "+version+" //////////");
     }
@@ -299,5 +306,6 @@ public class DeposeCubes extends AbstractScript {
         distancePenetrationZone = config.getInt(ConfigInfoRobot.DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES);
         dimensionporte = config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
         radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+        basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
     }
 }
