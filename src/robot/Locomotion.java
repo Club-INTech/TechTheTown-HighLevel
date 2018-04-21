@@ -612,6 +612,7 @@ public class Locomotion implements Service {
      * @param turnOnly vrai si on veut uniquement tourner (et pas avancer)
      */
     private void moveToPointEthernetOrder(double angle, double distance, boolean turnOnly) {
+        thEvent.setIsMoving(true);
         if (turnOnly) {
             ethWrapper.turn(angle, turningStrategy);
         } else {
