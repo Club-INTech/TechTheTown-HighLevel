@@ -174,6 +174,21 @@ public abstract class Node {
                     }
                 }
             }
+            try {
+                execute(null, gameState);
+            } catch (PointInObstacleException e1) {
+                e1.printStackTrace();
+            } catch (BadVersionException e1) {
+                e1.printStackTrace();
+            } catch (ExecuteException e1) {
+                e1.printStackTrace();
+            } catch (BlockedActuatorException e1) {
+                e1.printStackTrace();
+            } catch (UnableToMoveException e1) {
+                e1.printStackTrace();
+            } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+                immobileEnnemyForOneSecondAtLeast.printStackTrace();
+            }
         }
     }
 
