@@ -286,7 +286,7 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * On shutdown le ThreadEth
      */
-    public synchronized void shutdown(){
+    public void shutdown(){
         shutdown=true;
         try {
             fullDebug.flush();
@@ -324,7 +324,7 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Ferme la socket !
      */
-    private synchronized void closeSocket() {
+    private void closeSocket() {
         shutdown = true;
         try {
             socket.close();
