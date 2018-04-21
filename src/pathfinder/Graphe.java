@@ -282,8 +282,7 @@ public class Graphe implements Service {
         ArrayList<ObstacleProximity> tempMobileEnnemies = table.getObstacleManager().getMobileObstacles();
         this.mobileEnnemies.clear();
         for (ObstacleProximity obstacleProximity : tempMobileEnnemies){
-            log.debug("/////////////////////////////Ajout ObstacleProximity/////////////////////////////");
-            log.debug(obstacleProximity.getCircle().getCenter());
+            log.warning("Ajout d'un obstacle mobile en : "+obstacleProximity.getCircle().getCenter());
             this.mobileEnnemies.add(new ObstacleProximity(
                     new Circle(obstacleProximity.getCircle().getCenter(),obstacleProximity.getCircle().getRadius()),10000));
         }
