@@ -122,6 +122,8 @@ public enum ActuatorOrder implements MotionOrder
 	DEBUG("pfdebug"),
 	BASIC_DETECTION_ENABLE("bde"),
 	BASIC_DETECTION_DISABLE("bdd"),
+	EMERGENCY_STOP("emergencyStop"),
+	RESUME_AFTER_EMERGENCY_STOP("resumeEmergencyStop"),
 
 
 /*			 _______________________
