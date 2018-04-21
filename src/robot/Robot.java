@@ -20,14 +20,21 @@
 package robot;
 
 import container.Service;
-import enums.*;
+import enums.Speed;
+import enums.SymmetrizedTurningStrategy;
+import enums.SymmetrizedActuatorOrderMap;
+import enums.SymmetrizedSensorNamesMap;
+import enums.ActuatorOrder;
+import enums.DirectionStrategy;
+import enums.TurningStrategy;
+import enums.ConfigInfoRobot;
+import enums.ContactSensors;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import pathfinder.Pathfinding;
-import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Geometry;

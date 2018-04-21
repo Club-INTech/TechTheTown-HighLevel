@@ -20,7 +20,6 @@
 package tests;
 
 import enums.ActuatorOrder;
-import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
@@ -30,7 +29,6 @@ import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import org.junit.Before;
 import org.junit.Test;
-import robot.EthWrapper;
 import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
@@ -39,12 +37,9 @@ import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
-import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadSensor;
-import utils.Log;
 import utils.Sleep;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**

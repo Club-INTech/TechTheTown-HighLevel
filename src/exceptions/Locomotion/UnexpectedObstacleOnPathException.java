@@ -19,8 +19,6 @@
 
 package exceptions.Locomotion;
 
-import smartMath.Vec2;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 

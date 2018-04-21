@@ -21,11 +21,9 @@ package threads.dataHandlers;
 
 import enums.EventType;
 import pfg.config.Config;
-import strategie.GameState;
 import threads.AbstractThread;
 import utils.Log;
 
-import java.beans.EventHandler;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 

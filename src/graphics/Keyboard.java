@@ -22,14 +22,11 @@ package graphics;
 import enums.ActuatorOrder;
 import enums.TurningStrategy;
 import scripts.ScriptManager;
-import simulator.ThreadSimulator;
 import strategie.GameState;
-import tests.container.A;
 import threads.AbstractThread;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.lang.reflect.Array;
 
 /**
  * Gestionnaire des actions clavier pour l'interface graphique, ajoutez vos actions aux blocks correspondants

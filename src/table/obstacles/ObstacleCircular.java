@@ -19,7 +19,6 @@
 
 package table.obstacles;
 
-import pathfinder.Noeud;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Segment;

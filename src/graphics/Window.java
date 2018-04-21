@@ -21,19 +21,16 @@
 
 package graphics;
 
-import org.jfree.chart.axis.SegmentedTimeline;
 import pathfinder.Arete;
 import pathfinder.Noeud;
 import scripts.ScriptManager;
-import smartMath.Segment;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
-import tests.container.A;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.*;
+import javax.swing.JFrame;
+import java.awt.Color;
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**

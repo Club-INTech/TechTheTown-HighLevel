@@ -23,32 +23,46 @@ public enum Cubes{
     public static int[] findRelativeCoordsWithColor(Colors colorToSearch){
         for (Cubes position : Cubes.values()){
             if (colorToSearch==position.color){
-                int[] toReturn={position.xRelative, position.yRelative};
-                return toReturn;
+                return new int[]{position.xRelative, position.yRelative};
             }
         }
-        return null;
+        return new int[]{0,0};
     }
     public Colors getColor(){
         return this.color;
     }
 
     public int[] getRelativeCoords(){
-        int[] toReturn={this.xRelative, this.yRelative};
-        return toReturn;
+        return new int[]{this.xRelative, this.yRelative};
     }
 
-    public Vec2 getRelativeCoordsVec2(){
-        return new Vec2(this.xRelative, this.yRelative);
+    public Vec2 getRelativeCoordsVec2(int tasCubes){
+        if (tasCubes<3) {
+            return new Vec2(this.xRelative, this.yRelative);
+        }
+        else{
+            return new Vec2(-this.xRelative, this.yRelative);
+        }
     }
+
+    public Vec2 getRelativeCoordsVec2(TasCubes tasCubes){
+        if (tasCubes.getID()<3){
+            return new Vec2(this.xRelative, this.yRelative);
+        }
+        else{
+            return new Vec2(-this.xRelative, this.yRelative);
+        }
+    }
+
     public static Cubes getCubeFromColor(Colors colorToSearch){
         for (Cubes cube : Cubes.values()){
             if (colorToSearch==cube.color){
                 return cube;
             }
         }
-        return null;
+        return Cubes.YELLOW;
     }
+
     public static Cubes getCubeNotInPattern(int givenPatternID){
         Colors[] pattern=Patterns.getPatternFromID(givenPatternID);
         for (Colors color : Colors.values()){
@@ -59,10 +73,15 @@ public enum Cubes{
                 }
             }
             if (colorNotInPattern){
-                return getCubeFromColor(color);
+                if (color!=Colors.NULL) {
+                    return getCubeFromColor(color);
+                }
+                else{
+                    return Cubes.YELLOW;
+                }
             }
         }
-        return null;
+        return Cubes.YELLOW;
     }
 }
 

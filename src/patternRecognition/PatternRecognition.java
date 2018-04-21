@@ -9,7 +9,7 @@ import strategie.GameState;
 import threads.AbstractThread;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

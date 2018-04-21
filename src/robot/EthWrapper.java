@@ -20,7 +20,11 @@
 package robot;
 
 import container.Service;
-import enums.*;
+import enums.TurningStrategy;
+import enums.ContactSensors;
+import enums.ConfigInfoRobot;
+import enums.ActuatorOrder;
+import enums.Speed;
 import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Vec2;

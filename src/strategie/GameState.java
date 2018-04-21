@@ -316,6 +316,7 @@ public class GameState implements Service
         return this.reussitesTourAvant;
     }
     public void setReussitesTourAvant(int value, int positionIdealeDansLaTour){
+        log.debug("Reussites tour avant: "+value+" à la position "+positionIdealeDansLaTour);
         if (positionIdealeDansLaTour>=0 && positionIdealeDansLaTour<=3){
             this.reussitesTourAvant[positionIdealeDansLaTour] = value;
         }
@@ -325,6 +326,7 @@ public class GameState implements Service
         return this.reussitesTourArriere;
     }
     public void setReussitesTourArrière(int value, int positionIdealeDansLaTour){
+        log.debug("Reussites tour arrière: "+value+" à la position "+positionIdealeDansLaTour);
         if (positionIdealeDansLaTour>=0 && positionIdealeDansLaTour<=3){
             this.reussitesTourArriere[positionIdealeDansLaTour] = value;
         }

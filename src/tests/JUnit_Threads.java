@@ -22,7 +22,6 @@ package tests;
 import enums.ConfigInfoRobot;
 import org.junit.Assert;
 import org.junit.Test;
-import pfg.config.ConfigInfo;
 import robot.Robot;
 import smartMath.Vec2;
 import table.Table;

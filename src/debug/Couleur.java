@@ -19,7 +19,7 @@
 
 package debug;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Définition de quelques couleurs
