@@ -457,7 +457,7 @@ public class ThreadEth extends AbstractThread implements Service {
         Thread.currentThread().setPriority(10);
         createInterface();
         log.debug("ThreadEth started");
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
 
         while (!shutdown) {
             try {
