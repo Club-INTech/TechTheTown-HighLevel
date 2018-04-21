@@ -204,8 +204,8 @@ public class SensorPanel extends JPanel
 	    	for(int i = 0; i < values4.size() - 1; i++)
 	    		g.drawLine((int)(times.get(i)*aT + bT), (int)(values4.get(i)*a + b), (int)(times.get(i+1)*aT + bT), (int)(values4.get(i+1)*a + b));
 	    }
-	    
-	    
+
+
 	}
 	
 	public void drawInteger(Integer value1, Integer value2, Integer value3, Integer value4)

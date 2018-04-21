@@ -453,7 +453,7 @@ public class ThreadEth extends AbstractThread implements Service {
 
     @Override
     public void run() {
-        String buffer;
+        String buffer="";
         Thread.currentThread().setPriority(10);
         createInterface();
         log.debug("ThreadEth started");
@@ -462,71 +462,83 @@ public class ThreadEth extends AbstractThread implements Service {
         while (!shutdown) {
             try {
                 buffer = input.readLine();
-
+            } catch (IOException e) {
+                log.critical("IOException à la lecture du buffer input");
+                buffer="";
+                e.printStackTrace();
+            }
+            try {
                 fullDebug.write(buffer);
                 fullDebug.newLine();
                 fullDebug.flush();
-                if (buffer.length() >= 2 && !(buffer.replaceAll(" ", "").equals(""))) {
-                    char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
-                    String infosFromBuffer=buffer.substring(2);
-                    if (CommunicationHeaders.EVENT.getFirstHeader() == headers[0] && CommunicationHeaders.EVENT.getSecondHeader() == headers[1]) {
-                        eventBuffer.add(infosFromBuffer);
+            } catch (IOException e) {
+                log.critical("IOException pour le fullDebug");
+                e.printStackTrace();
+            }
+            if (buffer.length() >= 2 && !(buffer.replaceAll(" ", "").equals(""))) {
+                char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
+                String infosFromBuffer=buffer.substring(2);
+                if (CommunicationHeaders.EVENT.getFirstHeader() == headers[0] && CommunicationHeaders.EVENT.getSecondHeader() == headers[1]) {
+                    eventBuffer.add(infosFromBuffer);
+                    try {
                         outEvent.write(infosFromBuffer);
                         outEvent.newLine();
                         outEvent.flush();
+                    } catch (IOException e) {
+                        log.critical("IOException pour le debugEvent");
+                        e.printStackTrace();
                     }
-                    else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
-                        ultrasoundBuffer.add(infosFromBuffer);
+                }
+                else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
+                    ultrasoundBuffer.add(infosFromBuffer);
+                    try {
                         outSensor.write(infosFromBuffer);
                         outSensor.newLine();
                         outSensor.flush();
+                    } catch (IOException e) {
+                        log.critical("IOException pour les sensors");
+                        e.printStackTrace();
                     }
-                    else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
-                        synchronized (this.positionAndOrientation) {
-                            positionAndOrientation.update(infosFromBuffer,splitString);
-                            if(symmetry){
-                                positionAndOrientation.getPosition().setX(-positionAndOrientation.getPosition().getX());
-                                positionAndOrientation.setOrientation(Math.PI-positionAndOrientation.getOrientation());
-                            }
+                }
+                else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
+                    synchronized (this.positionAndOrientation) {
+                        positionAndOrientation.update(infosFromBuffer,splitString);
+                        if(symmetry){
+                            positionAndOrientation.getPosition().setX(-positionAndOrientation.getPosition().getX());
+                            positionAndOrientation.setOrientation(Math.PI-positionAndOrientation.getOrientation());
+                        }
+                        try {
                             outPosition.write(infosFromBuffer);
                             outPosition.newLine();
                             outPosition.flush();
+                        }catch (IOException e) {
+                            log.critical("IOException pour le debugPosition");
+                            e.printStackTrace();
                         }
                     }
-                    else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
-                        comFlag = false;
-                        outDebug.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis()-timeRef));
+                }
+                else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
+                    comFlag = false;
+                    try {
+                        outDebug.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis() - timeRef));
                         outDebug.newLine();
                         outDebug.flush();
                     }
-                    else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]){
-                        standardBuffer.add(infosFromBuffer);
+                    catch (IOException e) {
+                        log.critical("IOException pour le debugLL");
+                        e.printStackTrace();
                     }
-                    else{
-                        log.critical("///////// MESSAGE SANS HEADER ///////////");
-                        log.critical(infosFromBuffer);
-                        log.critical("/////// FIN MESSAGE SANS HEADER /////////");
-                    }
-                } else if (!(buffer.replaceAll(" ", "").equals(""))) {
-                    standardBuffer.add(buffer);
                 }
-
-            } catch (SocketException se) {
-                log.critical("LL ne répond pas, on ferme la socket et on en recrée une...");
-                try {
-                    if (socket != null) {
-                        socket.close();
-                        Thread.sleep(500);
-                        createInterface();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]){
+                    standardBuffer.add(infosFromBuffer);
                 }
-                se.printStackTrace();
-            } catch (IOException ioe) {
-                log.debug("LL ne répond pas, on shutdown");
-                shutdown = true;
-                ioe.printStackTrace();
+                else{
+                    log.critical("///////// MESSAGE AVEC MAUVAIS HEADER ///////////");
+                    log.critical(infosFromBuffer);
+                    log.critical("/////// FIN MESSAGE AVEC MAUVAIS HEADER /////////");
+                }
+            } else if (!(buffer.replaceAll(" ", "").equals(""))) {
+                standardBuffer.add(buffer);
             }
         }
     }
