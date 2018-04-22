@@ -490,6 +490,12 @@ public class ThreadEth extends AbstractThread implements Service {
             } catch (IOException e) {
                 log.debug("On n'arrive pas à écrire dans le fichier de debug orders");
                 e.printStackTrace();
+            }try {
+                fullDebug.write(mess);
+                fullDebug.newLine();
+            } catch (IOException e) {
+                log.debug("On n'arrive pas à écrire dans le fichier fullDebug");
+                e.printStackTrace();
             }
         }
 
@@ -646,6 +652,9 @@ public class ThreadEth extends AbstractThread implements Service {
                     log.critical("/////// FIN MESSAGE AVEC MAUVAIS HEADER /////////");
                 }
             } else if (!(buffer.replaceAll(" ", "").equals(""))) {
+                log.critical("/////////// MESSAGE SANS HEADER ///////////");
+                log.critical(buffer);
+                log.critical("///////// FIN MESSAGE SANS HEADER /////////");
                 standardBuffer.add(buffer);
             }
         }
