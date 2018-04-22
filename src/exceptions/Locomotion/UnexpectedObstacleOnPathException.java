@@ -17,36 +17,41 @@
  *  along with it.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package debug;
+package exceptions.Locomotion;
 
-import java.awt.Color;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
- * Définition de quelques couleurs
+ * Exception levée en cas de détection d'un ennemi proche (par les capteurs, ultrason, infrarouge, etc.)
  * @author pf
  *
  */
-public enum Couleur
+public class UnexpectedObstacleOnPathException extends Exception
 {
 
-	BLANC(255, 255, 255),
-	NOIR(0, 0, 0),
-	BLEU(0, 0, 200),
-	JAUNE(200, 200, 0),
-	ROUGE(200, 0, 0),
-	VERT(0, 200, 0),
-	VIOLET(200, 0, 200);
+	private static final long serialVersionUID = -3791360446545658528L;
+
+	public UnexpectedObstacleOnPathException()
+	{ 	super();
+
+	}
 	
-	private static final int alpha = 150;
-	public final Color couleur;
-	
-	Couleur(int r, int g, int b, int a)
+	public UnexpectedObstacleOnPathException(String m)
 	{
-		this.couleur = new Color(r,g,b,a);
+		super(m);
 	}
 
-	Couleur(int r, int g, int b)
+	
+	public String logStack()
 	{
-		this.couleur = new Color(r,g,b,alpha);
+		StringWriter sw = new StringWriter();
+		this.printStackTrace(new PrintWriter(sw));
+		
+		String exceptionAsString = sw.toString();	
+		exceptionAsString = exceptionAsString.replaceAll("(\r\n|\n\r|\r|\n)", " -> ");
+		
+		return exceptionAsString;
 	}
+
 }

@@ -1,16 +1,15 @@
 package tests;
 
-import enums.*;
+import enums.ScriptNames;
+import enums.TasCubes;
 import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 import pathfinder.Pathfinding;
 import robot.Robot;
-import scripts.*;
+import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
-import table.Table;
-
 import java.util.ArrayList;
 
 public class JUnit_TakeCubes extends JUnit_Test {

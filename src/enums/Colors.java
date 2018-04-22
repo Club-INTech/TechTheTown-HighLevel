@@ -1,7 +1,5 @@
 package enums;
 
-import java.util.Objects;
-
 //Enum de couleurs des cubes (id, nom et RGB pour chaque couleur) et donc des patterns
 public enum Colors {
 
@@ -12,7 +10,6 @@ public enum Colors {
     BLACK(3,"black", new int[]{14,14,16}),
     GREEN(4,"green", new int[]{97,153,59});*/
 
-    //Couleurs calibrées par rapport à une photo 1.2*brightness 1*saturation au local Intech
     ORANGE(0,"orange", new int[3]),
     YELLOW(1,"yellow", new int[3]),
     BLUE(2,"blue", new int[3]),
@@ -49,7 +46,7 @@ public enum Colors {
     public static int[] getRGBFromName(String givenName){
         int[] RGB = {};
         for (Colors color : Colors.values()){
-            if (Objects.equals(givenName, color.name)){
+            if (givenName.equals(color.name)){
                 RGB=color.RGB;
                 break;
             }
@@ -60,7 +57,7 @@ public enum Colors {
     public static Colors getColorFromName(String givenName){
         Colors colorFound=Colors.NULL;
         for (Colors color : Colors.values()){
-            if (Objects.equals(givenName, color.name)){
+            if (givenName.equals(color.name)){
                 colorFound=color;
                 break;
             }
@@ -72,7 +69,7 @@ public enum Colors {
     public static int[] getRGBFromID(int id){
         int[] RGB = {};
         for (Colors color : Colors.values()){
-            if (Objects.equals(id, color.id)){
+            if (id==color.id){
                 RGB=color.RGB;
                 break;
             }
@@ -83,7 +80,7 @@ public enum Colors {
     public static String getNameFromID(int id){
         String name="";
         for (Colors color : Colors.values()){
-            if (Objects.equals(id, color.id)){
+            if (id==color.id){
                 name=color.name;
                 break;
             }

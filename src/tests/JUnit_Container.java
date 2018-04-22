@@ -22,7 +22,6 @@ package tests;
 import exceptions.ContainerException;
 import org.junit.Assert;
 import org.junit.Test;
-import pfg.config.Config;
 import strategie.GameState;
 import table.Table;
 import tests.container.A;

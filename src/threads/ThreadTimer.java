@@ -57,7 +57,7 @@ public class ThreadTimer extends AbstractThread
 	public static boolean matchEnded = false;
 
 	/** Date de début du match. */
-	public static long matchStartTimestamp;
+	public static long matchStartTimestamp = 0;
 
 	/** Durée en miliseconde d'un match recupéré de la config */
 	public static long matchDuration = 90000;
@@ -238,6 +238,15 @@ public class ThreadTimer extends AbstractThread
 		return matchStartTimestamp + matchDuration - System.currentTimeMillis();
 	}
 
+
+	public static long getMatchCurrentTime() {
+		if (matchStartTimestamp!=0) {
+			return System.currentTimeMillis() - matchStartTimestamp;
+		}
+		else{
+			return 0;
+		}
+	}
 
 	/**
 	 * Temps écoulé depuis le début du match

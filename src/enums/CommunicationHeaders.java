@@ -10,6 +10,7 @@ public enum CommunicationHeaders {
     DEBUG((char) 0x02, (char) 0x20),
     POSITION((char) 0x07, (char) 0x05),
     STANDARD((char) 0x40, (char) 0x40),
+    ACKNOWLEDGEMENT((char) 0x06,(char) 0x1A),
     ;
 
     /** Le seul contenu de cette enum... */

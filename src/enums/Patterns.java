@@ -1,7 +1,5 @@
 package enums;
 
-import java.util.Objects;
-
 //Enum de tous les patterns possibles
 public enum Patterns {
 
@@ -52,7 +50,7 @@ public enum Patterns {
     public static Colors[] getPatternFromID(int givenID){
         Colors[] pattern = {};
         for (Patterns iteratingPattern : Patterns.values()){
-            if (Objects.equals(givenID, iteratingPattern.id)){
+            if (givenID==iteratingPattern.id){
                 pattern=iteratingPattern.pattern;
                 break;
             }

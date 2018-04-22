@@ -20,7 +20,11 @@
 package robot;
 
 import container.Service;
-import enums.*;
+import enums.TurningStrategy;
+import enums.DirectionStrategy;
+import enums.Speed;
+import enums.UnableToMoveReason;
+import enums.ConfigInfoRobot;
 import exceptions.Locomotion.BlockedException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
@@ -579,6 +583,7 @@ public class Locomotion implements Service {
      * @param turnOnly vrai si on veut uniquement tourner (et pas avancer)
      */
     private void moveToPointSymmetry(Vec2 aim, boolean turnOnly) {
+        thEvent.setIsMoving(true);
         updateCurrentPositionAndOrientation();
 
         Vec2 positionSymetrized = highLevelPosition.clone();
