@@ -239,6 +239,10 @@ public class ThreadTimer extends AbstractThread
 	}
 
 
+	public static long getMatchCurrentTime() {
+		return System.currentTimeMillis()-matchStartTimestamp;
+	}
+
 	/**
 	 * Temps écoulé depuis le début du match
 	 * @return le temps écoulé du match en milisecondes

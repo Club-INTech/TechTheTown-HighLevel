@@ -26,6 +26,7 @@ import pfg.config.Config;
 import smartMath.XYO;
 import table.Table;
 import threads.AbstractThread;
+import threads.ThreadTimer;
 import utils.Log;
 
 import java.io.BufferedReader;
@@ -616,7 +617,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 else if (CommunicationHeaders.ACKNOWLEDGEMENT.getFirstHeader() == headers[0] && CommunicationHeaders.ACKNOWLEDGEMENT.getSecondHeader() == headers[1]){
                     comFlag=false;
                     try {
-                        outAcknowledge.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis() - timeRef));
+                        outAcknowledge.write(infosFromBuffer + String.format(" [TimeToTravel : %d ms]", System.currentTimeMillis() - timeRef));
                         outAcknowledge.newLine();
                         outAcknowledge.flush();
                     }
@@ -627,7 +628,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 }
                 else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
                     try {
-                        outDebug.write(infosFromBuffer + String.format(" [Time : %d ms]", System.currentTimeMillis() - timeRef));
+                        outDebug.write(infosFromBuffer + String.format(" [TimeInMatch : %d ms]", ThreadTimer.getMatchCurrentTime()));
                         outDebug.newLine();
                         outDebug.flush();
                     }
