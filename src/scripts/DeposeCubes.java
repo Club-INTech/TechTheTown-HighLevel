@@ -48,6 +48,9 @@ public class DeposeCubes extends AbstractScript {
             state.setCapteursActivés(false);
         }
         Vec2 directionToGo=null;
+        if(basicDetect){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        }
         double prodScal=0;
         try {
             directionToGo = (this.entryPosition(version, state.robot.getPosition()).getCenter()).plusNewVector(new Vec2(0,-50)).minusNewVector(state.robot.getPosition());

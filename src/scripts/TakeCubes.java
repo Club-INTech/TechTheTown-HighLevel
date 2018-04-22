@@ -85,6 +85,7 @@ public class TakeCubes extends AbstractScript {
         }
         if(basicDetection){
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+
         } else {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
             state.setCapteursActivés(true);
@@ -650,6 +651,13 @@ public class TakeCubes extends AbstractScript {
                     this.correctionVectorTas = correctPosition(state, currentCube);
                 }
             }
+        }
+
+        if (basicDetection) {
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
+        } else {
+            state.robot.useActuator(ActuatorOrder.SUS_ON,true);
+            state.setCapteursActivés(true);
         }
 
         return cubeSuccessfullyTaken;

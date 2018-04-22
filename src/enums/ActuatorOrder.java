@@ -87,6 +87,8 @@ public enum ActuatorOrder implements MotionOrder
 	NO_ASSERV_SPEED("cv0"),
 	ASSERV_SPEED("cv1"),
 	DEBUG("pfdebug"),
+	EMERGENCY_STOP("emergencyStop"),
+	RESUME_AFTER_EMERGENCY_STOP("resumeEmergencyStop"),
 
 
 /*			 _______________________

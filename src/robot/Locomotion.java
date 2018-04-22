@@ -20,11 +20,7 @@
 package robot;
 
 import container.Service;
-import enums.TurningStrategy;
-import enums.DirectionStrategy;
-import enums.Speed;
-import enums.UnableToMoveReason;
-import enums.ConfigInfoRobot;
+import enums.*;
 import exceptions.Locomotion.BlockedException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
@@ -521,7 +517,7 @@ public class Locomotion implements Service {
                     boolean obstacleDetected=basicDetect();
                     boolean wasImmobilised=false;
                     if (obstacleDetected){
-                        immobilise();
+                        immobiliseEmergency();
                         wasImmobilised=true;
                     }
                     while (obstacleDetected){
@@ -617,6 +613,7 @@ public class Locomotion implements Service {
      * @param turnOnly vrai si on veut uniquement tourner (et pas avancer)
      */
     private void moveToPointEthernetOrder(double angle, double distance, boolean turnOnly) {
+        thEvent.setIsMoving(true);
         if (turnOnly) {
             ethWrapper.turn(angle, turningStrategy);
         } else {
@@ -746,9 +743,29 @@ public class Locomotion implements Service {
         log.warning("Arrêt du robot en " + lowLevelPosition);
         ethWrapper.immobilise();
         thEvent.setIsMoving(false);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         log.debug("isMoving variable has been defined to FALSE in Locomotion");
     }
 
+    /**
+     * Immobilise le robot en urgence
+     */
+    public void immobiliseEmergency() {
+        log.warning("Arrêt du robot en " + lowLevelPosition);
+        ethWrapper.immobiliseEmergency();
+        thEvent.setIsMoving(false);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ethWrapper.useActuator(ActuatorOrder.RESUME_AFTER_EMERGENCY_STOP);
+        log.debug("isMoving variable has been defined to FALSE in Locomotion");
+    }
 
     /********************
      * GUETTER & SETTER *
