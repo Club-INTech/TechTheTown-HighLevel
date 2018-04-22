@@ -7,7 +7,6 @@ import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -25,6 +24,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
     /** Eléments appelés par la config */
 
     private int distanceInterrupteur;
+    private boolean basicDetection;
 
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -38,15 +38,25 @@ public class ActivationPanneauDomotique extends AbstractScript{
     }
 
     @Override
-    public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+    public void execute(int versionToExecute, GameState state) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution ActivePanneauDomotique version "+versionToExecute+" //////////");
-        actualState.robot.turn(-Math.PI/2);
-        actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-        actualState.robot.moveLengthwise(distanceInterrupteur);
-        actualState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-        actualState.robot.goTo(new Vec2(xEntry,yEntry));
-        actualState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-        actualState.addObtainedPoints(25);
+        state.robot.turn(-Math.PI/2);
+        state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+        if(!(state.isCapteursActivés())){
+            state.robot.moveLengthwiseWithoutDetection(distanceInterrupteur,false);
+        }
+        else{
+            state.robot.moveLengthwise(distanceInterrupteur);
+        }
+        state.addObtainedPoints(25);
+        if(!(state.isCapteursActivés())){
+            state.robot.goToWithoutDetection(new Vec2(xEntry,yEntry));
+        }
+        else {
+            state.robot.goTo(new Vec2(xEntry, yEntry));
+        }
+        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+        state.setPanneauActive(true);
         log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");
     }
 
@@ -67,6 +77,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
     @Override
     public void updateConfig() {
         super.updateConfig();
-        distanceInterrupteur = config.getInt(ConfigInfoRobot.DISTANCE_INTERRUPTEUR);
+        this.distanceInterrupteur = config.getInt(ConfigInfoRobot.DISTANCE_INTERRUPTEUR);
+        this.basicDetection = config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
     }
 }

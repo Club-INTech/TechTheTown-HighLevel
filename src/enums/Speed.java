@@ -39,6 +39,7 @@ public enum Speed implements MotionOrder
 	SLOW_ALL(300, 1D),
 
 	/** Vitesse standard de déplacement et rotation */
+
 	MEDIUM_ALL(500,2D),
 
 	/** Vitesse rapide en translation et rotation */
@@ -54,6 +55,7 @@ public enum Speed implements MotionOrder
 
 
     /** Vitesse des moteurs lors d'une translation, ce sont ces valeurs qui seront envoyées à la STM */
+
     public int translationSpeed;
 
     /** Vitesse des moteurs lors d'une rotation, ce sont ces valeurs qui seront envoyées à la STM */

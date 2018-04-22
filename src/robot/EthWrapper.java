@@ -450,7 +450,7 @@ public class EthWrapper implements Service {
      * Coupe la connexion ethernet
      */
     public void close(){
-        eth.close();
+        eth.shutdown();
     }
 
     @Override

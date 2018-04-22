@@ -19,7 +19,7 @@ INDICE_PATTERN_SIMULATION            = 0
 
 
 # ETAT INITIAL DES ROBOTS
-COULEUR                              = orange
+COULEUR                              = vert
 SIMULATION                           = false
 ATTENTE_JUMPER                       = true
 
@@ -128,11 +128,15 @@ brightnessModifierLightingUp=1.5
 
 ###################### PARAMETRES SCRIPT #######################
 
+<<<<<<< HEAD
 #ActivationPanneauDomitique
+=======
+#ActivationPanneauDomotique
+>>>>>>> CommunicationProof
 DISTANCE_INTERRUPTEUR=68
 
 #ActiveAbeille
-DISTANCE_ABEILLE=70
+DISTANCE_ABEILLE=100
 
 #TakeCubes
 

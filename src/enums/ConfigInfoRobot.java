@@ -62,6 +62,10 @@ public enum ConfigInfoRobot implements ConfigInfo
     ROBOT_RADIUS(212),
     ENNEMY_RADIUS(400),
 
+    /** Vitesses du robot */
+    ROBOT_LINEAR_SPEED(840),        // mm/s
+    ROBOT_ANGULAR_SPEED(Math.PI),   // rad/s
+
     /**Les cubes*/
     LONGUEUR_CUBE(58),
 
@@ -73,7 +77,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     DIMENSION_PORTES(87),
 
     /** Paramètres obstacles */
-    PEREMP_OBST(5000),
+    PEREMP_OBST(1000),
 
     /** Paramètres capteurs */
 
@@ -89,9 +93,9 @@ public enum ConfigInfoRobot implements ConfigInfo
     // TODO à compléter
 
     /** Paramètres Locomotion */
-    BASIC_DETECTION_DISTANCE(100),
-    DETECTION_DISTANCE(200),
-    DETECTION_RAY(250),
+    BASIC_DETECTION_DISTANCE(200),
+    DETECTION_DISTANCE(300),
+    DETECTION_RAY(30),
     FEEDBACK_LOOPDELAY(50),
     BASIC_DETECTION(false),
     ENNEMY_LOOPDELAY(500),

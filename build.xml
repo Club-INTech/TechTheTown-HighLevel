@@ -100,4 +100,14 @@
     </jar>
   </target>
 
+  <target name="ia" depends="all">
+    <delete file="Atechthetown-highlevel.jar"/>
+    <jar destfile="Atechthetown-highlevel.jar" basedir="${techthetown-highlevel.output.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="MainIA"/>
+      </manifest>
+      <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
+    </jar>
+  </target>
+
 </project>

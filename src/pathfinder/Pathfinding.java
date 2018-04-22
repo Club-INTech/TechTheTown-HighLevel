@@ -37,6 +37,10 @@ public class Pathfinding implements Service {
     private boolean tasBaseEnnemiRemoved;
     private boolean tasChateauEnnemiRemoved;
     private boolean tasStationEpurationEnnemiRemoved;
+
+    private int robot_linear_speed;
+    private double robot_angular_speed;
+
     /** Coût fixe ajouté à chaque noeud*/
     private int coutFixe;
 
@@ -72,47 +76,51 @@ public class Pathfinding implements Service {
      * Retire un tas de cubes du graphes, si le robot les a récupérés.
      */
     public void removeObstacle() {
+        boolean grapheHasToBeRecreated=false;
         if (!this.tasBaseRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_BASE.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasBaseRemoved =true;
             }
         }
         if (!this.tasChateauRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_CHATEAU_EAU.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasChateauRemoved =true;
             }
         }
         if (!this.tasStationEpurationRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_STATION_EPURATION.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasStationEpurationRemoved =true;
             }
         }
         if (!this.tasBaseEnnemiRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_BASE_ENNEMI.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasBaseEnnemiRemoved =true;
             }
         }
         if (!this.tasChateauEnnemiRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_CHATEAU_EAU_ENNEMI.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasChateauEnnemiRemoved =true;
             }
         }
         if (!this.tasStationEpurationEnnemiRemoved) {
             if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)) {
                 obstacleManager.removeObstacle(circularObstacles.get(TAS_STATION_EPURATION_ENNEMI.getID()));
-                graphe.removeObstacle();
+                grapheHasToBeRecreated=true;
                 this.tasStationEpurationEnnemiRemoved =true;
             }
+        }
+        if (grapheHasToBeRecreated){
+            graphe.createGraphe();
         }
     }
 
@@ -127,6 +135,7 @@ public class Pathfinding implements Service {
     public ArrayList<Vec2> findmyway(Vec2 positionDepart, Vec2 positionArrive) throws PointInObstacleException, UnableToMoveException, NoPathFound {
 
         removeObstacle();
+        this.graphe.createGraphe();
         long time1 = System.currentTimeMillis();
 
         /** Déclaration des variables */
@@ -134,6 +143,7 @@ public class Pathfinding implements Service {
         Noeud noeudDepart = new Noeud(positionDepart, 0, 0, new ArrayList<>());
         Noeud noeudArrive = new Noeud(positionArrive, 0, 0, new ArrayList<>());
         Noeud noeudCourant;
+        this.graphe.reInitGraphe(noeudDepart, noeudArrive);
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
         ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
         ArrayList<Noeud> finalList = new ArrayList<>();
@@ -155,7 +165,7 @@ public class Pathfinding implements Service {
                 finalPath.add(positionArrive);
                 long time2 = System.currentTimeMillis() - time1;
                 log.debug("Time to execute (ms): " + time2);
-                this.getGraphe().reInitGraphe(noeudDepart, noeudArrive);
+                this.graphe.reInitGraphe(noeudDepart, noeudArrive);
                 return finalPath;
             }
 
@@ -209,9 +219,21 @@ public class Pathfinding implements Service {
         long time2 = System.currentTimeMillis() - time1;
         log.debug("Time to execute (ms): " + time2);
 
-        this.getGraphe().reInitGraphe(noeudDepart, noeudArrive);
 
         return finalPath;
+    }
+
+    /** Permet de calculer le temps pour se rendre à une position. */
+
+    public double howManyTime(Vec2 positionDepart, Vec2 positionArrive) throws UnableToMoveException, PointInObstacleException, NoPathFound {
+
+        ArrayList<Vec2> path = findmyway(positionDepart,positionArrive);
+        double time = 0;
+        for(int i = 0; i < path.size() - 1; i++){
+            time += robot_angular_speed*path.get(i).minusNewVector(path.get(i+1)).angle();
+            time += robot_linear_speed*path.get(i).minusNewVector(path.get(i+1)).length();
+        }
+        return time;
     }
 
     public Graphe getGraphe() {
@@ -220,6 +242,8 @@ public class Pathfinding implements Service {
 
     @Override
     public void updateConfig() {
-        coutFixe = this.config.getInt(ConfigInfoRobot.COUT_FIXE);
+       this.coutFixe = config.getInt(ConfigInfoRobot.COUT_FIXE);
+       this.robot_linear_speed = config.getInt(ConfigInfoRobot.ROBOT_LINEAR_SPEED);
+       this.robot_angular_speed = config.getDouble(ConfigInfoRobot.ROBOT_ANGULAR_SPEED);
     }
 }

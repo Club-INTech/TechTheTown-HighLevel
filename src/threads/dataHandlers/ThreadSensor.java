@@ -20,6 +20,7 @@
 package threads.dataHandlers;
 
 import enums.ConfigInfoRobot;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import pfg.config.Config;
 import robot.EthWrapper;
 import sensor.Sensor;
@@ -51,8 +52,8 @@ public class ThreadSensor extends AbstractThread
     /** La table */
     private Table mTable;
 
-	/** La stm avec laquelle on doit communiquer */
-	private EthWrapper ethWrapper;
+    /** La stm avec laquelle on doit communiquer */
+    private EthWrapper ethWrapper;
 
     /** Buffer de valeurs */
     private ConcurrentLinkedQueue<String> valuesReceived;
@@ -67,6 +68,9 @@ public class ThreadSensor extends AbstractThread
      * INFOS DES SENSORS *
      *********************/
 
+    /** Rayon de notre robot */
+    private int ourRadius;
+
     /** Rayon du robot adverse */
     private int enRadius;
 
@@ -74,34 +78,37 @@ public class ThreadSensor extends AbstractThread
     private XYO robotPosAndOr;
 
     /** Distance maximale fiable pour les capteurs : au dela, valeurs abberentes
-	 * Override par la config */
-	private int maxSensorRange;
+     * Override par la config */
+    private int maxSensorRange;
 
-	/** Distance minimale à laquelle on peut se fier aux capteurs : ne pas detecter notre propre root par exemple
+    /** Distance minimale à laquelle on peut se fier aux capteurs : ne pas detecter notre propre root par exemple
      * Override par la config */
     private int minSensorRange;
 
     /** Incertitude sur la mesure*/
     private double uncertainty;
 
-	/**
-	 *  Angle de visibilité qu'a le capteur 
-	 * Override par la config
-	 * 
-	 * Calcul de l'angle :
-	 * 
-	 *   |angle/ \angle|		 
-	 * 	 |	  /	  \    |		 
-	 * 	 |	 /	   \   |		
-	 * 	 |	/	    \  |		
-	 * 	 |o/         \o|		
-	 * 		  Robot			o : capteur
-	 * 
-	 */
-	private double detectionAngle;          //largeur de l'angle de détection
-	private double sensorOrientationF;      //orientation des capteurs avant, par rapport à la ligne de visée avant du robot
-	private double sensorOrientationB;      //orientation des capteurs arrière, par rapport à la ligne de visée AVANT du robot
-	private int lifetimeForUntestedObstacle = 200;  //temps de vie pour un obstable non testé
+    /** Magic number pour quand on détecte avec 2 capteurs */
+    private double magicNumber;
+
+    /**
+     *  Angle de visibilité qu'a le capteur
+     * Override par la config
+     *
+     * Calcul de l'angle :
+     *
+     *   |angle/ \angle|
+     * 	 |	  /	  \    |
+     * 	 |	 /	   \   |
+     * 	 |	/	    \  |
+     * 	 |o/         \o|
+     * 		  Robot			o : capteur
+     *
+     */
+    private double detectionAngle;          //largeur de l'angle de détection
+    private double sensorOrientationF;      //orientation des capteurs avant, par rapport à la ligne de visée avant du robot
+    private double sensorOrientationB;      //orientation des capteurs arrière, par rapport à la ligne de visée AVANT du robot
+    private int lifetimeForUntestedObstacle = 200;  //temps de vie pour un obstable non testé
 
 
     /*****************
@@ -143,83 +150,84 @@ public class ThreadSensor extends AbstractThread
     }
 
     /**
-	 * Crée un nouveau thread de capteurs
-	 * @param table La table a l'intérieure de laquelle le thread doit croire évoluer
-	 */
-	public ThreadSensor (Config config, Log log, Table table, EthWrapper ethWrapper, ThreadEth eth, GameState gameState)
-	{
-		super(config, log);
-		this.updateConfig();
+     * Crée un nouveau thread de capteurs
+     * @param table La table a l'intérieure de laquelle le thread doit croire évoluer
+     */
+    public ThreadSensor (Config config, Log log, Table table, EthWrapper ethWrapper, ThreadEth eth, GameState gameState)
+    {
+        super(config, log);
+        this.updateConfig();
         Thread.currentThread().setPriority(6);
         this.valuesReceived = eth.getUltrasoundBuffer();
         this.mTable = table;
         this.ethWrapper = ethWrapper;
         this.gameState = gameState;
-		this.sensorFL=new Sensor(0,-127,100,this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
-		this.sensorFR=new Sensor(1,127,100,-this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
-		this.sensorBL=new Sensor(2,-127,-100,this.sensorOrientationB-Math.PI,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
-		this.sensorBR=new Sensor(3,127,-100,-this.sensorOrientationB+Math.PI,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
+        this.sensorFL=new Sensor(0,100,-127,this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
+        this.sensorFR=new Sensor(1,100,127,-this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
+        this.sensorBL=new Sensor(2,-100,-127,this.sensorOrientationB-Math.PI,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
+        this.sensorBR=new Sensor(3,-100,127,-this.sensorOrientationB+Math.PI,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
         this.sensorsArray.add(0,sensorFL);
         this.sensorsArray.add(1,sensorFR);
         this.sensorsArray.add(2,sensorBL);
         this.sensorsArray.add(3,sensorBR);
+        this.magicNumber=0.285;
         nbSensors = sensorsArray.size();
-	}
+    }
 
 
     /** Ajoute les obstacles a l'obstacleManager */
     private void addObstacle() {
 
-            /**Schéma du robot :
-             *
-             *           Front
-             *
-             *   \     /      \     /
-             *    \   /        \   /
-             *     \ /          \ /
-             *      0------------1
-             *      |            |
-             *      |    Robot   |
-             *      |    poney   |
-             *      |            |
-             *      |            |
-             *      |            |
-             *      2------------3
-             *     / \          / \
-             *    /   \        /   \
-             *   /     \      /     \
-             *
-             *           Back
-             */
+        /**Schéma du robot :
+         *
+         *           Front
+         *
+         *   \     /      \     /
+         *    \   /        \   /
+         *     \ /          \ /
+         *      0------------1
+         *      |            |                  x
+         *      |    Robot   |                  /\
+         *      |    poney   |                  |
+         *      |            |                  |
+         *      |            |                  O----> y
+         *      |            |
+         *      2------------3
+         *     / \          / \
+         *    /   \        /   \
+         *   /     \      /     \
+         *
+         *           Back
+         */
 
-            if (sensorFL.getDetectedDistance() != 0){
-                if (sensorFR.getDetectedDistance() != 0) {
-                    //System.out.println("Detection:Sensor0And1 ");
-                    addFrontObstacleBoth();
-                }
-                else {
-                    //System.out.println("Detection:Sensor0 ");
-                    addFrontObstacleSingle(true);
-                }
+        if (sensorFL.getDetectedDistance() != 0){
+            if (sensorFR.getDetectedDistance() != 0) {
+                //System.out.println("Detection:Sensor0And1 ");
+                addFrontObstacleBoth();
             }
-            else if (sensorFR.getDetectedDistance() != 0){
-                //System.out.println("Detection:Sensor1 ");
-                addFrontObstacleSingle(false);
+            else {
+                //System.out.println("Detection:Sensor0 ");
+                addFrontObstacleSingle(true);
             }
-            if (sensorBL.getDetectedDistance() != 0){
-                if (sensorBR.getDetectedDistance() != 0){
-                    //System.out.println("Detection:Sensor2And3 ");
-                    addBackObstacleBoth();
-                }
-                else{
-                    //System.out.println("Detection:Sensor2 ");
-                    addBackObstacleSingle(true);
-                }
+        }
+        else if (sensorFR.getDetectedDistance() != 0){
+            //System.out.println("Detection:Sensor1 ");
+            addFrontObstacleSingle(false);
+        }
+        if (sensorBL.getDetectedDistance() != 0){
+            if (sensorBR.getDetectedDistance() != 0){
+                //System.out.println("Detection:Sensor2And3 ");
+                addBackObstacleBoth();
             }
-            else if (sensorBR.getDetectedDistance() != 0){
-                //System.out.println("Detection:Sensor3 ");
-                addBackObstacleSingle(false);
+            else{
+                //System.out.println("Detection:Sensor2 ");
+                addBackObstacleSingle(true);
             }
+        }
+        else if (sensorBR.getDetectedDistance() != 0){
+            //System.out.println("Detection:Sensor3 ");
+            addBackObstacleSingle(false);
+        }
 
     }
 
@@ -229,17 +237,22 @@ public class ThreadSensor extends AbstractThread
         int l = sensorFL.getDetectedDistance();
         int r = sensorFR.getDetectedDistance();
         //TODO facteur 0.8 à changer empiriquement
+        int d = Math.abs(sensorFL.getY()) + Math.abs(sensorFR.getY());
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
-        int d = Math.abs(sensorFL.getX() - sensorFR.getX());
-        double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d))-Math.PI/2+(config.getDouble(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS)/2);
-        int x = (int) (a * Math.cos(alpha));
-        int y = (int) (a * Math.sin(alpha));
-        Vec2 posObjectFromSensorFL = new Vec2(x, y);
-        Vec2 posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
-        if (posObjectFromCenterRobot.getA() < 3 * Math.PI / 4 && posObjectFromCenterRobot.getA() > Math.PI / 4) { // pour éviter les faux obstacles
-            posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA() - Math.PI / 2);
-            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+        double toAcos=(b * b - a * a - d * d)/(-2.0 * a * d);
+        if (!(Math.abs(toAcos)<=1)){
+            addFrontObstacleSingleMiddle();
+        }
+        else {
+            double alpha = Math.acos(toAcos) - Math.PI / 2 + (this.detectionAngle / 2) - this.magicNumber;
+            int x = (int) (a * Math.cos(alpha));
+            int y = (int) (a * Math.sin(alpha));
+            Vec2 posObjectFromSensorFL = new Vec2(x, y);
+            Vec2 posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
+            if (posObjectFromCenterRobot.getA() > -Math.PI / 3 && posObjectFromCenterRobot.getA() < Math.PI / 3) { // pour éviter les faux obstacles
+                mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius + ourRadius + 10, lifetimeForUntestedObstacle);
+            }
         }
     }
     /** Ajoute un obstacle derrière le robot, avec les deux capteurs ayant détecté quelque chose */
@@ -247,20 +260,47 @@ public class ThreadSensor extends AbstractThread
         int l = sensorBL.getDetectedDistance();
         int r = sensorBR.getDetectedDistance();
         //TODO facteur 0.8 à changer empiriquement
+        int d = Math.abs(sensorBL.getY()) + Math.abs(sensorBR.getY());
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
-        int d = Math.abs(sensorBL.getX() - sensorBR.getX());
-        double alpha = Math.acos((b * b - a * a - d * d) / (double) (-2 * a * d))-Math.PI/2+(config.getDouble(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS)/2);
-        int x = (int) (a * Math.cos(alpha));
-        int y = (int) (a * Math.sin(alpha));
-        Vec2 posObjectFromSensorBL = new Vec2(x, y);
-        Vec2 posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
-        if (posObjectFromCenterRobot.getA() < 3 * Math.PI / 4 && posObjectFromCenterRobot.getA() > Math.PI / 4) { // pour éviter les faux obstacles
-            posObjectFromCenterRobot.setA(posObjectFromCenterRobot.getA() - Math.PI / 2);
-            posObjectFromCenterRobot.setX(posObjectFromCenterRobot.getX() * -1);
-            mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+        double toAcos=(b * b - a * a - d * d)/(-2.0 * a * d);
+        if (!(Math.abs(toAcos)<=1)){
+            addBackObstacleSingleMiddle();
+        }
+        else {
+            double alpha = Math.acos(toAcos) - Math.PI / 2 + (this.detectionAngle / 2) + this.magicNumber;
+            int x = (int) (a * Math.cos(alpha));
+            int y = (int) (a * Math.sin(alpha));
+            Vec2 posObjectFromSensorBL = new Vec2(x, y);
+            Vec2 posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
+            log.critical(posObjectFromCenterRobot.getA());
+            if (posObjectFromCenterRobot.getA() > -Math.PI / 3 || posObjectFromCenterRobot.getA() < Math.PI / 3) { // pour éviter les faux obstacles
+                posObjectFromCenterRobot.setX(posObjectFromCenterRobot.getX() * -1);
+                mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius + ourRadius + 10, lifetimeForUntestedObstacle);
+            }
         }
     }
+
+    private void addBackObstacleSingleMiddle(){
+        int l = sensorBL.getDetectedDistance();
+        int r = sensorBR.getDetectedDistance();
+        //TODO facteur 0.8 à changer empiriquement
+        int a = (int) (l + enRadius * 0.5);
+        int b = (int) (r + enRadius * 0.5);
+        Vec2 posFromCenterRobot = new Vec2( (a + b)/2.0 + (Math.abs(sensorBR.getX())+Math.abs(sensorBL.getX()))/2.0 ,-Math.PI);
+        mTable.getObstacleManager().addObstacle(this.changeRef(posFromCenterRobot), enRadius + ourRadius + 10, lifetimeForUntestedObstacle);
+    }
+
+    private void addFrontObstacleSingleMiddle(){
+        int l = sensorFL.getDetectedDistance();
+        int r = sensorFR.getDetectedDistance();
+        //TODO facteur 0.8 à changer empiriquement
+        int a = (int) (l + enRadius * 0.5);
+        int b = (int) (r + enRadius * 0.5);
+        Vec2 posFromCenterRobot = new Vec2((a + b)/2.0 + (Math.abs(sensorFR.getX())+Math.abs(sensorFL.getX()))/2.0,0);
+        mTable.getObstacleManager().addObstacle(this.changeRef(posFromCenterRobot), enRadius + ourRadius + 10, lifetimeForUntestedObstacle);
+    }
+
 
     /** Ajoute un obstacle d=sensorsArray.size()evant le robot, avec un seul capteur ayant détecté quelque chose
      * @param isLeft si c'est le capteur gauche */
@@ -274,18 +314,16 @@ public class ThreadSensor extends AbstractThread
             // On choisit le point à l'extrémité de l'arc à coté du capteur pour la position de l'ennemie: à courte distance, la position est réaliste,
             // à longue distance (>1m au vue des dimensions), l'ennemie est en réalité de l'autre coté
             double USFL = (double)sensorFL.getDetectedDistance();
-            System.out.println("0:"+USFL);
             Vec2 posObjectFromSensorFL = new Vec2(USFL+enRadius*0.8, sensorFL.getSensorOrientation() + sensorFL.getDetectionWideness()/2); //sensor avant gauche
             posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());     //sensor avant gauche
         }
         else{
             double USFR = (double)sensorFR.getDetectedDistance();
-            System.out.println("1:"+USFR);
             Vec2 posObjectFromSensorFR = new Vec2(USFR+enRadius*0.8, sensorFR.getSensorOrientation() - sensorFR.getDetectionWideness()/2); //sensor avant droit
             posObjectFromCenterRobot = posObjectFromSensorFR.plusNewVector(sensorFR.getVecteur()); //sensor avant droit
         }
 
-        mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+        mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius+ourRadius+10, lifetimeForUntestedObstacle);
     }
 
     /** Ajoute un obstacle derrière le robot, avec un seul capteur ayant détecté quelque chose
@@ -295,7 +333,6 @@ public class ThreadSensor extends AbstractThread
         Vec2 posObjectFromCenterRobot;
         if (isLeft){
             double USBL = (double)sensorBL.getDetectedDistance();
-            System.out.println("2:"+USBL);
             Vec2 posObjectFromSensorBL = new Vec2(USBL+enRadius*0.8, sensorBL.getSensorOrientation() + sensorBL.getDetectionWideness()/2);
             //Vec2 posDetect = new Vec2(USBL+enRadius*0.5,sensorBL.getSensorOrientation() - sensorBL.getDetectionWideness()/2);     //sensor arrière gauche
             posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());     //sensor arrière gauche
@@ -303,13 +340,12 @@ public class ThreadSensor extends AbstractThread
         }
         else{
             double USBR = (double)sensorBR.getDetectedDistance();
-            System.out.println("3:"+USBR);
             Vec2 posObjectFromSensorBR = new Vec2(USBR+enRadius*0.8, sensorBR.getSensorOrientation() - sensorBR.getDetectionWideness()/2);
             //Vec2 posDetect = new Vec2(USBF+enRadius*0.5,sensorBR.getSensorOrientation() + sensorBR.getDetectionWideness()/2);     //sensor arrière droit
             posObjectFromCenterRobot = posObjectFromSensorBR.plusNewVector(sensorBR.getVecteur());     //sensor arrière droit
             posObjectFromCenterRobot.setY(posObjectFromCenterRobot.getY()*-1);
         }
-        mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius, lifetimeForUntestedObstacle);
+        mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius+ourRadius+10, lifetimeForUntestedObstacle);
     }
 
     /** P'tite methode pour print le debug des capteurs
@@ -348,54 +384,58 @@ public class ThreadSensor extends AbstractThread
         mTable.getObstacleManager().removeOutdatedObstacles();
     }
 
-	/** Recupere la distance lue par les ultrasons
-	 * @return la distance selon les ultrasons */
-	@SuppressWarnings("unchecked")
+    /** Recupere la distance lue par les ultrasons
+     * @return la distance selon les ultrasons */
+    @SuppressWarnings("unchecked")
     public void getSensorInfos()
-	{
-        try
-		{
-		    robotPosAndOr = ethWrapper.updatePositionAndOrientation();
+    {
+        if(gameState.isCapteursActivés()) {
+            try {
+                robotPosAndOr = ethWrapper.updatePositionAndOrientation();
+                String[] valuesSReceived;
 
-            String[] valuesSReceived;
-            //ArrayList<Integer> res = new ArrayList<Integer>();
-
-            while(valuesReceived.peek() == null){
-                Thread.sleep(5);
-            }
-            String values = valuesReceived.poll();
-            valuesSReceived = values.split(" ");
-
-
-            for(int i=0; i<nbSensors; i++) {
-                int distance=Integer.parseInt(valuesSReceived[i]);
-                sensorsArray.get(i).setDetectedDistance(distance*10); //on convertit de cm en mm
-            }
-
-            if(symetry) //Inversion gauche/droite pour symétriser
-            {
-                sensorFL.switchValues(sensorFR);
-                sensorBL.switchValues(sensorBR);
-            }
-
-            for(int i=0 ; i<nbSensors ; i++)
-            {
-                // On met tout les capteurs qui detectent un objet trop proche du robot ou à plus de maxSensorRange a 0
-                // TODO : a passer en traitement de bas niveau ? Non, ce traitement peut dépendre de la façon dont on calcule la position adverse
-
-                if ( sensorsArray.get(i).getDetectedDistance() > sensorsArray.get(i).getMaximalValidDetectionDistance())
-                {
-                    sensorsArray.get(i).setDetectedDistance(0);
+                int attempts = 0;
+                while (valuesReceived.peek() == null && attempts < 50) {
+                    Thread.sleep(5);
+                    attempts++;
                 }
-                else if(sensorsArray.get(i).getDetectedDistance() < sensorsArray.get(i).getMinimalValidDetectionDistance()) {
-                    sensorsArray.get(i).setDetectedDistance(0);
+                if (attempts < 50) {
+                    String values = valuesReceived.poll();
+                    valuesSReceived = values.split(" ");
+
+                    for (int i = 0; i < nbSensors; i++) {
+                        int distance = Integer.parseInt(valuesSReceived[i]);
+                        sensorsArray.get(i).setDetectedDistance(distance * 10); //on convertit des cm en mm
+                    }
+
+                    //Inversion gauche/droite pour symétriser
+                    if (symetry) {
+                        sensorFL.switchValues(sensorFR);
+                        sensorBL.switchValues(sensorBR);
+                    }
+
+                    for (Sensor sensor : sensorsArray) {
+                        // On met tout les capteurs qui detectent un objet trop proche du robot ou à plus de maxSensorRange a 0
+                        if (sensor.getDetectedDistance() > sensor.getMaximalValidDetectionDistance()) {
+                            sensor.setDetectedDistance(0);
+                        } else if (sensor.getDetectedDistance() < sensor.getMinimalValidDetectionDistance()) {
+                            sensor.setDetectedDistance(0);
+                        }
+                    }
                 }
             }
-		}
-		catch(InterruptedException e) {
-            e.printStackTrace();
+            catch(InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-	}
+        //Si on éteint les capteurs
+        else {
+            for (Sensor sensor : sensorsArray) {
+                    sensor.setDetectedDistance(0);
+                }
+            }
+        }
+
 
     @Override
     public void run()
@@ -445,9 +485,11 @@ public class ThreadSensor extends AbstractThread
     }
 
     @Override
-	public void updateConfig()
-	{
+    public void updateConfig()
+    {
         this.symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
+        //this.ourRadius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS)/2;
+        this.ourRadius = 0;
         this.enRadius = config.getInt(ConfigInfoRobot.ROBOT_EN_RADIUS);
         this.maxSensorRange = config.getInt(ConfigInfoRobot.MAX_SENSOR_RANGE);
         this.minSensorRange = config.getInt(ConfigInfoRobot.MIN_SENSOR_RANGE);
@@ -455,5 +497,5 @@ public class ThreadSensor extends AbstractThread
         this.sensorOrientationB = config.getDouble(ConfigInfoRobot.SENSOR_ORIENTATION_BACK);
         this.detectionAngle = config.getDouble(ConfigInfoRobot.SENSOR_ANGLE_WIDENESS);
         this.usingJumper = config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
-	}
+    }
 }

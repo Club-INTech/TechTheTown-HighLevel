@@ -10,6 +10,7 @@ import robot.Robot;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
+import table.Table;
 import threads.ThreadInterface;
 
 public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
@@ -36,18 +37,10 @@ public class JUnit_ActivationPanneauDomotique extends JUnit_Test {
     public void testScript() {
         try {
             //Définition des paramètres de base
-            robotReal.setOrientation(Math.PI);
-            Vec2 positionDepart=new Vec2(1252,460);
-            robotReal.setPosition(positionDepart);
-            robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+            robotReal.setOrientation(Table.entryOrientation);
+            robotReal.setPosition(Table.entryPosition);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
             scriptManager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE).goToThenExec(0,state);
-            //robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
-            //Vec2 positionarrivee=new Vec2(890,347);
-            //robotReal.goTo(positionarrivee);
-
-            //robotReal.goTo(positionDepart);
-            //robotReal.turn(Math.PI/2);
         }catch (Exception e){
             e.printStackTrace();
         }

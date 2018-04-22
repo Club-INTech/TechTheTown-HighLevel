@@ -579,6 +579,7 @@ public class Locomotion implements Service {
      * @param turnOnly vrai si on veut uniquement tourner (et pas avancer)
      */
     private void moveToPointSymmetry(Vec2 aim, boolean turnOnly) {
+        thEvent.setIsMoving(true);
         updateCurrentPositionAndOrientation();
 
         Vec2 positionSymetrized = highLevelPosition.clone();
