@@ -582,7 +582,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 if (CommunicationHeaders.EVENT.getFirstHeader() == headers[0] && CommunicationHeaders.EVENT.getSecondHeader() == headers[1]) {
                     eventBuffer.add(infosFromBuffer);
                     try {
-                        outEvent.write(infosFromBuffer);
+                        outEvent.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime())+infosFromBuffer);
                         outEvent.newLine();
                         outEvent.flush();
                     } catch (IOException e) {
