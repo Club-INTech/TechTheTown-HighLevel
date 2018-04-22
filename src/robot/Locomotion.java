@@ -517,7 +517,7 @@ public class Locomotion implements Service {
                     boolean obstacleDetected=basicDetect();
                     boolean wasImmobilised=false;
                     if (obstacleDetected){
-                        immobilise();
+                        immobiliseEmergency();
                         wasImmobilised=true;
                     }
                     while (obstacleDetected){
@@ -747,10 +747,20 @@ public class Locomotion implements Service {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        log.debug("isMoving variable has been defined to FALSE in Locomotion");
+    }
+    public void immobiliseEmergency() {
+        log.warning("Arrêt du robot en " + lowLevelPosition);
+        ethWrapper.immobiliseEmergency();
+        thEvent.setIsMoving(false);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         ethWrapper.useActuator(ActuatorOrder.RESUME_AFTER_EMERGENCY_STOP);
         log.debug("isMoving variable has been defined to FALSE in Locomotion");
     }
-
 
     /********************
      * GUETTER & SETTER *

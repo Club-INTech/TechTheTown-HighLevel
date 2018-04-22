@@ -129,6 +129,16 @@ public class EthWrapper implements Service {
     public void immobilise()
     {
         log.warning("Immobilisation du robot");
+        eth.communicate(0, ActuatorOrder.STOP.getEthernetOrder());
+        while(isRobotMoving())
+        {
+            Sleep.sleep(loopDelay); // On attend d'etre arreté
+        }
+
+    }
+    public void immobiliseEmergency()
+    {
+        log.warning("Immobilisation du robot");
         eth.communicate(0, ActuatorOrder.EMERGENCY_STOP.getEthernetOrder());
         while(isRobotMoving())
         {

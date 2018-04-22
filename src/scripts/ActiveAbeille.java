@@ -67,9 +67,6 @@ public class ActiveAbeille extends AbstractScript {
                 hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
                 //On va vers l'abeille
                 actualState.robot.goTo(new Vec2(xEntry, yEntry));
-                if(basicDetection){
-                    actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
-                }
                 //On se tourne pour pousser l'abeille avec le bras avant
                 actualState.robot.turn(Math.PI / 2, true);
                 //On relève le bras avant
