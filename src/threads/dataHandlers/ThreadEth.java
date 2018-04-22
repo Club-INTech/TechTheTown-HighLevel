@@ -459,7 +459,7 @@ public class ThreadEth extends AbstractThread implements Service {
     public synchronized String[] communicate(int nb_line_response, String... message) {
         String mess = "";
         standardBuffer.clear();
-        String inputLines[] = new String[nb_line_response];
+        String LLResponse[] = new String[nb_line_response];
 
         for (String m : message) {
             mess += m + " ";
@@ -502,17 +502,17 @@ public class ThreadEth extends AbstractThread implements Service {
         /* Réponse du LL (listener dans le run) */
             for (int i = 0; i < nb_line_response; i++) {
                 int tries=0;
-                inputLines[i] = waitAndGetResponse();
+                LLResponse[i] = waitAndGetResponse();
 
-                while (inputLines[i] == null || inputLines[i].replaceAll(" ", "").equals("") && tries < 5) {
-                    log.critical("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                while (LLResponse[i] == null || LLResponse[i].replaceAll(" ", "").equals("") && tries < 5) {
+                    log.critical("Reception de " + LLResponse[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     tries += 1;
-                    inputLines[i] = waitAndGetResponse();
+                    LLResponse[i] = waitAndGetResponse();
                     if (tries==5) {
                         log.critical("On n'a pas reçu les informations attendues par le LL, on renvoie l'ordre");
                         throw new SocketException();
@@ -521,7 +521,7 @@ public class ThreadEth extends AbstractThread implements Service {
 
                 if (debug) {
                     try {
-                        outOrders.write("Reception de " + inputLines[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                        outOrders.write("Reception de " + LLResponse[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                         outOrders.newLine();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -542,13 +542,13 @@ public class ThreadEth extends AbstractThread implements Service {
             log.critical("LL ne répond pas, on renvoie le message");
             this.nbRepeatMessage += 1;
             if (this.nbRepeatMessage < 5) {
-                inputLines = communicate(nb_line_response, message);
+                LLResponse = communicate(nb_line_response, message);
             } else {
                 log.critical("On a renvoyé le message plus de 5 fois, y a un gros problème poto, mais dans le doute on continue le match");
             }
         }
         this.nbRepeatMessage = 0;
-        return inputLines;
+        return LLResponse;
     }
 
 
@@ -677,12 +677,14 @@ public class ThreadEth extends AbstractThread implements Service {
      * On stocke la position et l'orientation ici : les classes qui en ont besoin l'a mettre à jour via le Wrapper
      */
     public XYO getPositionAndOrientation() {
-        synchronized (positionAndOrientation) {
-            return positionAndOrientation;
+        synchronized (this.positionAndOrientation) {
+            return this.positionAndOrientation;
         }
     }
     public void setPositionAndOrientation(XYO positionAndOrientation) {
-        this.positionAndOrientation = positionAndOrientation;
+        synchronized (this.positionAndOrientation) {
+            this.positionAndOrientation = positionAndOrientation;
+        }
     }
 
     /**

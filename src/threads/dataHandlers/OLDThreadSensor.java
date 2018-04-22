@@ -349,7 +349,7 @@ public class OLDThreadSensor extends AbstractThread
     {
         try
         {
-            robotPosAndOr = ethWrapper.updatePositionAndOrientation();
+            robotPosAndOr = ethWrapper.getCurrentPositionAndOrientation();
 
             String[] valuesSReceived;
             ArrayList<Integer> res = new ArrayList<>();

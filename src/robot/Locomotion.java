@@ -294,7 +294,7 @@ public class Locomotion implements Service {
     public void followPath(ArrayList<Vec2> path, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         //On enleve le premier point, notre propre position
         for (int i = 1; i < path.size(); i++){
-            updateCurrentPositionAndOrientation();
+            getCurrentPositionAndOrientation();
             Vec2 aim = path.get(i);
             finalAim = aim;
             log.debug("Pathfinding : going to node of coords "+aim.toStringEth());
@@ -366,7 +366,7 @@ public class Locomotion implements Service {
         log.debug("Tourner vers " + Double.toString(angle));
 
         actualRetriesIfBlocked = 0;
-        updateCurrentPositionAndOrientation();
+        getCurrentPositionAndOrientation();
 
         /**
          * calcul de la position visee du haut niveau
@@ -396,7 +396,7 @@ public class Locomotion implements Service {
         log.debug("Avancer de " + Integer.toString(distance));
 
         actualRetriesIfBlocked = 0;
-        updateCurrentPositionAndOrientation();
+        getCurrentPositionAndOrientation();
 
         Vec2 aim = highLevelPosition.plusNewVector(new Vec2((double)distance, highLevelOrientation));
         finalAim = aim;
@@ -502,7 +502,7 @@ public class Locomotion implements Service {
         moveToPointSymmetry(aim, turnOnly);
 
         do {
-            updateCurrentPositionAndOrientation();
+            getCurrentPositionAndOrientation();
 
             if (thEvent.getUnableToMoveEvent().peek() != null) {
                 String unableToMoveReason = thEvent.getUnableToMoveEvent().poll();
@@ -531,7 +531,7 @@ public class Locomotion implements Service {
                         }
                     }
                     if (wasImmobilised){
-                        updateCurrentPositionAndOrientation();
+                        updateCurrentPositonAndOrientation();
                         moveToPointSymmetry(aim, turnOnly);
                     }
                 }
@@ -581,7 +581,7 @@ public class Locomotion implements Service {
      */
     private void moveToPointSymmetry(Vec2 aim, boolean turnOnly) {
         thEvent.setIsMoving(true);
-        updateCurrentPositionAndOrientation();
+        getCurrentPositionAndOrientation();
 
         Vec2 positionSymetrized = highLevelPosition.clone();
         Vec2 aimSymetrized = aim.clone();
@@ -719,11 +719,28 @@ public class Locomotion implements Service {
     }
 
     /**
-     * Met à jour position et orientation via la carte d'asservissement.
-     * Donne la veritable positions du robot sur la table
+     * Met à jour la position du robot dans Locomotion avec la dernière position renvoyée par le LL
      */
-    private void updateCurrentPositionAndOrientation() {
-        XYO positionAndOrientation = ethWrapper.updatePositionAndOrientation();
+    private void getCurrentPositionAndOrientation() {
+        XYO positionAndOrientation = ethWrapper.getCurrentPositionAndOrientation();
+
+        lowLevelPosition = positionAndOrientation.getPosition();
+        lowLevelOrientation = Geometry.moduloSpec(positionAndOrientation.getOrientation(), Math.PI);
+
+        highLevelPosition = lowLevelPosition.clone();
+        highLevelOrientation = lowLevelOrientation;
+
+        if (symetry) {
+            highLevelPosition.setX(-highLevelPosition.getX());
+            highLevelOrientation = Geometry.moduloSpec(Math.PI - lowLevelOrientation, Math.PI);
+        }
+    }
+
+    /**
+     * Force l'envoi de la position actuelle par le LL, et la met à jour dans Locomotion et ThreadEth
+     */
+    private void updateCurrentPositonAndOrientation(){
+        XYO positionAndOrientation = ethWrapper.updateCurrentPositionAndOrientation();
 
         lowLevelPosition = positionAndOrientation.getPosition();
         lowLevelOrientation = Geometry.moduloSpec(positionAndOrientation.getOrientation(), Math.PI);
@@ -794,7 +811,7 @@ public class Locomotion implements Service {
      * @return la position du robot en debut de match
      */
     public Vec2 getPosition() {
-        updateCurrentPositionAndOrientation();
+        getCurrentPositionAndOrientation();
         Vec2 out = highLevelPosition.clone();
         return out;
     }
@@ -817,7 +834,7 @@ public class Locomotion implements Service {
      * @return l'orientation du robot en debut de match
      */
     public double getOrientation() {
-        updateCurrentPositionAndOrientation();
+        getCurrentPositionAndOrientation();
         return highLevelOrientation;
     }
 

@@ -210,27 +210,21 @@ public class EthWrapper implements Service {
     }
 
     /**
-     * Demande a la carte d'asservissement la position et l'orientation courrante du robot sur la table.
-     * Renvoie x, y et orientation du robot (x en mm, y en mm, et orientation en radiants)
-     * @return un tableau de 3 cases: [x, y, orientation]
+     * Renvoie le dernier XYO que le LL nous a envoyé dans le canal position
+     * @return
      */
-    public float[] getCurrentPositionAndOrientation()
+    public XYO getCurrentPositionAndOrientation()
     {
-        // on demande a la carte des information a jour
-        // on envois "?xyo" et on lis double (dans l'ordre : abscisse, ordonnée, orientation)
-        String[] infosBuffer = eth.communicate(3, ActuatorOrder.SEND_POSITION.getEthernetOrder());
-        float[] parsedInfos = new float[3];
-        for(int i = 0; i < 3; i++)
-        {
-            try{
-                parsedInfos[i] = Float.parseFloat(infosBuffer[i]);
-            } catch (NumberFormatException e)
-            {
-                log.critical("BAD POSITION RECEIVED BY LL : "+ Arrays.toString(parsedInfos));
-                return null;
-            }
-        }
-        return parsedInfos;
+        return eth.getPositionAndOrientation();
+    }
+
+    /**
+     * Force la mise à jour de l'orientaton et de la position du robot
+     */
+    public XYO updateCurrentPositionAndOrientation(){
+        String[] xyo = eth.communicate(3, ActuatorOrder.SEND_POSITION.getEthernetOrder());
+        eth.setPositionAndOrientation(new XYO(new Vec2(Integer.parseInt(xyo[0]),Integer.parseInt(xyo[1])),Double.parseDouble(xyo[2])));
+        return eth.getPositionAndOrientation();
     }
 
     /**
@@ -377,13 +371,6 @@ public class EthWrapper implements Service {
     /**********
      * DIVERS *
      **********/
-
-    /**
-     * Met à jour l'orientaton et la position du robot
-     */
-    public XYO updatePositionAndOrientation(){
-        return eth.getPositionAndOrientation();
-    }
 
 
     /**
