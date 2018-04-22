@@ -89,6 +89,8 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Emplacement des fichiers
      */
+    private File standardFileTmp;
+    private File standardFile;
     private File ordersFileTmp;
     private File ordersFile;
     private File debugFileTmp;
@@ -109,6 +111,7 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Buffer pour fichiers de debug
      */
+    private BufferedWriter outStandard;
     private BufferedWriter outOrders;
     private BufferedWriter outDebug;
     private BufferedWriter outAcknowledge;
@@ -167,6 +170,8 @@ public class ThreadEth extends AbstractThread implements Service {
         this.nbRepeatMessage=0;
         if (debug) {
             try {
+                this.standardFileTmp = new File("/tmp/standard.txt");
+                this.standardFile = new File("./standard.txt");
                 this.ordersFileTmp = new File("/tmp/orders.txt");
                 this.ordersFile = new File("./orders.txt");
                 this.debugFileTmp = new File("/tmp/debugLL.txt");
@@ -184,11 +189,17 @@ public class ThreadEth extends AbstractThread implements Service {
                 this.logFileTmp = new File(log.getSavePath());
                 this.logFile = new File(log.getFinalSavePath());
 
+                if (!this.standardFileTmp.exists()){
+                    this.standardFileTmp.createNewFile();
+                }
                 if (!this.ordersFileTmp.exists()) {
                     this.ordersFileTmp.createNewFile();
                 }
                 if (!this.debugFileTmp.exists()) {
                     this.debugFileTmp.createNewFile();
+                }
+                if (!this.acknowledgeFileTmp.exists()){
+                    this.acknowledgeFileTmp.createNewFile();
                 }
                 if (!this.positionFileTmp.exists()) {
                     this.positionFileTmp.createNewFile();
@@ -202,6 +213,8 @@ public class ThreadEth extends AbstractThread implements Service {
                 if (!this.sensorUSFileTmp.exists()) {
                     this.sensorUSFileTmp.createNewFile();
                 }
+                outStandard = new BufferedWriter(new FileWriter(this.standardFileTmp));
+                outStandard.newLine();
                 outOrders = new BufferedWriter(new FileWriter(this.ordersFileTmp));
                 outOrders.newLine();
                 outDebug = new BufferedWriter(new FileWriter(this.debugFileTmp));
@@ -314,7 +327,6 @@ public class ThreadEth extends AbstractThread implements Service {
         }
     }
 
-
     /**
      * On shutdown le ThreadEth
      */
@@ -324,6 +336,12 @@ public class ThreadEth extends AbstractThread implements Service {
             fullDebug.flush();
             fullDebug.close();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            outStandard.flush();
+            outStandard.close();
+        } catch (IOException e){
             e.printStackTrace();
         }
         try {
@@ -363,51 +381,35 @@ public class ThreadEth extends AbstractThread implements Service {
             e.printStackTrace();
         }
         log.debug("Fichiers de debug fermés");
-        try {
-            Files.copy(fullDebugFileTmp.toPath(), fullDebugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+        try { Files.copy(fullDebugFileTmp.toPath(), fullDebugFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
+        catch (IOException e) { e.printStackTrace(); }
 
-        try {
-            Files.copy(eventFileTmp.toPath(), eventFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        try{
-            Files.copy(sensorUSFileTmp.toPath(), sensorUSFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            Files.copy(acknowledgeFileTmp.toPath(), acknowledgeFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        try { Files.copy(standardFileTmp.toPath(), standardFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
+        catch (IOException e){ e.printStackTrace(); }
+
+        try { Files.copy(eventFileTmp.toPath(), eventFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
+        catch (IOException e) { e.printStackTrace(); }
+
+        try{ Files.copy(sensorUSFileTmp.toPath(), sensorUSFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
+        catch (IOException e) { e.printStackTrace(); }
+
+        try { Files.copy(positionFileTmp.toPath(), positionFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
+        catch (IOException e) { e.printStackTrace(); }
+
+        try { Files.copy(debugFileTmp.toPath(), debugFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
+        catch (IOException e) { e.printStackTrace(); }
+
+        try { Files.copy(acknowledgeFileTmp.toPath(), acknowledgeFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
+        catch (IOException e) { e.printStackTrace(); }
+
+        try { Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
+        catch (IOException e) { e.printStackTrace(); }
+
         log.debug("Fichiers de debug bien copiés dans le répertoire courant");
         Log.stop();
-        try {
-            Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        try { Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
+        catch (IOException e) { e.printStackTrace(); }
         closeSocket();
     }
 
@@ -573,7 +575,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 fullDebug.newLine();
                 fullDebug.flush();
             } catch (IOException e) {
-                log.critical("IOException pour le fullDebug");
+                log.critical("IOException pour fullDebug.txt");
                 e.printStackTrace();
             }
             if (buffer.length() >= 2 && !(buffer.replaceAll(" ", "").equals(""))) {
@@ -586,7 +588,7 @@ public class ThreadEth extends AbstractThread implements Service {
                         outEvent.newLine();
                         outEvent.flush();
                     } catch (IOException e) {
-                        log.critical("IOException pour le debugEvent");
+                        log.critical("IOException pour debugEvent.txt");
                         e.printStackTrace();
                     }
                 }
@@ -597,7 +599,7 @@ public class ThreadEth extends AbstractThread implements Service {
                         outSensor.newLine();
                         outSensor.flush();
                     } catch (IOException e) {
-                        log.critical("IOException pour les sensors");
+                        log.critical("IOException pour us.txt");
                         e.printStackTrace();
                     }
                 }
@@ -613,7 +615,7 @@ public class ThreadEth extends AbstractThread implements Service {
                             outPosition.newLine();
                             outPosition.flush();
                         }catch (IOException e) {
-                            log.critical("IOException pour le debugPosition");
+                            log.critical("IOException pour debugPosition.txt");
                             e.printStackTrace();
                         }
                     }
@@ -626,7 +628,7 @@ public class ThreadEth extends AbstractThread implements Service {
                         outAcknowledge.flush();
                     }
                     catch (IOException e) {
-                        log.critical("IOException pour acknowledge");
+                        log.critical("IOException pour acknowledge.txt");
                         e.printStackTrace();
                     }
                 }
@@ -637,12 +639,20 @@ public class ThreadEth extends AbstractThread implements Service {
                         outDebug.flush();
                     }
                     catch (IOException e) {
-                        log.critical("IOException pour le debugLL");
+                        log.critical("IOException pour debugLL.txt");
                         e.printStackTrace();
                     }
                 }
                 else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]){
                     standardBuffer.add(infosFromBuffer);
+                    try {
+                        outStandard.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + buffer);
+                        outStandard.newLine();
+                        outStandard.flush();
+                    }
+                    catch (IOException e){
+                        log.critical("IOException pour standard.txt");
+                    }
                 }
                 else{
                     log.critical("///////// MESSAGE AVEC MAUVAIS HEADER ///////////");
@@ -653,7 +663,6 @@ public class ThreadEth extends AbstractThread implements Service {
                 log.critical("/////////// MESSAGE SANS HEADER ///////////");
                 log.critical(buffer);
                 log.critical("///////// FIN MESSAGE SANS HEADER /////////");
-                standardBuffer.add(buffer);
             }
         }
     }
