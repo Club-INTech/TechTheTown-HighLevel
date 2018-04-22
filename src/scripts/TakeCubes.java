@@ -80,7 +80,7 @@ public class TakeCubes extends AbstractScript {
             this.specialVersions(indiceTas, state);
         }
         if(basicDetection){
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
         }
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
     }
