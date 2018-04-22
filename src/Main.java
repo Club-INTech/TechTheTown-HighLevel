@@ -77,7 +77,6 @@ public class Main {
             if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
                 realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             }
-
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
