@@ -655,14 +655,14 @@ public class ThreadEth extends AbstractThread implements Service {
                     }
                 }
                 else{
-                    log.critical("///////// MESSAGE AVEC MAUVAIS HEADER ///////////");
+                    log.critical("///////// MESSAGE CORROMPU ///////////");
                     log.critical(infosFromBuffer);
-                    log.critical("/////// FIN MESSAGE AVEC MAUVAIS HEADER /////////");
+                    log.critical("/////// FIN MESSAGE CORROMPU /////////");
                 }
             } else if (!(buffer.replaceAll(" ", "").equals(""))) {
-                log.critical("/////////// MESSAGE SANS HEADER ///////////");
+                log.critical("/////////// MESSAGE CORROMPU ///////////");
                 log.critical(buffer);
-                log.critical("///////// FIN MESSAGE SANS HEADER /////////");
+                log.critical("///////// FIN MESSAGE CORROMPU /////////");
             }
         }
     }
