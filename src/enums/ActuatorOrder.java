@@ -181,7 +181,7 @@ public enum ActuatorOrder implements MotionOrder
 	 */
 	private String serialOrder;
 
-	/** duurée de l'action en millisecondes */
+	/** durée de l'action en millisecondes */
 	private int duration;
 
 	/**

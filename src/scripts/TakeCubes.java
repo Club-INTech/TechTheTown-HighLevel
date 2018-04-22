@@ -612,7 +612,7 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, true);
             state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,false);
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE, true);
-            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT_UNPEU,false);
+            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT_UNPEU,true);
             if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
                 cubeSuccessfullyTaken=true;
                 state.setReussitesTourAvant(1,this.currentIdealPositionInTower);
@@ -636,7 +636,7 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, true);
             state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE, false);
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT, true);
-            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE_UNPEU,false);
+            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE_UNPEU,true);
             if(state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
                 cubeSuccessfullyTaken=true;
                 state.setReussitesTourArrière(1,this.currentIdealPositionInTower);
