@@ -486,13 +486,11 @@ public class ThreadEth extends AbstractThread implements Service {
         if (debug) {
             try {
                 outOrders.write(mess);
-                outOrders.newLine();
             } catch (IOException e) {
                 log.debug("On n'arrive pas à écrire dans le fichier de debug orders");
                 e.printStackTrace();
             }try {
-                fullDebug.write(mess);
-                fullDebug.newLine();
+                fullDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime())+mess);
             } catch (IOException e) {
                 log.debug("On n'arrive pas à écrire dans le fichier fullDebug");
                 e.printStackTrace();
@@ -571,7 +569,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 e.printStackTrace();
             }
             try {
-                fullDebug.write(buffer);
+                fullDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime())+buffer);
                 fullDebug.newLine();
                 fullDebug.flush();
             } catch (IOException e) {
@@ -595,7 +593,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
                     ultrasoundBuffer.add(infosFromBuffer);
                     try {
-                        outSensor.write(infosFromBuffer);
+                        outSensor.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime())+infosFromBuffer);
                         outSensor.newLine();
                         outSensor.flush();
                     } catch (IOException e) {
@@ -611,7 +609,7 @@ public class ThreadEth extends AbstractThread implements Service {
                             positionAndOrientation.setOrientation(Math.PI-positionAndOrientation.getOrientation());
                         }
                         try {
-                            outPosition.write(infosFromBuffer);
+                            outPosition.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime())+infosFromBuffer);
                             outPosition.newLine();
                             outPosition.flush();
                         }catch (IOException e) {
@@ -623,7 +621,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 else if (CommunicationHeaders.ACKNOWLEDGEMENT.getFirstHeader() == headers[0] && CommunicationHeaders.ACKNOWLEDGEMENT.getSecondHeader() == headers[1]){
                     comFlag=false;
                     try {
-                        outAcknowledge.write(infosFromBuffer + String.format(" [TimeToTravel : %d ms]", System.currentTimeMillis() - timeRef));
+                        outAcknowledge.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime())+infosFromBuffer+String.format(" [TimeToTravel : %d ms]", System.currentTimeMillis() - timeRef));
                         outAcknowledge.newLine();
                         outAcknowledge.flush();
                     }
@@ -634,7 +632,7 @@ public class ThreadEth extends AbstractThread implements Service {
                 }
                 else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
                     try {
-                        outDebug.write(infosFromBuffer + String.format(" [TimeInMatch : %d ms]", ThreadTimer.getMatchCurrentTime()));
+                        outDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime())+infosFromBuffer);
                         outDebug.newLine();
                         outDebug.flush();
                     }
