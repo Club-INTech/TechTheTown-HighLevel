@@ -531,6 +531,7 @@ public class Locomotion implements Service {
                         }
                     }
                     if (wasImmobilised){
+                        updateCurrentPositionAndOrientation();
                         moveToPointSymmetry(aim, turnOnly);
                     }
                 }
