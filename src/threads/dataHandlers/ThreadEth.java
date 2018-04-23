@@ -141,6 +141,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private volatile ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> acknowledgementBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
 
     /**
@@ -152,8 +153,12 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Nombre de fois qu'on a renvoyé le message
      */
-
     private int nbRepeatMessage;
+
+    /**
+     * ID du dernier message envoyé
+     */
+    private char charIDLastMessage;
 
     private boolean symmetry=config.getBoolean(ConfigInfoRobot.COULEUR);
 
@@ -168,6 +173,7 @@ public class ThreadEth extends AbstractThread implements Service {
         this.positionAndOrientation = new XYO(Table.entryPosition,Table.entryOrientation);
         this.name = "Teensy";
         this.nbRepeatMessage=0;
+        this.charIDLastMessage ='A';
         if (debug) {
             try {
                 this.standardFileTmp = new File("/tmp/standard.txt");
@@ -284,6 +290,7 @@ public class ThreadEth extends AbstractThread implements Service {
         String response = null;
         long startTime = System.currentTimeMillis();
 
+        //On attend une réponse jusqu'à ce qu'on considère un timeOut
         while ((System.currentTimeMillis() - startTime) < TIMEOUT) {
             try {
                 if ((response = standardBuffer.peek()) != null) {
@@ -307,21 +314,34 @@ public class ThreadEth extends AbstractThread implements Service {
      * Attend que le LL réponde sur le canal acknowledgement lors d'un envoi d'ordre
      */
     private synchronized void waitForAcknowledgement() throws SocketException {
-        int nbTimesHasBeenWaiting=0;
-        int maxTimesWaiting=500;
-        boolean socketExceptionThrown=false;
-        while (comFlag && !socketExceptionThrown){
-            try {
-                Thread.sleep(1);
-            }catch (InterruptedException e){
-                e.printStackTrace();
-            }
-            nbTimesHasBeenWaiting+=1;
-            if (nbTimesHasBeenWaiting==maxTimesWaiting){
-                log.critical("On a attendu trop longtemps pour un event de fin de mouvement (>"+maxTimesWaiting+"ms)...");
-                socketExceptionThrown=true;
+        long startTime = System.currentTimeMillis();
+        while (comFlag){
+
+            //On attend une réponse jusqu'à ce qu'on considère un timeOut
+            if (System.currentTimeMillis() - startTime < TIMEOUT){
+                log.critical("On a attendu trop longtemps pour un event de fin de mouvement (>"+TIMEOUT+"ms)...");
                 throw new SocketException();
             }
+
+            //On regarde le buffer d'acknowledgement pour voir si un ack est arrivé
+            if (acknowledgementBuffer.peek()!=null){
+                try {
+                    Thread.sleep(2);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+
+                //On compare le charID du dernier message
+                char id=acknowledgementBuffer.poll().charAt(0);
+                if (id==this.charIDLastMessage){
+                    comFlag=false;
+                    acknowledgementBuffer.clear();
+                }
+                else{
+                    log.critical("Mauvais charID de message");
+                }
+            }
+
         }
     }
 
@@ -461,93 +481,117 @@ public class ThreadEth extends AbstractThread implements Service {
         standardBuffer.clear();
         String LLResponse[] = new String[nb_line_response];
 
+        //On ajoute un identifiant au message, afin de proof le LL en cas de renvoi du message
+        mess+=this.charIDLastMessage;
+        //On concatène les différents éléments du message avant d'envoyer le tout
         for (String m : message) {
             mess += m + " ";
         }
 
         /* Envoi de l'ordre */
-        boolean exceptionHappened=false;
+        boolean exceptionHappened=false; //Sert à savoir si une exception a eu lieu pour éviter d'attendre inutilement une réponse
         try {
-            timeRef = System.currentTimeMillis();
-            comFlag = true;
-            mess += "\r\n";
+            timeRef = System.currentTimeMillis(); //On stocke le moment auquel le message est parti
+            comFlag = true; //On dit qu'on est en communication actuellement (sert de lock)
+            mess += "\r\n"; //On ajoute un retour à la ligne en fin de message
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
             output.write(mess, 0, mess.length());
-            output.flush();
+            output.flush(); //On envoi le message au LL
         } catch (SocketException e) {
-            exceptionHappened=true;
+            exceptionHappened=true; //On log qu'une exception s'est produite
             log.critical("SocketException : LL ne répond pas");
             e.printStackTrace();
         } catch (IOException except) {
-            exceptionHappened=true;
+            exceptionHappened=true; //On log qu'une exception s'est produite
             log.critical("IOException : LL ne répond pas");
             except.printStackTrace();
         }
 
-        if (debug && !exceptionHappened) {
-            try {
-                outOrders.write(mess);
-            } catch (IOException e) {
-                log.debug("On n'arrive pas à écrire dans le fichier de debug orders");
-                e.printStackTrace();
-            }try {
-                fullDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime())+"HL: "+mess);
-            } catch (IOException e) {
-                log.debug("On n'arrive pas à écrire dans le fichier fullDebug");
-                e.printStackTrace();
-            }
-        }
-
-        try {
-        /* Réponse du LL (listener dans le run) */
-            for (int i = 0; i < nb_line_response; i++) {
-                int tries=0;
-                LLResponse[i] = waitAndGetResponse();
-
-                while (LLResponse[i] == null || LLResponse[i].replaceAll(" ", "").equals("") && tries < 5) {
-                    log.critical("Reception de " + LLResponse[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    tries += 1;
-                    LLResponse[i] = waitAndGetResponse();
-                    if (tries==5) {
-                        log.critical("On n'a pas reçu les informations attendues par le LL, on renvoie l'ordre");
-                        throw new SocketException();
-                    }
-                }
-
-                if (debug) {
-                    try {
-                        outOrders.write("Reception de " + LLResponse[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
-                        outOrders.newLine();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            if (nb_line_response != 0) {
+        if (!exceptionHappened) {
+            if (debug) {
                 try {
-                    outOrders.newLine();
-                } catch (IOException e2) {
-                    e2.printStackTrace();
+                    outOrders.write(mess);
+                } catch (IOException e) {
+                    log.debug("On n'arrive pas à écrire dans le fichier de debug orders");
+                    e.printStackTrace();
+                }
+                try {
+                    fullDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + "HL: " + mess);
+                } catch (IOException e) {
+                    log.debug("On n'arrive pas à écrire dans le fichier fullDebug");
+                    e.printStackTrace();
                 }
             }
-            waitForAcknowledgement();
 
-        } catch (SocketException e){
-            log.critical("LL ne répond pas, on renvoie le message");
-            this.nbRepeatMessage += 1;
-            if (this.nbRepeatMessage < 5) {
-                LLResponse = communicate(nb_line_response, message);
-            } else {
-                log.critical("On a renvoyé le message plus de 5 fois, y a un gros problème poto, mais dans le doute on continue le match");
+            try {
+                // On récupère la réponse du LL, qui a été mise dans le standardBuffer par le listener du run
+
+                //On regarde combien de lignes on attend en réponse de la part du LL
+                for (int i = 0; i < nb_line_response; i++) {
+                    int tries = 0;
+                    //On attend 1 ligne
+                    LLResponse[i] = waitAndGetResponse();
+
+                    //Si il n'y a pas eu de réponse, on réessaye au bout de 10 ms
+                    while (LLResponse[i] == null || LLResponse[i].replaceAll(" ", "").equals("") && tries < 5) {
+                        log.critical("Reception de " + LLResponse[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        tries += 1;
+                        LLResponse[i] = waitAndGetResponse();
+                        if (tries == 5) {
+                            //Si au bout de 5 fois, on n'a pas reçu de réponse, on throw une SocketException
+                            log.critical("On n'a pas reçu les informations attendues par le LL, on renvoie l'ordre");
+                            throw new SocketException();
+                        }
+                    }
+
+                    if (debug) {
+                        try {
+                            outOrders.write("Reception de " + LLResponse[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                            outOrders.newLine();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+
+                if (nb_line_response != 0) {
+                    try {
+                        outOrders.newLine();
+                    } catch (IOException e2) {
+                        e2.printStackTrace();
+                    }
+                }
+                //On attend un acknowledgement de la part du LL
+                waitForAcknowledgement();
+
+            } catch (SocketException e) {
+                log.critical("LL ne répond pas, on renvoie le message");
+                this.nbRepeatMessage += 1;
+                if (this.nbRepeatMessage < 5) {
+                    LLResponse = communicate(nb_line_response, message);
+                } else {
+                    log.critical("On a renvoyé le message plus de 5 fois, y a un gros problème poto, mais dans le doute on continue le match");
+                }
             }
         }
+
+        //On réinitialise le nombre de fois qu'on a répété un message
         this.nbRepeatMessage = 0;
+
+        //On incrémente le charIDLastMessage d'une lettre
+        int intIDLastMessage = (int)this.charIDLastMessage+1;
+        //Si on a dépassé Z, on revient à A
+        if (intIDLastMessage==91){
+            intIDLastMessage=65;
+        }
+        this.charIDLastMessage = (char)(intIDLastMessage);
+
         return LLResponse;
     }
 
@@ -619,7 +663,7 @@ public class ThreadEth extends AbstractThread implements Service {
                             }
                         }
                     } else if (CommunicationHeaders.ACKNOWLEDGEMENT.getFirstHeader() == headers[0] && CommunicationHeaders.ACKNOWLEDGEMENT.getSecondHeader() == headers[1]) {
-                        comFlag = false;
+                        acknowledgementBuffer.add(infosFromBuffer);
                         try {
                             outAcknowledge.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer + String.format(" [TimeToTravel : %d ms]", System.currentTimeMillis() - timeRef));
                             outAcknowledge.newLine();
