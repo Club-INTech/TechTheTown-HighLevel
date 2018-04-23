@@ -552,7 +552,7 @@ public class ThreadEth extends AbstractThread implements Service {
                     LLResponse[i] = waitAndGetResponse();
 
                     //Si il n'y a pas eu de réponse, on réessaye au bout de 10 ms
-                    while (LLResponse[i] == null || LLResponse[i].replaceAll(" ", "").equals("") && tries < 5) {
+                    while ((LLResponse[i] == null || LLResponse[i].replaceAll(" ", "").equals("")) && tries < 5) {
                         log.critical("Reception de " + LLResponse[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
                         try {
                             Thread.sleep(10);
@@ -582,14 +582,6 @@ public class ThreadEth extends AbstractThread implements Service {
                     }
                 }
 
-
-                if (nb_line_response != 0) {
-                    try {
-                        outOrders.newLine();
-                    } catch (IOException e2) {
-                        e2.printStackTrace();
-                    }
-                }
                 //On attend un acknowledgement de la part du LL
                 waitForAcknowledgement();
 
@@ -720,11 +712,6 @@ public class ThreadEth extends AbstractThread implements Service {
                         log.critical("///////// FIN MESSAGE CORROMPU /////////");
                     }
                 }
-            }
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
     }
