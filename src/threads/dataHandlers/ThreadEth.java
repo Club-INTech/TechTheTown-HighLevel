@@ -490,7 +490,6 @@ public class ThreadEth extends AbstractThread implements Service {
         String mess = "";
         //On réinitialise les buffers, de telle sorte qu'ils soient prêts pour le nouvel ordre
         acknowledgementBuffer.clear();
-        standardBuffer.clear();
         String LLResponse[] = new String[nb_line_response];
 
         //On ajoute un identifiant au message, afin de proof le LL en cas de renvoi du message
@@ -567,6 +566,7 @@ public class ThreadEth extends AbstractThread implements Service {
                             incrementCharID();
                             //Si au bout de 5 fois, on n'a pas reçu de réponse, on throw une SocketException
                             log.critical("On n'a pas reçu les informations attendues par le LL, on renvoie l'ordre");
+                            standardBuffer.clear();
                             throw new SocketException();
                         }
                     }
