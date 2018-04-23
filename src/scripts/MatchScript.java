@@ -30,7 +30,7 @@ public class MatchScript extends AbstractScript {
     public void execute(int version,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution MatchScript version "+version+" //////////");
         if(version==0){
-            hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
+            hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE,HookNames.BASIC_DETECTION_DISABLE);
             if(basicDetection){
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             } else {

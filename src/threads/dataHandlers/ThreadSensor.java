@@ -20,7 +20,6 @@
 package threads.dataHandlers;
 
 import enums.ConfigInfoRobot;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import pfg.config.Config;
 import robot.EthWrapper;
 import sensor.Sensor;
@@ -391,7 +390,7 @@ public class ThreadSensor extends AbstractThread
     {
         if(gameState.isCapteursActivés()) {
             try {
-                robotPosAndOr = ethWrapper.updatePositionAndOrientation();
+                robotPosAndOr = ethWrapper.getCurrentPositionAndOrientation();
                 String[] valuesSReceived;
 
                 int attempts = 0;

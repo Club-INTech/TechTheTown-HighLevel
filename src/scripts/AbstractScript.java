@@ -20,7 +20,6 @@
 package scripts;
 
 import container.Service;
-import enums.ActuatorOrder;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -80,11 +79,11 @@ public abstract class AbstractScript implements Service
 		log.debug("Lancement de " + this.toString() + " version " + versionToExecute);
 		try
 		{
-			if(actualState.robot.getPosition().minusNewVector(entryPosition(versionToExecute, actualState.robot.getPositionFast()).getCenter()).squaredLength() > 40) {
+			actualState.robot.getEthWrapper().updateCurrentPositionAndOrientation();
+			if(actualState.robot.getPosition().minusNewVector(entryPosition(versionToExecute, actualState.robot.getPositionFast()).getCenter()).squaredLength() > 20) {
 				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getPosition()).getCenter());
 				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPositionFast()), actualState.table);
 			}
-			actualState.robot.useActuator(ActuatorOrder.SEND_POSITION,true);
 		}
 		catch (UnableToMoveException e)
 		{
