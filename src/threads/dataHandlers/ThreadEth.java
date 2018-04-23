@@ -523,7 +523,7 @@ public class ThreadEth extends AbstractThread implements Service {
         if (!exceptionHappened) {
             if (debug) {
                 try {
-                    outOrders.write(mess);
+                    outOrders.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + mess);
                 } catch (IOException e) {
                     log.debug("On n'arrive pas à écrire dans le fichier de debug orders");
                     e.printStackTrace();
