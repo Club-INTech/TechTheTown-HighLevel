@@ -474,12 +474,11 @@ public class ThreadEth extends AbstractThread implements Service {
 
     private void incrementCharID(){
         //On incrémente le charIDLastMessage d'une lettre
-        int intIDLastMessage = (int)this.charIDLastMessage+1;
+        this.charIDLastMessage+=1;
         //Si on a dépassé Z, on revient à A
-        if (intIDLastMessage==91){
-            intIDLastMessage=65;
+        if (charIDLastMessage>'Z'){
+            charIDLastMessage='A';
         }
-        this.charIDLastMessage = (char)(intIDLastMessage);
     }
 
     /**
