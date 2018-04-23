@@ -77,7 +77,7 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Timeout pour l'envoie de message
      */
-    private static final int TIMEOUT = 1000;
+    private static final int TIMEOUT = 100;
 
     /**
      * True si besoin de fichiers de debug
@@ -471,6 +471,17 @@ public class ThreadEth extends AbstractThread implements Service {
      * FONCTION COMMUNICATION & RUN (LISTENER) *
      *******************************************/
 
+
+    private void incrementCharID(){
+        //On incrémente le charIDLastMessage d'une lettre
+        int intIDLastMessage = (int)this.charIDLastMessage+1;
+        //Si on a dépassé Z, on revient à A
+        if (intIDLastMessage==91){
+            intIDLastMessage=65;
+        }
+        this.charIDLastMessage = (char)(intIDLastMessage);
+    }
+
     /**
      * Fonction pour envoyer un message au LL
      *
@@ -478,6 +489,8 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     public synchronized String[] communicate(int nb_line_response, String... message) {
         String mess = "";
+        //On réinitialise les buffers, de telle sorte qu'ils soient prêts pour le nouvel ordre
+        acknowledgementBuffer.clear();
         standardBuffer.clear();
         String LLResponse[] = new String[nb_line_response];
 
@@ -526,6 +539,12 @@ public class ThreadEth extends AbstractThread implements Service {
             try {
                 // On récupère la réponse du LL, qui a été mise dans le standardBuffer par le listener du run
 
+                /**
+                 * GROSSE HYPOTHESE ! ATTENTION LES CODEURS !
+                 * On considère que chaque ordre qui attend une réponse est un ordre qui n'a aucune influence sur le robot s'il est répété
+                 * (Exemple : ?xyo, f...)
+                 */
+
                 //On regarde combien de lignes on attend en réponse de la part du LL
                 for (int i = 0; i < nb_line_response; i++) {
                     int tries = 0;
@@ -543,6 +562,10 @@ public class ThreadEth extends AbstractThread implements Service {
                         tries += 1;
                         LLResponse[i] = waitAndGetResponse();
                         if (tries == 5) {
+                            /**
+                             * ICI A LIEU LA GROSSE HYPOTHESE : on renvoie un NOUVEL ORDRE au LL
+                             */
+                            incrementCharID();
                             //Si au bout de 5 fois, on n'a pas reçu de réponse, on throw une SocketException
                             log.critical("On n'a pas reçu les informations attendues par le LL, on renvoie l'ordre");
                             throw new SocketException();
@@ -585,12 +608,7 @@ public class ThreadEth extends AbstractThread implements Service {
         this.nbRepeatMessage = 0;
 
         //On incrémente le charIDLastMessage d'une lettre
-        int intIDLastMessage = (int)this.charIDLastMessage+1;
-        //Si on a dépassé Z, on revient à A
-        if (intIDLastMessage==91){
-            intIDLastMessage=65;
-        }
-        this.charIDLastMessage = (char)(intIDLastMessage);
+        incrementCharID();
 
         return LLResponse;
     }
