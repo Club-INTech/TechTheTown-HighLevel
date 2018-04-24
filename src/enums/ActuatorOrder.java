@@ -68,39 +68,6 @@ public enum ActuatorOrder implements MotionOrder
 	ENABLE_HOOK("eh"),
 	DISABLE_HOOK("dh"),
 
-	ACTIVE_LA_POMPE("alp",100),
-	DESACTIVE_LA_POMPE("dlp",250),
-
-	BAISSE_LE_BRAS_AVANT("blbAv",900),
-	BAISSE_LE_BRAS_AVANT_SLOW("blbAv",3000),
-	RELEVE_LE_BRAS_AVANT("rlbAv",900),
-	RELEVE_LE_BRAS_AVANT_SLOW("rlbAv",3000),
-	OUVRE_LA_PORTE_AVANT("olpAv",600),
-	FERME_LA_PORTE_AVANT("flpAv",600),
-	OUVRE_LA_PORTE_AVANT_UNPEU("olpAvp",150),
-	FERME_LA_PORTE_AVANT_UNPEU("flpAv",150),
-	ACTIVE_ELECTROVANNE_AVANT("aeAv",200),
-	DESACTIVE_ELECTROVANNE_AVANT("deAv",100),
-
-	BAISSE_LE_BRAS_ARRIERE("blbAr",900),
-	BAISSE_LE_BRAS_ARRIERE_SLOW("blbAr",3000),
-	RELEVE_LE_BRAS_ARRIERE("rlbAr",900),
-	RELEVE_LE_BRAS_ARRIERE_SLOW("rlbAr",3000),
-	FERME_LA_PORTE_ARRIERE("flpAr",600),
-	OUVRE_LA_PORTE_ARRIERE("olpAr",600),
-	OUVRE_LA_PORTE_ARRIERE_UNPEU("olpArp",150),
-	FERME_LA_PORTE_ARRIERE_UNPEU("flpAr",150),
-	ACTIVE_ELECTROVANNE_ARRIERE("aeAr",200),
-	DESACTIVE_ELECTROVANNE_ARRIERE("deAr",100),
-
-	ACTIVE_BRAS_AVANT_POUR_ABEILLE("blbAvbei",500),
-	ACTIVE_BRAS_ARRIERE_POUR_ABEILLE("blbArbei",500),
-
-	CHECK_CAPTEURS_CUBE_AVANT("ccAv",50),
-	CHECK_CAPTEURS_CUBE_ARRIERE("ccAr",50),
-
-
-
 	SLOW_FRONT_ARM("AXGs 0 175",50),
 	FAST_FRONT_ARM("AXGs 0 250",50),
 	SLOW_BACK_ARM("AXGs 1 175",50),
@@ -120,8 +87,8 @@ public enum ActuatorOrder implements MotionOrder
 	NO_ASSERV_SPEED("cv0"),
 	ASSERV_SPEED("cv1"),
 	DEBUG("pfdebug"),
-	BASIC_DETECTION_ENABLE("bde"),
-	BASIC_DETECTION_DISABLE("bdd"),
+	EMERGENCY_STOP("emergencyStop"),
+	RESUME_AFTER_EMERGENCY_STOP("resumeEmergencyStop"),
 
 
 /*			 _______________________
@@ -150,7 +117,13 @@ public enum ActuatorOrder implements MotionOrder
 	DIST_US_BACK_LEFT("usarg"),
 	DIST_US_FRONT_RIGHT("usavd"),
 	DIST_US_FRONT_LEFT("usavg"),
+	BASIC_DETECTION_ENABLE("bde"),
+	BASIC_DETECTION_DISABLE("bdd"),
+	SUS_ON("sus on",300),
+	SUS_OFF("sus off",300),
 
+	CHECK_CAPTEURS_CUBE_AVANT("ccAv",50),
+	CHECK_CAPTEURS_CUBE_ARRIERE("ccAr",50),
 
 /*			 _____________________
  * 		   *|                     |*
@@ -164,7 +137,7 @@ public enum ActuatorOrder implements MotionOrder
     //états contacteurs (0='non appuyé', 1='appuyé')
     ETAT_CONTACTEUR1("c1"),				//vaut 1 si l'ascenseur est en position haute
     ETAT_CONTACTEUR2("c2"),				//vaut 1 si l'ascenseur est en position basse
-    ETAT_CONTACTEUR3("c3");
+    ETAT_CONTACTEUR3("c3"),
 
 /*			____________________
  *		  *|					|*
@@ -172,13 +145,43 @@ public enum ActuatorOrder implements MotionOrder
  * 		  *|____________________|*
  *
  */
+	ACTIVE_LA_POMPE("alp",100),
+	DESACTIVE_LA_POMPE("dlp",250),
+
+	BAISSE_LE_BRAS_AVANT("blbAv",900),
+	BAISSE_LE_BRAS_AVANT_SLOW("blbAv",3000),
+	RELEVE_LE_BRAS_AVANT("rlbAv",900),
+	RELEVE_LE_BRAS_AVANT_SLOW("rlbAv",3000),
+	OUVRE_LA_PORTE_AVANT("olpAv",600),
+	FERME_LA_PORTE_AVANT("flpAv",600),
+	OUVRE_LA_PORTE_AVANT_UNPEU("olpAvp",150),
+	FERME_LA_PORTE_AVANT_UNPEU("flpAv",150),
+	ACTIVE_ELECTROVANNE_AVANT("aeAv",300),
+	DESACTIVE_ELECTROVANNE_AVANT("deAv",100),
+
+	BAISSE_LE_BRAS_ARRIERE("blbAr",900),
+	BAISSE_LE_BRAS_ARRIERE_SLOW("blbAr",3000),
+	RELEVE_LE_BRAS_ARRIERE("rlbAr",900),
+	RELEVE_LE_BRAS_ARRIERE_SLOW("rlbAr",3000),
+	FERME_LA_PORTE_ARRIERE("flpAr",600),
+	OUVRE_LA_PORTE_ARRIERE("olpAr",600),
+	OUVRE_LA_PORTE_ARRIERE_UNPEU("olpArp",150),
+	FERME_LA_PORTE_ARRIERE_UNPEU("flpAr",150),
+	ACTIVE_ELECTROVANNE_ARRIERE("aeAr",300),
+	DESACTIVE_ELECTROVANNE_ARRIERE("deAr",100),
+
+	ACTIVE_BRAS_AVANT_POUR_ABEILLE("blbAvbei",500),
+	ACTIVE_BRAS_ARRIERE_POUR_ABEILLE("blbArbei",500);
+
+
+
 	// TODO : Ajouter les ordres & ajuster les WaitForCompletion (durée des ordres)
 	/**
 	 *  chaine de caractère envoyée au travers de la liaison série
 	 */
 	private String serialOrder;
 
-	/** duurée de l'action en millisecondes */
+	/** durée de l'action en millisecondes */
 	private int duration;
 
 	/**

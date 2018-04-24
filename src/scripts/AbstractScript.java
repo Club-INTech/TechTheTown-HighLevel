@@ -20,14 +20,12 @@
 package scripts;
 
 import container.Service;
-import enums.ActuatorOrder;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import hook.HookFactory;
 import pfg.config.Config;
@@ -41,11 +39,11 @@ import utils.Log;
  * Les scripts héritants de cette classe peuvent être indifférement exécutés par un Robot ou un Robotchrono.
  * @author pf
  */
-public abstract class AbstractScript implements Service 
+public abstract class AbstractScript implements Service
 {
 	/**  système de log sur lequel écrire. */
 	protected static Log log;
-	
+
 	/**  le fichier de config a partir duquel le script pourra se configurer. */
 	protected static Config config;
 
@@ -55,7 +53,7 @@ public abstract class AbstractScript implements Service
 
 	/** HookFactory pour gérer les hooks */
 	protected static HookFactory hookFactory;
-	
+
 	/**
 	 * Constructeur à appeller lorsqu'un script héritant de la classe AbstractScript est instancié.
 	 * Le constructeur se charge de renseigner la hookFactory, le système de config et de log.
@@ -68,7 +66,7 @@ public abstract class AbstractScript implements Service
 		AbstractScript.log = log;
 		AbstractScript.hookFactory = hookFactory;
 	}
-		
+
 	/**
 	 * Va au point d'entrée du script (en utilisant le Pathfinding), puis l'exécute
 	 * @param versionToExecute la version du script
@@ -76,20 +74,16 @@ public abstract class AbstractScript implements Service
 	 * @throws UnableToMoveException losrque le robot veut se déplacer et que quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
 	 * @throws ExecuteException
 	 */
-	public void goToThenExec(int versionToExecute,GameState actualState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException,ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+	public void goToThenExec(int versionToExecute,GameState actualState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException,ImmobileEnnemyForOneSecondAtLeast {
 		// va jusqu'au point d'entrée de la version demandée
 		log.debug("Lancement de " + this.toString() + " version " + versionToExecute);
 		try
 		{
-			if(actualState.robot.getPosition().minusNewVector(entryPosition(versionToExecute, actualState.robot.getPositionFast()).getCenter()).squaredLength() > 40) {
-
+			actualState.robot.getEthWrapper().updateCurrentPositionAndOrientation();
+			if(actualState.robot.getPosition().minusNewVector(entryPosition(versionToExecute, actualState.robot.getPositionFast()).getCenter()).squaredLength() > 20) {
 				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getPosition()).getCenter());
-
-					actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPositionFast()), actualState.table);
-
-
+				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPositionFast()), actualState.table);
 			}
-			actualState.robot.useActuator(ActuatorOrder.SEND_POSITION,true);
 		}
 		catch (UnableToMoveException e)
 		{
@@ -119,7 +113,7 @@ public abstract class AbstractScript implements Service
 	 * @throws UnableToMoveException exception levée lorsque le robot ne peut se déplacer (décor ou obstacles détectés par capteurs)
 	 * @throws ExecuteException
 	 */
-	public abstract void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, BadVersionException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException;
+	public abstract void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, BadVersionException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast;
 
 	/**
 	 * Renvoie le score que peut fournir une version d'un script.
@@ -138,7 +132,7 @@ public abstract class AbstractScript implements Service
 	 * @return la position du point d'entrée
 	 */
 	public abstract Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException;
-	
+
 	/**
 	 * Méthode appelée à la fin du script si une exception a lieu.
 	 * Le repli des actionneurs est impératif à demander au sein de cette méthode : si un bras reste déployé en cours de match, il risque de se faire arracher !  
@@ -153,21 +147,21 @@ public abstract class AbstractScript implements Service
 	 * Fonction qui attend que l'ennemi détecté par les capteurs se dégage du chemin suivi par le robot
 	 * @param posRobot la position du robot
 	 * @return true si chemin dégagé, false sinon
-     */
+	 */
 	public boolean waitForEnnemy(GameState actualState, Vec2 posRobot, boolean forward)
 	{
 		// Attente d'une seconde
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        long time = System.currentTimeMillis();
-        
-        // Détermination du chemin suivi par le robot
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		long time = System.currentTimeMillis();
+
+		// Détermination du chemin suivi par le robot
 		int signe = forward ? 1 : -1;
 		Vec2 aim = posRobot.plusNewVector(new Vec2((int)(signe*300*Math.cos(actualState.robot.getOrientation())),(int)(signe*300*Math.sin(actualState.robot.getOrientation()))));
-		
+
 		// boucle d'attente de 4 secondes maximum
 		while(actualState.table.getObstacleManager().isDiscObstructed(aim, 100))
 		{
@@ -189,7 +183,7 @@ public abstract class AbstractScript implements Service
 
 	public void updateConfig() {
 	}
-	
+
 	/** Getter utilisé par l'IA
 	 * @param stateToConsider état de jeu actuel
 	 * @return les versions possibles du script*/

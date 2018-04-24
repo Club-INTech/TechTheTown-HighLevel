@@ -7,7 +7,6 @@ import exceptions.BadVersionException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -23,6 +22,7 @@ public class DeposeCubes extends AbstractScript {
     private int distancePenetrationZone; //on pénètre la zone de construction de cette distance
     private int dimensionporte;
     private int radius;
+    private boolean basicDetect;
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
@@ -37,10 +37,13 @@ public class DeposeCubes extends AbstractScript {
      * @throws UnableToMoveException
      */
     @Override
-    public void execute(int version, GameState state) throws ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+    public void execute(int version, GameState state) throws ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         //On se tourne vers la zone de construction
         log.debug("////////// Execution DeposeCubes version "+version+" //////////");
         Vec2 directionToGo=null;
+        if(basicDetect){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        }
         double prodScal=0;
         try {
             directionToGo = (this.entryPosition(version, state.robot.getPosition()).getCenter()).plusNewVector(new Vec2(0,-50)).minusNewVector(state.robot.getPosition());
@@ -65,16 +68,22 @@ public class DeposeCubes extends AbstractScript {
                 }
 
 
-                state.robot.turn(-Math.PI / 2);
+                state.robot.turnWithoutDetection(-Math.PI / 2,false,false);
                 state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
                 //On ouvre la porte
                 state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
 
-                state.robot.moveLengthwise(distancePenetrationZone);
+                state.robot.moveLengthwiseWithoutDetection(distancePenetrationZone,false);
 
                 //On recule de la largeur de la porte + de la longueur avancée dans la zone
                 state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                state.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte));
+                /*
+                on recule tout en détectant (si on est en basicDetection on va s'arrêter, vu qu'on l'a
+                pas désactivée au début du execute et qu'elle est réactivée à la fin des execute des autres
+                scripts et que tous les mouvements qu'on fait avant de reculer dans le déposeCube sont
+                without detection)
+                 */
+                state.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte),false);
 
                 //On ferme la porte
                 state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
@@ -110,13 +119,13 @@ public class DeposeCubes extends AbstractScript {
                 state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
                 state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
                 if (aDejaDeposeUneTour) {
-                    state.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte));
+                    state.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte),false);
                 }
                 else{
-                    state.robot.moveLengthwise(-distancePenetrationZone);
+                    state.robot.moveLengthwise(-distancePenetrationZone,false);
                 }
                 state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                state.robot.moveLengthwise(dimensionporte + distancePenetrationZone);
+                state.robot.moveLengthwiseWithoutDetection(dimensionporte + distancePenetrationZone,false);
                 state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
 
                 //On calcule les points
@@ -142,15 +151,16 @@ public class DeposeCubes extends AbstractScript {
                 }
 
 
-                state.robot.turn(Math.PI / 2);
+                state.robot.turnWithoutDetection(Math.PI / 2,false,false);
                 state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
                 //On ouvre la porte
                 state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
                 //On rentre dans la zone
-                state.robot.moveLengthwise(-distancePenetrationZone);
+                state.robot.moveLengthwiseWithoutDetection(-distancePenetrationZone,false);
                 //On recule de la largeur de la porte + de la longueur avancée dans la zone
                 state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                state.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte);
+                //on est orienté vers Pi/2 donc c'est là qu'on recule, d'où l'intérêt de détecter
+                state.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte,false);
                 //On ferme la porte
                 state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
                 aDejaDeposeUneTour=true;
@@ -180,13 +190,13 @@ public class DeposeCubes extends AbstractScript {
                 state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
                 state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
                 if (aDejaDeposeUneTour) {
-                    state.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte);
+                    state.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte,false);
                 }
                 else{
-                    state.robot.moveLengthwise(distancePenetrationZone);
+                    state.robot.moveLengthwise(distancePenetrationZone,false);
                 }
                 state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                state.robot.moveLengthwise(-(dimensionporte + distancePenetrationZone));
+                state.robot.moveLengthwiseWithoutDetection(-(dimensionporte + distancePenetrationZone),false);
                 state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
 
                 //On calcule les points
@@ -260,15 +270,16 @@ public class DeposeCubes extends AbstractScript {
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
         //Zone de dépose des cubes proche de la base
+        int shift = 100;
         if (version==0) {
-            int xentry = 970;
+            int xentry = 970 + shift;
             int yentry = 150 + radius;
             Vec2 position = new Vec2(xentry, yentry);
             return new Circle(position);
         }
         //Zone de dépose des cubes proche du pattern
         else if (version==1) {
-            int xEntry = 600;
+            int xEntry = 600 + shift;
             int yEntry = 150 + radius;
             Vec2 positionentree = new Vec2(xEntry, yEntry);
             return new Circle(positionentree);
@@ -299,5 +310,6 @@ public class DeposeCubes extends AbstractScript {
         distancePenetrationZone = config.getInt(ConfigInfoRobot.DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES);
         dimensionporte = config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
         radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+        basicDetect=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
     }
 }

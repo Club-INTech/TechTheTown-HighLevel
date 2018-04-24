@@ -252,24 +252,20 @@ public class Log implements Service
 	@Override
 	public void updateConfig()
 	{
-		try
-		{
+		try {
 			// vérifie s'il faut afficher les logs a l'écran
 			printLogs = config.getBoolean(ConfigInfoRobot.PRINT_LOG);
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			e.printStackTrace();
 			critical(e);
 		}
-		try
-		{
+		try {
 			// vérifie s'il faut écrire les logs dans un fichier
 			saveLogs = config.getBoolean(ConfigInfoRobot.SAVE_LOG);
 			// TODO: mettre ici ouverture/fermeture de fichier si la valeur de sauvegarde_fichier change
 		}
-		catch(Exception e)
-		{
+		catch(Exception e) {
 			e.printStackTrace();
 			critical(e);
 		}

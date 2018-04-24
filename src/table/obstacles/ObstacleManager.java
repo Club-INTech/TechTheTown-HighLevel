@@ -39,7 +39,7 @@ import java.util.ArrayList;
  * Traite tout ce qui concerne la gestion des obstacles sur la table.
  * Les obstacles peuvent être fixes (bordures de la table par exemple) ou bien mobile (et alors considérés temporaires).
  * Un robot ennemi est une obstacle mobile par exemple. 
- * 
+ *
  * @author pf,
  */
 
@@ -47,26 +47,26 @@ public class ObstacleManager implements Service
 {
 
 	/** système de log sur lequel écrire. */
-    private Log log;
+	private Log log;
 
 	/** endroit ou lire la configuration du robot */
 	private Config config;
 
-    /** Ensemble des obstacles mobiles/temporaires se trouvant sur la table */
-    private ArrayList<ObstacleProximity> mMobileObstacles;
+	/** Ensemble des obstacles mobiles/temporaires se trouvant sur la table */
+	private ArrayList<ObstacleProximity> mMobileObstacles;
 
-    /** Ensemble des obstacles circulaires */
-    public ArrayList<ObstacleCircular> mCircularObstacle;
+	/** Ensemble des obstacles circulaires */
+	public ArrayList<ObstacleCircular> mCircularObstacle;
 
-    /**Robot(s) Ennemi(s) qui bouge plus au bout d'une seconde, c'est une liste
+	/**Robot(s) Ennemi(s) qui bouge plus au bout d'une seconde, c'est une liste
 	 * qui sera filée au graphe pour qu'il puise l'ajouter comme obstacle**/
 	public ArrayList<ObstacleCircular> mEnnemies;
 
 	/** Ensemble des obstacles mobiles/temporaires a tester pour les placer sur la table */
 	private ArrayList<ObstacleProximity> mUntestedMobileObstacles;
 
-    /** Ensembles des lignes modélisant les bords de la table */
-    private ArrayList<Segment> mLines;
+	/** Ensembles des lignes modélisant les bords de la table */
+	private ArrayList<Segment> mLines;
 
 	/** Les obstacles rectangulaires de la table */
 	public ArrayList<ObstacleRectangular> mRectangles;
@@ -82,13 +82,13 @@ public class ObstacleManager implements Service
 	/** Rayon du robot adverse
 	 * Override par la config */
 	private int mEnnemyRadius;
-	
+
 	// TODO virer : juste du debug / interface graphique
 	private int radiusDetectionDisc=0;
 	private Vec2 positionDetectionDisc=new Vec2(0,0);
 
 	/**	Temps donné aux obstacles pour qu'ils soit vérifiés */
-	private final int timeToTestObstacle = 1000;
+	private final int timeToTestObstacle = 500;
 
 	/** Temps de vie d'un robot ennemi
 	 * Override par la config */
@@ -106,31 +106,31 @@ public class ObstacleManager implements Service
 	private BufferedWriter out;
 
 	/**
-     * Instancie un nouveau gestionnaire d'obstacle.
-     * @param log le système de log sur lequel écrire.
-     * @param config l'endroit ou lire la configuration du robot
-     */
-    public ObstacleManager(Log log, Config config)
-    {
-        this.log = log;
-        this.config = config;
-        
-        //creation des listes qui contiendront les differents types d'obstacles
-        mMobileObstacles = new ArrayList<ObstacleProximity>();
-        mCircularObstacle = new ArrayList<ObstacleCircular>();
-        mLines = new ArrayList<Segment>();
+	 * Instancie un nouveau gestionnaire d'obstacle.
+	 * @param log le système de log sur lequel écrire.
+	 * @param config l'endroit ou lire la configuration du robot
+	 */
+	public ObstacleManager(Log log, Config config)
+	{
+		this.log = log;
+		this.config = config;
+		updateConfig();
+
+		//creation des listes qui contiendront les differents types d'obstacles
+		mMobileObstacles = new ArrayList<ObstacleProximity>();
+		mCircularObstacle = new ArrayList<ObstacleCircular>();
+		mLines = new ArrayList<Segment>();
 		mRectangles = new ArrayList<ObstacleRectangular>();
 		mEnnemies=new ArrayList<>();
 		mUntestedMobileObstacles= new ArrayList<ObstacleProximity>();
 
-		updateConfig();
 		initObstacle();
-      		
-      	// Bords de la table
-      	mLines.add(new Segment(new Vec2(-1500 + mRobotRadius, 0 + mRobotRadius), new Vec2(1500 - mRobotRadius, 0 + mRobotRadius)));
-      	mLines.add(new Segment(new Vec2(1500 - mRobotRadius, 0 + mRobotRadius), new Vec2(1500 - mRobotRadius, 2000 - mRobotRadius)));
-      	mLines.add(new Segment(new Vec2(1500 - mRobotRadius, 2000 - mRobotRadius), new Vec2(-1500 + mRobotRadius, 2000 - mRobotRadius)));
-      	mLines.add(new Segment(new Vec2(-1500 + mRobotRadius, 2000 - mRobotRadius), new Vec2(-1500 + mRobotRadius, 0 + mRobotRadius)));
+
+		// Bords de la table
+		mLines.add(new Segment(new Vec2(-1500 + mRobotRadius, 0 + mRobotRadius), new Vec2(1500 - mRobotRadius, 0 + mRobotRadius)));
+		mLines.add(new Segment(new Vec2(1500 - mRobotRadius, 0 + mRobotRadius), new Vec2(1500 - mRobotRadius, 2000 - mRobotRadius)));
+		mLines.add(new Segment(new Vec2(1500 - mRobotRadius, 2000 - mRobotRadius), new Vec2(-1500 + mRobotRadius, 2000 - mRobotRadius)));
+		mLines.add(new Segment(new Vec2(-1500 + mRobotRadius, 2000 - mRobotRadius), new Vec2(-1500 + mRobotRadius, 0 + mRobotRadius)));
 		try {
 			File file = new File("debugDetect.txt");
 
@@ -159,7 +159,7 @@ public class ObstacleManager implements Service
 
 		//mRectangles.add(new ObstacleRectangular(new Vec2(1300, 325), 400 + 2*mRobotRadius, 650 + 2*mRobotRadius)); //-1446, 678, 108, 472
 		mRectangles.add(new ObstacleRectangular(new Vec2(-1300, 325),  400 + 2*mRobotRadius, 650 + 2*mRobotRadius));
-        mRectangles.add(new ObstacleRectangular(new Vec2(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
+		mRectangles.add(new ObstacleRectangular(new Vec2(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
 
 		/** Tas de cubes*/
 		int d = 10;
@@ -182,61 +182,65 @@ public class ObstacleManager implements Service
 	 * @param lifetime durée de vie (en ms) de l'obstace a ajouter
 	 * TODO A réadapter à l'année en cours
 	 */
-	public synchronized void addObstacle(final Vec2 position, final int radius, final int lifetime)
-	{
+	public synchronized void addObstacle(final Vec2 position, final int radius, final int lifetime) {
 		//vérification que l'on ne détecte pas un obstacle "normal"
-		if (position.getX()>-1500+mEnnemyRadius-50 && position.getX()<1500- mEnnemyRadius+50 && position.getY() >mEnnemyRadius-80 && position.getY()<2000-mEnnemyRadius+80  // Hors de la table
-				&& !(position.getX() > 600 && position.getY() < 500)) // Dans la zone de départ
+		if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius && position.getY() > mEnnemyRadius && position.getY() < 2000 - mEnnemyRadius  // Hors de la table
+				&& !(position.getX() > 1100 - mEnnemyRadius && position.getY() < 600 + mEnnemyRadius)) // Dans la zone de départ
 		// TODO: Prévoir les cas où l'on détecte des éléments de jeu dans la condition
 		{
-			boolean isThereAnObstacleIntersecting=false;
-			for (int i = 0; i<mUntestedMobileObstacles.size(); i++)
-			{
-				ObstacleProximity obstacle = mUntestedMobileObstacles.get(i);
+			boolean isThereAnObstacleIntersecting = false;
+			for (ObstacleProximity obstacleMobileUntested : mUntestedMobileObstacles) {
+				ObstacleProximity obstacle = obstacleMobileUntested;
 
 				//si l'obstacle est deja dans la liste des obstacles non-testés on l'ajoute dans la liste des obstacles
-				if(obstacle.position.distance(position)<(obstacle.getRadius()+radius)/2)
-				{
-					mUntestedMobileObstacles.get(i).numberOfTimeDetected++;
-					mUntestedMobileObstacles.get(i).position.set(position);
-					mUntestedMobileObstacles.get(i).setRadius(radius);
-					mUntestedMobileObstacles.get(i).setLifeTime(lifetime);
+				if (obstacle.getPosition().distance(position) < obstacle.getRadius() / 3) {
+					isThereAnObstacleIntersecting = true;
+					obstacleMobileUntested.numberOfTimeDetected++;
+					obstacleMobileUntested.setPosition(position);
+					obstacleMobileUntested.setRadius(radius);
+					obstacleMobileUntested.setLifeTime(lifetime);
 
 					// si on l'a deja vu plein de fois
-					if(mUntestedMobileObstacles.get(i).numberOfTimeDetected >= mUntestedMobileObstacles.get(i).getMaxNumberOfTimeDetected()) {
-						mUntestedMobileObstacles.get(i).numberOfTimeDetected = mUntestedMobileObstacles.get(i).getMaxNumberOfTimeDetected();
+					if (obstacleMobileUntested.numberOfTimeDetected >= obstacleMobileUntested.getMaxNumberOfTimeDetected()) {
+						obstacleMobileUntested.numberOfTimeDetected = obstacleMobileUntested.getMaxNumberOfTimeDetected();
 					}
 
-					// si on valide sa vision
-					if(mUntestedMobileObstacles.get(i).numberOfTimeDetected >= mUntestedMobileObstacles.get(i).getThresholdConfirmedOrUnconfirmed())
-					{
-						if(crashRobot == 0 || mCircularObstacle.get(0).getPosition().distance(obstacle.getPosition()) > (int)((double)(mEnnemyRadius + mRobotRadius)/2.0)) {
-							isThereAnObstacleIntersecting = true;
-							mUntestedMobileObstacles.get(i).setLifeTime(defaultLifetime);
-							mMobileObstacles.add(mUntestedMobileObstacles.get(i));
-							mUntestedMobileObstacles.remove(i);
+					// si on valide sa vision et qu'il n'y a pas d'intersection avec un obstacle qui existe déjà
+					if (obstacleMobileUntested.numberOfTimeDetected >= obstacleMobileUntested.getThresholdConfirmedOrUnconfirmed()) {
+						boolean intersection=false;
+						for(ObstacleCircular obstacleCircularFixe : mCircularObstacle) {
+							if(obstacleMobileUntested.getCircle().isSuperposedWith(obstacleCircularFixe.getCircle())){
+								intersection=true;
+								break;
+							}
+						}
+						if(!intersection){
+							obstacleMobileUntested.setLifeTime(defaultLifetime);
+							mMobileObstacles.add(obstacleMobileUntested);
+							mUntestedMobileObstacles.remove(obstacleMobileUntested);
 						}
 					}
 				}
 			}
 
 			// on vérifie si l'on ne voit pas un obstacle confirmé déjà présent
-			for(int i = 0; i<mMobileObstacles.size(); i++)
-			{
-				ObstacleProximity obstacle = mMobileObstacles.get(i);
-				if(obstacle.position.distance(position) < obstacle.getRadius()+radius && (crashRobot == 0 || mMobileObstacles.get(0).getPosition().distance(obstacle.getPosition()) > (mEnnemyRadius + mRobotRadius)/2))
-				{
-					isThereAnObstacleIntersecting=true;
+			for (ObstacleProximity obstacleMobile : mMobileObstacles) {
+				ObstacleProximity obstacle = obstacleMobile;
+				if (obstacle.getPosition().distance(position) < obstacle.getRadius() / 3) {
+					isThereAnObstacleIntersecting = true;
 
-					mMobileObstacles.get(i).numberOfTimeDetected++;
-					mMobileObstacles.get(i).position.set(position);
-					mMobileObstacles.get(i).setRadius(radius);
-					mMobileObstacles.get(i).setLifeTime(defaultLifetime);
+					obstacleMobile.numberOfTimeDetected++;
+					obstacleMobile.setPosition(position);
+					obstacleMobile.setRadius(radius);
+					obstacleMobile.setLifeTime(defaultLifetime);
 
 					// si on l'a deja vu plein de fois
-					if(mMobileObstacles.get(i).numberOfTimeDetected >= mMobileObstacles.get(i).getMaxNumberOfTimeDetected())
-						mMobileObstacles.get(i).numberOfTimeDetected = mMobileObstacles.get(i).getMaxNumberOfTimeDetected();
+					if (obstacleMobile.numberOfTimeDetected >= obstacleMobile.getMaxNumberOfTimeDetected()) {
+						obstacleMobile.numberOfTimeDetected = obstacleMobile.getMaxNumberOfTimeDetected();
+					}
 				}
+
+
 			}
 			if (!isThereAnObstacleIntersecting) {
 				mUntestedMobileObstacles.add(new ObstacleProximity(new Circle(position, radius), timeToTestObstacle));
@@ -246,9 +250,14 @@ public class ObstacleManager implements Service
     		 *on ne detecte pas les plots ni les gobelets (et si on les detectes on prefere ne pas prendre le risque et on les evites)
     		 * et si on detecte une deuxieme fois l'ennemi on rajoute un obstacle sur lui
     		 */
+		/*
+		On vérifie si l'obstacle mobile confirmé qu'on a détecté n'est pas un élément de jeu,
+		si c'est le cas, on le remove de la liste des obstacles mobiles confirmés
+		 */
+
+
 		}
 	}
-
 	/**
 	 * Supprime du gestionnaire tout les obstacles dont la date de péremption est antérieure à la date fournie
 	 */
@@ -259,14 +268,16 @@ public class ObstacleManager implements Service
 			if(mMobileObstacles.get(i).getOutDatedTime() < System.currentTimeMillis())
 			{
 				log.debug("Retire l'obstacle :" + mMobileObstacles.get(i).getPosition());
-				mMobileObstacles.remove(i--);
+				mMobileObstacles.remove(i);
+				i--;
 			}
 
 		// enlève les obstacles en attente s'ils sont périmés
 		for(int i = 0; i < mUntestedMobileObstacles.size(); i++)
 			if(mUntestedMobileObstacles.get(i).getOutDatedTime() < System.currentTimeMillis())
 			{
-				mUntestedMobileObstacles.remove(i--);
+				mUntestedMobileObstacles.remove(i);
+				i--;
 			}
 	}
 
@@ -338,6 +349,7 @@ public class ObstacleManager implements Service
 			throw e;
 
 		}
+
 	}
 
 
@@ -356,7 +368,7 @@ public class ObstacleManager implements Service
 			//si aucun ennemi n'est détecté, on suppose que l'ennemi le plus proche est à 1m)
 
 			int distanceToClosestEnemy = 10000000;
-			int distanceToEnemyTested=10000000 ;
+			int distanceToEnemyTested=10000000;
 
 			ObstacleProximity closestEnnemy = null;
 
@@ -376,6 +388,7 @@ public class ObstacleManager implements Service
 					closestEnnemy = mMobileObstacles.get(i);
 				}
 			}
+
 			return closestEnnemy;
 		}
 		catch(IndexOutOfBoundsException e)
@@ -396,22 +409,17 @@ public class ObstacleManager implements Service
 		try
 		{
 			//si aucun ennemi n'est détecté, on suppose que l'ennemi le plus proche est à 1m)
-
 			int squaredDistanceToClosestEnemy = 10000000;
-			int squaredDistanceToEnemyTested=10000000 ;
-
+			int squaredDistanceToEnemyTested;
 			ObstacleCircular closestEnnemy = null;
-
-			if(mMobileObstacles.size() == 0 && mUntestedMobileObstacles.size()==0)
+			if(mMobileObstacles.size() == 0) {
 				return 1000;
-
-
+			}
 			//trouve l'ennemi le plus proche parmis les obstacles confirmés
 			for(int i=0; i<mMobileObstacles.size(); i++)
 			{
 				Vec2 ennemyRelativeCoords = mMobileObstacles.get(i).getPosition().minusNewVector(position);
 				squaredDistanceToEnemyTested = ennemyRelativeCoords.squaredLength();
-
 				if(squaredDistanceToEnemyTested < squaredDistanceToClosestEnemy)
 				{
 					squaredDistanceToClosestEnemy = squaredDistanceToEnemyTested;
@@ -419,16 +427,18 @@ public class ObstacleManager implements Service
 				}
 			}
 
-			if(squaredDistanceToClosestEnemy <= 0)
+			if(squaredDistanceToClosestEnemy <= 0) {
 				return 0;
+			}
 
 			if(closestEnnemy != null)
 			{
 				//log.debug("Position de l'ennemi le plus proche, non testé, d'après distanceToClosestEnnemy: "+mUntestedMobileObstacles.get(indexOfClosestEnnemy).getPosition(), this);
-				return (int)Math.sqrt((double)squaredDistanceToClosestEnemy) - mRobotRadius - closestEnnemy.getRadius();
+				return (int)Math.sqrt((double)squaredDistanceToClosestEnemy) - closestEnnemy.getRadius();
 			}
-			else
-				return 10000;
+			else {
+				return 1000;
+			}
 		}
 		catch(IndexOutOfBoundsException e)
 		{
@@ -446,10 +456,12 @@ public class ObstacleManager implements Service
 	public boolean isEnnemyForwardOrBackWard(int distance, Vec2 pos, Vec2 aim, double orientation){
 
 		try {
-			Obstacle closestEnnemy = getClosestEnnemy(pos);
+			ObstacleCircular closestEnnemy = getClosestEnnemy(pos);
 			if (closestEnnemy == null){
 				return false;
 			}
+
+			int obstacleRadius=closestEnnemy.getRadius();
 
 			out.newLine();
 			out.write("Position de l'ennemi le plus proche (référentiel de la table) :" + closestEnnemy.getPosition());
@@ -471,7 +483,8 @@ public class ObstacleManager implements Service
 			out.newLine();
 			out.write("Position du robot (table) :" + pos);
 
-			if (Math.abs(ennemyPos.getY()) < (mEnnemyRadius + mRobotRadius + 20) && Math.abs(ennemyPos.getX()) < (distance + mEnnemyRadius + mRobotRadius)) {
+			if (Math.abs(ennemyPos.getY()) < (obstacleRadius + 10) &&
+					Math.abs(ennemyPos.getX()) < (distance + obstacleRadius)){
 				out.newLine();
 				out.write("Condition rectangle vérifiée");
 				out.newLine();
@@ -613,10 +626,10 @@ public class ObstacleManager implements Service
 	 */
 	public synchronized boolean isPositionInObstacle(Vec2 pos, Obstacle obstacle)
 	{
-		if(obstacle instanceof ObstacleCircular)
+		if(obstacle instanceof ObstacleCircular || obstacle instanceof ObstacleProximity)
 		{
 			ObstacleCircular obstacleCircular = (ObstacleCircular)obstacle;
-			return pos.minusNewVector(obstacle.getPosition()).getR() < ((ObstacleCircular) obstacle).getRadius();
+			return pos.minusNewVector(obstacle.getPosition()).getR() < obstacleCircular.getRadius();
 		}
 		if(obstacle instanceof ObstacleRectangular)
 		{
@@ -626,8 +639,9 @@ public class ObstacleManager implements Service
 					&& pos.getY()<(obstacleRectangular.position.getY()+(obstacleRectangular.sizeY/2))
 					&& pos.getY()>(obstacleRectangular.position.getY()-(obstacleRectangular.sizeY/2));
 		}
-		else
+		else {
 			throw new IllegalArgumentException();
+		}
 	}
 
 	/**
@@ -652,26 +666,26 @@ public class ObstacleManager implements Service
 
 
 	/**
-     * Rend le gestionnaire d'obstacle fourni en argument explicite égal a ce gestionnaire.
-     * @param other les gestionnaire a modifier
-     */
-    public void copy(ObstacleManager other)
-    {
-    	//TODO innutilise
-    }
+	 * Rend le gestionnaire d'obstacle fourni en argument explicite égal a ce gestionnaire.
+	 * @param other les gestionnaire a modifier
+	 */
+	public void copy(ObstacleManager other)
+	{
+		//TODO innutilise
+	}
 
-    /**
-     *  Cette instance est elle dans le même état que celle fournie en argument explicite ?
-     *
-     * @param other l'autre instance a comparer
-     * @return true, si les deux instances sont dans le meme etat
-     */
-    public boolean equals(ObstacleManager other)
-    {
-    	//TODO inutilise
-    	boolean IDontKnow = false;
-        return IDontKnow;
-    }
+	/**
+	 *  Cette instance est elle dans le même état que celle fournie en argument explicite ?
+	 *
+	 * @param other l'autre instance a comparer
+	 * @return true, si les deux instances sont dans le meme etat
+	 */
+	public boolean equals(ObstacleManager other)
+	{
+		//TODO inutilise
+		boolean IDontKnow = false;
+		return IDontKnow;
+	}
 
 	/**
 	 * True si le robot est dans la table
@@ -679,7 +693,7 @@ public class ObstacleManager implements Service
 	 * @return
 	 */
 	public boolean isRobotInTable(Vec2 position){
-    	return ((Math.abs(position.getX())+mRobotRadius) < 1500 && (Math.abs(position.getY() - 1000)+mRobotRadius) < 1000);
+		return ((Math.abs(position.getX())+mRobotRadius) < 1500 && (Math.abs(position.getY() - 1000)+mRobotRadius) < 1000);
 	}
 
 
@@ -690,13 +704,13 @@ public class ObstacleManager implements Service
 
 
 	/** Utilis� par le pathfinding.
-     * Retourne tout les les obstacles temporaires/mobiles. (détectés par la balise laser, les capteurs de distance, etc.)
-     * @return la liste des obstacles temporaires/mobiles de la table
-     */
-    public ArrayList<ObstacleProximity> getMobileObstacles()
-    {
-        return mMobileObstacles;
-    }
+	 * Retourne tout les les obstacles temporaires/mobiles. (détectés par la balise laser, les capteurs de distance, etc.)
+	 * @return la liste des obstacles temporaires/mobiles de la table
+	 */
+	public ArrayList<ObstacleProximity> getMobileObstacles()
+	{
+		return mMobileObstacles;
+	}
 
 	/**
 	 * Utilisé pour les tests.
@@ -713,24 +727,24 @@ public class ObstacleManager implements Service
 	{
 		return mUntestedMobileObstacles;
 	}
-    
-    /** Utilis� par le pathfinding.
-     * Retourne tout les les obstacles fixes de la table.
-     * @return la liste des obstacles fixes de la table
-     */
-    public ArrayList<ObstacleCircular> getmCircularObstacle()
-    {
-        return mCircularObstacle;
-    }
-    
-    /**
-     * @return la liste des lignes formant les bords des obstacles sous forme de segments
-     */
+
+	/** Utilis� par le pathfinding.
+	 * Retourne tout les les obstacles fixes de la table.
+	 * @return la liste des obstacles fixes de la table
+	 */
+	public ArrayList<ObstacleCircular> getmCircularObstacle()
+	{
+		return mCircularObstacle;
+	}
+
+	/**
+	 * @return la liste des lignes formant les bords des obstacles sous forme de segments
+	 */
 	public ArrayList<Segment> getLines()
 	{
 		return mLines;
 	}
-	
+
 	/**
 	 * @return la liste des rectangles formant les obstacles rectangulaires
 	 */
@@ -738,7 +752,7 @@ public class ObstacleManager implements Service
 	{
 		return mRectangles;
 	}
-	
+
 	/**
 	 * @return le rayon de notre robot
 	 */
@@ -762,33 +776,33 @@ public class ObstacleManager implements Service
 	}
 
 	/**
-     * Change le position d'un robot adverse.
-     *
-     * @param ennemyID numéro du robot
-     * @param position nouvelle position du robot
-     */
-    public synchronized void setEnnemyNewLocation(int ennemyID, final Vec2 position)
-    {
-    	//TODO innutilise
-    	//changer la position de l'ennemi demandé
-    	//cela sera utilise par la strategie, la methode sera ecrite si besoin
-    	mMobileObstacles.get(ennemyID).setPosition(position);
-    }
-    
-    /**
-     * Utilis� par le thread de stratégie. (pas implemente : NE PAS UTILISER!!!)
-     * renvoie la position du robot ennemi voulu sur la table.
-     * @param ennemyID l'ennemi dont on veut la position
-     *
-     * @return la position de l'ennemi spécifié
-     */
-    public Vec2 getEnnemyLocation(int ennemyID)
-    {
-    	//TODO innutilise
-    	//donner la position de l'ennemi demandé
-    	//cela sera utilise par la strategie, la methode sera ecrite si besoin
-        return  mMobileObstacles.get(ennemyID).position;
-    }
+	 * Change le position d'un robot adverse.
+	 *
+	 * @param ennemyID numéro du robot
+	 * @param position nouvelle position du robot
+	 */
+	public synchronized void setEnnemyNewLocation(int ennemyID, final Vec2 position)
+	{
+		//TODO innutilise
+		//changer la position de l'ennemi demandé
+		//cela sera utilise par la strategie, la methode sera ecrite si besoin
+		mMobileObstacles.get(ennemyID).setPosition(position);
+	}
+
+	/**
+	 * Utilis� par le thread de stratégie. (pas implemente : NE PAS UTILISER!!!)
+	 * renvoie la position du robot ennemi voulu sur la table.
+	 * @param ennemyID l'ennemi dont on veut la position
+	 *
+	 * @return la position de l'ennemi spécifié
+	 */
+	public Vec2 getEnnemyLocation(int ennemyID)
+	{
+		//TODO innutilise
+		//donner la position de l'ennemi demandé
+		//cela sera utilise par la strategie, la methode sera ecrite si besoin
+		return  mMobileObstacles.get(ennemyID).position;
+	}
 
 	/**
 	 * Debug / interface graphique
@@ -823,92 +837,87 @@ public class ObstacleManager implements Service
 
 	/**
 	 * Vérifie si la position donnée est dégagée ou si elle est dans l'un des obstacles sur la table (tous les obstacles)
-     *
-     * @param position la position a vérifier
-     * @return true, si la position est dans un obstacle
-     */
-    public synchronized boolean isObstructed(Vec2 position)
-    {
-    	boolean isObstructed = false;
-    	for(int i=0; i<mMobileObstacles.size(); i++){
-			if (isPositionInObstacle(position, mMobileObstacles.get(i))) {
-				return true;
-			}
-		}
-    	for(int i = 0; i< mCircularObstacle.size(); i++) {
+	 *
+	 * @param position la position a vérifier
+	 * @return true, si la position est dans un obstacle
+	 */
+	public synchronized boolean isObstructed(Vec2 position)
+	{
+		boolean isObstructed = false;
+		for(int i = 0; i< mCircularObstacle.size(); i++) {
 			if (isPositionInObstacle(position, mCircularObstacle.get(i))) {
 				return true;
 			}
 		}
-    	for(int i=0; i<mRectangles.size(); i++){
-    		if (isPositionInObstacle(position, mRectangles.get(i))){
-    			return true;
+		for(int i=0; i<mRectangles.size(); i++){
+			if (isPositionInObstacle(position, mRectangles.get(i))){
+				return true;
 			}
 		}
-        return isObstructed;
-    }
-    
-    /**
-     *  On enlève les obstacles présents sur la table virtuelle mais non detectés
-     * @param position 
-     * @param orientation 
-     * @param detectionRadius 
-     * @param detectionAngle 
-     *  @return true si on a enlevé un obstacle, false sinon
-     */
-    public synchronized boolean removeNonDetectedObstacles(Vec2 position, double orientation, double detectionRadius, double detectionAngle)
-    {
+		return isObstructed;
+	}
+
+	/**
+	 *  On enlève les obstacles présents sur la table virtuelle mais non detectés
+	 * @param position
+	 * @param orientation
+	 * @param detectionRadius
+	 * @param detectionAngle
+	 *  @return true si on a enlevé un obstacle, false sinon
+	 */
+	public synchronized boolean removeNonDetectedObstacles(Vec2 position, double orientation, double detectionRadius, double detectionAngle)
+	{
 		boolean obstacleDeleted=false;
 		//check non testés ;--;et si <=0 remove
 		// check testés ; -- ; et si <maxnon goto nonteste  remove de testés
-		
-		
-    	//parcours des obstacles
+
+
+		//parcours des obstacles
 		for(int i = 0; i < mUntestedMobileObstacles.size(); i++)
-    	{
-    		Vec2 positionEnnemy = mUntestedMobileObstacles.get(i).position;
-    		int ennemyRay = mUntestedMobileObstacles.get(i).getRadius();
-    		// On verifie que l'ennemi est dans le cercle de detection actuel
-    		if((positionEnnemy.distance(position) < (detectionRadius+ennemyRay)*(detectionRadius+ennemyRay)))
-    		{
-    			if(isEnnemyInCone(positionEnnemy, position, detectionRadius, orientation,  detectionAngle, ennemyRay) )
-    			{
-    				mUntestedMobileObstacles.get(i).numberOfTimeDetected--;
-    			
-    				if(mUntestedMobileObstacles.get(i).numberOfTimeDetected <= 0)
-    				{
-    					mUntestedMobileObstacles.remove(i--);
-	    				obstacleDeleted=true;
-	    				log.debug("Ennemi untested en "+positionEnnemy+" enlevé !");
-    				}
-    			}
-    		}
-    	}
-    	for(int i = 0; i < mMobileObstacles.size(); i++)
-    	{
-    		Vec2 positionEnnemy = mMobileObstacles.get(i).position;
-    		int ennemyRay = mMobileObstacles.get(i).getRadius();
-    		// On verifie que l'ennemi est dans le cercle de detection actuel
-    		if((positionEnnemy.distance(position) < (detectionRadius+ennemyRay)*(detectionRadius+ennemyRay)))
-    		{
-    			if(isEnnemyInCone(positionEnnemy, position, detectionRadius, orientation,  detectionAngle, ennemyRay) )
-    			{
-    				mMobileObstacles.get(i).numberOfTimeDetected--;
-    			
-    				if(mMobileObstacles.get(i).numberOfTimeDetected < mMobileObstacles.get(i).getThresholdConfirmedOrUnconfirmed())
-    				{
-    					mMobileObstacles.get(i).setLifeTime(2000);
-        				mUntestedMobileObstacles.add(mMobileObstacles.get(i));
-	    				mMobileObstacles.remove(i--);
-	    				
-	    				obstacleDeleted=true;
-	    				log.debug("Ennemi en "+positionEnnemy+" enlevé !");
-    				}
-    			}
-    		}
-    	}
-    	return obstacleDeleted;
-    }
+		{
+			Vec2 positionEnnemy = mUntestedMobileObstacles.get(i).position;
+			int ennemyRay = mUntestedMobileObstacles.get(i).getRadius();
+			// On verifie que l'ennemi est dans le cercle de detection actuel
+			if((positionEnnemy.distance(position) < (detectionRadius+ennemyRay)*(detectionRadius+ennemyRay)))
+			{
+				if(isEnnemyInCone(positionEnnemy, position, detectionRadius, orientation,  detectionAngle, ennemyRay) )
+				{
+					mUntestedMobileObstacles.get(i).numberOfTimeDetected--;
+
+					if(mUntestedMobileObstacles.get(i).numberOfTimeDetected <= 0)
+					{
+						mUntestedMobileObstacles.remove(i--);
+						obstacleDeleted=true;
+						log.debug("Ennemi untested en "+positionEnnemy+" enlevé !");
+					}
+				}
+			}
+		}
+		for(int i = 0; i < mMobileObstacles.size(); i++)
+		{
+			Vec2 positionEnnemy = mMobileObstacles.get(i).position;
+			int ennemyRay = mMobileObstacles.get(i).getRadius();
+			// On verifie que l'ennemi est dans le cercle de detection actuel
+			if((positionEnnemy.distance(position) < (detectionRadius+ennemyRay)*(detectionRadius+ennemyRay)))
+			{
+				if(isEnnemyInCone(positionEnnemy, position, detectionRadius, orientation,  detectionAngle, ennemyRay) )
+				{
+					mMobileObstacles.get(i).numberOfTimeDetected--;
+
+					if(mMobileObstacles.get(i).numberOfTimeDetected < mMobileObstacles.get(i).getThresholdConfirmedOrUnconfirmed())
+					{
+						mMobileObstacles.get(i).setLifeTime(2000);
+						mUntestedMobileObstacles.add(mMobileObstacles.get(i));
+						mMobileObstacles.remove(i--);
+
+						obstacleDeleted=true;
+						log.debug("Ennemi en "+positionEnnemy+" enlevé !");
+					}
+				}
+			}
+		}
+		return obstacleDeleted;
+	}
 
 	/**
 	 * Renvoie true si l'ennemi se trouve dans un des deux cones de detection (droite et gauche)
@@ -920,71 +929,71 @@ public class ObstacleManager implements Service
 	 * @param ennemyRay
 	 * @return
 	 */
-    public boolean isEnnemyInCone(Vec2 positionEnnemy, Vec2 position, double detectionRadius, double orientation, double detectionAngle, int ennemyRay) 
-    {
-    	double ennemyAngle = Math.atan2(positionEnnemy.getX() - position.getX(), positionEnnemy.getY() - position.getY());
-		
+	public boolean isEnnemyInCone(Vec2 positionEnnemy, Vec2 position, double detectionRadius, double orientation, double detectionAngle, int ennemyRay)
+	{
+		double ennemyAngle = Math.atan2(positionEnnemy.getX() - position.getX(), positionEnnemy.getY() - position.getY());
+
 		// si le centre de l'obstacle est dans le cone 
 		// ou 
 		// si on intersecte avec le coté gauche 
 		// ou
 		// si on interesecte avec le coté droit
-		Segment coteGaucheCone = new Segment(position, 
-				new Vec2( position.getX() + (int)(detectionRadius*Math.cos(orientation + detectionAngle/2)), 
-						  position.getY() + (int)(detectionRadius*Math.sin(orientation + detectionAngle/2)) ) );
-		Segment coteDroitCone = new Segment(position, 
-				new Vec2( position.getX() + (int)(detectionRadius*Math.cos(orientation - detectionAngle/2)), 
-						  position.getY() + (int)(detectionRadius*Math.sin(orientation - detectionAngle/2)) ) );
-		
-		return (ennemyAngle < (orientation + detectionAngle/2)
-	    && ennemyAngle > (orientation - detectionAngle/2)
-	    || ( ( Geometry.intersects( coteGaucheCone , 
-	    						   new Circle(positionEnnemy, ennemyRay)) )
-	    || ( Geometry.intersects(	coteDroitCone, 
-	    						   new Circle(positionEnnemy, ennemyRay))) )  );
-	}
-    
-    /**
-     *  On enleve les obstacles qui sont en confrontation avec nous :
-     *  Cela evite de se retrouver dans un obstacle
-     * @param position 
-     */
-    public void removeObstacleInUs(Vec2 position)
-    {
-    	for(int i=0; i<mMobileObstacles.size(); i++)
-    	{ 
-    		if( (   (position.getX()-mMobileObstacles.get(i).getPosition().getX())*(position.getX()-mMobileObstacles.get(i).getPosition().getX())
-    	    	+   (position.getY()-mMobileObstacles.get(i).getPosition().getY())*(position.getY()-mMobileObstacles.get(i).getPosition().getY()) )
-    	    	<=( (mRobotRadius+mMobileObstacles.get(i).getRadius())*(mRobotRadius+mMobileObstacles.get(i).getRadius())) )
-    			mMobileObstacles.remove(mMobileObstacles.get(i));
-    	}
-    }
-    
-    /**
-     * supprime les obstacles fixes dans le disque
-     * 
-     * @param position
-     * @param radius
-     */
-    public void removeFixedObstaclesInDisc(Vec2 position, int radius)
-    {
-    	for(int i = 0; i< mCircularObstacle.size(); i++)
-    		if((position.getX()- mCircularObstacle.get(i).getPosition().getX())*(position.getX()- mCircularObstacle.get(i).getPosition().getX())
-    		 + (position.getY()- mCircularObstacle.get(i).getPosition().getY())*(position.getY()- mCircularObstacle.get(i).getPosition().getY())
-    		 <= mRobotRadius*mRobotRadius)
-    			mCircularObstacle.remove(mCircularObstacle.get(i));
-    }
+		Segment coteGaucheCone = new Segment(position,
+				new Vec2( position.getX() + (int)(detectionRadius*Math.cos(orientation + detectionAngle/2)),
+						position.getY() + (int)(detectionRadius*Math.sin(orientation + detectionAngle/2)) ) );
+		Segment coteDroitCone = new Segment(position,
+				new Vec2( position.getX() + (int)(detectionRadius*Math.cos(orientation - detectionAngle/2)),
+						position.getY() + (int)(detectionRadius*Math.sin(orientation - detectionAngle/2)) ) );
 
-    public void printObstacleFixedList()
-    {
-    	for(int i = 0; i< mCircularObstacle.size(); i++)
-    		mCircularObstacle.get(i).printObstacleMemory();
-    }
+		return (ennemyAngle < (orientation + detectionAngle/2)
+				&& ennemyAngle > (orientation - detectionAngle/2)
+				|| ( ( Geometry.intersects( coteGaucheCone ,
+				new Circle(positionEnnemy, ennemyRay)) )
+				|| ( Geometry.intersects(	coteDroitCone,
+				new Circle(positionEnnemy, ennemyRay))) )  );
+	}
+
+	/**
+	 *  On enleve les obstacles qui sont en confrontation avec nous :
+	 *  Cela evite de se retrouver dans un obstacle
+	 * @param position
+	 */
+	public void removeObstacleInUs(Vec2 position)
+	{
+		for(int i=0; i<mMobileObstacles.size(); i++)
+		{
+			if( (   (position.getX()-mMobileObstacles.get(i).getPosition().getX())*(position.getX()-mMobileObstacles.get(i).getPosition().getX())
+					+   (position.getY()-mMobileObstacles.get(i).getPosition().getY())*(position.getY()-mMobileObstacles.get(i).getPosition().getY()) )
+					<=( (mRobotRadius+mMobileObstacles.get(i).getRadius())*(mRobotRadius+mMobileObstacles.get(i).getRadius())) )
+				mMobileObstacles.remove(mMobileObstacles.get(i));
+		}
+	}
+
+	/**
+	 * supprime les obstacles fixes dans le disque
+	 *
+	 * @param position
+	 * @param radius
+	 */
+	public void removeFixedObstaclesInDisc(Vec2 position, int radius)
+	{
+		for(int i = 0; i< mCircularObstacle.size(); i++)
+			if((position.getX()- mCircularObstacle.get(i).getPosition().getX())*(position.getX()- mCircularObstacle.get(i).getPosition().getX())
+					+ (position.getY()- mCircularObstacle.get(i).getPosition().getY())*(position.getY()- mCircularObstacle.get(i).getPosition().getY())
+					<= mRobotRadius*mRobotRadius)
+				mCircularObstacle.remove(mCircularObstacle.get(i));
+	}
+
+	public void printObstacleFixedList()
+	{
+		for(int i = 0; i< mCircularObstacle.size(); i++)
+			mCircularObstacle.get(i).printObstacleMemory();
+	}
 
 	/**
 	 * Permet de update les obstacles avec un nouveau rayon de robot
 	 * @param newRobotRadius le nouveau rayon
-     */
+	 */
 	public void updateObstacles(int newRobotRadius)
 	{
 		if(this.mRobotRadius == newRobotRadius)
@@ -1022,39 +1031,39 @@ public class ObstacleManager implements Service
 		ThreadWorker.recalculateGraph();*/
 	}
 
-    /**
-     * Supprime tous les obstacles fixes qui superposent le point donné
-     * Utile pour forcer le passage si les obstacles vont subir un changement
-     * @param point le point à dégager
-     * @return les obstacles supprimés
-     */
+	/**
+	 * Supprime tous les obstacles fixes qui superposent le point donné
+	 * Utile pour forcer le passage si les obstacles vont subir un changement
+	 * @param point le point à dégager
+	 * @return les obstacles supprimés
+	 */
 	public ArrayList<Obstacle> freePoint(Vec2 point)
-    {
-        ArrayList<Obstacle> deleted = new ArrayList<>();
+	{
+		ArrayList<Obstacle> deleted = new ArrayList<>();
 
-        for (int i = 0; i< mCircularObstacle.size(); i++)
-        {
-            if(mCircularObstacle.get(i).isInObstacle(point))
-            {
-                deleted.add(mCircularObstacle.get(i));
-                removeObstacle(mCircularObstacle.get(i));
-            }
-        }
+		for (int i = 0; i< mCircularObstacle.size(); i++)
+		{
+			if(mCircularObstacle.get(i).isInObstacle(point))
+			{
+				deleted.add(mCircularObstacle.get(i));
+				removeObstacle(mCircularObstacle.get(i));
+			}
+		}
 
-        for (int i=0;i< mRectangles.size();i++)
-        {
-            if(mRectangles.get(i).isInObstacle(point))
-            {
-                deleted.add(mRectangles.get(i));
-                removeObstacle(mRectangles.get(i));
-            }
-        }
-        return deleted;
-    }
+		for (int i=0;i< mRectangles.size();i++)
+		{
+			if(mRectangles.get(i).isInObstacle(point))
+			{
+				deleted.add(mRectangles.get(i));
+				removeObstacle(mRectangles.get(i));
+			}
+		}
+		return deleted;
+	}
 
 	/**
 	 * Supprime TOUS les obstacles fixes de la table
-     * http://cdn.meme.am/instances/500x/21541512.jpg
+	 * http://cdn.meme.am/instances/500x/21541512.jpg
 	 */
 	public void destroyEverything()
 	{

@@ -21,18 +21,15 @@ package tests;
 
 import enums.ActuatorOrder;
 import enums.Speed;
-import exceptions.ContainerException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import org.junit.Before;
 import org.junit.Test;
 import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
-import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
@@ -40,6 +37,7 @@ import threads.ThreadInterface;
 import threads.dataHandlers.ThreadSensor;
 import utils.Sleep;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -64,7 +62,7 @@ public class JUnit_Sensors extends JUnit_Test
 	 * @see tests.JUnit_Test#setUp()
 	 */
 	@Before
-	public void setUp() throws Exception 
+	public void setUp() throws Exception
 	{
 		super.setUp();
 		state = container.getService(GameState.class);
@@ -105,7 +103,7 @@ public class JUnit_Sensors extends JUnit_Test
 	}
 
 	@Test
-	public void testStopWhileMove() throws Exception
+	public void testStopWhileMoveBasic() throws Exception
 	{
 		state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
 		state.robot.setPosition(Table.entryPosition);
@@ -116,31 +114,69 @@ public class JUnit_Sensors extends JUnit_Test
 		log.debug("Orientation :" + state.robot.getOrientation());
 	}
 
-	// @Test
-	public void testEvitement() throws Exception
-	{
-		log.debug("Test d'évitement");
-		try 
-		{	
-			state.robot.moveLengthwiseWithoutDetection(250, false);
-		} 
-		catch (UnableToMoveException e1)
-		{}
+	@Test
+	public void testStopWhileMoveNonBasic() throws Exception{
+		state.robot.setPosition(Table.entryPosition);
+		state.robot.setOrientation(Table.entryOrientation);
+		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+		state.robot.goTo(new Vec2(0,1000));
+	}
 
-		log.critical("Fin de moveLengthWise");
-		while(true)
-		{
-			try
-			{
-				state.robot.moveToCircle(new Circle(new Vec2(-700, 900),0), container.getService(Table.class));
+	@Test
+	public void testEvitement()
+	{
+		state.robot.setPosition(Table.entryPosition);
+		state.robot.setOrientation(Table.entryOrientation);
+		state.robot.setLocomotionSpeed(Speed.FAST_ALL);
+		Vec2[] positionList=new Vec2[]{
+				new Vec2(0,1000),
+				new Vec2(1000,500)
+				};
+
+		for (Vec2 position : positionList) {
+			try {
+				state.robot.followPath(state.robot.getPathfinding().findmyway(state.robot.getPosition(), position));
+			} catch (UnableToMoveException e) {
+				e.printStackTrace();
+			} catch (ImmobileEnnemyForOneSecondAtLeast e) {
+				boolean ennemyDodged = false;
+				while (!ennemyDodged) {
+					log.debug("PositionAIMtestEvitement : " + e.getAim());
+					try {
+						robot.moveLengthwise(-20);
+						ArrayList<Vec2> pathToFollow = state.robot.getPathfinding().findmyway(state.robot.getPosition(), e.getAim());
+						state.robot.followPath(pathToFollow);
+						ennemyDodged = true;
+					} catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+						log.debug("L'ennemi est toujours là");
+					} catch (PointInObstacleException e1) {
+						log.critical("PointInObstacleException");
+						e1.printStackTrace();
+					} catch (UnableToMoveException e1) {
+						log.critical("UnableToMoveException");
+						e1.printStackTrace();
+					} catch (NoPathFound noPathFound) {
+						log.critical("NoPathFound");
+						noPathFound.printStackTrace();
+					} finally {
+						try {
+							Thread.sleep(10);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+
+			} catch (PointInObstacleException e) {
+				log.debug("PointInObstacle!!!");
+				e.printStackTrace();
+			} catch (NoPathFound noPathFound) {
+				log.debug("noPathFound");
+				noPathFound.printStackTrace();
 			}
-			catch (UnableToMoveException | ContainerException e) 
-			{
-				log.critical("!!!!!! Catch de"+e+" dans testEvitement !!!!!!");
-			}	
 		}
 	}
-	
+
 	@Test
 	public void testDetecting() throws Exception
 	{
@@ -161,9 +197,9 @@ public class JUnit_Sensors extends JUnit_Test
 		}
 		state.robot.switchSensor();
 	}
-	
+
 //	@Test
-	public void testDetectionTournante() throws ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+	public void testDetectionTournante() throws ImmobileEnnemyForOneSecondAtLeast {
 		log.debug("Test d'évitement");
 		
 	/*	try 
@@ -175,32 +211,32 @@ public class JUnit_Sensors extends JUnit_Test
 		//SUUUUUUUUUS
 			log.critical( e.logStack(), this);
 		}*/
-		
+
 		while(true)
 		{
-			try 
+			try
 			{
 				state.robot.turn(- Math.PI/2);
 				state.robot.sleep(500);
 				state.robot.turn( Math.PI);
 				state.robot.sleep(500);
-			} 
+			}
 			catch (UnableToMoveException e1)
 			{
 				log.critical( e1.logStack());
 			}
 		}
 	}
-	
+
 	//@Test
-	public void testMoveThenDetect() throws UnexpectedObstacleOnPathException
+	public void testMoveThenDetect()
 	{
-		
-		try 
+
+		try
 		{
 			state.robot.moveLengthwiseWithoutDetection(500, false);
 			state.robot.turn(- Math.PI/2);
-		} 
+		}
 		catch (UnableToMoveException e1)
 		{
 			log.critical( e1.logStack());
@@ -211,32 +247,33 @@ public class JUnit_Sensors extends JUnit_Test
 		{
 		}
 	}
-	
+
 	//@Test
-	public void testMoveForwardBackward() throws ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+
+	public void testMoveForwardBackward() throws ImmobileEnnemyForOneSecondAtLeast {
 		
 		try 
 		{
 			state.robot.moveLengthwiseWithoutDetection(500, false);
-		} 
+		}
 		catch (UnableToMoveException e1)
 		{
 			log.critical( e1.logStack());
 		}
 		while (true)
 		{
-			try 
+			try
 			{
 				state.robot.moveLengthwiseWithoutDetection(500, false);
 				state.robot.moveLengthwiseWithoutDetection(-500, false);
-			} 
+			}
 			catch (UnableToMoveException e1)
 			{
 				log.critical( e1.logStack());
 			}
 		}
 	}
-	
+
 	//@Test
 	public void testSensorEnnemyWithoutMovement() throws InterruptedException {
 		log.debug("Test des capteurs fixe");
@@ -247,7 +284,7 @@ public class JUnit_Sensors extends JUnit_Test
 			Thread.sleep(100);
 		}
 	}
-	
+
 	//@Test
 	public void testDistaanceToClosestEnnemy()
 	{
@@ -255,33 +292,33 @@ public class JUnit_Sensors extends JUnit_Test
 		{
 			state.table.getObstacleManager().distanceToClosestEnemy(state.robot.getPosition());
 		}
-	} 
-	
-	
+	}
+
+
 	//@Test
-	public void testSensorEnnemyWithMovement() throws ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+	public void testSensorEnnemyWithMovement() throws ImmobileEnnemyForOneSecondAtLeast {
 		log.debug("Test des capteurs fixe");
 		while(true)
 		{
-			try 
+			try
 			{
 				state.robot.moveLengthwise(50);
 				state.robot.sleep(500);
-			} 
-			catch (UnableToMoveException e) 
+			}
+			catch (UnableToMoveException e)
 			{
 				try {
 					state.robot.moveLengthwise(-50);
 				} catch (UnableToMoveException e1) {
 					e1.printStackTrace();
-				}				
+				}
 			}
-			try 
+			try
 			{
 				state.robot.moveLengthwise(-50);
 				state.robot.sleep(500);
-			} 
-			catch (UnableToMoveException e) 
+			}
+			catch (UnableToMoveException e)
 			{
 				try {
 					state.robot.moveLengthwise(50);
@@ -291,31 +328,29 @@ public class JUnit_Sensors extends JUnit_Test
 			}
 		}
 	}
-	
-	
-	
+
    // @Test
-	public void testCapteurDeplacement() throws PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast,UnexpectedObstacleOnPathException {
+	public void testCapteurDeplacement() throws PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
     	matchSetUp(state.robot, false);
     	try 
     	{
 			state.robot.moveLengthwise(300);
-		} 
-    	catch (UnableToMoveException e2) 
-    	{
-    		log.critical( e2.logStack());
+		}
+		catch (UnableToMoveException e2)
+		{
+			log.critical( e2.logStack());
 		}
 		log.debug("Test d'évitement");
 		Random rand = new Random();
-    	while(true)
-    	{
+		while(true)
+		{
 			int x=0,y=0;
-			try 
+			try
 			{
 				x = rand.nextInt(3000)-1500;
 				y = rand.nextInt(2000);
 				state.robot.moveToLocation(new Vec2 (x,y), state.table);
-			} 
+			}
 			catch (UnableToMoveException e1)
 			{
 				log.critical("!!!!! Catch de"+e1+" dans testEvitement !!!!!");
@@ -325,6 +360,6 @@ public class JUnit_Sensors extends JUnit_Test
 				log.debug("pas de chemin trouvé");
 				e.printStackTrace();
 			}
-    	}
+		}
 	}
 }

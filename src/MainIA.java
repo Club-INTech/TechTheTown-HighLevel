@@ -19,6 +19,7 @@
 
 import container.Container;
 import enums.ActuatorOrder;
+import graphics.AffichageDebug;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
@@ -28,19 +29,23 @@ import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
+import simulator.ThreadSimulator;
 import strategie.GameState;
+import strategie.IA.IA;
 import table.Table;
 import threads.ThreadInterface;
-import threads.threadScore.ThreadScore;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
+import threads.dataHandlers.ThreadSensor;
+import threads.threadScore.ThreadScore;
+import utils.Log;
 
 /**
  * Code qui démarre le robot en début de match
  *
  * @author 4223, gaelle, rem
  */
-public class Main {
+public class MainIA {
     static Container container;
     static Config config;
     static GameState realState;
@@ -48,6 +53,8 @@ public class Main {
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
     static PatternRecognition patternRecognition;
+    static Log log;
+    static IA ia;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
@@ -56,38 +63,43 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         int matchScriptVersionToExecute=0;
         try {
-            // TODO : initialisation des variables globales du robot & objets...
             container = new Container();
             config = container.getConfig();
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion = container.getService(Locomotion.class);
-            patternRecognition = container.getService(PatternRecognition.class);
+            ia = container.getService(IA.class);
+            log = container.getService(Log.class);
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
             }
             matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
             Thread.currentThread().setPriority(6);
-            //container.getService(ThreadSensor.class);
+            container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
+            //container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
+            patternRecognition=container.getService(PatternRecognition.class);
             container.getService(ThreadScore.class);
             container.startInstanciedThreads();
+            // TODO : initialisation des variables globales du robot & objets...
             if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
                 realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             }
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
-            realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+            realState.robot.setLocomotionSpeed(Speed.FAST_ALL);
+
+
         } catch (ContainerException p) {
-            System.out.println("bug container");
+            log.debug("bug container");
             p.printStackTrace();
         }
         try {
 
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
-            System.out.println("Le robot commence le match");
+            log.debug("Le robot commence le match");
             waitMatchBegin();
 
             while(patternRecognition.isMovementLocked()) {
@@ -96,10 +108,12 @@ public class Main {
 
             //TODO : lancer l'IA
 
-            scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
+            ia.start(ScriptNames.MATCH_SCRIPT,config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE));
 
         } catch (Exception e) {
             e.printStackTrace();
+            log.debug("Exception");
+            ia.execute(e);
         }
     }
 

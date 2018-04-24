@@ -52,10 +52,10 @@ public class TablePanel extends JPanel
 
 	/** Champs pour l'interface Pathfinding : n'ayant pas de robot instancié, on récupère en brut les données */
 	private ArrayList<Vec2> path;
-	private CopyOnWriteArrayList<Arete> aretes;
+	private ArrayList<Arete> aretes;
 	private ArrayList<Vec2> clics;
 	private Vec2 point;
-	private CopyOnWriteArrayList<Noeud> nodes;
+	private ArrayList<Noeud> nodes;
 	public static boolean showGraph = true;
 
 	/** Table & robot */
@@ -104,9 +104,9 @@ public class TablePanel extends JPanel
 	public TablePanel(Table table)
 	{
 		path = new ArrayList<>();
-		aretes = new CopyOnWriteArrayList<>();
+		aretes = new ArrayList<>();
 		clics = new ArrayList<>();
-		nodes=new CopyOnWriteArrayList<>();
+		nodes=new ArrayList<>();
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
@@ -227,7 +227,7 @@ public class TablePanel extends JPanel
 		graphics.fillRect(0, 600, 1300, 400);
 		graphics.setColor(Color.DARK_GRAY);
 		graphics.fillRoundRect(920, 20, 360, 580, 20, 20);
-		graphics.fillRoundRect(20, 620, 1260, 275, 20, 20);
+		//graphics.fillRoundRect(20, 620, 1260, 275, 20, 20);
 		//afficher le point qu'on veut
 		graphics.setColor(Color.GREEN);
 		Vec2 position=changeRefToDisplay(point);
@@ -247,7 +247,7 @@ public class TablePanel extends JPanel
 		removeAll();
 		revalidate();
 	}
-	public void setAretes(CopyOnWriteArrayList<Arete> aretes) {
+	public void setAretes(ArrayList<Arete> aretes) {
 		this.aretes = aretes;
 		removeAll();
 		revalidate();
@@ -262,7 +262,7 @@ public class TablePanel extends JPanel
 		removeAll();
 		revalidate();
 	}
-	public void setNodes(CopyOnWriteArrayList<Noeud> nodes){
+	public void setNodes(ArrayList<Noeud> nodes){
 		this.nodes=nodes;
 		removeAll();
 		revalidate();

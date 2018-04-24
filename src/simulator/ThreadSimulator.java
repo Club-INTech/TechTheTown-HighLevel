@@ -103,7 +103,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
         String[] messages;
         String head;
 
-        communicate(CommunicationHeaders.DEBUG, "Message recu : " + request);
+        communicate(CommunicationHeaders.ACKNOWLEDGEMENT, "Message recu : " + request);
         messages = request.split(" ");
         head = messages[0];
 

@@ -50,7 +50,7 @@ MATCHSCRIPT_TO_EXECUTE               = 0
 # temps_untested_obstacle            = 250
 # 200 homologation ; 150 match
 
-basic_detection                      = false
+basic_detection                      = true
 SENSOR_ANGLE_WIDENESS                = 1.04
 
 
@@ -127,12 +127,11 @@ saturationModifierLightingUp=1.2
 brightnessModifierLightingUp=1.5
 
 ###################### PARAMETRES SCRIPT #######################
-
-#ActivationPanneauDomitique
-DISTANCE_INTERRUPTEUR=58
+#ActivationPanneauDomotique
+DISTANCE_INTERRUPTEUR=68
 
 #ActiveAbeille
-DISTANCE_ABEILLE=70
+DISTANCE_ABEILLE=100
 
 #TakeCubes
 

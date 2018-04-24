@@ -24,6 +24,7 @@ import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Robot;
 import table.Table;
+import threads.dataHandlers.ThreadEth;
 import utils.Log;
 
 import java.io.BufferedWriter;
@@ -56,7 +57,7 @@ public class ThreadTimer extends AbstractThread
 	public static boolean matchEnded = false;
 
 	/** Date de début du match. */
-	public static long matchStartTimestamp;
+	public static long matchStartTimestamp = 0;
 
 	/** Durée en miliseconde d'un match recupéré de la config */
 	public static long matchDuration = 90000;
@@ -212,7 +213,7 @@ public class ThreadTimer extends AbstractThread
 	private void onMatchEnded()
 	{
 
-		log.debug("Fin du Match car fin des 90s !");
+		log.debug("Fin du Match car fin des 100s !");
 
 		// Le match est fini, immobilisation du robot
 		matchEnded = true;
@@ -223,9 +224,7 @@ public class ThreadTimer extends AbstractThread
 		ethWrapper.disableTranslationnalFeedbackLoop();
 		ethWrapper.disableSpeedFeedbackLoop();
 
-		//mLocomotionCardWrapper.shutdownSTM();
-		Log.stop();
-
+		ethWrapper.close();
 		// et on coupe la connexion avec la carte d'asser comme ca on est sur qu'aucune partie du code ne peut faire quoi que ce soit pour faire bouger le robot
 	}
 
@@ -239,6 +238,15 @@ public class ThreadTimer extends AbstractThread
 		return matchStartTimestamp + matchDuration - System.currentTimeMillis();
 	}
 
+
+	public static long getMatchCurrentTime() {
+		if (matchStartTimestamp!=0) {
+			return System.currentTimeMillis() - matchStartTimestamp;
+		}
+		else{
+			return 0;
+		}
+	}
 
 	/**
 	 * Temps écoulé depuis le début du match

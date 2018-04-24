@@ -89,8 +89,20 @@ public class GameState implements Service
     private boolean tas_chateau_ennemi_eau_pris;
     private boolean tas_station_epuration_ennemi_pris;
 
+    /** Panneau domotique activé */
+    private boolean panneauActive;
+
+    /** Abeille lancée */
+    private boolean abeilleLancee;
+
     /** Permet de savoir quel bras on utilise pour TakeCubes */
     private BrasUtilise takeCubesBras;
+
+    /**Permet de savoir si on a acrivé ou désactivé les capteurs comme ça si on
+     * a à faire des movelenghtwise par exemple, on les fait mais sans se soucier
+     * de la détection de l'ennemi
+     */
+    private boolean capteursActivés;
 
     private Config config;
     private Log log;
@@ -133,11 +145,15 @@ public class GameState implements Service
         this.tas_chateau_ennemi_eau_pris=false;
         this.tas_station_epuration_ennemi_pris=false;
 
+        this.panneauActive = false;
+        this.abeilleLancee = false;
 
         //La reconnaissance de couleurs est faite ou non
         this.recognitionDone=false;
         //On set une valeur de base, qui sera changée par PatternRecognition par la suite
         this.indicePattern=-2;
+        //au début, le threadSensor est lancé, donc les capteurs sont bien activés au début
+        this.capteursActivés=true;
 
     }
 
@@ -280,6 +296,10 @@ public class GameState implements Service
         return tas_station_epuration_ennemi_pris;
     }
 
+    public boolean isPanneauActive () { return panneauActive; }
+
+    public boolean isAbeilleLancee () { return abeilleLancee; }
+
     public void setTas_base_pris(boolean tas_base_pris) {
         this.tas_base_pris = tas_base_pris;
     }
@@ -304,6 +324,13 @@ public class GameState implements Service
         this.tas_station_epuration_ennemi_pris = tas_station_epuration_ennemi_pris;
     }
 
+    public void setPanneauActive(boolean panneauActive) {
+        this.panneauActive = panneauActive;
+    }
+
+    public void setAbeilleLancee(boolean abeilleLancee) {
+        this.abeilleLancee = abeilleLancee;
+    }
     public void setJumperRemoved(boolean value){
         this.jumperRemoved=value;
     }
@@ -331,4 +358,14 @@ public class GameState implements Service
             this.reussitesTourArriere[positionIdealeDansLaTour] = value;
         }
     }
+
+    public boolean isCapteursActivés() {
+        return this.capteursActivés;
+    }
+
+    public void setCapteursActivés(boolean capteursActivés) {
+        this.capteursActivés = capteursActivés;
+    }
 }
+
+
