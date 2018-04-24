@@ -316,9 +316,8 @@ public class ThreadEth extends AbstractThread implements Service {
     private synchronized void waitForAcknowledgement() throws SocketException {
         long startTime = System.currentTimeMillis();
         while (comFlag){
-
             //On attend une réponse jusqu'à ce qu'on considère un timeOut
-            if (System.currentTimeMillis() - startTime < TIMEOUT){
+            if (System.currentTimeMillis() - startTime > TIMEOUT){
                 log.critical("On a attendu trop longtemps pour un event de fin de mouvement (>"+TIMEOUT+"ms)...");
                 throw new SocketException();
             }
