@@ -91,11 +91,11 @@ public class ThreadEvents extends AbstractThread
             try {
                 if (events.peek() != null) {
                     event = events.poll();
-                    if (event.length()>1) {
-                        String eventID = event.substring(0,2);
+                    if (event.length()>3) {
+                        String eventID = event.substring(0,4);
                         if (!eventIDReceived.contains(eventID)) {
                             boolean validEvent=false;
-                            String[] message = event.substring(2).split(" ");
+                            String[] message = event.substring(4).split(" ");
                             if (message[0].equals(EventType.BLOCKED.getEventName())) {
                                 validEvent=true;
                                 log.critical("Event du LL : UnableToMove");
