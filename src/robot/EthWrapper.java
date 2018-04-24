@@ -33,7 +33,6 @@ import threads.dataHandlers.ThreadEth;
 import utils.Log;
 import utils.Sleep;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -223,7 +222,21 @@ public class EthWrapper implements Service {
      */
     public XYO updateCurrentPositionAndOrientation(){
         String[] xyo = eth.communicate(3, ActuatorOrder.SEND_POSITION.getEthernetOrder());
-        eth.setPositionAndOrientation(new XYO(new Vec2((int)Float.parseFloat(xyo[0]),(int)Float.parseFloat(xyo[1])),Double.parseDouble(xyo[2])));
+        int x;
+        int y;
+        double angle;
+        try{
+            x=(int)Float.parseFloat(xyo[0]);
+            y=(int)Float.parseFloat(xyo[1]);
+            angle=Double.parseDouble(xyo[1]);
+        } catch (NumberFormatException e)
+        {
+            log.critical("BAD POSITION RECEIVED BY LL "+xyo[0]+" , "+xyo[1]+" , "+xyo[2]);
+            x=getCurrentPositionAndOrientation().getPosition().getX();
+            y=getCurrentPositionAndOrientation().getPosition().getY();
+            angle=getCurrentPositionAndOrientation().getOrientation();
+        }
+        eth.setPositionAndOrientation(new XYO(new Vec2(x,y),angle));
         return eth.getPositionAndOrientation();
     }
 
