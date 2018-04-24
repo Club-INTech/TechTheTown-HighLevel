@@ -451,7 +451,6 @@ public class ThreadEth extends AbstractThread implements Service {
      * FONCTION COMMUNICATION & RUN (LISTENER) *
      *******************************************/
 
-
     /**
      * Fonction pour envoyer un message au LL
      *
