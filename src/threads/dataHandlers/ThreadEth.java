@@ -455,6 +455,7 @@ public class ThreadEth extends AbstractThread implements Service {
         return inputLines;
     }
 
+
     @Override
     public void run() {
         String buffer;
