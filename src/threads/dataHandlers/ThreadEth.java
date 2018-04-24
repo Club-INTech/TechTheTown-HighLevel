@@ -77,7 +77,7 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Timeout pour l'envoie de message
      */
-    private static final int TIMEOUT = 100;
+    private static final int TIMEOUT = 250;
 
     /**
      * True si besoin de fichiers de debug
