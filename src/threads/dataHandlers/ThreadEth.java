@@ -532,9 +532,15 @@ public class ThreadEth extends AbstractThread implements Service {
                     e.printStackTrace();
                 }
             }
+        }
 
-            try {
+        try {
+            if (!exceptionHappened) {
+
                 // On récupère la réponse du LL, qui a été mise dans le standardBuffer par le listener du run
+
+                //On attend un acknowledgement de la part du LL
+                waitForAcknowledgement();
 
                 /**
                  * GROSSE HYPOTHESE ! ATTENTION LES CODEURS !
@@ -580,17 +586,17 @@ public class ThreadEth extends AbstractThread implements Service {
                     }
                 }
 
-                //On attend un acknowledgement de la part du LL
-                waitForAcknowledgement();
-
-            } catch (SocketException e) {
-                log.critical("LL ne répond pas, on renvoie le message");
-                this.nbRepeatMessage += 1;
-                if (this.nbRepeatMessage < 5) {
-                    LLResponse = communicate(nb_line_response, message);
-                } else {
-                    log.critical("On a renvoyé le message plus de 5 fois, y a un gros problème poto, mais dans le doute on continue le match");
-                }
+            }
+            else {
+                throw new SocketException();
+            }
+        } catch (SocketException e) {
+            log.critical("LL ne répond pas, on renvoie le message");
+            this.nbRepeatMessage += 1;
+            if (this.nbRepeatMessage < 5) {
+                LLResponse = communicate(nb_line_response, message);
+            } else {
+                log.critical("On a renvoyé le message plus de 5 fois, y a un gros problème poto, mais dans le doute on continue le match");
             }
         }
 
