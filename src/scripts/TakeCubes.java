@@ -71,24 +71,11 @@ public class TakeCubes extends AbstractScript {
     public void execute(int indiceTas, GameState state)
             throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
-        if(basicDetection){
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
-        } else {
-            state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-            state.setCapteursActivés(false);
-        }
         if (indiceTas<6){
             this.normalVersions(indiceTas, state);
         }
         else{
             this.specialVersions(indiceTas, state);
-        }
-        if(basicDetection){
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
-
-        } else {
-            state.robot.useActuator(ActuatorOrder.SUS_ON,true);
-            state.setCapteursActivés(true);
         }
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
     }
@@ -604,6 +591,12 @@ public class TakeCubes extends AbstractScript {
      */
     private boolean takeThisCube(GameState state, Cubes currentCube) throws InterruptedException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         boolean cubeSuccessfullyTaken=false;
+        if(basicDetection){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        } else {
+            state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
+            state.setCapteursActivés(false);
+        }
         if (this.brasUtilise.equals(BrasUtilise.AVANT)){
             //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
