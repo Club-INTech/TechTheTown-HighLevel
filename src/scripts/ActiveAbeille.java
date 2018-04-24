@@ -73,6 +73,8 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.addObtainedPoints(50);
                 //On relève le bras avant
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
+                hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.BASIC_DETECTION_DISABLE);
+
             } else {
                 //ON UTILISE LE BRAS ARRIERE
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.BASIC_DETECTION_DISABLE);
@@ -84,6 +86,7 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.addObtainedPoints(50);
                 //On relève le bras arrière
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
+                hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.BASIC_DETECTION_DISABLE);
             }
             //On retourne à une position atteignable par le pathfinding
             Vec2 aim = new Vec2(xExit, yExit);
