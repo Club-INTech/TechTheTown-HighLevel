@@ -447,7 +447,6 @@ public class ThreadEth extends AbstractThread implements Service {
         }
     }
 
-
     /*******************************************
      * FONCTION COMMUNICATION & RUN (LISTENER) *
      *******************************************/
