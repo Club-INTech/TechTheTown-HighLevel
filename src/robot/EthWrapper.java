@@ -228,7 +228,7 @@ public class EthWrapper implements Service {
         try{
             x=(int)Float.parseFloat(xyo[0]);
             y=(int)Float.parseFloat(xyo[1]);
-            angle=Double.parseDouble(xyo[1]);
+            angle=Double.parseDouble(xyo[2]);
         } catch (NumberFormatException e)
         {
             log.critical("BAD POSITION RECEIVED BY LL "+xyo[0]+" , "+xyo[1]+" , "+xyo[2]);
