@@ -442,8 +442,6 @@ public class Locomotion implements Service {
                 log.critical(e.logStack());
                 log.critical("Haut : Catch de " + e.getMessage() + " dans moveToPointException");
 
-                setBothSpeed(Speed.SLOW_ALL);
-
                 /** Si on ne s'y attendait pas, on réagit en se dégageant légèrement avant de retenter : si on n'y
                  * arrive pas, on balance une UnableToMoveException(PHYSICALLY_BLOCKED) à l'IA
                  * TODO A adapter à l'année en cours
