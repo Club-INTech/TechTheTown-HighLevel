@@ -348,7 +348,12 @@ public class ThreadEth extends AbstractThread implements Service {
      * On shutdown le ThreadEth
      */
     public void shutdown(){
-        shutdown=true;
+        closeSocket();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         try {
             fullDebug.flush();
             fullDebug.close();
@@ -427,7 +432,6 @@ public class ThreadEth extends AbstractThread implements Service {
 
         try { Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
         catch (IOException e) { e.printStackTrace(); }
-        closeSocket();
     }
 
     /**
@@ -435,6 +439,11 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     private void closeSocket() {
         shutdown = true;
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         try {
             socket.close();
             System.out.println("La socket a été fermée correctement");
@@ -619,101 +628,110 @@ public class ThreadEth extends AbstractThread implements Service {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
 
         while (!shutdown){
-            boolean inputReadExceptionHappened = false;
+            boolean inputReady = false;
             try {
-                buffer = input.readLine();
+                inputReady = input.ready();
             } catch (IOException e) {
-                inputReadExceptionHappened = true;
-                log.critical("IOException à la lecture du buffer input");
-                buffer = "";
+                log.critical("IOException à la vérification de l'input ready");
                 e.printStackTrace();
             }
-            if (!inputReadExceptionHappened) {
+            if (inputReady) {
+                boolean inputReadExceptionHappened = false;
                 try {
-                    fullDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + buffer);
-                    fullDebug.newLine();
-                    fullDebug.flush();
+                    buffer = input.readLine();
                 } catch (IOException e) {
-                    log.critical("IOException pour fullDebug.txt");
+                    inputReadExceptionHappened = true;
+                    log.critical("IOException à la lecture du buffer input");
+                    buffer = "";
                     e.printStackTrace();
                 }
-                if (!(buffer.replaceAll(" ", "").equals(""))) {
-                    if (buffer.length() >= 2) {
-                        char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
-                        String infosFromBuffer = buffer.substring(2);
-                        if (CommunicationHeaders.EVENT.getFirstHeader() == headers[0] && CommunicationHeaders.EVENT.getSecondHeader() == headers[1]) {
-                            eventBuffer.add(infosFromBuffer);
-                            try {
-                                outEvent.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
-                                outEvent.newLine();
-                                outEvent.flush();
-                            } catch (IOException e) {
-                                log.critical("IOException pour debugEvent.txt");
-                                e.printStackTrace();
-                            }
-                        } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
-                            ultrasoundBuffer.add(infosFromBuffer);
-                            try {
-                                outSensor.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
-                                outSensor.newLine();
-                                outSensor.flush();
-                            } catch (IOException e) {
-                                log.critical("IOException pour us.txt");
-                                e.printStackTrace();
-                            }
-                        } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
-                            synchronized (this.positionAndOrientation) {
-                                positionAndOrientation.update(infosFromBuffer, splitString);
-                                if (symmetry) {
-                                    positionAndOrientation.getPosition().setX(-positionAndOrientation.getPosition().getX());
-                                    positionAndOrientation.setOrientation(Math.PI - positionAndOrientation.getOrientation());
-                                }
+                if ((buffer != null) && !inputReadExceptionHappened) {
+                    try {
+                        fullDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + buffer);
+                        fullDebug.newLine();
+                        fullDebug.flush();
+                    } catch (IOException e) {
+                        log.critical("IOException pour fullDebug.txt");
+                        e.printStackTrace();
+                    }
+                    if (!(buffer.replaceAll(" ", "").equals(""))) {
+                        if (buffer.length() >= 2) {
+                            char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
+                            String infosFromBuffer = buffer.substring(2);
+                            if (CommunicationHeaders.EVENT.getFirstHeader() == headers[0] && CommunicationHeaders.EVENT.getSecondHeader() == headers[1]) {
+                                eventBuffer.add(infosFromBuffer);
                                 try {
-                                    outPosition.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
-                                    outPosition.newLine();
-                                    outPosition.flush();
+                                    outEvent.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
+                                    outEvent.newLine();
+                                    outEvent.flush();
                                 } catch (IOException e) {
-                                    log.critical("IOException pour debugPosition.txt");
+                                    log.critical("IOException pour debugEvent.txt");
                                     e.printStackTrace();
                                 }
-                            }
-                        } else if (CommunicationHeaders.ACKNOWLEDGEMENT.getFirstHeader() == headers[0] && CommunicationHeaders.ACKNOWLEDGEMENT.getSecondHeader() == headers[1]) {
-                            acknowledgementBuffer.add(infosFromBuffer);
-                            try {
-                                outAcknowledge.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer + String.format(" [TimeToTravel : %d ms]", System.currentTimeMillis() - timeRef));
-                                outAcknowledge.newLine();
-                                outAcknowledge.flush();
-                            } catch (IOException e) {
-                                log.critical("IOException pour acknowledge.txt");
-                                e.printStackTrace();
-                            }
-                        } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
-                            try {
-                                outDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
-                                outDebug.newLine();
-                                outDebug.flush();
-                            } catch (IOException e) {
-                                log.critical("IOException pour debugLL.txt");
-                                e.printStackTrace();
-                            }
-                        } else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]) {
-                            standardBuffer.add(infosFromBuffer);
-                            try {
-                                outStandard.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + buffer);
-                                outStandard.newLine();
-                                outStandard.flush();
-                            } catch (IOException e) {
-                                log.critical("IOException pour standard.txt");
+                            } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
+                                ultrasoundBuffer.add(infosFromBuffer);
+                                try {
+                                    outSensor.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
+                                    outSensor.newLine();
+                                    outSensor.flush();
+                                } catch (IOException e) {
+                                    log.critical("IOException pour us.txt");
+                                    e.printStackTrace();
+                                }
+                            } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
+                                synchronized (this.positionAndOrientation) {
+                                    positionAndOrientation.update(infosFromBuffer, splitString);
+                                    if (symmetry) {
+                                        positionAndOrientation.getPosition().setX(-positionAndOrientation.getPosition().getX());
+                                        positionAndOrientation.setOrientation(Math.PI - positionAndOrientation.getOrientation());
+                                    }
+                                    try {
+                                        outPosition.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
+                                        outPosition.newLine();
+                                        outPosition.flush();
+                                    } catch (IOException e) {
+                                        log.critical("IOException pour debugPosition.txt");
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else if (CommunicationHeaders.ACKNOWLEDGEMENT.getFirstHeader() == headers[0] && CommunicationHeaders.ACKNOWLEDGEMENT.getSecondHeader() == headers[1]) {
+                                acknowledgementBuffer.add(infosFromBuffer);
+                                try {
+                                    outAcknowledge.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer + String.format(" [TimeToTravel : %d ms]", System.currentTimeMillis() - timeRef));
+                                    outAcknowledge.newLine();
+                                    outAcknowledge.flush();
+                                } catch (IOException e) {
+                                    log.critical("IOException pour acknowledge.txt");
+                                    e.printStackTrace();
+                                }
+                            } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
+                                try {
+                                    outDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
+                                    outDebug.newLine();
+                                    outDebug.flush();
+                                } catch (IOException e) {
+                                    log.critical("IOException pour debugLL.txt");
+                                    e.printStackTrace();
+                                }
+                            } else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]) {
+                                standardBuffer.add(infosFromBuffer);
+                                try {
+                                    outStandard.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + buffer);
+                                    outStandard.newLine();
+                                    outStandard.flush();
+                                } catch (IOException e) {
+                                    log.critical("IOException pour standard.txt");
+                                }
+                            } else {
+                                log.critical("///////// MESSAGE CORROMPU ///////////");
+                                log.critical(infosFromBuffer);
+                                log.critical("/////// FIN MESSAGE CORROMPU /////////");
                             }
                         } else {
-                            log.critical("///////// MESSAGE CORROMPU ///////////");
-                            log.critical(infosFromBuffer);
-                            log.critical("/////// FIN MESSAGE CORROMPU /////////");
+                            log.critical("/////////// MESSAGE CORROMPU ///////////");
+                            log.critical(buffer);
+                            log.critical("///////// FIN MESSAGE CORROMPU /////////");
                         }
-                    } else {
-                        log.critical("/////////// MESSAGE CORROMPU ///////////");
-                        log.critical(buffer);
-                        log.critical("///////// FIN MESSAGE CORROMPU /////////");
                     }
                 }
             }
