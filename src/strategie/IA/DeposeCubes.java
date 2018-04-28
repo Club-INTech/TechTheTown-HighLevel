@@ -12,12 +12,11 @@ import strategie.GameState;
 import table.Table;
 import utils.Log;
 
-import java.util.ArrayList;
 
 public class DeposeCubes extends Node {
 
-    public DeposeCubes(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
-        super(name, versionToExecute, nextNodes, scriptManager, gameState ,pathfinding,hookFactory,config, log);
+    public DeposeCubes(String name, int versionToExecute, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
+        super(name, versionToExecute, scriptManager, gameState ,pathfinding,hookFactory,config, log);
         this.setScript(scriptManager.getScript(ScriptNames.DEPOSE_CUBES));
         this.setScore(0);
         this.setPosition(updatePosition());

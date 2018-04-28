@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 public class Abeille extends Node {
 
-    public Abeille(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
-        super(name, versionToExecute, nextNodes, scriptManager, gameState, pathfinding, hookFactory,config, log);
+    public Abeille(String name, int versionToExecute, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
+        super(name, versionToExecute, scriptManager, gameState, pathfinding, hookFactory,config, log);
         this.setScript(scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE));
         this.setScore(50);
         this.setPosition(updatePosition());

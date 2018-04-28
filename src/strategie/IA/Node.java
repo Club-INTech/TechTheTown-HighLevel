@@ -1,6 +1,5 @@
 package strategie.IA;
 
-import enums.ConfigInfoRobot;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -32,26 +31,23 @@ public abstract class Node {
     protected int timeToGo;
     protected int timeToExecute;
     protected boolean isDone;
-    protected ArrayList<Node> nextNodes;
     protected GameState gameState;
     protected Vec2 position;
-    protected Pathfinding pathfinding;;
+    protected Pathfinding pathfinding;
     protected Log log;
     protected Config config;
     protected HookFactory hookFactory;
-    protected int basicDetectionDistance;
 
 
     /** Noeud d'action, principale composant du graphe de décision. Il permet de lancer les scripts et de gérer les
      * exeptions. Il possède plusieurs paramètre utilisé pour calculer le coup d'une arrete en points/s.
      *
      * @param versionToExecute
-     * @param nextNodes
      * @param scriptManager
      * @param gameState
      */
 
-    public Node(String name, int versionToExecute, ArrayList<Node> nextNodes, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding, HookFactory hookFactory,Config config, Log log) {
+    public Node(String name, int versionToExecute, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding, HookFactory hookFactory,Config config, Log log) {
         this.name = name;
         this.versionToExecute = versionToExecute;
         this.id = 0;
@@ -59,7 +55,6 @@ public abstract class Node {
         this.timeToGo = 0;
         this.timeToExecute = 0;
         this.isDone = false;
-        this.nextNodes = nextNodes;
         this.scriptManager = scriptManager;
         this.gameState = gameState;
         this.position = Table.entryPosition;
@@ -67,7 +62,6 @@ public abstract class Node {
         this.hookFactory=hookFactory;
         this.config=config;
         this.log = log;
-        updateConfig();
     }
 
     /** Permet d'executer le script d'un noeud et de gérer les exeptions si il y en a. */
@@ -82,32 +76,6 @@ public abstract class Node {
         }
     }
 
-    //arbre de décision
-    public Node selectNode() {
-        int bestScore = 0;
-        int i = 0;
-        Node currentNode;
-        if (!isDone() || getNextNodes()==null){
-            return this;
-        }
-        if (gameState.isTourAvantRemplie()&& gameState.isTourArriereRemplie()){
-            //dépose cube
-        }
-        for (int j = 0; j < nextNodes.size(); j++) {
-            currentNode = nextNodes.get(j);
-            if (currentNode.getScore() > bestScore && !currentNode.isDone()) {
-                bestScore = currentNode.getScore();
-                i = j;
-            }
-        }
-        if (i!=0){
-            return nextNodes.get(i);
-        }
-        else{
-            return nextNodes.get(0).selectNode();
-        }
-
-    }
     /** Gère les exceptions soulevées */
 
     public void exception(Exception e) {
@@ -205,8 +173,6 @@ public abstract class Node {
 
     public abstract void unableToMoveExceptionHandled(UnableToMoveException e);
 
-
-
     @Override
     public String toString() {
         return "Nom : "+ getName()+", version : "+getVersionToExecute();
@@ -215,13 +181,8 @@ public abstract class Node {
     public Vec2 updatePosition() throws BadVersionException {
         return getScript().entryPosition(getVersionToExecute(),Table.entryPosition).getCenter();
     }
-    public void updateConfig(){
-        this.basicDetectionDistance=config.getInt(ConfigInfoRobot.BASIC_DETECTION_DISTANCE);
-    }
 
     public abstract boolean isDone();
-
-    public ArrayList<Node> getNextNodes() { return nextNodes; }
 
     public ScriptManager getScriptManager() {  return scriptManager;    }
 
@@ -246,10 +207,6 @@ public abstract class Node {
     }
 
     public void setId (int id) { this.id = id;}
-
-    public void setNextNodes(ArrayList<Node> nextNodes) {
-        this.nextNodes = nextNodes;
-    }
 
     public void setScript(AbstractScript script) {    this.script = script;    }
 
