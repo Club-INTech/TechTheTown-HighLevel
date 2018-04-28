@@ -470,7 +470,7 @@ public class Robot implements Service {
      * moveLengthwise mais sans détection
      */
     public void moveLengthwiseWithoutDetection(int distance) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        log.debug("appel de Robot.moveLengthwiseWithoutDetection(" + distance  + ")");
+        log.debug("appel de Robot.moveLengthwiseWithoutDetection(" + distance + "," + ")");
         moveLengthwise(distance, false, false);
     }
 
@@ -729,7 +729,6 @@ public class Robot implements Service {
      * @return la dernière position connue du robot
      */
     public Vec2 getPositionFast() {
-        position = mLocomotion.getPosition();
         return position;
     }
 
@@ -740,7 +739,6 @@ public class Robot implements Service {
      * @return la derniere orientation connue du robot
      */
     public double getOrientationFast() {
-        orientation = mLocomotion.getOrientationFast();
         return orientation;
     }
 
