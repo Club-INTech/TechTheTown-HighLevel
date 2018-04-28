@@ -20,7 +20,7 @@ public class DeposeCubes extends AbstractScript {
      * Eléments appelés par la config
      */
     private int distancePenetrationZone; //on pénètre la zone de construction de cette distance
-    private int dimensionporte;
+    private int dimensionPorte;
     private int radius;
     private boolean basicDetect;
 
@@ -38,177 +38,137 @@ public class DeposeCubes extends AbstractScript {
      */
     @Override
     public void execute(int version, GameState state) throws ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
-        //On se tourne vers la zone de construction
         log.debug("////////// Execution DeposeCubes version "+version+" //////////");
-        Vec2 directionToGo=null;
-        if(basicDetect){
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        int numberTowersToDepose=0;
+        //Ou exclusif
+        if (state.isTourAvantRemplie()^state.isTourArriereRemplie()){
+            numberTowersToDepose=1;
         }
-        double prodScal=0;
-        try {
-            directionToGo = (this.entryPosition(version, state.robot.getPosition()).getCenter()).plusNewVector(new Vec2(0,-50)).minusNewVector(state.robot.getPosition());
-            prodScal=directionToGo.dot(new Vec2(100.0,state.robot.getOrientation()));
-        } catch (BadVersionException e) {
-            e.printStackTrace();
-            log.debug("BadVersionException: version "+version+" specified");
+        else if (state.isTourAvantRemplie() && state.isTourArriereRemplie()){
+            numberTowersToDepose=2;
+        }
+        else if (!(state.isTourAvantRemplie()) && !(state.isTourArriereRemplie())){
+            numberTowersToDepose=0;
         }
 
-        boolean aDejaDeposeUneTour=false;
-        if (prodScal>0){
-            if (state.isTourAvantRemplie()) {
 
-                //On singe-proof la construction de la tour
-                //Si les 4 cubes sont présents, on les verra avant de déposer les cubes
-                //Et si les 4 cubes sont présents, on les a tous ramassés comme
-                state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,true);
-                if (state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
-                    for (int i=0; i<4; i++) {
-                        state.setReussitesTourAvant(1, i);
+        if (numberTowersToDepose>0) {
+            Vec2 directionToGo = null;
+            double prodScal = 0;
+            try {
+                directionToGo = (this.entryPosition(version, state.robot.getPosition()).getCenter()).plusNewVector(new Vec2(0, -50)).minusNewVector(state.robot.getPosition());
+                prodScal = directionToGo.dot(new Vec2(100.0, state.robot.getOrientation()));
+            } catch (BadVersionException e) {
+                e.printStackTrace();
+                log.debug("BadVersionException: version " + version + " specified");
+            }
+
+            //On ne dépose qu'une tour
+            if (numberTowersToDepose == 1) {
+                if (state.isTourAvantRemplie()) {
+                    state.robot.turn(-Math.PI / 2);
+                    state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+                    state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
+                    state.robot.moveLengthwiseWithoutDetection(distancePenetrationZone);
+                    state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                    state.robot.moveLengthwise(-(distancePenetrationZone + dimensionPorte));
+                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+
+                    state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
+                    if (state.isCubeBonusAvantPresent()) {
+                        state.setCubeBonusAvantPresent(false);
+                    }
+                } else if (state.isTourArriereRemplie()) {
+                    state.robot.turn(Math.PI / 2);
+                    state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
+                    state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+                    state.robot.moveLengthwiseWithoutDetection(-distancePenetrationZone);
+                    state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                    state.robot.moveLengthwise(distancePenetrationZone + dimensionPorte);
+                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+
+                    state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
+                    if (state.isCubeBonusArrierePresent()) {
+                        state.setCubeBonusArrierePresent(false);
                     }
                 }
-
-
-                state.robot.turnWithoutDetection(-Math.PI / 2,false,false);
-                state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                //On ouvre la porte
-                state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
-
-                state.robot.moveLengthwiseWithoutDetection(distancePenetrationZone,false);
-
-                //On recule de la largeur de la porte + de la longueur avancée dans la zone
-                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                /*
-                on recule tout en détectant (si on est en basicDetection on va s'arrêter, vu qu'on l'a
-                pas désactivée au début du execute et qu'elle est réactivée à la fin des execute des autres
-                scripts et que tous les mouvements qu'on fait avant de reculer dans le déposeCube sont
-                without detection)
-                 */
-                state.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte),false);
-
-                //On ferme la porte
-                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
-                aDejaDeposeUneTour=true;
-
-                //On calcule les points
-                state.addObtainedPoints(calculScore(true,state.isCubeBonusAvantPresent(),state));
-                if (state.isCubeBonusAvantPresent()){
-                    //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
-                    state.setCubeBonusAvantPresent(false);
-                }
             }
-            if (state.isTourArriereRemplie()) {
+
+            //On dépose les deux tours
+            else {
+                if (prodScal > 0) {
+                    //On se tourne vers la zone à détecter
+                    state.robot.turn(-Math.PI / 2);
+                    //On ralentit pour éviter de faire tomber la tour de cubes
+                    state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+                    //On ouvre la porte
+                    state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
+                    //On rentre dans la zone
+                    state.robot.moveLengthwiseWithoutDetection(distancePenetrationZone);
+                    //On recule de la largeur de la porte + de la longueur avancée dans la zone
+                    state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                    /*
+                    on recule tout en détectant (si on est en basicDetection on va s'arrêter, vu qu'on l'a
+                    pas désactivée au début du execute et qu'elle est réactivée à la fin des execute des autres
+                    scripts et que tous les mouvements qu'on fait avant de reculer dans le déposeCube sont
+                    without detection)
+                    */
+                    //on est orienté vers -Pi/2 et c'est là qu'on recule, d'où l'intérêt de détecter
+                    state.robot.moveLengthwise(-(distancePenetrationZone + dimensionPorte));
+                    //On ferme la porte
+                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+
+                    //On calcule les points
+                    state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
+                    if (state.isCubeBonusAvantPresent()) {
+                        //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
+                        state.setCubeBonusAvantPresent(false);
+                    }
 
 
+                    state.robot.turn(Math.PI / 2);
+                    state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
+                    state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
+                    state.robot.moveLengthwise(-(distancePenetrationZone + 2*dimensionPorte));
+                    state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                    state.robot.moveLengthwiseWithoutDetection(2*dimensionPorte + distancePenetrationZone);
+                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
 
-                //On singe-proof la construction de la tour
-                //Si les 4 cubes sont présents, on les verra avant de déposer les cubes
-                //Et si les 4 cubes sont présents, on les a tous ramassés comme
-                state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE,true);
-                if (state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
-                    for (int i=0; i<4; i++) {
-                        state.setReussitesTourArrière(1, i);
+                    state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
+                    if (state.isCubeBonusArrierePresent()) {
+                        state.setCubeBonusArrierePresent(false);
+                    }
+                } else {
+                    state.robot.turn(Math.PI / 2);
+                    state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+                    state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
+                    state.robot.moveLengthwiseWithoutDetection(-distancePenetrationZone);
+                    state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                    state.robot.moveLengthwise(distancePenetrationZone + dimensionPorte);
+                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+
+                    state.addObtainedPoints(calculScore(false, state.isCubeBonusAvantPresent(), state));
+                    if (state.isCubeBonusAvantPresent()) {
+                        state.setCubeBonusAvantPresent(false);
+                    }
+
+
+                    state.robot.turn(-Math.PI / 2);
+                    state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
+                    state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
+                    state.robot.moveLengthwise(distancePenetrationZone + 2*dimensionPorte);
+                    state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                    state.robot.moveLengthwiseWithoutDetection(-(2*dimensionPorte + distancePenetrationZone));
+                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+
+                    state.addObtainedPoints(calculScore(true, state.isCubeBonusArrierePresent(), state));
+                    if (state.isCubeBonusArrierePresent()) {
+                        state.setCubeBonusArrierePresent(false);
                     }
                 }
-
-
-
-
-                state.robot.turn(Math.PI / 2);
-
-                //On avance de la dimension de la porte + de la distance poussée
-                state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
-                state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
-                if (aDejaDeposeUneTour) {
-                    state.robot.moveLengthwise(-(distancePenetrationZone + 2 * dimensionporte),false);
-                }
-                else{
-                    state.robot.moveLengthwise(-distancePenetrationZone,false);
-                }
-                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                state.robot.moveLengthwiseWithoutDetection(dimensionporte + distancePenetrationZone,false);
-                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
-
-                //On calcule les points
-                state.addObtainedPoints(calculScore(false,state.isCubeBonusArrierePresent(),state));
-                if (state.isCubeBonusArrierePresent()){
-                    //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
-                    state.setCubeBonusArrierePresent(false);
-                }
             }
+            state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
         }
-        else{
-            if (state.isTourArriereRemplie()) {
-
-
-                //On singe-proof la construction de la tour
-                //Si les 4 cubes sont présents, on les verra avant de déposer les cubes
-                //Et si les 4 cubes sont présents, on les a tous ramassés comme
-                state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_ARRIERE,true);
-                if (state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAR()){
-                    for (int i=0; i<4; i++) {
-                        state.setReussitesTourArrière(1, i);
-                    }
-                }
-
-
-                state.robot.turnWithoutDetection(Math.PI / 2,false,false);
-                state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                //On ouvre la porte
-                state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
-                //On rentre dans la zone
-                state.robot.moveLengthwiseWithoutDetection(-distancePenetrationZone,false);
-                //On recule de la largeur de la porte + de la longueur avancée dans la zone
-                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                //on est orienté vers Pi/2 donc c'est là qu'on recule, d'où l'intérêt de détecter
-                state.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte,false);
-                //On ferme la porte
-                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
-                aDejaDeposeUneTour=true;
-
-                //On calcule les points
-                state.addObtainedPoints(calculScore(false,state.isCubeBonusAvantPresent(),state));
-                if (state.isCubeBonusAvantPresent()){
-                    //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
-                    state.setCubeBonusAvantPresent(false);
-                }
-            }
-            if (state.isTourAvantRemplie()) {
-
-                //On singe-proof la construction de la tour
-                //Si les 4 cubes sont présents, on les verra avant de déposer les cubes
-                //Et si les 4 cubes sont présents, on les a tous ramassés comme
-                state.robot.useActuator(ActuatorOrder.CHECK_CAPTEURS_CUBE_AVANT,true);
-                if (state.robot.getmLocomotion().getThEvent().getCubeTakenBrasAV()){
-                    for (int i=0; i<4; i++) {
-                        state.setReussitesTourAvant(1, i);
-                    }
-                }
-
-                state.robot.turn(-Math.PI / 2);
-
-                //On avance de la dimension de la porte + de la distance poussée
-                state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
-                state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
-                if (aDejaDeposeUneTour) {
-                    state.robot.moveLengthwise(distancePenetrationZone + 2 * dimensionporte,false);
-                }
-                else{
-                    state.robot.moveLengthwise(distancePenetrationZone,false);
-                }
-                state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                state.robot.moveLengthwiseWithoutDetection(-(dimensionporte + distancePenetrationZone),false);
-                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
-
-                //On calcule les points
-                state.addObtainedPoints(calculScore(true,state.isCubeBonusArrierePresent(),state));
-                if (state.isCubeBonusArrierePresent()){
-                    //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
-                    state.setCubeBonusArrierePresent(false);
-                }
-            }
-        }
-        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-
         //Les deux premières sont déposées
         state.setTourAvantRemplie(false);
         state.setTourArriereRemplie(false);
@@ -305,7 +265,7 @@ public class DeposeCubes extends AbstractScript {
     public void updateConfig() {
         super.updateConfig();
         distancePenetrationZone = config.getInt(ConfigInfoRobot.DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES);
-        dimensionporte = config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
+        dimensionPorte = config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
         radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         basicDetect=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
     }

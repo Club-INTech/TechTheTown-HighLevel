@@ -466,6 +466,14 @@ public class Robot implements Service {
         moveLengthwise(distance, expectsWallImpact, false);
     }
 
+    /**
+     * moveLengthwise mais sans détection
+     */
+    public void moveLengthwiseWithoutDetection(int distance) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
+        log.debug("appel de Robot.moveLengthwiseWithoutDetection(" + distance  + ")");
+        moveLengthwise(distance, false, false);
+    }
+
 
     /**
      * Fait avancer le robot de la distance spécifiée. Le robot garde son orientation actuelle et va simplement avancer
