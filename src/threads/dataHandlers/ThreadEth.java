@@ -464,8 +464,6 @@ public class ThreadEth extends AbstractThread implements Service {
                     synchronized (socketLock) {
                         input.close();
                         output.close();
-                        socket.shutdownInput();
-                        socket.shutdownOutput();
                         socket.close();
                     }
                 }
