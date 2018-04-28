@@ -3,28 +3,54 @@ package enums;
 import smartMath.Vec2;
 
 public enum TasCubes{
-    TAS_BASE(0,640,540), //Position pas décalée de -10 en X par rapport à la position théorique
-    TAS_CHATEAU_EAU(1,1200,1190),
-    TAS_STATION_EPURATION(2,390,1500), //Position décalée de -10 en X par rapport à la position théorique
-    TAS_STATION_EPURATION_ENNEMI(3,-400,1500),
-    TAS_CHATEAU_EAU_ENNEMI(4,-1200,1190),
-    TAS_BASE_ENNEMI(5,-650,540);
+    //Position verte décalée de -10 en X par rapport à la position théorique
+    //Position orange décalée de -10 en X par rapport à la position théorique
+    TAS_BASE(0,new Vec2(640,540), new Vec2(640,540)),
+
+    //Position orange décalée de +10 en Y par rapport à la position théorique
+    TAS_CHATEAU_EAU(1,new Vec2(1200,1190),  new Vec2(1200,1200)),
+
+
+    //Position verte décalée de -10 en X par rapport à la position théorique
+    //Position orange décalée de -10 en X par rapport à la position théorique
+    TAS_STATION_EPURATION(2,new Vec2(390,1500),  new Vec2(390,1500)),
+
+
+    TAS_STATION_EPURATION_ENNEMI(3,new Vec2(-400,1500),  new Vec2(-400,1500)),
+
+
+    TAS_CHATEAU_EAU_ENNEMI(4,new Vec2(-1200,1190),  new Vec2(-1200,1190)),
+
+
+    TAS_BASE_ENNEMI(5,new Vec2(-650,540),  new Vec2(-650,540));
 
     private int id;
-    private int x;
-    private int y;
-    TasCubes(int id, int x, int y){
+    private Vec2 greenCoords;
+    private Vec2 orangeCoords;
+
+    private static boolean symetry;
+    TasCubes(int id, Vec2 greenCoords, Vec2 orangeCoords){
         this.id=id;
-        this.x=x;
-        this.y=y;
+        this.greenCoords=greenCoords;
+        this.orangeCoords=orangeCoords;
     }
 
     public int[] getCoords(){
-        return new int[]{this.x, this.y};
+        if (symetry) {
+            return new int[]{this.orangeCoords.getX(), this.orangeCoords.getY()};
+        }
+        else{
+            return new int[]{this.greenCoords.getX(), this.greenCoords.getY()};
+        }
     }
 
     public Vec2 getCoordsVec2(){
-        return new Vec2(this.x,this.y);
+        if (symetry) {
+            return this.orangeCoords;
+        }
+        else{
+            return this.greenCoords;
+        }
     }
 
     public int getID(){
@@ -37,5 +63,9 @@ public enum TasCubes{
             }
         }
         return null;
+    }
+
+    public static void setSymetry(boolean value) {
+        symetry = value;
     }
 }

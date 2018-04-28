@@ -168,13 +168,12 @@ public class GameState implements Service
     }
     
     /**
-     * temps écoulé depuis le début du match en ms
-     * 
+     * Temps écoulé depuis le début du match en ms
 	 * @return the time Ellapsed
 	 */
 	public long getTimeEllapsed()
 	{
-		timeEllapsed = ThreadTimer.ellapsedTimeSinceMatchStarted();
+		timeEllapsed = ThreadTimer.getMatchCurrentTime();
 		return timeEllapsed;
 	}
 

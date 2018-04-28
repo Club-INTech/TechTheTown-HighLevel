@@ -69,6 +69,14 @@ public class ThreadEth extends AbstractThread implements Service {
     private Socket socket;
 
     /**
+     * Lock strings
+     */
+
+    private static final String inputLock="inputLock";
+    private static final String outputLock="outputLock";
+    private static final String socketLock="socketLock";
+
+    /**
      * IP Teensy & local
      */
     private String teensyAdress = "192.168.0.1";
@@ -77,7 +85,7 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Timeout pour l'envoie de message
      */
-    private static final int TIMEOUT = 1000;
+    private static final int TIMEOUT = 250;
 
     /**
      * True si besoin de fichiers de debug
@@ -141,6 +149,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private volatile ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
+    private volatile ConcurrentLinkedQueue<String> acknowledgementBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
 
     /**
@@ -152,8 +161,12 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Nombre de fois qu'on a renvoyé le message
      */
-
     private int nbRepeatMessage;
+
+    /**
+     * ID du dernier message envoyé
+     */
+    private char charIDLastMessage;
 
     private boolean symmetry=config.getBoolean(ConfigInfoRobot.COULEUR);
 
@@ -168,6 +181,7 @@ public class ThreadEth extends AbstractThread implements Service {
         this.positionAndOrientation = new XYO(Table.entryPosition,Table.entryOrientation);
         this.name = "Teensy";
         this.nbRepeatMessage=0;
+        this.charIDLastMessage ='A';
         if (debug) {
             try {
                 this.standardFileTmp = new File("/tmp/standard.txt");
@@ -244,13 +258,19 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     private void createSocket() {
         try {
-            if (simulation) {
-                socket = new Socket(localAdress, 23500);
-            } else {
-                socket = new Socket(teensyAdress, 23500);
+            synchronized (socketLock) {
+                if (simulation) {
+                    socket = new Socket(localAdress, 23500);
+                } else {
+                    socket = new Socket(teensyAdress, 23500);
+                }
+                synchronized (inputLock) {
+                    input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                }
+                synchronized (outputLock) {
+                    output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                }
             }
-            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             interfaceCreated = true;
             log.debug("Socket créée");
         } catch (IOException e) {
@@ -284,12 +304,13 @@ public class ThreadEth extends AbstractThread implements Service {
         String response = null;
         long startTime = System.currentTimeMillis();
 
+        //On attend une réponse jusqu'à ce qu'on considère un timeOut
         while ((System.currentTimeMillis() - startTime) < TIMEOUT) {
             try {
                 if ((response = standardBuffer.peek()) != null) {
                     break;
                 }
-                Thread.sleep(2);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -307,21 +328,33 @@ public class ThreadEth extends AbstractThread implements Service {
      * Attend que le LL réponde sur le canal acknowledgement lors d'un envoi d'ordre
      */
     private synchronized void waitForAcknowledgement() throws SocketException {
-        int nbTimesHasBeenWaiting=0;
-        int maxTimesWaiting=500;
-        boolean socketExceptionThrown=false;
-        while (comFlag && !socketExceptionThrown){
-            try {
-                Thread.sleep(1);
-            }catch (InterruptedException e){
-                e.printStackTrace();
-            }
-            nbTimesHasBeenWaiting+=1;
-            if (nbTimesHasBeenWaiting==maxTimesWaiting){
-                log.critical("On a attendu trop longtemps pour un event de fin de mouvement (>"+maxTimesWaiting+"ms)...");
-                socketExceptionThrown=true;
+        long startTime = System.currentTimeMillis();
+        while (comFlag){
+            //On attend une réponse jusqu'à ce qu'on considère un timeOut
+            if (System.currentTimeMillis() - startTime > TIMEOUT){
+                log.critical("On a attendu trop longtemps pour un event de fin de mouvement (>"+TIMEOUT+"ms)...");
                 throw new SocketException();
             }
+
+            //On regarde le buffer d'acknowledgement pour voir si un ack est arrivé
+            if (acknowledgementBuffer.peek()!=null){
+                try {
+                    Thread.sleep(1);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+
+                //On compare le charID du dernier message
+                char id=acknowledgementBuffer.poll().charAt(0);
+                if (id==this.charIDLastMessage){
+                    comFlag=false;
+                    acknowledgementBuffer.clear();
+                }
+                else{
+                    log.critical("Mauvais charID de message");
+                }
+            }
+
         }
     }
 
@@ -329,7 +362,12 @@ public class ThreadEth extends AbstractThread implements Service {
      * On shutdown le ThreadEth
      */
     public void shutdown(){
-        shutdown=true;
+        closeSocket();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         try {
             fullDebug.flush();
             fullDebug.close();
@@ -408,7 +446,6 @@ public class ThreadEth extends AbstractThread implements Service {
 
         try { Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
         catch (IOException e) { e.printStackTrace(); }
-        closeSocket();
     }
 
     /**
@@ -417,7 +454,22 @@ public class ThreadEth extends AbstractThread implements Service {
     private void closeSocket() {
         shutdown = true;
         try {
-            socket.close();
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            synchronized (inputLock) {
+                synchronized (outputLock) {
+                    synchronized (socketLock) {
+                        input.close();
+                        output.close();
+                        socket.shutdownInput();
+                        socket.shutdownOutput();
+                        socket.close();
+                    }
+                }
+            }
             System.out.println("La socket a été fermée correctement");
         } catch (IOException e) {
             System.out.println("IOException à la fermeture de la socket");
@@ -430,9 +482,19 @@ public class ThreadEth extends AbstractThread implements Service {
      * Recrée le socket
      */
     private void recreateSocket() {
-        if (socket != null) {
+        boolean socketAvaible;
+        synchronized (socketLock) {
+           socketAvaible = (socket != null);
+        }
+        if (socketAvaible){
             try {
-                socket.close();
+                synchronized (inputLock) {
+                    synchronized (outputLock) {
+                        synchronized (socketLock) {
+                            socket.close();
+                        }
+                    }
+                }
             } catch (IOException e) {
                 log.critical("IOException : problème pour fermer le socket");
                 e.printStackTrace();
@@ -451,6 +513,16 @@ public class ThreadEth extends AbstractThread implements Service {
      * FONCTION COMMUNICATION & RUN (LISTENER) *
      *******************************************/
 
+
+    private void incrementCharID(){
+        //On incrémente le charIDLastMessage d'une lettre
+        this.charIDLastMessage+=1;
+        //Si on a dépassé Z, on revient à A
+        if (charIDLastMessage>'Z'){
+            charIDLastMessage='A';
+        }
+    }
+
     /**
      * Fonction pour envoyer un message au LL
      *
@@ -458,87 +530,112 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     public synchronized String[] communicate(int nb_line_response, String... message) {
         String mess = "";
-        standardBuffer.clear();
+        //On réinitialise les buffers, de telle sorte qu'ils soient prêts pour le nouvel ordre
+        acknowledgementBuffer.clear();
         String LLResponse[] = new String[nb_line_response];
 
+        //On ajoute un identifiant au message, afin de proof le LL en cas de renvoi du message
+        mess+=this.charIDLastMessage;
+        //On concatène les différents éléments du message avant d'envoyer le tout
         for (String m : message) {
             mess += m + " ";
         }
 
         /* Envoi de l'ordre */
-        boolean exceptionHappened=false;
+        boolean exceptionHappened=false; //Sert à savoir si une exception a eu lieu pour éviter d'attendre inutilement une réponse
         try {
-            timeRef = System.currentTimeMillis();
-            comFlag = true;
-            mess += "\r\n";
+            timeRef = System.currentTimeMillis(); //On stocke le moment auquel le message est parti
+            comFlag = true; //On dit qu'on est en communication actuellement (sert de lock)
+            mess += "\r\n"; //On ajoute un retour à la ligne en fin de message
             // On envoie au LL le nombre de caractères qu'il est censé recevoir
-            output.write(mess, 0, mess.length());
-            output.flush();
+            synchronized (outputLock) {
+                output.write(mess, 0, mess.length());
+                output.flush(); //On envoi le message au LL
+            }
         } catch (SocketException e) {
-            exceptionHappened=true;
+            exceptionHappened=true; //On log qu'une exception s'est produite
             log.critical("SocketException : LL ne répond pas");
             e.printStackTrace();
         } catch (IOException except) {
-            exceptionHappened=true;
+            exceptionHappened=true; //On log qu'une exception s'est produite
             log.critical("IOException : LL ne répond pas");
             except.printStackTrace();
         }
 
-        if (debug && !exceptionHappened) {
-            try {
-                outOrders.write(mess);
-            } catch (IOException e) {
-                log.debug("On n'arrive pas à écrire dans le fichier de debug orders");
-                e.printStackTrace();
-            }try {
-                fullDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime())+"HL: "+mess);
-            } catch (IOException e) {
-                log.debug("On n'arrive pas à écrire dans le fichier fullDebug");
-                e.printStackTrace();
+        if (!exceptionHappened) {
+            if (debug) {
+                try {
+                    outOrders.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + mess);
+                } catch (IOException e) {
+                    log.debug("On n'arrive pas à écrire dans le fichier de debug orders");
+                    e.printStackTrace();
+                }
+                try {
+                    fullDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + "HL: " + mess);
+                } catch (IOException e) {
+                    log.debug("On n'arrive pas à écrire dans le fichier fullDebug");
+                    e.printStackTrace();
+                }
             }
         }
 
         try {
-        /* Réponse du LL (listener dans le run) */
-            for (int i = 0; i < nb_line_response; i++) {
-                int tries=0;
-                LLResponse[i] = waitAndGetResponse();
+            if (!exceptionHappened) {
 
-                while (LLResponse[i] == null || LLResponse[i].replaceAll(" ", "").equals("") && tries < 5) {
-                    log.critical("Reception de " + LLResponse[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    tries += 1;
+                // On récupère la réponse du LL, qui a été mise dans le standardBuffer par le listener du run
+
+                //On attend un acknowledgement de la part du LL
+                waitForAcknowledgement();
+
+                /**
+                 * GROSSE HYPOTHESE ! ATTENTION LES CODEURS !
+                 * On considère que chaque ordre qui attend une réponse est un ordre qui n'a aucune influence sur le robot s'il est répété
+                 * (Exemple : ?xyo, f...)
+                 */
+
+                //On regarde combien de lignes on attend en réponse de la part du LL
+                for (int i = 0; i < nb_line_response; i++) {
+                    int tries = 0;
+                    //On attend 1 ligne
                     LLResponse[i] = waitAndGetResponse();
-                    if (tries==5) {
-                        log.critical("On n'a pas reçu les informations attendues par le LL, on renvoie l'ordre");
-                        throw new SocketException();
+
+                    //Si il n'y a pas eu de réponse, on réessaye au bout de 10 ms
+                    while ((LLResponse[i] == null || LLResponse[i].replaceAll(" ", "").equals("")) && tries < 5) {
+                        log.critical("Reception de " + LLResponse[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        tries += 1;
+                        LLResponse[i] = waitAndGetResponse();
+                        if (tries == 5) {
+                            /**
+                             * ICI A LIEU LA GROSSE HYPOTHESE : on renvoie un NOUVEL ORDRE au LL
+                             */
+                            incrementCharID();
+                            //Si au bout de 5 fois, on n'a pas reçu de réponse, on throw une SocketException
+                            log.critical("On n'a pas reçu les informations attendues par le LL, on renvoie l'ordre");
+                            standardBuffer.clear();
+                            throw new SocketException();
+                        }
+                    }
+
+                    if (debug) {
+                        try {
+                            outOrders.write("Reception de " + LLResponse[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
+                            outOrders.newLine();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
-                if (debug) {
-                    try {
-                        outOrders.write("Reception de " + LLResponse[i] + " , en réponse à " + message[0].replaceAll("\r", "").replaceAll("\n", "") + " : Attente du LL");
-                        outOrders.newLine();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
-
-            if (nb_line_response != 0) {
-                try {
-                    outOrders.newLine();
-                } catch (IOException e2) {
-                    e2.printStackTrace();
-                }
+            else {
+                throw new SocketException();
             }
-            waitForAcknowledgement();
-
-        } catch (SocketException e){
+        } catch (SocketException e) {
             log.critical("LL ne répond pas, on renvoie le message");
             this.nbRepeatMessage += 1;
             if (this.nbRepeatMessage < 5) {
@@ -547,7 +644,13 @@ public class ThreadEth extends AbstractThread implements Service {
                 log.critical("On a renvoyé le message plus de 5 fois, y a un gros problème poto, mais dans le doute on continue le match");
             }
         }
+
+        //On réinitialise le nombre de fois qu'on a répété un message
         this.nbRepeatMessage = 0;
+
+        //On incrémente le charIDLastMessage d'une lettre
+        incrementCharID();
+
         return LLResponse;
     }
 
@@ -561,16 +664,27 @@ public class ThreadEth extends AbstractThread implements Service {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
 
         while (!shutdown){
-            boolean inputReadExceptionHappened = false;
-            try {
-                buffer = input.readLine();
-            } catch (IOException e) {
-                inputReadExceptionHappened = true;
-                log.critical("IOException à la lecture du buffer input");
-                buffer = "";
-                e.printStackTrace();
+            boolean inputReady = false;
+            synchronized (inputLock) {
+                try {
+                    inputReady = input.ready();
+                } catch (IOException e) {
+                    log.critical("IOException à la vérification de l'input ready");
+                    e.printStackTrace();
+                }
+                if (inputReady) {
+                    try {
+                        buffer = input.readLine();
+                    } catch (IOException e) {
+                        buffer = null;
+                        log.critical("IOException à la lecture du buffer input");
+                        e.printStackTrace();
+                    }
+                } else {
+                    buffer = null;
+                }
             }
-            if (!inputReadExceptionHappened) {
+            if (buffer != null) {
                 try {
                     fullDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + buffer);
                     fullDebug.newLine();
@@ -579,86 +693,89 @@ public class ThreadEth extends AbstractThread implements Service {
                     log.critical("IOException pour fullDebug.txt");
                     e.printStackTrace();
                 }
-                if (buffer.length() >= 2 && !(buffer.replaceAll(" ", "").equals(""))) {
-                    char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
-                    String infosFromBuffer = buffer.substring(2);
-                    if (CommunicationHeaders.EVENT.getFirstHeader() == headers[0] && CommunicationHeaders.EVENT.getSecondHeader() == headers[1]) {
-                        eventBuffer.add(infosFromBuffer);
-                        try {
-                            outEvent.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
-                            outEvent.newLine();
-                            outEvent.flush();
-                        } catch (IOException e) {
-                            log.critical("IOException pour debugEvent.txt");
-                            e.printStackTrace();
-                        }
-                    } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
-                        ultrasoundBuffer.add(infosFromBuffer);
-                        try {
-                            outSensor.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
-                            outSensor.newLine();
-                            outSensor.flush();
-                        } catch (IOException e) {
-                            log.critical("IOException pour us.txt");
-                            e.printStackTrace();
-                        }
-                    } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
-                        synchronized (this.positionAndOrientation) {
-                            positionAndOrientation.update(infosFromBuffer, splitString);
-                            if (symmetry) {
-                                positionAndOrientation.getPosition().setX(-positionAndOrientation.getPosition().getX());
-                                positionAndOrientation.setOrientation(Math.PI - positionAndOrientation.getOrientation());
-                            }
+                if (!(buffer.replaceAll(" ", "").equals(""))) {
+                    if (buffer.length() >= 2) {
+                        char[] headers = {buffer.toCharArray()[0], buffer.toCharArray()[1]};
+                        String infosFromBuffer = buffer.substring(2);
+                        if (CommunicationHeaders.EVENT.getFirstHeader() == headers[0] && CommunicationHeaders.EVENT.getSecondHeader() == headers[1]) {
+                            eventBuffer.add(infosFromBuffer);
                             try {
-                                outPosition.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
-                                outPosition.newLine();
-                                outPosition.flush();
+                                outEvent.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
+                                outEvent.newLine();
+                                outEvent.flush();
                             } catch (IOException e) {
-                                log.critical("IOException pour debugPosition.txt");
+                                log.critical("IOException pour debugEvent.txt");
                                 e.printStackTrace();
                             }
-                        }
-                    } else if (CommunicationHeaders.ACKNOWLEDGEMENT.getFirstHeader() == headers[0] && CommunicationHeaders.ACKNOWLEDGEMENT.getSecondHeader() == headers[1]) {
-                        comFlag = false;
-                        try {
-                            outAcknowledge.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer + String.format(" [TimeToTravel : %d ms]", System.currentTimeMillis() - timeRef));
-                            outAcknowledge.newLine();
-                            outAcknowledge.flush();
-                        } catch (IOException e) {
-                            log.critical("IOException pour acknowledge.txt");
-                            e.printStackTrace();
-                        }
-                    } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
-                        try {
-                            outDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
-                            outDebug.newLine();
-                            outDebug.flush();
-                        } catch (IOException e) {
-                            log.critical("IOException pour debugLL.txt");
-                            e.printStackTrace();
-                        }
-                    } else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]) {
-                        standardBuffer.add(infosFromBuffer);
-                        try {
-                            outStandard.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + buffer);
-                            outStandard.newLine();
-                            outStandard.flush();
-                        } catch (IOException e) {
-                            log.critical("IOException pour standard.txt");
+                        } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
+                            ultrasoundBuffer.add(infosFromBuffer);
+                            try {
+                                outSensor.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
+                                outSensor.newLine();
+                                outSensor.flush();
+                            } catch (IOException e) {
+                                log.critical("IOException pour us.txt");
+                                e.printStackTrace();
+                            }
+                        } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
+                            synchronized (this.positionAndOrientation) {
+                                positionAndOrientation.update(infosFromBuffer, splitString);
+                                if (symmetry) {
+                                    positionAndOrientation.getPosition().setX(-positionAndOrientation.getPosition().getX());
+                                    positionAndOrientation.setOrientation(Math.PI - positionAndOrientation.getOrientation());
+                                }
+                                try {
+                                    outPosition.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
+                                    outPosition.newLine();
+                                    outPosition.flush();
+                                } catch (IOException e) {
+                                    log.critical("IOException pour debugPosition.txt");
+                                    e.printStackTrace();
+                                }
+                            }
+                        } else if (CommunicationHeaders.ACKNOWLEDGEMENT.getFirstHeader() == headers[0] && CommunicationHeaders.ACKNOWLEDGEMENT.getSecondHeader() == headers[1]) {
+                            acknowledgementBuffer.add(infosFromBuffer);
+                            try {
+                                outAcknowledge.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer + String.format(" [TimeToTravel : %d ms]", System.currentTimeMillis() - timeRef));
+                                outAcknowledge.newLine();
+                                outAcknowledge.flush();
+                            } catch (IOException e) {
+                                log.critical("IOException pour acknowledge.txt");
+                                e.printStackTrace();
+                            }
+                        } else if (CommunicationHeaders.DEBUG.getFirstHeader() == headers[0] && CommunicationHeaders.DEBUG.getSecondHeader() == headers[1]) {
+                            try {
+                                outDebug.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
+                                outDebug.newLine();
+                                outDebug.flush();
+                            } catch (IOException e) {
+                                log.critical("IOException pour debugLL.txt");
+                                e.printStackTrace();
+                            }
+                        } else if (CommunicationHeaders.STANDARD.getFirstHeader() == headers[0] && CommunicationHeaders.STANDARD.getFirstHeader() == headers[1]) {
+                            standardBuffer.add(infosFromBuffer);
+                            try {
+                                outStandard.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + buffer);
+                                outStandard.newLine();
+                                outStandard.flush();
+                            } catch (IOException e) {
+                                log.critical("IOException pour standard.txt");
+                            }
+                        } else {
+                            log.critical("///////// MESSAGE CORROMPU ///////////");
+                            log.critical(infosFromBuffer);
+                            log.critical("/////// FIN MESSAGE CORROMPU /////////");
                         }
                     } else {
-                        log.critical("///////// MESSAGE CORROMPU ///////////");
-                        log.critical(infosFromBuffer);
-                        log.critical("/////// FIN MESSAGE CORROMPU /////////");
+                        log.critical("/////////// MESSAGE CORROMPU ///////////");
+                        log.critical(buffer);
+                        log.critical("///////// FIN MESSAGE CORROMPU /////////");
                     }
-                } else if (!(buffer.replaceAll(" ", "").equals(""))) {
-                    log.critical("/////////// MESSAGE CORROMPU ///////////");
-                    log.critical(buffer);
-                    log.critical("///////// FIN MESSAGE CORROMPU /////////");
                 }
             }
         }
     }
+
 
     /**
      * Getters & Setters

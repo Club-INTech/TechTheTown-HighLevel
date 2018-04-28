@@ -42,9 +42,7 @@ import java.io.IOException;
 
 public class ThreadTimer extends AbstractThread
 {
-	/** La table sur laquelle le thread doit croire évoluer */
-	private Table table;
-
+	/** La robot */
 	private Robot robot;
 
 	/** La carte avec laquelle on doit communiquer */
@@ -57,85 +55,36 @@ public class ThreadTimer extends AbstractThread
 	public static boolean matchEnded = false;
 
 	/** Date de début du match. */
-	public static long matchStartTimestamp = 0;
+	private static long matchStartTimestamp = 0;
 
-	/** Durée en miliseconde d'un match recupéré de la config */
-	public static long matchDuration = 90000;
+	/** Durée en millisecondes d'un match recupéré de la config */
+	private static long matchDuration = 100000;
 
-	/** Temps en ms qui s'écoule entre deux mise a jour de la liste des obstacle périmables. Lors de chaque mise a jour, les obstacles périmés sont détruits. */
-	public static int obstacleRefreshInterval = 100;
-
-	/** interface graphique d'affichage de la table, pour le debug */
-	//public Window window;
-
-	/**
-	 * indique si l'interface graphique est activée ou non 
-	 */
-	private boolean isGraphicalInterfaceEnabled = false;
-
-	private BufferedWriter out;
-
-	/**
-	 * Indique si on attend le jumper ou non
-	 */
+	/** Indique si on attend le jumper ou non */
 	private boolean usingJumper;
 	/**
 	 * Crée le thread timer.-
 	 *
-	 * @param table La table sur laquelle le thread doit croire évoluer
 	 * @param ethWrapper La carte d'asservissement avec laquelle on doit communiquer
 	 */
 
-	public ThreadTimer(Config config, Log log, Table table, Robot robot, EthWrapper ethWrapper)
+	public ThreadTimer(Config config, Log log, Robot robot, EthWrapper ethWrapper)
 	{
 		super(config, log);
-
-		this.table = table;
 		this.ethWrapper = ethWrapper;
 		this.robot=robot;
 
 		updateConfig();
-		Thread.currentThread().setPriority(10);
-
-		// DEBUG: interface graphique
-		/*try
-		{
-			window = new Window(table, robot);
-		}
-		catch (Exception e)
-		{
-			isGraphicalInterfaceEnabled = false;
-			log.debug("Affichage graphique non disponible");
-		}*/
+		Thread.currentThread().setPriority(8);
 	}
 
-	/* (non-Javadoc)
-	 * @see threads.AbstractThread#run()
-	 */
 	@Override
-	public void run()
-	{
+	public void run() {
 		log.debug("Lancement du thread timer");
 
-		// on eteind les capteursgetObstacleManager
-		//config.set("capteurs_on", "true");
 		ethWrapper.updateConfig();
 
-		try
-		{
-			File file = new File("pos.txt");
-			if (!file.exists()) {
-				//file.delete();
-				file.createNewFile();
-			}
-			out = new BufferedWriter(new FileWriter(file));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Attente du démarrage du match
-
-		// attends que le jumper soit retiré du robot
+		// Attente du démarrage du match : on attend que le jumper soit retiré
 
 		if (this.usingJumper) {
 			while (!robot.getmLocomotion().getThEvent().wasJumperRemoved()) {
@@ -150,72 +99,41 @@ public class ThreadTimer extends AbstractThread
 		// maintenant que le jumper est retiré, le match a commencé
 		matchStarted = true;
 
-		//log.debug(!serialWrapper.isJumperAbsent() +" / "+ !matchStarted);
-
-		// Le match démarre ! On chage l'état du thread pour refléter ce changement
+		// Le match démarre ! On change l'état du thread pour refléter ce changement
 		matchStartTimestamp = System.currentTimeMillis();
 		log.critical("Jumper Enlevé");
 
-		matchStarted = true;
-
-		// config.set("capteurs_on", "true");
 		ethWrapper.updateConfig();
 
 		log.debug("LE MATCH COMMENCE !");
-		long ddm = System.currentTimeMillis();
 
 		// boucle principale, celle qui dure tout le match
-		while(System.currentTimeMillis() - matchStartTimestamp < matchDuration)
-		{
-
-			if(stopThreads)
-			{
-				// ons 'arrète si le ThreadManager le demande
+		while (System.currentTimeMillis() - matchStartTimestamp < matchDuration) {
+			if (stopThreads) {
+				// on s'arrète si le ThreadManager le demande
 				log.debug("Arrêt du thread timer demandé durant le match");
 				return;
 			}
-
-			if((System.currentTimeMillis()-ddm) >=12)
-			{
-				// log.debug("lol, i'm noob");
-				try {
-					out.write(Integer.toString(robot.getPositionFast().getX()));
-					out.write("\t");
-					out.write(Integer.toString(robot.getPositionFast().getY()));
-					out.newLine();
-					out.flush();
-					ddm = System.currentTimeMillis();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-			try
-			{
-				Thread.sleep(obstacleRefreshInterval);
-			}
-			catch(Exception e)
-			{
-				log.warning(e.toString());
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				log.critical("InterruptedException : le sleep du ThreadTimer a été interrompu");
 			}
 		}
+
 		log.debug("Fin des "+matchDuration+" ms de match, temps : "+(System.currentTimeMillis() - matchStartTimestamp));
 
-		// actions de fin de match
+		// Actions de fin de match
 		onMatchEnded();
-
-		log.debug("Fin du thread timer");
 	}
 
 	/**
-	 * On match ended.
+	 * Actions à faire lorsque le match est terminé
 	 */
 	private void onMatchEnded()
 	{
-
-		log.debug("Fin du Match car fin des 100s !");
-
 		// Le match est fini, immobilisation du robot
+		log.debug("Lancement des actions de fin de match");
 		matchEnded = true;
 		ethWrapper.immobilise();
 
@@ -224,10 +142,9 @@ public class ThreadTimer extends AbstractThread
 		ethWrapper.disableTranslationnalFeedbackLoop();
 		ethWrapper.disableSpeedFeedbackLoop();
 
+		//On ferme la liaison HL/LL
 		ethWrapper.close();
-		// et on coupe la connexion avec la carte d'asser comme ca on est sur qu'aucune partie du code ne peut faire quoi que ce soit pour faire bouger le robot
 	}
-
 
 	/**
 	 * Temps restant avant la fin du match.
@@ -238,7 +155,10 @@ public class ThreadTimer extends AbstractThread
 		return matchStartTimestamp + matchDuration - System.currentTimeMillis();
 	}
 
-
+	/**
+	 * Renvoie le temps actuellement écoulé depuis le début du match
+	 * @return le temps (en ms)
+	 */
 	public static long getMatchCurrentTime() {
 		if (matchStartTimestamp!=0) {
 			return System.currentTimeMillis() - matchStartTimestamp;
@@ -248,23 +168,11 @@ public class ThreadTimer extends AbstractThread
 		}
 	}
 
-	/**
-	 * Temps écoulé depuis le début du match
-	 * @return le temps écoulé du match en milisecondes
-	 */
-	public static long ellapsedTimeSinceMatchStarted()
-	{
-		return  System.currentTimeMillis() - matchStartTimestamp;
-	}
-
-	/* (non-Javadoc)
-	 * @see threads.AbstractThread#updateConfig()
-	 */
 	public void updateConfig()
 	{
-		// facteur 1000 car temps_match est en secondes et duree_match en ms
 		try
 		{
+			// Facteur x1000 car TEMPS_MATCH est en secondes et matchDuration en ms
 			matchDuration = config.getInt(ConfigInfoRobot.TEMPS_MATCH)*1000;
 			this.usingJumper=config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
 		}
