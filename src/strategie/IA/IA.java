@@ -54,17 +54,15 @@ public class IA implements Service {
     /** Créer les noeuds du graphe de décision. */
 
     public ArrayList<Node> createNodes() throws BadVersionException {
-        Node pattern = new Pattern("Pattern",0, null, scriptManager, gameState,pathfinding,hookFactory,config, log);
-        Node abeille = new Abeille("Abeille",1, null, scriptManager, gameState,pathfinding,hookFactory,config, log);
-        Node panneau = new Panneau("Panneau",0, null, scriptManager, gameState,pathfinding,hookFactory,config, log);
-        Node takeCubes = new TakeCubes("TakeCubes",0, null, scriptManager, gameState,pathfinding,hookFactory,config, log);
-        Node takeCubes2 = new TakeCubes("TakeCubes",1, null, scriptManager, gameState,pathfinding,hookFactory,config, log);
-        Node takeCubes3 = new TakeCubes("TakeCubes",2, null, scriptManager, gameState,pathfinding,hookFactory,config, log);
-        Node deposeCubes = new DeposeCubes("DeposeCube",0, null, scriptManager, gameState,pathfinding,hookFactory,config, log);
-        Node deposeCubes2 = new DeposeCubes("DeposeCube",1, null, scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node abeille = new Abeille("Abeille",1,  scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node panneau = new Panneau("Panneau",0,  scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node takeCubes = new TakeCubes("TakeCubes",0, scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node takeCubes2 = new TakeCubes("TakeCubes",1, scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node takeCubes3 = new TakeCubes("TakeCubes",2, scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node deposeCubes = new DeposeCubes("DeposeCube",0, scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node deposeCubes2 = new DeposeCubes("DeposeCube",1, scriptManager, gameState,pathfinding,hookFactory,config, log);
 
         ArrayList<Node> nodes = new ArrayList<>();
-//        nodes.add(pattern);
         nodes.add(panneau);
         nodes.add(abeille);
         nodes.add(takeCubes);
@@ -201,29 +199,11 @@ public class IA implements Service {
 //            }
 //        }
         nextNode = theAnswer();
-//        while (nextNode != null){
-//            try {
-//                log.debug("//////IA////// SELECTED NODE : "+nextNode.name);
-//                nextNode.execute(e, gameState);
-//                log.debug("//////IA////// EXECUTE : "+nextNode.name);
-//            } catch (PointInObstacleException e1) {
-//                e1.printStackTrace();
-//            } catch (BadVersionException e1) {
-//                e1.printStackTrace();
-//            } catch (ExecuteException e1) {
-//                e1.printStackTrace();
-//            } catch (BlockedActuatorException e1) {
-//                e1.printStackTrace();
-//            } catch (UnableToMoveException e1) {
-//                e1.printStackTrace();
-//            } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
-//                immobileEnnemyForOneSecondAtLeast.printStackTrace();
-//            }
-//            nextNode = theAnswer();
-//        }
-        for (Node node: nodes){
+        while (nextNode != null){
             try {
-                node.execute(null,gameState);
+                log.debug("//////IA////// SELECTED NODE : "+nextNode.name);
+                nextNode.execute(e, gameState);
+                log.debug("//////IA////// EXECUTE : "+nextNode.name);
             } catch (PointInObstacleException e1) {
                 e1.printStackTrace();
             } catch (BadVersionException e1) {
@@ -237,6 +217,7 @@ public class IA implements Service {
             } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
                 immobileEnnemyForOneSecondAtLeast.printStackTrace();
             }
+            nextNode = theAnswer();
         }
     }
 
