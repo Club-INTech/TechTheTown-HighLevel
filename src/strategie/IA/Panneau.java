@@ -21,11 +21,6 @@ public class Panneau extends Node {
         this.setPosition(updatePosition());
     }
 
-
-    public void exception(Exception e) {
-
-    }
-
     @Override
     public void unableToMoveExceptionHandled(UnableToMoveException e) {
 

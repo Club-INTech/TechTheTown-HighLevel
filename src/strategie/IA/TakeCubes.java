@@ -51,10 +51,6 @@ public class TakeCubes extends Node {
     }
 
 
-    public void exception(Exception e) {
-
-    }
-
     @Override
     public void unableToMoveExceptionHandled(UnableToMoveException e) {
 

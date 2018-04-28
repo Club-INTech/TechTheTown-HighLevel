@@ -27,11 +27,6 @@ public class Abeille extends Node {
         this.setPosition(updatePosition());
     }
 
-    @Override
-    public void exception(Exception e) {
-
-    }
-
     /**
      * On override le execute du node, l'idée c'est qu'on puisse déjà enable et
      * disable les hooks qu'on veut en fonction des bras
@@ -70,6 +65,7 @@ public class Abeille extends Node {
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
             }
         }
+        setDone(true);
     }
 
     public void unableToMoveExceptionHandled (UnableToMoveException e){
