@@ -129,7 +129,7 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.turn(Math.PI / 2);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
                     state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
-                    state.robot.moveLengthwise(-(distancePenetrationZone + 2*dimensionPorte));
+                    state.robot.moveLengthwise(-(distancePenetrationZone + dimensionPorte));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                     state.robot.moveLengthwiseWithoutDetection(2*dimensionPorte + distancePenetrationZone);
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
@@ -156,7 +156,7 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.turn(-Math.PI / 2);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
                     state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
-                    state.robot.moveLengthwise(distancePenetrationZone + 2*dimensionPorte);
+                    state.robot.moveLengthwise(distancePenetrationZone + dimensionPorte);
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                     state.robot.moveLengthwiseWithoutDetection(-(2*dimensionPorte + distancePenetrationZone));
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
