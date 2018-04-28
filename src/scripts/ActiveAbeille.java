@@ -33,13 +33,13 @@ public class ActiveAbeille extends AbstractScript {
         super(config,log,hookFactory);
         updateConfig();
         this.securityDistance=60;
-        this.xEntry=1300;
-        this.yEntry=1733;
+        this.xEntry=1280;
+        this.yEntry=1780;
         this.xExit=1500-radius-securityDistance;
         this.yExit=2000-radius-securityDistance;
         /**2 versions, l'une pour l'IA(si jamais on a à appeler le pathfinding pour
          * aller à l'abeille) et l'autre pour le MatchScript*/
-        versions = new Integer[]{0,1};
+        versions = new int[]{0,1};
     }
     @Override
     public void updateConfig() {
@@ -73,6 +73,8 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.addObtainedPoints(50);
                 //On relève le bras avant
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
+                hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.BASIC_DETECTION_DISABLE);
+
             } else {
                 //ON UTILISE LE BRAS ARRIERE
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.BASIC_DETECTION_DISABLE);
@@ -84,6 +86,7 @@ public class ActiveAbeille extends AbstractScript {
                 actualState.addObtainedPoints(50);
                 //On relève le bras arrière
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
+                hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.BASIC_DETECTION_DISABLE);
             }
             //On retourne à une position atteignable par le pathfinding
             Vec2 aim = new Vec2(xExit, yExit);
@@ -143,8 +146,8 @@ public class ActiveAbeille extends AbstractScript {
 
 
     @Override
-    public Integer[] getVersion(GameState stateToConsider) {
-        return new Integer[0];
+    public int[] getVersion(GameState stateToConsider) {
+        return versions;
     }
 
     @Override

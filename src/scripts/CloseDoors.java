@@ -43,9 +43,7 @@ public class CloseDoors extends AbstractScript
 {
 	public CloseDoors(Config config, Log log, HookFactory hookFactory) {
 		super(config, log, hookFactory);
-
-		versions = new Integer[]{0,1,3,4};
-
+		versions = new int[]{0,1,3,4};
 	}
 	
 	/**
@@ -304,7 +302,7 @@ public class CloseDoors extends AbstractScript
     }
 
 	@Override
-	public Integer[] getVersion(GameState stateToConsider)
+	public int[] getVersion(GameState stateToConsider)
 	{
 		return versions;
 	}

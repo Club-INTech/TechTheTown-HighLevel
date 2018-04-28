@@ -785,8 +785,8 @@ public class TakeCubes extends AbstractScript {
      * @return
      */
     @Override
-    public Integer[] getVersion(GameState state) {
-        return new Integer[]{};
+    public int[] getVersion(GameState state) {
+        return versions;
     }
 
     /**

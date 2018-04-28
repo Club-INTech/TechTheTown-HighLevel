@@ -290,6 +290,77 @@ public class Graphe implements Service {
         createAretes();
     }
 
+    /**
+     * Cette méthode retourne le noeud du graphe qui est le plus proche d'une position
+     * Elle servira quand on sera bloqués dans un obstacle
+     * @param position
+     * @return le noeud du graphe le plus proche
+     */
+
+    public Noeud closestNodeToPosition(Vec2 position){
+        /**On get l'obstacle circulaire le plus proche car tous les noeuds sont
+         * autour d'obstacles circulaires, on comparera ensuite avec les trois noeuds
+         * restants
+         * */
+        ObstacleCircular closestCircularObstacle=table.getObstacleManager().getClosestObstacleCircular(position);
+        ArrayList<Vec2> pointsAround=closestCircularObstacle.getCircle().pointsaroundcircle(10);
+        ArrayList<Vec2> pointsThatAreNodes=new ArrayList<>();
+        for(Vec2 pointAround : pointsAround){
+            if(isAlreadyANode(pointAround)){
+                pointsThatAreNodes.add(pointAround);
+            }
+        }
+        float distanceMin=pointsThatAreNodes.get(0).distance(position);
+        int iMin=0;
+        for(int i=0; i<pointsThatAreNodes.size();i++){
+            if(pointsThatAreNodes.get(i).distance(position)<distanceMin){
+                distanceMin=pointsThatAreNodes.get(i).distance(position);
+                iMin=i;
+            }
+        }
+        Vec2 positionMilieu=new Vec2(0,1000);
+        Vec2 positionDepart=new Vec2(1252, 455);
+        Vec2 positionToInterr=new Vec2(650,215);
+        float distanceToMilieu=positionMilieu.distance(position);
+        float distanceToDepart=positionDepart.distance(position);
+        float distanceToInterr=positionToInterr.distance(position);
+        float[] tab={distanceToMilieu,distanceToDepart,distanceToInterr};
+        float minLocal=tab[0];
+        for(int j=0;j<tab.length;j++){
+            if(tab[j]<minLocal){
+                minLocal=tab[j];
+            }
+        }
+        if(minLocal<distanceMin){
+            if(minLocal==distanceToMilieu){
+                return new Noeud(positionMilieu,0,0,new ArrayList<>());
+            }
+            else if(minLocal==distanceToDepart){
+                return new Noeud(positionDepart,0,0,new ArrayList<>());
+            }
+            else{
+                return new Noeud(positionToInterr,0,0,new ArrayList<>());
+            }
+        }
+        else{
+            return new Noeud(pointsThatAreNodes.get(iMin),0,0,new ArrayList<>());
+        }
+
+    }
+
+    /**
+     * Cette méthode retourne true si le point indiqué correspond déjà à un noeud
+     * @param position
+     * @return
+     */
+    public boolean isAlreadyANode(Vec2 position){
+        ArrayList<Vec2> points=new ArrayList<>();
+        for(Noeud noeud : nodes){
+            points.add(noeud.getPosition());
+        }
+        return points.contains(position);
+    }
+
     public ArrayList<Noeud> getNodes() {
         return nodes;
     }
@@ -301,6 +372,7 @@ public class Graphe implements Service {
     public ArrayList<ObstacleProximity> getMobileEnnemies() {
         return mobileEnnemies;
     }
+
 }
 
 

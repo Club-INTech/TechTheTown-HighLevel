@@ -190,6 +190,16 @@ public abstract class Node {
                 immobileEnnemyForOneSecondAtLeast.printStackTrace();
             }
         }
+        // on est dans un obstacle, on va au noeud le plus proche du graphe
+        else if(e instanceof PointInObstacleException){
+            try {
+                gameState.robot.goTo(gameState.robot.getPathfinding().getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition());
+            } catch (UnableToMoveException e1) {
+                e1.printStackTrace();
+            } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+                immobileEnnemyForOneSecondAtLeast.printStackTrace();
+            }
+        }
     }
 
 
