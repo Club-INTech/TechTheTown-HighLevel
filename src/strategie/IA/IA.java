@@ -65,12 +65,12 @@ public class IA implements Service {
 
         ArrayList<Node> nodes = new ArrayList<>();
 //        nodes.add(pattern);
-        nodes.add(abeille);
         nodes.add(panneau);
+        nodes.add(abeille);
         nodes.add(takeCubes);
         nodes.add(takeCubes2);
-        nodes.add(takeCubes3);
         nodes.add(deposeCubes);
+        nodes.add(takeCubes3);
         nodes.add(deposeCubes2);
 
         return nodes;
@@ -90,8 +90,8 @@ public class IA implements Service {
         if (availableNodes.isEmpty())
             return null;
         if (gameState.isTourAvantRemplie() && gameState.isTourArriereRemplie()){
-            if (availableNodes.contains(nodes.get(nodes.size()-2))){
-                return nodes.get(nodes.size()-2);
+            if (availableNodes.contains(nodes.get(nodes.size()-3))){
+                return nodes.get(nodes.size()-3);
             } else{
                 return nodes.get(nodes.size()-1);
             }
@@ -201,11 +201,29 @@ public class IA implements Service {
 //            }
 //        }
         nextNode = theAnswer();
-        while (nextNode != null){
+//        while (nextNode != null){
+//            try {
+//                log.debug("//////IA////// SELECTED NODE : "+nextNode.name);
+//                nextNode.execute(e, gameState);
+//                log.debug("//////IA////// EXECUTE : "+nextNode.name);
+//            } catch (PointInObstacleException e1) {
+//                e1.printStackTrace();
+//            } catch (BadVersionException e1) {
+//                e1.printStackTrace();
+//            } catch (ExecuteException e1) {
+//                e1.printStackTrace();
+//            } catch (BlockedActuatorException e1) {
+//                e1.printStackTrace();
+//            } catch (UnableToMoveException e1) {
+//                e1.printStackTrace();
+//            } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+//                immobileEnnemyForOneSecondAtLeast.printStackTrace();
+//            }
+//            nextNode = theAnswer();
+//        }
+        for (Node node: nodes){
             try {
-                log.debug("//////IA////// SELECTED NODE : "+nextNode.name);
-                nextNode.execute(e, gameState);
-                log.debug("//////IA////// EXECUTE : "+nextNode.name);
+                node.execute(null,gameState);
             } catch (PointInObstacleException e1) {
                 e1.printStackTrace();
             } catch (BadVersionException e1) {
@@ -219,7 +237,6 @@ public class IA implements Service {
             } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
                 immobileEnnemyForOneSecondAtLeast.printStackTrace();
             }
-            nextNode = theAnswer();
         }
     }
 
