@@ -318,7 +318,34 @@ public class Graphe implements Service {
                 iMin=i;
             }
         }
-        return new Noeud(pointsThatAreNodes.get(iMin),0,0,new ArrayList<>());
+        Vec2 positionMilieu=new Vec2(0,1000);
+        Vec2 positionDepart=new Vec2(1252, 455);
+        Vec2 positionToInterr=new Vec2(650,215);
+        float distanceToMilieu=positionMilieu.distance(position);
+        float distanceToDepart=positionDepart.distance(position);
+        float distanceToInterr=positionToInterr.distance(position);
+        float[] tab={distanceToMilieu,distanceToDepart,distanceToInterr};
+        float minLocal=tab[0];
+        for(int j=0;j<tab.length;j++){
+            if(tab[j]<minLocal){
+                minLocal=tab[j];
+            }
+        }
+        if(minLocal<distanceMin){
+            if(minLocal==distanceToMilieu){
+                return new Noeud(positionMilieu,0,0,new ArrayList<>());
+            }
+            else if(minLocal==distanceToDepart){
+                return new Noeud(positionDepart,0,0,new ArrayList<>());
+            }
+            else{
+                return new Noeud(positionToInterr,0,0,new ArrayList<>());
+            }
+        }
+        else{
+            return new Noeud(pointsThatAreNodes.get(iMin),0,0,new ArrayList<>());
+        }
+
     }
 
     /**
