@@ -48,7 +48,7 @@ public abstract class AbstractScript implements Service
 	protected static Config config;
 
 	/**  Liste des versions du script. */
-	protected Integer[] versions;
+	protected int[] versions;
 
 
 	/** HookFactory pour gérer les hooks */
@@ -187,7 +187,7 @@ public abstract class AbstractScript implements Service
 	/** Getter utilisé par l'IA
 	 * @param stateToConsider état de jeu actuel
 	 * @return les versions possibles du script*/
-	abstract public Integer[] getVersion(GameState stateToConsider);
+	abstract public int[] getVersion(GameState stateToConsider);
 
 
 }

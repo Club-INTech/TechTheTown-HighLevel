@@ -166,12 +166,10 @@ public class MatchScript extends AbstractScript {
     }
 
     @Override
-    public void finalize(GameState state, Exception e) throws UnableToMoveException {
-
-    }
+    public void finalize(GameState state, Exception e) throws UnableToMoveException { }
 
     @Override
-    public Integer[] getVersion(GameState stateToConsider) {
+    public int[] getVersion(GameState stateToConsider) {
         return versions;
     }
 

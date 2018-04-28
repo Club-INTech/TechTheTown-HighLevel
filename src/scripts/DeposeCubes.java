@@ -26,7 +26,7 @@ public class DeposeCubes extends AbstractScript {
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
-        versions = new Integer[]{0, 1};
+        super.versions = new int[]{0, 1};
         updateConfig();
     }
 
@@ -270,16 +270,15 @@ public class DeposeCubes extends AbstractScript {
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
         //Zone de dépose des cubes proche de la base
-        int shift = 100;
         if (version==0) {
-            int xentry = 970 + shift;
+            int xentry = 970;
             int yentry = 150 + radius;
             Vec2 position = new Vec2(xentry, yentry);
             return new Circle(position);
         }
         //Zone de dépose des cubes proche du pattern
         else if (version==1) {
-            int xEntry = 600 + shift;
+            int xEntry = 600;
             int yEntry = 150 + radius;
             Vec2 positionentree = new Vec2(xEntry, yEntry);
             return new Circle(positionentree);
@@ -298,11 +297,9 @@ public class DeposeCubes extends AbstractScript {
     }
 
     @Override
-    public Integer[] getVersion(GameState stateToConsider) {
+    public int[] getVersion(GameState stateToConsider) {
         return versions;
     }
-
-
 
     @Override
     public void updateConfig() {

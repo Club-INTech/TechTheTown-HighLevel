@@ -33,13 +33,13 @@ public class ActiveAbeille extends AbstractScript {
         super(config,log,hookFactory);
         updateConfig();
         this.securityDistance=60;
-        this.xEntry=1300;
-        this.yEntry=1733;
+        this.xEntry=1280;
+        this.yEntry=1780;
         this.xExit=1500-radius-securityDistance;
         this.yExit=2000-radius-securityDistance;
         /**2 versions, l'une pour l'IA(si jamais on a à appeler le pathfinding pour
          * aller à l'abeille) et l'autre pour le MatchScript*/
-        versions = new Integer[]{0,1};
+        versions = new int[]{0,1};
     }
     @Override
     public void updateConfig() {
@@ -143,8 +143,8 @@ public class ActiveAbeille extends AbstractScript {
 
 
     @Override
-    public Integer[] getVersion(GameState stateToConsider) {
-        return new Integer[0];
+    public int[] getVersion(GameState stateToConsider) {
+        return versions;
     }
 
     @Override
