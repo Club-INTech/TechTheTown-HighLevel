@@ -190,6 +190,10 @@ public abstract class Node {
                 immobileEnnemyForOneSecondAtLeast.printStackTrace();
             }
         }
+        // on est dans un obstacle, on va au noeud le plus proche du graphe
+        else if(e instanceof PointInObstacleException){
+
+        }
     }
 
 

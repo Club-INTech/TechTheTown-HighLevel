@@ -1062,6 +1062,25 @@ public class ObstacleManager implements Service
 	}
 
 	/**
+	 * Cette méthode retourne l'obstacle circulaire fixe (l'ennemi n'est pas concerné)
+	 * le plus proche du robot
+	 * @param positionRobot
+	 * @return
+	 */
+
+	public ObstacleCircular getClosestObstacleCircular(Vec2 positionRobot){
+		float distanceMin=mCircularObstacle.get(0).getCircle().getCenter().distance(positionRobot);
+		int iMin=0;
+		for(int i=1;i<mCircularObstacle.size();i++){
+			if(mCircularObstacle.get(i).getCircle().getCenter().distance(positionRobot)<=distanceMin){
+				distanceMin=mCircularObstacle.get(i).getCircle().getCenter().distance(positionRobot);
+				iMin=i;
+			}
+		}
+		return mCircularObstacle.get(iMin);
+	}
+
+	/**
 	 * Supprime TOUS les obstacles fixes de la table
 	 * http://cdn.meme.am/instances/500x/21541512.jpg
 	 */
