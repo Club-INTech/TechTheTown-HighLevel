@@ -23,6 +23,7 @@ package smartMath;
 
 /**
  * Classe regroupant la position et l'orientation (pratique pour récupérer les infos du LL)
+ * LA POSITION ET L'ORIENTATION SONT CELLE DU LL
  * @author rem
  */
 public class XYO {
