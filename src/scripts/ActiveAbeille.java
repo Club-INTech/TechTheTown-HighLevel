@@ -57,8 +57,8 @@ public class ActiveAbeille extends AbstractScript {
         if(basicDetection){
             actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
         } else {
-            actualState.robot.useActuator(ActuatorOrder.SUS_ON,true);
-            actualState.setCapteursActivés(true);
+            actualState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
+            actualState.setCapteursActivés(false);
         }
         actualState.robot.goTo(new Vec2(xEntryReal, yEntryReal));
         if (prodScal > 0) {

@@ -651,6 +651,7 @@ public class Locomotion implements Service {
             closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
             if(closest <= distance){
                 table.getObstacleManager().getMobileObstacles().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
+                log.debug("ImmobileEnnemy est thrown");
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
         }
@@ -668,7 +669,7 @@ public class Locomotion implements Service {
             Thread.sleep(1000);
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
             if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
-                log.debug("l'exception est throw");
+                log.debug("ImmobileEnnemy est throw");
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
         }
