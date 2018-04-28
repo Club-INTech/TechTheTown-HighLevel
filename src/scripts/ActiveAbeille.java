@@ -100,14 +100,13 @@ public class ActiveAbeille extends AbstractScript {
             actualState.setAbeilleLancee(true);
             log.debug("////////// End ActiveAbeille version " + versionToExecute + " //////////");
         }
-        /**On arrive à la position d'entrée,le hook to enable est enabled au niveau de l'IA
-         *  on avance un petit peu
-         * et on fait la même suite d'actions*/
+        /**On est à la position d'entrée accesssibe par le pathfinding,
+         * on avance un petit peu,on baisse le bras et on pousse l'abeille :)*/
         else if(versionToExecute==1){
             if(prodScal>0) {
                 actualState.robot.turn(Math.PI/4);
                 actualState.robot.moveLengthwise(distanceAbeille);
-                //Le hook est normalement activé par l'IA
+                actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE,true);
                 actualState.robot.turn(Math.PI/2);
                 actualState.addObtainedPoints(50);
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, true);
@@ -116,7 +115,7 @@ public class ActiveAbeille extends AbstractScript {
            else{
                 actualState.robot.turn(5*Math.PI/4);
                 actualState.robot.moveLengthwise(-distanceAbeille);
-                //Le hook est normalement activé par l'IA
+                actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE,true);
                 actualState.robot.turn(-Math.PI/2);
                 actualState.addObtainedPoints(50);
                 actualState.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, true);
