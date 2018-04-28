@@ -722,26 +722,6 @@ public class Robot implements Service {
         return orientation;
     }
 
-    /**
-     * Donne la dernière position connue du robot sur la table
-     * cette methode est rapide et ne déclenche pas d'appel série
-     *
-     * @return la dernière position connue du robot
-     */
-    public Vec2 getPositionFast() {
-        return position;
-    }
-
-    /**
-     * Donne la derniere orientation connue du robot sur la table
-     * Cette méthode est rapide et ne déclenche pas d'appel série
-     *
-     * @return la derniere orientation connue du robot
-     */
-    public double getOrientationFast() {
-        return orientation;
-    }
-
     public void setRobotRadius(int radius) {
         this.robotRay = radius;
     }

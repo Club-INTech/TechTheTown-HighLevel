@@ -178,9 +178,9 @@ public class TablePanel extends JPanel
 	    if(isRobotPresent)
 	    {
 		    graphics.setColor(robotColor);
-			Vec2 robotPosition = robot.getPositionFast();
+			Vec2 robotPosition = robot.getPosition();
 			Vec2 robotPositionDisplay = changeRefToDisplay(robotPosition);
-			double robotOrientation = robot.getOrientationFast();
+			double robotOrientation = robot.getOrientation();
 			Vec2 orentationIndicator = changeRefToDisplay(robotPosition.plusNewVector(new Vec2(new Double(robot.getRobotRadius()), robotOrientation)));
 
 			upLeftCorner = changeRefToDisplay(robotPosition).plusNewVector(new Vec2(-wideDisplay, -wideDisplay));

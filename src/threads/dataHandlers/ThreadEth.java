@@ -75,6 +75,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private static final String inputLock="inputLock";
     private static final String outputLock="outputLock";
     private static final String socketLock="socketLock";
+    private static final String xyoLock="xyoLock";
 
     /**
      * IP Teensy & local
@@ -716,7 +717,7 @@ public class ThreadEth extends AbstractThread implements Service {
                                 e.printStackTrace();
                             }
                         } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
-                            synchronized (this.positionAndOrientation) {
+                            synchronized (xyoLock) {
                                 positionAndOrientation.update(infosFromBuffer, splitString);
                                 if (symmetry) {
                                     positionAndOrientation.getPosition().setX(-positionAndOrientation.getPosition().getX());
@@ -792,12 +793,12 @@ public class ThreadEth extends AbstractThread implements Service {
      * On stocke la position et l'orientation ici : les classes qui en ont besoin l'a mettre à jour via le Wrapper
      */
     public XYO getPositionAndOrientation() {
-        synchronized (this.positionAndOrientation) {
+        synchronized (xyoLock) {
             return this.positionAndOrientation;
         }
     }
     public void setPositionAndOrientation(XYO positionAndOrientation) {
-        synchronized (this.positionAndOrientation) {
+        synchronized (xyoLock) {
             this.positionAndOrientation = positionAndOrientation;
         }
     }
