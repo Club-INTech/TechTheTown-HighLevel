@@ -109,6 +109,7 @@ public class MainIA {
             //TODO : lancer l'IA
 
 //            ia.start(ScriptNames.MATCH_SCRIPT,config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE));
+            realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             ia.execute(null);
 
         } catch (Exception e) {
