@@ -203,6 +203,7 @@ public class IA implements Service {
         nextNode = theAnswer();
         while (nextNode != null){
             try {
+                log.debug("//////IA////// SELECTED NODE : "+nextNode.name);
                 nextNode.execute(e, gameState);
                 log.debug("//////IA////// EXECUTE : "+nextNode.name);
             } catch (PointInObstacleException e1) {
