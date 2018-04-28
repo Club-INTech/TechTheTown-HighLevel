@@ -33,11 +33,6 @@ public class DeposeCubes extends Node {
         return isDone;
     }
 
-    public void exception(Exception e) {
-
-    }
-
-
     @Override
     public void unableToMoveExceptionHandled(UnableToMoveException e) {
 
