@@ -215,7 +215,4 @@ public abstract class Node {
     public void setPosition(Vec2 position) { this.position = position; }
 
     public void setVersionToExecute(int versionToExecute) { this.versionToExecute = versionToExecute; }
-
-
-
 }
