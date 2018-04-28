@@ -83,7 +83,8 @@ public class JUnit_IA extends JUnit_Test{
             state.setRecognitionDone(true);
             state.setIndicePattern(2);
             state.robot.setLocomotionSpeed(Speed.FAST_ALL);
-            ia.start(ScriptNames.MATCH_SCRIPT,0);
+//            ia.start(ScriptNames.MATCH_SCRIPT,0);
+            ia.execute(null);
         }
         @Test
         public void ennemyAvoid(){

@@ -3,6 +3,9 @@ package strategie.IA;
 import container.Service;
 import enums.ScriptNames;
 import exceptions.BadVersionException;
+import exceptions.BlockedActuatorException;
+import exceptions.ExecuteException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
@@ -10,6 +13,7 @@ import hook.HookFactory;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.*;
+import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 
@@ -24,7 +28,10 @@ public class IA implements Service {
     private Graph graph;
     private Pathfinding pathfinding;
     private int nb_tas_pris;
+    private ArrayList<Node> nodes;
+    private ArrayList<Node> availableNodes;
     private ArrayList<Node> nodesToExecute;
+    private Node nextNode;
     private HookFactory hookFactory;
 
     /** Permet de s'adapter au déroulement d'un match grace à un graphe de décision. */
@@ -38,7 +45,10 @@ public class IA implements Service {
         this.hookFactory = hookFactory;
         this.graph = new Graph(createNodes(),log);
         this.nb_tas_pris = 0;
+        this.nodes = createNodes();
+        this.availableNodes = new ArrayList<>();
         this.nodesToExecute = kruskal();
+        this.nextNode = theAnswer();
     }
 
     /** Créer les noeuds du graphe de décision. */
@@ -58,12 +68,62 @@ public class IA implements Service {
         nodes.add(abeille);
         nodes.add(panneau);
         nodes.add(takeCubes);
-        nodes.add(deposeCubes);
-        nodes.add(deposeCubes2);
         nodes.add(takeCubes2);
         nodes.add(takeCubes3);
+        nodes.add(deposeCubes);
+        nodes.add(deposeCubes2);
 
         return nodes;
+    }
+
+    /** Renvoie le prochain noeud à executer. Si les tours sont remplies, on execute un
+     *  dépose cube et sinon on va faire le script le plus proche.
+     *
+     */
+
+    public Node theAnswer() {
+
+        Vec2 robotPosition = gameState.robot.getPosition();
+        updateAvailableNodes();
+        double dmin = 66666666666666.;
+        int j = 0;
+        if (availableNodes.isEmpty())
+            return null;
+        if (gameState.isTourAvantRemplie() && gameState.isTourArriereRemplie()){
+            if (availableNodes.contains(nodes.get(nodes.size()-2))){
+                return nodes.get(nodes.size()-2);
+            } else{
+                return nodes.get(nodes.size()-1);
+            }
+        }
+        if ( (gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie()) && gameState.isTas_base_pris() && gameState.isTas_chateau_eau_pris() &&
+        gameState.isTas_station_epuration_pris()){
+            if (availableNodes.contains(nodes.get(nodes.size()-2))){
+                return nodes.get(nodes.size()-2);
+            } else{
+                return nodes.get(nodes.size()-1);
+            }
+        }
+        for (int i = 0; i<availableNodes.size();i++){
+            try {
+                double d = pathfinding.howManyTime(robotPosition, availableNodes.get(i).position);
+                if (d<dmin){
+                    j=i;
+                    dmin=d;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return availableNodes.get(j);
+    }
+    public void updateAvailableNodes(){
+        availableNodes.clear();
+        for (Node node: nodes) {
+            if (!node.isDone()) {
+                availableNodes.add(node);
+            }
+        }
     }
 
     /** Trouve un parcourt optimal dans le graphe de décision. */
@@ -128,17 +188,37 @@ public class IA implements Service {
     }
 
     public void execute(Exception e) {
-        graph.clean();
-        log.debug("Clean du graphe");
-        setNodesToExecute(kruskal());
-        display();
-        for(Node node : nodesToExecute){
+//        graph.clean();
+//        log.debug("Clean du graphe");
+//        setNodesToExecute(kruskal());
+//        display();
+//        for(Node node : nodesToExecute){
+//            try {
+//                node.execute(e,gameState);
+//            } catch (Exception e1){
+//                e1.printStackTrace();
+//                execute(e1);
+//            }
+//        }
+        nextNode = theAnswer();
+        while (nextNode != null){
             try {
-                node.execute(e,gameState);
-            } catch (Exception e1){
+                nextNode.execute(e, gameState);
+                log.debug("//////IA////// EXECUTE : "+nextNode.name);
+            } catch (PointInObstacleException e1) {
                 e1.printStackTrace();
-                execute(e1);
+            } catch (BadVersionException e1) {
+                e1.printStackTrace();
+            } catch (ExecuteException e1) {
+                e1.printStackTrace();
+            } catch (BlockedActuatorException e1) {
+                e1.printStackTrace();
+            } catch (UnableToMoveException e1) {
+                e1.printStackTrace();
+            } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+                immobileEnnemyForOneSecondAtLeast.printStackTrace();
             }
+            nextNode = theAnswer();
         }
     }
 
