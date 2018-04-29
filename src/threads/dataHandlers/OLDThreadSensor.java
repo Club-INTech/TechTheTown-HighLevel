@@ -214,7 +214,7 @@ public class OLDThreadSensor extends AbstractThread
 
         if (isValue) {
             printDebug(vec);
-            mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius, lifetimeForUntestedObstacle);
+            mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius);
         }
     }
     /** Ajoute un obstacle derrière le robot, avec les deux capteurs ayant détecté quelque chose */
@@ -251,7 +251,7 @@ public class OLDThreadSensor extends AbstractThread
 
         if (isValue) {
             this.printDebug(vec);
-            mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius, lifetimeForUntestedObstacle);
+            mTable.getObstacleManager().addObstacle(this.changeRef(vec), enRadius);
         }
     }
 
@@ -280,7 +280,7 @@ public class OLDThreadSensor extends AbstractThread
         }
 
         this.printDebug(posEn);
-        mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius, lifetimeForUntestedObstacle);
+        mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius);
     }
 
     /** Ajoute un obstacle derrière le robot, avec un seul capteur ayant détecté quelque chose
@@ -304,7 +304,7 @@ public class OLDThreadSensor extends AbstractThread
         }
 
         this.printDebug(posEn);
-        mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius, lifetimeForUntestedObstacle);
+        mTable.getObstacleManager().addObstacle(this.changeRef(posEn), enRadius);
     }
 
     /** P'tite methode pour print le debug des capteurs
