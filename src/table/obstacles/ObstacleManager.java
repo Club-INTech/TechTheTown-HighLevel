@@ -189,10 +189,11 @@ public class ObstacleManager implements Service
 		// TODO: Prévoir les cas où l'on détecte des éléments de jeu dans la condition
 		{
 			boolean isThereAnObstacleIntersecting = false;
+			ArrayList<ObstacleProximity> obstacleToBeRemoved = new ArrayList<>();
 			for (ObstacleProximity obstacleMobileUntested : mUntestedMobileObstacles) {
 
 				//si l'obstacle est deja dans la liste des obstacles non-testés on l'ajoute dans la liste des obstacles
-				if (obstacleMobileUntested.getPosition().distance(position) < obstacleMobileUntested.getRadius() / 3) {
+				if (obstacleMobileUntested.getPosition().distance(position) < obstacleMobileUntested.getRadius() / 2) {
 					isThereAnObstacleIntersecting = true;
 					obstacleMobileUntested.numberOfTimeDetected++;
 					obstacleMobileUntested.setPosition(position);
@@ -216,11 +217,13 @@ public class ObstacleManager implements Service
 						if(!intersection){
 							obstacleMobileUntested.setLifeTime(defaultLifetime);
 							mMobileObstacles.add(obstacleMobileUntested);
-							mUntestedMobileObstacles.remove(obstacleMobileUntested);
+							obstacleToBeRemoved.add(obstacleMobileUntested);
 						}
 					}
 				}
 			}
+			mUntestedMobileObstacles.removeAll(obstacleToBeRemoved);
+
 
 			// on vérifie si l'on ne voit pas un obstacle confirmé déjà présent
 			for (ObstacleProximity obstacleMobile : mMobileObstacles) {
