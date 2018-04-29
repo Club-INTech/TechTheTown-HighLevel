@@ -184,7 +184,8 @@ public class ObstacleManager implements Service
 	 */
 	public synchronized void addObstacle(final Vec2 position, final int radius) {
 		//vérification que l'on ne détecte pas un obstacle "normal"
-		if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius && position.getY() > mEnnemyRadius && position.getY() < 2000 - mEnnemyRadius  // Hors de la table
+		if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius
+				&& position.getY() > mEnnemyRadius && position.getY() < 2000 - mEnnemyRadius  // Hors de la table
 				&& !(position.getX() > 1100 - mEnnemyRadius && position.getY() < 600 + mEnnemyRadius)) // Dans la zone de départ
 		// TODO: Prévoir les cas où l'on détecte des éléments de jeu dans la condition
 		{
@@ -193,7 +194,7 @@ public class ObstacleManager implements Service
 			for (ObstacleProximity obstacleMobileUntested : mUntestedMobileObstacles) {
 
 				//si l'obstacle est deja dans la liste des obstacles non-testés on l'ajoute dans la liste des obstacles
-				if (obstacleMobileUntested.getPosition().distance(position) < obstacleMobileUntested.getRadius() / 2) {
+				if (obstacleMobileUntested.getPosition().distance(position) < obstacleMobileUntested.getRadius()) {
 					isThereAnObstacleIntersecting = true;
 					obstacleMobileUntested.numberOfTimeDetected++;
 					obstacleMobileUntested.setPosition(position);
@@ -228,7 +229,7 @@ public class ObstacleManager implements Service
 
 			// on vérifie si l'on ne voit pas un obstacle confirmé déjà présent
 			for (ObstacleProximity obstacleMobile : mMobileObstacles) {
-				if (obstacleMobile.getPosition().distance(position) < obstacleMobile.getRadius() / 2) {
+				if (obstacleMobile.getPosition().distance(position) < obstacleMobile.getRadius()) {
 					isThereAnObstacleIntersecting = true;
 
 					obstacleMobile.numberOfTimeDetected++;
