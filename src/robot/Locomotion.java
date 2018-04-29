@@ -498,7 +498,6 @@ public class Locomotion implements Service {
      */
     private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException,ImmobileEnnemyForOneSecondAtLeast {
         moveToPointSymmetry(aim, turnOnly);
-
         do {
             getCurrentPositionAndOrientation();
 
@@ -568,6 +567,7 @@ public class Locomotion implements Service {
             }
         }
         while (thEvent.getIsMoving());
+
     }
 
     /**
@@ -645,10 +645,20 @@ public class Locomotion implements Service {
             log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de "
                     + closest + " mm)");
             immobilise();
-            Thread.sleep(1000);
+            int count = 0;
 
-            //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
-            closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
+
+            while(count < 100)
+            {
+                //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
+                closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
+                if(closest > distance){
+                    break;
+                }
+                Thread.sleep(10);
+                count++;
+            }
+
             if(closest <= distance){
                 table.getObstacleManager().getMobileObstacles().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
                 log.debug("ImmobileEnnemy est thrown");
@@ -666,7 +676,17 @@ public class Locomotion implements Service {
         if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)) {
             log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin : le robot va s'arrêter");
             immobilise();
-            Thread.sleep(1000);
+            int count = 0;
+
+            while(count < 100)
+            {
+                if(!table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
+                    break;
+                }
+                Thread.sleep(10);
+                count++;
+            }
+
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
             if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
                 log.debug("ImmobileEnnemy est throw");
