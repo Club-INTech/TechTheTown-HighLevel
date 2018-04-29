@@ -186,7 +186,8 @@ public class ObstacleManager implements Service
 		//vérification que l'on ne détecte pas un obstacle "normal"
 		if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius
 				&& position.getY() > mEnnemyRadius && position.getY() < 2000 - mEnnemyRadius  // Hors de la table
-				&& !(position.getX() > 1100 - mEnnemyRadius && position.getY() < 600 + mEnnemyRadius)) // Dans la zone de départ
+				&& !(position.getX() > 1100 - mEnnemyRadius && position.getY() < 600 + mEnnemyRadius) // Dans la zone de départ
+				&& !(position.getX() > 550 - mEnnemyRadius && position.getY() < 170 + mEnnemyRadius)) // Dans la zone de construction
 		// TODO: Prévoir les cas où l'on détecte des éléments de jeu dans la condition
 		{
 			boolean isThereAnObstacleIntersecting = false;
