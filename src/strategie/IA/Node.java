@@ -72,10 +72,7 @@ public abstract class Node {
             throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         if (tentatives < 3) {
             tentatives++;
-            if(e instanceof ImmobileEnnemyForOneSecondAtLeast){
-                execute(null,gameState);
-            }
-            else if (e != null) {
+           if (e != null && !(e instanceof ImmobileEnnemyForOneSecondAtLeast)) {
                 exception(e);
             } else {
                 script.goToThenExec(versionToExecute, gameState);
