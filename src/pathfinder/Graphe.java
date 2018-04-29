@@ -2,6 +2,7 @@ package pathfinder;
 
 import container.Service;
 import enums.ConfigInfoRobot;
+import enums.TasCubes;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Geometry;
@@ -79,6 +80,16 @@ public class Graphe implements Service {
         Vec2 positioninterr=new Vec2(650,215);
         Noeud noeudinterr=new Noeud(positioninterr,0,0, new ArrayList<>());
         nodes.add(noeudinterr);
+
+        int xCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getX())/3;
+        int yCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getY())/3;
+        Vec2 noeudEnPlusCoteVert=new Vec2(xCentreGravite,yCentreGravite);
+        nodes.add(new Noeud(noeudEnPlusCoteVert,0,0,new ArrayList<>()));
+
+        int xCentreGraviteEnnemy=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getX())/3;
+        int yCentreGraviteEnnemy=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getY())/3;
+        Vec2 noeudEnPlusCoteOrange=new Vec2(xCentreGraviteEnnemy,yCentreGraviteEnnemy);
+        nodes.add(new Noeud(noeudEnPlusCoteOrange,0,0,new ArrayList<>()));
     }
 
     /**
@@ -325,13 +336,21 @@ public class Graphe implements Service {
         Vec2 positionMilieu=new Vec2(0,1000);
         Vec2 positionDepart=new Vec2(1252, 455);
         Vec2 positionToInterr=new Vec2(650,215);
+        int xCentreGraviteVert=(TasCubes.TAS_BASE.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getX())/3;
+        int yCentreGravitevert=(TasCubes.TAS_BASE.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getY())/3;
+        Vec2 positionEnPlusCoteVert=new Vec2(xCentreGraviteVert,yCentreGravitevert);
+        int xCentreGraviteOrange=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getX())/3;
+        int yCentreGraviteOrange=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getY())/3;
+        Vec2 positionEnPlusCoteOrange=new Vec2(xCentreGraviteOrange,yCentreGraviteOrange);
         float distanceToMilieu=positionMilieu.distance(position);
         float distanceToDepart=positionDepart.distance(position);
         float distanceToInterr=positionToInterr.distance(position);
-        float[] tab={distanceToMilieu,distanceToDepart,distanceToInterr};
+        float distanceToNodePlusVert=positionEnPlusCoteVert.distance(position);
+        float distanceToNodePlusOrange=positionEnPlusCoteOrange.distance(position);
+        float[] tab={distanceToMilieu,distanceToDepart,distanceToInterr,distanceToNodePlusVert,distanceToNodePlusOrange};
         float minLocal=tab[0];
         for(int j=0;j<tab.length;j++){
-            if(tab[j]<minLocal){
+            if(tab[j]<=minLocal){
                 minLocal=tab[j];
             }
         }
