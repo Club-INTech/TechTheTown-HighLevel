@@ -202,12 +202,7 @@ public class IA implements Service {
         while (nextNode != null){
             try {
                 log.debug("//////IA////// SELECTED NODE : "+nextNode.name);
-                if(e instanceof ImmobileEnnemyForOneSecondAtLeast){
-                    nextNode.execute(null,gameState);
-                }
-                else {
-                    nextNode.execute(e, gameState);
-                }
+                nextNode.execute(e, gameState);
                 log.debug("//////IA////// EXECUTE : "+nextNode.name);
             } catch (PointInObstacleException e1) {
                 e1.printStackTrace();
