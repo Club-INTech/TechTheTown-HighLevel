@@ -303,6 +303,10 @@ public class Graphe implements Service {
          * restants
          * */
         ObstacleCircular closestCircularObstacle=table.getObstacleManager().getClosestObstacleCircular(position);
+        //on a rajouté cette distance dans createNodes pour ne pas être collé aux obstacles
+        int d=30;
+        int R=closestCircularObstacle.getRadius();
+        closestCircularObstacle.setRadius(R+d);
         ArrayList<Vec2> pointsAround=closestCircularObstacle.getCircle().pointsaroundcircle(10);
         ArrayList<Vec2> pointsThatAreNodes=new ArrayList<>();
         for(Vec2 pointAround : pointsAround){
