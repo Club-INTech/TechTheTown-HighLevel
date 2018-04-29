@@ -354,7 +354,7 @@ public class ThreadSensor extends AbstractThread
             obPositionRobotRef = changeRef(obPositionRobotRef);
             out.write("Position calculée (référentiel de la table) :" + obPositionRobotRef);
             out.newLine();
-            out.write("Position du robot :" + robotPosAndOr.getHLPosition());
+            out.write("Position du robot :" + robotPosAndOr.getPosition());
             out.newLine();
             out.newLine();
             out.flush();
@@ -369,8 +369,19 @@ public class ThreadSensor extends AbstractThread
      * @param pos la position relative dont on cherche les coordonées absolues */
     private Vec2 changeRef(Vec2 pos)
     {
-        pos.setA(Geometry.moduloSpec(pos.getA()+robotPosAndOr.getHLOrientation(), Math.PI));
-        return pos.plusNewVector(robotPosAndOr.getHLPosition());
+        double robotOr;
+        Vec2 robotPos;
+        if (symetry) {
+            robotOr = Geometry.moduloSpec(Math.PI-robotPosAndOr.getOrientation(),Math.PI);
+            robotPos=robotPosAndOr.getPosition();
+            robotPos.setX(robotPos.getX()*-1);
+        }
+        else{
+            robotOr = robotPosAndOr.getOrientation();
+            robotPos=robotPosAndOr.getPosition();
+        }
+        pos.setA(Geometry.moduloSpec(pos.getA()+robotOr, Math.PI));
+        return pos.plusNewVector(robotPos);
     }
 
     /**

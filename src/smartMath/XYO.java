@@ -74,17 +74,11 @@ public class XYO {
     public Vec2 getPosition() {
         return position;
     }
-    public Vec2 getHLPosition() {
-        return new Vec2(this.position.getX()*-1, this.position.getY());
-    }
     public void setPosition(Vec2 position) {
         this.position = position;
     }
     public double getOrientation() {
         return orientation;
-    }
-    public double getHLOrientation(){
-        return Geometry.moduloSpec(Math.PI-this.orientation,Math.PI);
     }
     public void setOrientation(double orientation) {
         this.orientation = orientation;
