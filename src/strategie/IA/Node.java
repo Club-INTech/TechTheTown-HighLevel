@@ -126,8 +126,8 @@ public abstract class Node {
                     immobileEnnemyForOneSecondAtLeast.printStackTrace();
                     log.debug("L'ennemi est toujours là");
                 } catch (PointInObstacleException e1) {
-                    log.debug("PointInObstacleException");
-                    e1.printStackTrace();
+                    log.debug("PointInObstacleException, on part au noeud le plus proche");
+                    exception(e1);
                 } catch (UnableToMoveException e1) {
                     log.debug("UnableToMoveException");
                     e1.printStackTrace();
