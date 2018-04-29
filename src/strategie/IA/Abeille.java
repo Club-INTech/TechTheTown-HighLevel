@@ -31,42 +31,6 @@ public class Abeille extends Node {
      * On override le execute du node, l'idée c'est qu'on puisse déjà enable et
      * disable les hooks qu'on veut en fonction des bras
      */
-    @Override
-    public void execute(Exception e, GameState gameState) throws BadVersionException, BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, ImmobileEnnemyForOneSecondAtLeast {
-        if (e != null) {
-            exception(e);
-        }
-        /**
-         *On n'a pas d'exception, du coup tout est normal, on active les hooks
-         */
-        else {
-            Vec2 entry = this.script.entryPosition(1, gameState.robot.getPosition()).getCenter();
-            Vec2 directionToGo = (entry.minusNewVector(gameState.robot.getPosition()));
-            double prodScal = directionToGo.dot(new Vec2(100.0, gameState.robot.getOrientation()));
-            if (prodScal > 0) {
-                //ON UTILISE LE BRAS AVANT
-                //On disable le hook pour le bras arrière
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-                //On enable le kook pour le bras avant
-                hookFactory.enableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
-                this.script.goToThenExec(1, gameState);
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
-            }
-            if (prodScal < 0) {
-                //ON UTILISE LE BRAS AVANT
-                //On disable le hook pour le bras arrière
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
-                //On enable le kook pour le bras avant
-                hookFactory.enableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-                hookFactory.enableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-                this.script.goToThenExec(1, gameState);
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-                hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
-            }
-        }
-        setDone(true);
-    }
 
     public void unableToMoveExceptionHandled (UnableToMoveException e){
 
