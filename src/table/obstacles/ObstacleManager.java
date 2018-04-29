@@ -459,6 +459,7 @@ public class ObstacleManager implements Service
 		try {
 			ObstacleCircular closestEnnemy = getClosestEnnemy(pos);
 			if (closestEnnemy == null){
+				log.debug("Pas d'ennemis trouvés par isEnnemyForwardOrBackward");
 				return false;
 			}
 
@@ -468,7 +469,7 @@ public class ObstacleManager implements Service
 			out.write("Position de l'ennemi le plus proche (référentiel de la table) :" + closestEnnemy.getPosition());
 
 			// Changement de référentiel (de la table au robot)
-			Vec2 ennemyPos = closestEnnemy.position.minusNewVector(pos);
+			Vec2 ennemyPos = closestEnnemy.getPosition().minusNewVector(pos);
 			ennemyPos.setA(ennemyPos.getA() - orientation);
 
 			out.newLine();

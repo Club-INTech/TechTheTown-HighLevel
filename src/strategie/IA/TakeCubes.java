@@ -29,25 +29,29 @@ public class TakeCubes extends Node {
 
     @Override
     public void execute(Exception e, GameState gameState) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
-        if (e != null) {
-            exception(e);
-        } else {
-            if (gameState.isTourAvantRemplie() && !gameState.isTourArriereRemplie()){
-                gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
-            }
-            else if(gameState.isTourArriereRemplie() && !gameState.isTourAvantRemplie()){
-                gameState.setTakeCubesBras(BrasUtilise.AVANT);
+        if (getTentatives() < 3) {
+            if (e != null) {
+                exception(e);
             } else {
-                float scalar = gameState.robot.getPosition().minusNewVector(getScript().entryPosition(getVersionToExecute(),gameState.robot.getPosition()).getCenter()).dot(new Vec2(0,42));
-                if(scalar > 0){
-                    gameState.setTakeCubesBras(BrasUtilise.AVANT);
-                } else {
+                if (gameState.isTourAvantRemplie() && !gameState.isTourArriereRemplie()){
                     gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
                 }
+                else if(gameState.isTourArriereRemplie() && !gameState.isTourAvantRemplie()){
+                    gameState.setTakeCubesBras(BrasUtilise.AVANT);
+                } else {
+                    float scalar = gameState.robot.getPosition().minusNewVector(getScript().entryPosition(getVersionToExecute(),gameState.robot.getPosition()).getCenter()).dot(new Vec2(0,42));
+                    if(scalar > 0){
+                        gameState.setTakeCubesBras(BrasUtilise.AVANT);
+                    } else {
+                        gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
+                    }
+                }
             }
+            getScript().goToThenExec(getVersionToExecute(), gameState);
+            setDone(true);
+        } else {
+            setDone(true);
         }
-        getScript().goToThenExec(getVersionToExecute(), gameState);
-        setDone(true);
     }
 
 
@@ -59,11 +63,11 @@ public class TakeCubes extends Node {
     @Override
     public boolean isDone() {
         if(getVersionToExecute()==0)
-            return getGameState().isTas_base_pris();
+            return getGameState().isTas_base_pris() || getIsDone();
         if(getVersionToExecute()==1)
-            return getGameState().isTas_chateau_eau_pris();
+            return getGameState().isTas_chateau_eau_pris() || getIsDone();
         if (getVersionToExecute()==2)
-            return getGameState().isTas_station_epuration_pris();
+            return getGameState().isTas_station_epuration_pris() || getIsDone();
         else { return false;}
     }
 }

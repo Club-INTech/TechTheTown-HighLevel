@@ -30,6 +30,7 @@ public abstract class Node {
     protected int timeLimit;
     protected int timeToGo;
     protected int timeToExecute;
+    protected int tentatives;       //nombre de tentatives d'un noeuds, si on tente plus d'un certain nombre de fois on suppose que le noeud est inaccessible.
     protected boolean isDone;
     protected GameState gameState;
     protected Vec2 position;
@@ -54,6 +55,7 @@ public abstract class Node {
         this.timeLimit = 0;
         this.timeToGo = 0;
         this.timeToExecute = 0;
+        this.tentatives = 0;
         this.isDone = false;
         this.scriptManager = scriptManager;
         this.gameState = gameState;
@@ -68,10 +70,15 @@ public abstract class Node {
 
     public void execute(Exception e, GameState gameState)
             throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
-        if (e != null) {
-            exception(e);
+        if (tentatives < 3) {
+            tentatives++;
+            if (e != null) {
+                exception(e);
+            } else {
+                script.goToThenExec(versionToExecute, gameState);
+                setDone(true);
+            }
         } else {
-            script.goToThenExec(versionToExecute, gameState);
             setDone(true);
         }
     }
@@ -202,6 +209,8 @@ public abstract class Node {
     public String getName() { return name; }
 
     public boolean getIsDone(){ return isDone; }
+
+    public int getTentatives() {        return tentatives;  }
 
     public void setDone(boolean done) {
         this.isDone = done;
