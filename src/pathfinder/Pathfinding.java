@@ -38,6 +38,14 @@ public class Pathfinding implements Service {
     private boolean tasBaseEnnemiRemoved;
     private boolean tasChateauEnnemiRemoved;
     private boolean tasStationEpurationEnnemiRemoved;
+    private boolean tasBasePris;
+    private boolean tasBaseEnnemiPris;
+    private boolean tasChateauPris;
+    private boolean tasChateauEnnemiPris;
+    private boolean tasStationEpurationPris;
+    private boolean tasStationEpurationEnnemiPris;
+
+
 
     private int robot_linear_speed;
     private double robot_angular_speed;
@@ -79,43 +87,43 @@ public class Pathfinding implements Service {
     public void removeObstacle() {
         boolean grapheHasToBeRecreated=false;
         if (!this.tasBaseRemoved) {
-            if (config.getBoolean(ConfigInfoRobot.TAS_BASE_PRIS)) {
-                obstacleManager.removeObstacle(circularObstacles.get(TAS_BASE.getID()));
+            if (tasBasePris) {
+                this.graphe.getListCircu().remove(circularObstacles.get(TAS_BASE.getID()));
                 grapheHasToBeRecreated=true;
                 this.tasBaseRemoved =true;
             }
         }
         if (!this.tasChateauRemoved) {
-            if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS)) {
-                obstacleManager.removeObstacle(circularObstacles.get(TAS_CHATEAU_EAU.getID()));
+            if (tasChateauPris) {
+                this.graphe.getListCircu().remove(circularObstacles.get(TAS_CHATEAU_EAU.getID()));
                 grapheHasToBeRecreated=true;
                 this.tasChateauRemoved =true;
             }
         }
         if (!this.tasStationEpurationRemoved) {
-            if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS)) {
-                obstacleManager.removeObstacle(circularObstacles.get(TAS_STATION_EPURATION.getID()));
+            if (tasStationEpurationPris) {
+                this.graphe.getListCircu().remove(circularObstacles.get(TAS_STATION_EPURATION.getID()));
                 grapheHasToBeRecreated=true;
                 this.tasStationEpurationRemoved =true;
             }
         }
         if (!this.tasBaseEnnemiRemoved) {
-            if (config.getBoolean(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS)) {
-                obstacleManager.removeObstacle(circularObstacles.get(TAS_BASE_ENNEMI.getID()));
+            if (tasBaseEnnemiPris) {
+                this.graphe.getListCircu().remove(circularObstacles.get(TAS_BASE_ENNEMI.getID()));
                 grapheHasToBeRecreated=true;
                 this.tasBaseEnnemiRemoved =true;
             }
         }
         if (!this.tasChateauEnnemiRemoved) {
-            if (config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS)) {
-                obstacleManager.removeObstacle(circularObstacles.get(TAS_CHATEAU_EAU_ENNEMI.getID()));
+            if (tasChateauEnnemiPris) {
+                this.graphe.getListCircu().remove(circularObstacles.get(TAS_CHATEAU_EAU_ENNEMI.getID()));
                 grapheHasToBeRecreated=true;
                 this.tasChateauEnnemiRemoved =true;
             }
         }
         if (!this.tasStationEpurationEnnemiRemoved) {
-            if (config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS)) {
-                obstacleManager.removeObstacle(circularObstacles.get(TAS_STATION_EPURATION_ENNEMI.getID()));
+            if (tasStationEpurationEnnemiPris) {
+                this.graphe.getListCircu().remove(circularObstacles.get(TAS_STATION_EPURATION_ENNEMI.getID()));
                 grapheHasToBeRecreated=true;
                 this.tasStationEpurationEnnemiRemoved =true;
             }
@@ -246,5 +254,11 @@ public class Pathfinding implements Service {
        this.coutFixe = config.getInt(ConfigInfoRobot.COUT_FIXE);
        this.robot_linear_speed = config.getInt(ConfigInfoRobot.ROBOT_LINEAR_SPEED);
        this.robot_angular_speed = config.getDouble(ConfigInfoRobot.ROBOT_ANGULAR_SPEED);
+       this.tasBasePris=config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS);
+       this.tasBaseEnnemiPris=config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS);
+       this.tasStationEpurationPris=config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS);
+       this.tasStationEpurationEnnemiPris=config.getBoolean(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS);
+       this.tasChateauPris=config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_PRIS);
+       this.tasChateauEnnemiPris=config.getBoolean(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS);
     }
 }

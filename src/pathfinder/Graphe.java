@@ -46,8 +46,8 @@ public class Graphe implements Service {
         this.log = log;
         this.config = config;
         updateConfig();
-        this.listCircu = table.getObstacleManager().getmCircularObstacle();
-        this.listRectangu = table.getObstacleManager().getRectangles();
+        this.listCircu = (CopyOnWriteArrayList<ObstacleCircular>) table.getObstacleManager().getmCircularObstacle().clone();
+        this.listRectangu = (CopyOnWriteArrayList<ObstacleRectangular>) table.getObstacleManager().getRectangles().clone();
         this.mobileEnnemies = new CopyOnWriteArrayList<>();
         this.table = table;
         this.nodes = new ArrayList<>();
@@ -384,12 +384,17 @@ public class Graphe implements Service {
         return points.contains(position);
     }
 
+
     public ArrayList<Noeud> getNodes() {
         return nodes;
     }
 
     public ArrayList<Arete> getBoneslist() {
         return bonesList;
+    }
+
+    public CopyOnWriteArrayList<ObstacleCircular> getListCircu() {
+        return listCircu;
     }
 
     public CopyOnWriteArrayList<ObstacleProximity> getMobileEnnemies() {
