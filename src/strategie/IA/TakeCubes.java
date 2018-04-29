@@ -25,20 +25,6 @@ public class TakeCubes extends Node {
     }
 
     @Override
-    public void execute(Exception e, GameState gameState) throws BlockedActuatorException, UnableToMoveException, PointInObstacleException, ExecuteException, BadVersionException, ImmobileEnnemyForOneSecondAtLeast {
-        if (getTentatives() < 3) {
-            if (e != null) {
-                exception(e);
-            }
-            getScript().goToThenExec(getVersionToExecute(), gameState);
-            setDone(true);
-        } else {
-            setDone(true);
-        }
-    }
-
-
-    @Override
     public void unableToMoveExceptionHandled(UnableToMoveException e) {
 
     }
