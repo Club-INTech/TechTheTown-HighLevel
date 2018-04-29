@@ -93,7 +93,7 @@ public class ObstacleManager implements Service
 
 	/** Temps de vie d'un robot ennemi
 	 * Override par la config */
-	private int defaultLifetime = 10000;
+	private int defaultLifetime = 3000;
 
 	/** Nombre de robots ennemis crashed */
 	private int crashRobot = 0;
@@ -192,7 +192,8 @@ public class ObstacleManager implements Service
 		{
 			boolean isThereAnObstacleIntersecting = false;
 			ArrayList<ObstacleProximity> obstacleToBeRemoved = new ArrayList<>();
-			for (ObstacleProximity obstacleMobileUntested : mUntestedMobileObstacles) {
+			for (int i=0; i<mUntestedMobileObstacles.size(); i++) {
+				ObstacleProximity obstacleMobileUntested=mUntestedMobileObstacles.get(i);
 
 				//si l'obstacle est deja dans la liste des obstacles non-testés on l'ajoute dans la liste des obstacles
 				if (obstacleMobileUntested.getPosition().distance(position) < obstacleMobileUntested.getRadius()) {
@@ -218,9 +219,10 @@ public class ObstacleManager implements Service
 							}
 						}
 						if(!intersection){
-							obstacleMobileUntested.setLifeTime(defaultLifetime);
-							log.warning("Ajout d'un obstacle en position "+obstacleMobileUntested.getCircle().getCenter()+" avec lifeTime="+obstacleMobileUntested.getLifeTime());
-							mMobileObstacles.add(obstacleMobileUntested);
+							ObstacleProximity obstacleToAdd = obstacleMobileUntested.clone();
+							obstacleToAdd.setLifeTime(defaultLifetime);
+							log.warning("Ajout d'un obstacle en position "+obstacleToAdd.getCircle().getCenter()+" avec lifeTime="+obstacleToAdd.getLifeTime());
+							mMobileObstacles.add(obstacleMobileUntested.clone());
 							obstacleToBeRemoved.add(obstacleMobileUntested);
 						}
 					}
@@ -230,7 +232,8 @@ public class ObstacleManager implements Service
 
 
 			// on vérifie si l'on ne voit pas un obstacle confirmé déjà présent
-			for (ObstacleProximity obstacleMobile : mMobileObstacles) {
+			for (int i=0; i<mMobileObstacles.size(); i++) {
+				ObstacleProximity obstacleMobile=mMobileObstacles.get(i);
 				if (obstacleMobile.getPosition().distance(position) < obstacleMobile.getRadius()) {
 					isThereAnObstacleIntersecting = true;
 
@@ -244,8 +247,6 @@ public class ObstacleManager implements Service
 						obstacleMobile.numberOfTimeDetected = obstacleMobile.getMaxNumberOfTimeDetected();
 					}
 				}
-
-
 			}
 			if (!isThereAnObstacleIntersecting) {
 				mUntestedMobileObstacles.add(new ObstacleProximity(new Circle(position, radius), timeToTestObstacle));
@@ -1008,24 +1009,28 @@ public class ObstacleManager implements Service
 		if(this.mRobotRadius == newRobotRadius)
 			return;
 
-		for(ObstacleRectangular i : mRectangles)
+		for(int i=0; i<mRectangles.size(); i++)
 		{
-			i.changeDim(i.getSizeX()-2*mRobotRadius+2*newRobotRadius, i.getSizeY()-2*mRobotRadius+2*newRobotRadius);
+			ObstacleRectangular obs=mRectangles.get(i);
+			obs.changeDim(obs.getSizeX()-2*mRobotRadius+2*newRobotRadius, obs.getSizeY()-2*mRobotRadius+2*newRobotRadius);
 		}
 
-		for(ObstacleCircular i : mCircularObstacle)
+		for(int i=0; i<mCircularObstacle.size(); i++)
 		{
-			i.setRadius(i.getRadius()-mRobotRadius+newRobotRadius);
+			ObstacleCircular obs=mCircularObstacle.get(i);
+			obs.setRadius(obs.getRadius()-mRobotRadius+newRobotRadius);
 		}
 
-		for(ObstacleProximity i : mUntestedMobileObstacles)
+		for(int i=0; i<mUntestedMobileObstacles.size(); i++)
 		{
-			i.setRadius(i.getRadius()-mRobotRadius+newRobotRadius);
+			ObstacleProximity obs = mUntestedMobileObstacles.get(i);
+			obs.setRadius(obs.getRadius()-mRobotRadius+newRobotRadius);
 		}
 
-		for(ObstacleProximity i : mMobileObstacles)
+		for(int i=0; i<mMobileObstacles.size(); i++)
 		{
-			i.setRadius(i.getRadius()-mRobotRadius+newRobotRadius);
+			ObstacleProximity obs = mMobileObstacles.get(i);
+			obs.setRadius(obs.getRadius()-mRobotRadius+newRobotRadius);
 		}
 
 		this.mRobotRadius = newRobotRadius;
