@@ -216,6 +216,7 @@ public class ObstacleManager implements Service
 						}
 						if(!intersection){
 							obstacleMobileUntested.setLifeTime(defaultLifetime);
+							log.warning("Ajout d'un obstacle en position "+obstacleMobileUntested.getCircle().getCenter()+" avec lifeTime="+obstacleMobileUntested.getLifeTime());
 							mMobileObstacles.add(obstacleMobileUntested);
 							obstacleToBeRemoved.add(obstacleMobileUntested);
 						}

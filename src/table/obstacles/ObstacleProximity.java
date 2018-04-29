@@ -109,10 +109,10 @@ public class ObstacleProximity extends ObstacleCircular
 	 * nouveau du temps de vie pour l'obstacle
 	 * @param time le nouveau temps de vie
 	 */
-	public void setLifeTime(int time) 
+	public void setLifeTime(int time)
 	{
-		lifetime = time;
-		mOutDatedTime = System.currentTimeMillis() + lifetime;
+		this.lifetime = time;
+		this.mOutDatedTime = System.currentTimeMillis() + lifetime;
 	}
 
 	public int getLifeTime(){
