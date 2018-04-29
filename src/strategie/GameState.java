@@ -102,7 +102,7 @@ public class GameState implements Service
      * a à faire des movelenghtwise par exemple, on les fait mais sans se soucier
      * de la détection de l'ennemi
      */
-    private boolean capteursActivés;
+    private volatile boolean capteursActivés;
 
     private Config config;
     private Log log;
