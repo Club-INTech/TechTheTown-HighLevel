@@ -90,10 +90,35 @@ public class TakeCubes extends AbstractScript {
      */
     private void normalVersions(int indiceTas, GameState state) throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         //TODO mettre un choix par orientation du robot par rapport au tas
-        this.brasUtilise=state.getTakeCubesBras();
 
         //On récupère le tas correspondant à l'indice
         this.currentTas = TasCubes.getTasFromID(indiceTas);
+
+
+        if (state.isTourAvantRemplie()){
+            if (state.isTourArriereRemplie()){
+                return;
+            }
+            else{
+                this.brasUtilise=BrasUtilise.ARRIERE;
+            }
+        }
+        else {
+            if (state.isTourArriereRemplie()){
+                this.brasUtilise=BrasUtilise.AVANT;
+            }
+            else{
+                Vec2 directionToGo = this.currentTas.getCoordsVec2().minusNewVector(state.robot.getPosition());
+                double prodScal = directionToGo.dot(new Vec2(100.0, state.robot.getOrientation()));
+                if (prodScal > 0) {
+                    this.brasUtilise=BrasUtilise.AVANT;
+                } else {
+                    this.brasUtilise=BrasUtilise.ARRIERE;
+                }
+            }
+        }
+
+
         Cubes additionalCube;
         if(!(config.getBoolean(ConfigInfoRobot.SIMULATION))){
             while(!state.isRecognitionDone()){

@@ -95,9 +95,6 @@ public class GameState implements Service
     /** Abeille lancée */
     private boolean abeilleLancee;
 
-    /** Permet de savoir quel bras on utilise pour TakeCubes */
-    private BrasUtilise takeCubesBras;
-
     /**Permet de savoir si on a acrivé ou désactivé les capteurs comme ça si on
      * a à faire des movelenghtwise par exemple, on les fait mais sans se soucier
      * de la détection de l'ennemi
@@ -135,8 +132,6 @@ public class GameState implements Service
 
         this.reussitesTourAvant=new int[]{-1,-1,-1,-1};
         this.reussitesTourArriere=new int[]{-1,-1,-1,-1};
-
-        this.takeCubesBras= BrasUtilise.AVANT;
 
         this.tas_base_pris=false;
         this.tas_chateau_eau_pris=false;
@@ -250,14 +245,6 @@ public class GameState implements Service
 
     public void setCubeBonusArrierePresent(boolean cubeArrierePresent) {
         this.cubeArrierePresent = cubeArrierePresent;
-    }
-
-    public BrasUtilise getTakeCubesBras() {
-        return takeCubesBras;
-    }
-
-    public void setTakeCubesBras(BrasUtilise bras){
-	    this.takeCubesBras=bras;
     }
 
     /**

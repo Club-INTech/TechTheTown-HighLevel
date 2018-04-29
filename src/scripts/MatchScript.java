@@ -47,7 +47,6 @@ public class MatchScript extends AbstractScript {
                 gameState.setCapteursActivés(true);
             }
             //On prend le tas de cubes 2
-            gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
             TakeCubes tk2 = new TakeCubes(config,log,hookFactory);
             tk2.goToThenExec(2,gameState);
 
@@ -56,7 +55,6 @@ public class MatchScript extends AbstractScript {
             activeAbeille.goToThenExec(0,gameState);
 
             //On prend le tas de cubes 1
-            gameState.setTakeCubesBras(BrasUtilise.AVANT);
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);
             tk1.goToThenExec(1,gameState);
 
@@ -68,7 +66,6 @@ public class MatchScript extends AbstractScript {
             dpCubes0.goToThenExec(0, gameState);
 
             //On prend le tas de cubes 0
-            gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
             TakeCubes tk0=new TakeCubes(config,log,hookFactory);
             tk0.goToThenExec(0,gameState);
 
@@ -81,7 +78,6 @@ public class MatchScript extends AbstractScript {
             hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
 
             //Pile cube n°1
-            gameState.setTakeCubesBras(BrasUtilise.AVANT);
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);
             tk1.goToThenExec(1,gameState);
             //Pile cube n°1
@@ -94,7 +90,6 @@ public class MatchScript extends AbstractScript {
             activeAbeille.goToThenExec(0,gameState);
 
             //Pile de cube n°2
-            gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
             TakeCubes tk2=new TakeCubes(config,log,hookFactory);
             tk2.goToThenExec(2,gameState);
             //Pile de cube n°2
@@ -104,7 +99,6 @@ public class MatchScript extends AbstractScript {
             dpCubes0.goToThenExec(0, gameState);
 
             //Pile cube n°0
-            gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
             TakeCubes tk0=new TakeCubes(config,log,hookFactory);
             tk0.goToThenExec(0,gameState);
             //Pile cube n°0
@@ -133,7 +127,6 @@ public class MatchScript extends AbstractScript {
             dpCubes0.goToThenExec(0, gameState);
 
             //Pile cube n°0
-            gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
             TakeCubes tk0 = new TakeCubes(config,log,hookFactory);
             tk0.goToThenExec(0,gameState);
             //Pile cube n°0

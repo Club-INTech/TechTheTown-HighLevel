@@ -1,6 +1,5 @@
 package strategie.IA;
 
-import enums.BrasUtilise;
 import enums.ScriptNames;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
@@ -12,11 +11,9 @@ import hook.HookFactory;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.ScriptManager;
-import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
 
-import java.util.ArrayList;
 
 public class TakeCubes extends Node {
 
@@ -32,20 +29,6 @@ public class TakeCubes extends Node {
         if (getTentatives() < 3) {
             if (e != null) {
                 exception(e);
-            } else {
-                if (gameState.isTourAvantRemplie() && !gameState.isTourArriereRemplie()){
-                    gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
-                }
-                else if(gameState.isTourArriereRemplie() && !gameState.isTourAvantRemplie()){
-                    gameState.setTakeCubesBras(BrasUtilise.AVANT);
-                } else {
-                    float scalar = gameState.robot.getPosition().minusNewVector(getScript().entryPosition(getVersionToExecute(),gameState.robot.getPosition()).getCenter()).dot(new Vec2(0,42));
-                    if(scalar > 0){
-                        gameState.setTakeCubesBras(BrasUtilise.AVANT);
-                    } else {
-                        gameState.setTakeCubesBras(BrasUtilise.ARRIERE);
-                    }
-                }
             }
             getScript().goToThenExec(getVersionToExecute(), gameState);
             setDone(true);
