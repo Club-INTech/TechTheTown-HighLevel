@@ -180,10 +180,9 @@ public class ObstacleManager implements Service
 	 *
 	 * @param position position ou ajouter l'obstacle
 	 * @param radius rayon de l'obstacle a ajouter
-	 * @param lifetime durée de vie (en ms) de l'obstace a ajouter
 	 * TODO A réadapter à l'année en cours
 	 */
-	public synchronized void addObstacle(final Vec2 position, final int radius, final int lifetime) {
+	public synchronized void addObstacle(final Vec2 position, final int radius) {
 		//vérification que l'on ne détecte pas un obstacle "normal"
 		if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius && position.getY() > mEnnemyRadius && position.getY() < 2000 - mEnnemyRadius  // Hors de la table
 				&& !(position.getX() > 1100 - mEnnemyRadius && position.getY() < 600 + mEnnemyRadius)) // Dans la zone de départ
@@ -191,15 +190,14 @@ public class ObstacleManager implements Service
 		{
 			boolean isThereAnObstacleIntersecting = false;
 			for (ObstacleProximity obstacleMobileUntested : mUntestedMobileObstacles) {
-				ObstacleProximity obstacle = obstacleMobileUntested;
 
 				//si l'obstacle est deja dans la liste des obstacles non-testés on l'ajoute dans la liste des obstacles
-				if (obstacle.getPosition().distance(position) < obstacle.getRadius() / 3) {
+				if (obstacleMobileUntested.getPosition().distance(position) < obstacleMobileUntested.getRadius() / 3) {
 					isThereAnObstacleIntersecting = true;
 					obstacleMobileUntested.numberOfTimeDetected++;
 					obstacleMobileUntested.setPosition(position);
 					obstacleMobileUntested.setRadius(radius);
-					obstacleMobileUntested.setLifeTime(lifetime);
+					obstacleMobileUntested.setLifeTime(timeToTestObstacle);
 
 					// si on l'a deja vu plein de fois
 					if (obstacleMobileUntested.numberOfTimeDetected >= obstacleMobileUntested.getMaxNumberOfTimeDetected()) {
@@ -226,8 +224,7 @@ public class ObstacleManager implements Service
 
 			// on vérifie si l'on ne voit pas un obstacle confirmé déjà présent
 			for (ObstacleProximity obstacleMobile : mMobileObstacles) {
-				ObstacleProximity obstacle = obstacleMobile;
-				if (obstacle.getPosition().distance(position) < obstacle.getRadius() / 3) {
+				if (obstacleMobile.getPosition().distance(position) < obstacleMobile.getRadius() / 2) {
 					isThereAnObstacleIntersecting = true;
 
 					obstacleMobile.numberOfTimeDetected++;
