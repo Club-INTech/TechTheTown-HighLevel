@@ -161,6 +161,7 @@ public abstract class Node {
         // on est dans un obstacle, on va au noeud le plus proche du graphe
         else if(e instanceof PointInObstacleException){
             try {
+                gameState.robot.getPathfinding().getGraphe().addNodeInGraphe(gameState.robot.getPathfinding().getGraphe().closestNodeToPosition(gameState.robot.getPosition()));
                 gameState.robot.goTo(gameState.robot.getPathfinding().getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition());
             } catch (UnableToMoveException e1) {
                 e1.printStackTrace();
