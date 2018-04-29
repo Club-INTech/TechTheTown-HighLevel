@@ -274,7 +274,7 @@ public class ObstacleManager implements Service
 		for(ObstacleProximity obstacle : mMobileObstacles) {
 			if (obstacle.getOutDatedTime() < System.currentTimeMillis()) {
 				confirmedObstaclesToBeRemoved.add(obstacle);
-				log.debug("Retire l'obstacle :" + obstacle.getPosition() + "(lifeTime: " + obstacle.getLifeTime()+")");
+				log.warning("Retire l'obstacle :" + obstacle.getPosition() + "(lifeTime: " + obstacle.getLifeTime()+")");
 			}
 		}
 		mMobileObstacles.removeAll(confirmedObstaclesToBeRemoved);
