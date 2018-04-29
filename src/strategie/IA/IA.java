@@ -47,8 +47,8 @@ public class IA implements Service {
         this.nb_tas_pris = 0;
         this.nodes = createNodes();
         this.availableNodes = new ArrayList<>();
-        this.nodesToExecute = kruskal();
-        this.nextNode = theAnswer();
+//        this.nodesToExecute = kruskal();
+//        this.nextNode = theAnswer();
     }
 
     /** Créer les noeuds du graphe de décision. */
