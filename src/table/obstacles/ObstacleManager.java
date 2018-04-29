@@ -89,11 +89,11 @@ public class ObstacleManager implements Service
 	private Vec2 positionDetectionDisc=new Vec2(0,0);
 
 	/**	Temps donné aux obstacles pour qu'ils soit vérifiés */
-	private final int timeToTestObstacle = 500;
+	private final int timeToTestObstacle = 1000;
 
 	/** Temps de vie d'un robot ennemi
 	 * Override par la config */
-	private int defaultLifetime = 5000;
+	private int defaultLifetime = 10000;
 
 	/** Nombre de robots ennemis crashed */
 	private int crashRobot = 0;
@@ -485,7 +485,7 @@ public class ObstacleManager implements Service
 			out.newLine();
 			out.write("Position du robot (table) :" + pos);
 
-			if (Math.abs(ennemyPos.getY()) < (obstacleRadius + 10) &&
+			if (Math.abs(ennemyPos.getY()) < (obstacleRadius + mRobotRadius + 40) &&
 					Math.abs(ennemyPos.getX()) < (distance + obstacleRadius)){
 				out.newLine();
 				out.write("Condition rectangle vérifiée");

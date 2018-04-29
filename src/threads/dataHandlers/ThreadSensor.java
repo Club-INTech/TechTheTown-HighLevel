@@ -271,7 +271,6 @@ public class ThreadSensor extends AbstractThread
             int y = (int) (a * Math.sin(alpha));
             Vec2 posObjectFromSensorBL = new Vec2(x, y);
             Vec2 posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
-            log.critical(posObjectFromCenterRobot.getA());
             if (posObjectFromCenterRobot.getA() > -Math.PI / 3 || posObjectFromCenterRobot.getA() < Math.PI / 3) { // pour éviter les faux obstacles
                 posObjectFromCenterRobot.setX(posObjectFromCenterRobot.getX() * -1);
                 mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius + ourRadius + 10);
@@ -355,7 +354,7 @@ public class ThreadSensor extends AbstractThread
             obPositionRobotRef = changeRef(obPositionRobotRef);
             out.write("Position calculée (référentiel de la table) :" + obPositionRobotRef);
             out.newLine();
-            out.write("Position du robot :" + robotPosAndOr.getPosition());
+            out.write("Position du robot :" + robotPosAndOr.getHLPosition());
             out.newLine();
             out.newLine();
             out.flush();
@@ -370,8 +369,8 @@ public class ThreadSensor extends AbstractThread
      * @param pos la position relative dont on cherche les coordonées absolues */
     private Vec2 changeRef(Vec2 pos)
     {
-        pos.setA(Geometry.moduloSpec(pos.getA()+robotPosAndOr.getOrientation(), Math.PI));
-        return pos.plusNewVector(robotPosAndOr.getPosition());
+        pos.setA(Geometry.moduloSpec(pos.getA()+robotPosAndOr.getHLOrientation(), Math.PI));
+        return pos.plusNewVector(robotPosAndOr.getHLPosition());
     }
 
     /**
