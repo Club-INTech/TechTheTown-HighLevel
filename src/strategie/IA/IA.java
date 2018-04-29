@@ -105,7 +105,7 @@ public class IA implements Service {
         for (int i = 0; i<availableNodes.size();i++){
             try {
                 double d = pathfinding.howManyTime(robotPosition, availableNodes.get(i).position);
-                if (d<dmin){
+                if (d<dmin  && !(availableNodes.get(i) instanceof DeposeCubes)){
                     j=i;
                     dmin=d;
                 }
