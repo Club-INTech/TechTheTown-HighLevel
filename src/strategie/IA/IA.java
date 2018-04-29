@@ -96,8 +96,8 @@ public class IA implements Service {
         }
         if ( (gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie()) && gameState.isTas_base_pris() && gameState.isTas_chateau_eau_pris() &&
         gameState.isTas_station_epuration_pris()){
-            if (availableNodes.contains(nodes.get(nodes.size()-2))){
-                return nodes.get(nodes.size()-2);
+            if (availableNodes.contains(nodes.get(nodes.size()-3))){
+                return nodes.get(nodes.size()-3);
             } else{
                 return nodes.get(nodes.size()-1);
             }
