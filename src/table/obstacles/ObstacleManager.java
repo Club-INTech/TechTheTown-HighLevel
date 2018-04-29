@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Traite tout ce qui concerne la gestion des obstacles sur la table.
@@ -53,23 +54,23 @@ public class ObstacleManager implements Service
 	private Config config;
 
 	/** Ensemble des obstacles mobiles/temporaires se trouvant sur la table */
-	private ArrayList<ObstacleProximity> mMobileObstacles;
+	private CopyOnWriteArrayList<ObstacleProximity> mMobileObstacles;
 
 	/** Ensemble des obstacles circulaires */
-	public ArrayList<ObstacleCircular> mCircularObstacle;
+	public CopyOnWriteArrayList<ObstacleCircular> mCircularObstacle;
 
 	/**Robot(s) Ennemi(s) qui bouge plus au bout d'une seconde, c'est une liste
 	 * qui sera filée au graphe pour qu'il puise l'ajouter comme obstacle**/
-	public ArrayList<ObstacleCircular> mEnnemies;
+	public CopyOnWriteArrayList<ObstacleCircular> mEnnemies;
 
 	/** Ensemble des obstacles mobiles/temporaires a tester pour les placer sur la table */
-	private ArrayList<ObstacleProximity> mUntestedMobileObstacles;
+	private CopyOnWriteArrayList<ObstacleProximity> mUntestedMobileObstacles;
 
 	/** Ensembles des lignes modélisant les bords de la table */
-	private ArrayList<Segment> mLines;
+	private CopyOnWriteArrayList<Segment> mLines;
 
 	/** Les obstacles rectangulaires de la table */
-	public ArrayList<ObstacleRectangular> mRectangles;
+	public CopyOnWriteArrayList<ObstacleRectangular> mRectangles;
 
 	/** Rayon de notre robot */
 	public int mRobotRadius;
@@ -117,12 +118,12 @@ public class ObstacleManager implements Service
 		updateConfig();
 
 		//creation des listes qui contiendront les differents types d'obstacles
-		mMobileObstacles = new ArrayList<ObstacleProximity>();
-		mCircularObstacle = new ArrayList<ObstacleCircular>();
-		mLines = new ArrayList<Segment>();
-		mRectangles = new ArrayList<ObstacleRectangular>();
-		mEnnemies=new ArrayList<>();
-		mUntestedMobileObstacles= new ArrayList<ObstacleProximity>();
+		mMobileObstacles = new CopyOnWriteArrayList<ObstacleProximity>();
+		mCircularObstacle = new CopyOnWriteArrayList<ObstacleCircular>();
+		mLines = new CopyOnWriteArrayList<Segment>();
+		mRectangles = new CopyOnWriteArrayList<ObstacleRectangular>();
+		mEnnemies=new CopyOnWriteArrayList<>();
+		mUntestedMobileObstacles= new CopyOnWriteArrayList<ObstacleProximity>();
 
 		initObstacle();
 
@@ -707,7 +708,7 @@ public class ObstacleManager implements Service
 	 * Retourne tout les les obstacles temporaires/mobiles. (détectés par la balise laser, les capteurs de distance, etc.)
 	 * @return la liste des obstacles temporaires/mobiles de la table
 	 */
-	public ArrayList<ObstacleProximity> getMobileObstacles()
+	public CopyOnWriteArrayList<ObstacleProximity> getMobileObstacles()
 	{
 		return mMobileObstacles;
 	}
@@ -723,7 +724,7 @@ public class ObstacleManager implements Service
 		return mMobileObstacles.size();
 	}
 
-	public ArrayList<ObstacleProximity> getUntestedArrayList()
+	public CopyOnWriteArrayList<ObstacleProximity> getUntestedArrayList()
 	{
 		return mUntestedMobileObstacles;
 	}
@@ -732,7 +733,7 @@ public class ObstacleManager implements Service
 	 * Retourne tout les les obstacles fixes de la table.
 	 * @return la liste des obstacles fixes de la table
 	 */
-	public ArrayList<ObstacleCircular> getmCircularObstacle()
+	public CopyOnWriteArrayList<ObstacleCircular> getmCircularObstacle()
 	{
 		return mCircularObstacle;
 	}
@@ -740,7 +741,7 @@ public class ObstacleManager implements Service
 	/**
 	 * @return la liste des lignes formant les bords des obstacles sous forme de segments
 	 */
-	public ArrayList<Segment> getLines()
+	public CopyOnWriteArrayList<Segment> getLines()
 	{
 		return mLines;
 	}
@@ -748,7 +749,7 @@ public class ObstacleManager implements Service
 	/**
 	 * @return la liste des rectangles formant les obstacles rectangulaires
 	 */
-	public ArrayList<ObstacleRectangular> getRectangles()
+	public CopyOnWriteArrayList<ObstacleRectangular> getRectangles()
 	{
 		return mRectangles;
 	}
@@ -1093,7 +1094,7 @@ public class ObstacleManager implements Service
 		mUntestedMobileObstacles.clear();
 	}
 
-	public ArrayList<ObstacleCircular> getmEnnemies() {
+	public CopyOnWriteArrayList<ObstacleCircular> getmEnnemies() {
 		return mEnnemies;
 	}
 }

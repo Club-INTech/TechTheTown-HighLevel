@@ -21,9 +21,9 @@ public class Graphe implements Service {
 
     private Log log;
     private Config config;
-    private ArrayList<ObstacleCircular> listCircu;
-    private ArrayList<ObstacleRectangular> listRectangu;
-    private ArrayList<ObstacleProximity> mobileEnnemies;
+    private CopyOnWriteArrayList<ObstacleCircular> listCircu;
+    private CopyOnWriteArrayList<ObstacleRectangular> listRectangu;
+    private CopyOnWriteArrayList<ObstacleProximity> mobileEnnemies;
 
     private Table table;
     private ArrayList<Noeud> nodes;
@@ -47,7 +47,7 @@ public class Graphe implements Service {
         updateConfig();
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
-        this.mobileEnnemies = new ArrayList<>();
+        this.mobileEnnemies = new CopyOnWriteArrayList<>();
         this.table = table;
         this.nodes = new ArrayList<>();
         this.bonesList=new ArrayList<>();
@@ -279,7 +279,7 @@ public class Graphe implements Service {
     public void createGraphe(){
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
-        ArrayList<ObstacleProximity> tempMobileEnnemies = table.getObstacleManager().getMobileObstacles();
+        CopyOnWriteArrayList<ObstacleProximity> tempMobileEnnemies = table.getObstacleManager().getMobileObstacles();
         this.mobileEnnemies.clear();
         for (ObstacleProximity obstacleProximity : tempMobileEnnemies){
             log.warning("Ajout d'un obstacle mobile en : "+obstacleProximity.getCircle().getCenter());
@@ -369,7 +369,7 @@ public class Graphe implements Service {
         return bonesList;
     }
 
-    public ArrayList<ObstacleProximity> getMobileEnnemies() {
+    public CopyOnWriteArrayList<ObstacleProximity> getMobileEnnemies() {
         return mobileEnnemies;
     }
 
