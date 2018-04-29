@@ -21,6 +21,9 @@ package tests;
 
 import enums.ActuatorOrder;
 import enums.Speed;
+import exceptions.BadVersionException;
+import exceptions.BlockedActuatorException;
+import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
@@ -115,67 +118,90 @@ public class JUnit_Sensors extends JUnit_Test
 	}
 
 	@Test
-	public void testStopWhileMoveNonBasic() throws Exception{
+	public void testStopThenEsquiveWhileMove_NonBasic(){
 		state.robot.setPosition(Table.entryPosition);
 		state.robot.setOrientation(Table.entryOrientation);
 		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-		state.robot.goTo(new Vec2(0,1000));
-	}
-
-	@Test
-	public void testEvitement()
-	{
-		state.robot.setPosition(Table.entryPosition);
-		state.robot.setOrientation(Table.entryOrientation);
-		state.robot.setLocomotionSpeed(Speed.FAST_ALL);
-		Vec2[] positionList=new Vec2[]{
-				new Vec2(0,1000),
-				new Vec2(1000,500)
-				};
-
-		for (Vec2 position : positionList) {
-			try {
-				state.robot.followPath(state.robot.getPathfinding().findmyway(state.robot.getPosition(), position));
-			} catch (UnableToMoveException e) {
-				e.printStackTrace();
-			} catch (ImmobileEnnemyForOneSecondAtLeast e) {
-				boolean ennemyDodged = false;
-				while (!ennemyDodged) {
-					log.debug("PositionAIMtestEvitement : " + e.getAim());
-					try {
-						robot.moveLengthwise(-20);
-						ArrayList<Vec2> pathToFollow = state.robot.getPathfinding().findmyway(state.robot.getPosition(), e.getAim());
-						state.robot.followPath(pathToFollow);
-						ennemyDodged = true;
-					} catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
-						log.debug("L'ennemi est toujours là");
-					} catch (PointInObstacleException e1) {
-						log.critical("PointInObstacleException");
-						e1.printStackTrace();
-					} catch (UnableToMoveException e1) {
-						log.critical("UnableToMoveException");
-						e1.printStackTrace();
-					} catch (NoPathFound noPathFound) {
-						log.critical("NoPathFound");
-						noPathFound.printStackTrace();
-					} finally {
-						try {
-							Thread.sleep(10);
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
+		try {
+			state.robot.goTo(new Vec2(0,1000));
+		} catch (UnableToMoveException e) {
+			e.printStackTrace();
+		} catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+			Vec2 aim = immobileEnnemyForOneSecondAtLeast.getAim();
+			log.debug("immobileEnnemyAimis"+aim);
+			boolean ennemyDodged = false;
+			int attemps=0;
+			while (!ennemyDodged && attemps<10) {
+				attemps++;
+				try {
+					log.debug("L'esquive a commencé");
+					Vec2 directionToGo = (aim.minusNewVector(gameState.robot.getPosition()));
+					double prodScal = directionToGo.dot(new Vec2(100.0, gameState.robot.getOrientation()));
+					//On regarde si le point où l'on veut reculer est dans un obstacle, si c'est le cas, on throw PointInObstacleException
+					if (prodScal>0) {
+						Vec2 wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new Vec2(-50.0,gameState.robot.getOrientation()));
+						if (!gameState.table.getObstacleManager().isPositionInObstacle(wantToBackUpTo)) {
+							gameState.robot.moveLengthwise(-50);
+						}
+						else{
+							log.debug("Point in obstacle : on va au noeud le plus proche");
+							//On sort de l'obstacle
+							try {
+								gameState.robot.goTo(gameState.robot.getPathfinding().getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition());
+								log.debug("on est au noeud le plus proche : on est sortis!");
+							} catch (UnableToMoveException e1) {
+								e1.printStackTrace();
+							} catch (ImmobileEnnemyForOneSecondAtLeast ennemyImm) {
+								ennemyImm.printStackTrace();
+							}
 						}
 					}
-				}
+					else{
+						Vec2 wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new Vec2(50.0,gameState.robot.getOrientation()));
+						if (!gameState.table.getObstacleManager().isPositionInObstacle(wantToBackUpTo)) {
+							gameState.robot.moveLengthwise(50);
+						}
+						else{
+							log.debug("Point in obstacle");
+							log.debug("Point in obstacle : on va au noeud le plus proche");
+							//On sort de l'obstacle
+							try {
+								gameState.robot.goTo(gameState.robot.getPathfinding().getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition());
+								log.debug("on est au noeud le plus proche : on est bien sortis!");
+							} catch (UnableToMoveException e1) {
+								e1.printStackTrace();
+							} catch (ImmobileEnnemyForOneSecondAtLeast ennemyImm) {
+								ennemyImm.printStackTrace();
+							}
+						}
+					}
 
-			} catch (PointInObstacleException e) {
-				log.debug("PointInObstacle!!!");
-				e.printStackTrace();
-			} catch (NoPathFound noPathFound) {
-				log.debug("noPathFound");
-				noPathFound.printStackTrace();
+					//On cherche un nouveau chemin pour y aller
+					ArrayList<Vec2> pathToFollow = gameState.robot.getPathfinding().findmyway(gameState.robot.getPosition(), aim);
+					gameState.robot.followPath(pathToFollow);
+					ennemyDodged = true;
+				} catch (ImmobileEnnemyForOneSecondAtLeast ennemy) {
+					ennemy.printStackTrace();
+					log.debug("L'ennemi est toujours là");
+				} catch (PointInObstacleException e1) {
+					log.debug("PointInObstacleException, on part au noeud le plus proche");
+				} catch (UnableToMoveException e1) {
+					log.debug("UnableToMoveException");
+					e1.printStackTrace();
+				} catch (NoPathFound noPathFound) {
+					log.debug("NoPathFound");
+					noPathFound.printStackTrace();
+				} finally {
+					try {
+						Thread.sleep(250);
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+				}
 			}
 		}
 	}
+
 
 	@Test
 	public void testDetecting() throws Exception
