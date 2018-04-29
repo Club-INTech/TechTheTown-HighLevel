@@ -28,6 +28,6 @@ public class Panneau extends Node {
 
     @Override
     public boolean isDone() {
-        return getGameState().isPanneauActive();
+        return getGameState().isPanneauActive() || getIsDone();
     }
 }

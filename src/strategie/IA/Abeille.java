@@ -74,6 +74,6 @@ public class Abeille extends Node {
 
     @Override
     public boolean isDone() {
-        return getGameState().isAbeilleLancee();
+        return getGameState().isAbeilleLancee() || getIsDone();
     }
 }

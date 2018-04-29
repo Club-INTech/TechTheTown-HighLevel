@@ -29,7 +29,7 @@ public class DeposeCubes extends Node {
 
     @Override
     public boolean isDone() {
-        return isDone;
+        return isDone || getIsDone();
     }
 
     @Override

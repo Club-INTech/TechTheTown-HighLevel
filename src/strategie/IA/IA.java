@@ -54,7 +54,7 @@ public class IA implements Service {
     /** Créer les noeuds du graphe de décision. */
 
     public ArrayList<Node> createNodes() throws BadVersionException {
-        Node abeille = new Abeille("Abeille",1,  scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node abeille = new Abeille("Abeille",0,  scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node panneau = new Panneau("Panneau",0,  scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node takeCubes = new TakeCubes("TakeCubes",0, scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node takeCubes2 = new TakeCubes("TakeCubes",1, scriptManager, gameState,pathfinding,hookFactory,config, log);
