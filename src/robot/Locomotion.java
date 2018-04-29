@@ -498,7 +498,6 @@ public class Locomotion implements Service {
      */
     private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException,ImmobileEnnemyForOneSecondAtLeast {
         moveToPointSymmetry(aim, turnOnly);
-
         do {
             getCurrentPositionAndOrientation();
 
@@ -568,6 +567,7 @@ public class Locomotion implements Service {
             }
         }
         while (thEvent.getIsMoving());
+
     }
 
     /**

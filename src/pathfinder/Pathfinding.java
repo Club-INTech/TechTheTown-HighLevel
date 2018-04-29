@@ -14,6 +14,7 @@ import utils.Log;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static enums.TasCubes.*;
 
@@ -30,7 +31,7 @@ public class Pathfinding implements Service {
     private Graphe graphe;
     private Table table;
     private ObstacleManager obstacleManager;
-    private ArrayList<ObstacleCircular> circularObstacles;
+    private CopyOnWriteArrayList<ObstacleCircular> circularObstacles;
     private boolean tasBaseRemoved;
     private boolean tasChateauRemoved;
     private boolean tasStationEpurationRemoved;
@@ -50,7 +51,7 @@ public class Pathfinding implements Service {
         updateConfig();
         this.table = table;
         obstacleManager = table.getObstacleManager();
-        circularObstacles = (ArrayList<ObstacleCircular>) obstacleManager.getmCircularObstacle().clone();
+        circularObstacles = (CopyOnWriteArrayList<ObstacleCircular>) obstacleManager.getmCircularObstacle().clone();
         this.graphe = graphe;
         this.tasBaseRemoved =false;
         this.tasChateauRemoved =false;
