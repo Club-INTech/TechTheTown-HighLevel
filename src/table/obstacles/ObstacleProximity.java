@@ -114,4 +114,8 @@ public class ObstacleProximity extends ObstacleCircular
 		lifetime = time;
 		mOutDatedTime = System.currentTimeMillis() + lifetime;
 	}
+
+	public int getLifeTime(){
+		return this.lifetime;
+	}
 }

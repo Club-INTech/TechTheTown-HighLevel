@@ -265,21 +265,24 @@ public class ObstacleManager implements Service
 	public synchronized void removeOutdatedObstacles()
 	{
 		// enlève les obstacles confirmés s'ils sont périmés
-		for(int i = 0; i < mMobileObstacles.size(); i++)
-			if(mMobileObstacles.get(i).getOutDatedTime() < System.currentTimeMillis())
-			{
-				log.debug("Retire l'obstacle :" + mMobileObstacles.get(i).getPosition());
-				mMobileObstacles.remove(i);
-				i--;
+		ArrayList<ObstacleProximity> confirmedObstaclesToBeRemoved = new ArrayList<>();
+		for(ObstacleProximity obstacle : mMobileObstacles) {
+			if (obstacle.getOutDatedTime() < System.currentTimeMillis()) {
+				confirmedObstaclesToBeRemoved.add(obstacle);
+				log.debug("Retire l'obstacle :" + obstacle.getPosition() + "(lifeTime: " + obstacle.getLifeTime()+")");
 			}
+		}
+		mMobileObstacles.removeAll(confirmedObstaclesToBeRemoved);
 
+
+		ArrayList<ObstacleProximity> untestedObstaclesToBeRemoved = new ArrayList<>();
 		// enlève les obstacles en attente s'ils sont périmés
-		for(int i = 0; i < mUntestedMobileObstacles.size(); i++)
-			if(mUntestedMobileObstacles.get(i).getOutDatedTime() < System.currentTimeMillis())
-			{
-				mUntestedMobileObstacles.remove(i);
-				i--;
+		for(ObstacleProximity obstacle : mUntestedMobileObstacles) {
+			if (obstacle.getOutDatedTime() < System.currentTimeMillis()) {
+				untestedObstaclesToBeRemoved.add(obstacle);
 			}
+		}
+		mUntestedMobileObstacles.removeAll(untestedObstaclesToBeRemoved);
 	}
 
 	/**
