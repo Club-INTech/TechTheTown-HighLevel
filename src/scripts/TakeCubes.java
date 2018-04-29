@@ -52,14 +52,7 @@ public class TakeCubes extends AbstractScript {
         super(config, log, hookFactory);
         this.updateConfig();
         this.longueurBrasUtilise = (this.longueurBrasAvant+this.longueurBrasArriere)/2;
-        this.correctionVectorTas = new Vec2(0,0);
-        this.correctionVectorTas2 = new Vec2(0,0);
         this.indicePattern=-2;
-        this.currentTas=TasCubes.getTasFromID(0);
-        this.directionRobot="forward";
-        this.brasUtilise=BrasUtilise.AVANT;
-        this.alreadyTriedCorrection=false;
-        this.currentIdealPositionInTower=0;
         this.timeAfterTakeCubesMustBeStopped=90000;
     }
 
@@ -71,6 +64,10 @@ public class TakeCubes extends AbstractScript {
     public void execute(int indiceTas, GameState state)
             throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
+        this.alreadyTriedCorrection=false;
+        this.currentIdealPositionInTower=0;
+        this.correctionVectorTas = new Vec2(0,0);
+        this.correctionVectorTas2 = new Vec2(0,0);
         if (indiceTas<6){
             this.normalVersions(indiceTas, state);
         }
