@@ -80,7 +80,7 @@ public class DeposeCubes extends AbstractScript {
                     }
                 } else if (state.isTourArriereRemplie()) {
                     state.robot.turn(Math.PI / 2);
-                    state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
+                    state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
                     state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
                     state.robot.moveLengthwiseWithoutDetection(-distancePenetrationZone);
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
