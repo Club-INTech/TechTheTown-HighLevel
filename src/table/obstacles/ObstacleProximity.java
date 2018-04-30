@@ -78,8 +78,8 @@ public class ObstacleProximity extends ObstacleCircular
 		//TODO mettre dans le fichier de config le "temps de peremption" de chaque obstacle 
 		numberOfTimeDetected=1;
 
-		thresholdConfirmedOrUnconfirmed=3;
-		maxNumberOfTimeDetected=3;
+		thresholdConfirmedOrUnconfirmed=1;
+		maxNumberOfTimeDetected=1;
 	}
 	
 	/* (non-Javadoc)
