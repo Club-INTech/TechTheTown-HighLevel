@@ -199,10 +199,13 @@ public class IA implements Service {
 //            }
 //        }
         nextNode = theAnswer();
-        while (nextNode != null){
+        int n=availableNodes.size();
+        int attempts=0;
+        while (nextNode != null && attempts<n){
             try {
                 log.debug("//////IA////// SELECTED NODE : "+nextNode.name);
                 nextNode.execute(e, gameState);
+                attempts++;
                 log.debug("//////IA////// EXECUTE : "+nextNode.name);
             } catch (PointInObstacleException e1) {
                 e1.printStackTrace();
@@ -218,6 +221,14 @@ public class IA implements Service {
                 immobileEnnemyForOneSecondAtLeast.printStackTrace();
             }
             nextNode = theAnswer();
+        }
+        //On a vu un ennemi, et on a testé toutes les possibilités, mais on le voit toujours : on esquive
+        if(attempts>n){
+            //On esquive
+            if(e instanceof ImmobileEnnemyForOneSecondAtLeast ){
+                nextNode.exception(e);
+            }
+
         }
     }
 
