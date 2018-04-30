@@ -635,8 +635,8 @@ public class Locomotion implements Service {
      */
     public void detectEnemyArroundPosition(int distance) throws InterruptedException,ImmobileEnnemyForOneSecondAtLeast {
         int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
-        log.debug("Closest ennemy detected (arroundPosition) at distance: "+closest);
         if (closest <= distance) {
+            log.debug("Closest ennemy detected (arroundPosition) at distance: "+closest);
             log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de "
                     + closest + " mm)");
             immobilise();
@@ -669,8 +669,8 @@ public class Locomotion implements Service {
      */
     public void detectEnemyAtDistance(int distance, Vec2 moveDirection) throws InterruptedException,ImmobileEnnemyForOneSecondAtLeast{
         boolean a =table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation);
-        log.debug("Ennemy detected at distance(<"+distance+"mm): "+a);
         if (a) {
+            log.debug("Ennemy detected at distance(<"+distance+"mm): "+a);
             log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin : le robot va s'arrêter");
             immobilise();
             int count = 0;
