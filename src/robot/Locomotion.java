@@ -679,16 +679,16 @@ public class Locomotion implements Service {
         if (a) {
             log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin : le robot va s'arrêter");
             immobilise();
-            int count = 0;
-
-            while(count < 100)
-            {
-                if(!table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
-                    break;
-                }
-                Thread.sleep(10);
-                count++;
-            }
+//            int count = 0;
+//
+//            while(count < 100)
+//            {
+//                if(!table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
+//                    break;
+//                }
+//                Thread.sleep(10);
+//                count++;
+//            }
 
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
             if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
