@@ -112,7 +112,7 @@ public abstract class Node {
                         else{
                             log.debug("Point in obstacle");
                             //on renvoie une exception avec notre objectif initial en paramètre
-                            throw new PointInObstacleException(aim);
+                            throw new PointInObstacleException(aim, false);
                         }
                     }
                     else{
@@ -123,7 +123,7 @@ public abstract class Node {
                         else{
                             log.debug("Point in obstacle");
                             //on renvoie une exception avec notre objectif initial en paramètre
-                            throw new PointInObstacleException(aim);
+                            throw new PointInObstacleException(aim, false);
                         }
                     }
 
@@ -170,8 +170,10 @@ public abstract class Node {
         // on est dans un obstacle, on va au noeud le plus proche du graphe
         else if(e instanceof PointInObstacleException){
             try {
+                log.debug("On est dans un obstacle, on va au noeud le plus proche.");
                 gameState.robot.getPathfinding().getGraphe().addNodeInGraphe(gameState.robot.getPathfinding().getGraphe().closestNodeToPosition(gameState.robot.getPosition()));
                 gameState.robot.goTo(gameState.robot.getPathfinding().getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition());
+                log.debug("On est au noeud le plus proche.");
             } catch (UnableToMoveException e1) {
                 e1.printStackTrace();
             } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {

@@ -25,17 +25,22 @@ import smartMath.Vec2;
  * Peut etre utile pour le Pathfinding...
  */
 public class PointInObstacleException extends Exception {
+
     private Vec2 point;
-    public PointInObstacleException(Vec2 point)
+    private boolean departInOsbtacle;
+
+    public PointInObstacleException(Vec2 point, boolean departInOsbtacle)
     {
         super();
-        this.point=point;
-
+        this.point = point;
+        this.departInOsbtacle = departInOsbtacle;
     }
 
     public Vec2 getPoint() {
         return point;
     }
+
+    public boolean isDepartInOsbtacle() { return  departInOsbtacle;}
 
     public void setPoint(Vec2 point) {
         this.point = point;
