@@ -689,12 +689,12 @@ public class Locomotion implements Service {
 //                Thread.sleep(10);
 //                count++;
 //            }
-
+//
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
-            if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
+//            if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
                 log.debug("ImmobileEnnemy est throw");
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
-            }
+//            }
         }
     }
 
