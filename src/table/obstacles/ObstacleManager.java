@@ -441,7 +441,7 @@ public class ObstacleManager implements Service
 			if(closestEnnemy != null)
 			{
 				//log.debug("Position de l'ennemi le plus proche, non testé, d'après distanceToClosestEnnemy: "+mUntestedMobileObstacles.get(indexOfClosestEnnemy).getPosition(), this);
-				return (int)Math.sqrt((double)squaredDistanceToClosestEnemy) - closestEnnemy.getRadius();
+				return (int)Math.sqrt((double)squaredDistanceToClosestEnemy);
 			}
 			else {
 				return 1000;
