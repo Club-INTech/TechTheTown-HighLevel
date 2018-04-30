@@ -212,7 +212,7 @@ public class ObstacleManager implements Service
 					if (obstacleMobileUntested.numberOfTimeDetected >= obstacleMobileUntested.getThresholdConfirmedOrUnconfirmed()) {
 						boolean intersection=false;
 						for(ObstacleCircular obstacleCircularFixe : mCircularObstacle) {
-							if(obstacleMobileUntested.getCircle().isSuperposedWith(obstacleCircularFixe.getCircle())){
+							if(obstacleMobileUntested.getCircle().isInsideEnough(obstacleCircularFixe.getCircle())){
 								log.debug("Superposition d'obstacles !");
 								intersection=true;
 								break;
