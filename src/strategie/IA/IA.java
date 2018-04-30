@@ -225,6 +225,7 @@ public class IA implements Service {
         //On a vu un ennemi, et on a testé toutes les possibilités, mais on le voit toujours : on esquive
         if(attempts>n){
             //On esquive
+            log.debug("On tente une esquive.");
             if(e instanceof ImmobileEnnemyForOneSecondAtLeast ){
                 nextNode.exception(e);
             }
