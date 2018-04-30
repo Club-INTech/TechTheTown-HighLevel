@@ -1,13 +1,6 @@
 package tests;
 
-import enums.ScriptNames;
 import enums.Speed;
-import exceptions.BadVersionException;
-import exceptions.BlockedActuatorException;
-import exceptions.ExecuteException;
-import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
-import exceptions.Locomotion.PointInObstacleException;
-import exceptions.Locomotion.UnableToMoveException;
 import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
@@ -17,7 +10,6 @@ import simulator.ThreadSimulatorMotion;
 import strategie.GameState;
 import table.Table;
 import strategie.IA.*;
-import threads.ThreadInterface;
 import threads.dataHandlers.ThreadSensor;
 
 /*
@@ -89,7 +81,7 @@ public class JUnit_IA extends JUnit_Test{
         @Test
         public void ennemyAvoid(){
             ia.getGraph().getNodes();
-            for(Node node : ia.getGraph().getNodes()){
+            for(Node node : ia.getGraph().getNodes().getArrayList()){
                 System.out.println(node);
             }
         }

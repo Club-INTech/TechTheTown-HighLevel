@@ -28,7 +28,7 @@ public class IA implements Service {
     private Graph graph;
     private Pathfinding pathfinding;
     private int nb_tas_pris;
-    private ArrayList<Node> nodes;
+    private NodeArray nodes;
     private ArrayList<Node> availableNodes;
     private ArrayList<Node> nodesToExecute;
     private Node nextNode;
@@ -53,7 +53,7 @@ public class IA implements Service {
 
     /** Créer les noeuds du graphe de décision. */
 
-    public ArrayList<Node> createNodes() throws BadVersionException {
+    public NodeArray createNodes() throws BadVersionException {
         Node abeille = new Abeille("Abeille",0,  scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node panneau = new Panneau("Panneau",0,  scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node takeCubes = new TakeCubes("TakeCubes",0, scriptManager, gameState,pathfinding,hookFactory,config, log);
@@ -62,7 +62,7 @@ public class IA implements Service {
         Node deposeCubes = new DeposeCubes("DeposeCube",0, scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node deposeCubes2 = new DeposeCubes("DeposeCube",1, scriptManager, gameState,pathfinding,hookFactory,config, log);
 
-        ArrayList<Node> nodes = new ArrayList<>();
+        NodeArray nodes = new NodeArray();
         nodes.add(panneau);
         nodes.add(abeille);
         nodes.add(takeCubes);
@@ -76,56 +76,84 @@ public class IA implements Service {
 
     /** Renvoie le prochain noeud à executer. Si les tours sont remplies, on execute un
      *  dépose cube et sinon on va faire le script le plus proche.
-     *
      */
 
     public Node theAnswer() {
-
         Vec2 robotPosition = gameState.robot.getPosition();
-        updateAvailableNodes();
-        double dmin = 66666666666666.;
+        updateAvailableNodes(); //On récupère les nodes dont on a besoin
+        double dmin = 1000000000;
         int j = 0;
-        if (availableNodes.isEmpty())
+        //Si toutes les nodes sont faites, on renvoie null;
+        if (availableNodes.isEmpty()){
             return null;
-        if (gameState.isTourAvantRemplie() && gameState.isTourArriereRemplie()){
-            if (availableNodes.contains(nodes.get(nodes.size()-3))){
-                return nodes.get(nodes.size()-3);
-            } else{
-                return nodes.get(nodes.size()-1);
-            }
         }
-        if ( (gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie()) && gameState.isTas_base_pris() && gameState.isTas_chateau_eau_pris() &&
-        gameState.isTas_station_epuration_pris()){
-            if (availableNodes.contains(nodes.get(nodes.size()-3))){
-                return nodes.get(nodes.size()-3);
-            } else{
-                return nodes.get(nodes.size()-1);
-            }
-        }
-        for (int i = 0; i<availableNodes.size();i++){
-            double d = 0;
-            try {
-                d = pathfinding.howManyTime(robotPosition, availableNodes.get(i).position);
-            } catch (UnableToMoveException e) {
-                e.printStackTrace();
-            } catch (PointInObstacleException e) {
-                e.printStackTrace();
-            } catch (NoPathFound noPathFound) {
-                noPathFound.printStackTrace();
-                //si il n'y a pas de chemin, on n'y vas pas.
-                d =  66666666666666.;
-            }
-            if (d<dmin  && !(availableNodes.get(i) instanceof DeposeCubes)){
-                    j=i;
-                    dmin=d;
-                }
 
+        //Si on n'a plus beaucoup de temps, et qu'on a une tour dans le robot, on va la déposer à DeposeCubes1
+        else if ((gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie()) && gameState.getTimeEllapsed()>90000){
+            return nodes.getNodeByNameAndVersion("DeposeCubes",1);
+        }
+
+        //Si on a 2 tours dans le robot, on va les déposer
+        else if (gameState.isTourAvantRemplie() && gameState.isTourArriereRemplie()){
+            Node deposeCubes0 = nodes.getNodeByNameAndVersion("DeposeCubes",0);
+            if (availableNodes.contains(deposeCubes0)){
+                return deposeCubes0;
+            } else{
+                return nodes.getNodeByNameAndVersion("DeposeCubes",1);
+            }
+        }
+
+        //Si on a une tour dans le robot, et qu'on a pris les trois tas, on va la déposer
+        else {
+            int nbTasPris = 0;
+            if (gameState.isTas_base_pris()){
+                nbTasPris++;
+            }
+            if (gameState.isTas_chateau_eau_pris()){
+                nbTasPris++;
+            }
+            if (gameState.isTas_station_epuration_pris()){
+                nbTasPris++;
+            }
+            if ((gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie()) && nbTasPris==3){
+                Node deposeCubes0 = nodes.getNodeByNameAndVersion("DeposeCubes",0);
+                if (availableNodes.contains(deposeCubes0)){
+                    return deposeCubes0;
+                } else{
+                    return nodes.getNodeByNameAndVersion("DeposeCubes",1);
+                }
+            }
+        }
+
+        //Si aucun des cas spécifiques plus haut ne s'est présenté, on cherche la node la plus proche
+        for (int i = 0; i<availableNodes.size();i++){
+            Node currentNode = availableNodes.get(i);
+            if (!(currentNode instanceof DeposeCubes)){
+                double d = 0;
+                try {
+                    d = pathfinding.howManyTime(robotPosition, currentNode.getPosition());
+                } catch (UnableToMoveException e) {
+                    e.printStackTrace();
+                } catch (PointInObstacleException e) {
+                    e.printStackTrace();
+                } catch (NoPathFound noPathFound) {
+                    noPathFound.printStackTrace();
+                    //si il n'y a pas de chemin, on n'y vas pas.
+                    d = 1000000000;
+                }
+                if (d < dmin) {
+                    j = i;
+                    dmin = d;
+                }
+            }
         }
         return availableNodes.get(j);
     }
+
+    //On récupère les nodes qui n'ont pas encore été faites
     public void updateAvailableNodes(){
         availableNodes.clear();
-        for (Node node: nodes) {
+        for (Node node: nodes.getArrayList()) {
             if (!node.isDone()) {
                 availableNodes.add(node);
             }
@@ -242,7 +270,7 @@ public class IA implements Service {
     }
 
     public void display(){
-        log.debug("Nodes to execute :");
+        log.debug("NodeArray to execute :");
         for(Node node: nodesToExecute){
             log.debug(node.toString());
         }

@@ -4,7 +4,6 @@ import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import pathfinder.Pathfinding;
-import strategie.GameState;
 import utils.Log;
 
 import java.util.ArrayList;
@@ -13,13 +12,13 @@ import java.util.PriorityQueue;
 
 public class Graph {
 
-    private ArrayList<Node> nodes;
+    private NodeArray nodes;
     private PriorityQueue<Edge> edges;
     private Log log;
 
     /** Graphe de décision qui gère les actions à effectuer durant un match. */
 
-    public Graph(ArrayList<Node> nodes, Log log) {
+    public Graph(NodeArray nodes, Log log) {
         this.nodes = nodes;
         this.edges = createEdge();
         this.log = log;
@@ -72,7 +71,7 @@ public class Graph {
 
     public void clean(){
         ArrayList<Node> lst = new ArrayList<>();
-        for(Node node: nodes){
+        for(Node node: nodes.getArrayList()){
             log.debug(node.isDone());
             if(!node.isDone()){
                 lst.add(node);
@@ -86,7 +85,7 @@ public class Graph {
 
     public void display(){
         System.out.println("Liste des noeuds");
-        for(Node node : nodes){
+        for(Node node : nodes.getArrayList()){
             System.out.println(node);
         }
         System.out.println("Liste des arretes");
@@ -95,7 +94,7 @@ public class Graph {
         }
     }
 
-    public ArrayList<Node> getNodes() {
+    public NodeArray getNodes() {
         return nodes;
     }
 
@@ -103,7 +102,7 @@ public class Graph {
         return edges;
     }
 
-    public void setNodes(ArrayList<Node> nodes){ this.nodes=nodes;}
+    public void setNodes(ArrayList<Node> nodes){ this.nodes.setNodes(nodes);}
 
     public void setEdges(PriorityQueue<Edge> edges){ this.edges=edges;}
 }
