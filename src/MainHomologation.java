@@ -50,7 +50,6 @@ public class MainHomologation {
     static ScriptManager scriptmanager;
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
-    static Log log;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
@@ -64,7 +63,6 @@ public class MainHomologation {
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion = container.getService(Locomotion.class);
-            log = container.getService(Log.class);
             Thread.currentThread().setPriority(6);
             container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
@@ -76,12 +74,10 @@ public class MainHomologation {
 
 
         } catch (ContainerException p) {
-            log.debug("bug container");
             p.printStackTrace();
         }
         try {
 
-            log.debug("Le robot commence le match");
             waitMatchBegin();
             config.override(ConfigInfoRobot.BASIC_DETECTION,true);
             scriptmanager.getScript(ScriptNames.SCRIPT_HOMOLOGATION).goToThenExec(0, realState);
@@ -89,7 +85,6 @@ public class MainHomologation {
 
         } catch (Exception e) {
             e.printStackTrace();
-            log.debug("Exception");
         }
     }
 
