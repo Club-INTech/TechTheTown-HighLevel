@@ -87,6 +87,7 @@ public abstract class Node {
 
     public void exception(Exception e) {
         log.debug("on est dans Exception du Node Abstrait");
+
         if (e instanceof ImmobileEnnemyForOneSecondAtLeast) {
             log.debug("j'ai bien catch immmobileEnnemy et je tente d'esquiver : je suis bien intelligent");
             Vec2 aim = ((ImmobileEnnemyForOneSecondAtLeast) e).getAim();
