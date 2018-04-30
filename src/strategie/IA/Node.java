@@ -1,5 +1,6 @@
 package strategie.IA;
 
+import enums.ScriptNames;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 
 public abstract class Node {
 
-    protected String name;
+    protected ScriptNames scriptName;
     protected ScriptManager scriptManager;
     protected AbstractScript script;
     protected int versionToExecute;
@@ -48,8 +49,8 @@ public abstract class Node {
      * @param gameState
      */
 
-    public Node(String name, int versionToExecute, ScriptManager scriptManager ,GameState gameState, Pathfinding pathfinding, HookFactory hookFactory,Config config, Log log) {
-        this.name = name;
+    public Node(ScriptNames scriptName, int versionToExecute, ScriptManager scriptManager , GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) {
+        this.scriptName = scriptName;
         this.versionToExecute = versionToExecute;
         this.id = 0;
         this.timeLimit = 0;
@@ -208,7 +209,7 @@ public abstract class Node {
 
     public GameState getGameState() {return gameState;}
 
-    public String getName() { return name; }
+    public String getName() { return scriptName.getName(); }
 
     public boolean getIsDone(){ return isDone; }
 

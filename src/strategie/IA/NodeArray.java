@@ -1,5 +1,7 @@
 package strategie.IA;
 
+import enums.ScriptNames;
+
 import java.util.ArrayList;
 
 public class NodeArray {
@@ -9,6 +11,8 @@ public class NodeArray {
     NodeArray(){
         this.nodes=new ArrayList<>();
     }
+
+
 
     public void add(Node node){
         this.nodes.add(node);
@@ -34,10 +38,10 @@ public class NodeArray {
         this.nodes=array;
     }
 
-    public Node getNodeByNameAndVersion(String name, int version){
+    public Node getNodeByNameAndVersion(ScriptNames name, int version){
         for (Node node : nodes){
             if (node.getVersionToExecute()==version) {
-                if (node.getName().equals(name)) {
+                if (node.getName()==name) {
                     return node;
                 }
             }

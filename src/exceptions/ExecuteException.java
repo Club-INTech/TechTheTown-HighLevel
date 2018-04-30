@@ -30,7 +30,7 @@ public class ExecuteException extends Exception
 	 * @author Théo
 	 */
 	
-	// La raison du probleme dans l'execute
+	// La raison du probleme dans l'handleException
 	Exception exception;
 	
 	public ExecuteException(Exception e)

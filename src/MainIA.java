@@ -19,7 +19,6 @@
 
 import container.Container;
 import enums.ActuatorOrder;
-import graphics.AffichageDebug;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
@@ -29,7 +28,6 @@ import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
-import simulator.ThreadSimulator;
 import strategie.GameState;
 import strategie.IA.IA;
 import table.Table;
@@ -113,7 +111,7 @@ public class MainIA {
         } catch (Exception e) {
             e.printStackTrace();
             log.debug("Exception");
-            ia.execute(e);
+            ia.handleException(e);
         }
     }
 

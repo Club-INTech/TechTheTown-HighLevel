@@ -13,7 +13,7 @@ import utils.Log;
 
 public class TakeCubes extends Node {
 
-    public TakeCubes(String name, int versionToExecute, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
+    public TakeCubes(ScriptNames name, int versionToExecute, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
         super(name, versionToExecute, scriptManager, gameState,pathfinding,hookFactory,config, log);
         this.setScript(scriptManager.getScript(ScriptNames.TAKE_CUBES));
         this.setScore(40);
