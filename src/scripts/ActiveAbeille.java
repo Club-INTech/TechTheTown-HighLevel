@@ -26,7 +26,6 @@ public class ActiveAbeille extends AbstractScript {
 
     /** Eléments appelés par la config */
     private int radius; //rayon du robot
-    private int distanceAbeille;
 
     public ActiveAbeille(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -35,14 +34,11 @@ public class ActiveAbeille extends AbstractScript {
         this.yEntryReal=1780;
         this.xEntryPathfindingAvaible=1200;
         this.yEntryPathfindingAvaible=1700;
-        /**2 versions, l'une pour l'IA(si jamais on a à appeler le pathfinding pour
-         * aller à l'abeille) et l'autre pour le MatchScript*/
         versions = new int[]{0};
     }
     @Override
     public void updateConfig() {
         super.updateConfig();
-        distanceAbeille = config.getInt(ConfigInfoRobot.DISTANCE_ABEILLE);
         radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
     }
@@ -60,7 +56,7 @@ public class ActiveAbeille extends AbstractScript {
             actualState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
             actualState.setCapteursActivés(false);
         }
-        actualState.robot.goTo(new Vec2(xEntryReal, yEntryReal));
+        actualState.robot.goToWithoutDetection(new Vec2(xEntryReal, yEntryReal));
         if (prodScal > 0) {
             //ON UTILISE LE BRAS AVANT
             actualState.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE, true);

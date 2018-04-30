@@ -115,7 +115,8 @@ public class IA implements Service {
             Node deposeCubes0 = nodes.getNodeByNameAndVersion("DeposeCubes",0);
             if (!availableNodes.contains(deposeCubes0)){
                 return deposeCubes0;
-            } else{
+            }
+            else{
                 return nodes.getNodeByNameAndVersion("DeposeCubes",1);
             }
         }
@@ -123,20 +124,15 @@ public class IA implements Service {
         //Si on a une tour dans le robot, et qu'on a pris les trois tas, on va la déposer
         else if (gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie()){
             int nbTasPris = 0;
-            if (gameState.isTas_base_pris()){
-                nbTasPris++;
-            }
-            if (gameState.isTas_chateau_eau_pris()){
-                nbTasPris++;
-            }
-            if (gameState.isTas_station_epuration_pris()){
-                nbTasPris++;
-            }
+            if (gameState.isTas_base_pris()){ nbTasPris++; }
+            if (gameState.isTas_chateau_eau_pris()){ nbTasPris++; }
+            if (gameState.isTas_station_epuration_pris()){ nbTasPris++; }
             if (nbTasPris==3){
                 Node deposeCubes0 = nodes.getNodeByNameAndVersion("DeposeCubes",0);
                 if (!availableNodes.contains(deposeCubes0)){
                     return deposeCubes0;
-                } else{
+                }
+                else{
                     return nodes.getNodeByNameAndVersion("DeposeCubes",1);
                 }
             }
@@ -279,7 +275,7 @@ public class IA implements Service {
         if(attempts>n){
             //On esquive
             log.debug("On tente une esquive.");
-            if(e instanceof ImmobileEnnemyForOneSecondAtLeast ){
+            if(e instanceof ImmobileEnnemyForOneSecondAtLeast){
                 nextNode.exception(e);
             }
         }

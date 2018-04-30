@@ -197,13 +197,7 @@ public class Locomotion implements Service {
      * Temps d'attente lorsqu'il y a un ennemie devant
      * Override par la config
      */
-    private int ennemyLoopDelay;
-
-    /**
-     * Temps d'attente que l'ennemie se bouge avant de décider de faire autre chose
-     * Override par la config
-     */
-    private int ennemyTimeout;
+    private int basicDetectionLoopDelay;
 
     /**
      * Temps d'attente entre deux boucles d'acquitement
@@ -519,7 +513,7 @@ public class Locomotion implements Service {
                     }
                     while (obstacleDetected){
                         try {
-                            Thread.sleep(500);
+                            Thread.sleep(basicDetectionLoopDelay);
                             obstacleDetected=basicDetect();
                         } catch (InterruptedException e) {
                             log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
@@ -990,8 +984,7 @@ public class Locomotion implements Service {
         feedbackLoopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
         basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
 
-        ennemyLoopDelay = config.getInt(ConfigInfoRobot.ENNEMY_LOOPDELAY);
-        ennemyTimeout = config.getInt(ConfigInfoRobot.ENNEMY_TIMEOUT);
+        basicDetectionLoopDelay = config.getInt(ConfigInfoRobot.BASIC_DETECTION_LOOP_DELAY);
 
         /** BlockedException */
         distanceToDisengage = config.getInt(ConfigInfoRobot.DISTANCE_TO_DISENGAGE);
