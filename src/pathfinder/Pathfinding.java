@@ -154,10 +154,10 @@ public class Pathfinding implements Service {
 //        int l = 0;
         /** Exception départ ou arrivée dans un obstacle */
         if (obstacleManager.isObstructed(noeudDepart.getPosition()) || !obstacleManager.isRobotInTable(noeudDepart.getPosition())) {
-            throw new PointInObstacleException(noeudDepart.getPosition());
+            throw new PointInObstacleException(noeudDepart.getPosition(), true);
         } else if (obstacleManager.isObstructed(noeudArrive.getPosition())
                 || !obstacleManager.isRobotInTable(noeudArrive.getPosition())) {
-            throw new PointInObstacleException(noeudArrive.getPosition());
+            throw new PointInObstacleException(noeudArrive.getPosition(), false);
         }
         //début de l'algorithme
         else {

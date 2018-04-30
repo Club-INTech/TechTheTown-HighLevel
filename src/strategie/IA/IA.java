@@ -149,6 +149,9 @@ public class IA implements Service {
                     e.printStackTrace();
                 } catch (PointInObstacleException e) {
                     e.printStackTrace();
+                    if (e.isDepartInOsbtacle()) {
+                        currentNode.exception(e);
+                    }
                 } catch (NoPathFound noPathFound) {
                     noPathFound.printStackTrace();
                     //si il n'y a pas de chemin, on n'y vas pas.
