@@ -74,12 +74,12 @@ public class ObstacleProximity extends ObstacleCircular
 		super(circle);
 		
 		this.lifetime = lifetime;
-		mOutDatedTime = System.currentTimeMillis() + lifetime;// la date de peremption = temps actuel + temps de peremption de l'obstacle
+		this.mOutDatedTime = System.currentTimeMillis() + lifetime;// la date de peremption = temps actuel + temps de peremption de l'obstacle
 		//TODO mettre dans le fichier de config le "temps de peremption" de chaque obstacle 
-		numberOfTimeDetected=1;
+		this.numberOfTimeDetected=1;
 
-		thresholdConfirmedOrUnconfirmed=1;
-		maxNumberOfTimeDetected=1;
+		this.thresholdConfirmedOrUnconfirmed=3;
+		this.maxNumberOfTimeDetected=3;
 	}
 	
 	/* (non-Javadoc)
@@ -87,7 +87,7 @@ public class ObstacleProximity extends ObstacleCircular
 	 */
 	public ObstacleProximity clone()
 	{
-		return new ObstacleProximity(circle, lifetime);
+		return new ObstacleProximity(this.circle, this.lifetime);
 	}
 	
 	public long getOutDatedTime()
