@@ -41,7 +41,7 @@ public class DeposeCubes extends AbstractScript {
      * @throws UnableToMoveException
      */
     @Override
-    public void execute(int version, GameState state) throws ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+    public void execute(int version, GameState state) throws UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution DeposeCubes version "+version+" //////////");
         int numberTowersToDepose=0;
         //Ou exclusif

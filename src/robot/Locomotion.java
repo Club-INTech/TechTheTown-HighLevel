@@ -509,7 +509,7 @@ public class Locomotion implements Service {
             }
 
             /** TODO A adapté à l'année en cours */
-            if (mustDetect){
+            if (mustDetect) {
                 if (basicDetection){
                     boolean obstacleDetected=basicDetect();
                     boolean wasImmobilised=false;

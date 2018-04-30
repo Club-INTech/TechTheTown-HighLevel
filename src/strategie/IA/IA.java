@@ -103,15 +103,23 @@ public class IA implements Service {
             }
         }
         for (int i = 0; i<availableNodes.size();i++){
+            double d = 0;
             try {
-                double d = pathfinding.howManyTime(robotPosition, availableNodes.get(i).position);
-                if (d<dmin  && !(availableNodes.get(i) instanceof DeposeCubes)){
+                d = pathfinding.howManyTime(robotPosition, availableNodes.get(i).position);
+            } catch (UnableToMoveException e) {
+                e.printStackTrace();
+            } catch (PointInObstacleException e) {
+                e.printStackTrace();
+            } catch (NoPathFound noPathFound) {
+                noPathFound.printStackTrace();
+                //si il n'y a pas de chemin, on n'y vas pas.
+                d =  66666666666666.;
+            }
+            if (d<dmin  && !(availableNodes.get(i) instanceof DeposeCubes)){
                     j=i;
                     dmin=d;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
         }
         return availableNodes.get(j);
     }
