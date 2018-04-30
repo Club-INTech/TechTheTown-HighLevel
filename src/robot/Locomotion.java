@@ -322,7 +322,7 @@ public class Locomotion implements Service {
         double moveA = move.getA();
 
         if (directionStrategy.equals(DirectionStrategy.FASTEST)) {
-            int sens = move.dot(new Vec2(100, highLevelOrientation));
+            float sens = move.dot(new Vec2(100, highLevelOrientation));
             if (sens >= 0) {    //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
                 log.debug("Angle de rotation: " + moveA);
                 log.debug("Distance de translation: " + moveR);
