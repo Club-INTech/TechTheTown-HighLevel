@@ -112,7 +112,7 @@ public abstract class Node {
                         else{
                             log.debug("Point in obstacle");
                             //on renvoie une exception avec notre objectif initial en paramètre
-                            throw new PointInObstacleException(aim);
+                            throw new PointInObstacleException(aim, false);
                         }
                     }
                     else{
@@ -123,7 +123,7 @@ public abstract class Node {
                         else{
                             log.debug("Point in obstacle");
                             //on renvoie une exception avec notre objectif initial en paramètre
-                            throw new PointInObstacleException(aim);
+                            throw new PointInObstacleException(aim, false);
                         }
                     }
 
