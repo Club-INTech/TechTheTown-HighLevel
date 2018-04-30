@@ -91,9 +91,8 @@ public class ObstacleManager implements Service
 	/**	Temps donné aux obstacles pour qu'ils soit vérifiés */
 	private final int timeToTestObstacle = 1000;
 
-	/** Temps de vie d'un robot ennemi
-	 * Override par la config */
-	private int defaultLifetime = 3000;
+	/** Temps de vie d'un robot ennemi */
+	private int defaultLifetime = 10000; //OVERRIDE PAR LA CONFIG
 
 	/** Nombre de robots ennemis crashed */
 	private int crashRobot = 0;
