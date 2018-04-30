@@ -80,6 +80,9 @@ public class ScriptHomologation extends AbstractScript {
     public void takeThisCube(GameState state,String direction){
 
         state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
+        state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
+        state.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, false);
         if(direction.equals("forward")){
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
             state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
