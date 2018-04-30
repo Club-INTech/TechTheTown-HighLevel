@@ -50,7 +50,6 @@ public class MainHomologation {
     static ScriptManager scriptmanager;
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
-    static PatternRecognition patternRecognition;
     static Log log;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
@@ -70,8 +69,6 @@ public class MainHomologation {
             container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
             container.getService(ThreadTimer.class);
-            patternRecognition=container.getService(PatternRecognition.class);
-            container.getService(ThreadScore.class);
             container.startInstanciedThreads();
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
@@ -86,13 +83,9 @@ public class MainHomologation {
 
             log.debug("Le robot commence le match");
             waitMatchBegin();
-
-            while(patternRecognition.isMovementLocked()) {
-                Thread.sleep(10);
-            }
-
+            config.override(ConfigInfoRobot.BASIC_DETECTION,true);
             scriptmanager.getScript(ScriptNames.SCRIPT_HOMOLOGATION).goToThenExec(0, realState);
-
+            config.override(ConfigInfoRobot.BASIC_DETECTION,false);
 
         } catch (Exception e) {
             e.printStackTrace();
