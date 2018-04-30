@@ -35,5 +35,7 @@ public enum ScriptNames
     ACTIVE_ABEILLE,
     DEPOSE_CUBES,
     MATCH_SCRIPT,
-    TAKE_CUBES;
+    TAKE_CUBES,
+    SCRIPT_HOMOLOGATION,
+    ;
 }

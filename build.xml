@@ -110,4 +110,14 @@
     </jar>
   </target>
 
+  <target name="homologation" depends="all">
+    <delete file="Htechthetown-highlevel.jar"/>
+    <jar destfile="Htechthetown-highlevel.jar" basedir="${techthetown-highlevel.output.dir}">
+      <manifest>
+        <attribute name="Main-Class" value="MainHomologation"/>
+      </manifest>
+      <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
+    </jar>
+  </target>
+
 </project>

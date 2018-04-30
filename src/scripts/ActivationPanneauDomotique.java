@@ -1,5 +1,6 @@
 package scripts;
 
+import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.BadVersionException;
@@ -42,13 +43,14 @@ public class ActivationPanneauDomotique extends AbstractScript{
         log.debug("////////// Execution ActivePanneauDomotique version "+versionToExecute+" //////////");
         state.robot.turn(-Math.PI/2);
         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-        if(!(state.isCapteursActivés())){
-            state.robot.goToWithoutDetection(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur));
-        }
-        else{
-            state.robot.goTo(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur));
-        }
+        state.robot.goToWithoutDetection(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur));
         state.addObtainedPoints(25);
+        if(basicDetection) {
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
+        } else {
+            state.robot.useActuator(ActuatorOrder.SUS_ON,true);
+            state.setCapteursActivés(true);
+        }
         state.robot.goTo(new Vec2(xEntry, yEntry));
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
         state.setPanneauActive(true);

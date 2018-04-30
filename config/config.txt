@@ -130,13 +130,7 @@ brightnessModifierLightingUp=1.5
 #ActivationPanneauDomotique
 DISTANCE_INTERRUPTEUR=65
 
-#ActiveAbeille
-DISTANCE_ABEILLE=100
-
-#TakeCubes
-
 #DéposeCube
 DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES=90
-
 
 
