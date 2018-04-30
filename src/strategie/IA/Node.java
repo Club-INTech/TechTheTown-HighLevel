@@ -79,6 +79,7 @@ public abstract class Node {
                 setDone(true);
             }
         } else {
+            log.debug(getName() +versionToExecute+" Is blocked");
             setDone(true);
         }
     }
