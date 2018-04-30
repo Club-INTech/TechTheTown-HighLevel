@@ -80,10 +80,8 @@ public abstract class AbstractScript implements Service
 		try
 		{
 			actualState.robot.getEthWrapper().updateCurrentPositionAndOrientation();
-			if(actualState.robot.getPosition().minusNewVector(entryPosition(versionToExecute, actualState.robot.getPosition()).getCenter()).squaredLength() > 20) {
-				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getPosition()).getCenter());
-				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPosition()), actualState.table);
-			}
+			log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getPosition()).getCenter());
+			actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPosition()), actualState.table);
 		}
 		catch (UnableToMoveException e)
 		{
