@@ -252,10 +252,10 @@ public class IA implements Service {
         int attempts=0;
         while (nextNode != null && attempts<n){
             try {
-                log.debug("//////IA////// SELECTED NODE : "+nextNode.name);
+                log.debug("//////IA////// SELECTED NODE : "+nextNode.name +" "+nextNode.getVersionToExecute());
                 nextNode.execute(e, gameState);
                 attempts++;
-                log.debug("//////IA////// EXECUTE : "+nextNode.name);
+                log.debug("//////IA////// EXECUTE : "+nextNode.name+ " "+nextNode.getVersionToExecute());
             } catch (PointInObstacleException e1) {
                 e1.printStackTrace();
             } catch (BadVersionException e1) {
