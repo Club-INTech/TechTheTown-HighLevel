@@ -255,7 +255,7 @@ public class Robot implements Service {
         goTo(pointVise, false, true);
     }
 
-    public void goToWithoutDetection(Vec2 pointVise ) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
+    public void goToWithoutDetection(Vec2 pointVise) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         goTo(pointVise, false, false);
     }
 
