@@ -53,14 +53,14 @@ public class IA implements Service {
 
     /** Créer les noeuds du graphe de décision. */
 
-    public NodeArray createNodes() throws BadVersionException {
+    private NodeArray createNodes() throws BadVersionException {
         Node abeille = new Abeille("Abeille",0,  scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node panneau = new Panneau("Panneau",0,  scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node takeCubes = new TakeCubes("TakeCubes",0, scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node takeCubes2 = new TakeCubes("TakeCubes",1, scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node takeCubes3 = new TakeCubes("TakeCubes",2, scriptManager, gameState,pathfinding,hookFactory,config, log);
-        Node deposeCubes = new DeposeCubes("DeposeCube",0, scriptManager, gameState,pathfinding,hookFactory,config, log);
-        Node deposeCubes2 = new DeposeCubes("DeposeCube",1, scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node deposeCubes = new DeposeCubes("DeposeCubes",0, scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node deposeCubes2 = new DeposeCubes("DeposeCubes",1, scriptManager, gameState,pathfinding,hookFactory,config, log);
 
         NodeArray nodes = new NodeArray();
         nodes.add(panneau);
@@ -78,7 +78,7 @@ public class IA implements Service {
      *  dépose cube et sinon on va faire le script le plus proche.
      */
 
-    public Node theAnswer() {
+    private Node theAnswer() {
         Vec2 robotPosition = gameState.robot.getPosition();
         updateAvailableNodes(); //On récupère les nodes dont on a besoin
         double dmin = 1000000000;
@@ -88,38 +88,51 @@ public class IA implements Service {
             return null;
         }
 
-        //Si on n'a plus beaucoup de temps, et qu'on a une tour dans le robot, on va la déposer à DeposeCubes1
-        else if ((gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie()) && gameState.getTimeEllapsed()>90000){
-            return nodes.getNodeByNameAndVersion("DeposeCubes",1);
+        //La dernière action de la partie quand on a plus beaucoup de temps
+        else if (gameState.getTimeEllapsed()>85000){
+            //Si on a une tour dans le robot, on va la déposer à DeposeCubes1
+            if ((gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie())){
+                Node deposeCubes0 = nodes.getNodeByNameAndVersion("DeposeCubes",0);
+                if (!availableNodes.contains(deposeCubes0)) {
+                    return nodes.getNodeByNameAndVersion("DeposeCubes", 1);
+                }
+                else{
+                    return nodes.getNodeByNameAndVersion("DeposeCubes", 1);
+                }
+            }
+            //Si le panneau n'a pas encore été fait, et qu'on a pas de tours, on fait le panneau
+            else if (!availableNodes.contains(nodes.getNodeByNameAndVersion("Panneau",0))){
+                return nodes.getNodeByNameAndVersion("Panneau",0);
+            }
+            //Si on n'a plus de tours, et que le panneau a déjà été activé, on va faire l'abeille, quitte à ce qu'il y ait un robot ennemi là bas
+            else if (!availableNodes.contains(nodes.getNodeByNameAndVersion("Abeille",0))){
+                return nodes.getNodeByNameAndVersion("Abeille",0);
+            }
         }
 
         //Si on a 2 tours dans le robot, on va les déposer
         else if (gameState.isTourAvantRemplie() && gameState.isTourArriereRemplie()){
             Node deposeCubes0 = nodes.getNodeByNameAndVersion("DeposeCubes",0);
-            if (availableNodes.contains(deposeCubes0)){
+            if (!availableNodes.contains(deposeCubes0)){
                 return deposeCubes0;
-            } else{
+            }
+            else{
                 return nodes.getNodeByNameAndVersion("DeposeCubes",1);
             }
         }
 
         //Si on a une tour dans le robot, et qu'on a pris les trois tas, on va la déposer
-        else {
+        else if (gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie()){
             int nbTasPris = 0;
-            if (gameState.isTas_base_pris()){
-                nbTasPris++;
-            }
-            if (gameState.isTas_chateau_eau_pris()){
-                nbTasPris++;
-            }
-            if (gameState.isTas_station_epuration_pris()){
-                nbTasPris++;
-            }
-            if ((gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie()) && nbTasPris==3){
+            if (gameState.isTas_base_pris()){ nbTasPris++; }
+            if (gameState.isTas_chateau_eau_pris()){ nbTasPris++; }
+            if (gameState.isTas_station_epuration_pris()){ nbTasPris++; }
+            if (nbTasPris==3){
                 Node deposeCubes0 = nodes.getNodeByNameAndVersion("DeposeCubes",0);
-                if (availableNodes.contains(deposeCubes0)){
+                if (!availableNodes.contains(deposeCubes0)){
                     return deposeCubes0;
-                } else{
+                }
+                else{
                     return nodes.getNodeByNameAndVersion("DeposeCubes",1);
                 }
             }
@@ -151,7 +164,7 @@ public class IA implements Service {
     }
 
     //On récupère les nodes qui n'ont pas encore été faites
-    public void updateAvailableNodes(){
+    private void updateAvailableNodes(){
         availableNodes.clear();
         for (Node node: nodes.getArrayList()) {
             if (!node.isDone()) {
@@ -188,7 +201,7 @@ public class IA implements Service {
 
     /** Transforme le parcours optimal composé d'arrete en une liste de noeud à exécuter */
 
-    public ArrayList<Node> edgeToNode(ArrayList<Edge> edges) {
+    private ArrayList<Node> edgeToNode(ArrayList<Edge> edges) {
         ArrayList<Node> nodes = new ArrayList<>();
         for (Edge edge : edges){
             if(edge.getNode1().getScore()>edge.getNode2().getScore()){
@@ -262,10 +275,9 @@ public class IA implements Service {
         if(attempts>n){
             //On esquive
             log.debug("On tente une esquive.");
-            if(e instanceof ImmobileEnnemyForOneSecondAtLeast ){
+            if(e instanceof ImmobileEnnemyForOneSecondAtLeast){
                 nextNode.exception(e);
             }
-
         }
     }
 

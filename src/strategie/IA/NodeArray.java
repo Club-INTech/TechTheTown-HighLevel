@@ -10,7 +10,6 @@ public class NodeArray {
         this.nodes=new ArrayList<>();
     }
 
-
     public void add(Node node){
         this.nodes.add(node);
     }
@@ -34,7 +33,6 @@ public class NodeArray {
     public void setNodes(ArrayList<Node> array){
         this.nodes=array;
     }
-
 
     public Node getNodeByNameAndVersion(String name, int version){
         for (Node node : nodes){

@@ -197,13 +197,7 @@ public class Locomotion implements Service {
      * Temps d'attente lorsqu'il y a un ennemie devant
      * Override par la config
      */
-    private int ennemyLoopDelay;
-
-    /**
-     * Temps d'attente que l'ennemie se bouge avant de décider de faire autre chose
-     * Override par la config
-     */
-    private int ennemyTimeout;
+    private int basicDetectionLoopDelay;
 
     /**
      * Temps d'attente entre deux boucles d'acquitement
@@ -519,7 +513,7 @@ public class Locomotion implements Service {
                     }
                     while (obstacleDetected){
                         try {
-                            Thread.sleep(500);
+                            Thread.sleep(basicDetectionLoopDelay);
                             obstacleDetected=basicDetect();
                         } catch (InterruptedException e) {
                             log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
@@ -679,22 +673,22 @@ public class Locomotion implements Service {
         if (a) {
             log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin : le robot va s'arrêter");
             immobilise();
-            int count = 0;
-
-            while(count < 100)
-            {
-                if(!table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
-                    break;
-                }
-                Thread.sleep(10);
-                count++;
-            }
-
+//            int count = 0;
+//
+//            while(count < 100)
+//            {
+//                if(!table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
+//                    break;
+//                }
+//                Thread.sleep(10);
+//                count++;
+//            }
+//
             //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
-            if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
+//            if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
                 log.debug("ImmobileEnnemy est throw");
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
-            }
+//            }
         }
     }
 
@@ -990,8 +984,7 @@ public class Locomotion implements Service {
         feedbackLoopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
         basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
 
-        ennemyLoopDelay = config.getInt(ConfigInfoRobot.ENNEMY_LOOPDELAY);
-        ennemyTimeout = config.getInt(ConfigInfoRobot.ENNEMY_TIMEOUT);
+        basicDetectionLoopDelay = config.getInt(ConfigInfoRobot.BASIC_DETECTION_LOOP_DELAY);
 
         /** BlockedException */
         distanceToDisengage = config.getInt(ConfigInfoRobot.DISTANCE_TO_DISENGAGE);

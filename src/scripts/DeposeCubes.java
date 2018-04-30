@@ -132,7 +132,7 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.turn(Math.PI / 2);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
                     state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
-                    state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[version]-distancePenetrationZone));
+                    state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[version]-distancePenetrationZone));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                     state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[version]+2*dimensionPorte));
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
