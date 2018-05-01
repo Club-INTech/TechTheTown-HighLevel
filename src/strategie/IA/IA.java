@@ -182,12 +182,28 @@ public class IA implements Service {
                 nextNode.execute(gameState);
                 nextNode.setDone(true);
                 success=true;
-            } catch (Exception e){
-                return false;
+            } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+                log.debug("ImmobileEnnemyForOneSecondAtLeast");
+                immobileEnnemyForOneSecondAtLeast.printStackTrace();
+            } catch (PointInObstacleException e) {
+                log.debug("PointInObstacleException");
+                e.printStackTrace();
+            } catch (BlockedActuatorException e) {
+                log.debug("BlockedActuatorException");
+                e.printStackTrace();
+            } catch (ExecuteException e) {
+                log.debug("ExecuteException");
+                e.printStackTrace();
+            } catch (BadVersionException e) {
+                log.debug("BadVersionException");
+                e.printStackTrace();
+            } catch (UnableToMoveException e) {
+                log.debug("UnableToMoveException");
+                e.printStackTrace();
             }
         }
         exploredNodes.clear();
-        return true;
+        return success;
     }
 
 
