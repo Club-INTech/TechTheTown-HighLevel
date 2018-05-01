@@ -114,7 +114,6 @@ public class IA implements Service {
             tryToDoAnotherNode(this.lastNodeTried);
         }
         log.warning("///// IA ///// On a résolu les exceptions, on continue le match");
-        exploredNodes.clear();
         resumeMatch();
     }
 
