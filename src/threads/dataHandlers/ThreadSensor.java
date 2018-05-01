@@ -433,16 +433,12 @@ public class ThreadSensor extends AbstractThread
             robotPosAndOr = ethWrapper.getCurrentPositionAndOrientation();
             String[] valuesSReceived;
 
-            int attempts = 0;
-            while (valuesReceived.peek() == null && attempts < 50) {
-                try {
-                    Thread.sleep(5);
-                } catch(InterruptedException e) {
-                    e.printStackTrace();
-                }
-                attempts++;
+            long timeStart = System.currentTimeMillis();
+            long timeEllapsed=0;
+            while (valuesReceived.peek() == null && timeEllapsed<200) {
+                timeEllapsed=System.currentTimeMillis()-timeStart;
             }
-            if (attempts < 50) {
+            if (timeEllapsed<200) {
                 String values = valuesReceived.poll();
                 valuesSReceived = values.split(" ");
 
@@ -455,6 +451,12 @@ public class ThreadSensor extends AbstractThread
                 if (symetry) {
                     sensorFL.switchValues(sensorFR);
                     sensorBL.switchValues(sensorBR);
+                }
+            }
+            else{
+                valuesReceived.clear();
+                for (Sensor sensor : sensorsArray){
+                    sensor.setDetectedDistance(0);
                 }
             }
         }

@@ -15,7 +15,6 @@ public class Sensor{
     private int detectedDistance;                 //en mm
     private int rawDetectedDistance;                 //en mm
     private double uncertainty;                           //en mm (uncertainty of 2mm <==> +- 2mm)
-    private double robotSize;                           //en mm
 
     public Sensor(int id, int xRelativeToRobotCenter, int yRelativeToRobotCenter, double sensorOrientation, double detectionWideness, int maximalValidDetectionDistance, int minimalValidDetectionDistance, double uncertainty){
         this.id=id;
@@ -29,7 +28,6 @@ public class Sensor{
         this.detectedDistance=0;
         this.rawDetectedDistance=0;
         this.uncertainty=uncertainty;
-        this.robotSize=Double.parseDouble(ConfigInfoRobot.ROBOT_RADIUS.getDefaultValue().toString());
     }
 
     /**Fonction permettant d'affecter la valeur réelle mesurée par un capteur à l'objet Sensor.
