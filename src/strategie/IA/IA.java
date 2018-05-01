@@ -206,6 +206,9 @@ public class IA implements Service {
                 log.debug("UnableToMoveException");
                 e.printStackTrace();
                 nextNode = findBestNode();
+            } catch (NoPathFound noPathFound) {
+                log.debug("NoPathFound");
+                noPathFound.printStackTrace();
             }
         }
         exploredNodes.clear();
