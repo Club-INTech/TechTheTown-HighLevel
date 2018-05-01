@@ -31,10 +31,10 @@ public class DeposeCubes extends AbstractScript {
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
-        super.versions = new int[]{0, 1};
+        updateConfig();
+        versions = new int[]{0, 1};
         this.xEntry=new int[]{970,600};
         this.yEntry=new int[]{150+radius,150+radius};
-        updateConfig();
     }
 
     /**
@@ -50,12 +50,15 @@ public class DeposeCubes extends AbstractScript {
         //Ou exclusif
         if (state.isTourAvantRemplie()^state.isTourArriereRemplie()){
             numberTowersToDepose=1;
+            log.debug("DeposeCubes : "+numberTowersToDepose+" tour à déposer");
         }
         else if (state.isTourAvantRemplie() && state.isTourArriereRemplie()){
             numberTowersToDepose=2;
+            log.debug("DeposeCubes : "+numberTowersToDepose+" tours à déposer");
         }
         else if (!(state.isTourAvantRemplie()) && !(state.isTourArriereRemplie())){
             numberTowersToDepose=0;
+            log.debug("DeposeCubes : "+numberTowersToDepose+" tours à déposer");
         }
 
 
