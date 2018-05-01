@@ -32,6 +32,7 @@ import threads.AbstractThread;
 import threads.ThreadTimer;
 import utils.Log;
 
+import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -247,18 +248,24 @@ public class ThreadSensor extends AbstractThread
         int d = Math.abs(sensorFL.getY()) + Math.abs(sensorFR.getY());
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
-        double toAcos=(b * b - a * a - d * d)/(-2.0 * a * d);
-        if (!(Math.abs(toAcos)<=1)){
+        double toAcos = Math.abs(Geometry.moduloSpec((b * b - a * a - d * d) / (-2.0 * a * d), Math.PI));
+        log.debug(toAcos);
+
+        if (!(Math.abs(toAcos) <= 1)) {
             addFrontObstacleSingleMiddle();
-        }
-        else {
-            double alpha = -Math.abs(Math.acos(toAcos)-Math.PI / 2);
-            int x = (int) (a * Math.cos(alpha));
-            int y = (int) (a * Math.sin(alpha));
-            Vec2 posObjectFromSensorFL = new Vec2(x, y);
-            Vec2 posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
-            if (posObjectFromCenterRobot.getA() > -Math.PI / 3 && posObjectFromCenterRobot.getA() < Math.PI / 3) { // pour éviter les faux obstacles
-                mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius + ourRadius + 10);
+        } else {
+            double alpha = -Math.abs(Math.acos(toAcos) - Math.PI / 2);
+            if (alpha > detectionAngle) {
+                addFrontObstacleSingleMiddle();
+            } else {
+                int x = (int) (a * Math.cos(alpha));
+                int y = (int) (a * Math.sin(alpha));
+                Vec2 posObjectFromSensorFL = new Vec2(x, y);
+                Vec2 posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
+                if (posObjectFromCenterRobot.getA() > -Math.PI / 3 && posObjectFromCenterRobot.getA() < Math.PI / 3) { // pour éviter les faux obstacles
+                    mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius + ourRadius + 10);
+                }
+
             }
         }
     }
@@ -280,19 +287,25 @@ public class ThreadSensor extends AbstractThread
         int d = Math.abs(sensorBL.getY()) + Math.abs(sensorBR.getY());
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
-        double toAcos=(b * b - a * a - d * d)/(-2.0 * a * d);
+        double toAcos= Math.abs(Geometry.moduloSpec((b * b - a * a - d * d)/(-2.0 * a * d),Math.PI));
+        log.debug(toAcos);
+        //Si on ne fait pas cette condition, quand l'arcos est supérieur à 1, on a superposition entre le robot ennemi et le notre
         if (!(Math.abs(toAcos)<=1)){
             addBackObstacleSingleMiddle();
         }
         else {
             double alpha = Math.abs((3*Math.PI / 2-Math.acos(toAcos)));
-            int x = (int) (a * Math.cos(alpha));
-            int y = (int) (a * Math.sin(alpha));
-            Vec2 posObjectFromSensorBL = new Vec2(x, y);
-            Vec2 posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
-            if (posObjectFromCenterRobot.getA() > -Math.PI / 3 || posObjectFromCenterRobot.getA() < Math.PI / 3) { // pour éviter les faux obstacles
-                posObjectFromCenterRobot.setX(posObjectFromCenterRobot.getX() * -1);
-                mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius + ourRadius + 10);
+            if(alpha>detectionAngle){
+                addBackObstacleSingleMiddle();
+            }
+            else {
+                int x = (int) (a * Math.cos(alpha));
+                int y = (int) (a * Math.sin(alpha));
+                Vec2 posObjectFromSensorBL = new Vec2(x, y);
+                Vec2 posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
+                if (posObjectFromCenterRobot.getA() > -Math.PI / 3 || posObjectFromCenterRobot.getA() < Math.PI / 3) { // pour éviter les faux obstacles
+                    mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius + ourRadius + 10);
+                }
             }
         }
     }
@@ -497,8 +510,7 @@ public class ThreadSensor extends AbstractThread
         while(!ThreadTimer.matchEnded)
         {
             // on s'arrete si le ThreadManager le demande
-            if(stopThreads)
-            {
+            if(stopThreads) {
                 log.debug("Stop du thread capteurs");
                 return;
             }

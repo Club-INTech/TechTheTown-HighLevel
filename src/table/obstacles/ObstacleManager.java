@@ -89,10 +89,10 @@ public class ObstacleManager implements Service
 	private Vec2 positionDetectionDisc=new Vec2(0,0);
 
 	/**	Temps donné aux obstacles pour qu'ils soit vérifiés */
-	private final int timeToTestObstacle = 1000;
+	private final int timeToTestObstacle = 500;
 
 	/** Temps de vie d'un robot ennemi */
-	private int defaultLifetime = 10000; //OVERRIDE PAR LA CONFIG
+	private int defaultLifetime = 1000; //OVERRIDE PAR LA CONFIG
 
 	/** Nombre de robots ennemis crashed */
 	private int crashRobot = 0;
