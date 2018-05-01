@@ -121,7 +121,8 @@ public class IA implements Service {
 
     private void resumeMatch(){
         try {
-            while (findBestNode()!=null) {
+            while (findBestNode()!=null){
+                updateAvailableNodes();
                 tryToDoAnotherNode(this.lastNodeTried);
             }
         } catch (NoNodesAvailableException e) {
@@ -300,6 +301,7 @@ public class IA implements Service {
             log.debug("////////// IA ////////// EXECUTE : " + nextNode.getName() + " " + nextNode.getVersionToExecute());
             nextNode.execute(gameState);
             nextNode.setDone(true);
+            log.debug("Node ("+ nextNode.getName() +", "+nextNode.getVersionToExecute()+") is done");
         } catch (Exception e){
             gameState.robot.immobilise();
             handleException(e);
