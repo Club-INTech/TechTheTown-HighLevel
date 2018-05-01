@@ -560,12 +560,6 @@ public class Locomotion implements Service {
                     }
                 }
             }
-
-            try {
-                Thread.sleep(feedbackLoopDelay);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
         while (thEvent.getIsMoving());
 
