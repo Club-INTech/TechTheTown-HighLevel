@@ -312,65 +312,15 @@ public class Graphe implements Service {
      */
 
     public Noeud closestNodeToPosition(Vec2 position){
-        /**On get l'obstacle circulaire le plus proche car tous les noeuds sont
-         * autour d'obstacles circulaires, on comparera ensuite avec les trois noeuds
-         * restants
-         * */
-        ObstacleCircular closestCircularObstacle=table.getObstacleManager().getClosestObstacleCircular(position);
-        //on a rajouté cette distance dans createNodes pour ne pas être collé aux obstacles
-        int d=30;
-        int R=closestCircularObstacle.getRadius();
-        closestCircularObstacle.setRadius(R+d);
-        ArrayList<Vec2> pointsAround=closestCircularObstacle.getCircle().pointsaroundcircle(10);
-        ArrayList<Vec2> pointsThatAreNodes=new ArrayList<>();
-        for(Vec2 pointAround : pointsAround){
-            if(isAlreadyANode(pointAround)){
-                pointsThatAreNodes.add(pointAround);
-            }
-        }
-        float distanceMin=pointsThatAreNodes.get(0).distance(position);
+        float distanceMin=nodes.get(0).getPosition().distance(position);
         int iMin=0;
-        for(int i=0; i<pointsThatAreNodes.size();i++){
-            if(pointsThatAreNodes.get(i).distance(position)<distanceMin){
-                distanceMin=pointsThatAreNodes.get(i).distance(position);
+        for(int i=0; i<nodes.size();i++){
+            if(nodes.get(i).getPosition().distance(position)<distanceMin){
+                distanceMin=nodes.get(i).getPosition().distance(position);
                 iMin=i;
             }
         }
-        Vec2 positionMilieu=new Vec2(0,1000);
-        Vec2 positionDepart=new Vec2(1252, 455);
-        Vec2 positionToInterr=new Vec2(650,215);
-        int xCentreGraviteVert=(TasCubes.TAS_BASE.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getX())/3;
-        int yCentreGravitevert=(TasCubes.TAS_BASE.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getY())/3;
-        Vec2 positionEnPlusCoteVert=new Vec2(xCentreGraviteVert,yCentreGravitevert);
-        int xCentreGraviteOrange=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getX())/3;
-        int yCentreGraviteOrange=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getY())/3;
-        Vec2 positionEnPlusCoteOrange=new Vec2(xCentreGraviteOrange,yCentreGraviteOrange);
-        float distanceToMilieu=positionMilieu.distance(position);
-        float distanceToDepart=positionDepart.distance(position);
-        float distanceToInterr=positionToInterr.distance(position);
-        float distanceToNodePlusVert=positionEnPlusCoteVert.distance(position);
-        float distanceToNodePlusOrange=positionEnPlusCoteOrange.distance(position);
-        float[] tab={distanceToMilieu,distanceToDepart,distanceToInterr,distanceToNodePlusVert,distanceToNodePlusOrange};
-        float minLocal=tab[0];
-        for(int j=0;j<tab.length;j++){
-            if(tab[j]<=minLocal){
-                minLocal=tab[j];
-            }
-        }
-        if(minLocal<distanceMin){
-            if(minLocal==distanceToMilieu){
-                return new Noeud(positionMilieu,0,0,new ArrayList<>());
-            }
-            else if(minLocal==distanceToDepart){
-                return new Noeud(positionDepart,0,0,new ArrayList<>());
-            }
-            else{
-                return new Noeud(positionToInterr,0,0,new ArrayList<>());
-            }
-        }
-        else{
-            return new Noeud(pointsThatAreNodes.get(iMin),0,0,new ArrayList<>());
-        }
+        return nodes.get(iMin);
 
     }
 
