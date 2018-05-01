@@ -507,7 +507,7 @@ public class Locomotion implements Service {
                         boolean obstacleDetected = basicDetect();
                         boolean wasImmobilised = false;
                         if (obstacleDetected) {
-                            immobiliseEmergency();
+                            immobilise();
                             wasImmobilised = true;
                         }
                         while (obstacleDetected) {
@@ -530,7 +530,7 @@ public class Locomotion implements Service {
                     if (basicDetectionActivated){
                         boolean obstacleDetected=basicDetect();
                         if (obstacleDetected){
-                            immobiliseEmergency();
+                            immobilise();
                             throw new UnableToMoveException(aim,UnableToMoveReason.OBSTACLE_DETECTED);
                         }
                     }
@@ -784,30 +784,9 @@ public class Locomotion implements Service {
         log.warning("Arrêt du robot en " + lowLevelPosition);
         ethWrapper.immobilise();
         thEvent.setIsMoving(false);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         log.debug("isMoving variable has been defined to FALSE in Locomotion");
     }
 
-    /**
-     * Immobilise le robot en urgence
-     */
-    public void immobiliseEmergency() {
-        log.warning("Arrêt du robot en " + lowLevelPosition);
-        ethWrapper.immobiliseEmergency();
-        thEvent.setIsMoving(false);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        ethWrapper.useActuator(ActuatorOrder.RESUME_AFTER_EMERGENCY_STOP);
-        updateCurrentPositonAndOrientation();
-        log.debug("isMoving variable has been defined to FALSE in Locomotion");
-    }
 
     /********************
      * GUETTER & SETTER *
@@ -816,7 +795,6 @@ public class Locomotion implements Service {
 
     /**
      * Met à jour la position. A ne faire qu'en début de match, ou en cas de recalage
-     *
      * @param positionWanted
      */
     public void setPosition(Vec2 positionWanted) {

@@ -62,7 +62,10 @@ public class IA implements Service {
     private void handleException(Exception e){
         ScriptNames lastScriptExecuted = gameState.getLastScript();
         int lastVersionExecuted = gameState.getLastScriptVersion();
+        //On récupère la dernier node qu'on a essayé de réaliser
         this.lastNodeTried=nodes.getNodeByNameAndVersion(lastScriptExecuted,lastVersionExecuted);
+
+
         if (e instanceof ImmobileEnnemyForOneSecondAtLeast){
             log.warning("IA HANDLED EXCEPTION : ImmobileEnnemyForOneSecondAtLeast");
             Vec2 aim = ((ImmobileEnnemyForOneSecondAtLeast) e).getAim();
