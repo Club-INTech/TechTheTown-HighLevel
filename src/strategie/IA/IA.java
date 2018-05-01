@@ -131,7 +131,18 @@ public class IA implements Service {
         } catch (NoNodesAvailableException e) {
             handleException(e);
         }
-        log.debug("On a fini toutes les nodes disponibles");
+        exploredNodes.clear();
+        try {
+            if (findBestNode()!=null){
+                resumeMatch();
+            }
+            else{
+                log.debug("On a fini toutes les nodes disponibles");
+            }
+        } catch (NoNodesAvailableException e) {
+            handleException(e);
+        }
+        log.debug("Plus aucune node n'est à faire, le match est terminé");
     }
 
 
