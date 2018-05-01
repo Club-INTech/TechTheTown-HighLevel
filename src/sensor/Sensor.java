@@ -12,7 +12,8 @@ public class Sensor{
     private double sensorOrientation;                   //en radians, angle du milieu du cône de détection avec la face avant du robot (sens trigonométrique)
     private int maximalValidDetectionDistance;       //en mm
     private int minimalValidDetectionDistance;       //en mm
-    private int detectedDistance;                    //en mm
+    private int detectedDistance;                 //en mm
+    private int rawDetectedDistance;                 //en mm
     private double uncertainty;                           //en mm (uncertainty of 2mm <==> +- 2mm)
     private double robotSize;                           //en mm
 
@@ -26,6 +27,7 @@ public class Sensor{
         this.maximalValidDetectionDistance=maximalValidDetectionDistance;
         this.minimalValidDetectionDistance=minimalValidDetectionDistance;
         this.detectedDistance=0;
+        this.rawDetectedDistance=0;
         this.uncertainty=uncertainty;
         this.robotSize=Double.parseDouble(ConfigInfoRobot.ROBOT_RADIUS.getDefaultValue().toString());
     }
@@ -34,7 +36,16 @@ public class Sensor{
      * @param detectedDistance
      */
     public void setDetectedDistance(int detectedDistance){
-        this.detectedDistance=detectedDistance;
+        this.rawDetectedDistance=detectedDistance;
+        if (detectedDistance>this.maximalValidDetectionDistance){
+            this.detectedDistance=0;
+        }
+        else if (detectedDistance<this.minimalValidDetectionDistance){
+            this.detectedDistance=0;
+        }
+        else {
+            this.detectedDistance = detectedDistance;
+        }
     }
 
     public int getID(){
@@ -46,7 +57,11 @@ public class Sensor{
 
     public Vec2 getVecteur(){ return this.vecteur; }
 
-    public int getDetectedDistance() { return this.detectedDistance; }
+    public int getDetectedDistance() {
+        return this.detectedDistance;
+    }
+
+    public int getRawDetectedDistance() { return this.rawDetectedDistance; }
 
     public double getSensorOrientation(){ return this.sensorOrientation; }
 

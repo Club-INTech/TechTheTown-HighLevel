@@ -454,15 +454,6 @@ public class ThreadSensor extends AbstractThread
                     sensorFL.switchValues(sensorFR);
                     sensorBL.switchValues(sensorBR);
                 }
-
-                for (Sensor sensor : sensorsArray) {
-                    // On met tout les capteurs qui detectent un objet trop proche du robot ou à plus de maxSensorRange a 0
-                    if (sensor.getDetectedDistance() > sensor.getMaximalValidDetectionDistance()) {
-                        sensor.setDetectedDistance(0);
-                    } else if (sensor.getDetectedDistance() < sensor.getMinimalValidDetectionDistance()) {
-                        sensor.setDetectedDistance(0);
-                    }
-                }
             }
         }
         //Si on éteint les capteurs
