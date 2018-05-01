@@ -15,7 +15,7 @@ import utils.Log;
 
 public class DeposeCubes extends Node {
 
-    public DeposeCubes(String name, int versionToExecute, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
+    public DeposeCubes(ScriptNames name, int versionToExecute, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
         super(name, versionToExecute, scriptManager, gameState ,pathfinding,hookFactory,config, log);
         this.setScript(scriptManager.getScript(ScriptNames.DEPOSE_CUBES));
         this.setScore(0);

@@ -28,14 +28,23 @@ package enums;
 public enum ScriptNames
 {
     //Script exemple
-    CLOSE_DOORS,
+    CLOSE_DOORS("CloseDoors"),
 
 	// TODO : Rajouter les noms des scripts
-    ACTIVATION_PANNEAU_DOMOTIQUE,
-    ACTIVE_ABEILLE,
-    DEPOSE_CUBES,
-    MATCH_SCRIPT,
-    TAKE_CUBES,
-    SCRIPT_HOMOLOGATION,
+    ACTIVATION_PANNEAU_DOMOTIQUE("Panneau"),
+    ACTIVE_ABEILLE("Abeille"),
+    DEPOSE_CUBES("DeposeCubes"),
+    MATCH_SCRIPT("MatchScript"),
+    TAKE_CUBES("TakeCubes"),
+    SCRIPT_HOMOLOGATION("Homologation"),
     ;
+
+    private String name;
+    ScriptNames(String name){
+        this.name=name;
+    }
+
+    public String getName(){
+        return this.name;
+    }
 }

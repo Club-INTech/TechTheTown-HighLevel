@@ -237,7 +237,7 @@ public class TakeCubes extends AbstractScript {
                         //On fait aller le robot à la position pour prendre le premier cube du pattern
                         log.debug("Essaye de prendre le cube " + pattern[i].getName());
                         state.robot.moveNearPointWithoutDetection(successivesPositionsList[i].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
-                        //Le robot execute les actions pour prendre le cube
+                        //Le robot exception les actions pour prendre le cube
                         Cubes currentCube = Cubes.getCubeFromColor(pattern[i]);
                         takeThisCube(state, currentCube);
                         this.currentIdealPositionInTower++;
@@ -260,7 +260,7 @@ public class TakeCubes extends AbstractScript {
                         log.debug("Essaye de prendre le cube " + additionalCube.getColor().getName());
                         //On fait aller le robot à la position pour prendre le cube additionnel.
                         state.robot.moveNearPointWithoutDetection(successivesPositionsList[3].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
-                        //Le robot execute les actions pour prendre le cube
+                        //Le robot exception les actions pour prendre le cube
                         takeThisCube(state, additionalCube);
                     }
                     else {

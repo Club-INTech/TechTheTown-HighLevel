@@ -138,7 +138,7 @@ public abstract class AbstractScript implements Service
 	 * Le repli des actionneurs est impératif à demander au sein de cette méthode : si un bras reste déployé en cours de match, il risque de se faire arracher !  
 	 * Ainsi, les exceptions lancées par cette méthode sont les plus critiques que l'on puisse imaginer : elles préviennent qu'on peut casser la méca si on ne réagit pas bien !
 	 * @param state : état du jeu au sein duquel il faut finaliser le script
-	 * @param e : l'exception qui a déclenché le finalize 
+	 * @param e : l'exception qui a déclenché le finalize
 	 * @throws UnableToMoveException exception levée lorsque le robot ne peut se déplacer (décor ou obstacles détectés par capteurs)
 	 */
 	public abstract void finalize(GameState state, Exception e) throws UnableToMoveException;

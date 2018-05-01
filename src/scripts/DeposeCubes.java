@@ -112,7 +112,7 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                     /*
                     on recule tout en détectant (si on est en basicDetection on va s'arrêter, vu qu'on l'a
-                    pas désactivée au début du execute et qu'elle est réactivée à la fin des execute des autres
+                    pas désactivée au début du exception et qu'elle est réactivée à la fin des exception des autres
                     scripts et que tous les mouvements qu'on fait avant de reculer dans le déposeCube sont
                     without detection)
                     */

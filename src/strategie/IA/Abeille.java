@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class Abeille extends Node {
 
-    public Abeille(String name, int versionToExecute, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
+    public Abeille(ScriptNames name, int versionToExecute, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
         super(name, versionToExecute, scriptManager, gameState, pathfinding, hookFactory,config, log);
         this.setScript(scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE));
         this.setScore(50);
@@ -28,7 +28,7 @@ public class Abeille extends Node {
     }
 
     /**
-     * On override le execute du node, l'idée c'est qu'on puisse déjà enable et
+     * On override le exception du node, l'idée c'est qu'on puisse déjà enable et
      * disable les hooks qu'on veut en fonction des bras
      */
 

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class Panneau extends Node {
 
-    public Panneau(String name, int versionToExecute, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
+    public Panneau(ScriptNames name, int versionToExecute, ScriptManager scriptManager, GameState gameState, Pathfinding pathfinding, HookFactory hookFactory, Config config, Log log) throws BadVersionException {
         super(name, versionToExecute, scriptManager, gameState,pathfinding,hookFactory,config, log);
         this.setScript(scriptManager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE));
         this.setScore(25);

@@ -168,7 +168,7 @@ public class Pathfinding implements Service {
                 finalPath.add(positionDepart);
                 finalPath.add(positionArrive);
                 long time2 = System.currentTimeMillis() - time1;
-                log.debug("Time to execute (ms): " + time2);
+                log.debug("Time to exception (ms): " + time2);
                 this.graphe.reInitGraphe(noeudDepart, noeudArrive);
                 return finalPath;
             }
@@ -221,7 +221,7 @@ public class Pathfinding implements Service {
         }
 
         long time2 = System.currentTimeMillis() - time1;
-        log.debug("Time to execute (ms): " + time2);
+        log.debug("Time to exception (ms): " + time2);
 
 
         return finalPath;

@@ -19,7 +19,6 @@
 
 import container.Container;
 import enums.ActuatorOrder;
-import graphics.AffichageDebug;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
@@ -29,7 +28,6 @@ import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
-import simulator.ThreadSimulator;
 import strategie.GameState;
 import strategie.IA.IA;
 import table.Table;
@@ -96,25 +94,18 @@ public class MainIA {
             log.debug("bug container");
             p.printStackTrace();
         }
-        try {
 
-            // TODO : initialisation du robot avant retrait du jumper (actionneurs)
-            log.debug("Le robot commence le match");
-            waitMatchBegin();
+        // TODO : initialisation du robot avant retrait du jumper (actionneurs)
+        log.debug("Le robot commence le match");
+        waitMatchBegin();
 
-            while(patternRecognition.isMovementLocked()) {
-                Thread.sleep(10);
-            }
-
-            //TODO : lancer l'IA
-
-            ia.start(ScriptNames.MATCH_SCRIPT,config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.debug("Exception");
-            ia.execute(e);
+        while(patternRecognition.isMovementLocked()) {
+            Thread.sleep(10);
         }
+
+
+        //On lance l'IA pour qu'elle se câle sur le MatchScript jusqu'à ce qu'une exception apparaisse
+        ia.start(ScriptNames.MATCH_SCRIPT,config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE));
     }
 
 
