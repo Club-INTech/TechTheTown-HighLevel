@@ -1,7 +1,5 @@
 package strategie.IA;
 
-import java.util.ArrayList;
-
 public class Edge {
 
     private Node node1;

@@ -26,12 +26,12 @@ public class TakeCubes extends Node {
     }
 
     @Override
-    public boolean isDone() {
+    public boolean isDone(){
         if(getVersionToExecute()==0)
             return getGameState().isTas_base_pris() || getIsDone();
-        if(getVersionToExecute()==1)
+        else if(getVersionToExecute()==1)
             return getGameState().isTas_chateau_eau_pris() || getIsDone();
-        if (getVersionToExecute()==2)
+        else if(getVersionToExecute()==2)
             return getGameState().isTas_station_epuration_pris() || getIsDone();
         else { return false;}
     }

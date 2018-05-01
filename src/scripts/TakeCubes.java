@@ -1,16 +1,8 @@
 package scripts;
 
-import enums.TasCubes;
-import enums.Patterns;
-import enums.Colors;
-import enums.ActuatorOrder;
-import enums.ConfigInfoRobot;
-import enums.Cubes;
-import enums.BrasUtilise;
-import exceptions.ExecuteException;
-import exceptions.PatternNotYetCalculatedException;
-import exceptions.BadVersionException;
-import exceptions.PatternNotRecognizedException;
+import enums.*;
+import exceptions.*;
+import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
@@ -812,6 +804,13 @@ public class TakeCubes extends AbstractScript {
     @Override
     public int[] getVersion(GameState state) {
         return versions;
+    }
+
+    @Override
+    public void goToThenExec(int versionToExecute, GameState state) throws PointInObstacleException, BadVersionException, NoPathFound, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+        state.setLastScript(ScriptNames.TAKE_CUBES);
+        state.setLastScriptVersion(versionToExecute);
+        super.goToThenExec(versionToExecute, state);
     }
 
     /**

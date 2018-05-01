@@ -144,9 +144,11 @@ public class IA implements Service {
             gameState.robot.goTo(aim,expectsWallImpact,mustDetect);
             //On ne rassemble pas les exceptions en un seul catch pour pouvoir voir quelles exceptions sont lancées
         } catch (UnableToMoveException e) {
+            log.debug("UnableToMoveEvent from goTo");
             gameState.robot.immobilise();
             handleException(e);
         } catch (ImmobileEnnemyForOneSecondAtLeast e) {
+            log.debug("ImmobileEnnemyForOneSecondAtLeast from goTo");
             gameState.robot.immobilise();
             handleException(e);
         }
@@ -160,9 +162,11 @@ public class IA implements Service {
             gameState.robot.turnRelatively(angle);
             //On ne rassemble pas les exceptions en un seul catch pour pouvoir voir quelles exceptions sont lancées
         } catch (UnableToMoveException e) {
+            log.debug("UnableToMoveEvent from turn");
             gameState.robot.immobilise();
             handleException(e);
         } catch (ImmobileEnnemyForOneSecondAtLeast e) {
+            log.debug("ImmobileEnnemyForOneSecondAtLeast from turn");
             gameState.robot.immobilise();
             handleException(e);
         }
@@ -270,6 +274,7 @@ public class IA implements Service {
                 cost = 1000000000;
             }
         } catch (NoPathFound noPathFound){
+            log.debug("NoPathFound from calculateNodeCost");
             //si il n'y a pas de chemin, on met un cout énorme pour ne pas y aller
             cost = 1000000000;
         }
@@ -303,6 +308,7 @@ public class IA implements Service {
             nextNode.setDone(true);
             log.debug("Node ("+ nextNode.getName() +", "+nextNode.getVersionToExecute()+") is done");
         } catch (Exception e){
+            log.debug(e.getClass());
             gameState.robot.immobilise();
             handleException(e);
         }
