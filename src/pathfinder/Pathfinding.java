@@ -249,5 +249,6 @@ public class Pathfinding implements Service {
        this.coutFixe = config.getInt(ConfigInfoRobot.COUT_FIXE);
        this.robot_linear_speed = config.getInt(ConfigInfoRobot.ROBOT_LINEAR_SPEED);
        this.robot_angular_speed = config.getDouble(ConfigInfoRobot.ROBOT_ANGULAR_SPEED);
+
     }
 }

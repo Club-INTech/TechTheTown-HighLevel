@@ -29,10 +29,12 @@ public class Graphe implements Service {
     private Table table;
     private ArrayList<Noeud> nodes;
     private ArrayList<Arete> bonesList;
+    private boolean basicDetection;
 
     @Override
     public void updateConfig() {
         int r=config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
+        this.basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
     }
 
 
@@ -223,12 +225,13 @@ public class Graphe implements Service {
         /*
           On crée des noeuds autour des obstacles mobiles
          */
-        for(ObstacleProximity obstacleMobile : mobileEnnemies) {
-            Circle obstaclecircle=new Circle(obstacleMobile.getPosition(),obstacleMobile.getRadius()+d);
-            ArrayList<Vec2> lmobile = obstaclecircle.pointsaroundcircle(10);
-            points.addAll(lmobile);
+        if(!basicDetection) {
+            for (ObstacleProximity obstacleMobile : mobileEnnemies) {
+                Circle obstaclecircle = new Circle(obstacleMobile.getPosition(), obstacleMobile.getRadius() + d);
+                ArrayList<Vec2> lmobile = obstaclecircle.pointsaroundcircle(10);
+                points.addAll(lmobile);
+            }
         }
-
         /*
         On vérifie pour chaque point s'il n'y a pas d'intersection avec les obstacles circulaires
          */
