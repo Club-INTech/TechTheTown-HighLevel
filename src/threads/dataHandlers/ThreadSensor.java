@@ -416,7 +416,7 @@ public class ThreadSensor extends AbstractThread
     @SuppressWarnings("unchecked")
     public void getSensorInfos()
     {
-        if(gameState.isCapteursActivés()){
+        if(gameState.isCapteursActivated()){
             robotPosAndOr = ethWrapper.getCurrentPositionAndOrientation();
             String[] valuesSReceived;
 

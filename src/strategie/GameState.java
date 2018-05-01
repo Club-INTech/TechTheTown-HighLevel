@@ -20,7 +20,6 @@
 package strategie;
 
 import container.Service;
-import enums.BrasUtilise;
 import pfg.config.Config;
 import robot.Robot;
 import table.Table;
@@ -99,7 +98,7 @@ public class GameState implements Service
      * a à faire des movelenghtwise par exemple, on les fait mais sans se soucier
      * de la détection de l'ennemi
      */
-    private volatile boolean capteursActivés;
+    private volatile boolean capteursActivated;
 
     private Config config;
     private Log log;
@@ -148,7 +147,7 @@ public class GameState implements Service
         //On set une valeur de base, qui sera changée par PatternRecognition par la suite
         this.indicePattern=-2;
         //au début, le threadSensor est lancé, donc les capteurs sont bien activés au début
-        this.capteursActivés=true;
+        this.capteursActivated =true;
 
     }
 
@@ -345,12 +344,12 @@ public class GameState implements Service
         }
     }
 
-    public boolean isCapteursActivés() {
-        return this.capteursActivés;
+    public boolean isCapteursActivated() {
+        return this.capteursActivated;
     }
 
-    public void setCapteursActivés(boolean capteursActivés) {
-        this.capteursActivés = capteursActivés;
+    public void setCapteursActivated(boolean capteursActivés) {
+        this.capteursActivated = capteursActivés;
     }
 }
 

@@ -8,7 +8,6 @@ import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
-import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
@@ -54,7 +53,7 @@ public class ActiveAbeille extends AbstractScript {
             actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
         } else {
             actualState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-            actualState.setCapteursActivés(false);
+            actualState.setCapteursActivated(false);
         }
         actualState.robot.goToWithoutDetection(new Vec2(xEntryReal, yEntryReal));
         if (prodScal > 0) {
@@ -80,7 +79,7 @@ public class ActiveAbeille extends AbstractScript {
             actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
         } else {
             actualState.robot.useActuator(ActuatorOrder.SUS_ON,true);
-            actualState.setCapteursActivés(true);
+            actualState.setCapteursActivated(true);
         }
         log.debug("////////// End ActiveAbeille version " + versionToExecute + " //////////");
     }

@@ -49,7 +49,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
         } else {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
-            state.setCapteursActivés(true);
+            state.setCapteursActivated(true);
         }
         state.robot.goTo(new Vec2(xEntry, yEntry));
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
