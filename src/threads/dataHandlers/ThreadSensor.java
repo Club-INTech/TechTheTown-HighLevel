@@ -249,8 +249,6 @@ public class ThreadSensor extends AbstractThread
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
         double toAcos = Math.abs(Geometry.moduloSpec((b * b - a * a - d * d) / (-2.0 * a * d), Math.PI));
-        log.debug(toAcos);
-
         if (!(Math.abs(toAcos) <= 1)) {
             addFrontObstacleSingleMiddle();
         } else {
@@ -288,7 +286,6 @@ public class ThreadSensor extends AbstractThread
         int a = (int) (l + enRadius * 0.8);
         int b = (int) (r + enRadius * 0.8);
         double toAcos= Math.abs(Geometry.moduloSpec((b * b - a * a - d * d)/(-2.0 * a * d),Math.PI));
-        log.debug(toAcos);
         //Si on ne fait pas cette condition, quand l'arcos est supérieur à 1, on a superposition entre le robot ennemi et le notre
         if (!(Math.abs(toAcos)<=1)){
             addBackObstacleSingleMiddle();

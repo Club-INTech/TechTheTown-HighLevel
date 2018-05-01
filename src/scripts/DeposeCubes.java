@@ -24,7 +24,6 @@ public class DeposeCubes extends AbstractScript {
     private int radius;
     private int[] xEntry;
     private int[] yEntry;
-    private boolean basicDetect;
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
@@ -270,6 +269,5 @@ public class DeposeCubes extends AbstractScript {
         distancePenetrationZone = config.getInt(ConfigInfoRobot.DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES);
         dimensionPorte = config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
         radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        basicDetect=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
     }
 }

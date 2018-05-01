@@ -31,6 +31,7 @@ public class TakeCubes extends AbstractScript {
     private int longueurBrasUtilise;
 
     private boolean basicDetection;
+    private boolean usingIA;
 
     private int indicePattern;
     private TasCubes currentTas;
@@ -613,11 +614,12 @@ public class TakeCubes extends AbstractScript {
      */
     private boolean takeThisCube(GameState state, Cubes currentCube) throws InterruptedException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         boolean cubeSuccessfullyTaken=false;
-        if(basicDetection){
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
-        } else {
+        if (usingIA) {
             state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
             state.setCapteursActivated(false);
+        }
+        if(basicDetection){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
         }
         if (this.brasUtilise.equals(BrasUtilise.AVANT)){
             //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
@@ -668,11 +670,12 @@ public class TakeCubes extends AbstractScript {
             }
         }
 
-        if (basicDetection) {
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
-        } else {
+        if (usingIA) {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
             state.setCapteursActivated(true);
+        }
+        if(basicDetection){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
         }
 
         return cubeSuccessfullyTaken;
@@ -822,5 +825,6 @@ public class TakeCubes extends AbstractScript {
         this.longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
         this.longueurBrasArriere=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_ARRIERE);
         this.basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        this.usingIA=config.getBoolean(ConfigInfoRobot.USING_IA);
     }
 }

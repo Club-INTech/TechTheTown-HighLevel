@@ -151,16 +151,15 @@ public class Locomotion implements Service {
      *****************/
 
     /**
-     * Valeur limite de détection pour le mode basique
-     * Override par la config
-     */
-    private int basicDetectDistance;
-
-    /**
      * Si la détection basique est activée ou non
      * Override par la config
      */
-    private boolean basicDetection;
+    private boolean basicDetectionActivated;
+
+    /**
+     * On regarde si on utilise l'IA ou non
+     */
+    private boolean usingIA;
 
     /**
      * Rayon du cercle autour du robot pour savoir s'il peut tourner (detectionRay légèrement supérieur à celui du robot)
@@ -462,9 +461,10 @@ public class Locomotion implements Service {
                         doItAgain = (actualRetriesIfBlocked < maxRetriesIfBlocked);
                     } catch (BlockedException definitivelyBlocked) {
                         /** Cas très improbable... on balance à l'IA */
-                        immobilise();
                         log.critical(definitivelyBlocked.logStack());
                         log.debug("Catch de " + definitivelyBlocked + " dans moveToPointHandleException");
+                        immobilise();
+
                         log.critical("Lancement de UnableToMoveException dans MoveToPointException, visant " + finalAim.toString() + " cause physique");
                         throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
                     }
@@ -489,7 +489,7 @@ public class Locomotion implements Service {
      * @param mustDetect        true si on veut detecter, false sinon.
      * @throws BlockedException
      */
-    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException,ImmobileEnnemyForOneSecondAtLeast {
+    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, ImmobileEnnemyForOneSecondAtLeast, UnableToMoveException {
         moveToPointSymmetry(aim, turnOnly);
         do {
             getCurrentPositionAndOrientation();
@@ -503,29 +503,38 @@ public class Locomotion implements Service {
 
             /** TODO A adapté à l'année en cours */
             if (mustDetect) {
-                if (basicDetection){
-                    boolean obstacleDetected=basicDetect();
-                    boolean wasImmobilised=false;
-                    if (obstacleDetected){
-                        immobiliseEmergency();
-                        wasImmobilised=true;
-                    }
-                    while (obstacleDetected){
-                        try {
-                            Thread.sleep(basicDetectionLoopDelay);
-                            obstacleDetected=basicDetect();
-                        } catch (InterruptedException e) {
-                            log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
-                            obstacleDetected=false;
-                            e.printStackTrace();
+                if (!usingIA){
+                    if (basicDetectionActivated) {
+                        boolean obstacleDetected = basicDetect();
+                        boolean wasImmobilised = false;
+                        if (obstacleDetected) {
+                            immobiliseEmergency();
+                            wasImmobilised = true;
                         }
-                    }
-                    if (wasImmobilised){
-                        updateCurrentPositonAndOrientation();
-                        moveToPointSymmetry(aim, turnOnly);
+                        while (obstacleDetected) {
+                            try {
+                                Thread.sleep(basicDetectionLoopDelay);
+                                obstacleDetected = basicDetect();
+                            } catch (InterruptedException e) {
+                                log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
+                                obstacleDetected = false;
+                                e.printStackTrace();
+                            }
+                        }
+                        if (wasImmobilised) {
+                            updateCurrentPositonAndOrientation();
+                            moveToPointSymmetry(aim, turnOnly);
+                        }
                     }
                 }
                 else{
+                    if (basicDetectionActivated){
+                        boolean obstacleDetected=basicDetect();
+                        if (obstacleDetected){
+                            immobiliseEmergency();
+                            throw new UnableToMoveException(aim,UnableToMoveReason.OBSTACLE_DETECTED);
+                        }
+                    }
                     if (turnOnly){
                         try{
                             detectEnemyArroundPosition(detectionRay);
@@ -967,7 +976,7 @@ public class Locomotion implements Service {
      * Active/désactive la basicDetection
      */
     public void setBasicDetection(boolean basicDetection) {
-        this.basicDetection = basicDetection;
+        this.basicDetectionActivated = basicDetection;
     }
 
 
@@ -977,11 +986,11 @@ public class Locomotion implements Service {
         symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
 
         /** Detection & Ennemy */
-        basicDetectDistance = config.getInt(ConfigInfoRobot.BASIC_DETECTION_DISTANCE);
         detectionDistance = config.getInt(ConfigInfoRobot.DETECTION_DISTANCE);
         detectionRay = config.getInt(ConfigInfoRobot.DETECTION_RAY);
         feedbackLoopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
-        basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        basicDetectionActivated=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        usingIA=config.getBoolean(ConfigInfoRobot.USING_IA);
 
         basicDetectionLoopDelay = config.getInt(ConfigInfoRobot.BASIC_DETECTION_LOOP_DELAY);
 
