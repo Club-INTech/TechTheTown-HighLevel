@@ -76,24 +76,29 @@ public class Graphe implements Service {
         Vec2 positionmilieu=new Vec2(0,1000);
         Noeud nodemilieu=new Noeud(positionmilieu,0,0, new ArrayList<>());
         nodes.add(nodemilieu);
+        nodesFixes.add(nodemilieu);
 
         Vec2 positiondepart=new Vec2(1252, 455);
-        Noeud nodepart=new Noeud(positiondepart,0,0, new ArrayList<>());
-        nodes.add(nodepart);
+        Noeud nodeDepart=new Noeud(positiondepart,0,0, new ArrayList<>());
+        nodes.add(nodeDepart);
+        nodesFixes.add(nodeDepart);
 
         Vec2 positioninterr=new Vec2(650,215);
         Noeud noeudinterr=new Noeud(positioninterr,0,0, new ArrayList<>());
         nodes.add(noeudinterr);
+        nodesFixes.add(noeudinterr);
 
         int xCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getX())/3;
         int yCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getY())/3;
         Vec2 noeudEnPlusCoteVert=new Vec2(xCentreGravite,yCentreGravite);
         nodes.add(new Noeud(noeudEnPlusCoteVert,0,0,new ArrayList<>()));
+        nodesFixes.add(new Noeud(noeudEnPlusCoteVert,0,0,new ArrayList<>()));
 
         int xCentreGraviteEnnemy=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getX())/3;
         int yCentreGraviteEnnemy=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getY())/3;
         Vec2 noeudEnPlusCoteOrange=new Vec2(xCentreGraviteEnnemy,yCentreGraviteEnnemy);
         nodes.add(new Noeud(noeudEnPlusCoteOrange,0,0,new ArrayList<>()));
+        nodesFixes.add(new Noeud(noeudEnPlusCoteOrange,0,0,new ArrayList<>()));
     }
 
     /**
