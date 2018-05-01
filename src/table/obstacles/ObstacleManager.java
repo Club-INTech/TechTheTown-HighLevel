@@ -496,8 +496,9 @@ public class ObstacleManager implements Service
 				out.newLine();
 				out.write("Condition rectangle vérifiée");
 				out.newLine();
-				out.write("Produit scalaire :" + ennemyPos.dot(newAim));
+				out.write("Produit scalaire: " + ennemyPos.dot(newAim));
 				out.flush();
+				log.warning("(isEnnemyForwardOrBackward) Ennemi détecté: "+ennemyPos);
 				return (ennemyPos.dot(newAim) > 0);
 			}
 			out.flush();

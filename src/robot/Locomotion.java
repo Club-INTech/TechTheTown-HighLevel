@@ -677,7 +677,7 @@ public class Locomotion implements Service {
 
             while(count < 50)
             {
-                if(!table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
+                if(!table.getObstacleManager().isEnnemyForwardOrBackWard((int)(distance*1.2), highLevelPosition, moveDirection, highLevelOrientation)){
                     break;
                 }
                 Thread.sleep(10);
