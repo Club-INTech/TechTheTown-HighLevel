@@ -62,8 +62,8 @@ public class IA implements Service {
 
     private void handleException(Exception e){
         boolean reussite = goToAnotherNode(null);
+        resumeMatch();
     }
-
 
 
     private void resumeMatch(){

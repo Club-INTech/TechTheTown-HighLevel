@@ -103,7 +103,7 @@ public class MainIA {
             Thread.sleep(10);
         }
 
-        
+
         //On lance l'IA pour qu'elle se câle sur le MatchScript jusqu'à ce qu'une exception apparaisse
         ia.start(ScriptNames.MATCH_SCRIPT,config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE));
     }
