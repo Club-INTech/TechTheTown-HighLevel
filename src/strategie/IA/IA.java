@@ -93,19 +93,19 @@ public class IA implements Service {
             //Si on a une tour dans le robot, on va la déposer à DeposeCubes1
             if ((gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie())){
                 Node deposeCubes0 = nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,0);
-                if (!availableNodes.contains(deposeCubes0)) {
-                    return nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES, 1);
+                if (availableNodes.contains(deposeCubes0)) {
+                    return nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES, 0);
                 }
                 else{
                     return nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES, 1);
                 }
             }
             //Si le panneau n'a pas encore été fait, et qu'on a pas de tours, on fait le panneau
-            else if (!availableNodes.contains(nodes.getNodeByNameAndVersion(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0))){
+            else if (availableNodes.contains(nodes.getNodeByNameAndVersion(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0))){
                 return nodes.getNodeByNameAndVersion(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0);
             }
             //Si on n'a plus de tours, et que le panneau a déjà été activé, on va faire l'abeille, quitte à ce qu'il y ait un robot ennemi là bas
-            else if (!availableNodes.contains(nodes.getNodeByNameAndVersion(ScriptNames.ACTIVE_ABEILLE,0))){
+            else if (availableNodes.contains(nodes.getNodeByNameAndVersion(ScriptNames.ACTIVE_ABEILLE,0))){
                 return nodes.getNodeByNameAndVersion(ScriptNames.ACTIVE_ABEILLE,0);
             }
         }
@@ -113,7 +113,7 @@ public class IA implements Service {
         //Si on a 2 tours dans le robot, on va les déposer
         else if (gameState.isTourAvantRemplie() && gameState.isTourArriereRemplie()){
             Node deposeCubes0 = nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,0);
-            if (!availableNodes.contains(deposeCubes0)){
+            if (availableNodes.contains(deposeCubes0)){
                 return deposeCubes0;
             }
             else{
@@ -129,7 +129,7 @@ public class IA implements Service {
             if (gameState.isTas_station_epuration_pris()){ nbTasPris++; }
             if (nbTasPris==3){
                 Node deposeCubes0 = nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,0);
-                if (!availableNodes.contains(deposeCubes0)){
+                if (availableNodes.contains(deposeCubes0)){
                     return deposeCubes0;
                 }
                 else{
