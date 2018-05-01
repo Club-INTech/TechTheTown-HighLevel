@@ -466,7 +466,6 @@ public class ObstacleManager implements Service
 		try {
 			ObstacleCircular closestEnnemy = getClosestEnnemy(pos);
 			if (closestEnnemy == null){
-				log.debug("Pas d'ennemis trouvés par isEnnemyForwardOrBackward");
 				return false;
 			}
 
