@@ -1,32 +1,29 @@
 package exceptions;
 
+import smartMath.Vec2;
+
 /**
  * Exception levée qu'un noeud est dans un obstacle.
  */
 
 public class NoPathFound extends Exception {
 
-    private boolean nodeInObstacle;
-    private boolean noPathFound;
+    private String message;
+    private Vec2 aim;
 
-    public NoPathFound(boolean nodeInObstacle, boolean noPathFound) {
-        this.nodeInObstacle = nodeInObstacle;
-        this.noPathFound = noPathFound;
+    public NoPathFound(final Vec2 aim) {
+        this(aim,"NoPathFound");
     }
 
-    public boolean isNodeInObstacle() {
-        return nodeInObstacle;
+    public NoPathFound(final Vec2 aim, final String m) {
+        this.aim=aim;
+        this.message=m;
     }
 
-    public boolean isNoPathFound() {
-        return noPathFound;
+    public String getMessage(){
+        return this.message;
     }
-
-    public void setNodeInObstacle(boolean nodeInObstacle) {
-        this.nodeInObstacle = nodeInObstacle;
-    }
-
-    public void setNoPathFound(boolean noPathFound) {
-        this.noPathFound = noPathFound;
+    public Vec2 getAim(){
+        return this.aim;
     }
 }

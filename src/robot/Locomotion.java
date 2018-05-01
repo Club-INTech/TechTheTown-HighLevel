@@ -462,10 +462,9 @@ public class Locomotion implements Service {
                         doItAgain = (actualRetriesIfBlocked < maxRetriesIfBlocked);
                     } catch (BlockedException definitivelyBlocked) {
                         /** Cas très improbable... on balance à l'IA */
+                        immobilise();
                         log.critical(definitivelyBlocked.logStack());
                         log.debug("Catch de " + definitivelyBlocked + " dans moveToPointHandleException");
-                        immobilise();
-
                         log.critical("Lancement de UnableToMoveException dans MoveToPointException, visant " + finalAim.toString() + " cause physique");
                         throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
                     }
