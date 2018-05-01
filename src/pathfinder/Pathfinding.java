@@ -136,7 +136,7 @@ public class Pathfinding implements Service {
      * @param positionArrive
      * @return
      */
-    public ArrayList<Vec2> findmyway(Vec2 positionDepart, Vec2 positionArrive) throws PointInObstacleException, UnableToMoveException, NoPathFound {
+    public ArrayList<Vec2> findmyway(Vec2 positionDepart, Vec2 positionArrive) throws PointInObstacleException, NoPathFound {
 
         removeObstacle();
         this.graphe.createGraphe();
@@ -205,13 +205,13 @@ public class Pathfinding implements Service {
         // Pas de chemin trouvé.
         if (!closeList.contains(noeudArrive) && openList.isEmpty()) {
             log.debug("No way found");
-            throw new NoPathFound(false, true);
+            throw new NoPathFound(noeudArrive.getPosition());
         }
         // Fabrique le chemin en partant du noeud d'arrivé
         finalList.add(noeudArrive);
         if (noeudArrive.getPred() == null) {
             log.debug("prednull");
-            throw new NoPathFound(false, true);
+            throw new NoPathFound(noeudArrive.getPosition());
         }
         while (noeudDepart != finalList.get(finalList.size() - 1)) {
             finalList.add(finalList.get(finalList.size() - 1).getPred());
@@ -229,7 +229,7 @@ public class Pathfinding implements Service {
 
     /** Permet de calculer le temps pour se rendre à une position. */
 
-    public double howManyTime(Vec2 positionDepart, Vec2 positionArrive) throws UnableToMoveException, PointInObstacleException, NoPathFound {
+    public double howManyTime(Vec2 positionDepart, Vec2 positionArrive) throws PointInObstacleException, NoPathFound {
 
         ArrayList<Vec2> path = findmyway(positionDepart,positionArrive);
         double time = 0;

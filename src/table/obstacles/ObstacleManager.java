@@ -852,18 +852,22 @@ public class ObstacleManager implements Service
 	 */
 	public synchronized boolean isObstructed(Vec2 position)
 	{
-		boolean isObstructed = false;
-		for(int i = 0; i< mCircularObstacle.size(); i++) {
-			if (isPositionInObstacle(position, mCircularObstacle.get(i))) {
+		for(ObstacleCircular obstacle : mCircularObstacle) {
+			if (isPositionInObstacle(position, obstacle)) {
 				return true;
 			}
 		}
-		for(int i=0; i<mRectangles.size(); i++){
-			if (isPositionInObstacle(position, mRectangles.get(i))){
+		for(ObstacleRectangular obstacle : mRectangles){
+			if (isPositionInObstacle(position, obstacle)){
 				return true;
 			}
 		}
-		return isObstructed;
+		for (ObstacleProximity obstacle : mMobileObstacles){
+			if (isPositionInObstacle(position,obstacle)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

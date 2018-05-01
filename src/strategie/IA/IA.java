@@ -1,14 +1,13 @@
 package strategie.IA;
 
+import com.sun.org.apache.bcel.internal.generic.NOP;
 import container.Service;
 import enums.ScriptNames;
-import exceptions.BadVersionException;
-import exceptions.BlockedActuatorException;
-import exceptions.ExecuteException;
+import enums.UnableToMoveReason;
+import exceptions.*;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.NoPathFound;
 import hook.HookFactory;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
@@ -28,10 +27,11 @@ public class IA implements Service {
     private ScriptManager scriptManager;
     private Graph graph;
     private Pathfinding pathfinding;
+    private HookFactory hookFactory;
     private NodeArray nodes;
     private ArrayList<Node> exploredNodes;
     private ArrayList<Node> availableNodes;
-    private HookFactory hookFactory;
+    private Node lastNodeTried;
 
     /**
      * Permet de s'adapter au déroulement d'un match grace à un graphe de décision.
@@ -47,6 +47,7 @@ public class IA implements Service {
         this.nodes = createNodes();
         this.availableNodes = new ArrayList<>();
         this.exploredNodes = new ArrayList<>();
+        this.lastNodeTried=null;
     }
 
     public void start(ScriptNames scriptNames, int versionToExecute)  {
@@ -61,17 +62,93 @@ public class IA implements Service {
     }
 
     private void handleException(Exception e){
-        String className = getClassNameWhichThrowThisException(e);
-        boolean reussite = goToAnotherNode(null);
+        if (e instanceof ImmobileEnnemyForOneSecondAtLeast){
+            log.warning("IA HANDLED EXCEPTION : ImmobileEnnemyForOneSecondAtLeast");
+            tryToDoAnotherNode(this.lastNodeTried);
+        }
+        else if (e instanceof NoPathFound){
+            log.warning("IA HANDLED EXCEPTION : NoPathFound");
+            Vec2 aim = ((NoPathFound) e).getAim();
+            tryToDoAnotherNode(this.lastNodeTried);
+        }
+        else if (e instanceof NoNodesAvailableException){
+            log.warning("IA HANDLED EXCEPTION : NoNodesAvailableException");
+            log.warning("On attend 2s le temps que la situation se stabilise, et on tourne pour essyer de se dégager");
+            exploredNodes.clear();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+            turnRelativelyHandleException(Math.PI/2);
+            tryToDoAnotherNode(null);
+        }
+        else if (e instanceof UnableToMoveException){
+            log.warning("IA HANDLED EXCEPTION : UnableToMoveException");
+            tryToDoAnotherNode(this.lastNodeTried);
+        }
+        else if (e instanceof PointInObstacleException){
+            //Bien géré normalement
+            log.warning("IA HANDLED EXCEPTION : PointInObstacleException");
+            boolean isDepartInObstacle = ((PointInObstacleException) e).isDepartInOsbtacle();
+            if (isDepartInObstacle){
+                Vec2 aimToExitObstacle = pathfinding.getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition();
+                goToHandleException(aimToExitObstacle);
+            }
+            else{
+               tryToDoAnotherNode(this.lastNodeTried);
+            }
+        }
+        else if (e instanceof ExecuteException){
+            //Normalement ne doit pas arriver
+            log.warning("IA HANDLED EXCEPTION : ExecuteException");
+            log.critical("//////////////////// ExecuteException ! Ne devrait pas arriver ! ///////////////////////////");
+            tryToDoAnotherNode(this.lastNodeTried);
+        }
+        else{
+            log.critical("IA EXCEPTION : "+e.getClass().getName() +" NOT CURRENTLY HANDLED EXCEPTION");
+            tryToDoAnotherNode(this.lastNodeTried);
+        }
         resumeMatch();
     }
 
 
+
     private void resumeMatch(){
-        while (findBestNode()!=null) {
-            goToAnotherNode(null);
+        try {
+            while (findBestNode()!=null) {
+                tryToDoAnotherNode(this.lastNodeTried);
+            }
+        } catch (NoNodesAvailableException e) {
+            handleException(e);
         }
         log.debug("On a fini toutes les nodes disponibles");
+    }
+
+
+    /**
+     *
+     */
+    private void goToHandleException(Vec2 aim){
+        goToHandleException(aim,false,true);
+    }
+
+    private void goToHandleException(Vec2 aim, boolean expectsWallImpact, boolean mustDetect){
+        try {
+            gameState.robot.goTo(aim,expectsWallImpact,mustDetect);
+        } catch (Exception e){
+            gameState.robot.immobilise();
+            handleException(e);
+        }
+    }
+
+    private void turnRelativelyHandleException(double angle){
+        try {
+            gameState.robot.turnRelatively(angle);
+        } catch (Exception e){
+            gameState.robot.immobilise();
+            handleException(e);
+        }
     }
 
 
@@ -79,11 +156,9 @@ public class IA implements Service {
      *  Renvoie le prochain noeud à executer. Si les tours sont remplies, on exception un
      *  dépose cube et sinon on va faire le script le plus proche.
      */
-    private Node findBestNode() {
+    private Node findBestNode() throws NoNodesAvailableException {
         Vec2 robotPosition = gameState.robot.getPosition();
         updateAvailableNodes(); //On récupère les nodes des actions qui n'ont pas encore été faites
-        double dmin = 1000000000;
-        int j = 0;
         //Si toutes les nodes sont faites, on renvoie null;
         if (availableNodes.isEmpty()){
             return null;
@@ -140,6 +215,8 @@ public class IA implements Service {
         }
 
 
+        double dmin = 1000000000;
+        int j = -1;
         //Si aucun des cas spécifiques plus haut ne s'est présenté, on cherche la node la plus proche
         for (int i = 0; i<availableNodes.size();i++){
             Node currentNode = availableNodes.get(i);
@@ -147,13 +224,14 @@ public class IA implements Service {
                 double d = 0;
                 try {
                     d = pathfinding.howManyTime(robotPosition, currentNode.getPosition());
-                } catch (UnableToMoveException e) {
-                    e.printStackTrace();
-                } catch (PointInObstacleException e) {
-                    e.printStackTrace();
-                } catch (NoPathFound noPathFound) {
-                    noPathFound.printStackTrace();
-                    //si il n'y a pas de chemin, on n'y vas pas.
+                } catch (PointInObstacleException e){
+                    if (e.isDepartInOsbtacle()){
+                        handleException(e);
+                    } else{
+                        d = 1000000000;
+                    }
+                } catch (NoPathFound noPathFound){
+                    //si il n'y a pas de chemin, on met un cout énorme pour ne pas y aller
                     d = 1000000000;
                 }
                 if (d < dmin) {
@@ -162,83 +240,43 @@ public class IA implements Service {
                 }
             }
         }
-        return availableNodes.get(j);
+        if (j == -1) {
+            throw new NoNodesAvailableException();
+        }
+        else{
+            return availableNodes.get(j);
+        }
     }
 
     /**
      * Méthode essayant d'aller à une autre node, en les essayant toutes
      * @return si on a réussi à aller à une node et à l'exécuter
      */
-    public boolean goToAnotherNode(Node previousFailedNode) {
-        Node nextNode = findBestNode();
-        if (previousFailedNode!=null) {
-            exploredNodes.add(previousFailedNode);
-        }
-        boolean success=false;
-        while ((nextNode != null) || (!success)){
-            exploredNodes.add(nextNode);
-            try {
-                log.debug("////////// IA ////////// SELECTED NODE : "+nextNode.getName()+" "+nextNode.getVersionToExecute());
-                log.debug("////////// IA ////////// EXECUTE : "+nextNode.getName()+" "+nextNode.getVersionToExecute());
-                nextNode.execute(gameState);
-                nextNode.setDone(true);
-                success=true;
-            } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
-                log.debug("ImmobileEnnemyForOneSecondAtLeast");
-                immobileEnnemyForOneSecondAtLeast.printStackTrace();
-                nextNode = findBestNode();
-            } catch (PointInObstacleException e) {
-                log.debug("PointInObstacleException");
-                e.printStackTrace();
-                nextNode = findBestNode();
-            } catch (BlockedActuatorException e) {
-                log.debug("BlockedActuatorException");
-                e.printStackTrace();
-                nextNode = findBestNode();
-            } catch (ExecuteException e) {
-                log.debug("ExecuteException");
-                e.printStackTrace();
-                nextNode = findBestNode();
-            } catch (BadVersionException e) {
-                log.debug("BadVersionException");
-                e.printStackTrace();
-                nextNode = findBestNode();
-            } catch (UnableToMoveException e) {
-                log.debug("UnableToMoveException");
-                e.printStackTrace();
-                nextNode = findBestNode();
-            } catch (NoPathFound noPathFound) {
-                log.debug("NoPathFound");
-                noPathFound.printStackTrace();
+    public void tryToDoAnotherNode(Node previousFailedNode) {
+        if (previousFailedNode != null) {
+            if (!exploredNodes.contains(previousFailedNode)) {
+                exploredNodes.add(previousFailedNode);
             }
         }
-        exploredNodes.clear();
-        return success;
+        Node nextNode = null;
+        try {
+            nextNode = findBestNode();
+        } catch (NoNodesAvailableException e) {
+            handleException(e);
+            return;
+        }
+        exploredNodes.add(nextNode);
+        try {
+            this.lastNodeTried = nextNode;
+            log.debug("////////// IA ////////// SELECTED NODE : " + nextNode.getName() + " " + nextNode.getVersionToExecute());
+            log.debug("////////// IA ////////// EXECUTE : " + nextNode.getName() + " " + nextNode.getVersionToExecute());
+            nextNode.execute(gameState);
+            nextNode.setDone(true);
+        } catch (Exception e){
+            gameState.robot.immobilise();
+            handleException(e);
+        }
     }
-
-    private String getClassNameWhichThrowThisException(Exception e){
-        StackTraceElement[] stackTrace = e.getStackTrace();
-        for (StackTraceElement stackTraceElement : stackTrace){
-            String className = stackTraceElement.getClassName();
-            if (className.equals(Abeille.class.getName()) || className.equals(ActiveAbeille.class.getName())) {
-                return ScriptNames.ACTIVE_ABEILLE.getName();
-            }
-            else if (className.equals(Panneau.class.getName()) || className.equals(ActivationPanneauDomotique.class.getName())) {
-                return ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE.getName();
-            }
-            else if (className.equals(TakeCubes.class.getName()) || className.equals(scripts.TakeCubes.class.getName())) {
-                return ScriptNames.TAKE_CUBES.getName();
-            }
-            else if (className.equals(DeposeCubes.class.getName()) || className.equals(scripts.DeposeCubes.class.getName())){
-                return ScriptNames.DEPOSE_CUBES.getName();
-            }
-            else if (className.equals(AbstractScript.class.getName())){
-                return "AbstractScript";
-            }
-        }
-        return null;
-    }
-
 
 
     /**
@@ -289,15 +327,19 @@ public class IA implements Service {
                 ennemyDodged = true;
 
             } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+                gameState.robot.immobilise();
                 log.debug("L'ennemi est toujours là");
                 Sleep.sleep(250);
             } catch (PointInObstacleException e1) {
+                gameState.robot.immobilise();
                 log.debug("PointInObstacleException, on part au noeud le plus proche");
                 Sleep.sleep(250);
             } catch (UnableToMoveException e1) {
+                gameState.robot.immobilise();
                 log.debug("UnableToMoveException");
                 Sleep.sleep(250);
             } catch (NoPathFound noPathFound) {
+                gameState.robot.immobilise();
                 log.debug("NoPathFound");
                 Sleep.sleep(250);
             }

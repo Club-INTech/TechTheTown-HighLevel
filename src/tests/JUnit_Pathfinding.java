@@ -289,9 +289,6 @@ public class JUnit_Pathfinding extends JUnit_Test {
             } catch (PointInObstacleException e) {
                 System.out.println("Obstacle!!");
                 e.printStackTrace();
-            } catch (UnableToMoveException e) {
-                System.out.println("No way found !!");
-                e.printStackTrace();
             } catch (NoPathFound e) {
                 System.out.println("No way found");
                 e.printStackTrace();
