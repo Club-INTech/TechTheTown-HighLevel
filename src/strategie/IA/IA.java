@@ -61,6 +61,7 @@ public class IA implements Service {
     }
 
     private void handleException(Exception e){
+        String className = getClassNameWhichThrowThisException(e);
         boolean reussite = goToAnotherNode(null);
         resumeMatch();
     }
@@ -214,6 +215,30 @@ public class IA implements Service {
         exploredNodes.clear();
         return success;
     }
+
+    private String getClassNameWhichThrowThisException(Exception e){
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        for (StackTraceElement stackTraceElement : stackTrace){
+            String className = stackTraceElement.getClassName();
+            if (className.equals(Abeille.class.getName()) || className.equals(ActiveAbeille.class.getName())) {
+                return ScriptNames.ACTIVE_ABEILLE.getName();
+            }
+            else if (className.equals(Panneau.class.getName()) || className.equals(ActivationPanneauDomotique.class.getName())) {
+                return ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE.getName();
+            }
+            else if (className.equals(TakeCubes.class.getName()) || className.equals(scripts.TakeCubes.class.getName())) {
+                return ScriptNames.TAKE_CUBES.getName();
+            }
+            else if (className.equals(DeposeCubes.class.getName()) || className.equals(scripts.DeposeCubes.class.getName())){
+                return ScriptNames.DEPOSE_CUBES.getName();
+            }
+            else if (className.equals(AbstractScript.class.getName())){
+                return "AbstractScript";
+            }
+        }
+        return null;
+    }
+
 
 
     /**
