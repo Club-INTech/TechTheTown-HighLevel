@@ -390,7 +390,7 @@ public class GameState implements Service
         this.lastScriptVersion=version;
     }
 
-    public int getLastScripVersion(){
+    public int getLastScriptVersion(){
         return this.lastScriptVersion;
     }
 }

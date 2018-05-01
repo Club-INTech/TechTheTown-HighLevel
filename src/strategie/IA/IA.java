@@ -1,9 +1,7 @@
 package strategie.IA;
 
-import com.sun.org.apache.bcel.internal.generic.NOP;
 import container.Service;
 import enums.ScriptNames;
-import enums.UnableToMoveReason;
 import exceptions.*;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
@@ -62,6 +60,9 @@ public class IA implements Service {
     }
 
     private void handleException(Exception e){
+        ScriptNames lastScriptExecuted = gameState.getLastScript();
+        int lastVersionExecuted = gameState.getLastScriptVersion();
+        this.lastNodeTried=nodes.getNodeByNameAndVersion(lastScriptExecuted,lastVersionExecuted);
         if (e instanceof ImmobileEnnemyForOneSecondAtLeast){
             log.warning("IA HANDLED EXCEPTION : ImmobileEnnemyForOneSecondAtLeast");
             Vec2 aim = ((ImmobileEnnemyForOneSecondAtLeast) e).getAim();
