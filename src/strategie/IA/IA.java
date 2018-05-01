@@ -64,6 +64,7 @@ public class IA implements Service {
     private void handleException(Exception e){
         if (e instanceof ImmobileEnnemyForOneSecondAtLeast){
             log.warning("IA HANDLED EXCEPTION : ImmobileEnnemyForOneSecondAtLeast");
+            Vec2 aim = ((ImmobileEnnemyForOneSecondAtLeast) e).getAim();
             tryToDoAnotherNode(this.lastNodeTried);
         }
         else if (e instanceof NoPathFound){
@@ -73,22 +74,24 @@ public class IA implements Service {
         }
         else if (e instanceof NoNodesAvailableException){
             log.warning("IA HANDLED EXCEPTION : NoNodesAvailableException");
-            log.warning("On attend 2s le temps que la situation se stabilise, et on tourne pour essyer de se dégager");
+            log.warning("On se tourne pour essayer de changer notre perspective, et on attend 2s le temps que la situation se stabilise");
+            turnRelativelyHandleException(Math.PI/2);
             exploredNodes.clear();
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-            turnRelativelyHandleException(Math.PI/2);
             tryToDoAnotherNode(null);
         }
         else if (e instanceof UnableToMoveException){
+            Vec2 aim = ((UnableToMoveException) e).getAim();
             log.warning("IA HANDLED EXCEPTION : UnableToMoveException");
             tryToDoAnotherNode(this.lastNodeTried);
         }
         else if (e instanceof PointInObstacleException){
             //Bien géré normalement
+            Vec2 problemPoint = ((PointInObstacleException) e).getPoint();
             log.warning("IA HANDLED EXCEPTION : PointInObstacleException");
             boolean isDepartInObstacle = ((PointInObstacleException) e).isDepartInOsbtacle();
             if (isDepartInObstacle){
@@ -96,7 +99,7 @@ public class IA implements Service {
                 goToHandleException(aimToExitObstacle);
             }
             else{
-               tryToDoAnotherNode(this.lastNodeTried);
+                tryToDoAnotherNode(this.lastNodeTried);
             }
         }
         else if (e instanceof ExecuteException){
@@ -109,6 +112,8 @@ public class IA implements Service {
             log.critical("IA EXCEPTION : "+e.getClass().getName() +" NOT CURRENTLY HANDLED EXCEPTION");
             tryToDoAnotherNode(this.lastNodeTried);
         }
+        log.warning("///// IA ///// On a résolu les exceptions, on continue le match");
+        exploredNodes.clear();
         resumeMatch();
     }
 
@@ -127,7 +132,7 @@ public class IA implements Service {
 
 
     /**
-     *
+     * Méthode permettant de faire un goto avec le robot à partir de handleException, tout en gérant les exceptions récursivement
      */
     private void goToHandleException(Vec2 aim){
         goToHandleException(aim,false,true);
@@ -136,16 +141,27 @@ public class IA implements Service {
     private void goToHandleException(Vec2 aim, boolean expectsWallImpact, boolean mustDetect){
         try {
             gameState.robot.goTo(aim,expectsWallImpact,mustDetect);
-        } catch (Exception e){
+            //On ne rassemble pas les exceptions en un seul catch pour pouvoir voir quelles exceptions sont lancées
+        } catch (UnableToMoveException e) {
+            gameState.robot.immobilise();
+            handleException(e);
+        } catch (ImmobileEnnemyForOneSecondAtLeast e) {
             gameState.robot.immobilise();
             handleException(e);
         }
     }
 
+    /**
+     * Méthode permettant de tourner le robot à partir de handleException, tout en gérant les exceptions récursivement
+     */
     private void turnRelativelyHandleException(double angle){
         try {
             gameState.robot.turnRelatively(angle);
-        } catch (Exception e){
+            //On ne rassemble pas les exceptions en un seul catch pour pouvoir voir quelles exceptions sont lancées
+        } catch (UnableToMoveException e) {
+            gameState.robot.immobilise();
+            handleException(e);
+        } catch (ImmobileEnnemyForOneSecondAtLeast e) {
             gameState.robot.immobilise();
             handleException(e);
         }
@@ -169,11 +185,12 @@ public class IA implements Service {
             //Si on a une tour dans le robot, on va la déposer à DeposeCubes1
             if ((gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie())){
                 Node deposeCubes0 = nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,0);
+                Node deposeCubes1 = nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,1);
                 if (availableNodes.contains(deposeCubes0)) {
-                    return nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES, 0);
+                    return deposeCubes0;
                 }
-                else{
-                    return nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES, 1);
+                else if (availableNodes.contains(deposeCubes1)){
+                    return deposeCubes1;
                 }
             }
             //Si le panneau n'a pas encore été fait, et qu'on a pas de tours, on fait le panneau
@@ -189,11 +206,12 @@ public class IA implements Service {
         //Si on a 2 tours dans le robot, on va les déposer
         else if (gameState.isTourAvantRemplie() && gameState.isTourArriereRemplie()){
             Node deposeCubes0 = nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,0);
+            Node deposeCubes1 = nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,1);
             if (availableNodes.contains(deposeCubes0)){
                 return deposeCubes0;
             }
-            else{
-                return nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,1);
+            else if (availableNodes.contains(deposeCubes1)){
+                return deposeCubes1;
             }
         }
 
@@ -205,41 +223,30 @@ public class IA implements Service {
             if (gameState.isTas_station_epuration_pris()){ nbTasPris++; }
             if (nbTasPris==3){
                 Node deposeCubes0 = nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,0);
+                Node deposeCubes1 = nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,1);
                 if (availableNodes.contains(deposeCubes0)){
                     return deposeCubes0;
                 }
-                else{
-                    return nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,1);
+                else if (availableNodes.contains(deposeCubes1)){
+                    return deposeCubes1;
                 }
             }
         }
 
 
-        double dmin = 1000000000;
+        double minCost = 1000000000;
         int j = -1;
         //Si aucun des cas spécifiques plus haut ne s'est présenté, on cherche la node la plus proche
-        for (int i = 0; i<availableNodes.size();i++){
+        for (int i = 0; i<availableNodes.size();i++) {
             Node currentNode = availableNodes.get(i);
-            if (!(currentNode instanceof DeposeCubes)){
-                double d = 0;
-                try {
-                    d = pathfinding.howManyTime(robotPosition, currentNode.getPosition());
-                } catch (PointInObstacleException e){
-                    if (e.isDepartInOsbtacle()){
-                        handleException(e);
-                    } else{
-                        d = 1000000000;
-                    }
-                } catch (NoPathFound noPathFound){
-                    //si il n'y a pas de chemin, on met un cout énorme pour ne pas y aller
-                    d = 1000000000;
-                }
-                if (d < dmin) {
+            if (!(currentNode instanceof DeposeCubes)) {
+                double cost = calculateNodeCost(currentNode, robotPosition);
+                if (cost < minCost) {
                     j = i;
-                    dmin = d;
+                    minCost = cost;
                 }
             }
-        }
+        }   
         if (j == -1) {
             throw new NoNodesAvailableException();
         }
@@ -247,6 +254,27 @@ public class IA implements Service {
             return availableNodes.get(j);
         }
     }
+
+    /**
+     * Calcul le coût d'une node
+     */
+    private double calculateNodeCost(Node node, Vec2 robotPosition){
+        double cost=0;
+        try {
+            cost = pathfinding.howManyTime(robotPosition, node.getPosition());
+        } catch (PointInObstacleException e){
+            if (e.isDepartInOsbtacle()){
+                handleException(e);
+            } else{
+                cost = 1000000000;
+            }
+        } catch (NoPathFound noPathFound){
+            //si il n'y a pas de chemin, on met un cout énorme pour ne pas y aller
+            cost = 1000000000;
+        }
+        return cost;
+    }
+
 
     /**
      * Méthode essayant d'aller à une autre node, en les essayant toutes
@@ -261,11 +289,11 @@ public class IA implements Service {
         Node nextNode = null;
         try {
             nextNode = findBestNode();
+            exploredNodes.add(nextNode);
         } catch (NoNodesAvailableException e) {
             handleException(e);
             return;
         }
-        exploredNodes.add(nextNode);
         try {
             this.lastNodeTried = nextNode;
             log.debug("////////// IA ////////// SELECTED NODE : " + nextNode.getName() + " " + nextNode.getVersionToExecute());
