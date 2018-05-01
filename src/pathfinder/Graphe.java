@@ -28,6 +28,7 @@ public class Graphe implements Service {
 
     private Table table;
     private ArrayList<Noeud> nodes;
+    private ArrayList<Noeud> nodesFixes;
     private ArrayList<Arete> bonesList;
     private boolean basicDetection;
 
@@ -53,6 +54,7 @@ public class Graphe implements Service {
         this.mobileEnnemies = new CopyOnWriteArrayList<>();
         this.table = table;
         this.nodes = new ArrayList<>();
+        this.nodesFixes = new ArrayList<>();
         this.bonesList=new ArrayList<>();
         createNodes();
         long time1 = System.currentTimeMillis();
@@ -213,6 +215,8 @@ public class Graphe implements Service {
      */
     public void createNodesAroundCircularObstacles(){
         ArrayList<Vec2> points=new ArrayList<>();
+        ArrayList<Vec2> pointsFixes=new ArrayList<>();
+        ArrayList<Vec2> pointsMobiles=new ArrayList<>();
         int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
         /*
         on crée des noeuds autour des obstacles circulaires
@@ -220,6 +224,7 @@ public class Graphe implements Service {
         for(ObstacleCircular obstacleCircular : listCircu) {
             Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
             ArrayList<Vec2> lcirculaire = obstaclecircle.pointsaroundcircle(10);
+            pointsFixes.addAll(lcirculaire);
             points.addAll(lcirculaire);
         }
         /*
@@ -229,6 +234,7 @@ public class Graphe implements Service {
             for (ObstacleProximity obstacleMobile : mobileEnnemies) {
                 Circle obstaclecircle = new Circle(obstacleMobile.getPosition(), obstacleMobile.getRadius() + d);
                 ArrayList<Vec2> lmobile = obstaclecircle.pointsaroundcircle(10);
+                pointsMobiles.addAll(lmobile);
                 points.addAll(lmobile);
             }
         }
@@ -272,6 +278,36 @@ public class Graphe implements Service {
         for(Vec2 coords : finalPointsToReturn){
             nodes.add(new Noeud(coords,0,0,new ArrayList<>()));
         }
+        //C'est pour la méthode qui permet de get les noeuds les plus proches
+        ArrayList<Vec2> finalPointsFixesToReturn = new ArrayList<>();
+        for(Vec2 pointFixe : pointsFixes){
+            boolean mustBeRemoved=false;
+            for(ObstacleRectangular obstacleRectangular : listRectangu){
+                if(table.getObstacleManager().isPositionInObstacle(pointFixe,obstacleRectangular)){
+                    mustBeRemoved=true;
+                    break;
+                }
+            }
+            if (!mustBeRemoved) {
+                for (ObstacleCircular obstacleCircular : listCircu) {
+                    if (table.getObstacleManager().isPositionInObstacle(pointFixe, obstacleCircular)) {
+                        mustBeRemoved=true;
+                        break;
+                    }
+                }
+            }
+            if (!mustBeRemoved) {
+                if (!(table.getObstacleManager().isRobotInTable(pointFixe))) {
+                    mustBeRemoved=true;
+                }
+            }
+            if (!mustBeRemoved){
+                finalPointsFixesToReturn.add(pointFixe);
+            }
+        }
+        for(Vec2 coords : finalPointsFixesToReturn){
+            nodesFixes.add(new Noeud(coords,0,0,new ArrayList<>()));
+        }
     }
 
     /**
@@ -312,15 +348,15 @@ public class Graphe implements Service {
      */
 
     public Noeud closestNodeToPosition(Vec2 position){
-        float distanceMin=nodes.get(0).getPosition().distance(position);
+        float distanceMin=nodesFixes.get(0).getPosition().distance(position);
         int iMin=0;
-        for(int i=1; i<nodes.size();i++){
-            if(nodes.get(i).getPosition().distance(position)<distanceMin){
-                distanceMin=nodes.get(i).getPosition().distance(position);
+        for(int i=1; i<nodesFixes.size();i++){
+            if(nodesFixes.get(i).getPosition().distance(position)<distanceMin){
+                distanceMin=nodesFixes.get(i).getPosition().distance(position);
                 iMin=i;
             }
         }
-        return nodes.get(iMin);
+        return nodesFixes.get(iMin);
 
     }
 
