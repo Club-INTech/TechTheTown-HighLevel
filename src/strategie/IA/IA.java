@@ -174,7 +174,7 @@ public class IA implements Service {
             exploredNodes.add(previousFailedNode);
         }
         boolean success=false;
-        while (nextNode != null || success){
+        while ((nextNode != null) || (!success)){
             exploredNodes.add(nextNode);
             try {
                 log.debug("////////// IA ////////// SELECTED NODE : "+nextNode.getName()+" "+nextNode.getVersionToExecute());
@@ -185,21 +185,27 @@ public class IA implements Service {
             } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
                 log.debug("ImmobileEnnemyForOneSecondAtLeast");
                 immobileEnnemyForOneSecondAtLeast.printStackTrace();
+                nextNode = findBestNode();
             } catch (PointInObstacleException e) {
                 log.debug("PointInObstacleException");
                 e.printStackTrace();
+                nextNode = findBestNode();
             } catch (BlockedActuatorException e) {
                 log.debug("BlockedActuatorException");
                 e.printStackTrace();
+                nextNode = findBestNode();
             } catch (ExecuteException e) {
                 log.debug("ExecuteException");
                 e.printStackTrace();
+                nextNode = findBestNode();
             } catch (BadVersionException e) {
                 log.debug("BadVersionException");
                 e.printStackTrace();
+                nextNode = findBestNode();
             } catch (UnableToMoveException e) {
                 log.debug("UnableToMoveException");
                 e.printStackTrace();
+                nextNode = findBestNode();
             }
         }
         exploredNodes.clear();
