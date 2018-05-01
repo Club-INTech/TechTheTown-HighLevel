@@ -246,7 +246,7 @@ public class IA implements Service {
                     minCost = cost;
                 }
             }
-        }   
+        }
         if (j == -1) {
             throw new NoNodesAvailableException();
         }
