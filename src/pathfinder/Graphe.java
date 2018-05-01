@@ -314,7 +314,7 @@ public class Graphe implements Service {
     public Noeud closestNodeToPosition(Vec2 position){
         float distanceMin=nodes.get(0).getPosition().distance(position);
         int iMin=0;
-        for(int i=0; i<nodes.size();i++){
+        for(int i=1; i<nodes.size();i++){
             if(nodes.get(i).getPosition().distance(position)<distanceMin){
                 distanceMin=nodes.get(i).getPosition().distance(position);
                 iMin=i;
