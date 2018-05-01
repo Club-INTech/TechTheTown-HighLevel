@@ -1,6 +1,7 @@
 package strategie.IA;
 
 import enums.ScriptNames;
+import enums.UnableToMoveReason;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -69,120 +70,10 @@ public abstract class Node {
 
     /** Permet d'executer le script d'un noeud et de gérer les exeptions si il y en a. */
 
-    public void execute(Exception e, GameState gameState)
-            throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
-        if (tentatives < 3) {
-            tentatives++;
-           if (e != null && !(e instanceof ImmobileEnnemyForOneSecondAtLeast)) {
-                exception(e);
-            } else {
-                script.goToThenExec(versionToExecute, gameState);
-                setDone(true);
-            }
-        } else {
-            log.debug(getName() +versionToExecute+" Is blocked");
-            setDone(true);
-        }
+    public void execute(GameState gameState) throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+        script.goToThenExec(versionToExecute, gameState);
+        setDone(true);
     }
-
-    /** Gère les exceptions soulevées */
-
-    public void exception(Exception e) {
-        log.debug("on est dans Exception du Node Abstrait" + e);
-
-        if (e instanceof ImmobileEnnemyForOneSecondAtLeast) {
-            log.debug("j'ai bien catch immmobileEnnemy et je tente d'esquiver : je suis bien intelligent");
-            Vec2 aim = ((ImmobileEnnemyForOneSecondAtLeast) e).getAim();
-            boolean ennemyDodged = false;
-            int attemps=0;
-            while (!ennemyDodged && attemps<10) {
-                attemps++;
-                try {
-                    log.debug("Début esquive");
-
-                    //On s'éloigne de l'aim
-                    Vec2 directionToGo = (aim.minusNewVector(gameState.robot.getPosition()));
-                    double prodScal = directionToGo.dot(new Vec2(100.0, gameState.robot.getOrientation()));
-                    Vec2 pointToGo;
-                    //On regarde si le point où l'on veut reculer est dans un obstacle, si c'est le cas, on throw PointInObstacleException
-                    if (prodScal>0) {
-                        Vec2 wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new Vec2(-50.0,gameState.robot.getOrientation()));
-                        if (!gameState.table.getObstacleManager().isPositionInObstacle(wantToBackUpTo)) {
-                            gameState.robot.moveLengthwise(-50);
-                        }
-                        else{
-                            log.debug("Point in obstacle");
-                            //on renvoie une exception avec notre objectif initial en paramètre
-                            throw new PointInObstacleException(aim, false);
-                        }
-                    }
-                    else{
-                        Vec2 wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new Vec2(50.0,gameState.robot.getOrientation()));
-                        if (!gameState.table.getObstacleManager().isPositionInObstacle(wantToBackUpTo)) {
-                            gameState.robot.moveLengthwise(50);
-                        }
-                        else{
-                            log.debug("Point in obstacle");
-                            //on renvoie une exception avec notre objectif initial en paramètre
-                            throw new PointInObstacleException(aim, false);
-                        }
-                    }
-
-                    //On cherche un nouveau chemin pour y aller
-                    ArrayList<Vec2> pathToFollow = gameState.robot.getPathfinding().findmyway(gameState.robot.getPosition(), aim);
-                    gameState.robot.followPath(pathToFollow);
-                    ennemyDodged = true;
-                } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
-                    immobileEnnemyForOneSecondAtLeast.printStackTrace();
-                    log.debug("L'ennemi est toujours là");
-                } catch (PointInObstacleException e1) {
-                    log.debug("PointInObstacleException, on part au noeud le plus proche");
-                    exception(e1);
-                } catch (UnableToMoveException e1) {
-                    log.debug("UnableToMoveException");
-                    e1.printStackTrace();
-                } catch (NoPathFound noPathFound) {
-                    log.debug("NoPathFound");
-                    noPathFound.printStackTrace();
-                } finally {
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-            try {
-                execute(null, gameState);
-            } catch (PointInObstacleException e1) {
-                e1.printStackTrace();
-            } catch (BadVersionException e1) {
-                e1.printStackTrace();
-            } catch (ExecuteException e1) {
-                e1.printStackTrace();
-            } catch (BlockedActuatorException e1) {
-                e1.printStackTrace();
-            } catch (UnableToMoveException e1) {
-                e1.printStackTrace();
-            } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
-                immobileEnnemyForOneSecondAtLeast.printStackTrace();
-            }
-        }
-        // on est dans un obstacle, on va au noeud le plus proche du graphe
-        else if(e instanceof PointInObstacleException){
-            try {
-                log.debug("On est dans un obstacle, on va au noeud le plus proche.");
-                gameState.robot.getPathfinding().getGraphe().addNodeInGraphe(gameState.robot.getPathfinding().getGraphe().closestNodeToPosition(gameState.robot.getPosition()));
-                gameState.robot.goTo(gameState.robot.getPathfinding().getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition());
-                log.debug("On est au noeud le plus proche.");
-            } catch (UnableToMoveException e1) {
-                e1.printStackTrace();
-            } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
-                immobileEnnemyForOneSecondAtLeast.printStackTrace();
-            }
-        }
-    }
-
 
     public abstract void unableToMoveExceptionHandled(UnableToMoveException e);
 
@@ -197,35 +88,33 @@ public abstract class Node {
 
     public abstract boolean isDone();
 
-    public ScriptManager getScriptManager() {  return scriptManager;    }
+    public ScriptManager getScriptManager() { return scriptManager; }
 
-    public int getScore(){   return score;    }
+    public int getScore(){ return score; }
 
-    public int getId() {   return id;    }
+    public int getId() { return id; }
 
-    public AbstractScript getScript() {  return script;    }
+    public AbstractScript getScript() { return script; }
 
-    public int getVersionToExecute() {  return versionToExecute;    }
+    public int getVersionToExecute() { return versionToExecute; }
 
-    public Vec2 getPosition() {return position;}
+    public Vec2 getPosition() { return position; }
 
-    public GameState getGameState() {return gameState;}
+    public GameState getGameState() { return gameState; }
 
     public String getName() { return scriptName.getName(); }
 
     public boolean getIsDone(){ return isDone; }
 
-    public int getTentatives() {        return tentatives;  }
-
     public void setDone(boolean done) {
         this.isDone = done;
     }
 
-    public void setId (int id) { this.id = id;}
+    public void setId (int id) { this.id = id; }
 
-    public void setScript(AbstractScript script) {    this.script = script;    }
+    public void setScript(AbstractScript script) { this.script = script; }
 
-    public void setScore(int score) {   this.score = score;    }
+    public void setScore(int score) { this.score = score; }
 
     public void setPosition(Vec2 position) { this.position = position; }
 

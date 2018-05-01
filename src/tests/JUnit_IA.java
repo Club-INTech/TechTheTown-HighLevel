@@ -64,7 +64,7 @@ public class JUnit_IA extends JUnit_Test{
 
             } catch (Exception e) {
                 e.printStackTrace();
-                ia.handleException(e);
+                ia.goToAnotherNode(null);
             }
         }
 
@@ -76,7 +76,7 @@ public class JUnit_IA extends JUnit_Test{
             state.setIndicePattern(2);
             state.robot.setLocomotionSpeed(Speed.FAST_ALL);
 //            ia.start(ScriptNames.MATCH_SCRIPT,0);
-            ia.handleException(null);
+            ia.goToAnotherNode(null);
         }
         @Test
         public void ennemyAvoid(){

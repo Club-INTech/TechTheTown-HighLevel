@@ -116,7 +116,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     /** Paramètre d'attente du jumper */
     ATTENTE_JUMPER(true),
 
-    /** Paramètre permettant de savoir quel matchscript on handleException */
+    /** Paramètre permettant de savoir quel matchscript on exception */
     MATCHSCRIPT_TO_EXECUTE(0),
 
     /** Paramètres reconnaissance de couleurs */

@@ -28,7 +28,7 @@ public class Abeille extends Node {
     }
 
     /**
-     * On override le handleException du node, l'idée c'est qu'on puisse déjà enable et
+     * On override le exception du node, l'idée c'est qu'on puisse déjà enable et
      * disable les hooks qu'on veut en fonction des bras
      */
 
