@@ -229,8 +229,17 @@ public class ThreadSensor extends AbstractThread
 
     }
 
-    /** Ajoute un obstacle en face du robot, avec les deux capteurs ayant détecté quelque chose
-     * Convention: la droite du robot est l'orientation 0 (on travaille dans le repère du robot, et on garde les memes conventions que pour la table) */
+    /**
+     *         \.</----: Point qu'on détecte, la distance entre 0 et
+     *         \ /       le point c'est l, et entre 1 et le point c'est r
+     *  \      \/        (on a donc 3 longueurs, on applique Al Kashi, l'angle d'intérêt
+     *   \     /\   /      c'est cet angle trouvé par Al Kashi-PI/2)
+     *    \   / \  /
+     *     \ /  \ /
+     *      0----1
+     *        d : distance entre les capteurs 0 et 1
+     *
+     * */
     private void addFrontObstacleBoth() {
         int l = sensorFL.getDetectedDistance();
         int r = sensorFR.getDetectedDistance();
@@ -243,7 +252,7 @@ public class ThreadSensor extends AbstractThread
             addFrontObstacleSingleMiddle();
         }
         else {
-            double alpha = Math.acos(toAcos) - Math.PI / 2 + (this.detectionAngle / 2) - this.magicNumber;
+            double alpha = -Math.abs(Math.acos(toAcos)-Math.PI / 2);
             int x = (int) (a * Math.cos(alpha));
             int y = (int) (a * Math.sin(alpha));
             Vec2 posObjectFromSensorFL = new Vec2(x, y);
@@ -253,7 +262,17 @@ public class ThreadSensor extends AbstractThread
             }
         }
     }
-    /** Ajoute un obstacle derrière le robot, avec les deux capteurs ayant détecté quelque chose */
+    /** Ajoute un obstacle derrière le robot, avec les deux capteurs ayant détecté quelque chose
+     *        d:distance entre les capteurs 2 et 3
+     *      2---3
+     *     /\  /\    l : distance entre 2 et le point à détecter
+     *    /  \/  \   r: distance entre 3 et le point à détecter
+     *   /   /\   \   On a trois longueurs, on applique Al Kashi, l'angle d'intérêt
+     *  /   /  \   \  c'est Pi/2-cet angle trouvé par Al Kashi
+     * /   /    \   \
+     *    /   .<-\--- : point à détecter
+     *
+     * */
     private void addBackObstacleBoth() {
         int l = sensorBL.getDetectedDistance();
         int r = sensorBR.getDetectedDistance();
@@ -266,7 +285,7 @@ public class ThreadSensor extends AbstractThread
             addBackObstacleSingleMiddle();
         }
         else {
-            double alpha = Math.acos(toAcos) - Math.PI / 2 + (this.detectionAngle / 2) + this.magicNumber;
+            double alpha = Math.abs((3*Math.PI / 2-Math.acos(toAcos)));
             int x = (int) (a * Math.cos(alpha));
             int y = (int) (a * Math.sin(alpha));
             Vec2 posObjectFromSensorBL = new Vec2(x, y);
