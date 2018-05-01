@@ -1,7 +1,6 @@
 package scripts;
 
 import enums.ActuatorOrder;
-import enums.BrasUtilise;
 import enums.ConfigInfoRobot;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
@@ -34,7 +33,7 @@ public class MatchScript extends AbstractScript {
                 gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             } else {
                 gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-                gameState.setCapteursActivés(false);
+                gameState.setCapteursActivated(false);
             }
 
             //On active le panneau domotique

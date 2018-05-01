@@ -426,8 +426,10 @@ public class ThreadSensor extends AbstractThread
 
     /** Recupere la distance lue par les ultrasons
      * @return la distance selon les ultrasons */
-    public void getSensorInfos() {
-        if(gameState.isCapteursActivés()){
+    @SuppressWarnings("unchecked")
+    public void getSensorInfos()
+    {
+        if(gameState.isCapteursActivated()){
             robotPosAndOr = ethWrapper.getCurrentPositionAndOrientation();
             String[] valuesSReceived;
 

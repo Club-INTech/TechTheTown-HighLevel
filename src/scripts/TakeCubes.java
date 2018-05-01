@@ -617,7 +617,7 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
         } else {
             state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-            state.setCapteursActivés(false);
+            state.setCapteursActivated(false);
         }
         if (this.brasUtilise.equals(BrasUtilise.AVANT)){
             //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
@@ -672,7 +672,7 @@ public class TakeCubes extends AbstractScript {
             state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
         } else {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
-            state.setCapteursActivés(true);
+            state.setCapteursActivated(true);
         }
 
         return cubeSuccessfullyTaken;
