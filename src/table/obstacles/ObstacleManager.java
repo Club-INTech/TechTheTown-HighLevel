@@ -183,13 +183,7 @@ public class ObstacleManager implements Service
 	 */
 	public synchronized void addObstacle(final Vec2 position, final int radius) {
 		//vérification que l'on ne détecte pas un obstacle "normal"
-		if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius
-				&& position.getY() > mEnnemyRadius && position.getY() < 2000 - mEnnemyRadius  // Hors de la table
-				&& !(position.getX() > 1100 - mEnnemyRadius && position.getY() < 600 + mEnnemyRadius) // Dans la zone de départ
-				&& !(position.getX() > 550 - mEnnemyRadius && position.getY() < 170 + mEnnemyRadius) // Dans la zone de construction
-				&& !(Math.abs(position.getX()) < 590 + mEnnemyRadius/2 && position.getY() > 1750 - mEnnemyRadius)) // Dans la station d'épuration
-		// TODO: Prévoir les cas où l'on détecte des éléments de jeu dans la condition
-		{
+		if (isObstaclePositionValid(position)){
 			boolean isThereAnObstacleIntersecting = false;
 			ArrayList<ObstacleProximity> obstacleToBeRemoved = new ArrayList<>();
 			for (int i=0; i<mUntestedMobileObstacles.size(); i++) {
@@ -262,6 +256,27 @@ public class ObstacleManager implements Service
 
 
 		}
+	}
+
+	/**
+	 * Méthode permettant de savoir si une position est un obstacle valide
+	 * @param position position de l'obstacle sur laquelle on veut une validation
+	 * @return renvoie true si la position peut être un obstacle, false sinon
+	 */
+	public boolean isObstaclePositionValid(Vec2 position){
+		// TODO: Prévoir les cas où l'on détecte des éléments de jeu dans la condition
+		if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius
+				&& position.getY() > mEnnemyRadius && position.getY() < 2000 - mEnnemyRadius  // Hors de la table
+				&& !(position.getX() > 1100 - mEnnemyRadius && position.getY() < 600 + mEnnemyRadius) // Dans la zone de départ
+				&& !(position.getX() > 550 - mEnnemyRadius && position.getY() < 170 + mEnnemyRadius) // Dans la zone de construction
+				&& !(Math.abs(position.getX()) < 590 + mEnnemyRadius/2 && position.getY() > 1750 - mEnnemyRadius)){ // Dans la station d'épuration
+			return true;
+		}
+		else{
+			return false;
+		}
+
+
 	}
 	/**
 	 * Supprime du gestionnaire tout les obstacles dont la date de péremption est antérieure à la date fournie

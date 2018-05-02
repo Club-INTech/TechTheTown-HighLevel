@@ -49,6 +49,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         state.robot.goToWithoutDetection(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur));
         state.addObtainedPoints(25);
+        state.setPanneauActive(true);
         if (usingIA) {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
             state.setCapteursActivated(true);
@@ -58,7 +59,6 @@ public class ActivationPanneauDomotique extends AbstractScript{
         }
         state.robot.goTo(new Vec2(xEntry, yEntry));
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-        state.setPanneauActive(true);
         log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");
     }
 
