@@ -26,7 +26,7 @@ public class ThreadScore extends AbstractThread {
         this.log=log;
         this.state=state;
         updateConfig();
-        this.frame = new Frame(this.state,this.symetry);
+        this.frame = new Frame(this.log, this.state,this.symetry);
     }
 
     @Override

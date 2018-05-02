@@ -1,6 +1,7 @@
 package threads.threadScore;
 
 import strategie.GameState;
+import utils.Log;
 
 import javax.swing.JPanel;
 import java.awt.Graphics;
@@ -10,10 +11,13 @@ public class Panel extends JPanel {
 
     private GameState state;
     private boolean symetry;
+    private int points;
+    private Log log;
 
-    public Panel(GameState state, boolean symetry){
+    public Panel(Log log, GameState state, boolean symetry){
         this.state=state;
         this.symetry=symetry;
+        this.points=0;
         this.setFont(new Font("Comic Sans MS",Font.BOLD, 100));
     }
 
@@ -30,6 +34,10 @@ public class Panel extends JPanel {
         else{
             posTextX=70;
         }
-        g.drawString(Integer.toString(this.state.getObtainedPoints()), posTextX,120);
+        if (this.state.getObtainedPoints()!=this.points) {
+            log.critical("Points : "+this.points);
+            this.points = this.state.getObtainedPoints();
+            g.drawString(Integer.toString(this.points), posTextX, 120);
+        }
     }
 }
