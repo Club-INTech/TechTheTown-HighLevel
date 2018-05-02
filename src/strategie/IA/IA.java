@@ -117,6 +117,9 @@ public class IA implements Service {
         }
         else{
             log.critical("IA EXCEPTION : "+e.getClass().getName() +" NOT CURRENTLY HANDLED EXCEPTION");
+            for (StackTraceElement elem : e.getStackTrace()) {
+                log.critical(elem);
+            }
             tryToDoAnotherNode(this.lastNodeTried);
         }
         log.warning("///// IA ///// On a résolu les exceptions, on continue le match");
