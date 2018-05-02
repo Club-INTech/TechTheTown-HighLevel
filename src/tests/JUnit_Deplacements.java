@@ -7,7 +7,7 @@ import org.junit.Test;
 import robot.Robot;
 import strategie.GameState;
 
-public class JUnit_ProblèmesCom extends JUnit_Test {
+public class JUnit_Deplacements extends JUnit_Test {
 
     private Robot robot;
     private GameState state;
@@ -25,11 +25,24 @@ public class JUnit_ProblèmesCom extends JUnit_Test {
     }
 
     @Test
-    public void testScript() {
+    public void testTranslation() {
         try {
             for (int i=0; i<100; i++){
                 robot.moveLengthwise(500);
                 robot.moveLengthwise(-500);
+            }
+        } catch (UnableToMoveException e) {
+            e.printStackTrace();
+        } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
+            immobileEnnemyForOneSecondAtLeast.printStackTrace();
+        }
+    }
+    @Test
+    public void testRotation() {
+        try {
+            for (int i=0; i<100; i++){
+                robot.turn(Math.PI/2);
+                robot.turn(-Math.PI/2);
             }
         } catch (UnableToMoveException e) {
             e.printStackTrace();
