@@ -29,11 +29,14 @@ public class DeposeCubes extends Node {
 
     @Override
     public boolean isDone() {
-        return isDone || getIsDone();
-    }
-
-    @Override
-    public void unableToMoveExceptionHandled(UnableToMoveException e) {
-
+        if (versionToExecute==0) {
+            return getIsDone() || gameState.isDeposeCubes0Done();
+        }
+        else if (versionToExecute==1){
+            return getIsDone() || gameState.isDeposeCubes1Done();
+        }
+        else{
+            return false;
+        }
     }
 }

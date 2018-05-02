@@ -20,6 +20,7 @@
 package strategie;
 
 import container.Service;
+import enums.ScriptNames;
 import pfg.config.Config;
 import robot.Robot;
 import table.Table;
@@ -94,6 +95,14 @@ public class GameState implements Service
     /** Abeille lancée */
     private boolean abeilleLancee;
 
+    /** DeposeCubes done */
+    private boolean deposeCubes0Done;
+    private boolean deposeCubes1Done;
+
+    /** Dernier script lancé */
+    private ScriptNames lastScript;
+    private int lastScriptVersion;
+
     /**Permet de savoir si on a acrivé ou désactivé les capteurs comme ça si on
      * a à faire des movelenghtwise par exemple, on les fait mais sans se soucier
      * de la détection de l'ennemi
@@ -142,13 +151,16 @@ public class GameState implements Service
         this.panneauActive = false;
         this.abeilleLancee = false;
 
+        this.deposeCubes0Done = false;
+        this.deposeCubes1Done = false;
+
         //La reconnaissance de couleurs est faite ou non
         this.recognitionDone=false;
         //On set une valeur de base, qui sera changée par PatternRecognition par la suite
         this.indicePattern=-2;
         //au début, le threadSensor est lancé, donc les capteurs sont bien activés au début
         this.capteursActivated =true;
-
+        this.lastScript=null;
     }
 
     /* (non-Javadoc)
@@ -285,6 +297,26 @@ public class GameState implements Service
 
     public boolean isAbeilleLancee () { return abeilleLancee; }
 
+    public boolean isDeposeCubes0Done () { return deposeCubes0Done; }
+
+    public boolean isDeposeCubes1Done () { return deposeCubes1Done; }
+
+    public void setPanneauActive(boolean panneauActive) {
+        this.panneauActive = panneauActive;
+    }
+
+    public void setAbeilleLancee(boolean abeilleLancee) {
+        this.abeilleLancee = abeilleLancee;
+    }
+
+    public void setDeposeCubes0Done(boolean deposeCubes0Done){
+        this.deposeCubes0Done=deposeCubes0Done;
+    }
+    public void setDeposeCubes1Done(boolean deposeCubes1Done){
+        this.deposeCubes1Done=deposeCubes1Done;
+    }
+
+
     public void setTas_base_pris(boolean tas_base_pris) {
         this.tas_base_pris = tas_base_pris;
     }
@@ -309,13 +341,7 @@ public class GameState implements Service
         this.tas_station_epuration_ennemi_pris = tas_station_epuration_ennemi_pris;
     }
 
-    public void setPanneauActive(boolean panneauActive) {
-        this.panneauActive = panneauActive;
-    }
 
-    public void setAbeilleLancee(boolean abeilleLancee) {
-        this.abeilleLancee = abeilleLancee;
-    }
     public void setJumperRemoved(boolean value){
         this.jumperRemoved=value;
     }
@@ -350,6 +376,22 @@ public class GameState implements Service
 
     public void setCapteursActivated(boolean capteursActivés) {
         this.capteursActivated = capteursActivés;
+    }
+
+    public void setLastScript(ScriptNames lastScript){
+        this.lastScript=lastScript;
+    }
+
+    public ScriptNames getLastScript(){
+        return this.lastScript;
+    }
+
+    public void setLastScriptVersion(int version){
+        this.lastScriptVersion=version;
+    }
+
+    public int getLastScriptVersion(){
+        return this.lastScriptVersion;
     }
 }
 

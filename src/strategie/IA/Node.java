@@ -71,11 +71,9 @@ public abstract class Node {
     /** Permet d'executer le script d'un noeud et de gérer les exeptions si il y en a. */
 
     public void execute(GameState gameState) throws PointInObstacleException, BadVersionException, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast, NoPathFound {
-        script.goToThenExec(versionToExecute, gameState);
+        this.script.goToThenExec(versionToExecute, gameState);
         setDone(true);
     }
-
-    public abstract void unableToMoveExceptionHandled(UnableToMoveException e);
 
     @Override
     public String toString() {

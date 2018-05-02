@@ -151,16 +151,15 @@ public class Locomotion implements Service {
      *****************/
 
     /**
-     * Valeur limite de détection pour le mode basique
-     * Override par la config
-     */
-    private int basicDetectDistance;
-
-    /**
      * Si la détection basique est activée ou non
      * Override par la config
      */
-    private boolean basicDetection;
+    private boolean basicDetectionActivated;
+
+    /**
+     * On regarde si on utilise l'IA ou non
+     */
+    private boolean advancedDetection;
 
     /**
      * Rayon du cercle autour du robot pour savoir s'il peut tourner (detectionRay légèrement supérieur à celui du robot)
@@ -489,7 +488,7 @@ public class Locomotion implements Service {
      * @param mustDetect        true si on veut detecter, false sinon.
      * @throws BlockedException
      */
-    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException,ImmobileEnnemyForOneSecondAtLeast {
+    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, ImmobileEnnemyForOneSecondAtLeast, UnableToMoveException {
         moveToPointSymmetry(aim, turnOnly);
         do {
             getCurrentPositionAndOrientation();
@@ -503,29 +502,38 @@ public class Locomotion implements Service {
 
             /** TODO A adapté à l'année en cours */
             if (mustDetect) {
-                if (basicDetection){
-                    boolean obstacleDetected=basicDetect();
-                    boolean wasImmobilised=false;
-                    if (obstacleDetected){
-                        immobiliseEmergency();
-                        wasImmobilised=true;
-                    }
-                    while (obstacleDetected){
-                        try {
-                            Thread.sleep(basicDetectionLoopDelay);
-                            obstacleDetected=basicDetect();
-                        } catch (InterruptedException e) {
-                            log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
-                            obstacleDetected=false;
-                            e.printStackTrace();
+                if (!advancedDetection){
+                    if (basicDetectionActivated) {
+                        boolean obstacleDetected = basicDetect();
+                        boolean wasImmobilised = false;
+                        if (obstacleDetected) {
+                            immobilise();
+                            wasImmobilised = true;
                         }
-                    }
-                    if (wasImmobilised){
-                        updateCurrentPositonAndOrientation();
-                        moveToPointSymmetry(aim, turnOnly);
+                        while (obstacleDetected) {
+                            try {
+                                Thread.sleep(basicDetectionLoopDelay);
+                                obstacleDetected = basicDetect();
+                            } catch (InterruptedException e) {
+                                log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
+                                obstacleDetected = false;
+                                e.printStackTrace();
+                            }
+                        }
+                        if (wasImmobilised) {
+                            updateCurrentPositonAndOrientation();
+                            moveToPointSymmetry(aim, turnOnly);
+                        }
                     }
                 }
                 else{
+                    if (basicDetectionActivated){
+                        boolean obstacleDetected=basicDetect();
+                        if (obstacleDetected){
+                            immobilise();
+                            throw new UnableToMoveException(aim,UnableToMoveReason.OBSTACLE_DETECTED);
+                        }
+                    }
                     if (turnOnly){
                         try{
                             detectEnemyArroundPosition(detectionRay);
@@ -551,12 +559,6 @@ public class Locomotion implements Service {
                         }
                     }
                 }
-            }
-
-            try {
-                Thread.sleep(feedbackLoopDelay);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
         while (thEvent.getIsMoving());
@@ -776,29 +778,9 @@ public class Locomotion implements Service {
         log.warning("Arrêt du robot en " + lowLevelPosition);
         ethWrapper.immobilise();
         thEvent.setIsMoving(false);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         log.debug("isMoving variable has been defined to FALSE in Locomotion");
     }
 
-    /**
-     * Immobilise le robot en urgence
-     */
-    public void immobiliseEmergency() {
-        log.warning("Arrêt du robot en " + lowLevelPosition);
-        ethWrapper.immobiliseEmergency();
-        thEvent.setIsMoving(false);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        ethWrapper.useActuator(ActuatorOrder.RESUME_AFTER_EMERGENCY_STOP);
-        log.debug("isMoving variable has been defined to FALSE in Locomotion");
-    }
 
     /********************
      * GUETTER & SETTER *
@@ -807,7 +789,6 @@ public class Locomotion implements Service {
 
     /**
      * Met à jour la position. A ne faire qu'en début de match, ou en cas de recalage
-     *
      * @param positionWanted
      */
     public void setPosition(Vec2 positionWanted) {
@@ -967,7 +948,7 @@ public class Locomotion implements Service {
      * Active/désactive la basicDetection
      */
     public void setBasicDetection(boolean basicDetection) {
-        this.basicDetection = basicDetection;
+        this.basicDetectionActivated = basicDetection;
     }
 
 
@@ -977,11 +958,11 @@ public class Locomotion implements Service {
         symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
 
         /** Detection & Ennemy */
-        basicDetectDistance = config.getInt(ConfigInfoRobot.BASIC_DETECTION_DISTANCE);
         detectionDistance = config.getInt(ConfigInfoRobot.DETECTION_DISTANCE);
         detectionRay = config.getInt(ConfigInfoRobot.DETECTION_RAY);
         feedbackLoopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
-        basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        basicDetectionActivated=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        advancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
 
         basicDetectionLoopDelay = config.getInt(ConfigInfoRobot.BASIC_DETECTION_LOOP_DELAY);
 

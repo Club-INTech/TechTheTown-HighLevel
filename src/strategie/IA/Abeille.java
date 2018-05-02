@@ -27,15 +27,6 @@ public class Abeille extends Node {
         this.setPosition(updatePosition());
     }
 
-    /**
-     * On override le exception du node, l'idée c'est qu'on puisse déjà enable et
-     * disable les hooks qu'on veut en fonction des bras
-     */
-
-    public void unableToMoveExceptionHandled (UnableToMoveException e){
-
-    }
-
     @Override
     public boolean isDone() {
         return getGameState().isAbeilleLancee() || getIsDone();

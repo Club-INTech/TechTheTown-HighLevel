@@ -1,16 +1,8 @@
 package scripts;
 
-import enums.TasCubes;
-import enums.Patterns;
-import enums.Colors;
-import enums.ActuatorOrder;
-import enums.ConfigInfoRobot;
-import enums.Cubes;
-import enums.BrasUtilise;
-import exceptions.ExecuteException;
-import exceptions.PatternNotYetCalculatedException;
-import exceptions.BadVersionException;
-import exceptions.PatternNotRecognizedException;
+import enums.*;
+import exceptions.*;
+import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
@@ -31,6 +23,7 @@ public class TakeCubes extends AbstractScript {
     private int longueurBrasUtilise;
 
     private boolean basicDetection;
+    private boolean advancedDetection;
 
     private int indicePattern;
     private TasCubes currentTas;
@@ -613,11 +606,12 @@ public class TakeCubes extends AbstractScript {
      */
     private boolean takeThisCube(GameState state, Cubes currentCube) throws InterruptedException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         boolean cubeSuccessfullyTaken=false;
-        if(basicDetection){
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
-        } else {
+        if (advancedDetection) {
             state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
             state.setCapteursActivated(false);
+        }
+        if(basicDetection){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
         }
         if (this.brasUtilise.equals(BrasUtilise.AVANT)){
             //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
@@ -668,11 +662,12 @@ public class TakeCubes extends AbstractScript {
             }
         }
 
-        if (basicDetection) {
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
-        } else {
+        if (advancedDetection) {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
             state.setCapteursActivated(true);
+        }
+        if(basicDetection){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
         }
 
         return cubeSuccessfullyTaken;
@@ -811,6 +806,13 @@ public class TakeCubes extends AbstractScript {
         return versions;
     }
 
+    @Override
+    public void goToThenExec(int versionToExecute, GameState state) throws PointInObstacleException, BadVersionException, NoPathFound, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+        state.setLastScript(ScriptNames.TAKE_CUBES);
+        state.setLastScriptVersion(versionToExecute);
+        super.goToThenExec(versionToExecute, state);
+    }
+
     /**
      * Update la config
      */
@@ -822,5 +824,6 @@ public class TakeCubes extends AbstractScript {
         this.longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
         this.longueurBrasArriere=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_ARRIERE);
         this.basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        this.advancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
     }
 }

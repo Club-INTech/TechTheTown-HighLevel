@@ -35,10 +35,10 @@ public class UnableToMoveException extends Exception
 
 	
 	/** La position où on voulait aller au moment de l'exception */
-	public Vec2 aim;
+	private Vec2 aim;
 	
 	/** La raison du blocage */
-	public UnableToMoveReason reason;
+	private UnableToMoveReason reason;
 	
 	private static final long serialVersionUID = -8139322860107594266L;
 
@@ -74,6 +74,10 @@ public class UnableToMoveException extends Exception
 		exceptionAsString = exceptionAsString.replaceAll("(\r\n|\n\r|\r|\n)", " -> ");
 		
 		return exceptionAsString;
+	}
+
+	public Vec2 getAim(){
+		return this.aim;
 	}
 	
 }

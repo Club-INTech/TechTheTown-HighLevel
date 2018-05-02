@@ -2,12 +2,15 @@ package scripts;
 
 import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
+import enums.ScriptNames;
 import enums.Speed;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
+import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.NoPathFound;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -26,6 +29,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     private int distanceInterrupteur;
     private boolean basicDetection;
+    private boolean advancedDetection;
 
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -45,15 +49,16 @@ public class ActivationPanneauDomotique extends AbstractScript{
         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         state.robot.goToWithoutDetection(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur));
         state.addObtainedPoints(25);
-        if(basicDetection) {
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
-        } else {
+        state.setPanneauActive(true);
+        if (advancedDetection) {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
             state.setCapteursActivated(true);
         }
+        if(basicDetection){
+            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+        }
         state.robot.goTo(new Vec2(xEntry, yEntry));
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-        state.setPanneauActive(true);
         log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");
     }
 
@@ -69,9 +74,17 @@ public class ActivationPanneauDomotique extends AbstractScript{
     }
 
     @Override
+    public void goToThenExec(int versionToExecute, GameState state) throws PointInObstacleException, BadVersionException, NoPathFound, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+        state.setLastScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE);
+        state.setLastScriptVersion(versionToExecute);
+        super.goToThenExec(versionToExecute, state);
+    }
+
+    @Override
     public void updateConfig() {
         super.updateConfig();
         this.distanceInterrupteur = config.getInt(ConfigInfoRobot.DISTANCE_INTERRUPTEUR);
         this.basicDetection = config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        this.advancedDetection = config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
     }
 }

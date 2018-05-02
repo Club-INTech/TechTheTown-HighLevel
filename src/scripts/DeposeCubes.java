@@ -2,11 +2,15 @@ package scripts;
 
 import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
+import enums.ScriptNames;
 import enums.Speed;
 import exceptions.BadVersionException;
+import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
+import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.NoPathFound;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -24,14 +28,13 @@ public class DeposeCubes extends AbstractScript {
     private int radius;
     private int[] xEntry;
     private int[] yEntry;
-    private boolean basicDetect;
 
     public DeposeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
-        super.versions = new int[]{0, 1};
+        updateConfig();
+        versions = new int[]{0, 1};
         this.xEntry=new int[]{970,600};
         this.yEntry=new int[]{150+radius,150+radius};
-        updateConfig();
     }
 
     /**
@@ -47,12 +50,15 @@ public class DeposeCubes extends AbstractScript {
         //Ou exclusif
         if (state.isTourAvantRemplie()^state.isTourArriereRemplie()){
             numberTowersToDepose=1;
+            log.debug("DeposeCubes : "+numberTowersToDepose+" tour à déposer");
         }
         else if (state.isTourAvantRemplie() && state.isTourArriereRemplie()){
             numberTowersToDepose=2;
+            log.debug("DeposeCubes : "+numberTowersToDepose+" tours à déposer");
         }
         else if (!(state.isTourAvantRemplie()) && !(state.isTourArriereRemplie())){
             numberTowersToDepose=0;
+            log.debug("DeposeCubes : "+numberTowersToDepose+" tours à déposer");
         }
 
 
@@ -76,11 +82,15 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[version]-distancePenetrationZone));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                     state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[version]+dimensionPorte));
-                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
                     state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
-                    if (state.isCubeBonusAvantPresent()) {
-                        state.setCubeBonusAvantPresent(false);
+                    resetTour(true,state);
+                    if (version==0){
+                        state.setDeposeCubes0Done(true);
                     }
+                    else if(version==1){
+                        state.setDeposeCubes1Done(true);
+                    }
+                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
                 } else if (state.isTourArriereRemplie()) {
                     state.robot.turn(Math.PI / 2);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
@@ -88,12 +98,16 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[version]-distancePenetrationZone));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                     state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[version]+dimensionPorte));
+                    state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
+                    resetTour(false,state);
+                    if (version==0){
+                        state.setDeposeCubes0Done(true);
+                    }
+                    else if(version==1){
+                        state.setDeposeCubes1Done(true);
+                    }
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
 
-                    state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
-                    if (state.isCubeBonusArrierePresent()) {
-                        state.setCubeBonusArrierePresent(false);
-                    }
                 }
             }
 
@@ -118,15 +132,18 @@ public class DeposeCubes extends AbstractScript {
                     */
                     //on est orienté vers -Pi/2 et c'est là qu'on recule, d'où l'intérêt de détecter
                     state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[version]+dimensionPorte));
+                    //On calcule les points
+                    state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
+                    resetTour(true,state);
+                    if (version==0){
+                        state.setDeposeCubes0Done(true);
+                    }
+                    else if(version==1){
+                        state.setDeposeCubes1Done(true);
+                    }
                     //On ferme la porte
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
 
-                    //On calcule les points
-                    state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
-                    if (state.isCubeBonusAvantPresent()) {
-                        //On considère que le cube bonus n'est plus présent, afin de ne pas biaiser la prochaine exécution de TakeCubes
-                        state.setCubeBonusAvantPresent(false);
-                    }
 
 
                     state.robot.turn(Math.PI / 2);
@@ -135,12 +152,10 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[version]-distancePenetrationZone));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                     state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[version]+2*dimensionPorte));
+                    state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
+                    resetTour(false,state);
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
 
-                    state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
-                    if (state.isCubeBonusArrierePresent()) {
-                        state.setCubeBonusArrierePresent(false);
-                    }
                 } else {
                     state.robot.turn(Math.PI / 2);
                     state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
@@ -148,12 +163,16 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[version]-distancePenetrationZone));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                     state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[version]+dimensionPorte));
+                    state.addObtainedPoints(calculScore(false, state.isCubeBonusAvantPresent(), state));
+                    resetTour(true,state);
+                    if (version==0){
+                        state.setDeposeCubes0Done(true);
+                    }
+                    else if(version==1){
+                        state.setDeposeCubes1Done(true);
+                    }
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
 
-                    state.addObtainedPoints(calculScore(false, state.isCubeBonusAvantPresent(), state));
-                    if (state.isCubeBonusAvantPresent()) {
-                        state.setCubeBonusAvantPresent(false);
-                    }
 
 
                     state.robot.turn(-Math.PI / 2);
@@ -162,24 +181,13 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[version]-distancePenetrationZone));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                     state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[version]+2*dimensionPorte));
+                    state.addObtainedPoints(calculScore(true, state.isCubeBonusArrierePresent(), state));
+                    resetTour(false,state);
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
 
-                    state.addObtainedPoints(calculScore(true, state.isCubeBonusArrierePresent(), state));
-                    if (state.isCubeBonusArrierePresent()) {
-                        state.setCubeBonusArrierePresent(false);
-                    }
                 }
             }
             state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-        }
-        //Les deux premières sont déposées
-        state.setTourAvantRemplie(false);
-        state.setTourArriereRemplie(false);
-
-        //On reset les réussites de tours avant et arrières
-        for (int i=0; i<4; i++) {
-            state.setReussitesTourArrière(-1,i);
-            state.setReussitesTourAvant(-1,i);
         }
 
         log.debug("////////// End DeposeCubes version "+version+" //////////");
@@ -229,6 +237,27 @@ public class DeposeCubes extends AbstractScript {
         }
     }
 
+    private void resetTour(boolean tourAvant, GameState state){
+        if (tourAvant){
+            if (state.isCubeBonusAvantPresent()) {
+                state.setCubeBonusAvantPresent(false);
+            }
+            state.setTourAvantRemplie(false);
+            for (int i=0; i<4; i++) {
+                state.setReussitesTourAvant(-1, i);
+            }
+        }
+        else{
+            if (state.isCubeBonusArrierePresent()) {
+                state.setCubeBonusArrierePresent(false);
+            }
+            state.setTourArriereRemplie(false);
+            for (int i=0; i<4; i++) {
+                state.setReussitesTourArrière(-1, i);
+            }
+        }
+    }
+
 
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
@@ -265,11 +294,17 @@ public class DeposeCubes extends AbstractScript {
     }
 
     @Override
+    public void goToThenExec(int versionToExecute, GameState state) throws PointInObstacleException, BadVersionException, NoPathFound, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+        state.setLastScript(ScriptNames.DEPOSE_CUBES);
+        state.setLastScriptVersion(versionToExecute);
+        super.goToThenExec(versionToExecute, state);
+    }
+
+    @Override
     public void updateConfig() {
         super.updateConfig();
         distancePenetrationZone = config.getInt(ConfigInfoRobot.DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES);
         dimensionPorte = config.getInt(ConfigInfoRobot.DIMENSION_PORTES);
         radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        basicDetect=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
     }
 }

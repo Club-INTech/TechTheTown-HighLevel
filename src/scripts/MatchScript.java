@@ -20,6 +20,7 @@ import utils.Log;
 public class MatchScript extends AbstractScript {
 
     private boolean basicDetection;
+    private boolean advancedDetection;
 
     public MatchScript(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -30,11 +31,12 @@ public class MatchScript extends AbstractScript {
     public void execute(int version,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast, NoPathFound {
         log.debug("////////// Execution MatchScript version "+version+" //////////");
         if(version==0){
-            if(basicDetection){
-                gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
-            } else {
+            if (advancedDetection) {
                 gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
                 gameState.setCapteursActivated(false);
+            }
+            if(basicDetection){
+                gameState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
             }
 
             //On active le panneau domotique
@@ -146,6 +148,7 @@ public class MatchScript extends AbstractScript {
 
     public void updateConfig(){
         this.basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        this.advancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
     }
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
