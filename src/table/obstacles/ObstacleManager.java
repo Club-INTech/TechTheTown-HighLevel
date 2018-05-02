@@ -507,7 +507,7 @@ public class ObstacleManager implements Service
 			out.newLine();
 			out.write("Position du robot (table) :" + pos);
 
-			if (Math.abs(ennemyPos.getY()) < (obstacleRadius + mRobotRadius + 40) &&
+			if (Math.abs(ennemyPos.getY()) < (obstacleRadius + 40) &&
 					Math.abs(ennemyPos.getX()) < (distance + obstacleRadius)){
 				out.newLine();
 				out.write("Condition rectangle vérifiée");

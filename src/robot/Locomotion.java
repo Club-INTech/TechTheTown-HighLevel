@@ -489,6 +489,7 @@ public class Locomotion implements Service {
      * @throws BlockedException
      */
     private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, ImmobileEnnemyForOneSecondAtLeast, UnableToMoveException {
+        thEvent.setIsMoving(true);
         moveToPointSymmetry(aim, turnOnly);
         do {
             getCurrentPositionAndOrientation();
@@ -522,7 +523,7 @@ public class Locomotion implements Service {
                         }
                         if (wasImmobilised) {
                             updateCurrentPositonAndOrientation();
-                            moveToPointSymmetry(aim, turnOnly);
+                            moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
                         }
                     }
                 }
@@ -536,7 +537,11 @@ public class Locomotion implements Service {
                     }
                     if (turnOnly){
                         try{
-                            detectEnemyArroundPosition(detectionRay);
+                            boolean hasDetectedSomething = detectEnemyArroundPosition(detectionRay);
+                            if (hasDetectedSomething){
+                                updateCurrentPositonAndOrientation();
+                                moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
+                            }
                         }
                         catch (InterruptedException e){
                             e.printStackTrace();
@@ -548,7 +553,11 @@ public class Locomotion implements Service {
                     }
                     else{
                         try{
-                            detectEnemyAtDistance(detectionDistance, aim.minusNewVector(highLevelPosition));
+                            boolean hasDetectedSomething = detectEnemyAtDistance(detectionDistance, aim.minusNewVector(highLevelPosition));
+                            if (hasDetectedSomething){
+                                updateCurrentPositonAndOrientation();
+                                moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
+                            }
                         }
                         catch(InterruptedException e){
                             e.printStackTrace();
@@ -634,9 +643,11 @@ public class Locomotion implements Service {
      *
      * @param distance distance jusqu'a un ennemi en mm en dessous de laquelle on doit abandonner le mouvement
      */
-    public void detectEnemyArroundPosition(int distance) throws InterruptedException,ImmobileEnnemyForOneSecondAtLeast {
+    public boolean detectEnemyArroundPosition(int distance) throws InterruptedException,ImmobileEnnemyForOneSecondAtLeast {
         int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
+        boolean hasDetectedSomething=false;
         if (closest <= distance) {
+            hasDetectedSomething=true;
             log.debug("Closest ennemy detected (arroundPosition) at distance: "+closest);
             log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de "
                     + closest + " mm)");
@@ -661,6 +672,7 @@ public class Locomotion implements Service {
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
         }
+        return hasDetectedSomething;
     }
 
     /**
@@ -668,9 +680,11 @@ public class Locomotion implements Service {
      *
      * @param moveDirection direction du robot
      */
-    public void detectEnemyAtDistance(int distance, Vec2 moveDirection) throws InterruptedException,ImmobileEnnemyForOneSecondAtLeast{
+    public boolean detectEnemyAtDistance(int distance, Vec2 moveDirection) throws InterruptedException,ImmobileEnnemyForOneSecondAtLeast{
         boolean a =table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation);
+        boolean hasDetectedSomething = false;
         if (a) {
+            hasDetectedSomething=true;
             log.debug("Ennemy detected at distance(<"+distance+"mm): "+a);
             log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin : le robot va s'arrêter");
             immobilise();
@@ -691,6 +705,7 @@ public class Locomotion implements Service {
                 throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
             }
         }
+        return hasDetectedSomething;
     }
 
 
