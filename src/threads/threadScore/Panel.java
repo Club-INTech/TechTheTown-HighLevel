@@ -36,8 +36,8 @@ public class Panel extends JPanel {
         }
         if (this.state.getObtainedPoints()!=this.points) {
             log.critical("Points : "+this.points);
-            this.points = this.state.getObtainedPoints();
-            g.drawString(Integer.toString(this.points), posTextX, 120);
         }
+        this.points = this.state.getObtainedPoints();
+        g.drawString(Integer.toString(this.points), posTextX, 120);
     }
 }
