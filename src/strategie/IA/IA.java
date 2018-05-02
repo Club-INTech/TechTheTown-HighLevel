@@ -135,6 +135,7 @@ public class IA implements Service {
         }
         exploredNodes.clear();
         try {
+            //Si cette condition est fausse, cela veut dire qu'il n'y a plus aucune node qui n'est pas faite, car on a reset toutes les nodes explorées
             if (findBestNode()!=null){
                 resumeMatch();
             }
