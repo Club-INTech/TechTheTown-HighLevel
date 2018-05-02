@@ -426,52 +426,66 @@ public class Locomotion implements Service {
         boolean doItAgain;
         do {
             doItAgain = false;
+
             try {
                 moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
                 isRobotMovingForward = false;
                 isRobotMovingBackward = false;
             }
-            catch (BlockedException e) {
-                log.critical(e.logStack());
-                log.critical("Haut : Catch de " + e.getMessage() + " dans moveToPointException");
-
-                /** Si on ne s'y attendait pas, on réagit en se dégageant légèrement avant de retenter : si on n'y
-                 * arrive pas, on balance une UnableToMoveException(PHYSICALLY_BLOCKED) à l'IA
-                 * TODO A adapter à l'année en cours
-                 */
-                if (!expectWallImpact && !isForcing) {
-                    immobilise();
-                    actualRetriesIfBlocked++;
-
+//            catch (BlockedException e) {
+//                log.critical(e.logStack());
+//                log.critical("Haut : Catch de " + e.getMessage() + " dans moveToPointException");
+//
+//                /** Si on ne s'y attendait pas, on réagit en se dégageant légèrement avant de retenter : si on n'y
+//                 * arrive pas, on balance une UnableToMoveException(PHYSICALLY_BLOCKED) à l'IA
+//                 * TODO A adapter à l'année en cours
+//                 */
+//                if (!expectWallImpact && !isForcing) {
+//                    immobilise();
+//                    actualRetriesIfBlocked++;
+//
+//                    try {
+//                        log.warning("On est bloqué : on se dégage !");
+//                        if (turnOnly) {
+//                            /** TODO A faire ! cas ou on doit se dégager alors que l'on a cogné un mur en tournant...
+//                             /* Bonne chance pour trouver le sens vers lequel on doit tourner :p ! */
+//                        } else if (isMovementForward) {
+//                            isRobotMovingForward = false;
+//                            isRobotMovingBackward = true;
+//                            moveToPointDetectExceptions(highLevelPosition.minusNewVector(new Vec2(distanceToDisengage, highLevelOrientation)), false, false, true);
+//                        } else {
+//                            isRobotMovingForward = true;
+//                            isRobotMovingBackward = false;
+//                            moveToPointDetectExceptions(highLevelPosition.plusNewVector(new Vec2(distanceToDisengage, highLevelOrientation)), true, false, true);
+//                        }
+//                        // Si l'on arriver jusq'ici, c'est qu'aucune exception n'a été levé
+//                        doItAgain = (actualRetriesIfBlocked < maxRetriesIfBlocked);
+//                    } catch (BlockedException definitivelyBlocked) {
+//                        /** Cas très improbable... on balance à l'IA */
+//                        immobilise();
+//                        log.critical(definitivelyBlocked.logStack());
+//                        log.debug("Catch de " + definitivelyBlocked + " dans moveToPointHandleException");
+//                        log.critical("Lancement de UnableToMoveException dans MoveToPointException, visant " + finalAim.toString() + " cause physique");
+//                        throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
+//                    }
+//                } else if (!expectWallImpact) {
+//                    log.critical("Lancement de UnableToMoveException dans MoveToPointException, visant " + finalAim.getX() + " :: " + finalAim.getY() + " cause physique");
+//                    throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
+//                }
+//            }
+            catch(BlockedException e){
+                if (expectWallImpact || isForcing) {
                     try {
-                        log.warning("On est bloqué : on se dégage !");
-                        if (turnOnly) {
-                            /** TODO A faire ! cas ou on doit se dégager alors que l'on a cogné un mur en tournant...
-                             /* Bonne chance pour trouver le sens vers lequel on doit tourner :p ! */
-                        } else if (isMovementForward) {
-                            isRobotMovingForward = false;
-                            isRobotMovingBackward = true;
-                            moveToPointDetectExceptions(highLevelPosition.minusNewVector(new Vec2(distanceToDisengage, highLevelOrientation)), false, false, true);
-                        } else {
-                            isRobotMovingForward = true;
-                            isRobotMovingBackward = false;
-                            moveToPointDetectExceptions(highLevelPosition.plusNewVector(new Vec2(distanceToDisengage, highLevelOrientation)), true, false, true);
-                        }
-                        // Si l'on arriver jusq'ici, c'est qu'aucune exception n'a été levé
-                        doItAgain = (actualRetriesIfBlocked < maxRetriesIfBlocked);
-                    } catch (BlockedException definitivelyBlocked) {
-                        /** Cas très improbable... on balance à l'IA */
-                        immobilise();
-                        log.critical(definitivelyBlocked.logStack());
-                        log.debug("Catch de " + definitivelyBlocked + " dans moveToPointHandleException");
-                        log.critical("Lancement de UnableToMoveException dans MoveToPointException, visant " + finalAim.toString() + " cause physique");
-                        throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
+                        Thread.sleep(500);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
                     }
-                } else if (!expectWallImpact) {
-                    log.critical("Lancement de UnableToMoveException dans MoveToPointException, visant " + finalAim.getX() + " :: " + finalAim.getY() + " cause physique");
+                    immobilise();
+                }
+                else{
+                    immobilise();
                     throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
                 }
-
             }
 
         }
