@@ -214,16 +214,22 @@ public class EthWrapper implements Service {
         int x;
         int y;
         double angle;
-        try{
-            x=(int)Float.parseFloat(xyo[0]);
-            y=(int)Float.parseFloat(xyo[1]);
-            angle=Double.parseDouble(xyo[2]);
-        } catch (NumberFormatException e)
-        {
-            log.critical("BAD POSITION RECEIVED BY LL "+xyo[0]+" , "+xyo[1]+" , "+xyo[2]);
-            x=getCurrentPositionAndOrientation().getPosition().getX();
-            y=getCurrentPositionAndOrientation().getPosition().getY();
-            angle=getCurrentPositionAndOrientation().getOrientation();
+        if (xyo.length==3) {
+            try {
+                x = (int) Float.parseFloat(xyo[0]);
+                y = (int) Float.parseFloat(xyo[1]);
+                angle = Double.parseDouble(xyo[2]);
+            } catch (NumberFormatException e) {
+                log.critical("BAD POSITION RECEIVED BY LL " + xyo[0] + " , " + xyo[1] + " , " + xyo[2]);
+                x = getCurrentPositionAndOrientation().getPosition().getX();
+                y = getCurrentPositionAndOrientation().getPosition().getY();
+                angle = getCurrentPositionAndOrientation().getOrientation();
+            }
+        }else{
+            log.critical("BAD POSITION RECEIVED BY LL : xyo bad length");
+            x = getCurrentPositionAndOrientation().getPosition().getX();
+            y = getCurrentPositionAndOrientation().getPosition().getY();
+            angle = getCurrentPositionAndOrientation().getOrientation();
         }
         eth.setPositionAndOrientation(new XYO(new Vec2(x,y),angle));
         return eth.getPositionAndOrientation();
