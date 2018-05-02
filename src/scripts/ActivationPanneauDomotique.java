@@ -29,7 +29,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     private int distanceInterrupteur;
     private boolean basicDetection;
-    private boolean usingIA;
+    private boolean advancedDetection;
 
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -50,7 +50,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
         state.robot.goToWithoutDetection(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur));
         state.addObtainedPoints(25);
         state.setPanneauActive(true);
-        if (usingIA) {
+        if (advancedDetection) {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
             state.setCapteursActivated(true);
         }
@@ -85,6 +85,6 @@ public class ActivationPanneauDomotique extends AbstractScript{
         super.updateConfig();
         this.distanceInterrupteur = config.getInt(ConfigInfoRobot.DISTANCE_INTERRUPTEUR);
         this.basicDetection = config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-        this.usingIA = config.getBoolean(ConfigInfoRobot.USING_IA);
+        this.advancedDetection = config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
     }
 }

@@ -93,8 +93,8 @@ public enum ConfigInfoRobot implements ConfigInfo
     // TODO à compléter
 
     /** Paramètres Locomotion */
-    USING_IA(false),
     BASIC_DETECTION(true),
+    ADVANCED_DETECTION(false),
     BASIC_DETECTION_LOOP_DELAY(500),
     DETECTION_DISTANCE(500),
     DETECTION_RAY(300),

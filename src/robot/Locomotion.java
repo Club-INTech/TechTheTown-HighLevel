@@ -159,7 +159,7 @@ public class Locomotion implements Service {
     /**
      * On regarde si on utilise l'IA ou non
      */
-    private boolean usingIA;
+    private boolean advancedDetection;
 
     /**
      * Rayon du cercle autour du robot pour savoir s'il peut tourner (detectionRay légèrement supérieur à celui du robot)
@@ -502,7 +502,7 @@ public class Locomotion implements Service {
 
             /** TODO A adapté à l'année en cours */
             if (mustDetect) {
-                if (!usingIA){
+                if (!advancedDetection){
                     if (basicDetectionActivated) {
                         boolean obstacleDetected = basicDetect();
                         boolean wasImmobilised = false;
@@ -962,7 +962,7 @@ public class Locomotion implements Service {
         detectionRay = config.getInt(ConfigInfoRobot.DETECTION_RAY);
         feedbackLoopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
         basicDetectionActivated=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-        usingIA=config.getBoolean(ConfigInfoRobot.USING_IA);
+        advancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
 
         basicDetectionLoopDelay = config.getInt(ConfigInfoRobot.BASIC_DETECTION_LOOP_DELAY);
 

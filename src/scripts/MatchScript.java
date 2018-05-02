@@ -20,7 +20,7 @@ import utils.Log;
 public class MatchScript extends AbstractScript {
 
     private boolean basicDetection;
-    private boolean usingIA;
+    private boolean advancedDetection;
 
     public MatchScript(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -31,7 +31,7 @@ public class MatchScript extends AbstractScript {
     public void execute(int version,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast, NoPathFound {
         log.debug("////////// Execution MatchScript version "+version+" //////////");
         if(version==0){
-            if (usingIA) {
+            if (advancedDetection) {
                 gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
                 gameState.setCapteursActivated(false);
             }
@@ -148,7 +148,7 @@ public class MatchScript extends AbstractScript {
 
     public void updateConfig(){
         this.basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-        this.usingIA=config.getBoolean(ConfigInfoRobot.USING_IA);
+        this.advancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
     }
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
