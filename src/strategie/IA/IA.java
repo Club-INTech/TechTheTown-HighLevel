@@ -126,13 +126,9 @@ public class IA implements Service {
 
 
     private void resumeMatch(){
-        try {
-            while (findBestNode()!=null){
-                updateAvailableNodes();
-                tryToDoAnotherNode(this.lastNodeTried);
-            }
-        } catch (NoNodesAvailableException e) {
-            handleException(e);
+        while (!availableNodes.isEmpty()){
+            updateAvailableNodes();
+            tryToDoAnotherNode(this.lastNodeTried);
         }
         exploredNodes.clear();
         try {
@@ -204,6 +200,7 @@ public class IA implements Service {
 
         //La dernière action de la partie quand on a plus beaucoup de temps
         else if (gameState.getTimeEllapsed()>85000){
+            exploredNodes.clear();
             //Si on a une tour dans le robot, on va la déposer à DeposeCubes1
             if ((gameState.isTourAvantRemplie() || gameState.isTourArriereRemplie())){
                 Node deposeCubes0 = nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,0);

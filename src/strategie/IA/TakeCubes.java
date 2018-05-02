@@ -21,11 +21,6 @@ public class TakeCubes extends Node {
     }
 
     @Override
-    public void unableToMoveExceptionHandled(UnableToMoveException e) {
-
-    }
-
-    @Override
     public boolean isDone(){
         if(getVersionToExecute()==0)
             return getGameState().isTas_base_pris() || getIsDone();

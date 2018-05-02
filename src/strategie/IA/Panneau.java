@@ -22,11 +22,6 @@ public class Panneau extends Node {
     }
 
     @Override
-    public void unableToMoveExceptionHandled(UnableToMoveException e) {
-
-    }
-
-    @Override
     public boolean isDone() {
         return getGameState().isPanneauActive() || getIsDone();
     }

@@ -75,8 +75,6 @@ public abstract class Node {
         setDone(true);
     }
 
-    public abstract void unableToMoveExceptionHandled(UnableToMoveException e);
-
     @Override
     public String toString() {
         return "Nom : "+ getName()+", version : "+getVersionToExecute();
