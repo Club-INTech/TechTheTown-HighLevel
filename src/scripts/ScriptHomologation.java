@@ -11,6 +11,7 @@ import exceptions.NoPathFound;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
+import smartMath.Geometry;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -38,17 +39,25 @@ public class ScriptHomologation extends AbstractScript {
         Vec2 cubeYellowRelativePosition = Cubes.getCubeFromColor(Colors.YELLOW).getRelativeCoordsVec2(tasEnnemi).dotFloat(longueurCube);
         Vec2 directionToGo = coordTasCubes.minusNewVector(actualState.robot.getPosition());
         double prodScal = directionToGo.dot(new Vec2(100.0, actualState.robot.getOrientation()));
+        Circle aimArcCircle;
         if(prodScal>0){
             //On avance vers le cube jaune
             actualState.robot.moveNearPoint(coordTasCubes.plusNewVector(cubeYellowRelativePosition),longueurBrasAv,"forward");
             //On prend le cube jaune
             takeThisCube(actualState,"forward");
+            aimArcCircle= new Circle(coordTasCubes, this.longueurBrasAv+this.longueurCube*1.5+10, - 9 * Math.PI / 20, Math.PI / 2, true);
         }
         else{
             //On recule vers le cube jaune
             actualState.robot.moveNearPoint(coordTasCubes.plusNewVector(cubeYellowRelativePosition),longueurBrasAR,"backward");
             //On prend le cube jaune
             takeThisCube(actualState,"backward");
+            aimArcCircle= new Circle(coordTasCubes, this.longueurBrasAR+this.longueurCube*1.5+10, - 9 * Math.PI / 20, Math.PI / 2, true);
+        }
+        Vec2 aim = Geometry.closestPointOnCircle(actualState.robot.getPosition(),aimArcCircle);
+        //On ne sort seulement si la distance nous séparant de la position de sortie est supérieure à 2cm
+        if (actualState.robot.getPosition().distance(aim)>20) {
+            actualState.robot.goTo(aim);
         }
         //On dépose le cube jaune qu'on a pris
         DeposeCubes dpCubes=new DeposeCubes(config,log,hookFactory);
