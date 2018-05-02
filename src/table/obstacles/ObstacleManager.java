@@ -190,7 +190,7 @@ public class ObstacleManager implements Service
 				ObstacleProximity obstacleMobileUntested=mUntestedMobileObstacles.get(i);
 
 				//si l'obstacle est deja dans la liste des obstacles non-testés on l'ajoute dans la liste des obstacles
-				if (obstacleMobileUntested.getPosition().distance(position) < obstacleMobileUntested.getRadius()) {
+				if (obstacleMobileUntested.getPosition().distance(position) < obstacleMobileUntested.getRadius()*2) {
 					isThereAnObstacleIntersecting = true;
 					obstacleMobileUntested.numberOfTimeDetected++;
 					obstacleMobileUntested.setPosition(position);
@@ -227,13 +227,14 @@ public class ObstacleManager implements Service
 			// on vérifie si l'on ne voit pas un obstacle confirmé déjà présent
 			for (int i=0; i<mMobileObstacles.size(); i++) {
 				ObstacleProximity obstacleMobile=mMobileObstacles.get(i);
-				if (obstacleMobile.getPosition().distance(position) < obstacleMobile.getRadius()) {
+				if (obstacleMobile.getPosition().distance(position) < obstacleMobile.getRadius()*2) {
 					isThereAnObstacleIntersecting = true;
 
 					obstacleMobile.numberOfTimeDetected++;
 					obstacleMobile.setPosition(position);
 					obstacleMobile.setRadius(radius);
 					obstacleMobile.setLifeTime(defaultLifetime);
+					log.warning("On actualise (lifetime +"+defaultLifetime+") l'obstacle en position "+obstacleMobile.getPosition());
 
 					// si on l'a deja vu plein de fois
 					if (obstacleMobile.numberOfTimeDetected >= obstacleMobile.getMaxNumberOfTimeDetected()) {
