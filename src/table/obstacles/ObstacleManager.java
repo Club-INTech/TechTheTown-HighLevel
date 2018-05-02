@@ -513,7 +513,7 @@ public class ObstacleManager implements Service
 				out.newLine();
 				out.write("Produit scalaire: " + ennemyPos.dot(newAim));
 				out.flush();
-				log.warning("(isEnnemyForwardOrBackward) Ennemi détecté: "+ennemyPos);
+				log.warning("(isEnnemyForwardOrBackward) Ennemi détecté ! Table: "+closestEnnemy.getPosition()+" / Robot:"+ennemyPos);
 				return (ennemyPos.dot(newAim) > 0);
 			}
 			out.flush();
