@@ -2,6 +2,7 @@ package strategie.IA;
 
 import container.Service;
 import enums.ScriptNames;
+import enums.Speed;
 import exceptions.*;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
@@ -64,7 +65,9 @@ public class IA implements Service {
         int lastVersionExecuted = gameState.getLastScriptVersion();
         //On récupère la dernier node qu'on a essayé de réaliser
         this.lastNodeTried=nodes.getNodeByNameAndVersion(lastScriptExecuted,lastVersionExecuted);
-
+        if (this.lastNodeTried==nodes.getNodeByNameAndVersion(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0)){
+            gameState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+        }
 
         if (e instanceof ImmobileEnnemyForOneSecondAtLeast){
             log.warning("IA HANDLED EXCEPTION : ImmobileEnnemyForOneSecondAtLeast");
