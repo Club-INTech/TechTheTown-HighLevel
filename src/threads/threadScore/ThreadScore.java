@@ -21,12 +21,12 @@ public class ThreadScore extends AbstractThread {
 
     public ThreadScore(Log log, Config config, GameState state){
         super(config, log);
+        this.log=log;
         Thread.currentThread().setPriority(4);
         this.config=config;
-        this.log=log;
         this.state=state;
         updateConfig();
-        this.frame = new Frame(this.log, this.state,this.symetry);
+        this.frame = new Frame(log, this.state,this.symetry);
     }
 
     @Override

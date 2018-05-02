@@ -15,6 +15,7 @@ public class Panel extends JPanel {
     private Log log;
 
     public Panel(Log log, GameState state, boolean symetry){
+        this.log=log;
         this.state=state;
         this.symetry=symetry;
         this.points=0;
@@ -35,9 +36,9 @@ public class Panel extends JPanel {
             posTextX=70;
         }
         if (this.state.getObtainedPoints()!=this.points) {
+            this.points = this.state.getObtainedPoints();
             log.critical("Points : "+this.points);
         }
-        this.points = this.state.getObtainedPoints();
         g.drawString(Integer.toString(this.points), posTextX, 120);
     }
 }
