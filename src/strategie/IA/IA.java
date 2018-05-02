@@ -84,12 +84,12 @@ public class IA implements Service {
             log.warning("On se tourne pour essayer de changer notre perspective, et on attend 2s le temps que la situation se stabilise");
             turnRelativelyHandleException(Math.PI/2);
             exploredNodes.clear();
+            updateAvailableNodes();
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-            tryToDoAnotherNode(null);
         }
         else if (e instanceof UnableToMoveException){
             Vec2 aim = ((UnableToMoveException) e).getAim();
@@ -122,7 +122,7 @@ public class IA implements Service {
             }
             tryToDoAnotherNode(this.lastNodeTried);
         }
-        log.warning("///// IA ///// On a résolu les exceptions, on continue le match");
+        log.warning("///// IA ///// On a résolu l'exception, on continue le match");
         resumeMatch();
     }
 
@@ -309,25 +309,30 @@ public class IA implements Service {
                 exploredNodes.add(previousFailedNode);
             }
         }
-        Node nextNode = null;
+        Node nextNode;
         try {
             nextNode = findBestNode();
-            exploredNodes.add(nextNode);
         } catch (NoNodesAvailableException e) {
             handleException(e);
             return;
         }
-        try {
-            this.lastNodeTried = nextNode;
-            log.debug("////////// IA ////////// SELECTED NODE : " + nextNode.getName() + " " + nextNode.getVersionToExecute());
-            log.debug("////////// IA ////////// EXECUTE : " + nextNode.getName() + " " + nextNode.getVersionToExecute());
-            nextNode.execute(gameState);
-            nextNode.setDone(true);
-            log.debug("Node ("+ nextNode.getName() +", "+nextNode.getVersionToExecute()+") is done");
-        } catch (Exception e){
-            log.debug(e.getClass());
-            gameState.robot.immobilise();
-            handleException(e);
+        if (nextNode!=null) {
+            exploredNodes.add(nextNode);
+            try {
+                this.lastNodeTried = nextNode;
+                log.debug("////////// IA ////////// SELECTED NODE : " + nextNode.getName() + " " + nextNode.getVersionToExecute());
+                log.debug("////////// IA ////////// EXECUTE : " + nextNode.getName() + " " + nextNode.getVersionToExecute());
+                nextNode.execute(gameState);
+                nextNode.setDone(true);
+                log.debug("Node (" + nextNode.getName() + ", " + nextNode.getVersionToExecute() + ") is done");
+            } catch (Exception e) {
+                log.debug(e.getClass());
+                gameState.robot.immobilise();
+                handleException(e);
+            }
+        }
+        else{
+            handleException(new NoNodesAvailableException());
         }
     }
 
