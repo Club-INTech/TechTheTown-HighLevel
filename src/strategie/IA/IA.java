@@ -321,13 +321,15 @@ public class IA implements Service {
             exploredNodes.add(nextNode);
             try {
                 this.lastNodeTried = nextNode;
+                this.gameState.setLastScript(nextNode.getScriptName());
+                this.gameState.setLastScriptVersion(nextNode.getVersionToExecute());
                 log.debug("////////// IA ////////// SELECTED NODE : " + nextNode.getName() + " " + nextNode.getVersionToExecute());
                 log.debug("////////// IA ////////// EXECUTE : " + nextNode.getName() + " " + nextNode.getVersionToExecute());
                 nextNode.execute(gameState);
                 nextNode.setDone(true);
                 log.debug("Node (" + nextNode.getName() + ", " + nextNode.getVersionToExecute() + ") is done");
             } catch (Exception e) {
-                log.debug(e.getClass());
+                log.debug("Exception : "+e.getClass());
                 gameState.robot.immobilise();
                 handleException(e);
             }

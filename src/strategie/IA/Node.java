@@ -102,6 +102,8 @@ public abstract class Node {
 
     public String getName() { return scriptName.getName(); }
 
+    public ScriptNames getScriptName() { return scriptName; }
+
     public boolean getIsDone(){ return isDone; }
 
     public void setDone(boolean done) {
