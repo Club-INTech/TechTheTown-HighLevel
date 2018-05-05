@@ -18,6 +18,7 @@
  */
 
 import container.Container;
+import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
@@ -57,6 +58,7 @@ public class MainHomologation {
             config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
             log = container.getService(Log.class);
             realState = container.getService(GameState.class);
+            realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion = container.getService(Locomotion.class);
