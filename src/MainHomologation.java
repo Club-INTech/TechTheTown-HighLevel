@@ -31,6 +31,7 @@ import table.Table;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadSensor;
+import utils.Log;
 
 /**
  * Main Homologation
@@ -41,6 +42,7 @@ public class MainHomologation {
     static GameState realState;
     static ScriptManager scriptmanager;
     static EthWrapper mEthWrapper;
+    static Log log;
     static Locomotion mLocomotion;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
@@ -53,6 +55,7 @@ public class MainHomologation {
             config = container.getConfig();
             config.override(ConfigInfoRobot.BASIC_DETECTION,true);
             config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
+            log = container.getService(Log.class);
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
@@ -77,7 +80,7 @@ public class MainHomologation {
             config.override(ConfigInfoRobot.BASIC_DETECTION,false);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.logStackTrace(e.getStackTrace());
         }
     }
 
