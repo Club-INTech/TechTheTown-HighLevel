@@ -34,7 +34,7 @@ public class DeposeCubes extends AbstractScript {
         updateConfig();
         versions = new int[]{0, 1};
         this.xEntry=new int[]{970,600};
-        this.yEntry=new int[]{150+radius,150+radius};
+        this.yEntry=new int[]{150+radius,220};
     }
 
     /**
