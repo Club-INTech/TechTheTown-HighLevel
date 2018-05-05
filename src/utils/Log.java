@@ -142,12 +142,15 @@ public class Log implements Service
 	}
 
 	/**
-	 * Affiche une stackTrace
+	 * Affiche une exception et sa stack trace
 	 *
-	 * @param stackTraceElements stackTrace à logger
+	 * @param exception exception à logger
 	 */
-	public void logStackTrace(StackTraceElement[] stackTraceElements){
+	public void logException(Exception exception){
+		String className = exception.getClass().toString();
+		StackTraceElement[] stackTraceElements = exception.getStackTrace();
 		StringBuilder toLog = new StringBuilder();
+		toLog.append(className);
 		for (StackTraceElement stackTraceElement : stackTraceElements){
 			toLog.append(stackTraceElement.toString());
 			toLog.append("\r\n");

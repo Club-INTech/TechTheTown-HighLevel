@@ -80,7 +80,7 @@ public class MainHomologation {
             config.override(ConfigInfoRobot.BASIC_DETECTION,false);
 
         } catch (Exception e) {
-            log.logStackTrace(e.getStackTrace());
+            log.logException(e);
         }
     }
 
