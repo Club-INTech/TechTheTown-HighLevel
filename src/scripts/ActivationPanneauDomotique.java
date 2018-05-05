@@ -28,8 +28,8 @@ public class ActivationPanneauDomotique extends AbstractScript{
     /** Eléments appelés par la config */
 
     private int distanceInterrupteur;
-    private boolean basicDetection;
-    private boolean advancedDetection;
+    private boolean usingBasicDetection;
+    private boolean usingAdvancedDetection;
 
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -45,12 +45,12 @@ public class ActivationPanneauDomotique extends AbstractScript{
     @Override
     public void execute(int versionToExecute, GameState state) throws UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution ActivePanneauDomotique version "+versionToExecute+" //////////");
-        if (advancedDetection) {
+        if (usingAdvancedDetection) {
             state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
             state.setCapteursActivated(false);
         }
-        if(basicDetection){
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        if(usingBasicDetection){
+            state.robot.setBasicDetection(false);
         }
         state.robot.turn(-Math.PI/2);
         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
@@ -58,12 +58,12 @@ public class ActivationPanneauDomotique extends AbstractScript{
         state.robot.goToWithoutDetection(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur),true);
         state.addObtainedPoints(25);
         state.setPanneauActive(true);
-        if (advancedDetection) {
+        if (usingAdvancedDetection) {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
             state.setCapteursActivated(true);
         }
-        if(basicDetection){
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+        if(usingBasicDetection){
+            state.robot.setBasicDetection(true);
         }
         state.robot.goTo(new Vec2(xEntry, yEntry));
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
@@ -92,7 +92,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
     public void updateConfig() {
         super.updateConfig();
         this.distanceInterrupteur = config.getInt(ConfigInfoRobot.DISTANCE_INTERRUPTEUR);
-        this.basicDetection = config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-        this.advancedDetection = config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
+        this.usingBasicDetection = config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        this.usingAdvancedDetection = config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
     }
 }

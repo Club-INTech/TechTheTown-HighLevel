@@ -57,6 +57,9 @@ public class GameState implements Service
     /** Points marqués depuis le debut du match */
     private int obtainedPoints;
 
+    /** On active ou désactive la basicDetection*/
+    private boolean basicDetectionIgnored;
+
     /** Indice du pattern trouvé */
     private int indicePattern;
 

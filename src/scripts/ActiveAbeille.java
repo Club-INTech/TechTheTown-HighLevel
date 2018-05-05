@@ -25,8 +25,8 @@ public class ActiveAbeille extends AbstractScript {
     private int yEntryReal;
     private int xEntryPathfindingAvaible; //position de sortie permettant au pathfinding d'être lancé
     private int yEntryPathfindingAvaible;
-    private boolean basicDetection;
-    private boolean advancedDetection;
+    private boolean usingBasicDetection;
+    private boolean usingAdvancedDetection;
 
     /** Eléments appelés par la config */
     private int radius; //rayon du robot
@@ -44,8 +44,8 @@ public class ActiveAbeille extends AbstractScript {
     public void updateConfig() {
         super.updateConfig();
         radius = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
-        basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-        advancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
+        usingBasicDetection =config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        usingAdvancedDetection =config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class ActiveAbeille extends AbstractScript {
                 //On disable le hook du bras avant
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
             }
-            if(basicDetection){
+            if(usingBasicDetection){
                 state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             }
             Vec2 aim = new Vec2(xEntryPathfindingAvaible,yEntryPathfindingAvaible);
@@ -96,12 +96,12 @@ public class ActiveAbeille extends AbstractScript {
         }
         if(versionToExecute==1) {
             //On vérifie quel bras de l'abeille on va devoir utiliser, à l'aide d'un produit scalaire
-            if (advancedDetection) {
+            if (usingAdvancedDetection) {
                 state.robot.useActuator(ActuatorOrder.SUS_OFF, true);
                 state.setCapteursActivated(false);
             }
-            if (basicDetection) {
-                state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE, true);
+            if (usingBasicDetection) {
+                state.robot.setBasicDetection(false);
             }
 
             if (prodScal > 0) {
@@ -125,12 +125,12 @@ public class ActiveAbeille extends AbstractScript {
             //On retourne à une position atteignable par le pathfinding
             Vec2 aim = new Vec2(xEntryPathfindingAvaible, yEntryPathfindingAvaible);
             state.robot.goTo(aim);
-            if (advancedDetection) {
+            if (usingAdvancedDetection) {
                 state.robot.useActuator(ActuatorOrder.SUS_ON, true);
                 state.setCapteursActivated(true);
             }
-            if (basicDetection) {
-                state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE, true);
+            if (usingBasicDetection) {
+                state.robot.setBasicDetection(true);
             }
             log.debug("////////// End ActiveAbeille version " + versionToExecute + " //////////");
         }

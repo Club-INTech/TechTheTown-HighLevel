@@ -28,6 +28,7 @@ import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.Vec2;
 import smartMath.XYO;
+import strategie.GameState;
 import table.Table;
 import threads.dataHandlers.ThreadEvents;
 import utils.Log;
@@ -152,9 +153,14 @@ public class Locomotion implements Service {
 
     /**
      * Si la détection basique est activée ou non
+     */
+    private boolean basicDetectionActivated=true;
+
+    /**
+     * Si on utilise la basic detection
      * Override par la config
      */
-    private boolean basicDetectionActivated;
+    private boolean usingBasicDetection;
 
     /**
      * On regarde si on utilise l'IA ou non
@@ -240,7 +246,6 @@ public class Locomotion implements Service {
      */
     private ThreadEvents thEvent;
 
-    private Robot robot;
     /**
      * Constructeur de Locomotion
      *
@@ -505,26 +510,28 @@ public class Locomotion implements Service {
     private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, ImmobileEnnemyForOneSecondAtLeast, UnableToMoveException {
         thEvent.setIsMoving(true);
         if (mustDetect){
-            if (basicDetectionActivated){
-                boolean obstacleDetected = basicDetect();
-                boolean wasImmobilised = false;
-                if (obstacleDetected) {
-                    immobilise();
-                    wasImmobilised = true;
-                }
-                while (obstacleDetected) {
-                    try {
-                        Thread.sleep(basicDetectionLoopDelay);
-                        obstacleDetected = basicDetect();
-                    } catch (InterruptedException e) {
-                        log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
-                        obstacleDetected = false;
-                        e.printStackTrace();
+            if (usingBasicDetection) {
+                if (basicDetectionActivated) {
+                    boolean obstacleDetected = basicDetect();
+                    boolean wasImmobilised = false;
+                    if (obstacleDetected) {
+                        immobilise();
+                        wasImmobilised = true;
                     }
-                }
-                if (wasImmobilised) {
-                    updateCurrentPositonAndOrientation();
-                    moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
+                    while (obstacleDetected) {
+                        try {
+                            Thread.sleep(basicDetectionLoopDelay);
+                            obstacleDetected = basicDetect();
+                        } catch (InterruptedException e) {
+                            log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
+                            obstacleDetected = false;
+                            e.printStackTrace();
+                        }
+                    }
+                    if (wasImmobilised) {
+                        updateCurrentPositonAndOrientation();
+                        moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
+                    }
                 }
             }
         }
@@ -542,26 +549,28 @@ public class Locomotion implements Service {
             /** TODO A adapté à l'année en cours */
             if (mustDetect) {
                 if (!advancedDetection){
-                    if (basicDetectionActivated) {
-                        boolean obstacleDetected = basicDetect();
-                        boolean wasImmobilised = false;
-                        if (obstacleDetected) {
-                            immobilise();
-                            wasImmobilised = true;
-                        }
-                        while (obstacleDetected) {
-                            try {
-                                Thread.sleep(basicDetectionLoopDelay);
-                                obstacleDetected = basicDetect();
-                            } catch (InterruptedException e) {
-                                log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
-                                obstacleDetected = false;
-                                e.printStackTrace();
+                    if (usingBasicDetection) {
+                        if (basicDetectionActivated) {
+                            boolean obstacleDetected = basicDetect();
+                            boolean wasImmobilised = false;
+                            if (obstacleDetected) {
+                                immobilise();
+                                wasImmobilised = true;
                             }
-                        }
-                        if (wasImmobilised) {
-                            updateCurrentPositonAndOrientation();
-                            moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
+                            while (obstacleDetected) {
+                                try {
+                                    Thread.sleep(basicDetectionLoopDelay);
+                                    obstacleDetected = basicDetect();
+                                } catch (InterruptedException e) {
+                                    log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
+                                    obstacleDetected = false;
+                                    e.printStackTrace();
+                                }
+                            }
+                            if (wasImmobilised) {
+                                updateCurrentPositonAndOrientation();
+                                moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
+                            }
                         }
                     }
                 }
@@ -1004,7 +1013,6 @@ public class Locomotion implements Service {
         this.basicDetectionActivated = basicDetection;
     }
 
-
     @Override
     public void updateConfig() {
         //TODO : remplir la config !!
@@ -1014,7 +1022,7 @@ public class Locomotion implements Service {
         detectionDistance = config.getInt(ConfigInfoRobot.DETECTION_DISTANCE);
         detectionRay = config.getInt(ConfigInfoRobot.DETECTION_RAY);
         feedbackLoopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
-        basicDetectionActivated=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        usingBasicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
         advancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
 
         basicDetectionLoopDelay = config.getInt(ConfigInfoRobot.BASIC_DETECTION_LOOP_DELAY);

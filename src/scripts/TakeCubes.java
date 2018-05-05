@@ -22,8 +22,8 @@ public class TakeCubes extends AbstractScript {
     private int longueurBrasArriere;
     private int longueurBrasUtilise;
 
-    private boolean basicDetection;
-    private boolean advancedDetection;
+    private boolean usingBasicDetection;
+    private boolean usingAdvancedDetection;
 
     private int indicePattern;
     private TasCubes currentTas;
@@ -342,12 +342,12 @@ public class TakeCubes extends AbstractScript {
      */
     private boolean takeThisCube(GameState state, Cubes currentCube) throws InterruptedException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         boolean cubeSuccessfullyTaken=false;
-        if (advancedDetection) {
+        if (usingAdvancedDetection) {
             state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
             state.setCapteursActivated(false);
         }
-        if(basicDetection){
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
+        if(usingBasicDetection){
+            state.robot.setBasicDetection(false);
         }
         if (this.brasUtilise.equals(BrasUtilise.AVANT)){
             //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
@@ -398,12 +398,12 @@ public class TakeCubes extends AbstractScript {
             }
         }
 
-        if (advancedDetection) {
+        if (usingAdvancedDetection) {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);
             state.setCapteursActivated(true);
         }
-        if(basicDetection){
-            state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+        if(usingBasicDetection){
+            state.robot.setBasicDetection(true);
         }
 
         return cubeSuccessfullyTaken;
@@ -559,7 +559,7 @@ public class TakeCubes extends AbstractScript {
         this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         this.longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
         this.longueurBrasArriere=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_ARRIERE);
-        this.basicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-        this.advancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
+        this.usingBasicDetection =config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        this.usingAdvancedDetection =config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
     }
 }
