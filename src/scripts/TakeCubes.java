@@ -452,7 +452,7 @@ public class TakeCubes extends AbstractScript {
 
         for (int i = 0; i < correctionVectorList.length; i++) {
             if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
-                state.robot.moveNearPointWithoutDetection(tableCoordsCurrentCube.plusNewVector(correctionVectorList[i]), this.longueurBrasUtilise, this.directionRobot);
+                state.robot.moveNearPoint(tableCoordsCurrentCube.plusNewVector(correctionVectorList[i]), this.longueurBrasUtilise, this.directionRobot);
                 boolean cubeTakenSuccessfully = takeThisCube(state, currentCube);
                 if (cubeTakenSuccessfully) {
                     finalOffsetVector = correctionVectorList[i];
