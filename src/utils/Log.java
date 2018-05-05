@@ -142,6 +142,20 @@ public class Log implements Service
 	}
 
 	/**
+	 * Affiche une stackTrace
+	 *
+	 * @param stackTraceElements stackTrace à logger
+	 */
+	public void logStackTrace(StackTraceElement[] stackTraceElements){
+		StringBuilder toLog = new StringBuilder();
+		for (StackTraceElement stackTraceElement : stackTraceElements){
+			toLog.append(stackTraceElement.toString());
+			toLog.append("\r\n");
+		}
+		writeToLog(toLog.toString(), criticalPrefix, System.out);
+	}
+
+	/**
 	 * Affichage de warnings, en orange. User-friendly
 	 *
 	 * @param message message a logguer
