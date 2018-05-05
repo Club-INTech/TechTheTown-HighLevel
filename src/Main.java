@@ -59,6 +59,9 @@ public class Main {
             // TODO : initialisation des variables globales du robot & objets...
             container = new Container();
             config = container.getConfig();
+            if (config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION)){
+                config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
+            }
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
@@ -66,9 +69,6 @@ public class Main {
             patternRecognition = container.getService(PatternRecognition.class);
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
-            }
-            if (config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION)){
-                config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
             }
             matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
             Thread.currentThread().setPriority(6);
