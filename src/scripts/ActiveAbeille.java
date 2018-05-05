@@ -42,7 +42,7 @@ public class ActiveAbeille extends AbstractScript {
         this.yEntryPathfindingAvaible=1700;
         this.xEntry2=780;
         this.yEntry2=1180;
-        versions = new int[]{0,1};
+        versions = new int[]{0,1,2};
     }
     @Override
     public void updateConfig() {
