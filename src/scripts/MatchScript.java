@@ -126,13 +126,13 @@ public class MatchScript extends AbstractScript {
             DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
             dpCubes0.goToThenExec(0, gameState);
 
-            //On active le panneau domotique
-            ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
-            actPD.goToThenExec(0,gameState);
-            
             //On prend le tas de cubes 0
             TakeCubes tk0=new TakeCubes(config,log,hookFactory);
             tk0.goToThenExec(0,gameState);
+
+            //On active le panneau domotique
+            ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
+            actPD.goToThenExec(0,gameState);
 
             //On dépose les cubes à la deuxième position
             DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
