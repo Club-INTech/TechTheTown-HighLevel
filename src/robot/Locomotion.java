@@ -28,7 +28,6 @@ import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.Vec2;
 import smartMath.XYO;
-import strategie.GameState;
 import table.Table;
 import threads.dataHandlers.ThreadEvents;
 import utils.Log;
@@ -509,34 +508,9 @@ public class Locomotion implements Service {
      */
     private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, ImmobileEnnemyForOneSecondAtLeast, UnableToMoveException {
         thEvent.setIsMoving(true);
-        if (mustDetect){
-            if (usingBasicDetection) {
-                if (basicDetectionActivated) {
-                    boolean obstacleDetected = basicDetect();
-                    boolean wasImmobilised = false;
-                    if (obstacleDetected) {
-                        immobilise();
-                        wasImmobilised = true;
-                    }
-                    while (obstacleDetected) {
-                        try {
-                            Thread.sleep(basicDetectionLoopDelay);
-                            obstacleDetected = basicDetect();
-                        } catch (InterruptedException e) {
-                            log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
-                            obstacleDetected = false;
-                            e.printStackTrace();
-                        }
-                    }
-                    if (wasImmobilised) {
-                        updateCurrentPositonAndOrientation();
-                        moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
-                    }
-                }
-            }
-        }
-        moveToPointSymmetry(aim, turnOnly);
-        do {
+        boolean orderSent=false;
+        while (thEvent.getIsMoving()) {
+
             getCurrentPositionAndOrientation();
 
             if (thEvent.getUnableToMoveEvent().peek() != null) {
@@ -546,7 +520,7 @@ public class Locomotion implements Service {
                 }
             }
 
-            /** TODO A adapté à l'année en cours */
+            // TODO A adapté à l'année en cours
             if (mustDetect) {
                 if (!advancedDetection){
                     if (usingBasicDetection) {
@@ -615,10 +589,13 @@ public class Locomotion implements Service {
                         }
                     }
                 }
+                //On le met à la fin, afin de savoir si on détecte déjà un obstacle, et le cas échéant directement renoyer une exception
+                if (!orderSent) {
+                    orderSent=true;
+                    moveToPointSymmetry(aim, turnOnly);
+                }
             }
         }
-        while (thEvent.getIsMoving());
-
     }
 
     /**
