@@ -184,7 +184,6 @@ public class DeposeCubes extends AbstractScript {
                     state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
                     resetTour(true,state);
                     state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
-
                 }
             }
             state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);

@@ -154,7 +154,7 @@ public class Locomotion implements Service {
     /**
      * Si la détection basique est activée ou non
      */
-    private boolean basicDetectionActivated=true;
+    private boolean basicDetectionActivated = true;
 
     /**
      * Si on utilise la basic detection
