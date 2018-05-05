@@ -45,6 +45,7 @@ public class ScriptHomologation extends AbstractScript {
             actualState.robot.moveNearPoint(coordTasCubes.plusNewVector(cubeYellowRelativePosition),longueurBrasAv,"forward");
             //On prend le cube jaune
             takeThisCube(actualState,"forward");
+            actualState.setTourAvantRemplie(true);
             actualState.robot.moveLengthwise(-200);
         }
         else{
@@ -52,6 +53,7 @@ public class ScriptHomologation extends AbstractScript {
             actualState.robot.moveNearPoint(coordTasCubes.plusNewVector(cubeYellowRelativePosition),longueurBrasAR,"backward");
             //On prend le cube jaune
             takeThisCube(actualState,"backward");
+            actualState.setTourArriereRemplie(true);
             actualState.robot.moveLengthwise(200);
         }
 
