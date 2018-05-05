@@ -22,42 +22,22 @@ public class ScriptHomologation extends AbstractScript {
     private int longueurCube;
     private int longueurBrasAv;
     private int longueurBrasAR;
+    private int indiceTasCubeAPrendre;
 
     public ScriptHomologation(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
+        indiceTasCubeAPrendre=2;
         updateConfig();
     }
 
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, BadVersionException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast, NoPathFound {
-        //On y va avec la basicDetection
-        actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
-        //on se dirige vers le tas de cube numéro 4
-        TasCubes tasEnnemi = TasCubes.getTasFromID(2);
-        Vec2 coordTasCubes=tasEnnemi.getCoordsVec2();
-        Vec2 cubeYellowRelativePosition = Cubes.getCubeFromColor(Colors.YELLOW).getRelativeCoordsVec2(tasEnnemi).dotFloat(longueurCube);
-        Vec2 directionToGo = coordTasCubes.minusNewVector(actualState.robot.getPosition());
-        double prodScal = directionToGo.dot(new Vec2(100.0, actualState.robot.getOrientation()));
-        Circle aimArcCircle;
-        if(prodScal>0){
-            //On avance vers le cube jaune
-            actualState.robot.moveNearPoint(coordTasCubes.plusNewVector(cubeYellowRelativePosition),longueurBrasAv,"forward");
-            //On prend le cube jaune
-            takeThisCube(actualState,"forward");
-            actualState.setTourAvantRemplie(true);
-            actualState.robot.moveLengthwise(-200);
-        }
-        else{
-            //On recule vers le cube jaune
-            actualState.robot.moveNearPoint(coordTasCubes.plusNewVector(cubeYellowRelativePosition),longueurBrasAR,"backward");
-            //On prend le cube jaune
-            takeThisCube(actualState,"backward");
-            actualState.setTourArriereRemplie(true);
-            actualState.robot.moveLengthwise(200);
-        }
+        actualState.setRecognitionDone(true);
+        actualState.setIndicePattern(0);
+        TakeCubes takeCubes=new TakeCubes(config,log,hookFactory);
+        takeCubes.goToThenExec(2,actualState);
 
-        //On dépose le cube jaune qu'on a pris
         DeposeCubes dpCubes=new DeposeCubes(config,log,hookFactory);
         dpCubes.goToThenExec(0,actualState);
 
@@ -65,9 +45,7 @@ public class ScriptHomologation extends AbstractScript {
 
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
-        Circle aimArcCircle = new Circle(TasCubes.getTasFromID(4).getCoordsVec2(), (longueurBrasAR+longueurBrasAv)/2, - 9 * Math.PI / 20, Math.PI / 2, true);
-        Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
-        return new Circle(aim);
+        return new Circle(robotPosition);
     }
 
     @Override

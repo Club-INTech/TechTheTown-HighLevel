@@ -68,7 +68,7 @@ public class MainHomologation {
             container.startInstanciedThreads();
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
-            realState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+            realState.robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
 
 
         } catch (ContainerException p) {

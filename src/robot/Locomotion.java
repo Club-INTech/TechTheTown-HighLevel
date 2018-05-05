@@ -504,6 +504,30 @@ public class Locomotion implements Service {
      */
     private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, ImmobileEnnemyForOneSecondAtLeast, UnableToMoveException {
         thEvent.setIsMoving(true);
+        if (mustDetect){
+            if (basicDetectionActivated){
+                boolean obstacleDetected = basicDetect();
+                boolean wasImmobilised = false;
+                if (obstacleDetected) {
+                    immobilise();
+                    wasImmobilised = true;
+                }
+                while (obstacleDetected) {
+                    try {
+                        Thread.sleep(basicDetectionLoopDelay);
+                        obstacleDetected = basicDetect();
+                    } catch (InterruptedException e) {
+                        log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
+                        obstacleDetected = false;
+                        e.printStackTrace();
+                    }
+                }
+                if (wasImmobilised) {
+                    updateCurrentPositonAndOrientation();
+                    moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
+                }
+            }
+        }
         moveToPointSymmetry(aim, turnOnly);
         do {
             getCurrentPositionAndOrientation();
