@@ -59,7 +59,7 @@ public class ScriptHomologation extends AbstractScript {
 
         //On dépose le cube jaune qu'on a pris
         DeposeCubes dpCubes=new DeposeCubes(config,log,hookFactory);
-        dpCubes.goToThenExec(1,actualState);
+        dpCubes.goToThenExec(0,actualState);
 
     }
 
