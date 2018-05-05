@@ -439,7 +439,7 @@ public class IA implements Service {
      * Créer les noeuds du graphe de décision
      */
     private NodeArray createNodes() throws BadVersionException {
-        Node abeille = new Abeille(ScriptNames.ACTIVE_ABEILLE,0,  scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node abeille = new Abeille(ScriptNames.ACTIVE_ABEILLE,1,  scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node panneau = new Panneau(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0,  scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node takeCubes = new TakeCubes(ScriptNames.TAKE_CUBES,0, scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node takeCubes2 = new TakeCubes(ScriptNames.TAKE_CUBES,1, scriptManager, gameState,pathfinding,hookFactory,config, log);
