@@ -34,7 +34,7 @@ public class ScriptHomologation extends AbstractScript {
         //On y va avec la basicDetection
         actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
         //on se dirige vers le tas de cube numéro 4
-        TasCubes tasEnnemi = TasCubes.getTasFromID(4);
+        TasCubes tasEnnemi = TasCubes.getTasFromID(2);
         Vec2 coordTasCubes=tasEnnemi.getCoordsVec2();
         Vec2 cubeYellowRelativePosition = Cubes.getCubeFromColor(Colors.YELLOW).getRelativeCoordsVec2(tasEnnemi).dotFloat(longueurCube);
         Vec2 directionToGo = coordTasCubes.minusNewVector(actualState.robot.getPosition());
