@@ -51,6 +51,8 @@ public class MainHomologation {
         try {
             container = new Container();
             config = container.getConfig();
+            config.override(ConfigInfoRobot.BASIC_DETECTION,true);
+            config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
@@ -71,8 +73,6 @@ public class MainHomologation {
         try {
 
             waitMatchBegin();
-            config.override(ConfigInfoRobot.BASIC_DETECTION,true);
-            config.override(ConfigInfoRobot.ADVANCED_DETECTION, false);
             scriptmanager.getScript(ScriptNames.SCRIPT_HOMOLOGATION).goToThenExec(0, realState);
             config.override(ConfigInfoRobot.BASIC_DETECTION,false);
 
