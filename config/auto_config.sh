@@ -16,7 +16,7 @@ function monoGrep {			# Permet de récupérer l'argument dans la config (true/fa
 }
 
 function parameterTest {	# Test si le paramètre $1 est égal à la valeur $2 et, le cas échéant, le remplace par $3
-	if [ $(monoGrep "$1") = "$2" ]; then
+	if [ "$(monoGrep "$1")" = "$2" ]; then
 
 		echo "WARNING: $1 is $2"
 		echo "Setting $1 to $3"
@@ -28,8 +28,12 @@ function parameterTest {	# Test si le paramètre $1 est égal à la valeur $2 et
 	fi
 }
 
-configFile='./config.txt'
+configFile=""$( dirname "${BASH_SOURCE[0]}" )"/config.txt"
 
+if [ ! -e $configFile ]; then
+	echo "Erreur: fichier de config invalide!"
+	exit
+fi
 
 ### COLOR CHANGE
 
@@ -139,3 +143,5 @@ fi
 
 echo ""
 echo "May the Force be with Aspie"
+
+exit
