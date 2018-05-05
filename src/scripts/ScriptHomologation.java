@@ -45,20 +45,16 @@ public class ScriptHomologation extends AbstractScript {
             actualState.robot.moveNearPoint(coordTasCubes.plusNewVector(cubeYellowRelativePosition),longueurBrasAv,"forward");
             //On prend le cube jaune
             takeThisCube(actualState,"forward");
-            aimArcCircle= new Circle(coordTasCubes, this.longueurBrasAv+this.longueurCube*1.5+10, - 9 * Math.PI / 20, Math.PI / 2, true);
+            actualState.robot.moveLengthwise(-200);
         }
         else{
             //On recule vers le cube jaune
             actualState.robot.moveNearPoint(coordTasCubes.plusNewVector(cubeYellowRelativePosition),longueurBrasAR,"backward");
             //On prend le cube jaune
             takeThisCube(actualState,"backward");
-            aimArcCircle= new Circle(coordTasCubes, this.longueurBrasAR+this.longueurCube*1.5+10, - 9 * Math.PI / 20, Math.PI / 2, true);
+            actualState.robot.moveLengthwise(200);
         }
-        Vec2 aim = Geometry.closestPointOnCircle(actualState.robot.getPosition(),aimArcCircle);
-        //On ne sort seulement si la distance nous séparant de la position de sortie est supérieure à 2cm
-        if (actualState.robot.getPosition().distance(aim)>20) {
-            actualState.robot.goTo(aim);
-        }
+
         //On dépose le cube jaune qu'on a pris
         DeposeCubes dpCubes=new DeposeCubes(config,log,hookFactory);
         dpCubes.goToThenExec(1,actualState);
