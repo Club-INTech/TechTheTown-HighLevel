@@ -18,27 +18,19 @@
  */
 
 import container.Container;
-import enums.ActuatorOrder;
-import graphics.AffichageDebug;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
-import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
-import simulator.ThreadSimulator;
 import strategie.GameState;
-import strategie.IA.IA;
 import table.Table;
-import threads.ThreadInterface;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadSensor;
-import threads.threadScore.ThreadScore;
-import utils.Log;
 
 /**
  * Main Homologation
@@ -80,6 +72,7 @@ public class MainHomologation {
 
             waitMatchBegin();
             config.override(ConfigInfoRobot.BASIC_DETECTION,true);
+            config.override(ConfigInfoRobot.ADVANCED_DETECTION, false);
             scriptmanager.getScript(ScriptNames.SCRIPT_HOMOLOGATION).goToThenExec(0, realState);
             config.override(ConfigInfoRobot.BASIC_DETECTION,false);
 
