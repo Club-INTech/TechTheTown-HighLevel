@@ -163,8 +163,8 @@ public class ThreadSensor extends AbstractThread
         this.gameState = gameState;
         this.sensorFL=new Sensor(0,100,-127,this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
         this.sensorFR=new Sensor(1,100,127,-this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
-        this.sensorBL=new Sensor(2,-100,-127,this.sensorOrientationB-Math.PI,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
-        this.sensorBR=new Sensor(3,-100,127,-this.sensorOrientationB+Math.PI,this.detectionAngle,this.maxSensorRange,150, this.uncertainty);
+        this.sensorBL=new Sensor(2,-100,-127,this.sensorOrientationB-Math.PI,this.detectionAngle,this.maxSensorRange, this.minSensorRange, this.uncertainty);
+        this.sensorBR=new Sensor(3,-100,127,-this.sensorOrientationB+Math.PI,this.detectionAngle,this.maxSensorRange, this.minSensorRange, this.uncertainty);
         this.sensorsArray.add(0,sensorFL);
         this.sensorsArray.add(1,sensorFR);
         this.sensorsArray.add(2,sensorBL);

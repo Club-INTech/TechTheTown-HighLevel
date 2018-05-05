@@ -589,11 +589,12 @@ public class Locomotion implements Service {
                         }
                     }
                 }
-                //On le met à la fin, afin de savoir si on détecte déjà un obstacle, et le cas échéant directement renoyer une exception
-                if (!orderSent) {
-                    orderSent=true;
-                    moveToPointSymmetry(aim, turnOnly);
-                }
+            }
+
+            //On le met à la fin, afin de savoir si on détecte déjà un obstacle, et le cas échéant directement renoyer une exception
+            if (!orderSent) {
+                orderSent=true;
+                moveToPointSymmetry(aim, turnOnly);
             }
         }
     }
