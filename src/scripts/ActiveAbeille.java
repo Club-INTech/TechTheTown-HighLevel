@@ -25,6 +25,8 @@ public class ActiveAbeille extends AbstractScript {
     private int yEntryReal;
     private int xEntryPathfindingAvaible; //position de sortie permettant au pathfinding d'être lancé
     private int yEntryPathfindingAvaible;
+    private int xEntry2; //Position d'entrée version 2
+    private int yEntry2;
     private boolean usingBasicDetection;
     private boolean usingAdvancedDetection;
 
@@ -38,6 +40,8 @@ public class ActiveAbeille extends AbstractScript {
         this.yEntryReal=1780;
         this.xEntryPathfindingAvaible=1200;
         this.yEntryPathfindingAvaible=1700;
+        this.xEntry2=780;
+        this.yEntry2=1180;
         versions = new int[]{0,1};
     }
     @Override
@@ -54,7 +58,7 @@ public class ActiveAbeille extends AbstractScript {
         Vec2 corner = new Vec2(1500, 2000);
         Vec2 directionToGo = (corner.minusNewVector(state.robot.getPosition()));
         double prodScal = directionToGo.dot(new Vec2(100.0, state.robot.getOrientation()));
-        if(versionToExecute==0){
+        if(versionToExecute==0 || versionToExecute==2){
             if (prodScal > 0) {
                 //ON UTILISE LE BRAS AVANT
                 //On disable le hook pour le bras arrière
@@ -145,6 +149,9 @@ public class ActiveAbeille extends AbstractScript {
         }
         else if(version==1) {
             return new Circle(new Vec2(xEntryPathfindingAvaible, yEntryPathfindingAvaible));
+        }
+        else if (version==2){
+            return new Circle(new Vec2(xEntry2,yEntry2));
         }
         else{
             throw new BadVersionException();
