@@ -59,6 +59,9 @@ public class Main {
             // TODO : initialisation des variables globales du robot & objets...
             container = new Container();
             config = container.getConfig();
+            if (config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION)){
+                config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
+            }
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
