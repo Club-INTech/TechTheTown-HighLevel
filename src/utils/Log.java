@@ -142,6 +142,23 @@ public class Log implements Service
 	}
 
 	/**
+	 * Affiche une exception et sa stack trace
+	 *
+	 * @param exception exception à logger
+	 */
+	public void logException(Exception exception){
+		String className = exception.getClass().toString();
+		StackTraceElement[] stackTraceElements = exception.getStackTrace();
+		StringBuilder toLog = new StringBuilder();
+		toLog.append(className);
+		for (StackTraceElement stackTraceElement : stackTraceElements){
+			toLog.append(stackTraceElement.toString());
+			toLog.append("\r\n");
+		}
+		writeToLog(toLog.toString(), criticalPrefix, System.out);
+	}
+
+	/**
 	 * Affichage de warnings, en orange. User-friendly
 	 *
 	 * @param message message a logguer
