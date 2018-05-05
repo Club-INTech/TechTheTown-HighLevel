@@ -122,6 +122,10 @@ public class MatchScript extends AbstractScript {
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);
             tk1.goToThenExec(1,gameState);
 
+            //On active le panneau domotique
+            ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
+            actPD.goToThenExec(0,gameState);
+
             //On dépose les cubes à la première position
             DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
             dpCubes0.goToThenExec(0, gameState);
@@ -130,9 +134,7 @@ public class MatchScript extends AbstractScript {
             TakeCubes tk0=new TakeCubes(config,log,hookFactory);
             tk0.goToThenExec(0,gameState);
 
-            //On active le panneau domotique
-            ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
-            actPD.goToThenExec(0,gameState);
+
 
             //On dépose les cubes à la deuxième position
             DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
