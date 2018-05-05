@@ -33,7 +33,9 @@ public class ScriptHomologation extends AbstractScript {
 
     @Override
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, BadVersionException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast, NoPathFound {
-       TakeCubes takeCubes=new TakeCubes(config,log,hookFactory);
+        actualState.setRecognitionDone(true);
+        actualState.setIndicePattern(0);
+        TakeCubes takeCubes=new TakeCubes(config,log,hookFactory);
         takeCubes.goToThenExec(2,actualState);
 
         DeposeCubes dpCubes=new DeposeCubes(config,log,hookFactory);
