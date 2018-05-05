@@ -58,7 +58,6 @@ public class MainHomologation {
             config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
             log = container.getService(Log.class);
             realState = container.getService(GameState.class);
-            realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion = container.getService(Locomotion.class);
@@ -76,7 +75,7 @@ public class MainHomologation {
             p.printStackTrace();
         }
         try {
-
+            realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             waitMatchBegin();
             scriptmanager.getScript(ScriptNames.SCRIPT_HOMOLOGATION).goToThenExec(0, realState);
             config.override(ConfigInfoRobot.BASIC_DETECTION,false);
