@@ -8,6 +8,7 @@ public enum Patterns {
     //On prend la première et ledernière lettre du nom anglais de la lettre
     //D'où B lu E, O rang E, B lac K
     //En gardant ces lettres, on trouve : BEOEBK, ce qui correspond au pattern 6
+    NULL(-1, new Colors[] {Colors.ORANGE, Colors.YELLOW, Colors.GREEN}),
     OEBKGN(0, new Colors[] {Colors.ORANGE, Colors.BLACK, Colors.GREEN}),
     YWBKBE(1, new Colors[] {Colors.BLUE, Colors.BLACK, Colors.YELLOW}), //Ordre des couleurs inversés pour éviter que le jaune soit en premier
     BEGNOE(2, new Colors[] {Colors.BLUE, Colors.GREEN, Colors.ORANGE}),
