@@ -484,20 +484,11 @@ public class Locomotion implements Service {
 //                }
 //            }
             catch(BlockedException e){
-                if (expectWallImpact || isForcing) {
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
-                    immobilise();
-                }
-                else{
+                if (!expectWallImpact){
                     immobilise();
                     throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
                 }
             }
-
         }
         while (doItAgain);
     }
@@ -535,11 +526,13 @@ public class Locomotion implements Service {
                             boolean wasImmobilised = false;
                             if (obstacleDetected) {
                                 immobilise();
+                                log.warning("BasicDetection Triggered");
                                 wasImmobilised = true;
                             }
                             while (obstacleDetected) {
                                 try {
                                     Thread.sleep(basicDetectionLoopDelay);
+                                    log.warning("BasicDetection toujours triggered");
                                     obstacleDetected = basicDetect(isMovementForward, turnOnly);
                                 } catch (InterruptedException e) {
                                     log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
@@ -559,6 +552,7 @@ public class Locomotion implements Service {
                         boolean obstacleDetected=basicDetect(isMovementForward, turnOnly);
                         if (obstacleDetected){
                             immobilise();
+                            log.warning("BasicDetection Triggered");
                             throw new UnableToMoveException(aim,UnableToMoveReason.OBSTACLE_DETECTED);
                         }
                     }
@@ -667,10 +661,10 @@ public class Locomotion implements Service {
     private boolean basicDetect(boolean isMovementForward, boolean turnOnly) {
         if (turnOnly){
             return (thEvent.isObstacleBasicDetected()
-                    || (this.USvalues[0]!=0 && this.USvalues[0]<this.distanceBasicDetectionTriggered/2)
-                    || (this.USvalues[1]!=0 && this.USvalues[1]<this.distanceBasicDetectionTriggered/2)
-                    || (this.USvalues[2]!=0 && this.USvalues[2]<this.distanceBasicDetectionTriggered/2)
-                    || (this.USvalues[3]!=0 && this.USvalues[3]<this.distanceBasicDetectionTriggered/2));
+                    || (this.USvalues[0]!=0 && this.USvalues[0]<this.distanceBasicDetectionTriggered/3)
+                    || (this.USvalues[1]!=0 && this.USvalues[1]<this.distanceBasicDetectionTriggered/3)
+                    || (this.USvalues[2]!=0 && this.USvalues[2]<this.distanceBasicDetectionTriggered/3)
+                    || (this.USvalues[3]!=0 && this.USvalues[3]<this.distanceBasicDetectionTriggered/3));
         }
         else if (isMovementForward){
             return (thEvent.isObstacleBasicDetected()
