@@ -87,6 +87,9 @@ public class ActiveAbeille extends AbstractScript {
                 //On disable le hook du bras avant
                 hookFactory.disableHook(HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
             }
+            if(basicDetection){
+                state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
+            }
             Vec2 aim = new Vec2(xEntryPathfindingAvaible,yEntryPathfindingAvaible);
             state.robot.goTo(aim);
             log.debug("////////// End ActiveAbeille version "+versionToExecute+" //////////");
