@@ -67,6 +67,9 @@ public class Main {
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
             }
+            if (config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION)){
+                config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
+            }
             matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
             Thread.currentThread().setPriority(6);
             //container.getService(ThreadSensor.class);
