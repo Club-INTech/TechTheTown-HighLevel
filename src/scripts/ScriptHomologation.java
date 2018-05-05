@@ -22,9 +22,11 @@ public class ScriptHomologation extends AbstractScript {
     private int longueurCube;
     private int longueurBrasAv;
     private int longueurBrasAR;
+    private int indiceTasCubeAPrendre;
 
     public ScriptHomologation(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
+        indiceTasCubeAPrendre=2;
         updateConfig();
     }
 
@@ -34,12 +36,11 @@ public class ScriptHomologation extends AbstractScript {
         //On y va avec la basicDetection
         actualState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
         //on se dirige vers le tas de cube numéro 4
-        TasCubes tasEnnemi = TasCubes.getTasFromID(2);
-        Vec2 coordTasCubes=tasEnnemi.getCoordsVec2();
-        Vec2 cubeYellowRelativePosition = Cubes.getCubeFromColor(Colors.YELLOW).getRelativeCoordsVec2(tasEnnemi).dotFloat(longueurCube);
+        TasCubes tasCube = TasCubes.getTasFromID(indiceTasCubeAPrendre);
+        Vec2 coordTasCubes=tasCube.getCoordsVec2();
+        Vec2 cubeYellowRelativePosition = Cubes.getCubeFromColor(Colors.YELLOW).getRelativeCoordsVec2(tasCube).dotFloat(longueurCube);
         Vec2 directionToGo = coordTasCubes.minusNewVector(actualState.robot.getPosition());
         double prodScal = directionToGo.dot(new Vec2(100.0, actualState.robot.getOrientation()));
-        Circle aimArcCircle;
         if(prodScal>0){
             //On avance vers le cube jaune
             actualState.robot.moveNearPoint(coordTasCubes.plusNewVector(cubeYellowRelativePosition),longueurBrasAv,"forward");
@@ -65,7 +66,7 @@ public class ScriptHomologation extends AbstractScript {
 
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
-        Circle aimArcCircle = new Circle(TasCubes.getTasFromID(4).getCoordsVec2(), (longueurBrasAR+longueurBrasAv)/2, - 9 * Math.PI / 20, Math.PI / 2, true);
+        Circle aimArcCircle = new Circle(TasCubes.getTasFromID(indiceTasCubeAPrendre).getCoordsVec2(), (longueurBrasAR+longueurBrasAv)/2, - 9 * Math.PI / 20, Math.PI / 2, true);
         Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
         return new Circle(aim);
     }
