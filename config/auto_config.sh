@@ -28,12 +28,29 @@ function parameterTest {	# Test si le paramètre $1 est égal à la valeur $2 et
 	fi
 }
 
+function multiTest {		# Vérifie si $1 fait parti des éléments de $2
+
+	if [ ! $# -eq 2 ]; then
+		exit
+	fi
+
+	for toTest in ${!2}; do
+		if [ "$1" = "$toTest" ]; then
+			echo "0"
+			exit
+		fi
+	done
+	exit
+}
+
 configFile=""$( dirname "${BASH_SOURCE[0]}" )"/config.txt"
 
 if [ ! -e $configFile ]; then
 	echo "Erreur: fichier de config invalide!"
 	exit
 fi
+
+matchScriptVersions=("0" "1" "2" "99")
 
 ### COLOR CHANGE
 
@@ -114,19 +131,26 @@ while [ "$changeMatchScript" != 'y' -a "$changeMatchScript" != 'n' ]; do
 	read changeMatchScript
 done
 
-if [ $changeMatchScript != 'n' ]; then
-	newMatchVersion=""
-	confirmMatchVersion="coucou"
-	while [ "$confirmMatchVersion" != "$newMatchVersion" ]; do
-		confirmMatchVersion=" "
-		newMatchVersion=" "
-
-		while [ "$newMatchVersion" != "0" -a "$newMatchVersion" != "1" -a "$newMatchVersion" != "99" ]; do
-			echo -n "Choose a valid version (0/1/99): "
+ if [ $changeMatchScript != 'n' ]; then
+ 	newMatchVersion=""
+ 	confirmMatchVersion="coucou"
+ 	while [ "$confirmMatchVersion" != "$newMatchVersion" ]; do
+ 		confirmMatchVersion=" "
+ 		newMatchVersion=" "
+ 
+ 		while [ ! $(multiTest "$newMatchVersion" matchScriptVersions[@]) ]; do
+			echo -n "Choose a valid version ("
+			for i in ${matchScriptVersions[@]};do
+				echo -n "$i"
+				if [ ! "$i" = "${matchScriptVersions[$(expr ${#matchScriptVersions[@]} - 1)]}" ]; then
+					echo -n "/"
+				fi
+			done
+			echo -n "): "
 			read newMatchVersion
 		done
 
-		while [ "$confirmMatchVersion" != "0" -a "$confirmMatchVersion" != "1" -a "$confirmMatchVersion" != "99" ]; do
+		while [ ! $(multiTest "$confirmMatchVersion" matchScriptVersions[@] ) ]; do
 			echo -n "Please confirm your selection: "
 			read confirmMatchVersion
 		done
