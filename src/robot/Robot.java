@@ -259,6 +259,10 @@ public class Robot implements Service {
         goTo(pointVise, false, false);
     }
 
+    public void goToWithoutDetection(Vec2 pointVise, boolean expectedWallImpact) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
+        goTo(pointVise, expectedWallImpact, false);
+    }
+
     /**
      * Effectue un mouvement en ligne droite jusqu'au point désiré.
      *

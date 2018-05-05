@@ -77,9 +77,9 @@ public abstract class AbstractScript implements Service
 	public void goToThenExec(int versionToExecute,GameState actualState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast, NoPathFound {
 		// va jusqu'au point d'entrée de la version demandée
 		log.debug("Lancement de " + this.toString() + " version " + versionToExecute);
+		actualState.robot.getEthWrapper().updateCurrentPositionAndOrientation();
 		try
 		{
-			actualState.robot.getEthWrapper().updateCurrentPositionAndOrientation();
 			if ((entryPosition(versionToExecute,actualState.robot.getPosition()).getCenter().distance(actualState.robot.getPosition()))>2) {
 				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getPosition()).getCenter());
 				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPosition()), actualState.table);

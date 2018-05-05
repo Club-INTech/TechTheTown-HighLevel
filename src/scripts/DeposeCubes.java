@@ -263,17 +263,17 @@ public class DeposeCubes extends AbstractScript {
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
         //Zone de dépose des cubes proche de la base
         if (version==0) {
-            int xentry = this.xEntry[0];
-            int yentry = this.yEntry[0];
-            Vec2 position = new Vec2(xentry, yentry);
-            return new Circle(position);
+            int xEntry = this.xEntry[0];
+            int yEntry = this.yEntry[0];
+            Vec2 positionEntree = new Vec2(xEntry, yEntry);
+            return new Circle(positionEntree);
         }
         //Zone de dépose des cubes proche du pattern
         else if (version==1) {
             int xEntry = this.xEntry[1];
-            int yEntry = this.xEntry[1];
-            Vec2 positionentree = new Vec2(xEntry, yEntry);
-            return new Circle(positionentree);
+            int yEntry = this.yEntry[1];
+            Vec2 positionEntree = new Vec2(xEntry, yEntry);
+            return new Circle(positionEntree);
         } else {
             throw new BadVersionException();
         }
