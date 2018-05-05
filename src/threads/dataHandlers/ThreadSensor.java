@@ -442,6 +442,7 @@ public class ThreadSensor extends AbstractThread
                 for (int i = 0; i < nbSensors; i++) {
                     int distance = Integer.parseInt(valuesSReceived[i]);
                     sensorsArray.get(i).setDetectedDistance(distance * 10); //on convertit des cm en mm
+                    gameState.robot.setUSvalues(sensorsArray.get(i).getDetectedDistance(), i);
                 }
 
                 //Inversion gauche/droite pour symétriser

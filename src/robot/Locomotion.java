@@ -186,7 +186,7 @@ public class Locomotion implements Service {
      * <p>
      * +-----------+
      * +----+        |          Sens de déplacement du robot: ====>
-     * robot ->  |    |        |
+     * robot -> |    |        |
      * |    |        |
      * +----+        |
      * +-----------+
@@ -196,6 +196,14 @@ public class Locomotion implements Service {
      * Override par la config
      */
     private int detectionDistance;
+
+
+    /**
+     * Distance de trigger de la basicDetection
+     * Override par la config
+     */
+    private int distanceBasicDetectionTriggered=30;
+
 
     /**
      * Temps d'attente lorsqu'il y a un ennemie devant
@@ -212,7 +220,7 @@ public class Locomotion implements Service {
     /**
      * Valeurs des ultrasons filtrés par le LL pour la détection basique
      */
-    private ArrayList<Integer> USvalues;
+    private int[] USvalues;
 
     /*************************
      *   BLOCAGE MECANIQUE   *
@@ -258,9 +266,7 @@ public class Locomotion implements Service {
         this.config = config;
         this.ethWrapper = ethWrapper;
         this.table = table;
-        this.USvalues = new ArrayList<Integer>() {{
-            for (int i = 0; i < 4; i++) add(0);
-        }};
+        this.USvalues = new int[]{0,0,0,0};
         this.thEvent = thEvent;
         updateConfig();
     }
@@ -525,7 +531,7 @@ public class Locomotion implements Service {
                 if (!advancedDetection){
                     if (usingBasicDetection) {
                         if (basicDetectionActivated) {
-                            boolean obstacleDetected = basicDetect();
+                            boolean obstacleDetected = basicDetect(isMovementForward, turnOnly);
                             boolean wasImmobilised = false;
                             if (obstacleDetected) {
                                 immobilise();
@@ -534,7 +540,7 @@ public class Locomotion implements Service {
                             while (obstacleDetected) {
                                 try {
                                     Thread.sleep(basicDetectionLoopDelay);
-                                    obstacleDetected = basicDetect();
+                                    obstacleDetected = basicDetect(isMovementForward, turnOnly);
                                 } catch (InterruptedException e) {
                                     log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
                                     obstacleDetected = false;
@@ -550,7 +556,7 @@ public class Locomotion implements Service {
                 }
                 else{
                     if (basicDetectionActivated){
-                        boolean obstacleDetected=basicDetect();
+                        boolean obstacleDetected=basicDetect(isMovementForward, turnOnly);
                         if (obstacleDetected){
                             immobilise();
                             throw new UnableToMoveException(aim,UnableToMoveReason.OBSTACLE_DETECTED);
@@ -658,8 +664,24 @@ public class Locomotion implements Service {
      * que le LL détecte qqch à une distance qu'on set, cette exception sera catched par
      * le movetopointhandledexceptions qui immobilisera le robot
      */
-    private boolean basicDetect() {
-        return thEvent.isObstacleBasicDetected();
+    private boolean basicDetect(boolean isMovementForward, boolean turnOnly) {
+        if (turnOnly){
+            return (thEvent.isObstacleBasicDetected()
+                    || this.USvalues[0]<this.distanceBasicDetectionTriggered/2
+                    || this.USvalues[1]<this.distanceBasicDetectionTriggered/2
+                    || this.USvalues[2]<this.distanceBasicDetectionTriggered/2
+                    || this.USvalues[3]<this.distanceBasicDetectionTriggered/2);
+        }
+        else if (isMovementForward){
+            return (thEvent.isObstacleBasicDetected()
+                    || this.USvalues[0]<this.distanceBasicDetectionTriggered
+                    || this.USvalues[1]<this.distanceBasicDetectionTriggered);
+        }
+        else{
+            return (thEvent.isObstacleBasicDetected()
+                    || this.USvalues[2]<this.distanceBasicDetectionTriggered
+                    || this.USvalues[3]<this.distanceBasicDetectionTriggered);
+        }
     }
 
     /**
@@ -885,8 +907,10 @@ public class Locomotion implements Service {
      * utile pour la BasicDetection et pour la vérification d'obstacles lors d'appels directes à la série
      * (le dégagement dans la BlockedException)
      */
-    public void setUSvalues(ArrayList<Integer> val) {
-        this.USvalues = val;
+    public void setUSvalues(int val, int capteurID) {
+        if (capteurID<this.USvalues.length) {
+            this.USvalues[capteurID] = val;
+        }
     }
 
     /**
@@ -1000,6 +1024,7 @@ public class Locomotion implements Service {
         detectionRay = config.getInt(ConfigInfoRobot.DETECTION_RAY);
         feedbackLoopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
         usingBasicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        distanceBasicDetectionTriggered=config.getInt(ConfigInfoRobot.BASIC_DETECTION_DISTANCE);
         advancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
 
         basicDetectionLoopDelay = config.getInt(ConfigInfoRobot.BASIC_DETECTION_LOOP_DELAY);

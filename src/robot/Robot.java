@@ -680,8 +680,8 @@ public class Robot implements Service {
      *
      * @param val les valeurs comme définies dans threadSensors
      */
-    public void setUSvalues(ArrayList<Integer> val) {
-        mLocomotion.setUSvalues(val);
+    public void setUSvalues(int val, int capteurID) {
+        mLocomotion.setUSvalues(val, capteurID);
     }
 
     /**
