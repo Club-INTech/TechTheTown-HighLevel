@@ -104,6 +104,7 @@ public class IA implements Service {
             if (isDepartInObstacle){
                 Vec2 aimToExitObstacle = pathfinding.getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition();
                 goToHandleException(aimToExitObstacle);
+                executeHandleException(this.lastNodeTried);
             }
             else{
                 tryToDoAnotherNode(this.lastNodeTried);
@@ -184,6 +185,16 @@ public class IA implements Service {
             handleException(e);
         } catch (ImmobileEnnemyForOneSecondAtLeast e) {
             log.debug("ImmobileEnnemyForOneSecondAtLeast from turn");
+            gameState.robot.immobilise();
+            handleException(e);
+        }
+    }
+
+    private void executeHandleException(Node nodeToExecute){
+        try {
+            nodeToExecute.execute(gameState);
+        } catch (Exception e) {
+            log.debug("Exception : "+e.getClass());
             gameState.robot.immobilise();
             handleException(e);
         }
