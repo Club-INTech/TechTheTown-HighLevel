@@ -253,7 +253,7 @@ public class ThreadSensor extends AbstractThread
             addFrontObstacleSingleMiddle();
         } else {
             double alpha = -Math.abs(Math.acos(toAcos) - Math.PI / 2);
-            if (alpha > detectionAngle) {
+            if (Math.abs(alpha) > detectionAngle) {
                 addFrontObstacleSingleMiddle();
             } else {
                 int x = (int) (a * Math.cos(alpha));
