@@ -71,7 +71,9 @@ public class ActivationPanneauDomotique extends AbstractScript{
     }
 
     @Override
-    public void finalize(GameState state, Exception e) { }
+    public void finalize(GameState state, Exception e) {
+        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+    }
 
     @Override
     public int[] getVersion(GameState stateToConsider) { return new int[]{0}; }

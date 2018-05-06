@@ -61,21 +61,21 @@ public class IA implements Service {
     }
 
     private void handleException(Exception e){
+        log.debug("Lancement de handleException, exception: "+e.getClass().getName());
         ScriptNames lastScriptExecuted = gameState.getLastScript();
         int lastVersionExecuted = gameState.getLastScriptVersion();
         //On récupère la dernier node qu'on a essayé de réaliser
         this.lastNodeTried=nodes.getNodeByNameAndVersion(lastScriptExecuted,lastVersionExecuted);
-        // On replie les actionneurs si un script est interrompu
+        log.debug("Last node tried :"+this.lastNodeTried.getName());
+        log.debug("Lancement des finalize");
+        // On finalize les scripts
         try {
-            this.lastNodeTried.finalize(e);
+            if (this.lastNodeTried!=null) {
+                this.lastNodeTried.finalize(e);
+            }
         } catch (UnableToMoveException e1) {
+            log.critical("UnableToMoveException dans finalize");
             e1.printStackTrace();
-        }
-        if (this.lastNodeTried==nodes.getNodeByNameAndVersion(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0)){
-            gameState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-        }
-        else if (this.lastNodeTried.getScriptName()==nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES,0).getScriptName()){
-            gameState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
         }
 
         if (e instanceof ImmobileEnnemyForOneSecondAtLeast){
@@ -101,7 +101,6 @@ public class IA implements Service {
             }
         }
         else if (e instanceof UnableToMoveException){
-            Vec2 aim = ((UnableToMoveException) e).getAim();
             log.warning("IA HANDLED EXCEPTION : UnableToMoveException");
             tryToDoAnotherNode(this.lastNodeTried);
         }
