@@ -112,8 +112,8 @@ public class ActiveAbeille extends AbstractScript {
                 //ON UTILISE LE BRAS AVANT
                 state.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE, false);
                 state.robot.goToWithoutDetection(new Vec2(xEntryReal, yEntryReal));
-                state.robot.turnWithoutDetection(Math.PI / 2, true, false);
                 state.addObtainedPoints(50);
+                state.robot.turnWithoutDetection(Math.PI / 2, true, false);
                 state.setAbeilleLancee(true);
                 state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
 
@@ -121,8 +121,8 @@ public class ActiveAbeille extends AbstractScript {
                 //ON UTILISE LE BRAS ARRIERE
                 state.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE, false);
                 state.robot.goToWithoutDetection(new Vec2(xEntryReal, yEntryReal));
-                state.robot.turnWithoutDetection(-Math.PI / 2, true, false);
                 state.addObtainedPoints(50);
+                state.robot.turnWithoutDetection(-Math.PI / 2, true, false);
                 state.setAbeilleLancee(true);
                 state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
             }
