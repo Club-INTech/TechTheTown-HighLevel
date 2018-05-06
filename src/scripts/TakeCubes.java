@@ -520,7 +520,12 @@ public class TakeCubes extends AbstractScript {
      * @throws UnableToMoveException
      */
     @Override
-    public void finalize(GameState state, Exception e) throws UnableToMoveException { }
+    public void finalize(GameState state, Exception e) {
+        state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,false);
+        state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
+        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);
+        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
+    }
 
     /**
      *

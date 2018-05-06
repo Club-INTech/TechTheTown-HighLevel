@@ -159,7 +159,10 @@ public class ActiveAbeille extends AbstractScript {
     }
 
     @Override
-    public void finalize(GameState state, Exception e) throws UnableToMoveException {}
+    public void finalize(GameState state, Exception e) {
+        state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,false);
+        state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,false);
+    }
 
     @Override
     public void goToThenExec(int versionToExecute, GameState state) throws PointInObstacleException, BadVersionException, NoPathFound, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {

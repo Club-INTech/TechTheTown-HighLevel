@@ -71,7 +71,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
     }
 
     @Override
-    public void finalize(GameState state, Exception e) throws UnableToMoveException { }
+    public void finalize(GameState state, Exception e) { }
 
     @Override
     public int[] getVersion(GameState stateToConsider) { return new int[]{0}; }
