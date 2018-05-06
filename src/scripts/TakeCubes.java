@@ -138,32 +138,6 @@ public class TakeCubes extends AbstractScript {
             }
         }
 
-        //Grâce à la config, on passe au pathfinding quel this.currentTas on a pris
-        if(indiceTas==0){
-            config.override(ConfigInfoRobot.TAS_BASE_PRIS,true);
-            state.setTas_base_pris(true);
-        }
-        else if(indiceTas==1){
-            config.override(ConfigInfoRobot.TAS_CHATEAU_PRIS,true);
-            state.setTas_chateau_eau_pris(true);
-        }
-        else if(indiceTas==2){
-            config.override(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS,true);
-            state.setTas_station_epuration_pris(true);
-        }
-        else if(indiceTas==3){
-            config.override(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS,true);
-            state.setTas_base_ennemi_pris(true);
-        }
-        else if(indiceTas==4){
-            config.override(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS,true);
-            state.setTas_chateau_ennemi_eau_pris(true);
-        }
-        else if(indiceTas==5){
-            config.override(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS,true);
-            state.setTas_station_epuration_ennemi_pris(true);
-        }
-
         //Si indicePattern==-2, c'est que le pattern n'a pas encore été calculé
         if (this.indicePattern != -2){
             //Si indicePattern==-1, c'est que le pattern n'a pas pu être identifié
@@ -229,6 +203,28 @@ public class TakeCubes extends AbstractScript {
                         //Le robot exception les actions pour prendre le cube
                         Cubes currentCube = Cubes.getCubeFromColor(pattern[i]);
                         takeThisCube(state, currentCube);
+                        if (i==0) {
+                            //Grâce à la config, on passe au pathfinding quel this.currentTas on a pris
+                            if (indiceTas == 0) {
+                                config.override(ConfigInfoRobot.TAS_BASE_PRIS, true);
+                                state.setTas_base_pris(true);
+                            } else if (indiceTas == 1) {
+                                config.override(ConfigInfoRobot.TAS_CHATEAU_PRIS, true);
+                                state.setTas_chateau_eau_pris(true);
+                            } else if (indiceTas == 2) {
+                                config.override(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS, true);
+                                state.setTas_station_epuration_pris(true);
+                            } else if (indiceTas == 3) {
+                                config.override(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS, true);
+                                state.setTas_base_ennemi_pris(true);
+                            } else if (indiceTas == 4) {
+                                config.override(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS, true);
+                                state.setTas_chateau_ennemi_eau_pris(true);
+                            } else if (indiceTas == 5) {
+                                config.override(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS, true);
+                                state.setTas_station_epuration_ennemi_pris(true);
+                            }
+                        }
                         this.currentIdealPositionInTower++;
                     }
                     else {
@@ -523,6 +519,8 @@ public class TakeCubes extends AbstractScript {
     @Override
     public void finalize(GameState state, Exception e) {
         state.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
+        state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE,false);
+        state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT,false);
         state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,false);
         state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);

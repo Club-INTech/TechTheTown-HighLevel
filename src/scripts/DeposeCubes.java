@@ -212,7 +212,7 @@ public class DeposeCubes extends AbstractScript {
         log.debug(reussitesTour[0]+" "+reussitesTour[1]+" "+reussitesTour[2]+" "+reussitesTour[3]);
 
         //On check si on a essayé de construire la tour
-        if (reussitesTour[1]!=-1) {
+        if ((cubeBonusPresent && reussitesTour[1]!=-1) || (!cubeBonusPresent && reussitesTour[0]!=-1)) {
 
             //Calcul des points du pattern
             if (cubeBonusPresent) {
@@ -231,7 +231,12 @@ public class DeposeCubes extends AbstractScript {
             }
 
             //Calcul des points de la construction de la tour
-            int sum = reussitesTour[0] + reussitesTour[1] + reussitesTour[2] + reussitesTour[3];
+            int sum=0;
+            for (int i=0; i<4; i++) {
+                if (reussitesTour[i]==1) {
+                    sum ++;
+                }
+            }
             score += sum * (sum + 1) / 2;
 
             return score;
