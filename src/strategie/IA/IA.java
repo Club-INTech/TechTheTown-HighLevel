@@ -247,7 +247,9 @@ public class IA implements Service {
                 return deposeCubes0;
             }
             else if (availableNodes.contains(deposeCubes1)){
-                return deposeCubes1;
+                if (gameState.isTas_base_pris()) {
+                    return deposeCubes1;
+                }
             }
         }
 
