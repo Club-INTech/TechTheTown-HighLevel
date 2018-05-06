@@ -11,6 +11,7 @@ import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Vec2;
 import strategie.GameState;
+import tests.container.A;
 import utils.Log;
 
 
@@ -521,6 +522,7 @@ public class TakeCubes extends AbstractScript {
      */
     @Override
     public void finalize(GameState state, Exception e) {
+        state.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE,true);
         state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,false);
         state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);
