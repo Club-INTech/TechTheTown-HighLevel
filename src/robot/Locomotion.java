@@ -522,7 +522,7 @@ public class Locomotion implements Service {
                 if (!advancedDetection){
                     if (usingBasicDetection) {
                         if (basicDetectionActivated) {
-                            boolean obstacleDetected = basicDetect(isMovementForward, turnOnly);
+                            boolean obstacleDetected = basicDetect(isMovementForward);
                             boolean wasImmobilised = false;
                             if (obstacleDetected) {
                                 immobilise();
@@ -533,7 +533,7 @@ public class Locomotion implements Service {
                                 try {
                                     Thread.sleep(basicDetectionLoopDelay);
                                     log.warning("BasicDetection toujours triggered");
-                                    obstacleDetected = basicDetect(isMovementForward, turnOnly);
+                                    obstacleDetected = basicDetect(isMovementForward);
                                 } catch (InterruptedException e) {
                                     log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
                                     obstacleDetected = false;
@@ -549,7 +549,7 @@ public class Locomotion implements Service {
                 }
                 else{
                     if (basicDetectionActivated){
-                        boolean obstacleDetected=basicDetect(isMovementForward, turnOnly);
+                        boolean obstacleDetected=basicDetect(isMovementForward);
                         if (obstacleDetected){
                             immobilise();
                             log.warning("BasicDetection Triggered");
@@ -659,16 +659,35 @@ public class Locomotion implements Service {
      * que le LL détecte qqch à une distance qu'on set, cette exception sera catched par
      * le movetopointhandledexceptions qui immobilisera le robot
      */
-    private boolean basicDetect(boolean isMovementForward, boolean turnOnly) {
+    private boolean basicDetect(boolean isMovementForward) {
+        int startIndice;
         if (isMovementForward){
-            return (thEvent.isObstacleBasicDetected()
-                    || (this.USvalues[0]!=0 && this.USvalues[0]<this.distanceBasicDetectionTriggered)
-                    || (this.USvalues[1]!=0 && this.USvalues[1]<this.distanceBasicDetectionTriggered));
+            startIndice=0;
         }
         else{
-            return (thEvent.isObstacleBasicDetected()
-                    || (this.USvalues[2]!=0 && this.USvalues[2]<this.distanceBasicDetectionTriggered)
-                    || (this.USvalues[3]!=0 && this.USvalues[3]<this.distanceBasicDetectionTriggered));
+            startIndice=2;
+        }
+        if (this.USvalues[startIndice]!=0 && this.USvalues[startIndice]<this.distanceBasicDetectionTriggered){
+            if (this.USvalues[startIndice+1]!=0 && this.USvalues[startIndice+1]<this.distanceBasicDetectionTriggered){
+                int distance=Math.min(this.USvalues[startIndice],this.USvalues[startIndice+1]);
+                Vec2 basicDetectionAim = this.highLevelPosition.plusNewVector(new Vec2(distance,this.highLevelOrientation));
+                return table.getObstacleManager().isObstaclePositionValid(basicDetectionAim);
+            }
+            else{
+                int distance=this.USvalues[startIndice];
+                Vec2 basicDetectionAim = this.highLevelPosition.plusNewVector(new Vec2(distance,this.highLevelOrientation));
+                return table.getObstacleManager().isObstaclePositionValid(basicDetectionAim);
+            }
+        }
+        else{
+            if (this.USvalues[startIndice+1]!=0 && this.USvalues[startIndice+1]<this.distanceBasicDetectionTriggered){
+                int distance=this.USvalues[startIndice+1];
+                Vec2 basicDetectionAim = this.highLevelPosition.plusNewVector(new Vec2(distance,this.highLevelOrientation));
+                return table.getObstacleManager().isObstaclePositionValid(basicDetectionAim);
+            }
+            else{
+                return false;
+            }
         }
     }
 
