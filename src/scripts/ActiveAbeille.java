@@ -85,7 +85,7 @@ public class ActiveAbeille extends AbstractScript {
                 state.robot.goTo(new Vec2(xEntryReal, yEntryReal));
 
                 //On se tourne pour pousser l'abeille avec le bras avant
-                state.robot.turn(Math.PI/2,true);
+                state.robot.turn(-Math.PI/2,true);
                 //On relève le bras avant
                 state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
                 //On disable le hook du bras avant
