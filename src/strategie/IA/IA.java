@@ -11,7 +11,6 @@ import hook.HookFactory;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.*;
-import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -278,10 +277,12 @@ public class IA implements Service {
         for (int i = 0; i<availableNodes.size();i++) {
             Node currentNode = availableNodes.get(i);
             if (!(currentNode instanceof DeposeCubes)) {
-                double cost = calculateNodeCost(currentNode, robotPosition);
-                if (cost < minCost) {
-                    j = i;
-                    minCost = cost;
+                if (!(currentNode instanceof TakeCubes && gameState.isTourAvantRemplie() && gameState.isTourArriereRemplie())) {
+                    double cost = calculateNodeCost(currentNode, robotPosition);
+                    if (cost < minCost) {
+                        j = i;
+                        minCost = cost;
+                    }
                 }
             }
         }
