@@ -660,14 +660,7 @@ public class Locomotion implements Service {
      * le movetopointhandledexceptions qui immobilisera le robot
      */
     private boolean basicDetect(boolean isMovementForward, boolean turnOnly) {
-        if (turnOnly){
-            return (thEvent.isObstacleBasicDetected()
-                    || (this.USvalues[0]!=0 && this.USvalues[0]<this.distanceBasicDetectionTriggered/3)
-                    || (this.USvalues[1]!=0 && this.USvalues[1]<this.distanceBasicDetectionTriggered/3)
-                    || (this.USvalues[2]!=0 && this.USvalues[2]<this.distanceBasicDetectionTriggered/3)
-                    || (this.USvalues[3]!=0 && this.USvalues[3]<this.distanceBasicDetectionTriggered/3));
-        }
-        else if (isMovementForward){
+        if (isMovementForward){
             return (thEvent.isObstacleBasicDetected()
                     || (this.USvalues[0]!=0 && this.USvalues[0]<this.distanceBasicDetectionTriggered)
                     || (this.USvalues[1]!=0 && this.USvalues[1]<this.distanceBasicDetectionTriggered));
