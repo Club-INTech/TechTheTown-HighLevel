@@ -54,8 +54,8 @@ public class IA implements Service {
         try {
             scriptManager.getScript(scriptNames).goToThenExec(versionToExecute,gameState);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.debug("////////// IA ////////// An exception happened");
+            log.logException(e);
+            log.debug("////////// IA ////////// An exception happened: "+e.getClass().getName());
             log.debug("////////////// LANCEMENT IA ///////////////");
             handleException(e);
         }
