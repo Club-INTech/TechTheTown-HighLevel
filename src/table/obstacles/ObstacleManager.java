@@ -167,6 +167,11 @@ public class ObstacleManager implements Service
 			mCircularObstacle.add(new ObstacleCircular(new Circle(TasCubes.getTasFromID(i).getCoordsVec2(), 87 + mRobotRadius + d)));
 		}
 
+		/** Petits tas de cubes qui ne serons pas retirés après un takeCubes*/
+		for (int i=0; i<6; i++) {
+			mCircularObstacle.add(new ObstacleCircular(new Circle(TasCubes.getTasFromID(i).getCoordsVec2(), mRobotRadius / 2 + 87 + d)));
+		}
+
 		/**Récupérateur des eaux usées*/
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 1500,840), 105 + mRobotRadius)));
 		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -1500, 840), 105 + mRobotRadius)));
