@@ -66,6 +66,9 @@ public class IA implements Service {
         int lastVersionExecuted = gameState.getLastScriptVersion();
         //On récupère la dernier node qu'on a essayé de réaliser
         this.lastNodeTried=nodes.getNodeByNameAndVersion(lastScriptExecuted,lastVersionExecuted);
+        if (this.lastNodeTried==null){
+            this.lastNodeTried=nodes.getNodeByName(lastScriptExecuted);
+        }
         log.debug("Last node tried :"+this.lastNodeTried.getName());
         log.debug("Lancement des finalize");
         // On finalize les scripts
@@ -449,7 +452,7 @@ public class IA implements Service {
      * Créer les noeuds du graphe de décision
      */
     private NodeArray createNodes() throws BadVersionException {
-        Node abeille = new Abeille(ScriptNames.ACTIVE_ABEILLE,1,  scriptManager, gameState,pathfinding,hookFactory,config, log);
+        Node abeille = new Abeille(ScriptNames.ACTIVE_ABEILLE,2,  scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node panneau = new Panneau(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0,  scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node takeCubes = new TakeCubes(ScriptNames.TAKE_CUBES,0, scriptManager, gameState,pathfinding,hookFactory,config, log);
         Node takeCubes2 = new TakeCubes(ScriptNames.TAKE_CUBES,1, scriptManager, gameState,pathfinding,hookFactory,config, log);

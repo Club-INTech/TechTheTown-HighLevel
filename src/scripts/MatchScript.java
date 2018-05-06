@@ -50,7 +50,7 @@ public class MatchScript extends AbstractScript {
 
             //On active l'abeille
             ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
-            activeAbeille.goToThenExec(0,gameState);
+            activeAbeille.goToThenExec(2,gameState);
 
             //On prend le tas de cubes 1
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);

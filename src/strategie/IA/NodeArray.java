@@ -48,4 +48,13 @@ public class NodeArray {
         }
         return null;
     }
+
+    public Node getNodeByName(ScriptNames name){
+        for (Node node : nodes){
+            if (node.getName().equals(name.getName())) {
+                return node;
+            }
+        }
+        return null;
+    }
 }
