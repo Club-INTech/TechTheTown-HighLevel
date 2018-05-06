@@ -41,7 +41,7 @@ public class NodeArray {
     public Node getNodeByNameAndVersion(ScriptNames name, int version){
         for (Node node : nodes){
             if (node.getVersionToExecute()==version) {
-                if (node.getName()==name.getName()) {
+                if (node.getName().equals(name.getName())) {
                     return node;
                 }
             }

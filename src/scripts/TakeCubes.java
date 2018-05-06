@@ -33,6 +33,8 @@ public class TakeCubes extends AbstractScript {
     private int currentIdealPositionInTower;
     private int timeAfterTakeCubesMustBeStopped;
 
+    private boolean alreadyRemovedObstacle;
+
     private boolean alreadyTriedCorrection;
     private Vec2 correctionVectorTas;
     private Vec2 correctionVectorTas2;
@@ -59,6 +61,7 @@ public class TakeCubes extends AbstractScript {
             throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
         this.alreadyTriedCorrection=false;
+        this.alreadyRemovedObstacle=false;
         this.currentIdealPositionInTower=0;
         this.correctionVectorTas = new Vec2(0,0);
         this.correctionVectorTas2 = new Vec2(0,0);
@@ -202,8 +205,9 @@ public class TakeCubes extends AbstractScript {
                         state.robot.moveNearPoint(successivesPositionsList[i].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
                         //Le robot exception les actions pour prendre le cube
                         Cubes currentCube = Cubes.getCubeFromColor(pattern[i]);
-                        takeThisCube(state, currentCube);
-                        if (i==0) {
+                        boolean cubeSuccessfullyTaken = takeThisCube(state, currentCube);
+                        if (!this.alreadyRemovedObstacle && cubeSuccessfullyTaken) {
+                            this.alreadyRemovedObstacle=true;
                             //Grâce à la config, on passe au pathfinding quel this.currentTas on a pris
                             if (indiceTas == 0) {
                                 config.override(ConfigInfoRobot.TAS_BASE_PRIS, true);
@@ -368,6 +372,9 @@ public class TakeCubes extends AbstractScript {
                     log.debug("Lancement de la correction de position du tas "+currentTas.getID());
                     this.correctionVectorTas = correctPosition(state, currentCube);
                 }
+                if (this.correctionVectorTas!=new Vec2(0,0)){
+                    cubeSuccessfullyTaken=true;
+                }
             }
         }
         else if (this.brasUtilise.equals(BrasUtilise.ARRIERE)){
@@ -392,8 +399,12 @@ public class TakeCubes extends AbstractScript {
                     log.debug("Lancement de la correction de position du tas "+currentTas.getID());
                     this.correctionVectorTas = correctPosition(state, currentCube);
                 }
+                if (this.correctionVectorTas!=new Vec2(0,0)){
+                    cubeSuccessfullyTaken=true;
+                }
             }
         }
+
 
         if (usingAdvancedDetection) {
             state.robot.useActuator(ActuatorOrder.SUS_ON,true);

@@ -236,13 +236,13 @@ public class IA implements Service {
                     return deposeCubes1;
                 }
             }
-            //Si le panneau n'a pas encore été fait, et qu'on a pas de tours, on fait le panneau
-            else if (availableNodes.contains(nodes.getNodeByNameAndVersion(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0))){
-                return nodes.getNodeByNameAndVersion(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0);
-            }
             //Si on n'a plus de tours, et que le panneau a déjà été activé, on va faire l'abeille, quitte à ce qu'il y ait un robot ennemi là bas
             else if (availableNodes.contains(nodes.getNodeByNameAndVersion(ScriptNames.ACTIVE_ABEILLE,0))){
                 return nodes.getNodeByNameAndVersion(ScriptNames.ACTIVE_ABEILLE,0);
+            }
+            //Si le panneau n'a pas encore été fait, et qu'on a pas de tours, on fait le panneau
+            else if (availableNodes.contains(nodes.getNodeByNameAndVersion(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0))){
+                return nodes.getNodeByNameAndVersion(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0);
             }
         }
 
