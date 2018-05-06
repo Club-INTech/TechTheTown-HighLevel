@@ -161,14 +161,14 @@ public class ThreadSensor extends AbstractThread
         this.mTable = table;
         this.ethWrapper = ethWrapper;
         this.gameState = gameState;
-        this.sensorFL=new Sensor(0,100,-127,this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
-        this.sensorFR=new Sensor(1,100,127,-this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
-        this.sensorBL=new Sensor(2,-100,-127,this.sensorOrientationB-Math.PI,this.detectionAngle,this.maxSensorRange, this.minSensorRange, this.uncertainty);
-        this.sensorBR=new Sensor(3,-100,127,-this.sensorOrientationB+Math.PI,this.detectionAngle,this.maxSensorRange, this.minSensorRange, this.uncertainty);
-        this.sensorsArray.add(0,sensorFL);
-        this.sensorsArray.add(1,sensorFR);
-        this.sensorsArray.add(2,sensorBL);
-        this.sensorsArray.add(3,sensorBR);
+        this.sensorFL=new Sensor(0,100,127,this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
+        this.sensorFR=new Sensor(1,100,-127,-this.sensorOrientationF,this.detectionAngle,this.maxSensorRange,this.minSensorRange, this.uncertainty);
+        this.sensorBL=new Sensor(2,-100,127,this.sensorOrientationB-Math.PI,this.detectionAngle,this.maxSensorRange, this.minSensorRange, this.uncertainty);
+        this.sensorBR=new Sensor(3,-100,-127,-this.sensorOrientationB+Math.PI,this.detectionAngle,this.maxSensorRange, this.minSensorRange, this.uncertainty);
+        this.sensorsArray.add(sensorFL);
+        this.sensorsArray.add(sensorFR);
+        this.sensorsArray.add(sensorBL);
+        this.sensorsArray.add(sensorBR);
         this.magicNumber=0.285;
         nbSensors = sensorsArray.size();
     }
@@ -189,7 +189,7 @@ public class ThreadSensor extends AbstractThread
          *      |    Robot   |                  /\
          *      |    poney   |                  |
          *      |            |                  |
-         *      |            |                  O----> y
+         *      |            |           y <----0
          *      |            |
          *      2------------3
          *     / \          / \
@@ -340,12 +340,12 @@ public class ThreadSensor extends AbstractThread
             // On choisit le point à l'extrémité de l'arc à coté du capteur pour la position de l'ennemie: à courte distance, la position est réaliste,
             // à longue distance (>1m au vue des dimensions), l'ennemie est en réalité de l'autre coté
             double USFL = (double)sensorFL.getDetectedDistance();
-            Vec2 posObjectFromSensorFL = new Vec2(USFL+enRadius*0.8, sensorFL.getSensorOrientation()); //sensor avant gauche
+            Vec2 posObjectFromSensorFL = new Vec2(USFL+enRadius*0.5, sensorFL.getSensorOrientation()); //sensor avant gauche
             posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());     //sensor avant gauche
         }
         else{
             double USFR = (double)sensorFR.getDetectedDistance();
-            Vec2 posObjectFromSensorFR = new Vec2(USFR+enRadius*0.8, sensorFR.getSensorOrientation()); //sensor avant droit
+            Vec2 posObjectFromSensorFR = new Vec2(USFR+enRadius*0.5, sensorFR.getSensorOrientation()); //sensor avant droit
             posObjectFromCenterRobot = posObjectFromSensorFR.plusNewVector(sensorFR.getVecteur()); //sensor avant droit
         }
 
@@ -359,17 +359,15 @@ public class ThreadSensor extends AbstractThread
         Vec2 posObjectFromCenterRobot;
         if (isLeft){
             double USBL = (double)sensorBL.getDetectedDistance();
-            Vec2 posObjectFromSensorBL = new Vec2(USBL+enRadius*0.8, sensorBL.getSensorOrientation());
+            Vec2 posObjectFromSensorBL = new Vec2(USBL+enRadius*0.5, sensorBL.getSensorOrientation());
             //Vec2 posDetect = new Vec2(USBL+enRadius*0.5,sensorBL.getSensorOrientation() - sensorBL.getDetectionWideness()/2);     //sensor arrière gauche
             posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());     //sensor arrière gauche
-            posObjectFromCenterRobot.setY(posObjectFromCenterRobot.getY()*-1);
         }
         else{
             double USBR = (double)sensorBR.getDetectedDistance();
-            Vec2 posObjectFromSensorBR = new Vec2(USBR+enRadius*0.8, sensorBR.getSensorOrientation());
+            Vec2 posObjectFromSensorBR = new Vec2(USBR+enRadius*0.5, sensorBR.getSensorOrientation());
             //Vec2 posDetect = new Vec2(USBF+enRadius*0.5,sensorBR.getSensorOrientation() + sensorBR.getDetectionWideness()/2);     //sensor arrière droit
             posObjectFromCenterRobot = posObjectFromSensorBR.plusNewVector(sensorBR.getVecteur());     //sensor arrière droit
-            posObjectFromCenterRobot.setY(posObjectFromCenterRobot.getY()*-1);
         }
         mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius+ourRadius+10);
     }

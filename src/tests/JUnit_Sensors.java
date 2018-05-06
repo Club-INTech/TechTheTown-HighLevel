@@ -93,11 +93,14 @@ public class JUnit_Sensors extends JUnit_Test
 		while(true){
 			robot.getPosition();
 			robot.getOrientation();
-			String distanceDetected = "";
+			StringBuilder distanceDetected = new StringBuilder();
 			count+=1;
 			if (count==1000000) {
 				for (int i = 0; i < 4; i++) {
-					distanceDetected += i + ":" + threadSensor.getSensor(i).getRawDetectedDistance() + " ";
+					distanceDetected.append(i);
+					distanceDetected.append(":");
+					distanceDetected.append(threadSensor.getSensor(i).getDetectedDistance());
+					distanceDetected.append(" ");
 				}
 				System.out.println(distanceDetected);
 				count=0;
