@@ -67,6 +67,7 @@ public class ActiveAbeille extends AbstractScript {
                 hookFactory.enableHook(HookNames.BASIC_DETECTION_DISABLE,HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
                 //On va vers l'abeille
                 state.robot.goTo(new Vec2(xEntryReal, yEntryReal));
+                state.addObtainedPoints(50);
 
                 //On se tourne pour pousser l'abeille avec le bras avant
                 state.robot.turn(Math.PI/2,true);
@@ -83,6 +84,7 @@ public class ActiveAbeille extends AbstractScript {
                 hookFactory.enableHook(HookNames.BASIC_DETECTION_DISABLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
                 //On va vers l'abeille
                 state.robot.goTo(new Vec2(xEntryReal, yEntryReal));
+                state.addObtainedPoints(50);
 
                 //On se tourne pour pousser l'abeille avec le bras avant
                 state.robot.turn(-Math.PI/2,true);
