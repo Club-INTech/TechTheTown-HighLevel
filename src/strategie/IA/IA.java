@@ -139,7 +139,7 @@ public class IA implements Service {
     private void resumeMatch(){
         while (!availableNodes.isEmpty()){
             updateAvailableNodes();
-            tryToDoAnotherNode(this.lastNodeTried);
+            tryToDoAnotherNode(null);
         }
         exploredNodes.clear();
         try {
