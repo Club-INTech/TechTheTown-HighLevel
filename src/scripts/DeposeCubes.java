@@ -65,7 +65,9 @@ public class DeposeCubes extends AbstractScript {
 
 
         if (numberTowersToDepose>0) {
-            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[0]));
+            if (version == 1) {
+                state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0]));
+            }
             Vec2 directionToGo = null;
             double prodScal = 0;
             try {
