@@ -95,7 +95,9 @@ public class DeposeCubes extends AbstractScript {
                     else if(version==1){
                         state.setDeposeCubes1Done(true);
                     }
-                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                    if (state.getTimeEllapsed()<98000) {
+                        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                    }
                 } else if (state.isTourArriereRemplie()) {
                     state.robot.turn(Math.PI / 2);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
@@ -111,7 +113,9 @@ public class DeposeCubes extends AbstractScript {
                     else if(version==1){
                         state.setDeposeCubes1Done(true);
                     }
-                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                    if (state.getTimeEllapsed()<98000) {
+                        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                    }
 
                 }
             }
@@ -147,7 +151,10 @@ public class DeposeCubes extends AbstractScript {
                         state.setDeposeCubes1Done(true);
                     }
                     //On ferme la porte
-                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                    //On garde les portes ouvertes si on est quasiment à la fin du match
+                    if (state.getTimeEllapsed()<98000) {
+                        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                    }
 
 
 
@@ -159,7 +166,9 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0]+2*dimensionPorte));
                     state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
                     resetTour(false,state);
-                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                    if (state.getTimeEllapsed()<98000) {
+                        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                    }
 
                 } else {
                     state.robot.turn(Math.PI / 2);
@@ -176,7 +185,9 @@ public class DeposeCubes extends AbstractScript {
                     else if(version==1){
                         state.setDeposeCubes1Done(true);
                     }
-                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                    if (state.getTimeEllapsed()<98000) {
+                        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                    }
 
 
 
@@ -188,7 +199,9 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0]+2*dimensionPorte));
                     state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
                     resetTour(true,state);
-                    state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                    if (state.getTimeEllapsed()<98000) {
+                        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                    }
                 }
             }
             state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
