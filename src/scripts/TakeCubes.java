@@ -278,6 +278,54 @@ public class TakeCubes extends AbstractScript {
 //////////////////// LE SCRIPT A FINI SES MOUVEMENTS //////////////////////////
 
 
+                int[] reussitesTour;
+                if (brasUtilise==BrasUtilise.AVANT) {
+                    reussitesTour = state.getReussitesTourAvant();
+                    //Calcul des points du pattern
+                    if (additionalCube.getColor().equals(Colors.NULL)) {
+                        //Cas où le cube bones est présent
+                        //On a besoin que du premier, troisieme et quatrieme cube pour réaliser le pattern
+                        //La réalisation du pattern ne dépend pas de la présence du premier cube
+                        if (reussitesTour[0] == 1 && reussitesTour[2] == 1 && reussitesTour[3] == 1) {
+                            state.setPatternTourAvantReussi(true);
+                        } else {
+                            state.setPatternTourAvantReussi(false);
+                        }
+                    } else {
+                        //Cas où le cube bonus n'est pas présent
+                        //Il faut absolument que les trois premiers cubes qu'on a essayé de prendre soient présents dans la tour
+                        if (reussitesTour[0] == 1 && reussitesTour[1] == 1 && reussitesTour[2] == 1) {
+                            state.setPatternTourAvantReussi(true);
+                        }
+                        else{
+                            state.setPatternTourAvantReussi(false);
+                        }
+                    }
+                }
+                else{
+                    reussitesTour=state.getReussitesTourArriere();
+                    if (additionalCube.getColor().equals(Colors.NULL)) {
+                        //Cas où le cube bones est présent
+                        //On a besoin que du premier, troisieme et quatrieme cube pour réaliser le pattern
+                        //La réalisation du pattern ne dépend pas de la présence du premier cube
+                        if (reussitesTour[0] == 1 && reussitesTour[2] == 1 && reussitesTour[3] == 1) {
+                            state.setPatternTourArriereReussi(true);
+                        } else {
+                            state.setPatternTourArriereReussi(false);
+                        }
+                    } else {
+                        //Cas où le cube bonus n'est pas présent
+                        //Il faut absolument que les trois premiers cubes qu'on a essayé de prendre soient présents dans la tour
+                        if (reussitesTour[0] == 1 && reussitesTour[1] == 1 && reussitesTour[2] == 1) {
+                            state.setPatternTourArriereReussi(true);
+                        }
+                        else{
+                            state.setPatternTourArriereReussi(false);
+                        }
+                    }
+                }
+
+
 
                 //On se décale du tas
                 Circle aimArcCircle;

@@ -84,6 +84,9 @@ public class GameState implements Service
     /** Réussites tour arrière */
     private int[] reussitesTourArriere;
 
+    private boolean patternTourAvantReussi;
+    private boolean patternTourArriereReussi;
+
     /** Variables permettant de savoir quels tas de cubes on été pris, permet la gestion des obstacles */
     private boolean tas_base_pris;
     private boolean tas_chateau_eau_pris;
@@ -136,6 +139,8 @@ public class GameState implements Service
         //Aucun des tours n'est remplie en début de match
         this.tourAvantRemplie=false;
         this.tourArriereRemplie=false;
+        this.patternTourAvantReussi=false;
+        this.patternTourArriereReussi=false;
 
         //On dit que les cubes bonus sont présents au début du match
         this.cubeAvantPresent=true;
@@ -372,6 +377,12 @@ public class GameState implements Service
             this.reussitesTourArriere[positionIdealeDansLaTour] = value;
         }
     }
+
+    public boolean isPatternTourAvantReussi(){ return this.patternTourAvantReussi; }
+    public void setPatternTourAvantReussi(boolean value){ this.patternTourAvantReussi=value; }
+
+    public boolean isPatternTourArriereReussi(){ return this.patternTourArriereReussi; }
+    public void setPatternTourArriereReussi(boolean value){ this.patternTourArriereReussi=value; }
 
     public boolean isCapteursActivated() {
         return this.capteursActivated;

@@ -122,6 +122,15 @@ public class DeposeCubes extends AbstractScript {
 
             //On dépose les deux tours
             else {
+
+                //Si une première tour a un pattern et pas la seconde, on privilégie la première tour à la seconde
+                if (state.isPatternTourAvantReussi() && !state.isPatternTourArriereReussi()){
+                    prodScal=1;
+                }
+                else if (!state.isPatternTourAvantReussi() && state.isPatternTourArriereReussi()){
+                    prodScal=-1;
+                }
+
                 if (prodScal > 0) {
                     //On se tourne vers la zone à détecter
                     state.robot.turn(-Math.PI / 2);
