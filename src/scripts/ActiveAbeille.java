@@ -67,11 +67,10 @@ public class ActiveAbeille extends AbstractScript {
                 hookFactory.enableHook(HookNames.BASIC_DETECTION_DISABLE,HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
                 //On va vers l'abeille
                 state.robot.goTo(new Vec2(xEntryReal, yEntryReal));
+                state.addObtainedPoints(50);
 
                 //On se tourne pour pousser l'abeille avec le bras avant
-                state.robot.turnWithoutDetection(Math.PI/2,true, false);
-                state.addObtainedPoints(50);
-                state.setAbeilleLancee(true);
+                state.robot.turn(Math.PI/2,true);
                 //On relève le bras avant
                 state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT, false);
                 //On disable le hook du bras avant
@@ -85,11 +84,10 @@ public class ActiveAbeille extends AbstractScript {
                 hookFactory.enableHook(HookNames.BASIC_DETECTION_DISABLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
                 //On va vers l'abeille
                 state.robot.goTo(new Vec2(xEntryReal, yEntryReal));
+                state.addObtainedPoints(50);
 
                 //On se tourne pour pousser l'abeille avec le bras avant
-                state.robot.turnWithoutDetection(-Math.PI/2,true,false);
-                state.addObtainedPoints(50);
-                state.setAbeilleLancee(true);
+                state.robot.turn(-Math.PI/2,true);
                 //On relève le bras avant
                 state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
                 //On disable le hook du bras avant
@@ -163,10 +161,7 @@ public class ActiveAbeille extends AbstractScript {
     }
 
     @Override
-    public void finalize(GameState state, Exception e) {
-        state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_AVANT,false);
-        state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,false);
-    }
+    public void finalize(GameState state, Exception e) throws UnableToMoveException {}
 
     @Override
     public void goToThenExec(int versionToExecute, GameState state) throws PointInObstacleException, BadVersionException, NoPathFound, ExecuteException, BlockedActuatorException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {

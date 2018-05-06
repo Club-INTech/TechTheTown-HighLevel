@@ -10,6 +10,7 @@ import simulator.ThreadSimulatorMotion;
 import strategie.GameState;
 import table.Table;
 import strategie.IA.*;
+import threads.ThreadInterface;
 import threads.dataHandlers.ThreadSensor;
 
 /*
@@ -56,7 +57,7 @@ public class JUnit_IA extends JUnit_Test{
                 state = container.getService(GameState.class);
                 table = container.getService(Table.class);
                 threadSensor=container.getService(ThreadSensor.class);
-//                container.getService(ThreadInterface.class);
+                container.getService(ThreadInterface.class);
 
                 ia=container.getService(IA.class);
 
