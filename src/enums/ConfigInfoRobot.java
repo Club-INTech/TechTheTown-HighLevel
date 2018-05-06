@@ -77,7 +77,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     DIMENSION_PORTES(87),
 
     /** Paramètres obstacles */
-    PEREMP_OBST(1000),
+    PEREMP_OBST(2000),
 
     /** Paramètres capteurs */
 

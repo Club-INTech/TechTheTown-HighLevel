@@ -53,8 +53,8 @@ public class IA implements Service {
         try {
             scriptManager.getScript(scriptNames).goToThenExec(versionToExecute,gameState);
         } catch (Exception e) {
-            e.printStackTrace();
-            log.debug("////////// IA ////////// An exception happened");
+            log.logException(e);
+            log.debug("////////// IA ////////// An exception happened: "+e.getClass().getName());
             log.debug("////////////// LANCEMENT IA ///////////////");
             handleException(e);
         }
@@ -283,10 +283,12 @@ public class IA implements Service {
         for (int i = 0; i<availableNodes.size();i++) {
             Node currentNode = availableNodes.get(i);
             if (!(currentNode instanceof DeposeCubes)) {
-                double cost = calculateNodeCost(currentNode, robotPosition);
-                if (cost < minCost) {
-                    j = i;
-                    minCost = cost;
+                if (!(currentNode instanceof TakeCubes && gameState.isTourAvantRemplie() && gameState.isTourArriereRemplie())) {
+                    double cost = calculateNodeCost(currentNode, robotPosition);
+                    if (cost < minCost) {
+                        j = i;
+                        minCost = cost;
+                    }
                 }
             }
         }
