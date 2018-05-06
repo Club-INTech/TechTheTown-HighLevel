@@ -11,7 +11,6 @@ import hook.HookFactory;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.*;
-import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -66,6 +65,12 @@ public class IA implements Service {
         int lastVersionExecuted = gameState.getLastScriptVersion();
         //On récupère la dernier node qu'on a essayé de réaliser
         this.lastNodeTried=nodes.getNodeByNameAndVersion(lastScriptExecuted,lastVersionExecuted);
+        // On replie les actionneurs si un script est interrompu
+        try {
+            this.lastNodeTried.finalize(e);
+        } catch (UnableToMoveException e1) {
+            e1.printStackTrace();
+        }
         if (this.lastNodeTried==nodes.getNodeByNameAndVersion(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE,0)){
             gameState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
         }

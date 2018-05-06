@@ -75,6 +75,10 @@ public abstract class Node {
         setDone(true);
     }
 
+    public void finalize(Exception e) throws UnableToMoveException {
+        this.script.finalize(gameState, e);
+    }
+
     @Override
     public String toString() {
         return "Nom : "+ getName()+", version : "+getVersionToExecute();
