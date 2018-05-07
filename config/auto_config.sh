@@ -202,6 +202,7 @@ echo ""
 parameterTest "SIMULATION" "true" "false"
 parameterTest "ATTENTE_JUMPER" "false" "true"
 parameterTest "BASIC_DETECTION" "false" "true"
+parameterTest "ADVANCED_DETECTION" "false" "true"
 
 
 # On refait la même pour la version du match
