@@ -110,7 +110,7 @@ if [ $# -eq 0 ]; then
 	echo "Standard mode"
 	mode="std"
 else
-	while getopts ":yYnN" option; done 							# Permet de gérer les options du script
+	while getopts ":yYnN" option; do									# Permet de gérer les options du script
 		case $option in
 			y | Y )
 				echo "Forcing yes"
