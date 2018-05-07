@@ -1,5 +1,6 @@
 #! /bin/bash
 
+
 function colourConvert {
 	if [ $1 = 'o' ]; then
 		echo "orange"
@@ -15,10 +16,71 @@ function monoGrep {			# Permet de récupérer l'argument dans la config (true/fa
 	fi
 }
 
-function parameterTest {	# Test si le paramètre $1 est égal à la valeur $2 et, le cas échéant, le remplace par $3
-	if [ "$(monoGrep "$1")" = "$2" ]; then
+function parameterTest {	# Test si le paramètre $1 est égal à la valeur $2 et, le cas échéant, le remplace par $3. Demande confirmation
+	answer=""
+
+	if [ "$(monoGrep "$1")" = "$2" ]; then						# Si le paramètre est à la valeur $2, demande si on veut la changer ou pas
 
 		echo "WARNING: $1 is $2"
+		case $mode in
+			"std" )
+				while [ "$answer" != "y" -a "$answer" != "n" ]; do
+					echo -n "Change it to standard value ($3) ? (y/n): "
+					read answer
+				done
+				;;
+			"force-yes" )
+				answer="y"
+				;;
+			"force-no" )
+				answer="n"
+				;;
+		esac
+
+		if [ $answer = "y" ]; then
+			echo "Setting $1 to $3"
+			echo ""
+			
+			parameterState=$(grep $configFile -e ^"$1")
+			sed -i "s/$parameterState/$(echo -n "$(echo "$parameterState" | cut -d "=" -f1 )"= $3)/" $configFile
+		else
+			echo "Keeping $1 at non-standard value ($2)"
+			echo ""
+		fi
+
+	elif [ "$(monoGrep "$1")" = "$3" ]; then					# Si le paramètre est à la valeur $3 demande si on veut le garder ou pas
+
+		echo "$1 is already $3"
+
+		case $mode in
+			"std" )
+				while [ "$answer" != "y" -a "$answer" != "n" ]; do
+					echo -n "Keep it at standard value ? (y/n): "
+					read answer
+				done
+				;;
+			"force-yes" )
+				answer="y"
+				;;
+			"force-no" )
+				answer="n"
+				;;
+		esac
+
+		if [ $answer	= "y" ]; then
+			echo "Keeping $1 at standard value ($3)"
+			echo ""
+		else
+			echo "Changing $1 to non-standard value ($2)"
+			echo ""
+
+			parameterState=$(grep $configFile -e ^"$1")
+			sed -i "s/$parameterState/$(echo -n "$(echo "$parameterState" | cut -d "=" -f1 )"= $2)/" $configFile
+		fi
+
+	else
+
+		echo "WARNING: $1 value is invalid"
 		echo "Setting $1 to $3"
 		echo ""
 
@@ -43,10 +105,33 @@ function multiTest {		# Vérifie si $1 fait parti des éléments de $2
 	exit
 }
 
-configFile=""$( dirname "${BASH_SOURCE[0]}" )"/config.txt"
+
+if [ $# -eq 0 ]; then
+	echo "Standard mode"
+	mode="std"
+else
+	while getopts ":yYnN" option; done 							# Permet de gérer les options du script
+		case $option in
+			y | Y )
+				echo "Forcing yes"
+				mode="force-yes"
+				break;;
+			n | N )
+				echo "Forcing no"
+				mode="force-no"
+				break;;
+			* )
+				echo "Invalid option used. Valid options are: (yYnN)"
+				exit
+		esac
+	done
+fi
+
+
+configFile=""$( dirname "${BASH_SOURCE[0]}" )"/config.txt"		# Obtient le chemin d'origine du script et pas le lieu d'éxécution
 
 if [ ! -e $configFile ]; then
-	echo "Erreur: fichier de config invalide!"
+	echo "ERROR: Invalid config file!"
 	exit
 fi
 
@@ -71,7 +156,7 @@ echo "Current colour is $colour"
 
 colourConfirm=$colour
 
-while [ "$colourConfirm" != "$newColour" ]; do 									# Boucle de confirmation
+while [ "$colourConfirm" != "$newColour" ]; do 					# Boucle de confirmation
 
 	newColour=" "
 	colourConfirm=" "
@@ -116,7 +201,7 @@ echo ""
 
 parameterTest "SIMULATION" "true" "false"
 parameterTest "ATTENTE_JUMPER" "false" "true"
-parameterTest "basic_detection" "false" "true"
+parameterTest "BASIC_DETECTION" "false" "true"
 
 
 # On refait la même pour la version du match
@@ -127,19 +212,21 @@ currentMatchVersion=$(monoGrep "MATCHSCRIPT_TO_EXECUTE")
 echo "Ready to launch matchScript version $currentMatchVersion"
 
 while [ "$changeMatchScript" != 'y' -a "$changeMatchScript" != 'n' ]; do
-	echo -n "Would you like to change it ? (y/n)"
+	echo -n "Would you like to change it ? (y/n): "
 	read changeMatchScript
 done
 
  if [ $changeMatchScript != 'n' ]; then
  	newMatchVersion=""
  	confirmMatchVersion="coucou"
+
  	while [ "$confirmMatchVersion" != "$newMatchVersion" ]; do
  		confirmMatchVersion=" "
  		newMatchVersion=" "
  
  		while [ ! $(multiTest "$newMatchVersion" matchScriptVersions[@]) ]; do
-			echo -n "Choose a valid version ("
+
+			echo -n "Choose a valid version ("					# Permet d'afficher les valeurs du tableau proprement
 			for i in ${matchScriptVersions[@]};do
 				echo -n "$i"
 				if [ ! "$i" = "${matchScriptVersions[$(expr ${#matchScriptVersions[@]} - 1)]}" ]; then
@@ -148,6 +235,7 @@ done
 			done
 			echo -n "): "
 			read newMatchVersion
+
 		done
 
 		while [ ! $(multiTest "$confirmMatchVersion" matchScriptVersions[@] ) ]; do
