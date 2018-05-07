@@ -73,7 +73,7 @@ public class IA implements Service {
         log.debug("Lancement des finalize");
         // On finalize les scripts
         try {
-            if (this.lastNodeTried!=null) {
+            if (this.lastNodeTried!=null && !(e instanceof NoNodesAvailableException)) {
                 this.lastNodeTried.finalize(e);
             }
         } catch (UnableToMoveException e1) {

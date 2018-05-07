@@ -45,7 +45,7 @@ public class MainPattern {
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
 // PS : Les vérifications et validations c'est pas pour les chiens.
 
-    
+
     public static void main(String[] args) throws InterruptedException {
         try {
             container = new Container();
