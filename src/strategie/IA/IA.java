@@ -2,7 +2,6 @@ package strategie.IA;
 
 import container.Service;
 import enums.ScriptNames;
-import enums.Speed;
 import exceptions.*;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
@@ -31,6 +30,7 @@ public class IA implements Service {
     private ArrayList<Node> exploredNodes;
     private ArrayList<Node> availableNodes;
     private Node lastNodeTried;
+    private boolean nearEndMatch;
 
     /**
      * Permet de s'adapter au déroulement d'un match grace à un graphe de décision.
@@ -47,6 +47,7 @@ public class IA implements Service {
         this.availableNodes = new ArrayList<>();
         this.exploredNodes = new ArrayList<>();
         this.lastNodeTried=null;
+        this.nearEndMatch=false;
     }
 
     public void start(ScriptNames scriptNames, int versionToExecute)  {
@@ -224,7 +225,10 @@ public class IA implements Service {
 
         //La dernière action de la partie quand on a plus beaucoup de temps
         else if (gameState.getTimeEllapsed()>85000) {
-            exploredNodes.clear();
+            if (!this.nearEndMatch) {
+                exploredNodes.clear();
+                this.nearEndMatch=true;
+            }
             //Si on a un pattern réussi dans le robot, on va déposer les tours
             if ((gameState.isPatternTourAvantReussi() || gameState.isPatternTourArriereReussi())) {
                 Node deposeCubes0 = nodes.getNodeByNameAndVersion(ScriptNames.DEPOSE_CUBES, 0);
@@ -294,7 +298,11 @@ public class IA implements Service {
         for (int i = 0; i<availableNodes.size();i++) {
             Node currentNode = availableNodes.get(i);
             if (!(currentNode instanceof DeposeCubes)) {
-                if (!(currentNode instanceof TakeCubes && gameState.isTourAvantRemplie() && gameState.isTourArriereRemplie())) {
+                if (!(
+                        (currentNode instanceof TakeCubes && gameState.isTourAvantRemplie() && gameState.isTourArriereRemplie())
+                        || (currentNode instanceof TakeCubes && gameState.getTimeEllapsed()>85000)
+                     )
+                    ) {
                     double cost = calculateNodeCost(currentNode, robotPosition);
                     if (cost < minCost) {
                         j = i;
