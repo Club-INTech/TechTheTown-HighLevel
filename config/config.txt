@@ -19,7 +19,7 @@ INDICE_PATTERN_SIMULATION            = 0
 
 
 # ETAT INITIAL DES ROBOTS
-COULEUR                              = vert
+COULEUR                              = orange
 SIMULATION                           = false
 ATTENTE_JUMPER                       = true
 
@@ -50,8 +50,8 @@ MATCHSCRIPT_TO_EXECUTE               = 0
 # temps_untested_obstacle            = 250
 # 200 homologation ; 150 match
 
-BASIC_DETECTION                      = true
-ADVANCED_DETECTION                   = true
+BASIC_DETECTION                      = false
+ADVANCED_DETECTION                   = false
 SENSOR_ANGLE_WIDENESS                = 1.04
 
 
