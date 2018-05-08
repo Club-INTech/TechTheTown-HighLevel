@@ -78,7 +78,7 @@ public class MainHomologation {
             realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             waitMatchBegin();
             scriptmanager.getScript(ScriptNames.SCRIPT_HOMOLOGATION).goToThenExec(0, realState);
-            config.override(ConfigInfoRobot.BASIC_DETECTION,false);
+
 
         } catch (Exception e) {
             log.logException(e);
