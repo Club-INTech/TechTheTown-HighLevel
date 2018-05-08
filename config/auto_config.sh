@@ -32,7 +32,7 @@ function parameterTest {	# Test si le paramètre $1 est égal à la valeur $2 et
 			"force-yes" )
 				answer="y"
 				;;
-			"force-no" )
+			"force-no" | "keep-cfg" )
 				answer="n"
 				;;
 		esac
@@ -59,7 +59,7 @@ function parameterTest {	# Test si le paramètre $1 est égal à la valeur $2 et
 					read answer
 				done
 				;;
-			"force-yes" )
+			"force-yes" | "keep-cfg" )
 				answer="y"
 				;;
 			"force-no" )
@@ -110,7 +110,7 @@ if [ $# -eq 0 ]; then
 	echo "Standard mode"
 	mode="std"
 else
-	while getopts ":yYnN" option; do									# Permet de gérer les options du script
+	while getopts ":yYnNkK" option; do									# Permet de gérer les options du script
 		case $option in
 			y | Y )
 				echo "Forcing yes"
@@ -120,8 +120,12 @@ else
 				echo "Forcing no"
 				mode="force-no"
 				break;;
+			k | K )
+				echo "Keeping parameter values"
+				mode="keep-cfg"
+				break;;
 			* )
-				echo "Invalid option used. Valid options are: (yYnN)"
+				echo "Invalid option used. Valid options are: (yYnNkK)"
 				exit
 		esac
 	done
