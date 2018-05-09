@@ -51,7 +51,7 @@ MATCHSCRIPT_TO_EXECUTE               = 2
 # 200 homologation ; 150 match
 
 BASIC_DETECTION                      = true
-ADVANCED_DETECTION                   = true
+ADVANCED_DETECTION                   = false
 SENSOR_ANGLE_WIDENESS                = 1.04
 
 
