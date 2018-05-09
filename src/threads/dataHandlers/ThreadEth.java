@@ -169,7 +169,6 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     private char charIDLastMessage;
 
-    private boolean symmetry=config.getBoolean(ConfigInfoRobot.COULEUR);
 
     /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
@@ -719,10 +718,6 @@ public class ThreadEth extends AbstractThread implements Service {
                         } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                             synchronized (xyoLock) {
                                 positionAndOrientation.update(infosFromBuffer, splitString);
-                                if (symmetry) {
-                                    positionAndOrientation.getPosition().setX(-positionAndOrientation.getPosition().getX());
-                                    positionAndOrientation.setOrientation(Math.PI - positionAndOrientation.getOrientation());
-                                }
                                 try {
                                     outPosition.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
                                     outPosition.newLine();
