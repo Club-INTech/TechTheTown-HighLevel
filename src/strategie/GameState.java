@@ -167,7 +167,7 @@ public class GameState implements Service
         //On set une valeur de base, qui sera changée par PatternRecognition par la suite
         this.indicePattern=-2;
         //au début, le threadSensor est lancé, donc les capteurs sont bien activés au début
-        this.capteursActivated =true;
+        this.capteursActivated=true;
         this.lastScript=null;
     }
 

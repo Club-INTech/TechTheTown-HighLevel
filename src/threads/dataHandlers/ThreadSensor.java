@@ -439,7 +439,7 @@ public class ThreadSensor extends AbstractThread
 
                 for (int i = 0; i < nbSensors; i++) {
                     int distance = Integer.parseInt(valuesSReceived[i]);
-                    sensorsArray.get(i).setDetectedDistance(distance * 10); //on convertit des cm en mm
+                    sensorsArray.get(i).setDetectedDistance(distance*10); //on convertit des cm en mm
                     gameState.robot.setUSvalues(sensorsArray.get(i).getDetectedDistance(), i);
                 }
 
@@ -472,6 +472,7 @@ public class ThreadSensor extends AbstractThread
 
         updateConfig();
 
+        System.out.println("test");
         if (this.usingJumper) {
             while (!gameState.wasJumperRemoved()) {
                 try {
