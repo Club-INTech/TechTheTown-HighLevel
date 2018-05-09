@@ -65,6 +65,7 @@ public class TakeCubes extends AbstractScript {
         this.currentIdealPositionInTower=0;
         this.correctionVectorTas = new Vec2(0,0);
         this.correctionVectorTas2 = new Vec2(0,0);
+        log.debug("Execute: AlreadyTriedCorrection; "+this.alreadyTriedCorrection);
         this.normalVersions(indiceTas, state);
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
     }
@@ -202,6 +203,7 @@ public class TakeCubes extends AbstractScript {
                     if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
                         //On fait aller le robot à la position pour prendre le premier cube du pattern
                         log.debug("Essaye de prendre le cube " + pattern[i].getName());
+                        log.debug("AlreadyTriedCorrection; "+this.alreadyTriedCorrection);
                         state.robot.moveNearPoint(successivesPositionsList[i].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
                         //Le robot exception les actions pour prendre le cube
                         Cubes currentCube = Cubes.getCubeFromColor(pattern[i]);
@@ -419,9 +421,9 @@ public class TakeCubes extends AbstractScript {
                 if (!this.alreadyTriedCorrection){
                     log.debug("Lancement de la correction de position du tas "+currentTas.getID());
                     this.correctionVectorTas = correctPosition(state, currentCube);
-                }
-                if (this.correctionVectorTas!=new Vec2(0,0)){
-                    cubeSuccessfullyTaken=true;
+                    if (this.correctionVectorTas!=new Vec2(0,0)){
+                        cubeSuccessfullyTaken=true;
+                    }
                 }
             }
         }
@@ -509,6 +511,7 @@ public class TakeCubes extends AbstractScript {
         for (int i = 0; i < correctionVectorList.length; i++) {
             if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
                 state.robot.moveNearPoint(tableCoordsCurrentCube.plusNewVector(correctionVectorList[i]), this.longueurBrasUtilise, this.directionRobot);
+                log.debug("Essai de correction avec le vecteur :"+correctionVectorTas);
                 boolean cubeTakenSuccessfully = takeThisCube(state, currentCube);
                 if (cubeTakenSuccessfully) {
                     finalOffsetVector = correctionVectorList[i];
