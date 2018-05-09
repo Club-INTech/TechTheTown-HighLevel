@@ -69,7 +69,7 @@ public class MatchScript extends AbstractScript {
 
             //On dépose les cubes à la deuxième position
             DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
-            dpCubes1.goToThenExec(1, gameState);
+            dpCubes1.goToThenExec(2, gameState);
         }
 
         if(version==1){
@@ -137,7 +137,7 @@ public class MatchScript extends AbstractScript {
 
             //On dépose les cubes à la deuxième position
             DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
-            dpCubes1.goToThenExec(1, gameState);
+            dpCubes1.goToThenExec(2, gameState);
         }
 
         if (version==99){
