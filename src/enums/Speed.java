@@ -40,7 +40,7 @@ public enum Speed implements MotionOrder
 
 	/** Vitesse standard de déplacement et rotation */
 
-	MEDIUM_ALL(500,2D),
+	MEDIUM_ALL(400,2D),
 
 	/** Vitesse rapide en translation et rotation */
 	FAST_ALL(700,2.5D),
