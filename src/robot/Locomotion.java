@@ -521,9 +521,7 @@ public class Locomotion implements Service {
             if (mustDetect) {
                 if (!advancedDetection){
                     if (usingBasicDetection) {
-                        log.debug("La basic detection est activée dans la config");
                         if (basicDetectionActivated) {
-                            log.debug("La basic detection est activée dans le soft");
                             boolean obstacleDetected = basicDetect(isMovementForward);
                             boolean wasImmobilised = false;
                             if (obstacleDetected) {
