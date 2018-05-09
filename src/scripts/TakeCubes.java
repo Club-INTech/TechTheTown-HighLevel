@@ -198,14 +198,25 @@ public class TakeCubes extends AbstractScript {
                     this.longueurBrasUtilise=this.longueurBrasAvant;
                 }
 
-                /**
-                 * DEBUG
-                 */
-                for (Vec2 coords : successivesPositionsList){
-                    log.critical(coords);
+                if (indiceTas == 0) {
+                    config.override(ConfigInfoRobot.TAS_BASE_PRIS, true);
+                    state.setTas_base_pris(true);
+                } else if (indiceTas == 1) {
+                    config.override(ConfigInfoRobot.TAS_CHATEAU_PRIS, true);
+                    state.setTas_chateau_eau_pris(true);
+                } else if (indiceTas == 2) {
+                    config.override(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS, true);
+                    state.setTas_station_epuration_pris(true);
+                } else if (indiceTas == 3) {
+                    config.override(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS, true);
+                    state.setTas_base_ennemi_pris(true);
+                } else if (indiceTas == 4) {
+                    config.override(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS, true);
+                    state.setTas_chateau_ennemi_eau_pris(true);
+                } else if (indiceTas == 5) {
+                    config.override(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS, true);
+                    state.setTas_station_epuration_ennemi_pris(true);
                 }
-
-
 
                 for (int i=0; i<3; i++) {
                     //Si on n'a plus le temps pour prendre le reste des cubes, on va déposer ce qu'on a déjà
@@ -217,29 +228,6 @@ public class TakeCubes extends AbstractScript {
                         //Le robot exception les actions pour prendre le cube
                         Cubes currentCube = Cubes.getCubeFromColor(pattern[i]);
                         boolean cubeSuccessfullyTaken = takeThisCube(state, currentCube);
-                        if (!this.alreadyRemovedObstacle && cubeSuccessfullyTaken) {
-                            this.alreadyRemovedObstacle=true;
-                            //Grâce à la config, on passe au pathfinding quel this.currentTas on a pris
-                            if (indiceTas == 0) {
-                                config.override(ConfigInfoRobot.TAS_BASE_PRIS, true);
-                                state.setTas_base_pris(true);
-                            } else if (indiceTas == 1) {
-                                config.override(ConfigInfoRobot.TAS_CHATEAU_PRIS, true);
-                                state.setTas_chateau_eau_pris(true);
-                            } else if (indiceTas == 2) {
-                                config.override(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS, true);
-                                state.setTas_station_epuration_pris(true);
-                            } else if (indiceTas == 3) {
-                                config.override(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS, true);
-                                state.setTas_base_ennemi_pris(true);
-                            } else if (indiceTas == 4) {
-                                config.override(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS, true);
-                                state.setTas_chateau_ennemi_eau_pris(true);
-                            } else if (indiceTas == 5) {
-                                config.override(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS, true);
-                                state.setTas_station_epuration_ennemi_pris(true);
-                            }
-                        }
                         this.currentIdealPositionInTower++;
                     }
                     else {
