@@ -59,10 +59,10 @@ public class MainIA {
 // PS : Les vérifications et validations c'est pas pour les chiens.
 
     public static void main(String[] args) throws InterruptedException {
-        int matchScriptVersionToExecute=0;
         try {
             container = new Container();
             config = container.getConfig();
+            config.override(ConfigInfoRobot.ADVANCED_DETECTION, true);
             log = container.getService(Log.class);
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
@@ -72,22 +72,14 @@ public class MainIA {
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
             }
-            matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
             Thread.currentThread().setPriority(6);
             container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
-            //container.getService(ThreadInterface.class);
             container.getService(ThreadTimer.class);
             patternRecognition=container.getService(PatternRecognition.class);
             container.getService(ThreadScore.class);
             container.startInstanciedThreads();
             // TODO : initialisation des variables globales du robot & objets...
-            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
-                realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
-            }
-            else{
-                realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_DISABLE,true);
-            }
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
