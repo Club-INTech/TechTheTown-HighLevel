@@ -54,8 +54,6 @@ public class MainHomologation {
         try {
             container = new Container();
             config = container.getConfig();
-            config.override(ConfigInfoRobot.BASIC_DETECTION,true);
-            config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
             log = container.getService(Log.class);
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);

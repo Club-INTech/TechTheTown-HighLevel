@@ -198,6 +198,15 @@ public class TakeCubes extends AbstractScript {
                     this.longueurBrasUtilise=this.longueurBrasAvant;
                 }
 
+                /**
+                 * DEBUG
+                 */
+                for (Vec2 coords : successivesPositionsList){
+                    log.critical(coords);
+                }
+
+
+
                 for (int i=0; i<3; i++) {
                     //Si on n'a plus le temps pour prendre le reste des cubes, on va déposer ce qu'on a déjà
                     if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
