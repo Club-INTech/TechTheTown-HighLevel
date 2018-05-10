@@ -49,6 +49,7 @@ public class ThreadInterface extends AbstractThread
         this.robot = robot;
         this.win = new Window(table, state, scriptManager,false);
 
+
     }
 
     @Override
