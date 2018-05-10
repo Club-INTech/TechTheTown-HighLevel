@@ -255,7 +255,7 @@ public class Vec2 {
 
 	public void setX(int x) {
 		this.x = x;
-		r = this.length();
+		r = Math.sqrt(x * x + y * y);
 		a = this.angle();
 	}
 
@@ -265,7 +265,7 @@ public class Vec2 {
 
 	public void setY(int y) {
 		this.y = y;
-		r = this.length();
+		r = Math.sqrt(x * x + y * y);
 		a = this.angle();
 	}
 

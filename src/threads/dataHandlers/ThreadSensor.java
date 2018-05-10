@@ -400,12 +400,12 @@ public class ThreadSensor extends AbstractThread
         Vec2 robotPos;
         if (symetry) {
             robotOr = Geometry.moduloSpec(Math.PI-robotPosAndOr.getOrientation(),Math.PI);
-            robotPos=robotPosAndOr.getPosition();
+            robotPos=robotPosAndOr.getPosition().clone();
             robotPos.setX(robotPos.getX()*-1);
         }
         else{
             robotOr = robotPosAndOr.getOrientation();
-            robotPos=robotPosAndOr.getPosition();
+            robotPos=robotPosAndOr.getPosition().clone();
         }
         pos.setA(Geometry.moduloSpec(pos.getA()+robotOr, Math.PI));
         return pos.plusNewVector(robotPos);
