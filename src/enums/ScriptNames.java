@@ -37,6 +37,7 @@ public enum ScriptNames
     MATCH_SCRIPT("MatchScript"),
     TAKE_CUBES("TakeCubes"),
     SCRIPT_HOMOLOGATION("Homologation"),
+    RECALAGE("Recalage")
     ;
 
     private String name;

@@ -65,6 +65,7 @@ public class ScriptManager implements Service
 		instanciedScripts[ScriptNames.MATCH_SCRIPT.ordinal()] = new MatchScript(config, log, factory);
 		instanciedScripts[ScriptNames.TAKE_CUBES.ordinal()] = new TakeCubes(config, log, factory);
 		instanciedScripts[ScriptNames.SCRIPT_HOMOLOGATION.ordinal()] = new ScriptHomologation(config, log, factory);
+		instanciedScripts[ScriptNames.RECALAGE.ordinal()] = new Recalage(config, log, factory);
 	}
 	
 	/**
