@@ -88,7 +88,8 @@ public class JUnit_Recalage extends JUnit_Test {
     @Test
     public void test() {
 
-
+        gameState.robot.setPosition(Table.entryPosition);
+        gameState.robot.setOrientation(Table.entryOrientation);
 
         log.debug("Avant recalage : " +"Position : " + robotReal.getPosition()+"Orientation : "+robotReal.getOrientation());
         try {

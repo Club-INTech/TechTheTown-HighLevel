@@ -106,6 +106,7 @@ public class IA implements Service {
         }
         else if (e instanceof UnableToMoveException){
             log.warning("IA HANDLED EXCEPTION : UnableToMoveException");
+            gameState.robot.immobilise();
             tryToDoAnotherNode(this.lastNodeTried);
         }
         else if (e instanceof PointInObstacleException){
