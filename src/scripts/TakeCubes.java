@@ -445,9 +445,9 @@ public class TakeCubes extends AbstractScript {
                 if (!this.alreadyTriedCorrection){
                     log.debug("Lancement de la correction de position du tas "+currentTas.getID());
                     this.correctionVectorTas = correctPosition(state, currentCube);
-                }
-                if (this.correctionVectorTas!=new Vec2(0,0)){
-                    cubeSuccessfullyTaken=true;
+                    if (this.correctionVectorTas!=new Vec2(0,0)){
+                        cubeSuccessfullyTaken=true;
+                    }
                 }
             }
         }
