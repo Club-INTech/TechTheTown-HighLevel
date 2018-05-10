@@ -212,7 +212,6 @@ public class ObstacleManager implements Service
 						boolean intersection=false;
 						for(ObstacleCircular obstacleCircularFixe : mCircularObstacle) {
 							if(obstacleMobileUntested.getCircle().isInsideEnough(obstacleCircularFixe.getCircle())){
-								log.debug("Superposition d'obstacles !");
 								intersection=true;
 								break;
 							}

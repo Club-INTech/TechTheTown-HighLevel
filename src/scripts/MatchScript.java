@@ -69,11 +69,18 @@ public class MatchScript extends AbstractScript {
             tk0.goToThenExec(0,gameState);
 
             //On dépose les cubes à la deuxième position
-            DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
-            dpCubes1.goToThenExec(2, gameState);
+            DeposeCubes dpCubes2=new DeposeCubes(config,log,hookFactory);
+            dpCubes2.goToThenExec(2, gameState);
         }
 
         if(version==1){
+            if (usingAdvancedDetection) {
+                gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
+                gameState.setCapteursActivated(false);
+            }
+            if(usingBasicDetection){
+                gameState.robot.setBasicDetection(false);
+            }
             //Pile cube n°1
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);
             tk1.goToThenExec(1,gameState);
@@ -104,12 +111,18 @@ public class MatchScript extends AbstractScript {
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
             actPD.goToThenExec(0,gameState);
             //On dépose les cubes à la deuxième position
-            DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
-            dpCubes1.goToThenExec(1, gameState);
+            DeposeCubes dpCubes2=new DeposeCubes(config,log,hookFactory);
+            dpCubes2.goToThenExec(2, gameState);
         }
 
         if(version==2){
-
+            if (usingAdvancedDetection) {
+                gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
+                gameState.setCapteursActivated(false);
+            }
+            if(usingBasicDetection){
+                gameState.robot.setBasicDetection(false);
+            }
             //On active l'abeille
             ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
             activeAbeille.goToThenExec(2,gameState);
@@ -137,8 +150,8 @@ public class MatchScript extends AbstractScript {
 
 
             //On dépose les cubes à la deuxième position
-            DeposeCubes dpCubes1=new DeposeCubes(config,log,hookFactory);
-            dpCubes1.goToThenExec(2, gameState);
+            DeposeCubes dpCubes2=new DeposeCubes(config,log,hookFactory);
+            dpCubes2.goToThenExec(2, gameState);
         }
 
         if (version==99){
