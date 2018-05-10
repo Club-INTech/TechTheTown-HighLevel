@@ -10,14 +10,16 @@ import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
-q
+
 public class Recalage extends AbstractScript {
 
     private int robotRaduis;
+    private int distanceAvant;      //distance du centre du robot à l'avant du robot.
 
     public Recalage (Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
         updateConfig();
+        this.distanceAvant = 250;
     }
 
 
@@ -26,24 +28,28 @@ public class Recalage extends AbstractScript {
         log.debug("////////// Execution Recalage version "+version+" //////////");
 
         try {
+            //On s'oriente vers le mur coté abeille.
             gameState.robot.turn(Math.PI/2);
             gameState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+            //On s'avance vers le mur jusqu'a l'impact.
             gameState.robot.moveLengthwise(2000);
         } catch (UnableToMoveException e) {
             e.printStackTrace();
             log.debug("Unable to move exeption : On vient de taper le mur.");
+            //On s'oriente vers le mur coté extérieur.
             gameState.robot.setOrientation(Math.PI/2);
-            gameState.robot.setPosition(new Vec2(gameState.robot.getPosition().getX(),2000-robotRaduis/2));
+            gameState.robot.setPosition(new Vec2(gameState.robot.getPosition().getX(),2000- distanceAvant));
             log.debug("Robot recalé en y et en orientation");
             gameState.robot.moveLengthwise(-robotRaduis);
             gameState.robot.turn(0);
             try {
+                //On s'avance vers le mur jusqu'a l'impact.
                 gameState.robot.moveLengthwise(2000);
             } catch (UnableToMoveException e1) {
                 e1.printStackTrace();
                 log.debug("Unable to move exeption : On vient de taper le mur.");
                 gameState.robot.setOrientation(0);
-                gameState.robot.setPosition(new Vec2(1500-robotRaduis/2, gameState.robot.getPosition().getY()));
+                gameState.robot.setPosition(new Vec2(1500- distanceAvant, gameState.robot.getPosition().getY()));
                 log.debug("Robot recalé en x et en orientation.");
             }
         }
