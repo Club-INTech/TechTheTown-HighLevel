@@ -120,8 +120,8 @@ public enum ActuatorOrder implements MotionOrder
 	SUS_ON("sus on",300),
 	SUS_OFF("sus off",300),
 
-	CHECK_CAPTEURS_CUBE_AVANT("ccAv",50),
-	CHECK_CAPTEURS_CUBE_ARRIERE("ccAr",50),
+	CHECK_CAPTEURS_CUBE_AVANT("ccAv",100),
+	CHECK_CAPTEURS_CUBE_ARRIERE("ccAr",100),
 
 /*			 _____________________
  * 		   *|                     |*
