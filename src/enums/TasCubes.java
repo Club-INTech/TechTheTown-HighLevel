@@ -4,11 +4,12 @@ import smartMath.Vec2;
 
 public enum TasCubes{
     //Position verte décalée de -10 en X par rapport à la position théorique
-    //Position orange décalée de -10 en X par rapport à la position théorique
-    TAS_BASE(0,new Vec2(640,540), new Vec2(640,540)),
+    //Position orange décalée de +5 en X par rapport à la position théorique
+    //Position orange décalée de +15 en Y par rapport à la position théorique
+    TAS_BASE(0,new Vec2(640,540), new Vec2(655,555)),
 
     //Position orange décalée de +10 en Y par rapport à la position théorique
-    TAS_CHATEAU_EAU(1,new Vec2(1200,1190),  new Vec2(1200,1200)),
+    TAS_CHATEAU_EAU(1,new Vec2(1200,1200),  new Vec2(1200,1200)),
 
 
     //Position verte décalée de -10 en X par rapport à la position théorique

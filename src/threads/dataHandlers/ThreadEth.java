@@ -171,6 +171,7 @@ public class ThreadEth extends AbstractThread implements Service {
 
     private boolean symmetry=config.getBoolean(ConfigInfoRobot.COULEUR);
 
+
     /**
      * Créer l'interface Ethernet en pouvant choisir ou non de simuler le LL
      *
@@ -183,6 +184,18 @@ public class ThreadEth extends AbstractThread implements Service {
         this.name = "Teensy";
         this.nbRepeatMessage=0;
         this.charIDLastMessage ='A';
+        System.out.println("//////////////////////////////////////////////");
+        System.out.println("//////////////////////////////////////////////");
+        System.out.println("//////////////////////////////////////////////");
+        System.out.println("//////////////////////////////////////////////");
+        System.out.println("//////////////////////////////////////////////");
+        System.out.println("Couleur: "+ConfigInfoRobot.COULEUR);
+        System.out.println("Valeur symmetry dans ThreadEth: "+symmetry);
+        System.out.println("//////////////////////////////////////////////");
+        System.out.println("//////////////////////////////////////////////");
+        System.out.println("//////////////////////////////////////////////");
+        System.out.println("//////////////////////////////////////////////");
+        System.out.println("//////////////////////////////////////////////");
         if (debug) {
             try {
                 this.standardFileTmp = new File("/tmp/standard.txt");

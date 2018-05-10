@@ -65,6 +65,7 @@ public class TakeCubes extends AbstractScript {
         this.currentIdealPositionInTower=0;
         this.correctionVectorTas = new Vec2(0,0);
         this.correctionVectorTas2 = new Vec2(0,0);
+        log.debug("Execute: AlreadyTriedCorrection; "+this.alreadyTriedCorrection);
         this.normalVersions(indiceTas, state);
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
     }
@@ -197,38 +198,36 @@ public class TakeCubes extends AbstractScript {
                     this.longueurBrasUtilise=this.longueurBrasAvant;
                 }
 
+                if (indiceTas == 0) {
+                    config.override(ConfigInfoRobot.TAS_BASE_PRIS, true);
+                    state.setTas_base_pris(true);
+                } else if (indiceTas == 1) {
+                    config.override(ConfigInfoRobot.TAS_CHATEAU_PRIS, true);
+                    state.setTas_chateau_eau_pris(true);
+                } else if (indiceTas == 2) {
+                    config.override(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS, true);
+                    state.setTas_station_epuration_pris(true);
+                } else if (indiceTas == 3) {
+                    config.override(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS, true);
+                    state.setTas_base_ennemi_pris(true);
+                } else if (indiceTas == 4) {
+                    config.override(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS, true);
+                    state.setTas_chateau_ennemi_eau_pris(true);
+                } else if (indiceTas == 5) {
+                    config.override(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS, true);
+                    state.setTas_station_epuration_ennemi_pris(true);
+                }
+
                 for (int i=0; i<3; i++) {
                     //Si on n'a plus le temps pour prendre le reste des cubes, on va déposer ce qu'on a déjà
                     if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
                         //On fait aller le robot à la position pour prendre le premier cube du pattern
                         log.debug("Essaye de prendre le cube " + pattern[i].getName());
+                        log.debug("AlreadyTriedCorrection; "+this.alreadyTriedCorrection);
                         state.robot.moveNearPoint(successivesPositionsList[i].plusNewVector(this.correctionVectorTas), longueurBrasUtilise, this.directionRobot);
                         //Le robot exception les actions pour prendre le cube
                         Cubes currentCube = Cubes.getCubeFromColor(pattern[i]);
                         boolean cubeSuccessfullyTaken = takeThisCube(state, currentCube);
-                        if (!this.alreadyRemovedObstacle && cubeSuccessfullyTaken) {
-                            this.alreadyRemovedObstacle=true;
-                            //Grâce à la config, on passe au pathfinding quel this.currentTas on a pris
-                            if (indiceTas == 0) {
-                                config.override(ConfigInfoRobot.TAS_BASE_PRIS, true);
-                                state.setTas_base_pris(true);
-                            } else if (indiceTas == 1) {
-                                config.override(ConfigInfoRobot.TAS_CHATEAU_PRIS, true);
-                                state.setTas_chateau_eau_pris(true);
-                            } else if (indiceTas == 2) {
-                                config.override(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS, true);
-                                state.setTas_station_epuration_pris(true);
-                            } else if (indiceTas == 3) {
-                                config.override(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS, true);
-                                state.setTas_base_ennemi_pris(true);
-                            } else if (indiceTas == 4) {
-                                config.override(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS, true);
-                                state.setTas_chateau_ennemi_eau_pris(true);
-                            } else if (indiceTas == 5) {
-                                config.override(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS, true);
-                                state.setTas_station_epuration_ennemi_pris(true);
-                            }
-                        }
                         this.currentIdealPositionInTower++;
                     }
                     else {
@@ -419,9 +418,9 @@ public class TakeCubes extends AbstractScript {
                 if (!this.alreadyTriedCorrection){
                     log.debug("Lancement de la correction de position du tas "+currentTas.getID());
                     this.correctionVectorTas = correctPosition(state, currentCube);
-                }
-                if (this.correctionVectorTas!=new Vec2(0,0)){
-                    cubeSuccessfullyTaken=true;
+                    if (this.correctionVectorTas!=new Vec2(0,0)){
+                        cubeSuccessfullyTaken=true;
+                    }
                 }
             }
         }
@@ -446,9 +445,9 @@ public class TakeCubes extends AbstractScript {
                 if (!this.alreadyTriedCorrection){
                     log.debug("Lancement de la correction de position du tas "+currentTas.getID());
                     this.correctionVectorTas = correctPosition(state, currentCube);
-                }
-                if (this.correctionVectorTas!=new Vec2(0,0)){
-                    cubeSuccessfullyTaken=true;
+                    if (this.correctionVectorTas!=new Vec2(0,0)){
+                        cubeSuccessfullyTaken=true;
+                    }
                 }
             }
         }
@@ -509,6 +508,7 @@ public class TakeCubes extends AbstractScript {
         for (int i = 0; i < correctionVectorList.length; i++) {
             if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
                 state.robot.moveNearPoint(tableCoordsCurrentCube.plusNewVector(correctionVectorList[i]), this.longueurBrasUtilise, this.directionRobot);
+                log.debug("Essai de correction avec le vecteur :"+correctionVectorTas);
                 boolean cubeTakenSuccessfully = takeThisCube(state, currentCube);
                 if (cubeTakenSuccessfully) {
                     finalOffsetVector = correctionVectorList[i];

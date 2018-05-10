@@ -31,6 +31,7 @@ import scripts.ScriptManager;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
+import threads.dataHandlers.ThreadSensor;
 import threads.threadScore.ThreadScore;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
@@ -70,14 +71,13 @@ public class Main {
             }
             matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
             Thread.currentThread().setPriority(6);
-            //container.getService(ThreadSensor.class);
+            if (config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)) {
+                container.getService(ThreadSensor.class);
+            }
             container.getService(ThreadEth.class);
             container.getService(ThreadTimer.class);
             container.getService(ThreadScore.class);
             container.startInstanciedThreads();
-            if(config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
-                realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
-            }
             realState.robot.setPosition(Table.entryPosition);
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);

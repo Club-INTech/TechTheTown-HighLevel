@@ -33,10 +33,10 @@ public class DeposeCubes extends AbstractScript {
     public DeposeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
         updateConfig();
-        versions = new int[]{0, 1};
+        versions = new int[]{0, 1, 2};
         this.shift =  380;
-        this.xEntry=new int[]{970, 600};
-        this.yEntry=new int[]{150+radius, 600-shift};
+        this.xEntry=new int[]{970, 600, 600};
+        this.yEntry=new int[]{150+radius, 600-shift, 150+radius};
     }
 
     /**
@@ -305,7 +305,15 @@ public class DeposeCubes extends AbstractScript {
             int yEntry = this.yEntry[1];
             Vec2 positionEntree = new Vec2(xEntry, yEntry);
             return new Circle(positionEntree);
-        } else {
+        }
+        //Position d'entrée dans un obstacle: moins de mouvements
+        else if (version==2) {
+            int xEntry = this.xEntry[2];
+            int yEntry = this.yEntry[2];
+            Vec2 positionEntree = new Vec2(xEntry, yEntry);
+            return new Circle(positionEntree);
+        }
+        else {
             throw new BadVersionException();
         }
     }
