@@ -88,6 +88,8 @@ public class JUnit_Recalage extends JUnit_Test {
     @Test
     public void test() {
 
+
+
         log.debug("Avant recalage : " +"Position : " + robotReal.getPosition()+"Orientation : "+robotReal.getOrientation());
         try {
             scriptManager.getScript(ScriptNames.RECALAGE).execute(0, state);
