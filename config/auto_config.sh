@@ -139,7 +139,7 @@ if [ ! -e $configFile ]; then
 	exit
 fi
 
-matchScriptVersions=("0" "1" "2" "99")
+matchScriptVersions=("0" "1" "2" "42")
 
 ### COLOR CHANGE
 
