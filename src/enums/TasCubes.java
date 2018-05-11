@@ -14,7 +14,7 @@ public enum TasCubes{
 
     //Position verte décalée de -10 en X par rapport à la position théorique
     //Position orange décalée de -10 en X par rapport à la position théorique
-    TAS_STATION_EPURATION(2,new Vec2(395,1520),  new Vec2(390,1500)),
+    TAS_STATION_EPURATION(2,new Vec2(405,1520),  new Vec2(390,1500)),
 
 
     TAS_STATION_EPURATION_ENNEMI(3,new Vec2(-400,1500),  new Vec2(-400,1500)),
