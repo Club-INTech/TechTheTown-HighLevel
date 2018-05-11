@@ -72,7 +72,7 @@ public class XYO {
 
     /** Getters & Setters */
     public Vec2 getPosition() {
-        return position;
+        return position.clone();
     }
     public void setPosition(Vec2 position) {
         this.position = position;
