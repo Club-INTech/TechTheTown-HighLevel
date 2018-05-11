@@ -46,7 +46,7 @@ public class UseWebcam {
         List<String> command = new ArrayList<>();
 
         command.add(pythonCommand);
-        command.add("./src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py");
+        command.add("/home/pi/Documents/TechTheTown-HighLevel/src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py");
 
         //On crée le processus qui va lancer python pour set la position des patterns
         ProcessBuilder pb = new ProcessBuilder(command);
@@ -74,7 +74,7 @@ public class UseWebcam {
         List<String> command = new ArrayList<>();
 
         command.add(pythonCommand);
-        command.add("./src/patternRecognition/setPatternPosition/SetPatternPositionOrange.py");
+        command.add("/home/pi/Documents/TechTheTown-HighLevel/src/patternRecognition/setPatternPosition/SetPatternPositionOrange.py");
 
         //On crée le processus qui va lancer python pour set la position des patterns
         ProcessBuilder pb = new ProcessBuilder(command);
