@@ -620,6 +620,7 @@ public class TakeCubes extends AbstractScript {
     public void updateConfig() {
         super.updateConfig();
         TasCubes.setSymetry(config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
+        TasCubes.setMatchScriptVersion(config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE));
         this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         this.longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
         this.longueurBrasArriere=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_ARRIERE);
