@@ -106,7 +106,11 @@ public class Main {
                 Circle aimArcCircle;
                 aimArcCircle = new Circle(coordsTas, longueurBrasAvant, -Math.PI, 0, true);
                 System.out.println("Got aimArcCircle");
-                Vec2 aim = smartMath.Geometry.closestPointOnCircle(Table.entryPosition,aimArcCircle);
+                Vec2 robotPos=Table.entryPosition.clone();
+                if (symetry){
+                    robotPos.setX(-robotPos.getX());
+                }
+                Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPos,aimArcCircle);
                 System.out.println("Got final aim : " + aim.toString());
 
                 realState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
