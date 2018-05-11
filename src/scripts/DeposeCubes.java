@@ -67,7 +67,7 @@ public class DeposeCubes extends AbstractScript {
             numberOfTowersToDeposeInitially = numberTowersToDepose;
             if (numberTowersToDepose > 0) {
                 if (version == 1) {
-                    state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0]));
+                    state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0]));
                 }
                 state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU, false);
                 state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU, true);
@@ -92,8 +92,9 @@ public class DeposeCubes extends AbstractScript {
                         state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
                         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
                         try {
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone));
+                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone),true);
                         } catch (UnableToMoveException e) {
+                            log.debug("Catch UnableToMoveException (qui ne devrait pas arriver car on s'attend à un impact avec un mur)");
                             state.robot.immobilise();
                         }
                         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
@@ -113,8 +114,9 @@ public class DeposeCubes extends AbstractScript {
                         state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
                         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
                         try {
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone));
+                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone),true);
                         } catch (UnableToMoveException e) {
+                            log.debug("Catch UnableToMoveException (qui ne devrait pas arriver car on s'attend à un impact avec un mur)");
                             state.robot.immobilise();
                         }
                         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
@@ -152,8 +154,9 @@ public class DeposeCubes extends AbstractScript {
                         state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
                         //On rentre dans la zone
                         try {
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone));
+                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone), true);
                         } catch (UnableToMoveException e) {
+                            log.debug("Catch UnableToMoveException (qui ne devrait pas arriver car on s'attend à un impact avec un mur)");
                             state.robot.immobilise();
                         }
 
@@ -186,8 +189,9 @@ public class DeposeCubes extends AbstractScript {
                         state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
                         state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
                         try {
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone));
+                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone),true);
                         } catch (UnableToMoveException e) {
+                            log.debug("Catch UnableToMoveException (qui ne devrait pas arriver car on s'attend à un impact avec un mur)");
                             state.robot.immobilise();
                         }
                         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
@@ -203,8 +207,9 @@ public class DeposeCubes extends AbstractScript {
                         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
                         state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
                         try {
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone));
+                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone),true);
                         } catch (UnableToMoveException e) {
+                            log.debug("Catch UnableToMoveException (qui ne devrait pas arriver car on s'attend à un impact avec un mur)");
                             state.robot.immobilise();
                         }
                         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
@@ -225,8 +230,9 @@ public class DeposeCubes extends AbstractScript {
                         state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
                         state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
                         try {
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone));
+                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0] - distancePenetrationZone),true);
                         } catch (UnableToMoveException e) {
+                            log.debug("Catch UnableToMoveException (qui ne devrait pas arriver car on s'attend à un impact avec un mur)");
                             state.robot.immobilise();
                         }
                         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
