@@ -493,6 +493,9 @@ public class Locomotion implements Service {
                     immobilise();
                     throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
                 }
+                else{
+                    immobilise();
+                }
             }
         }
         while (doItAgain);

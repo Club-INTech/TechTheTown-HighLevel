@@ -37,7 +37,7 @@ public class ActiveAbeille extends AbstractScript {
         super(config,log,hookFactory);
         updateConfig();
         this.xEntryReal=1280;
-        this.yEntryReal=1780;
+        this.yEntryReal=1800;
         this.xEntryPathfindingAvaible=1200;
         this.yEntryPathfindingAvaible=1700;
         this.xEntry2=780;
