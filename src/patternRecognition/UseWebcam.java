@@ -45,9 +45,11 @@ public class UseWebcam {
     public static void setPatternPositionWithVideoGreen() {
         List<String> command = new ArrayList<>();
 
-        command.add("xterm");
-        command.add("-e");
-        command.add('"'+pythonCommand+" ~/Documents/TechTheTown-HighLevel/src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py; exit"+'"');
+        command.add("bash");
+        command.add("~/Desktop/GREEN_PATTERN.sh");
+        //command.add("xterm");
+        //command.add("-e");
+        //command.add('"'+pythonCommand+" ~/Documents/TechTheTown-HighLevel/src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py; exit"+'"');
 
         //On crée le processus qui va lancer python pour set la position des patterns
         ProcessBuilder pb = new ProcessBuilder(command);
