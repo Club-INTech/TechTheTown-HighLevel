@@ -208,7 +208,7 @@ public class MatchScript extends AbstractScript {
             takeCubes0.goToThenExec(0, gameState);
 
             //On évite de pousser un cube entre le robot et le panneau domotique
-            gameState.robot.goTo(new Vec2(370,500));
+            gameState.robot.goTo(new Vec2(340,500));
 
             ActivationPanneauDomotique activationPanneauDomotique = new ActivationPanneauDomotique(config, log, hookFactory);
             activationPanneauDomotique.goToThenExec(0,gameState);
