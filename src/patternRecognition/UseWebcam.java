@@ -42,43 +42,11 @@ public class UseWebcam {
         return picture;
     }
 
-    public static void setPatternPositionWithVideoGreen() {
+    public static void setPatternPositionWithVideo() {
         List<String> command = new ArrayList<>();
 
-        command.add("bash");
-        command.add("/home/pi/Desktop/GREEN_PATTERN.sh");
-        //command.add("xterm");
-        //command.add("-e");
-        //command.add('"'+pythonCommand+" ~/Documents/TechTheTown-HighLevel/src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py; exit"+'"');
-
-        //On crée le processus qui va lancer python pour set la position des patterns
-        ProcessBuilder pb = new ProcessBuilder(command);
-        pb.inheritIO();
-        Process p = null;
-
-        //On lance le processus
-        try {
-            p = pb.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("UseWebcam > Erreur processBuilder");
-        }
-
-        //On attend que le processus termine
-        try {
-            p.waitFor();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.out.println("UseWebcam > Erreur waitfor");
-        }
-    }
-
-    public static void setPatternPositionWithVideoOrange() {
-        List<String> command = new ArrayList<>();
-
-        command.add("xterm");
-        command.add("-e");
-        command.add('"'+pythonCommand+" ~/Documents/TechTheTown-HighLevel/src/patternRecognition/setPatternPosition/SetPatternPositionOrange.py; exit"+'"');
+        command.add(pythonCommand);
+        command.add("./src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py");
 
         //On crée le processus qui va lancer python pour set la position des patterns
         ProcessBuilder pb = new ProcessBuilder(command);

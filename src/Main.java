@@ -59,14 +59,11 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         int matchScriptVersionToExecute=2;
-        boolean symetry=false;
         try {
             // TODO : initialisation des variables globales du robot & objets...
             container = new Container();
             config = container.getConfig();
             config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
-            symetry=config.getString(ConfigInfoRobot.COULEUR).equals("orange");
-
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
@@ -95,33 +92,6 @@ public class Main {
 
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
             System.out.println("MatchScript to execute: "+matchScriptVersionToExecute);
-            if (matchScriptVersionToExecute==42) {
-                System.out.println("Entered IF");
-                TasCubes.setMatchScriptVersion(matchScriptVersionToExecute);
-                TasCubes.setSymetry(symetry);
-                Vec2 coordsTas = TasCubes.getTasFromID(2).getCoordsVec2();
-                System.out.println("Got coordsTas");
-                int longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
-                System.out.println("Got longueurBrasAvant");
-                Circle aimArcCircle;
-                aimArcCircle = new Circle(coordsTas, longueurBrasAvant, -Math.PI, 0, true);
-                System.out.println("Got aimArcCircle");
-                Vec2 robotPos=Table.entryPosition.clone();
-                if (symetry){
-                    robotPos.setX(-robotPos.getX());
-                }
-                Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPos,aimArcCircle);
-                System.out.println("Got final aim : " + aim.toString());
-
-                realState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                System.out.println("Set slow speed");
-                realState.robot.turnTo(aim);
-                System.out.println("Turned");
-                realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                System.out.println("Set default speed");
-
-                UseWebcam.setPatternPositionWithVideoGreen();
-            }
 
             System.out.println("Le robot commence le match");
 
