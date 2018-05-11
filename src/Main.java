@@ -59,11 +59,16 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         int matchScriptVersionToExecute=2;
+        boolean symetry;
         try {
             // TODO : initialisation des variables globales du robot & objets...
             container = new Container();
             config = container.getConfig();
             config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
+            matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
+            symetry=config.getString(ConfigInfoRobot.COULEUR).equals("orange");
+            TasCubes.setSymetry(symetry);
+            TasCubes.setMatchScriptVersion(matchScriptVersionToExecute);
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
@@ -72,7 +77,6 @@ public class Main {
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
             }
-            matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
             Thread.currentThread().setPriority(6);
             if (config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)) {
                 container.getService(ThreadSensor.class);
