@@ -47,8 +47,7 @@ public class UseWebcam {
 
         command.add("xterm");
         command.add("-e");
-        command.add('"'+pythonCommand);
-        command.add("~/Documents/TechTheTown-HighLevel/src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py; exit"+'"');
+        command.add('"'+pythonCommand+" ~/Documents/TechTheTown-HighLevel/src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py; exit"+'"');
 
         //On crée le processus qui va lancer python pour set la position des patterns
         ProcessBuilder pb = new ProcessBuilder(command);
@@ -77,8 +76,7 @@ public class UseWebcam {
 
         command.add("xterm");
         command.add("-e");
-        command.add('"'+pythonCommand);
-        command.add("~/Documents/TechTheTown-HighLevel/src/patternRecognition/setPatternPosition/SetPatternPositionOrange.py; exit"+'"');
+        command.add('"'+pythonCommand+" ~/Documents/TechTheTown-HighLevel/src/patternRecognition/setPatternPosition/SetPatternPositionOrange.py; exit"+'"');
 
         //On crée le processus qui va lancer python pour set la position des patterns
         ProcessBuilder pb = new ProcessBuilder(command);
