@@ -492,8 +492,7 @@ public class Locomotion implements Service {
                 if (!expectWallImpact){
                     immobilise();
                     throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
-                }
-                else{
+                } else {
                     immobilise();
                 }
             }
