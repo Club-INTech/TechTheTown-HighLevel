@@ -6,51 +6,104 @@ public enum TasCubes{
     //Position verte décalée de -10 en X par rapport à la position théorique
     //Position orange décalée de +5 en X par rapport à la position théorique
     //Position orange décalée de +15 en Y par rapport à la position théorique
-    TAS_BASE(0,new Vec2(640,540), new Vec2(655,545)),
+    TAS_BASE(0,new Vec2(640,540), new Vec2(655,545), //MatchScript 0
+            new Vec2(640,540), new Vec2(655,545), //MatchScript 2
+            new Vec2(640,540), new Vec2(655,545)), //MatchScript 42
 
     //Position orange décalée de +10 en Y par rapport à la position théorique
-    TAS_CHATEAU_EAU(1,new Vec2(1200,1200),  new Vec2(1200,1210)),
+    TAS_CHATEAU_EAU(1,new Vec2(1200,1200),  new Vec2(1200,1210),  //MatchScript 0
+            new Vec2(1200,1200),  new Vec2(1200,1210), //MatchScript 2
+            new Vec2(1200,1200),  new Vec2(1200,1210)), //MatchScript 42
 
 
     //Position verte décalée de -10 en X par rapport à la position théorique
     //Position orange décalée de -10 en X par rapport à la position théorique
-    TAS_STATION_EPURATION(2,new Vec2(395,1510),  new Vec2(390,1490)),
+    TAS_STATION_EPURATION(2,new Vec2(395,1510), new Vec2(390,1490), //MatchScript 0
+            new Vec2(395,1510), new Vec2(390,1490), //MatchScript 2
+            new Vec2(395,1510), new Vec2(390,1490)), //MatchScript 42
 
 
-    TAS_STATION_EPURATION_ENNEMI(3,new Vec2(-400,1500),  new Vec2(-400,1500)),
+    TAS_STATION_EPURATION_ENNEMI(3,new Vec2(-400,1500), new Vec2(-400,1500), //MatchScript 0
+            new Vec2(-400,1500), new Vec2(-400,1500), //MatchScript 2
+            new Vec2(-400,1500), new Vec2(-400,1500)), //MatchScript 42
 
 
-    TAS_CHATEAU_EAU_ENNEMI(4,new Vec2(-1200,1190),  new Vec2(-1200,1190)),
+    TAS_CHATEAU_EAU_ENNEMI(4,new Vec2(-1200,1190), new Vec2(-1200,1190), //MatchScript 0
+            new Vec2(-1200,1190), new Vec2(-1200,1190), //MatchScript 2
+            new Vec2(-1200,1190), new Vec2(-1200,1190)), //MatchScript 42
 
 
-    TAS_BASE_ENNEMI(5,new Vec2(-650,540),  new Vec2(-650,540));
+    TAS_BASE_ENNEMI(5,new Vec2(-650,540), new Vec2(-650,540), //MatchScript 0
+            new Vec2(-650,540), new Vec2(-650,540), //MatchScript 2
+            new Vec2(-650,540), new Vec2(-650,540)); //MatchScript 42
 
     private int id;
-    private Vec2 greenCoords;
-    private Vec2 orangeCoords;
+    private Vec2 greenCoordsMatchScript0;
+    private Vec2 orangeCoordsMatchScript0;
+
+    private Vec2 greenCoordsMatchScript2;
+    private Vec2 orangeCoordsMatchScript2;
+
+    private Vec2 greenCoordsMatchScript42;
+    private Vec2 orangeCoordsMatchScript42;
 
     private static boolean symetry;
-    TasCubes(int id, Vec2 greenCoords, Vec2 orangeCoords){
+    private static int matchScriptVersion=2;
+    TasCubes(int id, Vec2 greenCoordsMatchScript0, Vec2 orangeCoordsMatchScript0, Vec2 greenCoordsMatchScript2, Vec2 orangeCoordsMatchScript2, Vec2 greenCoordsMatchScript42, Vec2 orangeCoordsMatchScript42){
         this.id=id;
-        this.greenCoords=greenCoords;
-        this.orangeCoords=orangeCoords;
+        this.greenCoordsMatchScript0=greenCoordsMatchScript0;
+        this.orangeCoordsMatchScript0=orangeCoordsMatchScript0;
+        this.greenCoordsMatchScript2=greenCoordsMatchScript2;
+        this.orangeCoordsMatchScript2=orangeCoordsMatchScript2;
+        this.greenCoordsMatchScript42=greenCoordsMatchScript42;
+        this.orangeCoordsMatchScript42=orangeCoordsMatchScript42;
     }
 
     public int[] getCoords(){
-        if (symetry) {
-            return new int[]{this.orangeCoords.getX(), this.orangeCoords.getY()};
+        if (matchScriptVersion==0) {
+            if (symetry) {
+                return new int[]{this.orangeCoordsMatchScript0.getX(), this.orangeCoordsMatchScript0.getY()};
+            } else {
+                return new int[]{this.greenCoordsMatchScript0.getX(), this.greenCoordsMatchScript0.getY()};
+            }
+        }
+        else if (matchScriptVersion==42){
+            if (symetry) {
+                return new int[]{this.orangeCoordsMatchScript42.getX(), this.orangeCoordsMatchScript42.getY()};
+            } else {
+                return new int[]{this.greenCoordsMatchScript42.getX(), this.greenCoordsMatchScript42.getY()};
+            }
         }
         else{
-            return new int[]{this.greenCoords.getX(), this.greenCoords.getY()};
+            if (symetry) {
+                return new int[]{this.orangeCoordsMatchScript2.getX(), this.orangeCoordsMatchScript2.getY()};
+            } else {
+                return new int[]{this.greenCoordsMatchScript2.getX(), this.greenCoordsMatchScript2.getY()};
+            }
         }
     }
 
     public Vec2 getCoordsVec2(){
-        if (symetry) {
-            return this.orangeCoords;
+        if (matchScriptVersion==0) {
+            if (symetry) {
+                return this.orangeCoordsMatchScript0;
+            } else {
+                return this.greenCoordsMatchScript0;
+            }
+        }
+        else if (matchScriptVersion==42){
+            if (symetry) {
+                return this.orangeCoordsMatchScript42;
+            } else {
+                return this.greenCoordsMatchScript42;
+            }
         }
         else{
-            return this.greenCoords;
+            if (symetry) {
+                return this.orangeCoordsMatchScript2;
+            } else {
+                return this.greenCoordsMatchScript2;
+            }
         }
     }
 
@@ -69,4 +122,5 @@ public enum TasCubes{
     public static void setSymetry(boolean value) {
         symetry = value;
     }
+    public static void setMatchScriptVersion(int value) { matchScriptVersion = value;}
 }
