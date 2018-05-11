@@ -18,16 +18,17 @@
  */
 
 import container.Container;
-import enums.ActuatorOrder;
-import enums.ConfigInfoRobot;
-import enums.ScriptNames;
-import enums.Speed;
+import enums.*;
 import exceptions.ContainerException;
 import patternRecognition.PatternRecognition;
+import patternRecognition.UseWebcam;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
+import smartMath.Circle;
+import smartMath.Geometry;
+import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
@@ -35,6 +36,8 @@ import threads.dataHandlers.ThreadSensor;
 import threads.threadScore.ThreadScore;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
+
+import javax.print.Doc;
 
 /**
  * Code qui démarre le robot en début de match
@@ -56,11 +59,14 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         int matchScriptVersionToExecute=0;
+        boolean symetry=false;
         try {
             // TODO : initialisation des variables globales du robot & objets...
             container = new Container();
             config = container.getConfig();
             config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
+            symetry=config.getString(ConfigInfoRobot.COULEUR).equals("orange");
+
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
@@ -89,8 +95,22 @@ public class Main {
 
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
             System.out.println("Le robot commence le match");
-            waitMatchBegin();
 
+            if (matchScriptVersionToExecute==42) {
+                Vec2 coordsTas = TasCubes.getTasFromID(2).getCoordsVec2();
+                int longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
+                Circle aimArcCircle;
+                aimArcCircle = new Circle(coordsTas, longueurBrasAvant, -Math.PI, 0, true);
+                Vec2 aim = smartMath.Geometry.closestPointOnCircle(Table.entryPosition,aimArcCircle);
+
+                realState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+                realState.robot.turnTo(aim);
+                realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+
+                UseWebcam.setPatternPositionWithVideoGreen();
+            }
+
+            waitMatchBegin();
             while(patternRecognition.isMovementLocked()) {
                 Thread.sleep(10);
             }

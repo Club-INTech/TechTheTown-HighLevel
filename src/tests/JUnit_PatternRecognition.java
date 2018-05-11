@@ -39,7 +39,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     @Test
     public void testSetPatternPosition() {
         if (!this.noVideoInput) {
-            UseWebcam.setPatternPositionWithVideo();
+            UseWebcam.setPatternPositionWithVideoGreen();
         }
         else{
             log.critical("NoVideoInput");
@@ -61,7 +61,7 @@ public class JUnit_PatternRecognition extends JUnit_Test {
     public void testReconnaissanceWithSettingPositions(){
         //On set les positions de patterns
         if (!this.noVideoInput) {
-            UseWebcam.setPatternPositionWithVideo();
+            UseWebcam.setPatternPositionWithVideoGreen();
             try {
                 container.startInstanciedThreads();
             } catch (InterruptedException e) {
