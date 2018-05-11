@@ -58,15 +58,12 @@ public class Main {
 // PS : Les vérifications et validations c'est pas pour les chiens.
 
     public static void main(String[] args) throws InterruptedException {
-        int matchScriptVersionToExecute=0;
-        boolean symetry=false;
+        int matchScriptVersionToExecute=2;
         try {
             // TODO : initialisation des variables globales du robot & objets...
             container = new Container();
             config = container.getConfig();
             config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
-            symetry=config.getString(ConfigInfoRobot.COULEUR).equals("orange");
-
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
@@ -94,21 +91,9 @@ public class Main {
         try {
 
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
+            System.out.println("MatchScript to execute: "+matchScriptVersionToExecute);
+
             System.out.println("Le robot commence le match");
-
-            if (matchScriptVersionToExecute==42) {
-                Vec2 coordsTas = TasCubes.getTasFromID(2).getCoordsVec2();
-                int longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
-                Circle aimArcCircle;
-                aimArcCircle = new Circle(coordsTas, longueurBrasAvant, -Math.PI, 0, true);
-                Vec2 aim = smartMath.Geometry.closestPointOnCircle(Table.entryPosition,aimArcCircle);
-
-                realState.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                realState.robot.turnTo(aim);
-                realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-
-                UseWebcam.setPatternPositionWithVideoGreen();
-            }
 
             waitMatchBegin();
             while(patternRecognition.isMovementLocked()) {
