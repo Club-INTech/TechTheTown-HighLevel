@@ -46,7 +46,7 @@ public class UseWebcam {
         List<String> command = new ArrayList<>();
 
         command.add("bash");
-        command.add("~/Desktop/GREEN_PATTERN.sh");
+        command.add("/home/pi/Desktop/GREEN_PATTERN.sh");
         //command.add("xterm");
         //command.add("-e");
         //command.add('"'+pythonCommand+" ~/Documents/TechTheTown-HighLevel/src/patternRecognition/setPatternPosition/SetPatternPositionGreen.py; exit"+'"');
