@@ -47,9 +47,8 @@ public class DeposeCubes extends AbstractScript {
      * @throws UnableToMoveException
      */
     @Override
-    public void execute(int version, GameState state) throws ImmobileEnnemyForOneSecondAtLeast {
+    public void execute(int version, GameState state) throws ImmobileEnnemyForOneSecondAtLeast,UnableToMoveException {
         log.debug("////////// Execution DeposeCubes version "+version+" //////////");
-        try {
             versionCurrentlyExecuted = version;
             int numberTowersToDepose = 0;
             //Ou exclusif
@@ -240,10 +239,7 @@ public class DeposeCubes extends AbstractScript {
                 }
                 state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
             }
-        }
-        catch(UnableToMoveException e) {
-            finalize(state,e );
-        }
+
         log.debug("////////// End DeposeCubes version "+version+" //////////");
     }
 
@@ -354,169 +350,176 @@ public class DeposeCubes extends AbstractScript {
     @Override
     public void finalize(GameState state, Exception e) {
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);
-        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,false);
-        /*
+        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+        state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+
+    }
+    public void sortieDeposeCubesIfUnableToMove(GameState state, UnableToMoveException e ){
+    /*
         UnableToMove est catched quand on essaye de déposer les cubes et qu'on force sur les portes,
         sauf qu'on ne sait pas quand est-ce qu'on bloque : soit en essayant de déposer la tour avant, soit l'arrière
-         */
-        if (e instanceof UnableToMoveException) {
-            /*
+     */
+     try {
+           /*
             Si on a 2 tours à déposer, on check le gameState, si les deux tours sont remplies, c'est qu'on a foiré
             quand on a essayé de déposer la première tour du coup on recule un peu et on reprend la même suite d'actions
             , si l'une des deux est remplie et l'autre non,c'est que c'est la deuxième où
             on s'est planté, on recule aussi un peu et on refait la même suite d'actions,
             si les deux sont vides, tout c'est bien passé
              */
-            try {
-                if (numberOfTowersToDeposeInitially == 2) {
-                    //on a foiré en essayant de déposer la première tour
-                    if (state.isTourAvantRemplie() && state.isTourArriereRemplie()) {
-                        //On retente de déposer les deux tours
-                        if (state.robot.getOrientation() > 0) {
-                            //On se tourne vers la zone à détecter
-                            state.robot.turn(-Math.PI / 2);
-                            //On ralentit pour éviter de faire tomber la tour de cubes
-                            state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                            //On ouvre la porte
-                            state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
-                            //On rentre dans la zone
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone - 10));
-                            //On recule de la largeur de la porte + de la longueur avancée dans la zone
-                            state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                            //on est orienté vers -Pi/2 et c'est là qu'on recule, d'où l'intérêt de détecter
-                            state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + dimensionPorte));
-                            //On calcule les points
-                            state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
-                            resetTour(true, state);
-                            if (versionCurrentlyExecuted == 0) {
-                                state.setDeposeCubes0Done(true);
-                            } else if (versionCurrentlyExecuted == 1) {
-                                state.setDeposeCubes1Done(true);
-                            }
-                            //On ferme la porte
-                            //On garde les portes ouvertes si on est quasiment à la fin du match
-                            if (state.getTimeEllapsed() < 98000) {
-                                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
-                            }
-                            state.robot.turn(Math.PI / 2);
-                            state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
-                            state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone));
-                            state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                            state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + 2 * dimensionPorte));
-                            state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
-                            resetTour(false, state);
-                            if (state.getTimeEllapsed() < 98000) {
-                                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
-                            }
 
-
+            if (numberOfTowersToDeposeInitially == 2) {
+                log.debug(" UnableToMove a été thrown : on gère avec sortieDeposeCubesIfUnable");
+                //on a foiré en essayant de déposer la première tour
+                if (state.isTourAvantRemplie() && state.isTourArriereRemplie()) {
+                    //On retente de déposer les deux tours
+                    if (state.robot.getOrientation() > 0) {
+                        state.robot.moveLengthwise(-10);
+                        //On se tourne vers la zone à détecter
+                        state.robot.turn(-Math.PI / 2);
+                        //On ralentit pour éviter de faire tomber la tour de cubes
+                        state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+                        //On ouvre la porte
+                        state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
+                        //On rentre dans la zone
+                        state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone + 10));
+                        //On recule de la largeur de la porte + de la longueur avancée dans la zone
+                        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                        //on est orienté vers -Pi/2 et c'est là qu'on recule, d'où l'intérêt de détecter
+                        state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + dimensionPorte));
+                        //On calcule les points
+                        state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
+                        resetTour(true, state);
+                        if (versionCurrentlyExecuted == 0) {
+                            state.setDeposeCubes0Done(true);
+                        } else if (versionCurrentlyExecuted == 1) {
+                            state.setDeposeCubes1Done(true);
                         }
-                        //On est en train de déposer la tour d'arrière
-                        if (state.robot.getOrientation() < 0) {
-                            state.robot.moveLengthwise(10);
-                            state.robot.turn(Math.PI / 2);
-                            state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                            state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone - 10));
-                            state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                            state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + dimensionPorte));
-                            state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
-                            resetTour(false, state);
-                            if (versionCurrentlyExecuted == 0) {
-                                state.setDeposeCubes0Done(true);
-                            } else if (versionCurrentlyExecuted == 1) {
-                                state.setDeposeCubes1Done(true);
-                            }
-                            if (state.getTimeEllapsed() < 98000) {
-                                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
-                            }
-                            state.robot.turn(-Math.PI / 2);
-                            state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
-                            state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone));
-                            state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                            state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + 2 * dimensionPorte));
-                            state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
-                            resetTour(true, state);
-                            if (state.getTimeEllapsed() < 98000) {
-                                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
-                            }
-
+                        //On ferme la porte
+                        //On garde les portes ouvertes si on est quasiment à la fin du match
+                        if (state.getTimeEllapsed() < 98000) {
+                            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
                         }
-                    }
-                    //On a réussi à déposer la première mais c'est à la deuxième où on s'est bloqués
-                    else if (state.isTourAvantRemplie() || state.isTourArriereRemplie()) {
-                        if (state.robot.getOrientation() > 0) {
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone));
-                            state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                            state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + 2 * dimensionPorte));
-                            state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
-                            resetTour(false, state);
-                            if (state.getTimeEllapsed() < 98000) {
-                                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
-                            }
-
-                        } else {
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone));
-                            state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                            state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + 2 * dimensionPorte));
-                            state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
-                            resetTour(true, state);
-                            if (state.getTimeEllapsed() < 98000) {
-                                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
-                            }
+                        state.robot.turn(Math.PI / 2);
+                        state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
+                        state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
+                        state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone));
+                        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                        state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + 2 * dimensionPorte));
+                        state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
+                        resetTour(false, state);
+                        if (state.getTimeEllapsed() < 98000) {
+                            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
                         }
+
 
                     }
-                    //On a qu'une seule tour à déposer
-                    else {
-                        //On n'a pas déposé la tour avant
-                        if (state.isTourAvantRemplie()) {
-                            state.robot.moveLengthwise(-10);
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone - 10));
-                            state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                            state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + dimensionPorte));
-                            state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
-                            resetTour(true, state);
-                            if (versionCurrentlyExecuted == 0) {
-                                state.setDeposeCubes0Done(true);
-                            } else if (versionCurrentlyExecuted == 1) {
-                                state.setDeposeCubes1Done(true);
-                            }
-                            if (state.getTimeEllapsed() < 98000) {
-                                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
-                            }
+                    //On est en train de déposer la tour d'arrière
+                    if (state.robot.getOrientation() < 0) {
+                        state.robot.moveLengthwise(10);
+                        state.robot.turn(Math.PI / 2);
+                        state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
+                        state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
+                        state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone + 10));
+                        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                        state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + dimensionPorte));
+                        state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
+                        resetTour(false, state);
+                        if (versionCurrentlyExecuted == 0) {
+                            state.setDeposeCubes0Done(true);
+                        } else if (versionCurrentlyExecuted == 1) {
+                            state.setDeposeCubes1Done(true);
                         }
-                        //Il s'agit de la tour arrière qu'on n'arrive pas à détecter
-                        else if (state.isTourArriereRemplie()) {
-                            state.robot.moveLengthwise(10);
-                            state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone));
-                            state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                            state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + dimensionPorte));
-                            state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
-                            resetTour(false, state);
-                            if (versionCurrentlyExecuted == 0) {
-                                state.setDeposeCubes0Done(true);
-                            } else if (versionCurrentlyExecuted == 1) {
-                                state.setDeposeCubes1Done(true);
-                            }
-                            if (state.getTimeEllapsed() < 98000) {
-                                state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
-
-                            }
-
+                        if (state.getTimeEllapsed() < 98000) {
+                            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                        }
+                        state.robot.turn(-Math.PI / 2);
+                        state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
+                        state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
+                        state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone));
+                        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                        state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + 2 * dimensionPorte));
+                        state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
+                        resetTour(true, state);
+                        if (state.getTimeEllapsed() < 98000) {
+                            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
                         }
 
                     }
                 }
-            } catch (UnableToMoveException e1) {
-                e1.printStackTrace();
-            } catch (ImmobileEnnemyForOneSecondAtLeast ennemy) {
-                ennemy.printStackTrace();
+                //On a réussi à déposer la première mais c'est à la deuxième où on s'est bloqués
+                else if (state.isTourAvantRemplie() || state.isTourArriereRemplie()) {
+                    if (state.robot.getOrientation() > 0) {
+                        state.robot.moveLengthwise(-10);
+                        state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone+10));
+                        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                        state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + 2 * dimensionPorte));
+                        state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
+                        resetTour(false, state);
+                        if (state.getTimeEllapsed() < 98000) {
+                            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+                        }
+
+                    } else {
+                        state.robot.moveLengthwise(10);
+                        state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone+10));
+                        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                        state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + 2 * dimensionPorte));
+                        state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
+                        resetTour(true, state);
+                        if (state.getTimeEllapsed() < 98000) {
+                            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                        }
+                    }
+
+                }
+                //On a qu'une seule tour à déposer
+                else {
+                    //On n'a pas déposé la tour avant
+                    if (state.isTourAvantRemplie()) {
+                        state.robot.moveLengthwise(-10);
+                        state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone + 10));
+                        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                        state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + dimensionPorte));
+                        state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
+                        resetTour(true, state);
+                        if (versionCurrentlyExecuted == 0) {
+                            state.setDeposeCubes0Done(true);
+                        } else if (versionCurrentlyExecuted == 1) {
+                            state.setDeposeCubes1Done(true);
+                        }
+                        if (state.getTimeEllapsed() < 98000) {
+                            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
+                        }
+                    }
+                    //Il s'agit de la tour arrière qu'on n'arrive pas à détecter
+                    else if (state.isTourArriereRemplie()) {
+                        state.robot.moveLengthwise(10);
+                        state.robot.goToWithoutDetection(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] - distancePenetrationZone+10));
+                        state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+                        state.robot.goTo(new Vec2(this.xEntry[versionCurrentlyExecuted], this.yEntry[0] + dimensionPorte));
+                        state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
+                        resetTour(false, state);
+                        if (versionCurrentlyExecuted == 0) {
+                            state.setDeposeCubes0Done(true);
+                        } else if (versionCurrentlyExecuted == 1) {
+                            state.setDeposeCubes1Done(true);
+                        }
+                        if (state.getTimeEllapsed() < 98000) {
+                            state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
+
+                        }
+
+                    }
+
+                }
             }
+        } catch (UnableToMoveException e1) {
+            e1.printStackTrace();
+        } catch (ImmobileEnnemyForOneSecondAtLeast ennemy) {
+            ennemy.printStackTrace();
         }
+
     }
 
     @Override
