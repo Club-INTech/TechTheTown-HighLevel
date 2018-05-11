@@ -254,6 +254,11 @@ public class Locomotion implements Service {
     private ThreadEvents thEvent;
 
     /**
+     * Si on a déjà envoyé l'ordre
+     */
+    boolean orderSentMoveToPointDetectExceptions;
+
+    /**
      * Constructeur de Locomotion
      *
      * @param log        le fichier de log
@@ -488,6 +493,9 @@ public class Locomotion implements Service {
                     immobilise();
                     throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
                 }
+                else{
+                    immobilise();
+                }
             }
         }
         while (doItAgain);
@@ -505,7 +513,7 @@ public class Locomotion implements Service {
      */
     private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, ImmobileEnnemyForOneSecondAtLeast, UnableToMoveException {
         thEvent.setIsMoving(true);
-        boolean orderSent=false;
+        this.orderSentMoveToPointDetectExceptions=false;
         while (thEvent.getIsMoving()) {
 
             getCurrentPositionAndOrientation();
@@ -542,7 +550,6 @@ public class Locomotion implements Service {
                             }
                             if (wasImmobilised) {
                                 updateCurrentPositonAndOrientation();
-                                orderSent=true;
                                 moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
                             }
                         }
@@ -564,7 +571,6 @@ public class Locomotion implements Service {
                             boolean hasDetectedSomething = detectEnemyArroundPosition(detectionRay);
                             if (hasDetectedSomething){
                                 updateCurrentPositonAndOrientation();
-                                orderSent=true;
                                 moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
                             }
                         }
@@ -581,7 +587,6 @@ public class Locomotion implements Service {
                             boolean hasDetectedSomething = detectEnemyAtDistance(detectionDistance, aim.minusNewVector(highLevelPosition));
                             if (hasDetectedSomething){
                                 updateCurrentPositonAndOrientation();
-                                orderSent=true;
                                 moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
                             }
                         }
@@ -597,8 +602,8 @@ public class Locomotion implements Service {
             }
 
             //On le met à la fin, afin de savoir si on détecte déjà un obstacle, et le cas échéant directement renoyer une exception
-            if (!orderSent) {
-                orderSent=true;
+            if (!this.orderSentMoveToPointDetectExceptions) {
+                this.orderSentMoveToPointDetectExceptions=true;
                 moveToPointSymmetry(aim, turnOnly);
             }
         }
@@ -872,8 +877,6 @@ public class Locomotion implements Service {
         }
         ethWrapper.setX(this.lowLevelPosition.getX());
         ethWrapper.setY(this.lowLevelPosition.getY());
-
-        Sleep.sleep(300);
     }
 
     /**
