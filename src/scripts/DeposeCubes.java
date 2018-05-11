@@ -242,7 +242,8 @@ public class DeposeCubes extends AbstractScript {
             }
         }
         catch(UnableToMoveException e) {
-            finalize(state,e );
+            log.logException(e); //on cherche à savoir d'où vient l'exception
+            finalize(state,e);
         }
         log.debug("////////// End DeposeCubes version "+version+" //////////");
     }
