@@ -282,8 +282,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
         while (true) {
 
             try {
-                clics = window.waitLRClic();
-                path = pathfinding.findmyway(clics.get(0), clics.get(1));
+                //clics = window.waitLRClic();
+                path = pathfinding.findmyway(Table.entryPosition, new Vec2(370,390));
                 window.setPath(path);
                 window.repaint();
             } catch (PointInObstacleException e) {

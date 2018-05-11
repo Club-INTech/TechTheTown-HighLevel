@@ -207,8 +207,12 @@ public class MatchScript extends AbstractScript {
             TakeCubes takeCubes0 = new TakeCubes(config, log, hookFactory);
             takeCubes0.goToThenExec(0, gameState);
 
+            //On évite de pousser un cube entre le robot et le panneau domotique
+            gameState.robot.goTo(new Vec2(370,390));
+
             ActivationPanneauDomotique activationPanneauDomotique = new ActivationPanneauDomotique(config, log, hookFactory);
             activationPanneauDomotique.goToThenExec(0,gameState);
+
 
             DeposeCubes deposeCubes2 = new DeposeCubes(config, log, hookFactory);
             deposeCubes2.goToThenExec(2,gameState);
@@ -222,7 +226,7 @@ public class MatchScript extends AbstractScript {
             //
 
         ActiveAbeille activeAbeille1 = new ActiveAbeille(config, log, hookFactory);
-
+        activeAbeille1.goToThenExec(1, gameState);
 
 
 
