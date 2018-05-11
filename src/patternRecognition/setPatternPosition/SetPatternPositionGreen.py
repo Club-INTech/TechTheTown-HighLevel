@@ -112,7 +112,7 @@ colorValue3=0
 while(True):
     ##### CAPTURE DE LA VIDEO FRAME PAR FRAME
     ret, frame = cap.read()
-    if not isinstance(frame, NoneType)
+    if not isinstance(frame, NoneType):
         frame=frame[YSTART:YSTART+HAUTEUR_DISPLAY,XSTART:XSTART+LARGEUR_DISPLAY]
         cv2.namedWindow('frame')
         cv2.setMouseCallback('frame', setCalquePosition)
