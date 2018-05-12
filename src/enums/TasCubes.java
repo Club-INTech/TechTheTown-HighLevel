@@ -8,7 +8,7 @@ public enum TasCubes{
     //Position orange décalée de +15 en Y par rapport à la position théorique
     TAS_BASE(0,new Vec2(640,540), new Vec2(665,555), //MatchScript 0
             new Vec2(645,555), new Vec2(645,555), //MatchScript 2
-            new Vec2(630,540), new Vec2(655,550)), //MatchScript 42
+            new Vec2(625,540), new Vec2(655,550)), //MatchScript 42
 
 
     //Position orange décalée de +10 en Y par rapport à la position théorique
