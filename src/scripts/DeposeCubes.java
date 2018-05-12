@@ -12,6 +12,7 @@ import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import hook.HookFactory;
+import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
@@ -33,7 +34,8 @@ public class DeposeCubes extends AbstractScript {
     public DeposeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
         updateConfig();
-        versions = new int[]{0, 1, 2};
+        /** La version 42 est utilisé pour le dernier deposecube de la final. Il rajoute le hook pour fermer la porte. */
+        versions = new int[]{0, 1, 2, 42};
         this.shift =  380;
         this.xEntry=new int[]{970, 600, 600};
         this.yEntry=new int[]{150+radius, 600-shift, 150+radius};
@@ -93,15 +95,21 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
                     state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                    state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0]+dimensionPorte));
+                    if (version != 42) {
+                        state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0]+dimensionPorte));
+                    }
+                    else {
+                        hookFactory.disableHook(HookNames.FERMER_PORTE_ARRIERE);
+                        hookFactory.enableHook(HookNames.FERMER_PORTE_AVANT);
+                    }
                     resetTour(true,state);
-                    if (version==0){
+                    if (version==0 || version==42){
                         state.setDeposeCubes0Done(true);
                     }
                     else if(version==1){
                         state.setDeposeCubes1Done(true);
                     }
-                    if (state.getTimeEllapsed()<98000) {
+                    if (state.getTimeEllapsed()<98000 && version != 42) {
                         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
                     }
                 } else if (state.isTourArriereRemplie()) {
@@ -111,15 +119,20 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
                     state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                    state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0]+dimensionPorte));
+                    if (version != 42) {
+                        state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0] + dimensionPorte));
+                    }else {
+                        hookFactory.enableHook(HookNames.FERMER_PORTE_AVANT);
+                        hookFactory.disableHook(HookNames.FERMER_PORTE_ARRIERE);
+                    }
                     resetTour(false,state);
-                    if (version==0){
+                    if (version==0|| version==42){
                         state.setDeposeCubes0Done(true);
                     }
                     else if(version==1){
                         state.setDeposeCubes1Done(true);
                     }
-                    if (state.getTimeEllapsed()<98000) {
+                    if (state.getTimeEllapsed()<98000 && version != 42) {
                         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
                     }
 
@@ -306,7 +319,7 @@ public class DeposeCubes extends AbstractScript {
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
         //Zone de dépose des cubes proche de la base
-        if (version==0) {
+        if (version==0 || version==42) {
             int xEntry = this.xEntry[0];
             int yEntry = this.yEntry[0];
             Vec2 positionEntree = new Vec2(xEntry, yEntry);

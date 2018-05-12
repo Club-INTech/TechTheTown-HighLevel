@@ -32,7 +32,7 @@ public class MatchScript extends AbstractScript {
     @Override
     public void execute(int version,GameState gameState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast, NoPathFound {
         log.debug("////////// Execution MatchScript version "+version+" //////////");
-        hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE,HookNames.BASIC_DETECTION_DISABLE);
+        hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE,HookNames.BASIC_DETECTION_DISABLE, HookNames.FERMER_PORTE_AVANT, HookNames.FERMER_PORTE_ARRIERE);
         if(version==0){
             if (usingAdvancedDetection) {
                 gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
@@ -223,13 +223,15 @@ public class MatchScript extends AbstractScript {
             TakeCubes takeCubes1 = new TakeCubes(config, log, hookFactory);
             takeCubes1.goToThenExec(1, gameState);
 
-            DeposeCubes deposeCubes0 = new DeposeCubes(config, log, hookFactory);
-            deposeCubes0.goToThenExec(0, gameState);
 
+            DeposeCubes deposeCubes042 = new DeposeCubes(config, log, hookFactory);
+            deposeCubes042.goToThenExec(42, gameState);
             //
 
-        ActiveAbeille activeAbeille1 = new ActiveAbeille(config, log, hookFactory);
-        activeAbeille1.goToThenExec(1, gameState);
+            gameState.robot.goTo(new Vec2(1200,1700));
+
+            ActiveAbeille activeAbeille1 = new ActiveAbeille(config, log, hookFactory);
+            activeAbeille1.goToThenExec(1, gameState);
 
 
 
