@@ -229,7 +229,7 @@ public class MatchScript extends AbstractScript {
             gameState.robot.goTo(new Vec2(1200,1700));
 
             ActiveAbeille activeAbeille1 = new ActiveAbeille(config, log, hookFactory);
-            activeAbeille1.goToThenExec(2, gameState);
+            activeAbeille1.goToThenExec(1, gameState);
 
 
 
