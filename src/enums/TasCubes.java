@@ -6,9 +6,9 @@ public enum TasCubes{
     //Position verte décalée de -10 en X par rapport à la position théorique
     //Position orange décalée de +5 en X par rapport à la position théorique
     //Position orange décalée de +15 en Y par rapport à la position théorique
-    TAS_BASE(0,new Vec2(640,540), new Vec2(665,550), //MatchScript 0
-            new Vec2(640,540), new Vec2(655,550), //MatchScript 2
-            new Vec2(640,540), new Vec2(655,550)), //MatchScript 42
+    TAS_BASE(0,new Vec2(630,540), new Vec2(665,550), //MatchScript 0
+            new Vec2(640,550), new Vec2(655,550), //MatchScript 2
+            new Vec2(630,540), new Vec2(655,550)), //MatchScript 42
 
 
     //Position orange décalée de +10 en Y par rapport à la position théorique
@@ -20,7 +20,7 @@ public enum TasCubes{
     //Position verte décalée de -10 en X par rapport à la position théorique
     //Position orange décalée de -10 en X par rapport à la position théorique
     TAS_STATION_EPURATION(2,new Vec2(395,1500), new Vec2(395,1520), //MatchScript 0
-            new Vec2(395,1500), new Vec2(390,1510), //MatchScript 2
+            new Vec2(395,1510), new Vec2(390,1510), //MatchScript 2
             new Vec2(395,1500), new Vec2(390,1520)), //MatchScript 42
 
 
