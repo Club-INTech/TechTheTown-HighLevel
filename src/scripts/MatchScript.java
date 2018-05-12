@@ -223,10 +223,8 @@ public class MatchScript extends AbstractScript {
             TakeCubes takeCubes1 = new TakeCubes(config, log, hookFactory);
             takeCubes1.goToThenExec(1, gameState);
 
-
             DeposeCubes deposeCubes042 = new DeposeCubes(config, log, hookFactory);
-            deposeCubes042.goToThenExec(42, gameState);
-            //
+            deposeCubes042.goToThenExec(3, gameState);
 
             gameState.robot.goTo(new Vec2(1200,1700));
 

@@ -35,10 +35,10 @@ public class DeposeCubes extends AbstractScript {
         super(config, log, hookFactory);
         updateConfig();
         /** La version 42 est utilisé pour le dernier deposecube de la final. Il rajoute le hook pour fermer la porte. */
-        versions = new int[]{0, 1, 2, 42};
+        versions = new int[]{0, 1, 2, 3};
         this.shift =  380;
-        this.xEntry=new int[]{970, 600, 600};
-        this.yEntry=new int[]{150+radius, 600-shift, 150+radius};
+        this.xEntry=new int[]{970, 600, 600, 970};
+        this.yEntry=new int[]{150+radius, 600-shift, 150+radius, 150+radius};
     }
 
     /**
