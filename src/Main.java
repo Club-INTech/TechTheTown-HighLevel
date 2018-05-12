@@ -18,16 +18,17 @@
  */
 
 import container.Container;
-import enums.ActuatorOrder;
-import enums.ConfigInfoRobot;
-import enums.ScriptNames;
-import enums.Speed;
+import enums.*;
 import exceptions.ContainerException;
 import patternRecognition.PatternRecognition;
+import patternRecognition.UseWebcam;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
+import smartMath.Circle;
+import smartMath.Geometry;
+import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
@@ -35,6 +36,8 @@ import threads.dataHandlers.ThreadSensor;
 import threads.threadScore.ThreadScore;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
+
+import javax.print.Doc;
 
 /**
  * Code qui démarre le robot en début de match
@@ -55,12 +58,17 @@ public class Main {
 // PS : Les vérifications et validations c'est pas pour les chiens.
 
     public static void main(String[] args) throws InterruptedException {
-        int matchScriptVersionToExecute=0;
+        int matchScriptVersionToExecute=2;
+        boolean symetry;
         try {
             // TODO : initialisation des variables globales du robot & objets...
             container = new Container();
             config = container.getConfig();
             config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
+            matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
+            symetry=config.getString(ConfigInfoRobot.COULEUR).equals("orange");
+            TasCubes.setSymetry(symetry);
+            TasCubes.setMatchScriptVersion(matchScriptVersionToExecute);
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
@@ -69,7 +77,6 @@ public class Main {
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
             }
-            matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
             Thread.currentThread().setPriority(6);
             if (config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)) {
                 container.getService(ThreadSensor.class);
@@ -88,9 +95,11 @@ public class Main {
         try {
 
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
-            System.out.println("Le robot commence le match");
-            waitMatchBegin();
+            System.out.println("MatchScript to execute: "+matchScriptVersionToExecute);
 
+            System.out.println("Le robot commence le match");
+
+            waitMatchBegin();
             while(patternRecognition.isMovementLocked()) {
                 Thread.sleep(10);
             }

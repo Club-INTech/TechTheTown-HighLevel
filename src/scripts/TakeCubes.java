@@ -60,6 +60,7 @@ public class TakeCubes extends AbstractScript {
     public void execute(int indiceTas, GameState state)
             throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
+        state.robot.setBasicDetection(false);
         this.alreadyTriedCorrection=false;
         this.alreadyRemovedObstacle=false;
         this.currentIdealPositionInTower=0;
@@ -68,6 +69,7 @@ public class TakeCubes extends AbstractScript {
         log.debug("Execute: AlreadyTriedCorrection; "+this.alreadyTriedCorrection);
         this.normalVersions(indiceTas, state);
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
+        state.robot.setBasicDetection(true);
     }
 
     /**
@@ -620,6 +622,7 @@ public class TakeCubes extends AbstractScript {
     public void updateConfig() {
         super.updateConfig();
         TasCubes.setSymetry(config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
+        TasCubes.setMatchScriptVersion(config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE));
         this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         this.longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
         this.longueurBrasArriere=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_ARRIERE);

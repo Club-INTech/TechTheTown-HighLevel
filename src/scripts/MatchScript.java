@@ -207,11 +207,18 @@ public class MatchScript extends AbstractScript {
             TakeCubes takeCubes0 = new TakeCubes(config, log, hookFactory);
             takeCubes0.goToThenExec(0, gameState);
 
+            //On évite de pousser un cube entre le robot et le panneau domotique
+            gameState.robot.goTo(new Vec2(320,500)); //Position bonne
+
             ActivationPanneauDomotique activationPanneauDomotique = new ActivationPanneauDomotique(config, log, hookFactory);
             activationPanneauDomotique.goToThenExec(0,gameState);
 
             DeposeCubes deposeCubes2 = new DeposeCubes(config, log, hookFactory);
             deposeCubes2.goToThenExec(2,gameState);
+
+            //On évite qu'on pousse le cube du tas 0 en allant vers le tas 1
+            gameState.robot.goTo(new Vec2(900,560));
+            //TODO : Position à corriger
 
             TakeCubes takeCubes1 = new TakeCubes(config, log, hookFactory);
             takeCubes1.goToThenExec(1, gameState);
@@ -222,7 +229,7 @@ public class MatchScript extends AbstractScript {
             //
 
         ActiveAbeille activeAbeille1 = new ActiveAbeille(config, log, hookFactory);
-
+        activeAbeille1.goToThenExec(1, gameState);
 
 
 

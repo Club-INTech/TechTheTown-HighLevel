@@ -165,6 +165,9 @@ public class DeposeCubes extends AbstractScript {
                     else if(version==1){
                         state.setDeposeCubes1Done(true);
                     }
+                    else{
+                        state.setDeposeCubes0Done(true);
+                    }
                     //On ferme la porte
                     //On garde les portes ouvertes si on est quasiment à la fin du match
                     if (state.getTimeEllapsed()<98000) {
@@ -199,6 +202,9 @@ public class DeposeCubes extends AbstractScript {
                     }
                     else if(version==1){
                         state.setDeposeCubes1Done(true);
+                    }
+                    else{
+                        state.setDeposeCubes0Done(true);
                     }
                     if (state.getTimeEllapsed()<98000) {
                         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
