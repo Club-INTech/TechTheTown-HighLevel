@@ -68,8 +68,9 @@ public class TakeCubes extends AbstractScript {
         this.correctionVectorTas2 = new Vec2(0,0);
         log.debug("Execute: AlreadyTriedCorrection; "+this.alreadyTriedCorrection);
         this.normalVersions(indiceTas, state);
-        log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
         state.robot.setBasicDetection(true);
+        log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
+
     }
 
     /**
