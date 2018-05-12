@@ -122,8 +122,8 @@ public class DeposeCubes extends AbstractScript {
                     if (version != 42) {
                         state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0] + dimensionPorte));
                     }else {
-                        hookFactory.enableHook(HookNames.FERMER_PORTE_AVANT);
-                        hookFactory.disableHook(HookNames.FERMER_PORTE_ARRIERE);
+                        hookFactory.disableHook(HookNames.FERMER_PORTE_AVANT);
+                        hookFactory.enableHook(HookNames.FERMER_PORTE_ARRIERE);
                     }
                     resetTour(false,state);
                     if (version==0|| version==42){
