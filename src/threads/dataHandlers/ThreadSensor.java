@@ -120,6 +120,8 @@ public class ThreadSensor extends AbstractThread
 
     private boolean usingJumper;
 
+    private boolean advancedDetection;
+
 
     /** Valeurs des capteurs US {avant-gauche, avant-droit, arrière gauche, arrière-droit} */
     //ArrayList<Integer> USvalues = new ArrayList<Integer>(4);
@@ -505,8 +507,10 @@ public class ThreadSensor extends AbstractThread
                 return;
             }
             this.getSensorInfos();
-            this.removeOutDatedObstacle();
-            this.addObstacle();
+            if (advancedDetection) {
+                this.removeOutDatedObstacle();
+                this.addObstacle();
+            }
         }
         log.debug("Fin du thread de capteurs");
 
@@ -516,6 +520,7 @@ public class ThreadSensor extends AbstractThread
     public void updateConfig()
     {
         this.symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
+        this.advancedDetection = config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
         this.ourRadius = 0;
         this.enRadius = config.getInt(ConfigInfoRobot.ROBOT_EN_RADIUS);
         this.maxSensorRange = config.getInt(ConfigInfoRobot.MAX_SENSOR_RANGE);
