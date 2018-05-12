@@ -216,8 +216,9 @@ public class MatchScript extends AbstractScript {
             DeposeCubes deposeCubes2 = new DeposeCubes(config, log, hookFactory);
             deposeCubes2.goToThenExec(2,gameState);
 
-            //On évite qu'on pousse le cube vers le takeCubes
-            gameState.robot.goTo(new Vec2(900,560)); //Position à changer
+            //On évite qu'on pousse le cube du tas 0 en allant vers le tas 1
+            gameState.robot.goTo(new Vec2(900,560));
+            //TODO : Position à corriger
 
             TakeCubes takeCubes1 = new TakeCubes(config, log, hookFactory);
             takeCubes1.goToThenExec(1, gameState);
