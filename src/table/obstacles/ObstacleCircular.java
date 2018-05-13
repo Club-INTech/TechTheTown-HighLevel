@@ -22,7 +22,7 @@ package table.obstacles;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Segment;
-import smartMath.Vec2;
+import smartMath.Vect;
 
 /**
  * Obstacle de forme circulaire.
@@ -81,7 +81,7 @@ public class ObstacleCircular extends Obstacle
 	 * @param point le point à tester
 	 */
 	@Override
-	public boolean isInObstacle(Vec2 point)
+	public boolean isInObstacle(Vect point)
 	{
 		return ((Segment.squaredLength(point, position) < circle.getRadius()*circle.getRadius()));
 	}
@@ -97,7 +97,7 @@ public class ObstacleCircular extends Obstacle
 	 */
 
 	@Override
-	public void setPosition(Vec2 position){
+	public void setPosition(Vect position){
 		super.setPosition(position);
 		this.circle.getCenter().set(position);
 	}

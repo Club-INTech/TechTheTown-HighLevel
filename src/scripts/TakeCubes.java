@@ -7,11 +7,8 @@ import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import pfg.config.Config;
-import smartMath.Circle;
-import smartMath.Geometry;
-import smartMath.Vec2;
+import smartMath.*;
 import strategie.GameState;
-import tests.container.A;
 import utils.Log;
 
 
@@ -36,8 +33,8 @@ public class TakeCubes extends AbstractScript {
     private boolean alreadyRemovedObstacle;
 
     private boolean alreadyTriedCorrection;
-    private Vec2 correctionVectorTas;
-    private Vec2 correctionVectorTas2;
+    private Vect correctionVectorTas;
+    private Vect correctionVectorTas2;
 
     /**
      * @param config
@@ -64,8 +61,8 @@ public class TakeCubes extends AbstractScript {
         this.alreadyTriedCorrection=false;
         this.alreadyRemovedObstacle=false;
         this.currentIdealPositionInTower=0;
-        this.correctionVectorTas = new Vec2(0,0);
-        this.correctionVectorTas2 = new Vec2(0,0);
+        this.correctionVectorTas = new VectCart(0,0);
+        this.correctionVectorTas2 = new VectCart(0,0);
         log.debug("Execute: AlreadyTriedCorrection; "+this.alreadyTriedCorrection);
         this.normalVersions(indiceTas, state);
         state.robot.setBasicDetection(true);
@@ -101,8 +98,8 @@ public class TakeCubes extends AbstractScript {
                 this.brasUtilise=BrasUtilise.AVANT;
             }
             else{
-                Vec2 directionToGo = this.currentTas.getCoordsVec2().minusNewVector(state.robot.getPosition());
-                double prodScal = directionToGo.dot(new Vec2(100.0, state.robot.getOrientation()));
+                Vect directionToGo = this.currentTas.getCoordsVec2().minusNewVector(state.robot.getPosition());
+                double prodScal = directionToGo.dot(new VectPol(100.0, state.robot.getOrientation()));
                 if (prodScal > 0) {
                     this.brasUtilise=BrasUtilise.AVANT;
                 } else {
@@ -156,13 +153,13 @@ public class TakeCubes extends AbstractScript {
                 state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,true);
                 state.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, false);
 
-                Vec2[] successivesPositionsList;
+                Vect[] successivesPositionsList;
 
 
                 //Si additionalCube.getColor()==Colors.NULL, c'est qu'on a choisi de ne prendre que 3 cubes
                 //Sinon, la couleur de additionalCube sera correspondra au cube qui sera pris après le pattern
                 if (additionalCube.getColor().equals(Colors.NULL)) {
-                    successivesPositionsList = new Vec2[3];
+                    successivesPositionsList = new Vect[3];
                     //On sait que le premier cube dans la pile est le cube bonus, donc on l'indique dans les réussites de la tour
                     if (this.brasUtilise.equals(BrasUtilise.AVANT)) {
                         state.setReussitesTourAvant(1, this.currentIdealPositionInTower);
@@ -172,11 +169,11 @@ public class TakeCubes extends AbstractScript {
                     }
                     this.currentIdealPositionInTower++;
                 } else {
-                    successivesPositionsList = new Vec2[4];
+                    successivesPositionsList = new Vect[4];
                     //On calcule les positions du cube additionnel pour x et y :
                     // position = position du tas + position relative du cube choisi par rapport au tas
                     //La position X relative par rapport au tas change si on passe de l'autre côté de la table
-                    Vec2 additionalCubeRelativePosition = additionalCube.getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes);
+                    Vect additionalCubeRelativePosition = additionalCube.getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes);
                     successivesPositionsList[3]=this.currentTas.getCoordsVec2().plusNewVector(additionalCubeRelativePosition);
                 }
 
@@ -186,7 +183,7 @@ public class TakeCubes extends AbstractScript {
                     //On calcule les positions des cubes pour x et y :
                     // position = position du tas + position relative du cube choisi par rapport au tas
                     //La position X relative par rapport au tas change si on passe de l'autre côté de la table
-                    Vec2 cubeRelativePosition = Cubes.getCubeFromColor(pattern[i]).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes);
+                    Vect cubeRelativePosition = Cubes.getCubeFromColor(pattern[i]).getRelativeCoordsVec2(this.currentTas).dotFloat(this.largeurCubes);
                     successivesPositionsList[i]= this.currentTas.getCoordsVec2().plusNewVector(cubeRelativePosition);
                 }
 
@@ -349,7 +346,7 @@ public class TakeCubes extends AbstractScript {
                 else{
                     aimArcCircle = new Circle(this.currentTas.getCoordsVec2(), this.longueurBrasUtilise+this.largeurCubes*1.5+10, -Math.PI / 2, Math.PI / 2, true);
                 }
-                Vec2 aim = Geometry.closestPointOnCircle(state.robot.getPosition(),aimArcCircle);
+                Vect aim = Geometry.closestPointOnCircle(state.robot.getPosition(),aimArcCircle);
                 //On ne sort seulement si la distance nous séparant de la position de sortie est supérieure à 2cm
                 if (state.robot.getPosition().distance(aim)>20) {
                     state.robot.goTo(aim);
@@ -414,7 +411,7 @@ public class TakeCubes extends AbstractScript {
                 if (!this.alreadyTriedCorrection){
                     log.debug("Lancement de la correction de position du tas "+currentTas.getID());
                     this.correctionVectorTas = correctPosition(state, currentCube);
-                    if (this.correctionVectorTas!=new Vec2(0,0)){
+                    if (this.correctionVectorTas!=new VectCart(0,0)){
                         cubeSuccessfullyTaken=true;
                     }
                 }
@@ -441,7 +438,7 @@ public class TakeCubes extends AbstractScript {
                 if (!this.alreadyTriedCorrection){
                     log.debug("Lancement de la correction de position du tas "+currentTas.getID());
                     this.correctionVectorTas = correctPosition(state, currentCube);
-                    if (this.correctionVectorTas!=new Vec2(0,0)){
+                    if (this.correctionVectorTas!=new VectCart(0,0)){
                         cubeSuccessfullyTaken=true;
                     }
                 }
@@ -463,34 +460,34 @@ public class TakeCubes extends AbstractScript {
      * @throws ImmobileEnnemyForOneSecondAtLeast
      * @throws InterruptedException
      */
-    private Vec2 correctPosition(GameState state, Cubes currentCube) throws UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast, InterruptedException {
+    private Vect correctPosition(GameState state, Cubes currentCube) throws UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast, InterruptedException {
         this.alreadyTriedCorrection = true;
-        Vec2 relativeCoordsCurrentCube = currentCube.getRelativeCoordsVec2(this.currentTas);
-        Vec2 tableCoordsCurrentCube = this.currentTas.getCoordsVec2().plusNewVector(relativeCoordsCurrentCube.dotFloat(this.largeurCubes));
-        Vec2[] correctionVectorList = new Vec2[4];
+        Vect relativeCoordsCurrentCube = currentCube.getRelativeCoordsVec2(this.currentTas);
+        Vect tableCoordsCurrentCube = this.currentTas.getCoordsVec2().plusNewVector(relativeCoordsCurrentCube.dotFloat(this.largeurCubes));
+        Vect[] correctionVectorList = new Vect[4];
         int val = this.largeurCubes / 3;
-        Vec2 finalOffsetVector = new Vec2(0, 0);
-        if (relativeCoordsCurrentCube.equals(new Vec2(1, 0))) {
-            correctionVectorList[0] = new Vec2(val, val);
-            correctionVectorList[1] = new Vec2(val, -val);
-            correctionVectorList[2] = new Vec2(-val, -val);
-            correctionVectorList[3] = new Vec2(-val, val);
-        } else if (relativeCoordsCurrentCube.equals(new Vec2(0, 1))) {
-            correctionVectorList[0] = new Vec2(-val, val);
-            correctionVectorList[1] = new Vec2(val, val);
-            correctionVectorList[2] = new Vec2(val, -val);
-            correctionVectorList[3] = new Vec2(-val, -val);
-        } else if (relativeCoordsCurrentCube.equals(new Vec2(0, -1))) {
-            correctionVectorList[0] = new Vec2(val, -val);
-            correctionVectorList[1] = new Vec2(-val, -val);
-            correctionVectorList[2] = new Vec2(-val, val);
-            correctionVectorList[3] = new Vec2(val, val);
-        } else if (relativeCoordsCurrentCube.equals(new Vec2(-1, 0))) {
-            correctionVectorList[0] = new Vec2(-val, -val);
-            correctionVectorList[1] = new Vec2(-val, val);
-            correctionVectorList[2] = new Vec2(val, val);
-            correctionVectorList[3] = new Vec2(val, -val);
-        } else if (relativeCoordsCurrentCube.equals(new Vec2(0, 0))){
+        Vect finalOffsetVector = new VectCart(0, 0);
+        if (relativeCoordsCurrentCube.equals(new VectCart(1, 0))) {
+            correctionVectorList[0] = new VectCart(val, val);
+            correctionVectorList[1] = new VectCart(val, -val);
+            correctionVectorList[2] = new VectCart(-val, -val);
+            correctionVectorList[3] = new VectCart(-val, val);
+        } else if (relativeCoordsCurrentCube.equals(new VectCart(0, 1))) {
+            correctionVectorList[0] = new VectCart(-val, val);
+            correctionVectorList[1] = new VectCart(val, val);
+            correctionVectorList[2] = new VectCart(val, -val);
+            correctionVectorList[3] = new VectCart(-val, -val);
+        } else if (relativeCoordsCurrentCube.equals(new VectCart(0, -1))) {
+            correctionVectorList[0] = new VectCart(val, -val);
+            correctionVectorList[1] = new VectCart(-val, -val);
+            correctionVectorList[2] = new VectCart(-val, val);
+            correctionVectorList[3] = new VectCart(val, val);
+        } else if (relativeCoordsCurrentCube.equals(new VectCart(-1, 0))) {
+            correctionVectorList[0] = new VectCart(-val, -val);
+            correctionVectorList[1] = new VectCart(-val, val);
+            correctionVectorList[2] = new VectCart(val, val);
+            correctionVectorList[3] = new VectCart(val, -val);
+        } else if (relativeCoordsCurrentCube.equals(new VectCart(0, 0))){
             return finalOffsetVector;
         }
 
@@ -520,17 +517,17 @@ public class TakeCubes extends AbstractScript {
      * @throws BadVersionException
      */
     @Override
-    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException{
+    public Circle entryPosition(int version, Vect robotPosition) throws BadVersionException{
         if (version>5 || version<0){
             if (version == 120){
-                return new Circle(new Vec2(1000,1500));
+                return new Circle(new VectCart(1000,1500));
             }
             else {
                 throw new BadVersionException("Bad version exception : la version doit être comprise entre 0 et 5 (bornes incluses)");
             }
         }
         this.currentTas = TasCubes.getTasFromID(version);
-        Vec2 coordsTas = this.currentTas.getCoordsVec2();
+        Vect coordsTas = this.currentTas.getCoordsVec2();
 
         Circle aimArcCircle;
         if (version==0){
@@ -554,7 +551,7 @@ public class TakeCubes extends AbstractScript {
         else{
             aimArcCircle = new Circle(coordsTas, this.longueurBrasUtilise);
         }
-        Vec2 aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
+        Vect aim = smartMath.Geometry.closestPointOnCircle(robotPosition,aimArcCircle);
         log.debug("Point d'entrée TakeCubes (version:"+version+") : "+aim);
         return new Circle(aim);
     }

@@ -24,7 +24,9 @@ package graphics;
 import pathfinder.Arete;
 import pathfinder.Noeud;
 import robot.Robot;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
+import smartMath.VectPol;
 import table.Table;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleProximity;
@@ -38,7 +40,6 @@ import java.awt.Graphics;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * panneau sur lequel est dessine la table
@@ -51,10 +52,10 @@ public class TablePanel extends JPanel
 	private static final long serialVersionUID = -3033815690221481964L;
 
 	/** Champs pour l'interface Pathfinding : n'ayant pas de robot instancié, on récupère en brut les données */
-	private ArrayList<Vec2> path;
+	private ArrayList<Vect> path;
 	private ArrayList<Arete> aretes;
-	private ArrayList<Vec2> clics;
-	private Vec2 point;
+	private ArrayList<Vect> clics;
+	private Vect point;
 	private ArrayList<Noeud> nodes;
 	public static boolean showGraph = true;
 
@@ -89,7 +90,7 @@ public class TablePanel extends JPanel
 		aretes = robot.getPathfinding().getGraphe().getBoneslist();
 		this.table = table;
 		this.robot = robot;
-		this.point=new Vec2();
+		this.point=new Vect();
 
 		try{
 			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
@@ -110,7 +111,7 @@ public class TablePanel extends JPanel
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
-		this.point=new Vec2();
+		this.point=new Vect();
 
 		try{
 			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
@@ -124,10 +125,10 @@ public class TablePanel extends JPanel
 	{
 		// La table
 		int wideDisplay = (int)(table.getObstacleManager().getRobotRadius()*0.3);
-		Vec2 upLeftCorner;
-		Vec2 pathNode1;
-		Vec2 pathNode2;
-		Vec2 pathNode3;
+		Vect upLeftCorner;
+		Vect pathNode1;
+		Vect pathNode2;
+		Vect pathNode3;
 
 		// Background
 		graphics.drawImage(tableBackground,0, 0, 900, 600, this);
@@ -147,14 +148,14 @@ public class TablePanel extends JPanel
 	    // Obstacles rectangulaires
 	    for(ObstacleRectangular rectangular : table.getObstacleManager().getRectangles())
 	    {
-	    	upLeftCorner = changeRefToDisplay(rectangular.getPosition().plusNewVector(new Vec2(-rectangular.getSizeX()/2, rectangular.getSizeY()/2)));
+	    	upLeftCorner = changeRefToDisplay(rectangular.getPosition().plusNewVector(new VectCart(-rectangular.getSizeX()/2, rectangular.getSizeY()/2)));
 	    	graphics.fillRect(upLeftCorner.getX(), upLeftCorner.getY(), (int)(rectangular.getSizeX()*0.3), (int)(rectangular.getSizeY()*0.3));
 	    }
 
 	    // Obstacles ciculaires
 	    for(ObstacleCircular circular : table.getObstacleManager().getmCircularObstacle())
 	    {
-	    	upLeftCorner = changeRefToDisplay(circular.getPosition().plusNewVector(new Vec2(-circular.getRadius(), circular.getRadius())));
+	    	upLeftCorner = changeRefToDisplay(circular.getPosition().plusNewVector(new VectCart(-circular.getRadius(), circular.getRadius())));
 			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int)(circular.getRadius()*0.6), (int)(circular.getRadius()*0.6));
 	    }
 
@@ -162,7 +163,7 @@ public class TablePanel extends JPanel
 	    graphics.setColor(adverseColor);
 		for(ObstacleProximity adverse : table.getObstacleManager().getMobileObstacles())
 		{
-			upLeftCorner = changeRefToDisplay(adverse.getPosition().plusNewVector(new Vec2(-adverse.getRadius(), adverse.getRadius())));
+			upLeftCorner = changeRefToDisplay(adverse.getPosition().plusNewVector(new VectCart(-adverse.getRadius(), adverse.getRadius())));
 			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int)(adverse.getRadius()*0.6), (int)(adverse.getRadius()*0.6));
 		}
 
@@ -170,7 +171,7 @@ public class TablePanel extends JPanel
 		graphics.setColor(unconfirmedColor);
 		for(ObstacleProximity unconfirmed : table.getObstacleManager().getUntestedArrayList())
 		{
-			upLeftCorner = changeRefToDisplay(unconfirmed.getPosition().plusNewVector(new Vec2(-unconfirmed.getRadius(), unconfirmed.getRadius())));
+			upLeftCorner = changeRefToDisplay(unconfirmed.getPosition().plusNewVector(new VectCart(-unconfirmed.getRadius(), unconfirmed.getRadius())));
 			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int)(unconfirmed.getRadius()*0.6), (int)(unconfirmed.getRadius()*0.6));
 		}
 
@@ -178,12 +179,12 @@ public class TablePanel extends JPanel
 	    if(isRobotPresent)
 	    {
 		    graphics.setColor(robotColor);
-			Vec2 robotPosition = robot.getPosition();
-			Vec2 robotPositionDisplay = changeRefToDisplay(robotPosition);
+			Vect robotPosition = robot.getPosition();
+			Vect robotPositionDisplay = changeRefToDisplay(robotPosition);
 			double robotOrientation = robot.getOrientation();
-			Vec2 orentationIndicator = changeRefToDisplay(robotPosition.plusNewVector(new Vec2(new Double(robot.getRobotRadius()), robotOrientation)));
+			Vect orentationIndicator = changeRefToDisplay(robotPosition.plusNewVector(new VectPol(new Double(robot.getRobotRadius()), robotOrientation)));
 
-			upLeftCorner = changeRefToDisplay(robotPosition).plusNewVector(new Vec2(-wideDisplay, -wideDisplay));
+			upLeftCorner = changeRefToDisplay(robotPosition).plusNewVector(new VectCart(-wideDisplay, -wideDisplay));
 			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), wideDisplay*2, wideDisplay*2);
 
 			graphics.setColor(teamColor);
@@ -215,8 +216,8 @@ public class TablePanel extends JPanel
 		}
 
 		// Print les clics et leur position
-		for (Vec2 clic : clics){
-			Vec2 clicDisplay = changeRefToDisplay(clic);
+		for (Vect clic : clics){
+			Vect clicDisplay = changeRefToDisplay(clic);
 			graphics.fillOval(clicDisplay.getX() - 4, clicDisplay.getY() - 4, 8, 8);
 			graphics.drawString(clic.toStringInterface(), clicDisplay.getX() - 30, clicDisplay.getY() + 20);
 		}
@@ -230,19 +231,19 @@ public class TablePanel extends JPanel
 		//graphics.fillRoundRect(20, 620, 1260, 275, 20, 20);
 		//afficher le point qu'on veut
 		graphics.setColor(Color.GREEN);
-		Vec2 position=changeRefToDisplay(point);
+		Vect position=changeRefToDisplay(point);
 		graphics.fillOval(position.getX()-4,position.getY()-4,8,8);
 	}
 
 	/** Conversion en coordonnées d'affichage
 	 * @param vec
 	 */
-	private Vec2 changeRefToDisplay(Vec2 vec){
-		return new Vec2(new Integer((int)((vec.getX() + 1500)*0.3)),new Integer((int)((2000 - vec.getY())*0.3)-5));
+	private Vect changeRefToDisplay(Vect vec){
+		return new VectCart(new Integer((int)((vec.getX() + 1500)*0.3)),new Integer((int)((2000 - vec.getY())*0.3)-5));
 	}
 
 	/** Setters */
-	public void setPath(ArrayList<Vec2> path) {
+	public void setPath(ArrayList<Vect> path) {
 		this.path = path;
 		removeAll();
 		revalidate();
@@ -252,12 +253,12 @@ public class TablePanel extends JPanel
 		removeAll();
 		revalidate();
 	}
-	public void setClics(ArrayList<Vec2> clics) {
+	public void setClics(ArrayList<Vect> clics) {
 		this.clics = clics;
 		removeAll();
 		revalidate();
 	}
-	public void setPoint(Vec2 point ){
+	public void setPoint(Vect point ){
 		this.point=point;
 		removeAll();
 		revalidate();

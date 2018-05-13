@@ -1,20 +1,20 @@
 package exceptions.Locomotion;
 
-import smartMath.Vec2;
+import smartMath.Vect;
 
 public class ImmobileEnnemyForOneSecondAtLeast extends Exception {
 
-    private Vec2 finalAim;
-    public ImmobileEnnemyForOneSecondAtLeast(Vec2 aim) {
+    private Vect finalAim;
+    public ImmobileEnnemyForOneSecondAtLeast(Vect aim) {
         super();
         this.finalAim=aim;
     }
 
-    public Vec2 getAim() {
+    public Vect getAim() {
         return finalAim;
     }
 
-    public void setAim(Vec2 aim) {
+    public void setAim(Vect aim) {
         this.finalAim = aim;
     }
 }

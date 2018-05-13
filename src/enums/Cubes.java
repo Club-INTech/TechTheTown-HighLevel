@@ -1,6 +1,7 @@
 package enums;
 
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 
 public enum Cubes{
     ORANGE(-1,0,Colors.ORANGE),
@@ -36,21 +37,21 @@ public enum Cubes{
         return new int[]{this.xRelative, this.yRelative};
     }
 
-    public Vec2 getRelativeCoordsVec2(int tasCubes){
+    public Vect getRelativeCoordsVec2(int tasCubes){
         if (tasCubes<3) {
-            return new Vec2(this.xRelative, this.yRelative);
+            return new VectCart(this.xRelative, this.yRelative);
         }
         else{
-            return new Vec2(-this.xRelative, this.yRelative);
+            return new VectCart(-this.xRelative, this.yRelative);
         }
     }
 
-    public Vec2 getRelativeCoordsVec2(TasCubes tasCubes){
+    public Vect getRelativeCoordsVec2(TasCubes tasCubes){
         if (tasCubes.getID()<3){
-            return new Vec2(this.xRelative, this.yRelative);
+            return new VectCart(this.xRelative, this.yRelative);
         }
         else{
-            return new Vec2(-this.xRelative, this.yRelative);
+            return new VectCart(-this.xRelative, this.yRelative);
         }
     }
 

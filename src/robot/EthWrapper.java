@@ -27,7 +27,8 @@ import enums.ActuatorOrder;
 import enums.Speed;
 import hook.HookNames;
 import pfg.config.Config;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import smartMath.XYO;
 import threads.dataHandlers.ThreadEth;
 import utils.Log;
@@ -231,7 +232,7 @@ public class EthWrapper implements Service {
             y = getCurrentPositionAndOrientation().getPosition().getY();
             angle = getCurrentPositionAndOrientation().getOrientation();
         }
-        eth.setPositionAndOrientation(new XYO(new Vec2(x,y),angle));
+        eth.setPositionAndOrientation(new XYO(new VectCart(x,y),angle));
         return eth.getPositionAndOrientation();
     }
 
@@ -355,7 +356,7 @@ public class EthWrapper implements Service {
      */
 
 
-    public void configureHook(int id, Vec2 posTrigger, int tolerency, double orientation,double tolerencyAngle,String order){
+    public void configureHook(int id, Vect posTrigger, int tolerency, double orientation, double tolerencyAngle, String order){
         eth.communicate(0, ActuatorOrder.INITIALISE_HOOK.getEthernetOrder(), String.format("%d", id), posTrigger.toStringEth(), String.format("%d", tolerency),String.format("%f",orientation), String.format("%f",tolerencyAngle),order);
     }
 

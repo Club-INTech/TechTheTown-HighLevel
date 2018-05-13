@@ -1,7 +1,6 @@
 package strategie.IA;
 
 import enums.ScriptNames;
-import enums.UnableToMoveReason;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
 import exceptions.ExecuteException;
@@ -14,12 +13,10 @@ import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.AbstractScript;
 import scripts.ScriptManager;
-import smartMath.Vec2;
+import smartMath.Vect;
 import strategie.GameState;
 import table.Table;
 import utils.Log;
-
-import java.util.ArrayList;
 
 public abstract class Node {
 
@@ -35,7 +32,7 @@ public abstract class Node {
     protected int tentatives;       //nombre de tentatives d'un noeuds, si on tente plus d'un certain nombre de fois on suppose que le noeud est inaccessible.
     protected boolean isDone;
     protected GameState gameState;
-    protected Vec2 position;
+    protected Vect position;
     protected Pathfinding pathfinding;
     protected Log log;
     protected Config config;
@@ -84,7 +81,7 @@ public abstract class Node {
         return "Nom : "+ getName()+", version : "+getVersionToExecute();
     }
 
-    public Vec2 updatePosition() throws BadVersionException {
+    public Vect updatePosition() throws BadVersionException {
         return getScript().entryPosition(getVersionToExecute(),Table.entryPosition).getCenter();
     }
 
@@ -100,7 +97,7 @@ public abstract class Node {
 
     public int getVersionToExecute() { return versionToExecute; }
 
-    public Vec2 getPosition() { return position; }
+    public Vect getPosition() { return position; }
 
     public GameState getGameState() { return gameState; }
 
@@ -120,7 +117,7 @@ public abstract class Node {
 
     public void setScore(int score) { this.score = score; }
 
-    public void setPosition(Vec2 position) { this.position = position; }
+    public void setPosition(Vect position) { this.position = position; }
 
     public void setVersionToExecute(int versionToExecute) { this.versionToExecute = versionToExecute; }
 }

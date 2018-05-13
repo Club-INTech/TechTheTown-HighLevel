@@ -4,10 +4,7 @@ import container.Service;
 import enums.ConfigInfoRobot;
 import enums.TasCubes;
 import pfg.config.Config;
-import smartMath.Circle;
-import smartMath.Geometry;
-import smartMath.Segment;
-import smartMath.Vec2;
+import smartMath.*;
 import table.Table;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleProximity;
@@ -73,30 +70,30 @@ public class Graphe implements Service {
         this.nodes=new ArrayList<>();
         this.createNodesAroundCircularObstacles();
 
-        Vec2 positionmilieu=new Vec2(0,1000);
+        Vect positionmilieu=new VectCart(0,1000);
         Noeud nodemilieu=new Noeud(positionmilieu,0,0, new ArrayList<>());
         nodes.add(nodemilieu);
         nodesFixes.add(nodemilieu);
 
-        Vec2 positiondepart=new Vec2(1252, 455);
+        Vect positiondepart=new VectCart(1252, 455);
         Noeud nodeDepart=new Noeud(positiondepart,0,0, new ArrayList<>());
         nodes.add(nodeDepart);
         nodesFixes.add(nodeDepart);
 
-        Vec2 positioninterr=new Vec2(650,215);
+        Vect positioninterr=new VectCart(650,215);
         Noeud noeudinterr=new Noeud(positioninterr,0,0, new ArrayList<>());
         nodes.add(noeudinterr);
         nodesFixes.add(noeudinterr);
 
         int xCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getX())/3;
         int yCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getY())/3;
-        Vec2 noeudEnPlusCoteVert=new Vec2(xCentreGravite,yCentreGravite);
+        Vect noeudEnPlusCoteVert=new VectCart(xCentreGravite,yCentreGravite);
         nodes.add(new Noeud(noeudEnPlusCoteVert,0,0,new ArrayList<>()));
         nodesFixes.add(new Noeud(noeudEnPlusCoteVert,0,0,new ArrayList<>()));
 
         int xCentreGraviteEnnemy=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getX())/3;
         int yCentreGraviteEnnemy=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getY())/3;
-        Vec2 noeudEnPlusCoteOrange=new Vec2(xCentreGraviteEnnemy,yCentreGraviteEnnemy);
+        Vect noeudEnPlusCoteOrange=new VectCart(xCentreGraviteEnnemy,yCentreGraviteEnnemy);
         nodes.add(new Noeud(noeudEnPlusCoteOrange,0,0,new ArrayList<>()));
         nodesFixes.add(new Noeud(noeudEnPlusCoteOrange,0,0,new ArrayList<>()));
     }
@@ -219,16 +216,16 @@ public class Graphe implements Service {
      * @return
      */
     public void createNodesAroundCircularObstacles(){
-        ArrayList<Vec2> points=new ArrayList<>();
-        ArrayList<Vec2> pointsFixes=new ArrayList<>();
-        ArrayList<Vec2> pointsMobiles=new ArrayList<>();
+        ArrayList<Vect> points=new ArrayList<>();
+        ArrayList<Vect> pointsFixes=new ArrayList<>();
+        ArrayList<Vect> pointsMobiles=new ArrayList<>();
         int d=30;//distance qu'on ajoute pour que les noeuds ne soient pas dans les obstacles
         /*
         on crée des noeuds autour des obstacles circulaires
          */
         for(ObstacleCircular obstacleCircular : listCircu) {
             Circle obstaclecircle=new Circle(obstacleCircular.getPosition(),obstacleCircular.getRadius()+d);
-            ArrayList<Vec2> lcirculaire = obstaclecircle.pointsaroundcircle(10);
+            ArrayList<Vect> lcirculaire = obstaclecircle.pointsaroundcircle(10);
             pointsFixes.addAll(lcirculaire);
             points.addAll(lcirculaire);
         }
@@ -238,7 +235,7 @@ public class Graphe implements Service {
         if(!basicDetection) {
             for (ObstacleProximity obstacleMobile : mobileEnnemies) {
                 Circle obstaclecircle = new Circle(obstacleMobile.getPosition(), obstacleMobile.getRadius() + d);
-                ArrayList<Vec2> lmobile = obstaclecircle.pointsaroundcircle(10);
+                ArrayList<Vect> lmobile = obstaclecircle.pointsaroundcircle(10);
                 pointsMobiles.addAll(lmobile);
                 points.addAll(lmobile);
             }
@@ -246,8 +243,8 @@ public class Graphe implements Service {
         /*
         On vérifie pour chaque point s'il n'y a pas d'intersection avec les obstacles circulaires
          */
-        ArrayList<Vec2> finalPointsToReturn = new ArrayList<>();
-        for(Vec2 point : points){
+        ArrayList<Vect> finalPointsToReturn = new ArrayList<>();
+        for(Vect point : points){
             boolean mustBeRemoved=false;
             for(ObstacleRectangular obstacleRectangular : listRectangu){
                 if(table.getObstacleManager().isPositionInObstacle(point,obstacleRectangular)){
@@ -280,12 +277,12 @@ public class Graphe implements Service {
                 finalPointsToReturn.add(point);
             }
         }
-        for(Vec2 coords : finalPointsToReturn){
+        for(Vect coords : finalPointsToReturn){
             nodes.add(new Noeud(coords,0,0,new ArrayList<>()));
         }
         //C'est pour la méthode qui permet de get les noeuds les plus proches
-        ArrayList<Vec2> finalPointsFixesToReturn = new ArrayList<>();
-        for(Vec2 pointFixe : pointsFixes){
+        ArrayList<Vect> finalPointsFixesToReturn = new ArrayList<>();
+        for(Vect pointFixe : pointsFixes){
             boolean mustBeRemoved=false;
             for(ObstacleRectangular obstacleRectangular : listRectangu){
                 if(table.getObstacleManager().isPositionInObstacle(pointFixe,obstacleRectangular)){
@@ -310,7 +307,7 @@ public class Graphe implements Service {
                 finalPointsFixesToReturn.add(pointFixe);
             }
         }
-        for(Vec2 coords : finalPointsFixesToReturn){
+        for(Vect coords : finalPointsFixesToReturn){
             nodesFixes.add(new Noeud(coords,0,0,new ArrayList<>()));
         }
     }
@@ -352,7 +349,7 @@ public class Graphe implements Service {
      * @return le noeud du graphe le plus proche
      */
 
-    public Noeud closestNodeToPosition(Vec2 position){
+    public Noeud closestNodeToPosition(Vect position){
         float distanceMin=nodesFixes.get(0).getPosition().distance(position);
         int iMin=0;
         for(int i=1; i<nodesFixes.size();i++){
@@ -370,8 +367,8 @@ public class Graphe implements Service {
      * @param position
      * @return
      */
-    public boolean isAlreadyANode(Vec2 position){
-        ArrayList<Vec2> points=new ArrayList<>();
+    public boolean isAlreadyANode(Vect position){
+        ArrayList<Vect> points=new ArrayList<>();
         for(Noeud noeud : nodes){
             points.add(noeud.getPosition());
         }

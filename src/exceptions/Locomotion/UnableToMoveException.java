@@ -20,7 +20,7 @@
 package exceptions.Locomotion;
 
 import enums.UnableToMoveReason;
-import smartMath.Vec2;
+import smartMath.Vect;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -35,7 +35,7 @@ public class UnableToMoveException extends Exception
 
 	
 	/** La position où on voulait aller au moment de l'exception */
-	private Vec2 aim;
+	private Vect aim;
 	
 	/** La raison du blocage */
 	private UnableToMoveReason reason;
@@ -46,7 +46,7 @@ public class UnableToMoveException extends Exception
 	 * @param aim  position où on voulait aller au moment de l'exception
 	 * @param reason raison de l'exception
 	 */
-	public UnableToMoveException(Vec2 aim, UnableToMoveReason reason)
+	public UnableToMoveException(Vect aim, UnableToMoveReason reason)
 	{
 		super();
 		this.aim = aim;
@@ -58,7 +58,7 @@ public class UnableToMoveException extends Exception
 	 * @param aim  position où on voulait aller au moment de l'exception
 	 * @param reason raison de l'exception
 	 */
-	public UnableToMoveException(String m, Vec2 aim, UnableToMoveReason reason)
+	public UnableToMoveException(String m, Vect aim, UnableToMoveReason reason)
 	{
 		super(m);
 		this.aim = aim;
@@ -76,7 +76,7 @@ public class UnableToMoveException extends Exception
 		return exceptionAsString;
 	}
 
-	public Vec2 getAim(){
+	public Vect getAim(){
 		return this.aim;
 	}
 	

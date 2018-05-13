@@ -19,7 +19,8 @@
 
 package debug;
 
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 
 /**
  * Tous les paramètres pour une hyperbole
@@ -29,21 +30,21 @@ import smartMath.Vec2;
 
 public class Hyperbola {
 
-	private static Vec2[] balises;
+	private static Vect[] balises;
     private final static double speedOfSound = 0.34; // in mm/µs
 
 	static
 	{
-		balises = new Vec2[3];
-		balises[0] = new Vec2(-1500, 0);
-		balises[1] = new Vec2(-1500, 2000);
-		balises[2] = new Vec2(1500, 1000);
+		balises = new Vect[3];
+		balises[0] = new VectCart(-1500, 0);
+		balises[1] = new VectCart(-1500, 2000);
+		balises[2] = new VectCart(1500, 1000);
 	}
 	
-	public Vec2 p1 = null, p2 = null;
+	public Vect p1 = null, p2 = null;
 	public double delta; // en mm
 	
-	public Hyperbola(Vec2 p1, Vec2 p2, double delta)
+	public Hyperbola(Vect p1, Vect p2, double delta)
 	{
 		this.p1 = p1;
 		this.p2 = p2;

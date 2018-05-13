@@ -21,7 +21,6 @@ package smartMath;
 
 import java.awt.Rectangle;
 import java.awt.geom.Line2D;
-import java.util.Vector;
 
 /**
  * classe de calculs de géométrie
@@ -72,7 +71,7 @@ public class Geometry
 		int yB2=segment2.getB().getY();
 		return Line2D.linesIntersect(xA1,yA1,xB1,yB1,xA2,yA2,xB2,yB2);
 		/*if(segment1.vecdirecteur().crossProduct(segment2.vecdirecteur()) != 0){
-			Vec2 vecintersection=intersection(segment1,segment2);
+			Vect vecintersection=intersection(segment1,segment2);
 			if(vecintersection.xisbetween(xA1,xB1)&& vecintersection.xisbetween(xB2,xA2) &&vecintersection.yisbetween(yA1,yB1)&& vecintersection.yisbetween(yB2,yA2)){
 				return true;
 			}
@@ -133,11 +132,11 @@ public class Geometry
 	 * @param circle
 	 * @return le point de l'arc de cercle le plus proche de pointHorsCercle
 	 */
-	public static Vec2 closestPointOnCircle(Vec2 pointHorsCercle, Circle circle) {
+	public static Vect closestPointOnCircle(Vect pointHorsCercle, Circle circle) {
 		if (circle.containCircle(pointHorsCercle)) {
 			return (pointHorsCercle);
 		}
-		Vec2 vec = pointHorsCercle.minusNewVector(circle.getCenter());
+		Vect vec = pointHorsCercle.minusNewVector(circle.getCenter());
 
 		// Si la direction donnée par le vecteur pointHorsCercle intersecte l'arc de cercle, on a le point avec les coordonnées polaires ;)
 		if (vec.getA() >= circle.getAngleStart() && vec.getA() <= circle.getAngleEnd())
@@ -148,8 +147,8 @@ public class Geometry
 
 		// Sinon, on doit choisir entre le point du début de l'arc de cercle et celui de fin
 		else {
-			Vec2 circleCenterStart = new Vec2(circle.getRadius(), circle.getAngleStart());
-			Vec2 circleCenterEnd = new Vec2(circle.getRadius(), circle.getAngleEnd());
+			Vect circleCenterStart = new VectPol(circle.getRadius(), circle.getAngleStart());
+			Vect circleCenterEnd = new VectPol(circle.getRadius(), circle.getAngleEnd());
 
 			if (circle.getCenter().plusNewVector(circleCenterStart).distance(pointHorsCercle) >= circle.getCenter().plusNewVector(circleCenterEnd).distance(pointHorsCercle)){
 				return circleCenterEnd.plusNewVector(circle.getCenter());
@@ -167,20 +166,20 @@ public class Geometry
 	 * @return la nouvelle position du point
 	 */
 
-	public static Vec2 closestPointOutCircle(Vec2 pointDansCercle, Circle circle) {
+	public static Vect closestPointOutCircle(Vect pointDansCercle, Circle circle) {
 		if (!circle.containCircle(pointDansCercle))
 		{
 			return(pointDansCercle);
 		}
-		Vec2 toReturn = pointDansCercle.minusNewVector(circle.getCenter());
+		Vect toReturn = pointDansCercle.minusNewVector(circle.getCenter());
 
 		if (isBetween(toReturn.getA(), circle.getAngleStart(), circle.getAngleEnd())) {
 			toReturn.setR(circle.getRadius()+10);
 			return circle.getCenter().plusNewVector(toReturn);
 		}
 		else{
-			Vec2 vecAngleStart = new Vec2(circle.getRadius() + 10, circle.getAngleStart());
-			Vec2 vecAngleEnd = new Vec2(circle.getRadius() + 10, circle.getAngleEnd());
+			Vect vecAngleStart = new VectPol(circle.getRadius() + 10, circle.getAngleStart());
+			Vect vecAngleEnd = new VectPol(circle.getRadius() + 10, circle.getAngleEnd());
 
 			if (vecAngleStart.plusNewVector(circle.getCenter()).distance(pointDansCercle)<=vecAngleEnd.plusNewVector(circle.getCenter()).distance(pointDansCercle)){
 				return circle.getCenter().plusNewVector(vecAngleStart);
@@ -197,7 +196,7 @@ public class Geometry
 	 * @param segment2
 	 * @return le point d'intersection des droites portées par les segments.
 	 */
-	public static Vec2 intersection(Segment segment1, Segment segment2)
+	public static Vect intersection(Segment segment1, Segment segment2)
 	{
 		// resolution du systeme associe aux deux segments
 		double inter, k;
@@ -210,7 +209,7 @@ public class Geometry
 		else
 			k = -(double)(segment2.getA().getY() - segment1.getA().getY()) / (double)(segment1.getB().getY() - segment1.getA().getY());
 		
-		return new Vec2((int)(segment1.getA().getX() - k * (segment1.getB().getX() - segment1.getA().getX())), (int)(segment1.getA().getY() - k * (segment1.getB().getY() - segment1.getA().getY())));
+		return new VectCart((int)(segment1.getA().getX() - k * (segment1.getB().getX() - segment1.getA().getX())), (int)(segment1.getA().getY() - k * (segment1.getB().getY() - segment1.getA().getY())));
 	}
 
 	/**
@@ -238,10 +237,10 @@ public class Geometry
 	 * @return
 	 */
 	public static boolean intersects(Segment segment, Rectangle rectangle){
-		Vec2 pointhautgauche=new Vec2(new Integer((int) rectangle.getLocation().getX()),new Integer((int) rectangle.getLocation().getY()));
-		Vec2 pointbasgauche=new Vec2(new Integer((int) pointhautgauche.getX()),new Integer((int) (pointhautgauche.getY()-rectangle.getHeight())));
-		Vec2 pointhautdroite=new Vec2(new Integer((int) (pointhautgauche.getX()+rectangle.getWidth())),new Integer((int) pointhautgauche.getY()));
-		Vec2 pointbasdroite=new Vec2(new Integer((int) (pointhautgauche.getX()+rectangle.getWidth())),new Integer((int) (pointhautgauche.getY()-rectangle.getHeight())));
+		Vect pointhautgauche=new VectCart(new Integer((int) rectangle.getLocation().getX()),new Integer((int) rectangle.getLocation().getY()));
+		Vect pointbasgauche=new VectCart(new Integer((int) pointhautgauche.getX()),new Integer((int) (pointhautgauche.getY()-rectangle.getHeight())));
+		Vect pointhautdroite=new VectCart(new Integer((int) (pointhautgauche.getX()+rectangle.getWidth())),new Integer((int) pointhautgauche.getY()));
+		Vect pointbasdroite=new VectCart(new Integer((int) (pointhautgauche.getX()+rectangle.getWidth())),new Integer((int) (pointhautgauche.getY()-rectangle.getHeight())));
 		Segment segment1=new Segment(pointhautgauche,pointhautdroite);
 		Segment segment2=new Segment(pointhautdroite,pointbasdroite);
 		Segment segment3=new Segment(pointbasdroite,pointbasgauche);

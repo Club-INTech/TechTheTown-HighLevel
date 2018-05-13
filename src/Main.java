@@ -21,14 +21,10 @@ import container.Container;
 import enums.*;
 import exceptions.ContainerException;
 import patternRecognition.PatternRecognition;
-import patternRecognition.UseWebcam;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
-import smartMath.Circle;
-import smartMath.Geometry;
-import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
@@ -36,8 +32,6 @@ import threads.dataHandlers.ThreadSensor;
 import threads.threadScore.ThreadScore;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
-
-import javax.print.Doc;
 
 /**
  * Code qui démarre le robot en début de match

@@ -22,9 +22,7 @@ package threads.dataHandlers;
 import enums.ConfigInfoRobot;
 import pfg.config.Config;
 import robot.EthWrapper;
-import smartMath.Geometry;
-import smartMath.Vec2;
-import smartMath.XYO;
+import smartMath.*;
 import table.Table;
 import threads.AbstractThread;
 import threads.ThreadTimer;
@@ -112,10 +110,10 @@ public class OLDThreadSensor extends AbstractThread
     /**
      * Positions relatives au centre (des roues) du robot
      */
-    private final Vec2 positionLF = new Vec2(120, 125);
-    private final Vec2 positionRF = new Vec2(120, -125);
-    private final Vec2 positionLB = new Vec2(-180,80);
-    private final Vec2 positionRB = new Vec2(-180,-80);
+    private final Vect positionLF = new VectCart(120, 125);
+    private final Vect positionRF = new VectCart(120, -125);
+    private final Vect positionLB = new VectCart(-180,80);
+    private final Vect positionRB = new VectCart(-180,-80);
 
     /*****************
      * INFOS & DEBUG *
@@ -188,7 +186,7 @@ public class OLDThreadSensor extends AbstractThread
         double robotY;
         double b, delta;
         int R1, R2;
-        Vec2 vec = new Vec2();
+        Vect vec = new Vect();
         boolean isValue = true;
 
         R1 = USvalues.get(0) + (int) (enRadius*0.8);
@@ -202,12 +200,12 @@ public class OLDThreadSensor extends AbstractThread
         if (delta > 1) {
             robotX = ((-b + Math.sqrt(delta)) / 2.0);
             Integer X = new Integer((int) robotX);
-            vec = new Vec2(X, Y);
+            vec = new VectCart(X, Y);
         }
         else if (isBetween(delta, -1, 1)){
             robotX = -b/2;
             Integer X = new Integer((int) robotX);
-            vec = new Vec2(X, Y);
+            vec = new VectCart(X, Y);
         }else{
             isValue = false;
         }
@@ -225,7 +223,7 @@ public class OLDThreadSensor extends AbstractThread
         double robotY;
         double b, delta;
         int R1, R2;
-        Vec2 vec = new Vec2();
+        Vect vec = new Vect();
         boolean isValue = true;
 
         R1 = USvalues.get(2) + (int)(enRadius*0.8);
@@ -239,12 +237,12 @@ public class OLDThreadSensor extends AbstractThread
         if (delta > 1) {
             robotX = (int) ((-b - Math.sqrt(delta)) / 2);
             Integer X = new Integer((int) robotX);
-            vec = new Vec2(X, Y);
+            vec = new VectCart(X, Y);
         }
         else if(isBetween(delta, -1, 1)){
             robotX = (int) -b/2;
             Integer X = new Integer((int) robotX);
-            vec = new Vec2(X, Y);
+            vec = new VectCart(X, Y);
         }else{
             isValue = false;
         }
@@ -262,21 +260,21 @@ public class OLDThreadSensor extends AbstractThread
         // On modélise les arcs de cercle detecté par l'un des capteurs, puis on prend le point le plus à l'exterieur
         // Et on place le robot ennemie tangent en ce point : la position calculée n'est pas la position réelle du robot adverse mais elle suffit
 
-        Vec2 posEn;
+        Vect posEn;
         Double USFL = new Double((double) USvalues.get(0));
         Double USFR = new Double((double) USvalues.get(1));
 
         if (isLeft){
             // On choisit le point à l'extrémité de l'arc à coté du capteur pour la position de l'ennemie: à courte distance, la position est réaliste,
             // à longue distance (>1m au vue des dimensions), l'ennemie est en réalité de l'autre coté
-            Vec2 posDetect = new Vec2(USFL, angleLF + detectionAngle/2);
+            Vect posDetect = new VectPol(USFL, angleLF + detectionAngle/2);
             double angleEn = angleRF + detectionAngle/2;
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(positionLF);
+            posEn = posDetect.plusNewVector(new VectPol(enRadius*0.8, angleEn)).plusNewVector(positionLF);
         }
         else{
-            Vec2 posDetect = new Vec2(USFR, angleRF - detectionAngle/2);
+            Vect posDetect = new VectPol(USFR, angleRF - detectionAngle/2);
             double angleEn = angleLF - detectionAngle/2;
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(positionRF);
+            posEn = posDetect.plusNewVector(new VectPol(enRadius*0.8, angleEn)).plusNewVector(positionRF);
         }
 
         this.printDebug(posEn);
@@ -288,19 +286,19 @@ public class OLDThreadSensor extends AbstractThread
     private void addBackObstacleSingle(boolean isLeft) {
         // De meme qu'avec le front
 
-        Vec2 posEn;
+        Vect posEn;
         Double USBL = new Double((double) USvalues.get(2));
         Double USBF = new Double((double) USvalues.get(3));
 
         if (isLeft){
-            Vec2 posDetect = new Vec2(USBL,angleLB - detectionAngle/2);
+            Vect posDetect = new VectPol(USBL,angleLB - detectionAngle/2);
             double angleEn = angleRB - detectionAngle/2;
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(positionLB);
+            posEn = posDetect.plusNewVector(new VectPol(enRadius*0.8, angleEn)).plusNewVector(positionLB);
         }
         else{
-            Vec2 posDetect = new Vec2(USBF,angleRB + detectionAngle/2);
+            Vect posDetect = new VectPol(USBF,angleRB + detectionAngle/2);
             double angleEn = angleLB + detectionAngle/2;
-            posEn = posDetect.plusNewVector(new Vec2(enRadius*0.8, angleEn)).plusNewVector(positionRB);
+            posEn = posDetect.plusNewVector(new VectPol(enRadius*0.8, angleEn)).plusNewVector(positionRB);
         }
 
         this.printDebug(posEn);
@@ -309,7 +307,7 @@ public class OLDThreadSensor extends AbstractThread
 
     /** P'tite methode pour print le debug des capteurs
      * @param obPositionRobotRef la position de l'obstacle dans le réferentiel du robot */
-    private void printDebug(Vec2 obPositionRobotRef){
+    private void printDebug(Vect obPositionRobotRef){
         try {
             out.write("Position calculée (référentiel du robot) :" + obPositionRobotRef);
             out.newLine();
@@ -328,7 +326,7 @@ public class OLDThreadSensor extends AbstractThread
 
     /** Passe du référentiel du robot à celui de la table
      * @param pos la position relative dont on cherche les coordonées absolues */
-    private Vec2 changeRef(Vec2 pos)
+    private Vect changeRef(Vect pos)
     {
         pos.setA(Geometry.moduloSpec(pos.getA()+robotPosAndOr.getPosition().getA(), Math.PI));
         return pos.plusNewVector(robotPosAndOr.getPosition());

@@ -28,7 +28,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import table.Table;
 
 public class JUnit_Speed extends JUnit_Test {
@@ -65,8 +66,8 @@ public class JUnit_Speed extends JUnit_Test {
 			robot.setLocomotionSpeed(speed);
 			log.debug("PWM rotation : "+speed.rotationSpeed+"\nPWM translation : "+speed.translationSpeed);
 			try {
-				robot.moveToLocation(new Vec2(-1000, 1000), table);
-				robot.moveToLocation(new Vec2(1000, 1000), table);
+				robot.moveToLocation(new VectCart(-1000, 1000), table);
+				robot.moveToLocation(new VectCart(1000, 1000), table);
 			}
 			catch (NoPathFound e){
 				log.debug("pas de chemin trouvé");

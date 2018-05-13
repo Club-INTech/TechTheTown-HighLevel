@@ -14,7 +14,8 @@ import exceptions.NoPathFound;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
 import utils.Log;
 
@@ -37,8 +38,8 @@ public class ActivationPanneauDomotique extends AbstractScript{
     }
 
     @Override
-    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
-        Vec2 positionEntree=new Vec2(this.xEntry,this.yEntry);
+    public Circle entryPosition(int version, Vect robotPosition) throws BadVersionException {
+        Vect positionEntree=new VectCart(this.xEntry,this.yEntry);
         return new Circle(positionEntree,0);
     }
 
@@ -55,7 +56,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
         state.robot.turn(-Math.PI/2);
         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         //Il se peut qu'on fonce dans un mur
-        state.robot.goToWithoutDetection(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur),true);
+        state.robot.goToWithoutDetection(new VectCart(this.xEntry, this.yEntry-distanceInterrupteur),true);
         state.addObtainedPoints(25);
         state.setPanneauActive(true);
         if (usingAdvancedDetection) {
@@ -65,7 +66,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
         if(usingBasicDetection){
             state.robot.setBasicDetection(true);
         }
-        state.robot.goTo(new Vec2(xEntry, yEntry));
+        state.robot.goTo(new VectCart(xEntry, yEntry));
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
         log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");
     }

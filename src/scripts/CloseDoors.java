@@ -26,7 +26,8 @@ import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
 import utils.Log;
 
@@ -91,7 +92,7 @@ public class CloseDoors extends AbstractScript
 //				stateToConsider.table.intDoorClosed = true;
 
 				//if(Geometry.isBetween(stateToConsider.robot.getPosition().y, 1790, 1890))
-					stateToConsider.robot.setPosition(new Vec2(stateToConsider.robot.getPosition().getX(),1840));
+					stateToConsider.robot.setPosition(new VectCart(stateToConsider.robot.getPosition().getX(),1840));
 					stateToConsider.robot.setOrientation(-Math.PI/2);
 
 				//else
@@ -119,7 +120,7 @@ public class CloseDoors extends AbstractScript
 
 				//  if(Geometry.isBetween(stateToConsider.robot.getPosition().x, 1300, 1400))
 			//	{
-				    stateToConsider.robot.setPosition(new Vec2(1350, stateToConsider.robot.getPosition().getY()));
+				    stateToConsider.robot.setPosition(new VectCart(1350, stateToConsider.robot.getPosition().getY()));
 					stateToConsider.robot.setOrientation(Math.PI);
 			//	}
             //    else
@@ -197,7 +198,7 @@ public class CloseDoors extends AbstractScript
 //                stateToConsider.table.intDoorClosed = true;
 
                 //if(Geometry.isBetween(stateToConsider.robot.getPosition().y, 1790, 1890))
-                stateToConsider.robot.setPosition(new Vec2(stateToConsider.robot.getPosition().getX(),1840));
+                stateToConsider.robot.setPosition(new VectCart(stateToConsider.robot.getPosition().getX(),1840));
                 stateToConsider.robot.setOrientation(-Math.PI/2);
 
                 //else
@@ -234,7 +235,7 @@ public class CloseDoors extends AbstractScript
 
                 //  if(Geometry.isBetween(stateToConsider.robot.getPosition().x, 1300, 1400))
                 //	{
-                stateToConsider.robot.setPosition(new Vec2(1350, stateToConsider.robot.getPosition().getY()));
+                stateToConsider.robot.setPosition(new VectCart(1350, stateToConsider.robot.getPosition().getY()));
                 stateToConsider.robot.setOrientation(Math.PI);
                 //	}
                 //    else
@@ -276,16 +277,16 @@ public class CloseDoors extends AbstractScript
 	}
 
 	@Override
-	public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException
+	public Circle entryPosition(int version, Vect robotPosition) throws BadVersionException
 	{
 		if (version == 0 || version == 1 || version == 4)
 		{
-			// modification possible selon l'envergure du robot new Vec2(1135,1600)
+			// modification possible selon l'envergure du robot new Vect(1135,1600)
 			return new Circle(robotPosition);
 		}
 		else if(version == 3)
 		{
-			return new Circle(new Vec2(1050,1750));
+			return new Circle(new VectCart(1050,1750));
 		}
 		else
 		{

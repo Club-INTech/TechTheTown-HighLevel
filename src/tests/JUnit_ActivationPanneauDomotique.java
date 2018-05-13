@@ -1,6 +1,5 @@
 package tests;
 
-import enums.ActuatorOrder;
 import enums.ScriptNames;
 import enums.Speed;
 import hook.HookFactory;
@@ -8,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
 import scripts.ScriptManager;
-import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;

@@ -19,30 +19,30 @@
 
 package exceptions.Locomotion;
 
-import smartMath.Vec2;
+import smartMath.Vect;
 
 /**
  * Peut etre utile pour le Pathfinding...
  */
 public class PointInObstacleException extends Exception {
 
-    private Vec2 point;
+    private Vect point;
     private boolean departInOsbtacle;
 
-    public PointInObstacleException(Vec2 point, boolean departInOsbtacle)
+    public PointInObstacleException(Vect point, boolean departInOsbtacle)
     {
         super();
         this.point = point;
         this.departInOsbtacle = departInOsbtacle;
     }
 
-    public Vec2 getPoint() {
+    public Vect getPoint() {
         return point;
     }
 
     public boolean isDepartInOsbtacle() { return  departInOsbtacle;}
 
-    public void setPoint(Vec2 point) {
+    public void setPoint(Vect point) {
         this.point = point;
     }
 }

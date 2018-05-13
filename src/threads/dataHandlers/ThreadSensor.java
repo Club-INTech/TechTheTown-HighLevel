@@ -23,16 +23,13 @@ import enums.ConfigInfoRobot;
 import pfg.config.Config;
 import robot.EthWrapper;
 import sensor.Sensor;
-import smartMath.Geometry;
-import smartMath.Vec2;
-import smartMath.XYO;
+import smartMath.*;
 import strategie.GameState;
 import table.Table;
 import threads.AbstractThread;
 import threads.ThreadTimer;
 import utils.Log;
 
-import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -260,8 +257,8 @@ public class ThreadSensor extends AbstractThread
             } else {
                 int x = (int) (a * Math.cos(alpha));
                 int y = (int) (a * Math.sin(alpha));
-                Vec2 posObjectFromSensorFL = new Vec2(x, y);
-                Vec2 posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
+                Vect posObjectFromSensorFL = new VectCart(x, y);
+                Vect posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());
                 if (posObjectFromCenterRobot.getA() > -Math.PI / 3 && posObjectFromCenterRobot.getA() < Math.PI / 3) { // pour éviter les faux obstacles
                     mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius + ourRadius + 10);
                 }
@@ -300,8 +297,8 @@ public class ThreadSensor extends AbstractThread
             else {
                 int x = (int) (a * Math.cos(alpha));
                 int y = (int) (a * Math.sin(alpha));
-                Vec2 posObjectFromSensorBL = new Vec2(x, y);
-                Vec2 posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
+                Vect posObjectFromSensorBL = new VectCart(x, y);
+                Vect posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());
                 if (posObjectFromCenterRobot.getA() > -Math.PI / 3 || posObjectFromCenterRobot.getA() < Math.PI / 3) { // pour éviter les faux obstacles
                     mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius + ourRadius + 10);
                 }
@@ -315,7 +312,7 @@ public class ThreadSensor extends AbstractThread
         //TODO facteur 0.8 à changer empiriquement
         int a = (int) (l + enRadius * 0.5);
         int b = (int) (r + enRadius * 0.5);
-        Vec2 posFromCenterRobot = new Vec2( (a + b)/2.0 + (Math.abs(sensorBR.getX())+Math.abs(sensorBL.getX()))/2.0 ,-Math.PI);
+        Vect posFromCenterRobot = new VectPol( (a + b)/2.0 + (Math.abs(sensorBR.getX())+Math.abs(sensorBL.getX()))/2.0 ,-Math.PI);
         mTable.getObstacleManager().addObstacle(this.changeRef(posFromCenterRobot), enRadius + ourRadius + 10);
     }
 
@@ -325,7 +322,7 @@ public class ThreadSensor extends AbstractThread
         //TODO facteur 0.8 à changer empiriquement
         int a = (int) (l + enRadius * 0.5);
         int b = (int) (r + enRadius * 0.5);
-        Vec2 posFromCenterRobot = new Vec2((a + b)/2.0 + (Math.abs(sensorFR.getX())+Math.abs(sensorFL.getX()))/2.0,0);
+        Vect posFromCenterRobot = new VectPol((a + b)/2.0 + (Math.abs(sensorFR.getX())+Math.abs(sensorFL.getX()))/2.0,0);
         mTable.getObstacleManager().addObstacle(this.changeRef(posFromCenterRobot), enRadius + ourRadius + 10);
     }
 
@@ -337,17 +334,17 @@ public class ThreadSensor extends AbstractThread
         // On modélise les arcs de cercle detecté par l'un des capteurs, puis on prend le point le plus à l'exterieur
         // Et on place le robot ennemi sur la ligne de détection maximale : la position calculée n'est pas la position réelle du robot adverse mais elle suffit
 
-        Vec2 posObjectFromCenterRobot;
+        Vect posObjectFromCenterRobot;
         if (isLeft){
             // On choisit le point à l'extrémité de l'arc à coté du capteur pour la position de l'ennemie: à courte distance, la position est réaliste,
             // à longue distance (>1m au vue des dimensions), l'ennemie est en réalité de l'autre coté
             double USFL = (double)sensorFL.getDetectedDistance();
-            Vec2 posObjectFromSensorFL = new Vec2(USFL+enRadius*0.5, sensorFL.getSensorOrientation()); //sensor avant gauche
+            Vect posObjectFromSensorFL = new VectPol(USFL+enRadius*0.5, sensorFL.getSensorOrientation()); //sensor avant gauche
             posObjectFromCenterRobot = posObjectFromSensorFL.plusNewVector(sensorFL.getVecteur());     //sensor avant gauche
         }
         else{
             double USFR = (double)sensorFR.getDetectedDistance();
-            Vec2 posObjectFromSensorFR = new Vec2(USFR+enRadius*0.5, sensorFR.getSensorOrientation()); //sensor avant droit
+            Vect posObjectFromSensorFR = new VectPol(USFR+enRadius*0.5, sensorFR.getSensorOrientation()); //sensor avant droit
             posObjectFromCenterRobot = posObjectFromSensorFR.plusNewVector(sensorFR.getVecteur()); //sensor avant droit
         }
 
@@ -358,17 +355,17 @@ public class ThreadSensor extends AbstractThread
      * @param isLeft si c'est le capteur gauche */
     private void addBackObstacleSingle(boolean isLeft) {
         // De meme qu'avec le front
-        Vec2 posObjectFromCenterRobot;
+        Vect posObjectFromCenterRobot;
         if (isLeft){
             double USBL = (double)sensorBL.getDetectedDistance();
-            Vec2 posObjectFromSensorBL = new Vec2(USBL+enRadius*0.5, sensorBL.getSensorOrientation());
-            //Vec2 posDetect = new Vec2(USBL+enRadius*0.5,sensorBL.getSensorOrientation() - sensorBL.getDetectionWideness()/2);     //sensor arrière gauche
+            Vect posObjectFromSensorBL = new VectPol(USBL+enRadius*0.5, sensorBL.getSensorOrientation());
+            //Vect posDetect = new VectPol(USBL+enRadius*0.5,sensorBL.getSensorOrientation() - sensorBL.getDetectionWideness()/2);     //sensor arrière gauche
             posObjectFromCenterRobot = posObjectFromSensorBL.plusNewVector(sensorBL.getVecteur());     //sensor arrière gauche
         }
         else{
             double USBR = (double)sensorBR.getDetectedDistance();
-            Vec2 posObjectFromSensorBR = new Vec2(USBR+enRadius*0.5, sensorBR.getSensorOrientation());
-            //Vec2 posDetect = new Vec2(USBF+enRadius*0.5,sensorBR.getSensorOrientation() + sensorBR.getDetectionWideness()/2);     //sensor arrière droit
+            Vect posObjectFromSensorBR = new VectPol(USBR+enRadius*0.5, sensorBR.getSensorOrientation());
+            //Vect posDetect = new VectPol(USBF+enRadius*0.5,sensorBR.getSensorOrientation() + sensorBR.getDetectionWideness()/2);     //sensor arrière droit
             posObjectFromCenterRobot = posObjectFromSensorBR.plusNewVector(sensorBR.getVecteur());     //sensor arrière droit
         }
         mTable.getObstacleManager().addObstacle(this.changeRef(posObjectFromCenterRobot), enRadius+ourRadius+10);
@@ -376,7 +373,7 @@ public class ThreadSensor extends AbstractThread
 
     /** P'tite methode pour print le debug des capteurs
      * @param obPositionRobotRef la position de l'obstacle dans le réferentiel du robot */
-   /* private void printDebug(Vec2 obPositionRobotRef){
+   /* private void printDebug(Vect obPositionRobotRef){
         try {
             out.write("Position calculée (référentiel du robot) :" + obPositionRobotRef);
             out.newLine();
@@ -396,10 +393,10 @@ public class ThreadSensor extends AbstractThread
 
     /** Passe du référentiel du robot à celui de la table
      * @param pos la position relative dont on cherche les coordonées absolues */
-    private Vec2 changeRef(Vec2 pos)
+    private Vect changeRef(Vect pos)
     {
         double robotOr;
-        Vec2 robotPos;
+        Vect robotPos;
         if (symetry) {
             robotOr = Geometry.moduloSpec(Math.PI-robotPosAndOr.getOrientation(),Math.PI);
             robotPos=robotPosAndOr.getPosition().clone();

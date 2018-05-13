@@ -2,12 +2,11 @@ package strategie.IA;
 
 import enums.ScriptNames;
 import exceptions.BadVersionException;
-import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.ScriptManager;
-import smartMath.Vec2;
+import smartMath.Vect;
 import strategie.GameState;
 import table.Table;
 import utils.Log;
@@ -23,7 +22,7 @@ public class DeposeCubes extends Node {
     }
 
     @Override
-    public Vec2 updatePosition() throws BadVersionException {
+    public Vect updatePosition() throws BadVersionException {
         return getScript().entryPosition(0, Table.entryPosition).getCenter();
     }
 

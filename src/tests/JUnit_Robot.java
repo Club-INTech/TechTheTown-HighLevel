@@ -27,7 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
 import scripts.ScriptManager;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
 import table.Table;
 
@@ -69,7 +70,7 @@ public class JUnit_Robot extends JUnit_Test {
             robotReal.getPosition();
             robotReal.getOrientation();
 
-            robotReal.setPosition(new Vec2(890,840));
+            robotReal.setPosition(new VectCart(890,840));
             robotReal.setOrientation(Math.PI);
             robotReal.setLocomotionSpeed(Speed.DEFAULT_SPEED);
             robotReal.moveLengthwise(200);

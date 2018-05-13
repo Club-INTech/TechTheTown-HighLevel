@@ -28,7 +28,8 @@ import org.junit.Test;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import smartMath.Circle;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
@@ -62,11 +63,11 @@ public class JUnit_Graphics extends JUnit_Test
 
 	@Test
 	public void testSimpleMove() throws UnableToMoveException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast {
-		state.robot.setPosition(new Vec2(1200, 400));
+		state.robot.setPosition(new VectCart(1200, 400));
 		state.robot.setOrientation(3*Math.PI/4);
 		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
 		try {
-			state.robot.moveToCircle(new Circle(new Vec2(0, 1200), 0), table);
+			state.robot.moveToCircle(new Circle(new VectCart(0, 1200), 0), table);
 		}
 
 		catch (NoPathFound e){

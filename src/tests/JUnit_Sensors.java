@@ -21,9 +21,6 @@ package tests;
 
 import enums.ActuatorOrder;
 import enums.Speed;
-import exceptions.BadVersionException;
-import exceptions.BlockedActuatorException;
-import exceptions.ExecuteException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
@@ -33,7 +30,9 @@ import org.junit.Test;
 import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
+import smartMath.VectPol;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
@@ -84,7 +83,7 @@ public class JUnit_Sensors extends JUnit_Test
 	public void testDetect() throws Exception
 	{
 		log.debug("Test de detection");
-		robot.setPosition(new Vec2(0,800));
+		robot.setPosition(new VectCart(0,800));
 		robot.setOrientation(Table.entryOrientation);
 		log.debug ("Orientation :" + state.robot.getOrientation());
 		log.debug("Position :" + state.robot.getPosition());
@@ -115,7 +114,7 @@ public class JUnit_Sensors extends JUnit_Test
 		state.robot.setPosition(Table.entryPosition);
 		state.robot.setOrientation(Table.entryOrientation);
 		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-		state.robot.goTo(new Vec2(0,1000));
+		state.robot.goTo(new VectCart(0,1000));
 		log.debug("Test d'arret lors de l'execution d'un script");
 		log.debug("Orientation :" + state.robot.getOrientation());
 	}
@@ -126,11 +125,11 @@ public class JUnit_Sensors extends JUnit_Test
 		state.robot.setOrientation(Table.entryOrientation);
 		state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
 		try {
-			state.robot.goTo(new Vec2(0,1000));
+			state.robot.goTo(new VectCart(0,1000));
 		} catch (UnableToMoveException e) {
 			e.printStackTrace();
 		} catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {
-			Vec2 aim = immobileEnnemyForOneSecondAtLeast.getAim();
+			Vect aim = immobileEnnemyForOneSecondAtLeast.getAim();
 			log.debug("immobileEnnemyAimis"+aim);
 			boolean ennemyDodged = false;
 			int attemps=0;
@@ -138,11 +137,11 @@ public class JUnit_Sensors extends JUnit_Test
 				attemps++;
 				try {
 					log.debug("L'esquive a commencé");
-					Vec2 directionToGo = (aim.minusNewVector(gameState.robot.getPosition()));
-					double prodScal = directionToGo.dot(new Vec2(100.0, gameState.robot.getOrientation()));
+					Vect directionToGo = (aim.minusNewVector(gameState.robot.getPosition()));
+					double prodScal = directionToGo.dot(new VectPol(100.0, gameState.robot.getOrientation()));
 					//On regarde si le point où l'on veut reculer est dans un obstacle, si c'est le cas, on throw PointInObstacleException
 					if (prodScal>0) {
-						Vec2 wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new Vec2(-50.0,gameState.robot.getOrientation()));
+						Vect wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new VectPol(-50.0,gameState.robot.getOrientation()));
 						if (!gameState.table.getObstacleManager().isPositionInObstacle(wantToBackUpTo)) {
 							gameState.robot.moveLengthwise(-50);
 						}
@@ -160,7 +159,7 @@ public class JUnit_Sensors extends JUnit_Test
 						}
 					}
 					else{
-						Vec2 wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new Vec2(50.0,gameState.robot.getOrientation()));
+						Vect wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new VectPol(50.0,gameState.robot.getOrientation()));
 						if (!gameState.table.getObstacleManager().isPositionInObstacle(wantToBackUpTo)) {
 							gameState.robot.moveLengthwise(50);
 						}
@@ -180,7 +179,7 @@ public class JUnit_Sensors extends JUnit_Test
 					}
 
 					//On cherche un nouveau chemin pour y aller
-					ArrayList<Vec2> pathToFollow = gameState.robot.getPathfinding().findmyway(gameState.robot.getPosition(), aim);
+					ArrayList<Vect> pathToFollow = gameState.robot.getPathfinding().findmyway(gameState.robot.getPosition(), aim);
 					gameState.robot.followPath(pathToFollow);
 					ennemyDodged = true;
 				} catch (ImmobileEnnemyForOneSecondAtLeast ennemy) {
@@ -214,7 +213,7 @@ public class JUnit_Sensors extends JUnit_Test
 
 		state.robot.switchSensor();
 		state.robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
-		state.robot.setPosition(new Vec2(580, 208));
+		state.robot.setPosition(new VectCart(580, 208));
 		state.robot.setOrientation(-Math.PI/2);
 		try {
 			state.robot.moveLengthwise(-600);
@@ -378,7 +377,7 @@ public class JUnit_Sensors extends JUnit_Test
 			{
 				x = rand.nextInt(3000)-1500;
 				y = rand.nextInt(2000);
-				state.robot.moveToLocation(new Vec2 (x,y), state.table);
+				state.robot.moveToLocation(new VectCart(x,y), state.table);
 			}
 			catch (UnableToMoveException e1)
 			{

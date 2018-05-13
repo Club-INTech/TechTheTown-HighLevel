@@ -3,10 +3,9 @@ package pathfinder;
 import container.Service;
 import enums.ConfigInfoRobot;
 import exceptions.Locomotion.PointInObstacleException;
-import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import pfg.config.Config;
-import smartMath.Vec2;
+import smartMath.Vect;
 import table.Table;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleManager;
@@ -136,7 +135,7 @@ public class Pathfinding implements Service {
      * @param positionArrive
      * @return
      */
-    public ArrayList<Vec2> findmyway(Vec2 positionDepart, Vec2 positionArrive) throws PointInObstacleException, NoPathFound {
+    public ArrayList<Vect> findmyway(Vect positionDepart, Vect positionArrive) throws PointInObstacleException, NoPathFound {
 
         removeObstacle();
         this.graphe.createGraphe();
@@ -149,7 +148,7 @@ public class Pathfinding implements Service {
         Noeud noeudCourant;
         this.graphe.reInitGraphe(noeudDepart, noeudArrive);
         ArrayList<Noeud> closeList = new ArrayList<Noeud>();
-        ArrayList<Vec2> finalPath = new ArrayList<Vec2>();
+        ArrayList<Vect> finalPath = new ArrayList<Vect>();
         ArrayList<Noeud> finalList = new ArrayList<>();
 //        int l = 0;
         /** Exception départ ou arrivée dans un obstacle */
@@ -229,9 +228,9 @@ public class Pathfinding implements Service {
 
     /** Permet de calculer le temps pour se rendre à une position. */
 
-    public double howManyTime(Vec2 positionDepart, Vec2 positionArrive) throws PointInObstacleException, NoPathFound {
+    public double howManyTime(Vect positionDepart, Vect positionArrive) throws PointInObstacleException, NoPathFound {
 
-        ArrayList<Vec2> path = findmyway(positionDepart,positionArrive);
+        ArrayList<Vect> path = findmyway(positionDepart,positionArrive);
         double time = 0;
         for(int i = 0; i < path.size() - 1; i++){
             time += robot_angular_speed*path.get(i).minusNewVector(path.get(i+1)).angle();

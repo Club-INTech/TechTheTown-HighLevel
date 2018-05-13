@@ -24,7 +24,8 @@ import graphics.Window;
 import pfg.config.Config;
 import robot.Robot;
 import scripts.ScriptManager;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
 import table.Table;
 import utils.Log;
@@ -48,7 +49,7 @@ public class ThreadInterface extends AbstractThread
         this.log = log;
         this.robot = robot;
         this.win = new Window(table, state, scriptManager,false);
-        win.setPoint(new Vec2(597,1269));
+        win.setPoint(new VectCart(597,1269));
 
     }
 

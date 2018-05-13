@@ -19,7 +19,7 @@
 
 package table.obstacles;
 import smartMath.Segment;
-import smartMath.Vec2;
+import smartMath.Vect;
 
 /**
  * classe abstraite pour les obstacles sur la table.
@@ -30,13 +30,13 @@ import smartMath.Vec2;
 public abstract class Obstacle
 {
 	/** Position de l'obstacle sur la table. En fonction de la forme de l'obstacle, il peut s'étendre plus ou moins loin de cette position dans diverses directions */
-	protected Vec2 position;
+	protected Vect position;
 
 	/**
 	 * construit un nouvel obstacle à une position donnée
 	 * @param position position de l'obstacle à construire
 	 */
-	public Obstacle (Vec2 position)
+	public Obstacle (Vect position)
 	{
 		this.position = position.clone();
 	}
@@ -50,7 +50,7 @@ public abstract class Obstacle
 	 * Renvoie la position de cet obstacle.
 	 * @return the position
 	 */
-	public Vec2 getPosition()
+	public Vect getPosition()
 	{
 		return this.position;
 	}
@@ -58,7 +58,7 @@ public abstract class Obstacle
 	/** Change la position de l'obstacle
 	 * @param position la nouvelle position de l'obstacle
 	 */
-	public void setPosition(Vec2 position)
+	public void setPosition(Vect position)
 	{
 		this.position = position.clone();
 	}
@@ -74,7 +74,7 @@ public abstract class Obstacle
 	/** Renvoie vrai si le vecteur est dans l'obstacle
 	 * @param vec le vecteur à tester
 	 */
-	public abstract boolean isInObstacle(Vec2 vec);
+	public abstract boolean isInObstacle(Vect vec);
 
 	/**
 	 * Cette méthode teste si un segment est en intersection avec les obstacles

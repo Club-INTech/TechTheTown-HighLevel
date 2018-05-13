@@ -48,7 +48,7 @@ public class JUnit_ActiveAbeille extends JUnit_Test {
             robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
             hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
             scriptManager.getScript(ScriptNames.ACTIVE_ABEILLE).goToThenExec(0, state);
-            //Vec2 positionarrivee=new Vec2(890,347);
+            //Vect positionarrivee=new Vect(890,347);
             //robotReal.goTo(positionarrivee);
 
             //robotReal.goTo(positionDepart);

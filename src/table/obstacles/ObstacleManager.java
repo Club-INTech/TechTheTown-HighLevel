@@ -23,10 +23,7 @@ import container.Service;
 import enums.ConfigInfoRobot;
 import enums.TasCubes;
 import pfg.config.Config;
-import smartMath.Circle;
-import smartMath.Geometry;
-import smartMath.Segment;
-import smartMath.Vec2;
+import smartMath.*;
 import utils.Log;
 
 import java.io.BufferedWriter;
@@ -86,7 +83,7 @@ public class ObstacleManager implements Service
 
 	// TODO virer : juste du debug / interface graphique
 	private int radiusDetectionDisc=0;
-	private Vec2 positionDetectionDisc=new Vec2(0,0);
+	private Vect positionDetectionDisc=new VectCart(0,0);
 
 	/**	Temps donné aux obstacles pour qu'ils soit vérifiés */
 	private final int timeToTestObstacle = 500;
@@ -127,10 +124,10 @@ public class ObstacleManager implements Service
 		initObstacle();
 
 		// Bords de la table
-		mLines.add(new Segment(new Vec2(-1500 + mRobotRadius, 0 + mRobotRadius), new Vec2(1500 - mRobotRadius, 0 + mRobotRadius)));
-		mLines.add(new Segment(new Vec2(1500 - mRobotRadius, 0 + mRobotRadius), new Vec2(1500 - mRobotRadius, 2000 - mRobotRadius)));
-		mLines.add(new Segment(new Vec2(1500 - mRobotRadius, 2000 - mRobotRadius), new Vec2(-1500 + mRobotRadius, 2000 - mRobotRadius)));
-		mLines.add(new Segment(new Vec2(-1500 + mRobotRadius, 2000 - mRobotRadius), new Vec2(-1500 + mRobotRadius, 0 + mRobotRadius)));
+		mLines.add(new Segment(new VectCart(-1500 + mRobotRadius, 0 + mRobotRadius), new VectCart(1500 - mRobotRadius, 0 + mRobotRadius)));
+		mLines.add(new Segment(new VectCart(1500 - mRobotRadius, 0 + mRobotRadius), new VectCart(1500 - mRobotRadius, 2000 - mRobotRadius)));
+		mLines.add(new Segment(new VectCart(1500 - mRobotRadius, 2000 - mRobotRadius), new VectCart(-1500 + mRobotRadius, 2000 - mRobotRadius)));
+		mLines.add(new Segment(new VectCart(-1500 + mRobotRadius, 2000 - mRobotRadius), new VectCart(-1500 + mRobotRadius, 0 + mRobotRadius)));
 		try {
 			File file = new File("debugDetect.txt");
 
@@ -157,9 +154,9 @@ public class ObstacleManager implements Service
 		//Les différents obstacles fixés sur la table
 		//TODO initialiser tout les obstacles de la table
 
-		//mRectangles.add(new ObstacleRectangular(new Vec2(1300, 325), 400 + 2*mRobotRadius, 650 + 2*mRobotRadius)); //-1446, 678, 108, 472
-		mRectangles.add(new ObstacleRectangular(new Vec2(-1300, 325),  400 + 2*mRobotRadius, 650 + 2*mRobotRadius));
-		mRectangles.add(new ObstacleRectangular(new Vec2(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
+		//mRectangles.add(new ObstacleRectangular(new Vect(1300, 325), 400 + 2*mRobotRadius, 650 + 2*mRobotRadius)); //-1446, 678, 108, 472
+		mRectangles.add(new ObstacleRectangular(new VectCart(-1300, 325),  400 + 2*mRobotRadius, 650 + 2*mRobotRadius));
+		mRectangles.add(new ObstacleRectangular(new VectCart(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
 
 		/** Tas de cubes*/
 		int d = 10;
@@ -173,10 +170,10 @@ public class ObstacleManager implements Service
 		}
 
 		/**Récupérateur des eaux usées*/
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 1500,840), 105 + mRobotRadius)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -1500, 840), 105 + mRobotRadius)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 890,2000), 105 + mRobotRadius)));
-		mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -890, 2000), 105 + mRobotRadius)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new VectCart( 1500,840), 105 + mRobotRadius)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new VectCart( -1500, 840), 105 + mRobotRadius)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new VectCart( 890,2000), 105 + mRobotRadius)));
+		mCircularObstacle.add(new ObstacleCircular(new Circle(new VectCart( -890, 2000), 105 + mRobotRadius)));
 	}
 
 	/**
@@ -186,7 +183,7 @@ public class ObstacleManager implements Service
 	 * @param radius rayon de l'obstacle a ajouter
 	 * TODO A réadapter à l'année en cours
 	 */
-	public synchronized void addObstacle(final Vec2 position, final int radius) {
+	public synchronized void addObstacle(final Vect position, final int radius) {
 		//vérification que l'on ne détecte pas un obstacle "normal"
 		if (isObstaclePositionValid(position)){
 			boolean isThereAnObstacleIntersecting = false;
@@ -268,7 +265,7 @@ public class ObstacleManager implements Service
 	 * @param position position de l'obstacle sur laquelle on veut une validation
 	 * @return renvoie true si la position peut être un obstacle, false sinon
 	 */
-	public boolean isObstaclePositionValid(Vec2 position){
+	public boolean isObstaclePositionValid(Vect position){
 		// TODO: Prévoir les cas où l'on détecte des éléments de jeu dans la condition
 		if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius
 				&& position.getY() > mEnnemyRadius && position.getY() < 2000 - mEnnemyRadius  // Hors de la table
@@ -316,7 +313,7 @@ public class ObstacleManager implements Service
 	 * @param direction direction selon laquelle on doit considérer les ennemies
 	 * @return l'ennemie le plus proche
 	 */
-	public synchronized Obstacle getClosestObstacle (Vec2 position, Vec2 direction){
+	public synchronized Obstacle getClosestObstacle (Vect position, Vect direction){
 
 		try {
 			//si aucun ennemi n'est détecté, on suppose que l'ennemi le plus proche est à 1m)
@@ -328,7 +325,7 @@ public class ObstacleManager implements Service
 
 			//trouve l'ennemi le plus proche parmis les obstacles confirmés
 			for (int i = 0; i < mCircularObstacle.size(); i++) {
-				Vec2 obstacleRelativeCoords = mCircularObstacle.get(i).getPosition().minusNewVector(position);
+				Vect obstacleRelativeCoords = mCircularObstacle.get(i).getPosition().minusNewVector(position);
 				distanceToObstacleTested = obstacleRelativeCoords.length() - mCircularObstacle.get(i).getRadius();
 
 				if (distanceToObstacleTested < distanceToClosestObstacle) {
@@ -337,7 +334,7 @@ public class ObstacleManager implements Service
 				}
 			}
 			for (int i = 0; i < mRectangles.size(); i++) {
-				Vec2 obstacleRelativeCoords = mRectangles.get(i).getPosition().minusNewVector(position);
+				Vect obstacleRelativeCoords = mRectangles.get(i).getPosition().minusNewVector(position);
 				if(Math.abs(obstacleRelativeCoords.getY())<Math.abs(mRectangles.get(i).getSizeY()/2) &&
 						Math.abs(obstacleRelativeCoords.getX())<Math.abs(mRectangles.get(i).getSizeY()/2))//On est dans l'obstacle
 				{
@@ -353,7 +350,7 @@ public class ObstacleManager implements Service
 				else if(Math.abs(obstacleRelativeCoords.getY())>Math.abs(mRectangles.get(i).getSizeY()/2) &&
 						Math.abs(obstacleRelativeCoords.getX())>Math.abs(mRectangles.get(i).getSizeY()/2))//On est en diagonale on fait une approx
 				{
-					distanceToObstacleTested = obstacleRelativeCoords.length() - (new Vec2(mRectangles.get(i).getSizeX()/2, mRectangles.get(i).getSizeY())).length();
+					distanceToObstacleTested = obstacleRelativeCoords.length() - (new VectCart(mRectangles.get(i).getSizeX()/2, mRectangles.get(i).getSizeY())).length();
 				}
 				else if(Math.abs(obstacleRelativeCoords.getY())>Math.abs(mRectangles.get(i).getSizeY()/2) &&
 						Math.abs(obstacleRelativeCoords.getX())<Math.abs(mRectangles.get(i).getSizeY()/2))//On est dans en Y
@@ -390,7 +387,7 @@ public class ObstacleManager implements Service
 	 * Retourne l'obstacle mobile le plus proche
 	 * @param position la position de billy
 	 */
-	public synchronized ObstacleProximity getClosestEnnemy(Vec2 position){
+	public synchronized ObstacleProximity getClosestEnnemy(Vect position){
 		try
 		{
 			//si aucun ennemi n'est détecté, on suppose que l'ennemi le plus proche est à 1m)
@@ -407,7 +404,7 @@ public class ObstacleManager implements Service
 			//trouve l'ennemi le plus proche parmis les obstacles confirmés
 			for(int i=0; i<mMobileObstacles.size(); i++)
 			{
-				Vec2 ennemyRelativeCoords = mMobileObstacles.get(i).getPosition().minusNewVector(position);
+				Vect ennemyRelativeCoords = mMobileObstacles.get(i).getPosition().minusNewVector(position);
 				distanceToEnemyTested = (int) ennemyRelativeCoords.length();
 
 				if(distanceToEnemyTested < distanceToClosestEnemy)
@@ -432,7 +429,7 @@ public class ObstacleManager implements Service
 	 * @param position la position a laquelle on doit mesurer la proximité des ennemis
 	 * @return la distance à l'ennemi le plus proche (>= 0)
 	 */
-	public synchronized int distanceToClosestEnemy(Vec2 position)
+	public synchronized int distanceToClosestEnemy(Vect position)
 	{
 		try
 		{
@@ -446,7 +443,7 @@ public class ObstacleManager implements Service
 			//trouve l'ennemi le plus proche parmis les obstacles confirmés
 			for(int i=0; i<mMobileObstacles.size(); i++)
 			{
-				Vec2 ennemyRelativeCoords = mMobileObstacles.get(i).getPosition().minusNewVector(position);
+				Vect ennemyRelativeCoords = mMobileObstacles.get(i).getPosition().minusNewVector(position);
 				squaredDistanceToEnemyTested = ennemyRelativeCoords.squaredLength();
 				if(squaredDistanceToEnemyTested < squaredDistanceToClosestEnemy)
 				{
@@ -481,7 +478,7 @@ public class ObstacleManager implements Service
 	 * @param pos la position de billy
 	 * @param orientation l'orientation de billy
 	 */
-	public boolean isEnnemyForwardOrBackWard(int distance, Vec2 pos, Vec2 aim, double orientation){
+	public boolean isEnnemyForwardOrBackWard(int distance, Vect pos, Vect aim, double orientation){
 
 		try {
 			ObstacleCircular closestEnnemy = getClosestEnnemy(pos);
@@ -495,13 +492,13 @@ public class ObstacleManager implements Service
 			out.write("Position de l'ennemi le plus proche (référentiel de la table) :" + closestEnnemy.getPosition());
 
 			// Changement de référentiel (de la table au robot)
-			Vec2 ennemyPos = closestEnnemy.getPosition().minusNewVector(pos);
+			Vect ennemyPos = closestEnnemy.getPosition().minusNewVector(pos);
 			ennemyPos.setA(ennemyPos.getA() - orientation);
 
 			out.newLine();
 			out.write("Position de l'ennemi le plus proche (référentiel du robot) :" + ennemyPos);
 
-			Vec2 newAim = aim.minusNewVector(pos);
+			Vect newAim = aim.minusNewVector(pos);
 			newAim.setA(aim.getA() - orientation);
 
 			out.newLine();
@@ -537,7 +534,7 @@ public class ObstacleManager implements Service
 	 * @param direction direction selon laquelle on doit considérer les ennemies
 	 * @return l'ennemie le plus proche
 	 */
-	public synchronized void crashEnnemyAdd (Vec2 position, Vec2 direction){
+	public synchronized void crashEnnemyAdd (Vect position, Vect direction){
 		try
 		{
 			int squaredDistanceToClosestEnemy = 10000000;
@@ -547,7 +544,7 @@ public class ObstacleManager implements Service
 
 			// Trouve l'ennemi le plus proche parmis les obstacles confirmés
 			for (int i = 0; i < mMobileObstacles.size(); i++) {
-				Vec2 ennemyRelativeCoords = mMobileObstacles.get(i).getPosition().minusNewVector(position);
+				Vect ennemyRelativeCoords = mMobileObstacles.get(i).getPosition().minusNewVector(position);
 				if (direction.dot(ennemyRelativeCoords) > 0) {
 					squaredDistanceToEnemyTested = ennemyRelativeCoords.squaredLength();
 					if (squaredDistanceToEnemyTested < squaredDistanceToClosestEnemy) {
@@ -625,7 +622,7 @@ public class ObstacleManager implements Service
 	 * @param radius le rayon du disque
 	 * @return true, si au moins un obstacle chevauche le disque
 	 */
-	public synchronized boolean isDiscObstructed(final Vec2 discCenter, int radius)
+	public synchronized boolean isDiscObstructed(final Vect discCenter, int radius)
 	{
 		radiusDetectionDisc=radius;
 		positionDetectionDisc=discCenter;
@@ -653,7 +650,7 @@ public class ObstacleManager implements Service
 	 * @param obstacle l'obstacle a considérer
 	 * @return true, si la position est dans l'obstacle
 	 */
-	public synchronized boolean isPositionInObstacle(Vec2 pos, Obstacle obstacle)
+	public synchronized boolean isPositionInObstacle(Vect pos, Obstacle obstacle)
 	{
 		if(obstacle instanceof ObstacleCircular || obstacle instanceof ObstacleProximity)
 		{
@@ -678,7 +675,7 @@ public class ObstacleManager implements Service
 	 * @param position
 	 * @return
 	 */
-	public synchronized boolean isPositionInObstacle(Vec2 position){
+	public synchronized boolean isPositionInObstacle(Vect position){
 		for(Obstacle obstacle : mCircularObstacle){
 			if(isPositionInObstacle(position,obstacle)){
 				return true;
@@ -721,7 +718,7 @@ public class ObstacleManager implements Service
 	 * @param position
 	 * @return
 	 */
-	public boolean isRobotInTable(Vec2 position){
+	public boolean isRobotInTable(Vect position){
 		return ((Math.abs(position.getX())+mRobotRadius) < 1500 && (Math.abs(position.getY() - 1000)+mRobotRadius) < 1000);
 	}
 
@@ -810,7 +807,7 @@ public class ObstacleManager implements Service
 	 * @param ennemyID numéro du robot
 	 * @param position nouvelle position du robot
 	 */
-	public synchronized void setEnnemyNewLocation(int ennemyID, final Vec2 position)
+	public synchronized void setEnnemyNewLocation(int ennemyID, final Vect position)
 	{
 		//TODO innutilise
 		//changer la position de l'ennemi demandé
@@ -825,7 +822,7 @@ public class ObstacleManager implements Service
 	 *
 	 * @return la position de l'ennemi spécifié
 	 */
-	public Vec2 getEnnemyLocation(int ennemyID)
+	public Vect getEnnemyLocation(int ennemyID)
 	{
 		//TODO innutilise
 		//donner la position de l'ennemi demandé
@@ -842,7 +839,7 @@ public class ObstacleManager implements Service
 	{
 		return radiusDetectionDisc;
 	}
-	public Vec2 getDiscPosition()
+	public Vect getDiscPosition()
 	{
 		return positionDetectionDisc;
 	}
@@ -870,7 +867,7 @@ public class ObstacleManager implements Service
 	 * @param position la position a vérifier
 	 * @return true, si la position est dans un obstacle
 	 */
-	public synchronized boolean isObstructed(Vec2 position)
+	public synchronized boolean isObstructed(Vect position)
 	{
 		for(ObstacleCircular obstacle : mCircularObstacle) {
 			if (isPositionInObstacle(position, obstacle)) {
@@ -898,7 +895,7 @@ public class ObstacleManager implements Service
 	 * @param detectionAngle
 	 *  @return true si on a enlevé un obstacle, false sinon
 	 */
-	public synchronized boolean removeNonDetectedObstacles(Vec2 position, double orientation, double detectionRadius, double detectionAngle)
+	public synchronized boolean removeNonDetectedObstacles(Vect position, double orientation, double detectionRadius, double detectionAngle)
 	{
 		boolean obstacleDeleted=false;
 		//check non testés ;--;et si <=0 remove
@@ -908,7 +905,7 @@ public class ObstacleManager implements Service
 		//parcours des obstacles
 		for(int i = 0; i < mUntestedMobileObstacles.size(); i++)
 		{
-			Vec2 positionEnnemy = mUntestedMobileObstacles.get(i).position;
+			Vect positionEnnemy = mUntestedMobileObstacles.get(i).position;
 			int ennemyRay = mUntestedMobileObstacles.get(i).getRadius();
 			// On verifie que l'ennemi est dans le cercle de detection actuel
 			if((positionEnnemy.distance(position) < (detectionRadius+ennemyRay)*(detectionRadius+ennemyRay)))
@@ -928,7 +925,7 @@ public class ObstacleManager implements Service
 		}
 		for(int i = 0; i < mMobileObstacles.size(); i++)
 		{
-			Vec2 positionEnnemy = mMobileObstacles.get(i).position;
+			Vect positionEnnemy = mMobileObstacles.get(i).position;
 			int ennemyRay = mMobileObstacles.get(i).getRadius();
 			// On verifie que l'ennemi est dans le cercle de detection actuel
 			if((positionEnnemy.distance(position) < (detectionRadius+ennemyRay)*(detectionRadius+ennemyRay)))
@@ -962,7 +959,7 @@ public class ObstacleManager implements Service
 	 * @param ennemyRay
 	 * @return
 	 */
-	public boolean isEnnemyInCone(Vec2 positionEnnemy, Vec2 position, double detectionRadius, double orientation, double detectionAngle, int ennemyRay)
+	public boolean isEnnemyInCone(Vect positionEnnemy, Vect position, double detectionRadius, double orientation, double detectionAngle, int ennemyRay)
 	{
 		double ennemyAngle = Math.atan2(positionEnnemy.getX() - position.getX(), positionEnnemy.getY() - position.getY());
 
@@ -972,10 +969,10 @@ public class ObstacleManager implements Service
 		// ou
 		// si on interesecte avec le coté droit
 		Segment coteGaucheCone = new Segment(position,
-				new Vec2( position.getX() + (int)(detectionRadius*Math.cos(orientation + detectionAngle/2)),
+				new VectCart( position.getX() + (int)(detectionRadius*Math.cos(orientation + detectionAngle/2)),
 						position.getY() + (int)(detectionRadius*Math.sin(orientation + detectionAngle/2)) ) );
 		Segment coteDroitCone = new Segment(position,
-				new Vec2( position.getX() + (int)(detectionRadius*Math.cos(orientation - detectionAngle/2)),
+				new VectCart( position.getX() + (int)(detectionRadius*Math.cos(orientation - detectionAngle/2)),
 						position.getY() + (int)(detectionRadius*Math.sin(orientation - detectionAngle/2)) ) );
 
 		return (ennemyAngle < (orientation + detectionAngle/2)
@@ -991,7 +988,7 @@ public class ObstacleManager implements Service
 	 *  Cela evite de se retrouver dans un obstacle
 	 * @param position
 	 */
-	public void removeObstacleInUs(Vec2 position)
+	public void removeObstacleInUs(Vect position)
 	{
 		for(int i=0; i<mMobileObstacles.size(); i++)
 		{
@@ -1008,7 +1005,7 @@ public class ObstacleManager implements Service
 	 * @param position
 	 * @param radius
 	 */
-	public void removeFixedObstaclesInDisc(Vec2 position, int radius)
+	public void removeFixedObstaclesInDisc(Vect position, int radius)
 	{
 		for(int i = 0; i< mCircularObstacle.size(); i++)
 			if((position.getX()- mCircularObstacle.get(i).getPosition().getX())*(position.getX()- mCircularObstacle.get(i).getPosition().getX())
@@ -1074,7 +1071,7 @@ public class ObstacleManager implements Service
 	 * @param point le point à dégager
 	 * @return les obstacles supprimés
 	 */
-	public ArrayList<Obstacle> freePoint(Vec2 point)
+	public ArrayList<Obstacle> freePoint(Vect point)
 	{
 		ArrayList<Obstacle> deleted = new ArrayList<>();
 
@@ -1105,7 +1102,7 @@ public class ObstacleManager implements Service
 	 * @return
 	 */
 
-	public ObstacleCircular getClosestObstacleCircular(Vec2 positionRobot){
+	public ObstacleCircular getClosestObstacleCircular(Vect positionRobot){
 		float distanceMin=mCircularObstacle.get(0).getCircle().getCenter().distance(positionRobot);
 		int iMin=0;
 		for(int i=1;i<mCircularObstacle.size();i++){

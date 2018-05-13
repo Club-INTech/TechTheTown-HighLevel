@@ -25,7 +25,7 @@ package smartMath;
  * @author pf, rem
  */
 
-public class Vec2 {
+public class Vect {
 
 	/** Abscisse x */
 	private int x;
@@ -39,25 +39,13 @@ public class Vec2 {
 	/** Angle a, entre -pi et pi */
 	private double a;
 
+
 	/** Constructeur d'un vecteur nul */
-	public Vec2() {
+	public Vect() {
 		x = 0;
 		y = 0;
 		r = 0;
 		a = 0;
-	}
-
-	/**
-	 * Construit un vecteur à partir de ses coordonnées cartésiennes
-	 *
-	 * @param requestedX abscisse
-	 * @param requestedY ordonnée
-	 */
-	public Vec2(int requestedX, int requestedY) {
-		x = requestedX;
-		y = requestedY;
-		r = Math.sqrt(x * x + y * y);
-		a = this.angle();
 	}
 
 	/**
@@ -66,7 +54,7 @@ public class Vec2 {
 	 * @param requestedR rayon
 	 * @param requestedA angle
 	 */
-	public Vec2(double requestedR, double requestedA) {
+	public Vect(double requestedR, double requestedA) {
 		if (requestedR < 0){
 			r = Math.abs(requestedR);
 			a = Geometry.moduloSpec(requestedA + Math.PI, Math.PI);
@@ -101,7 +89,7 @@ public class Vec2 {
 	 * @param other le second vecteur du produit scalaire
 	 * @return résultat du produit
 	 */
-	public int dot(Vec2 other) {
+	public int dot(Vect other) {
 		return x * other.x + y * other.y;
 	}
 
@@ -112,7 +100,7 @@ public class Vec2 {
 	 * @param other le second vecteur du produit vectoriel
 	 * @return scalaire associé au produit vectoriel
 	 */
-	public int crossProduct (Vec2 other){
+	public int crossProduct (Vect other){
 		return (x * other.y - y * other.x);
 	}
 
@@ -122,8 +110,8 @@ public class Vec2 {
 	 * @param other le vecteur à sommer au premier
 	 * @return le nouveau vecteur
 	 */
-	public Vec2 plusNewVector(Vec2 other) {
-		return new Vec2(x + other.x, y + other.y);
+	public Vect plusNewVector(Vect other) {
+		return new VectCart(x + other.x, y + other.y);
 	}
 
 	/**
@@ -132,8 +120,8 @@ public class Vec2 {
 	 * @param other le vecteur à soustraire au premier
 	 * @return le nouveau vecteur
 	 */
-	public Vec2 minusNewVector(Vec2 other) {
-		return new Vec2(x - other.x, y - other.y);
+	public Vect minusNewVector(Vect other) {
+		return new VectCart(x - other.x, y - other.y);
 	}
 
 	/**
@@ -141,7 +129,7 @@ public class Vec2 {
 	 *
 	 * @param other le second vecteur
 	 */
-	public void plus(Vec2 other) {
+	public void plus(Vect other) {
 		x += other.x;
 		y += other.y;
 		r = Math.sqrt(x * x + y * y);
@@ -153,7 +141,7 @@ public class Vec2 {
 	 *
 	 * @param other le second vecteur
 	 */
-	public void minus(Vec2 other) {
+	public void minus(Vect other) {
 		x -= other.x;
 		y -= other.y;
 		r = Math.sqrt(x * x + y * y);
@@ -163,8 +151,8 @@ public class Vec2 {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
-	public Vec2 clone() {
-		return new Vec2(this.x, this.y);
+	public Vect clone() {
+		return new VectCart(this.x, this.y);
 	}
 
 	/**
@@ -173,7 +161,7 @@ public class Vec2 {
 	 * @param other le second vecteur
 	 * @return distance au carré entre les deux vecteurs
 	 */
-	public float squaredDistance(Vec2 other) {
+	public float squaredDistance(Vect other) {
 		return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
 	}
 
@@ -183,7 +171,7 @@ public class Vec2 {
 	 * @param other le second vecteur
 	 * @return la distance entre les deux vecteurs
 	 */
-	public float distance(Vec2 other) {
+	public float distance(Vect other) {
 		return (float) Math.sqrt(squaredDistance(other));
 	}
 
@@ -193,7 +181,7 @@ public class Vec2 {
 	 * @param other le second vecteur
 	 * @return vrai si les coordonnées sont égales
 	 */
-	public boolean equals(Vec2 other) {
+	public boolean equals(Vect other) {
 		return x == other.x && y == other.y;
 	}
 
@@ -203,8 +191,8 @@ public class Vec2 {
 	 * @param a le scalaire
 	 * @return ancien vecteur dilaté
 	 */
-	public Vec2 dotFloat(double a) {
-		return new Vec2((int) (x * a), (int) (y * a));
+	public Vect dotFloat(double a) {
+		return new VectCart((int) (x * a), (int) (y * a));
 	}
 
 	/**
@@ -229,9 +217,10 @@ public class Vec2 {
 		return r;
 	}
 
-	public Vec2 symetrize(){
-		this.x=-x;
-		return new Vec2(x,y);
+
+	//TODO faire l'angle aussi
+	public Vect getSymetric(){
+		return new VectCart(-x,y);
 	}
 
 	public boolean isNull() {
@@ -242,7 +231,7 @@ public class Vec2 {
 	 * Tous les setters et getters parce que private :p
 	 */
 
-	public void set(Vec2 other) {
+	public void set(Vect other) {
 		x = other.x;
 		y = other.y;
 		r = other.r;
@@ -314,9 +303,9 @@ public class Vec2 {
 			return true;
 		else if (obj == null)
 			return false;
-		else if (!(obj instanceof Vec2))
+		else if (!(obj instanceof Vect))
 			return false;
-		Vec2 other = (Vec2) obj;
+		Vect other = (Vect) obj;
 		if (x != other.x)
 			return false;
 		else if (y != other.y)
@@ -356,7 +345,7 @@ public class Vec2 {
 
 	/**
 	 * transforme un point en un cercle de rayon nul
-	 * @return un cercle de centre ce Vec2 et de rayon nul.
+	 * @return un cercle de centre ce Vect et de rayon nul.
 	 */
 	public Circle toCircle() {
 		return new Circle(this, 0);

@@ -19,7 +19,8 @@
 
 package debug;
 
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -55,7 +56,7 @@ public class DisplayTable extends JPanel {
 			this.couleur = couleur;
 		}
 
-		public Point(Vec2 p, Color couleur)
+		public Point(Vect p, Color couleur)
 		{
 			this(p.getX(), p.getY(), couleur);
 		}
@@ -178,7 +179,7 @@ public class DisplayTable extends JPanel {
 		double a = h.delta / 2;
 		double c = h.p1.distance(h.p2) / 2;
 		double b = Math.sqrt(c*c - a*a);
-		Vec2 centre =  new Vec2((h.p1.getX() + h.p2.getX()) / 2, (h.p1.getY() + h.p2.getY()) / 2);
+		Vect centre =  new VectCart((h.p1.getX() + h.p2.getX()) / 2, (h.p1.getY() + h.p2.getY()) / 2);
 		double angle = Math.atan2(h.p2.getY() - h.p1.getY(), h.p2.getX() - h.p1.getX());
 		double cos = Math.cos(angle);
 		double sin = Math.sin(angle);
@@ -187,7 +188,7 @@ public class DisplayTable extends JPanel {
 		{
 			double x = -a*Math.cosh(i/1000);
 			double y = b*Math.sinh(i/1000);
-			Vec2 p = new Vec2((int)(cos*x-sin*y), (int)(sin*x+cos*y));
+			Vect p = new VectCart((int)(cos*x-sin*y), (int)(sin*x+cos*y));
 			p.setX(centre.getX());
 			p.setY(centre.getY());
 			point = new Point(p, Couleur.NOIR.couleur);
@@ -228,7 +229,7 @@ public class DisplayTable extends JPanel {
 		frame.setVisible(true);
 	}
 
-	public synchronized void addPoint(Vec2 p, int indiceListe)
+	public synchronized void addPoint(Vect p, int indiceListe)
 	{
 		addPoint(p, indiceListe, couleursDefaut[indiceListe]);
 	}
@@ -242,12 +243,12 @@ public class DisplayTable extends JPanel {
 	public synchronized void addAllPointsFromTimestamps(double t0, double t1, double t2, int indiceListe1, int indiceListe2)
 	{
 		//t0 = CANAL_1 ; t1 = CANAL_2 ; t2 = INT
-        Vec2[] pos = Triangulation.computePoints(t0, t1, t2);
+        Vect[] pos = Triangulation.computePoints(t0, t1, t2);
 		addPoint(pos[0], indiceListe1);
         addPoint(pos[1], indiceListe2);
 	}
 	
-	private synchronized void addPoint(Vec2 p, int indiceListe, Color couleur)
+	private synchronized void addPoint(Vect p, int indiceListe, Color couleur)
 	{
 		if(p == null)
 			return;
@@ -302,7 +303,7 @@ public class DisplayTable extends JPanel {
 		}
 	}
 	
-	public void setUniquePoint(Vec2 v)
+	public void setUniquePoint(Vect v)
 	{
 		uniquePoint = new Point(v, Couleur.JAUNE.couleur);
 	}

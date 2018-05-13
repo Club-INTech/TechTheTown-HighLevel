@@ -23,7 +23,8 @@ import enums.ConfigInfoRobot;
 import org.junit.Assert;
 import org.junit.Test;
 import robot.Robot;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import table.Table;
 import threads.ThreadTimer;
 
@@ -52,12 +53,12 @@ public class JUnit_Threads extends JUnit_Test {
 		// TODO démarrer thread position
 		container.startAllThreads();
 		Thread.sleep(100);
-		Assert.assertTrue(robotvrai.getPosition().equals(new Vec2(0,1500)));
+		Assert.assertTrue(robotvrai.getPosition().equals(new Vect(0,1500)));
 		container.stopAllThreads();
 		deplacements.setX(100);
 		deplacements.setY(1400);
 		Thread.sleep(100);
-		Assert.assertTrue(robotvrai.getPosition().equals(new Vec2(0,1500)));
+		Assert.assertTrue(robotvrai.getPosition().equals(new Vect(0,1500)));
 */	}
 
 	/**
@@ -69,7 +70,7 @@ public class JUnit_Threads extends JUnit_Test {
 	public void test_detection_obstacle() throws Exception
 	{
 		Robot robotvrai = container.getService(Robot.class);
-		robotvrai.setPosition(new Vec2(0, 900));
+		robotvrai.setPosition(new VectCart(0, 900));
 		robotvrai.setOrientation(0);
 		
 		Table table = container.getService(Table.class);
@@ -123,7 +124,7 @@ public class JUnit_Threads extends JUnit_Test {
 	public void test_serie() throws Exception
 	{
 		Robot robotvrai = container.getService(Robot.class);
-		robotvrai.setPosition(new Vec2(1000, 1400));
+		robotvrai.setPosition(new VectCart(1000, 1400));
 		robotvrai.setOrientation((float)Math.PI);
 		container.startAllThreads();
 		Thread.sleep(200);

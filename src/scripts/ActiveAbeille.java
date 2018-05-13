@@ -14,7 +14,9 @@ import hook.HookFactory;
 import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Circle;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
+import smartMath.VectPol;
 import strategie.GameState;
 import utils.Log;
 
@@ -55,9 +57,9 @@ public class ActiveAbeille extends AbstractScript {
     @Override
     public void execute(int versionToExecute, GameState state) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution ActiveAbeille version " + versionToExecute + " //////////");
-        Vec2 corner = new Vec2(1500, 2000);
-        Vec2 directionToGo = (corner.minusNewVector(state.robot.getPosition()));
-        double prodScal = directionToGo.dot(new Vec2(100.0, state.robot.getOrientation()));
+        VectCart corner = new VectCart(1500, 2000);
+        Vect directionToGo = (corner.minusNewVector(state.robot.getPosition()));
+        double prodScal = directionToGo.dot(new VectPol(100.0, state.robot.getOrientation()));
         if(versionToExecute==0 || versionToExecute==2){
             if (prodScal > 0) {
                 //ON UTILISE LE BRAS AVANT
@@ -66,7 +68,7 @@ public class ActiveAbeille extends AbstractScript {
                 //On enable le kook pour le bras avant
                 hookFactory.enableHook(HookNames.BASIC_DETECTION_DISABLE,HookNames.ACTIVE_BRAS_AVANT_ABEILLE);
                 //On va vers l'abeille
-                state.robot.goTo(new Vec2(xEntryReal, yEntryReal));
+                state.robot.goTo(new VectCart(xEntryReal, yEntryReal));
 
                 //On se tourne pour pousser l'abeille avec le bras avant
                 state.robot.turnWithoutDetection(Math.PI/2,true,false);
@@ -84,7 +86,7 @@ public class ActiveAbeille extends AbstractScript {
                 //On enable le kook pour le bras avant
                 hookFactory.enableHook(HookNames.BASIC_DETECTION_DISABLE,HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE);
                 //On va vers l'abeille
-                state.robot.goTo(new Vec2(xEntryReal, yEntryReal));
+                state.robot.goTo(new VectCart(xEntryReal, yEntryReal));
 
                 //On se tourne pour pousser l'abeille avec le bras avant
                 state.robot.turnWithoutDetection(-Math.PI/2,true,false);
@@ -98,7 +100,7 @@ public class ActiveAbeille extends AbstractScript {
             if(usingBasicDetection){
                 state.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             }
-            Vec2 aim = new Vec2(xEntryPathfindingAvaible,yEntryPathfindingAvaible);
+            Vect aim = new VectCart(xEntryPathfindingAvaible,yEntryPathfindingAvaible);
             state.robot.goTo(aim);
             log.debug("////////// End ActiveAbeille version "+versionToExecute+" //////////");
         }
@@ -115,7 +117,7 @@ public class ActiveAbeille extends AbstractScript {
             if (prodScal > 0) {
                 //ON UTILISE LE BRAS AVANT
                 state.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE, false);
-                state.robot.goToWithoutDetection(new Vec2(xEntryReal, yEntryReal));
+                state.robot.goToWithoutDetection(new VectCart(xEntryReal, yEntryReal));
                 state.robot.turnWithoutDetection(Math.PI / 2, true, false);
                 state.addObtainedPoints(50);
                 state.setAbeilleLancee(true);
@@ -124,14 +126,14 @@ public class ActiveAbeille extends AbstractScript {
             } else {
                 //ON UTILISE LE BRAS ARRIERE
                 state.robot.useActuator(ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE, false);
-                state.robot.goToWithoutDetection(new Vec2(xEntryReal, yEntryReal));
+                state.robot.goToWithoutDetection(new VectCart(xEntryReal, yEntryReal));
                 state.robot.turnWithoutDetection(-Math.PI / 2, true, false);
                 state.addObtainedPoints(50);
                 state.setAbeilleLancee(true);
                 state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE, false);
             }
             //On retourne à une position atteignable par le pathfinding
-            Vec2 aim = new Vec2(xEntryPathfindingAvaible, yEntryPathfindingAvaible);
+            Vect aim = new VectCart(xEntryPathfindingAvaible, yEntryPathfindingAvaible);
             state.robot.goTo(aim);
             if (usingAdvancedDetection) {
                 state.robot.useActuator(ActuatorOrder.SUS_ON, true);
@@ -146,16 +148,16 @@ public class ActiveAbeille extends AbstractScript {
 
 
     @Override
-    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
+    public Circle entryPosition(int version, Vect robotPosition) throws BadVersionException {
         log.debug("Position d'entrée ActiveAbeille : "+robotPosition);
         if(version==0){
             return new Circle(robotPosition);
         }
         else if(version==1) {
-            return new Circle(new Vec2(xEntryPathfindingAvaible, yEntryPathfindingAvaible));
+            return new Circle(new VectCart(xEntryPathfindingAvaible, yEntryPathfindingAvaible));
         }
         else if (version==2){
-            return new Circle(new Vec2(xEntry2,yEntry2));
+            return new Circle(new VectCart(xEntry2,yEntry2));
         }
         else{
             throw new BadVersionException();

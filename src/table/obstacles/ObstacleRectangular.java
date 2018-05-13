@@ -21,7 +21,8 @@ package table.obstacles;
 
 import smartMath.Geometry;
 import smartMath.Segment;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param sizeX taille voulue du rectangle représentant l'obstacle en mm selon l'axe X
 	 * @param sizeY taille voulue du rectangle représentant l'obstacle en mm selon l'axe Y
 	 */
-	public ObstacleRectangular(Vec2 position, int sizeX, int sizeY)
+	public ObstacleRectangular(Vect position, int sizeX, int sizeY)
 	{
 		super(position);
 		this.sizeY = sizeY;
@@ -97,8 +98,8 @@ public class ObstacleRectangular extends Obstacle
 	public ArrayList<Segment> getDiagos()
 	{
 		ArrayList<Segment> segments = new ArrayList<Segment>();
-		segments.add(new Segment(new Vec2(position.getX() + sizeX/2 , position.getY() + sizeY/2), new Vec2(position.getX() - sizeX/2 , position.getY() - sizeY/2)));
-		segments.add(new Segment(new Vec2(position.getX() + sizeX/2 , position.getY() - sizeY/2), new Vec2(position.getX() - sizeX/2 , position.getY() + sizeY/2)));
+		segments.add(new Segment(new VectCart(position.getX() + sizeX/2 , position.getY() + sizeY/2), new VectCart(position.getX() - sizeX/2 , position.getY() - sizeY/2)));
+		segments.add(new Segment(new VectCart(position.getX() + sizeX/2 , position.getY() - sizeY/2), new VectCart(position.getX() - sizeX/2 , position.getY() + sizeY/2)));
 
 		return segments;
 	}
@@ -108,7 +109,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point le point à tester
 	 */
 	@Override
-	public boolean isInObstacle(Vec2 point)
+	public boolean isInObstacle(Vect point)
 	{
 		return point.getX() <= position.getX() + (sizeX / 2)
 				&& point.getX() >= position.getX() - (sizeX / 2)
@@ -122,7 +123,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param point point a considérer
 	 * @return la plus petite distance entre le point fourni et l'obstacle.
 	 */
-	public float distance(Vec2 point)
+	public float distance(Vect point)
 	{
 		return (float) Math.sqrt(SquaredDistance(point));
 	}
@@ -133,7 +134,7 @@ public class ObstacleRectangular extends Obstacle
 	 * @param in  point a considérer
 	 * @return la plus petite distance au carré entre le point fourni et l'obstacle
 	 */
-	public float SquaredDistance(Vec2 in)
+	public float SquaredDistance(Vect in)
 	{
 		
 		/*		
@@ -154,10 +155,10 @@ public class ObstacleRectangular extends Obstacle
 		 */
 
 		// calcul des positions des coins
-		Vec2 coinBasGauche = position.plusNewVector((new Vec2(0,-sizeY)));
-		Vec2 coinHautGauche = position.plusNewVector((new Vec2(0,0)));
-		Vec2 coinBasDroite = position.plusNewVector((new Vec2(sizeX,-sizeY)));
-		Vec2 coinHautDroite = position.plusNewVector((new Vec2(sizeX,0)));
+		Vect coinBasGauche = position.plusNewVector((new VectCart(0,-sizeY)));
+		Vect coinHautGauche = position.plusNewVector((new VectCart(0,0)));
+		Vect coinBasDroite = position.plusNewVector((new VectCart(sizeX,-sizeY)));
+		Vect coinHautDroite = position.plusNewVector((new VectCart(sizeX,0)));
 
 		// si le point fourni est dans les quarts-de-plans n°2,4,6 ou 8
 		if(in.getX() < coinBasGauche.getX() && in.getY() < coinBasGauche.getY())
@@ -200,8 +201,8 @@ public class ObstacleRectangular extends Obstacle
 	 * @param inObstacle
 	 * @return le point du rectangle le plus proche de inObstacle
 	 */
-	public Vec2 pointProche (Vec2 inObstacle){
-		Vec2 ref = inObstacle.minusNewVector(position);
+	public Vect pointProche (Vect inObstacle){
+		Vect ref = inObstacle.minusNewVector(position);
 		int min = Math.min(sizeX-Math.abs(ref.getX()), sizeY-Math.abs(ref.getY()));
 		if (ref.getX()>0 && ref.getY()>0){
 			if (min == sizeX-Math.abs((ref.getX()))){
@@ -243,7 +244,7 @@ public class ObstacleRectangular extends Obstacle
 				return ref.plusNewVector(position);
 			}
 		}
-		return new Vec2();
+		return new Vect();
 	}
 	@Override
 	public boolean intersects(Segment segment){

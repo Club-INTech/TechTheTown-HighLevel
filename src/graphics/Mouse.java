@@ -19,7 +19,8 @@
 
 package graphics;
 
-import smartMath.Vec2;
+import smartMath.Vect;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -30,9 +31,9 @@ import java.awt.event.MouseListener;
 public class Mouse implements MouseListener
 {
 	/** Position des clics */
-	private Vec2 rightClicPosition;
-	private Vec2 middleClicPosition;
-	private Vec2 leftClicPosition;
+	private Vect rightClicPosition;
+	private Vect middleClicPosition;
+	private Vect leftClicPosition;
 
 	/** Panel */
 	private TablePanel panel;
@@ -51,21 +52,21 @@ public class Mouse implements MouseListener
     {
         if (e.getButton()==MouseEvent.BUTTON1)
         {
-        	leftClicPosition = new Vec2();
+        	leftClicPosition = new Vect();
         	leftClicPosition.setX(e.getX());
         	leftClicPosition.setY(e.getY());
         	changeRefToTable(leftClicPosition);
         }
         if (e.getButton()==MouseEvent.BUTTON2)
         {
-			middleClicPosition = new Vec2();
+			middleClicPosition = new Vect();
 			middleClicPosition.setX(e.getX());
 			middleClicPosition.setY(e.getY());
 			changeRefToTable(middleClicPosition);
         }
         if (e.getButton()==MouseEvent.BUTTON3)
         {
-        	rightClicPosition = new Vec2();
+        	rightClicPosition = new Vect();
 			rightClicPosition.setX(e.getX());
 			rightClicPosition.setY(e.getY());
 			changeRefToTable(rightClicPosition);
@@ -86,7 +87,7 @@ public class Mouse implements MouseListener
 
     /** Change de référentiel (display -> table)
 	 * @param position */
-    private void changeRefToTable(Vec2 position){
+    private void changeRefToTable(Vect position){
 		position.setX((int)(position.getX()*10/3.0) - 1500);
 		position.setY((int)(-position.getY()*40/13.0) + 2000);
 	}
@@ -99,13 +100,13 @@ public class Mouse implements MouseListener
 	}
 
 	/** Getters */
-	public Vec2 getRightClicPosition() {
+	public Vect getRightClicPosition() {
 		return rightClicPosition;
 	}
-	public Vec2 getMiddleClicPosition() {
+	public Vect getMiddleClicPosition() {
 		return middleClicPosition;
 	}
-	public Vec2 getLeftClicPosition() {
+	public Vect getLeftClicPosition() {
 		return leftClicPosition;
 	}
 }

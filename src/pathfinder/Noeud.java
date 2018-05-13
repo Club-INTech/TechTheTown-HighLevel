@@ -1,18 +1,18 @@
 package pathfinder;
 
-import smartMath.Vec2;
+import smartMath.Vect;
 
 import java.util.ArrayList;
 
 public class Noeud {
-    private Vec2 position;
+    private Vect position;
     private double heuristique;
     private double cout;
     private ArrayList<Noeud> voisins;
     private Noeud pred;
 
     /** Constructeur*/
-    public Noeud(Vec2 position, int heuristique, int cout, ArrayList<Noeud> voisins) {
+    public Noeud(Vect position, int heuristique, int cout, ArrayList<Noeud> voisins) {
         this.position = position;
         this.heuristique = heuristique;
         this.cout = cout;
@@ -79,7 +79,7 @@ public class Noeud {
     public void setPred(Noeud pred) {        this.pred = pred;   }
 
 
-    public Vec2 getPosition() {  return position;   }
+    public Vect getPosition() {  return position;   }
 
     public double getHeuristique(){  return heuristique;}
 
@@ -89,7 +89,7 @@ public class Noeud {
 
     public Noeud getPred() {   return pred;    }
 
-    public void setPosition(Vec2 position) { this.position = position;  }
+    public void setPosition(Vect position) { this.position = position;  }
 
     public void setHeuristique(double heuristique) { this.heuristique = heuristique;  }
 

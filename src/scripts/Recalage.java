@@ -7,7 +7,8 @@ import exceptions.Locomotion.UnableToMoveException;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
 import utils.Log;
 
@@ -38,7 +39,7 @@ public class Recalage extends AbstractScript {
             log.debug("Unable to move exeption : On vient de taper le mur.");
             //On s'oriente vers le mur coté abeille.
             gameState.robot.setOrientation(0);
-            gameState.robot.setPosition(new Vec2(gameState.robot.getPosition().getX(),2000- distanceAvant));
+            gameState.robot.setPosition(new VectCart(gameState.robot.getPosition().getX(),2000- distanceAvant));
             log.debug("Robot recalé en y et en orientation");
             gameState.robot.moveLengthwise(-robotRaduis);
             gameState.robot.turn(Math.PI/2);
@@ -49,7 +50,7 @@ public class Recalage extends AbstractScript {
                 e1.printStackTrace();
                 log.debug("Unable to move exeption : On vient de taper le mur.");
                 gameState.robot.setOrientation(Math.PI/2);
-                gameState.robot.setPosition(new Vec2(1500 - distanceAvant, gameState.robot.getPosition().getY()));
+                gameState.robot.setPosition(new VectCart(1500 - distanceAvant, gameState.robot.getPosition().getY()));
                 log.debug("Robot recalé en x et en orientation.");
                 log.debug("Position actuelle : "+ gameState.robot.getPosition()+" "+gameState.robot.getOrientation());
             }
@@ -60,8 +61,8 @@ public class Recalage extends AbstractScript {
     }
 
     @Override
-    public Circle entryPosition(int version, Vec2 robotPosition) {
-        return new Circle(new Vec2(1280, 1780));
+    public Circle entryPosition(int version, Vect robotPosition) {
+        return new Circle(new VectCart(1280, 1780));
     }
 
     @Override

@@ -10,7 +10,8 @@ import hook.HookFactory;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.*;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectPol;
 import strategie.GameState;
 import utils.Log;
 import utils.Sleep;
@@ -84,12 +85,12 @@ public class IA implements Service {
 
         if (e instanceof ImmobileEnnemyForOneSecondAtLeast){
             log.warning("IA HANDLED EXCEPTION : ImmobileEnnemyForOneSecondAtLeast");
-            Vec2 aim = ((ImmobileEnnemyForOneSecondAtLeast) e).getAim();
+            Vect aim = ((ImmobileEnnemyForOneSecondAtLeast) e).getAim();
             tryToDoAnotherNode(this.lastNodeTried);
         }
         else if (e instanceof NoPathFound){
             log.warning("IA HANDLED EXCEPTION : NoPathFound");
-            Vec2 aim = ((NoPathFound) e).getAim();
+            Vect aim = ((NoPathFound) e).getAim();
             tryToDoAnotherNode(this.lastNodeTried);
         }
         else if (e instanceof NoNodesAvailableException){
@@ -111,11 +112,11 @@ public class IA implements Service {
         }
         else if (e instanceof PointInObstacleException){
             //Bien géré normalement
-            Vec2 problemPoint = ((PointInObstacleException) e).getPoint();
+            Vect problemPoint = ((PointInObstacleException) e).getPoint();
             log.warning("IA HANDLED EXCEPTION : PointInObstacleException");
             boolean isDepartInObstacle = ((PointInObstacleException) e).isDepartInOsbtacle();
             if (isDepartInObstacle){
-                Vec2 aimToExitObstacle = pathfinding.getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition();
+                Vect aimToExitObstacle = pathfinding.getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition();
                 goToHandleException(aimToExitObstacle);
                 executeHandleException(this.lastNodeTried);
             }
@@ -164,11 +165,11 @@ public class IA implements Service {
     /**
      * Méthode permettant de faire un goto avec le robot à partir de handleException, tout en gérant les exceptions récursivement
      */
-    private void goToHandleException(Vec2 aim){
+    private void goToHandleException(Vect aim){
         goToHandleException(aim,false,true);
     }
 
-    private void goToHandleException(Vec2 aim, boolean expectsWallImpact, boolean mustDetect){
+    private void goToHandleException(Vect aim, boolean expectsWallImpact, boolean mustDetect){
         try {
             gameState.robot.goTo(aim,expectsWallImpact,mustDetect);
             //On ne rassemble pas les exceptions en un seul catch pour pouvoir voir quelles exceptions sont lancées
@@ -217,7 +218,7 @@ public class IA implements Service {
      *  dépose cube et sinon on va faire le script le plus proche.
      */
     private Node findBestNode() throws NoNodesAvailableException {
-        Vec2 robotPosition = gameState.robot.getPosition();
+        Vect robotPosition = gameState.robot.getPosition();
         updateAvailableNodes(); //On récupère les nodes des actions qui n'ont pas encore été faites
         //Si toutes les nodes sont faites, on renvoie null;
         if (availableNodes.isEmpty()){
@@ -323,7 +324,7 @@ public class IA implements Service {
     /**
      * Calcul le coût d'une node
      */
-    private double calculateNodeCost(Node node, Vec2 robotPosition){
+    private double calculateNodeCost(Node node, Vect robotPosition){
         double cost=0;
         try {
             cost = pathfinding.howManyTime(robotPosition, node.getPosition());
@@ -386,7 +387,7 @@ public class IA implements Service {
      * Méthode permettant d'esquiver un ennemi
      * @param aim le point visé
      */
-    public boolean dodgeEnnemy(Vec2 aim){
+    public boolean dodgeEnnemy(Vect aim){
         log.debug("On tente d'esquiver");
         boolean ennemyDodged = false;
         int attemps=0;
@@ -395,13 +396,13 @@ public class IA implements Service {
             try {
                 log.debug("Début esquive (tentative "+attemps+")");
                 //On s'éloigne de l'aim
-                Vec2 directionToGo = (aim.minusNewVector(gameState.robot.getPosition()));
-                double prodScal = directionToGo.dot(new Vec2(100.0, gameState.robot.getOrientation()));
+                Vect directionToGo = (aim.minusNewVector(gameState.robot.getPosition()));
+                double prodScal = directionToGo.dot(new VectPol(100.0, gameState.robot.getOrientation()));
 
 
                 //On regarde si le point où l'on veut reculer est dans un obstacle, si c'est le cas, on throw PointInObstacleException
                 if (prodScal>0) {
-                    Vec2 wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new Vec2(-50.0,gameState.robot.getOrientation()));
+                    Vect wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new VectPol(-50.0,gameState.robot.getOrientation()));
                     if (!gameState.table.getObstacleManager().isPositionInObstacle(wantToBackUpTo)) {
                         gameState.robot.moveLengthwise(-50);
                     }
@@ -412,7 +413,7 @@ public class IA implements Service {
                     }
                 }
                 else{
-                    Vec2 wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new Vec2(50.0,gameState.robot.getOrientation()));
+                    Vect wantToBackUpTo=gameState.robot.getPosition().plusNewVector(new VectPol(50.0,gameState.robot.getOrientation()));
                     if (!gameState.table.getObstacleManager().isPositionInObstacle(wantToBackUpTo)) {
                         gameState.robot.moveLengthwise(50);
                     }
@@ -425,7 +426,7 @@ public class IA implements Service {
 
 
                 //On cherche un nouveau chemin pour y aller
-                ArrayList<Vec2> pathToFollow = gameState.robot.getPathfinding().findmyway(gameState.robot.getPosition(), aim);
+                ArrayList<Vect> pathToFollow = gameState.robot.getPathfinding().findmyway(gameState.robot.getPosition(), aim);
                 gameState.robot.followPath(pathToFollow);
                 ennemyDodged = true;
 

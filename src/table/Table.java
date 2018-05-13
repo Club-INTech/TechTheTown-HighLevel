@@ -23,7 +23,8 @@ package table;
 import container.Service;
 import enums.ConfigInfoRobot;
 import pfg.config.Config;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import table.obstacles.ObstacleManager;
 import utils.Log;
 
@@ -66,7 +67,7 @@ public class Table implements Service
 	// Au besoin, créer les classes nécessaires dans le package table
 
 	/** point de départ du match à modifier a chaque base roulante */
-	public static Vec2 entryPosition = new Vec2(1270, 455);
+	public static Vect entryPosition = new VectCart(1270, 455);
 	public static double entryOrientation = Math.PI;
 
 	/**
@@ -87,7 +88,7 @@ public class Table implements Service
 	{
 		if(symetry)
 		{
-			entryPosition = new Vec2(560, 176);
+			entryPosition = new VectCart(560, 176);
 		}
 		// TODO : initialiser les éléments de jeu définis plus haut
 	}

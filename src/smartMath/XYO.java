@@ -29,7 +29,7 @@ package smartMath;
 public class XYO {
 
     /** Vecteur position */
-    private Vec2 position;
+    private Vect position;
 
     /** Orientation */
     private double orientation;
@@ -41,7 +41,7 @@ public class XYO {
      * @param position
      * @param orientation
      */
-    public XYO(Vec2 position, double orientation){
+    public XYO(Vect position, double orientation){
         this.position = position;
         this.orientation = orientation;
     }
@@ -53,7 +53,7 @@ public class XYO {
      */
     public XYO(String buffer, String splitString){
         String[] infos = buffer.split(splitString);
-        this.position = new Vec2((int)Math.round(Double.parseDouble(infos[0])), (int)Math.round(Double.parseDouble(infos[1])));
+        this.position = new VectCart((int)Math.round(Double.parseDouble(infos[0])), (int)Math.round(Double.parseDouble(infos[1])));
         this.orientation = Double.parseDouble(infos[2]);
     }
 
@@ -63,7 +63,7 @@ public class XYO {
      */
     public void update(String buffer, String splitString){
         String[] infos = buffer.split(splitString);
-        this.position = new Vec2((int)Math.round(Double.parseDouble(infos[0])), (int)Math.round(Double.parseDouble(infos[1])));
+        this.position = new VectCart((int)Math.round(Double.parseDouble(infos[0])), (int)Math.round(Double.parseDouble(infos[1])));
         this.orientation = Double.parseDouble(infos[2]);
     }
 
@@ -71,10 +71,10 @@ public class XYO {
 
 
     /** Getters & Setters */
-    public Vec2 getPosition() {
+    public Vect getPosition() {
         return position.clone();
     }
-    public void setPosition(Vec2 position) {
+    public void setPosition(Vect position) {
         this.position = position;
     }
     public double getOrientation() {

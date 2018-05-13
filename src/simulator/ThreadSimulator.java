@@ -4,7 +4,8 @@ import container.Service;
 import enums.ActuatorOrder;
 import enums.CommunicationHeaders;
 import pfg.config.Config;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import threads.AbstractThread;
 import utils.Log;
 
@@ -119,18 +120,18 @@ public class ThreadSimulator extends AbstractThread implements Service {
 
         /** SETTINGS */
         else if (head.equals(ActuatorOrder.SET_X.getEthernetOrder())) {
-            Vec2 newPos = new Vec2((int) Float.parseFloat(messages[1]), state.getPosition().getY());
+            Vect newPos = new VectCart((int) Float.parseFloat(messages[1]), state.getPosition().getY());
             state.setPosition(newPos);
         }
         else if (head.equals(ActuatorOrder.SET_Y.getEthernetOrder())) {
-            Vec2 newPos = new Vec2(state.getPosition().getX(), (int) Float.parseFloat(messages[1]));
+            Vect newPos = new VectCart(state.getPosition().getX(), (int) Float.parseFloat(messages[1]));
             state.setPosition(newPos);
         }
         else if (head.equals(ActuatorOrder.SET_ORIENTATION.getEthernetOrder())) {
             state.setOrientation(Float.parseFloat(messages[1]));
         }
         else if (head.equals(ActuatorOrder.SET_POSITION.getEthernetOrder())){
-            state.setPosition(new Vec2((int) Float.parseFloat(messages[1]), (int) Float.parseFloat(messages[2])));
+            state.setPosition(new VectCart((int) Float.parseFloat(messages[1]), (int) Float.parseFloat(messages[2])));
             state.setOrientation(Float.parseFloat(messages[3]));
         }
         else if (head.equals(ActuatorOrder.SET_TRANSLATION_SPEED.getEthernetOrder())) {

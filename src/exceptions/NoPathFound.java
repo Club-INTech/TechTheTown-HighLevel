@@ -1,6 +1,6 @@
 package exceptions;
 
-import smartMath.Vec2;
+import smartMath.Vect;
 
 /**
  * Exception levée qu'un noeud est dans un obstacle.
@@ -9,13 +9,13 @@ import smartMath.Vec2;
 public class NoPathFound extends Exception {
 
     private String message;
-    private Vec2 aim;
+    private Vect aim;
 
-    public NoPathFound(final Vec2 aim) {
+    public NoPathFound(final Vect aim) {
         this(aim,"NoPathFound");
     }
 
-    public NoPathFound(final Vec2 aim, final String m) {
+    public NoPathFound(final Vect aim, final String m) {
         this.aim=aim;
         this.message=m;
     }
@@ -23,7 +23,7 @@ public class NoPathFound extends Exception {
     public String getMessage(){
         return this.message;
     }
-    public Vec2 getAim(){
+    public Vect getAim(){
         return this.aim;
     }
 }

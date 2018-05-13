@@ -8,7 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
 import scripts.ScriptManager;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
 
 public class JUnit_Depose_Cubes extends JUnit_Test{
@@ -37,7 +38,7 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
         try {
             //Définition des paramètres de base
             robotReal.setOrientation(Math.PI);
-            Vec2 positionDepart=new Vec2(890,837);
+            Vect positionDepart=new VectCart(890,837);
             robotReal.setPosition(positionDepart);
             robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
             robotReal.setLocomotionSpeed(Speed.SLOW_ALL);
@@ -45,7 +46,7 @@ public class JUnit_Depose_Cubes extends JUnit_Test{
 
             //goToThenExec
             scriptManager.getScript(ScriptNames.DEPOSE_CUBES).goToThenExec(1,state);
-            //Vec2 positionarrivee=new Vec2(890,347);
+            //Vect positionarrivee=new Vect(890,347);
             //robotReal.goTo(positionarrivee);
 
             //robotReal.goTo(positionDepart);

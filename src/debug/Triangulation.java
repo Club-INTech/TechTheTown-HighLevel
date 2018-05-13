@@ -19,7 +19,8 @@
 
 package debug;
 
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 
 /**
  * Classe qui triangulaire à partir des timestamps
@@ -45,9 +46,9 @@ public class Triangulation {
     private static double dateDebut = 0;
     private static int nbPoints = 0;
     
-    public static Vec2[] computePoints(double t0, double t1, double t2)
+    public static Vect[] computePoints(double t0, double t1, double t2)
     {
-        Vec2[] res = new Vec2[2];
+        Vect[] res = new Vect[2];
     	double t0_trie, t1_trie, t2_trie;
     	t0_trie = Math.min(t0, Math.min(t1, t2));
     	t2_trie = Math.max(t0, Math.max(t1, t2));
@@ -107,14 +108,14 @@ public class Triangulation {
         double X2 = (ax - bx) / cx;
         double Y2 = (ay - by) / cy;
 
-        Vec2 point1 = new Vec2((int)(X1), (int)(Y1));
-        Vec2 point2 = new Vec2((int)(X2), (int)(Y2));
+        Vect point1 = new VectCart((int)(X1), (int)(Y1));
+        Vect point2 = new VectCart((int)(X2), (int)(Y2));
         
         double[] temps = new double[3];
         
-		temps[0] = (point1.distance(new Vec2(-1500, 0)));
-		temps[1] = (point1.distance(new Vec2(-1500, 2000)));
-		temps[2] = (point1.distance(new Vec2(1500, 1000)));
+		temps[0] = (point1.distance(new VectCart(-1500, 0)));
+		temps[1] = (point1.distance(new VectCart(-1500, 2000)));
+		temps[2] = (point1.distance(new VectCart(1500, 1000)));
 
 		if((Math.abs(temps[2] - temps[1] - k1) > 20) || (Math.abs(temps[2] - temps[0] - k2) > 20) || (Math.abs(temps[1] - temps[0] - k3) > 20))
 		{

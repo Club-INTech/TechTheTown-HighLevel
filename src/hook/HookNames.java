@@ -22,7 +22,8 @@ package hook;
 import enums.ActuatorOrder;
 import enums.MotionOrder;
 import enums.Speed;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 
 /**
  * Contient le nom des hooks et leurs paramètres associés
@@ -31,19 +32,19 @@ import smartMath.Vec2;
 public enum HookNames {
 
     // Example :
-    SPEED_DOWN(1, new Vec2(50, 50), 5 ,0,Math.PI,Speed.SLOW_ALL),
-    BASIC_DETECTION_DISABLE(2,new Vec2(1500,2000),450,0,4*Math.PI,ActuatorOrder.BASIC_DETECTION_DISABLE),
-    ACTIVE_BRAS_AVANT_ABEILLE(3, new Vec2(1500,2000), 450, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE),
-    ACTIVE_BRAS_ARRIERE_ABEILLE(4, new Vec2(1500,2000), 450, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE),
-    FERMER_PORTE_AVANT(5,new Vec2(1200,1700), 666, 0, 4*Math.PI, ActuatorOrder.FERME_LA_PORTE_AVANT),
-    FERMER_PORTE_ARRIERE(6,new Vec2(1200,1700), 666, 0, 4*Math.PI, ActuatorOrder.FERME_LA_PORTE_ARRIERE),
+    SPEED_DOWN(1, new VectCart(50, 50), 5 ,0,Math.PI,Speed.SLOW_ALL),
+    BASIC_DETECTION_DISABLE(2,new VectCart(1500,2000),450,0,4*Math.PI,ActuatorOrder.BASIC_DETECTION_DISABLE),
+    ACTIVE_BRAS_AVANT_ABEILLE(3, new VectCart(1500,2000), 450, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_AVANT_POUR_ABEILLE),
+    ACTIVE_BRAS_ARRIERE_ABEILLE(4, new VectCart(1500,2000), 450, 0, 4*Math.PI, ActuatorOrder.ACTIVE_BRAS_ARRIERE_POUR_ABEILLE),
+    FERMER_PORTE_AVANT(5,new VectCart(1200,1700), 666, 0, 4*Math.PI, ActuatorOrder.FERME_LA_PORTE_AVANT),
+    FERMER_PORTE_ARRIERE(6,new VectCart(1200,1700), 666, 0, 4*Math.PI, ActuatorOrder.FERME_LA_PORTE_ARRIERE),
     ;
 
     /** Ordre du hook */
     private MotionOrder order;
 
     /** Position de trigger du hook */
-    private Vec2 position;
+    private Vect position;
 
     /** Tolérence sur la position */
     private int tolerency; //en mm
@@ -55,7 +56,7 @@ public enum HookNames {
     private double tolerencyAngle; //en radians
 
     /** Constructeur */
-    HookNames(int id, Vec2 position, int tolerency, double orientation, double tolerencyAngle, MotionOrder order){
+    HookNames(int id, Vect position, int tolerency, double orientation, double tolerencyAngle, MotionOrder order){
         this.id = id;
         this.position = position;
         this.tolerency = tolerency;
@@ -68,7 +69,7 @@ public enum HookNames {
     public MotionOrder getOrder() {
         return order;
     }
-    public Vec2 getPosition() {
+    public Vect getPosition() {
         return position;
     }
     public int getTolerency(){
@@ -86,7 +87,7 @@ public enum HookNames {
         return tolerencyAngle;
     }
 
-    public void setPosition(Vec2 position) {
+    public void setPosition(Vect position) {
         this.position = position;
     }
 

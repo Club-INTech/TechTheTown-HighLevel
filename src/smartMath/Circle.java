@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class Circle {
 
 	/** Position du centre du cercle */
-	private Vec2 center;
+	private Vect center;
 	
 	/** Rayon du cercle */
 	private double radius;
@@ -43,7 +43,7 @@ public class Circle {
 	 * @param center le centre
 	 * @param radius le rayon en mm
 	 */
-	public Circle(Vec2 center, double radius)
+	public Circle(Vect center, double radius)
 	{
 		this.center=center;
 		this.radius=radius;
@@ -55,7 +55,7 @@ public class Circle {
 	 * construit un cercle de rayon nul, soit un point
 	 * @param center le centre en mm, pas de virgule
 	 */
-	public Circle(Vec2 center)
+	public Circle(Vect center)
 	{
 		this.center=center;
 		this.radius=0;
@@ -72,7 +72,7 @@ public class Circle {
 	 * @param convention comment on représente l'arc de cercle: true veut dire que l'on met un angle start et end, false
 	 *                   veut dire avec un angle milieu de l'arc et une étendue
 	 */
-	public Circle(Vec2 center, double radius, double angleStart, double angleEnd, boolean convention)
+	public Circle(Vect center, double radius, double angleStart, double angleEnd, boolean convention)
 	{
 		this.center=center;
 		this.radius=radius;
@@ -90,7 +90,7 @@ public class Circle {
 	 * Getter de center
 	 * @return le centre du cercle (position en mm)
 	 */
-	public Vec2 getCenter()
+	public Vect getCenter()
 	{
 		return this.center;
 	}
@@ -112,21 +112,21 @@ public class Circle {
 	}
 
 	/**
-	 * test si le Vec2 est dans le disque
+	 * test si le Vect est dans le disque
 	 * @param point un vec2 a tester
 	 * @return vrai si le point est a l'interieur du cercle ou dessus
 	 */
-	public boolean containDisk(Vec2 point)
+	public boolean containDisk(Vect point)
 	{
 		return (point.distance(this.center)<=this.radius);
 	}
 	
 	/**
-	 * test si le Vec2 appartient au cercle
-	 * @param point un Vec2 a tester
+	 * test si le Vect appartient au cercle
+	 * @param point un Vect a tester
 	 * @return vrai si le point est sur le cercle
 	 */
-	public boolean containCircle(Vec2 point)
+	public boolean containCircle(Vect point)
 	{
 		double dx=point.getX()-this.center.getX();
 		double dy=point.getY()-this.center.getY();
@@ -137,12 +137,12 @@ public class Circle {
 	 * Cette méthode retourne des n vecteurs autour d'un cercle
 	 * @return
 	 */
-	public ArrayList<Vec2> pointsaroundcircle(int n){
-		ArrayList<Vec2> l=new ArrayList<>();
+	public ArrayList<Vect> pointsaroundcircle(int n){
+		ArrayList<Vect> l=new ArrayList<>();
 		for(int i=0;i<n;i++){
 			int x=new Integer((int)(this.getRadius()*Math.cos(2*i*Math.PI/n))+this.getCenter().getX());
 			int y=new Integer((int)(this.getRadius()*Math.sin(2*i*Math.PI/n))+this.getCenter().getY());
-			Vec2 vectoadd=new Vec2(x,y);
+			Vect vectoadd=new VectCart(x,y);
 			l.add(vectoadd);
 		}
 		return l;

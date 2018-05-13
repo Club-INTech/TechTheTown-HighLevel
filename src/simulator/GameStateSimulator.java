@@ -6,7 +6,7 @@ import enums.TurningStrategy;
 import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.PreciseVec2;
-import smartMath.Vec2;
+import smartMath.Vect;
 import table.Table;
 import utils.Log;
 
@@ -164,13 +164,13 @@ public class GameStateSimulator implements Service {
     }
 
     /** Position */
-    public synchronized Vec2 getPosition() {
+    public synchronized Vect getPosition() {
         return position.toVec2();
     }
     public synchronized float getOrientation() {
         return (float)orientation;
     }
-    public synchronized void setPosition(Vec2 position) {
+    public synchronized void setPosition(Vect position) {
         this.position = new PreciseVec2(position.getR(), position.getA());
     }
     public synchronized void setOrientation(float orientation) {

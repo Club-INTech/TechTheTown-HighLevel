@@ -19,7 +19,7 @@
 
 package table;
 
-import smartMath.Vec2;
+import smartMath.Vect;
 
 /**
  * Element de jeu
@@ -29,7 +29,7 @@ abstract class GameElement
 {
 	
 	/** La position de l'élément sur la table */
-	protected Vec2 position;
+	protected Vect position;
 	
 	/** Booléen qui précise si l'élement est dans le robot ou non */
 	public boolean inRobot;
@@ -39,7 +39,7 @@ abstract class GameElement
 	 *
 	 * @param position position à laquelle instancier l'élément de jeu
 	 */
-	public GameElement(Vec2 position)
+	public GameElement(Vect position)
 	{
 		this.position = position;
 	}
@@ -49,7 +49,7 @@ abstract class GameElement
 	 *
 	 * @return la position courante de l'élément de jeu
 	 */
-	public Vec2 getPosition()
+	public Vect getPosition()
 	{
 		return position;
 	}

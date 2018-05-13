@@ -15,7 +15,9 @@ import hook.HookFactory;
 import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Circle;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
+import smartMath.VectPol;
 import strategie.GameState;
 import utils.Log;
 
@@ -68,7 +70,7 @@ public class DeposeCubes extends AbstractScript {
 
         if (numberTowersToDepose>0) {
             if (version == 1) {
-                state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0]));
+                state.robot.goToWithoutDetection(new VectCart(this.xEntry[version], this.yEntry[0]));
             }
             state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT_UNPEU,false);
             state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE_UNPEU,true);
@@ -76,11 +78,11 @@ public class DeposeCubes extends AbstractScript {
             state.robot.moveLengthwise(-50);
             state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT_UNPEU,false);
             state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE_UNPEU,false);
-            Vec2 directionToGo = null;
+            Vect directionToGo = null;
             double prodScal = 0;
             try {
-                directionToGo = (this.entryPosition(version, state.robot.getPosition()).getCenter()).plusNewVector(new Vec2(0, -50)).minusNewVector(state.robot.getPosition());
-                prodScal = directionToGo.dot(new Vec2(100.0, state.robot.getOrientation()));
+                directionToGo = (this.entryPosition(version, state.robot.getPosition()).getCenter()).plusNewVector(new VectCart(0, -50)).minusNewVector(state.robot.getPosition());
+                prodScal = directionToGo.dot(new VectPol(100.0, state.robot.getOrientation()));
             } catch (BadVersionException e) {
                 e.printStackTrace();
                 log.debug("BadVersionException: version " + version + " specified");
@@ -92,11 +94,11 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.turn(-Math.PI / 2);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
                     state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                    state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
+                    state.robot.goToWithoutDetection(new VectCart(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
                     state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                     if (version != 3) {
-                        state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0]+dimensionPorte));
+                        state.robot.goTo(new VectCart(this.xEntry[version], this.yEntry[0]+dimensionPorte));
                     }
                     else {
                         hookFactory.disableHook(HookNames.FERMER_PORTE_ARRIERE);
@@ -116,11 +118,11 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.turn(Math.PI / 2);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
                     state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
-                    state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
+                    state.robot.goToWithoutDetection(new VectCart(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
                     state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
                     if (version != 3) {
-                        state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0] + dimensionPorte));
+                        state.robot.goTo(new VectCart(this.xEntry[version], this.yEntry[0] + dimensionPorte));
                     }else {
                         hookFactory.disableHook(HookNames.FERMER_PORTE_AVANT);
                         hookFactory.enableHook(HookNames.FERMER_PORTE_ARRIERE);
@@ -158,7 +160,7 @@ public class DeposeCubes extends AbstractScript {
                     //On ouvre la porte
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, false);
                     //On rentre dans la zone
-                    state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
+                    state.robot.goToWithoutDetection(new VectCart(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
 
                     state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
                     //On recule de la largeur de la porte + de la longueur avancée dans la zone
@@ -170,7 +172,7 @@ public class DeposeCubes extends AbstractScript {
                     without detection)
                     */
                     //on est orienté vers -Pi/2 et c'est là qu'on recule, d'où l'intérêt de détecter
-                    state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0]+dimensionPorte));
+                    state.robot.goTo(new VectCart(this.xEntry[version], this.yEntry[0]+dimensionPorte));
                     //On calcule les points
                     resetTour(true,state);
                     if (version==0){
@@ -193,10 +195,10 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.turn(Math.PI / 2);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
                     state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
-                    state.robot.goToWithoutDetection(new Vec2(this.xEntry[version], this.yEntry[0]-distancePenetrationZone), true);
+                    state.robot.goToWithoutDetection(new VectCart(this.xEntry[version], this.yEntry[0]-distancePenetrationZone), true);
                     state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                    state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0]+2*dimensionPorte));
+                    state.robot.goTo(new VectCart(this.xEntry[version], this.yEntry[0]+2*dimensionPorte));
                     resetTour(false,state);
                     if (state.getTimeEllapsed()<98000) {
                         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
@@ -206,10 +208,10 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.turn(Math.PI / 2);
                     state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, false);
-                    state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
+                    state.robot.goToWithoutDetection(new VectCart(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
                     state.addObtainedPoints(calculScore(false, state.isCubeBonusArrierePresent(), state));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                    state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0]+dimensionPorte));
+                    state.robot.goTo(new VectCart(this.xEntry[version], this.yEntry[0]+dimensionPorte));
                     resetTour(false,state);
                     if (version==0){
                         state.setDeposeCubes0Done(true);
@@ -229,10 +231,10 @@ public class DeposeCubes extends AbstractScript {
                     state.robot.turn(-Math.PI / 2);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
                     state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
-                    state.robot.goToWithoutDetection(new Vec2(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
+                    state.robot.goToWithoutDetection(new VectCart(this.xEntry[version],this.yEntry[0]-distancePenetrationZone), true);
                     state.addObtainedPoints(calculScore(true, state.isCubeBonusAvantPresent(), state));
                     state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-                    state.robot.goTo(new Vec2(this.xEntry[version], this.yEntry[0]+2*dimensionPorte));
+                    state.robot.goTo(new VectCart(this.xEntry[version], this.yEntry[0]+2*dimensionPorte));
                     resetTour(true,state);
                     if (state.getTimeEllapsed()<98000) {
                         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
@@ -317,26 +319,26 @@ public class DeposeCubes extends AbstractScript {
 
 
     @Override
-    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
+    public Circle entryPosition(int version, Vect robotPosition) throws BadVersionException {
         //Zone de dépose des cubes proche de la base
         if (version==0 || version==3) {
             int xEntry = this.xEntry[0];
             int yEntry = this.yEntry[0];
-            Vec2 positionEntree = new Vec2(xEntry, yEntry);
+            Vect positionEntree = new VectCart(xEntry, yEntry);
             return new Circle(positionEntree);
         }
         //Zone de dépose des cubes proche du pattern
         else if (version==1) {
             int xEntry = this.xEntry[1];
             int yEntry = this.yEntry[1];
-            Vec2 positionEntree = new Vec2(xEntry, yEntry);
+            Vect positionEntree = new VectCart(xEntry, yEntry);
             return new Circle(positionEntree);
         }
         //Position d'entrée dans un obstacle: moins de mouvements
         else if (version==2) {
             int xEntry = this.xEntry[2];
             int yEntry = this.yEntry[2];
-            Vec2 positionEntree = new Vec2(xEntry, yEntry);
+            Vect positionEntree = new VectCart(xEntry, yEntry);
             return new Circle(positionEntree);
         }
         else {

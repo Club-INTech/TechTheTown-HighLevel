@@ -21,7 +21,7 @@ package tests;
 
 import enums.ConfigInfoRobot;
 import org.junit.Test;
-import smartMath.Vec2;
+import smartMath.Vect;
 
 /**
  * Tests unitaires pour la configuration... juste épique.
@@ -40,7 +40,7 @@ public class JUnit_Config extends JUnit_Test {
 		int table_x = config.getInt(ConfigInfoRobot.TABLE_X);
 		String couleur = config.getString(ConfigInfoRobot.COULEUR);
 		boolean sym = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
-		Vec2 vecEx = config.get(ConfigInfoRobot.VECTEUR_EXAMPLE, Vec2.class);
+		Vect vecEx = config.get(ConfigInfoRobot.VECTEUR_EXAMPLE, Vect.class);
 
 		log.debug("TABLE : " + table_x + "  Couleur : " + couleur + "  Sym : " + sym + "  Vec : " + vecEx);
 

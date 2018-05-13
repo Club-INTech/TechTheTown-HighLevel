@@ -30,7 +30,8 @@ import org.junit.Before;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Robot;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadTimer;
@@ -129,7 +130,7 @@ public abstract class JUnit_Test
 	public void returnToEntryPosition(GameState state) throws UnableToMoveException, PointInObstacleException,ImmobileEnnemyForOneSecondAtLeast
 	{
 		try {
-			state.robot.moveToLocation(new Vec2(Table.entryPosition.getX() - 120, Table.entryPosition.getY() + 90), state.table);
+			state.robot.moveToLocation(new VectCart(Table.entryPosition.getX() - 120, Table.entryPosition.getY() + 90), state.table);
 		}
 		catch(NoPathFound e){
 			log.debug("pas de chemin trouvé");

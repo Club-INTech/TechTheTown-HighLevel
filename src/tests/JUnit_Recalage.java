@@ -19,33 +19,22 @@
 
 package tests;
 
-import enums.ConfigInfoRobot;
 import enums.ScriptNames;
-import enums.Speed;
 import exceptions.*;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import graphics.Window;
-import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
-import pathfinder.Graphe;
-import pathfinder.Pathfinding;
 import robot.Robot;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
-import smartMath.Circle;
-import smartMath.Vec2;
 import strategie.GameState;
 import strategie.IA.IA;
 import table.Table;
-import table.obstacles.ObstacleManager;
 import threads.ThreadInterface;
 import threads.dataHandlers.ThreadSensor;
-
-import java.util.ArrayList;
 
 /**
  * Tests Unitaires pour le pathfinding : utiliser ce JUnit pour faire des petits tests de java

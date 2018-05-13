@@ -350,14 +350,14 @@ public class PreciseVec2 {
 
     /**
      * transforme un point en un cercle de rayon nul
-     * @return un cercle de centre ce Vec2 et de rayon nul.
+     * @return un cercle de centre ce Vect et de rayon nul.
      */
     public Circle toCircle() {
         return new Circle(this.toVec2(), 0);
     }
 
-    public Vec2 toVec2(){
-        return new Vec2(this.r,this.a);
+    public Vect toVec2(){
+        return new VectPol(this.r,this.a);
     }
 }
 

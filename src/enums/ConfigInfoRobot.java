@@ -25,7 +25,8 @@ package enums;
  */
 
 import pfg.config.ConfigInfo;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 
 /**
  * Configuration du robot : la valeur est celle par défaut; si la variable figure dans le .ini,
@@ -109,7 +110,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     COUT_FIXE(10),
 
     /** Paramètres des scripts */
-    VECTEUR_EXAMPLE(new Vec2(50, 60)),
+    VECTEUR_EXAMPLE(new VectCart(50, 60)),
 
     /** Paramètre simulation */
     SIMULATION(false),

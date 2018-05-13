@@ -27,16 +27,16 @@ package smartMath;
 public class Segment
 {
 	/** Premier pont du segment*/
-	private Vec2 mPointA;
+	private Vect mPointA;
 	
 	/** Second point du segment*/
-	private Vec2 mPointB;
+	private Vect mPointB;
 	
 	/** Construit le segment à partir de ses points extrêmes
 	 * @param pointA premier point
 	 * @param pointB second point
 	 */
-	public Segment(Vec2 pointA, Vec2 pointB)
+	public Segment(Vect pointA, Vect pointB)
 	{
 		mPointA = pointA;
 		mPointB = pointB;
@@ -46,14 +46,14 @@ public class Segment
 	 * Donne le segment sous forme d'un vecteur
 	 * @return le vecteur !
 	 */
-	public Vec2 getVector(){
+	public Vect getVector(){
 		return mPointB.minusNewVector(mPointA);
 	}
 
 	/**
 	 * @return le premier point
 	 */
-	public Vec2 getA()
+	public Vect getA()
 	{
 		return mPointA;
 	}
@@ -61,7 +61,7 @@ public class Segment
 	/**
 	 * @return le second point
 	 */
-	public Vec2 getB()
+	public Vect getB()
 	{
 		return mPointB;
 	}
@@ -69,7 +69,7 @@ public class Segment
 	/**
 	 * @param pointA le nouveau point initial
 	 */
-	public void setA(Vec2 pointA)
+	public void setA(Vect pointA)
 	{
 		mPointA = pointA;
 	}
@@ -77,17 +77,17 @@ public class Segment
 	/**
 	 * @param pointB le nouveau point final
 	 */
-	public void setB(Vec2 pointB)
+	public void setB(Vect pointB)
 	{
 		mPointB = pointB;
 	}
 
 	/**
-	 * Renvoie la distance au carré entre deux points Vec2
+	 * Renvoie la distance au carré entre deux points Vect
 	 * @param pointA point 1
 	 * @param pointB point 2
      */
-	public static double squaredLength(Vec2 pointA, Vec2 pointB)
+	public static double squaredLength(Vect pointA, Vect pointB)
 	{
 		return (pointB.getX() - pointA.getX())*(pointB.getX() - pointA.getX()) + (pointB.getY() - pointA.getY())*(pointB.getY() - pointA.getY());
 
@@ -96,7 +96,7 @@ public class Segment
 	/**
 	 * Cette méthode retourne le vecteur directeur du segment
 	 */
-	public Vec2 vecdirecteur(){
+	public Vect vecdirecteur(){
 		int a;
 		int b;
 		int xA=this.getA().getX();
@@ -107,20 +107,20 @@ public class Segment
 		if(xA==xB){
 			b=xA;
 			a=1;
-			return new Vec2(b,a);
+			return new VectCart(b,a);
 		}
 		else{
 			//Il s'agit d'une droite parallèle à l'axe des abcisses
 			if(yA==yB){
 				a=0;
 				b=yA;
-				return new Vec2(a,b);
+				return new VectCart(a,b);
 			}
 			//Cas général
 			else{
 				a=(yB-yA)/(xB-xA);
 				b=(yA*xB-xA*yB)/(xB-xA);
-				return new Vec2(-b,a);
+				return new VectCart(-b,a);
 			}
 		}
 	}

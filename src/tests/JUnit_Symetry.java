@@ -23,7 +23,8 @@ import org.junit.Before;
 import org.junit.Test;
 import robot.EthWrapper;
 import scripts.ScriptManager;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
 
 public class JUnit_Symetry extends JUnit_Test
@@ -41,7 +42,7 @@ public class JUnit_Symetry extends JUnit_Test
 		ethWrapper = container.getService(EthWrapper.class);
 
 		// La position est setée qu'on soit jaune ou vert
-		real_state.robot.setPosition(new Vec2 (1103,1000));
+		real_state.robot.setPosition(new VectCart(1103,1000));
 		real_state.robot.setOrientation(Math.PI); 
 		
 		real_state.robot.updateConfig();	
@@ -75,8 +76,8 @@ public class JUnit_Symetry extends JUnit_Test
 		try 
 		{
 			real_state.robot.moveLengthwise(500);
-			real_state.robot.moveToLocation(new Vec2(-500,800), real_state.table);
-			real_state.robot.moveToLocation(new Vec2(-500,400), real_state.table);
+			real_state.robot.moveToLocation(new VectCart(-500,800), real_state.table);
+			real_state.robot.moveToLocation(new VectCart(-500,400), real_state.table);
 		}
 		catch (Exception e)
 		{

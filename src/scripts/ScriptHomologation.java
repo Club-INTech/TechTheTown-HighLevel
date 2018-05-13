@@ -11,8 +11,7 @@ import exceptions.NoPathFound;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
-import smartMath.Geometry;
-import smartMath.Vec2;
+import smartMath.Vect;
 import strategie.GameState;
 import utils.Log;
 
@@ -41,7 +40,7 @@ public class ScriptHomologation extends AbstractScript {
     }
 
     @Override
-    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
+    public Circle entryPosition(int version, Vect robotPosition) throws BadVersionException {
         return new Circle(robotPosition);
     }
 

@@ -1,13 +1,13 @@
 package sensor;
 
-import enums.ConfigInfoRobot;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 
 public class Sensor{
     private int id;                                     //ID du capteur
     private int x;                                   //en mm
     private int y;                                   //en mm
-    private Vec2 vecteur;
+    private Vect vecteur;
     private double detectionWideness;                   //en radians, angle du cône de détection (peut etre de 0 radians si capteur en ligne droite)
     private double sensorOrientation;                   //en radians, angle du milieu du cône de détection avec la face avant du robot (sens trigonométrique)
     private int maximalValidDetectionDistance;       //en mm
@@ -20,7 +20,7 @@ public class Sensor{
         this.id=id;
         this.x=xRelativeToRobotCenter;
         this.y=yRelativeToRobotCenter;
-        this.vecteur=new Vec2(this.x,this.y);
+        this.vecteur=new VectCart(this.x,this.y);
         this.sensorOrientation = sensorOrientation;
         this.detectionWideness=detectionWideness;
         this.maximalValidDetectionDistance=maximalValidDetectionDistance;
@@ -53,7 +53,7 @@ public class Sensor{
     public int getX(){ return this.x; }
     public int getY(){ return this.y; }
 
-    public Vec2 getVecteur(){ return this.vecteur; }
+    public Vect getVecteur(){ return this.vecteur; }
 
     public int getDetectedDistance() {
         return this.detectedDistance;

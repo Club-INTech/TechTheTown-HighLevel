@@ -24,14 +24,13 @@ package graphics;
 import pathfinder.Arete;
 import pathfinder.Noeud;
 import scripts.ScriptManager;
-import smartMath.Vec2;
+import smartMath.Vect;
 import strategie.GameState;
 import table.Table;
 
 import javax.swing.JFrame;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Interface graphique pour faciliter le debugage HL
@@ -102,9 +101,9 @@ public class Window extends JFrame
 	}
 
 	/** Attend que l'on clic droit et gauche et renvoie les positions des clics (gauche puis droit) */
-	public ArrayList<Vec2> waitLRClic() throws InterruptedException{
+	public ArrayList<Vect> waitLRClic() throws InterruptedException{
 		mouse.resetClics();
-		ArrayList<Vec2> clics = new ArrayList<>();
+		ArrayList<Vect> clics = new ArrayList<>();
 		while(mouse.getLeftClicPosition() == null || mouse.getRightClicPosition() == null){
 			Thread.sleep(100);
 			// TODO Mettre une vérification de la position du clic : accès à Table par le tablePanel
@@ -117,15 +116,15 @@ public class Window extends JFrame
 	}
 
 	/** Attend que l'on clic gauche et renvoie la position des clics (gauche puis droit) */
-	public Vec2 waitLClic() throws InterruptedException{
+	public Vect waitLClic() throws InterruptedException{
 		mouse.resetClics();
-		ArrayList<Vec2> clics = new ArrayList<>();
+		ArrayList<Vect> clics = new ArrayList<>();
 		while(mouse.getLeftClicPosition() == null ){
 			Thread.sleep(100);
 			// TODO Mettre une vérification de la position du clic : accès à Table par le tablePanel
 		}
 		clics.add(mouse.getLeftClicPosition().clone());
-		tablePanel.setClics(new ArrayList<Vec2>(clics));
+		tablePanel.setClics(new ArrayList<Vect>(clics));
 		mouse.resetClics();
 		return clics.get(0);
 	}
@@ -134,10 +133,10 @@ public class Window extends JFrame
 	public void setArete(ArrayList<Arete> aretes){
 		tablePanel.setAretes(aretes);
 	}
-	public void setPath(ArrayList<Vec2> path){
+	public void setPath(ArrayList<Vect> path){
 		tablePanel.setPath(path);
 	}
-	public void setPoint(Vec2 point){
+	public void setPoint(Vect point){
 		tablePanel.setPoint(point);
 		repaint();
 	}

@@ -13,9 +13,9 @@ import hook.HookFactory;
 import hook.HookNames;
 import pfg.config.Config;
 import smartMath.Circle;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
-import strategie.IA.Panneau;
 import utils.Log;
 
 public class MatchScript extends AbstractScript {
@@ -59,7 +59,7 @@ public class MatchScript extends AbstractScript {
             tk1.goToThenExec(1,gameState);
 
             //On évite que les cubes soient poussés vers la zone de construction
-            gameState.robot.goTo(new Vec2(970,1400));
+            gameState.robot.goTo(new VectCart(970,1400));
 
             //On dépose les cubes à la première position
             DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
@@ -89,7 +89,7 @@ public class MatchScript extends AbstractScript {
             //Pile cube n°1
 
             //On évite que les cubes soient poussés vers l'abeille
-            gameState.robot.goTo(new Vec2(970,1100));
+            gameState.robot.goTo(new VectCart(970,1100));
 
             //On active l'abeille
             ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
@@ -179,7 +179,7 @@ public class MatchScript extends AbstractScript {
             tk1.goToThenExec(1,gameState);
 
             //On évite que les cubes soient poussés vers la zone de construction
-            gameState.robot.goTo(new Vec2(970,1400));
+            gameState.robot.goTo(new VectCart(970,1400));
 
             //On dépose les cubes à la première position
             DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
@@ -208,7 +208,7 @@ public class MatchScript extends AbstractScript {
             takeCubes0.goToThenExec(0, gameState);
 
             //On évite de pousser un cube entre le robot et le panneau domotique
-            gameState.robot.goTo(new Vec2(320,500)); //Position bonne
+            gameState.robot.goTo(new VectCart(320,500)); //Position bonne
 
             ActivationPanneauDomotique activationPanneauDomotique = new ActivationPanneauDomotique(config, log, hookFactory);
             activationPanneauDomotique.goToThenExec(0,gameState);
@@ -217,7 +217,7 @@ public class MatchScript extends AbstractScript {
             deposeCubes2.goToThenExec(2,gameState);
 
             //On évite qu'on pousse le cube du tas 0 en allant vers le tas 1
-            gameState.robot.goTo(new Vec2(900,560));
+            gameState.robot.goTo(new VectCart(900,560));
             //TODO : Position à corriger
 
             TakeCubes takeCubes1 = new TakeCubes(config, log, hookFactory);
@@ -226,8 +226,8 @@ public class MatchScript extends AbstractScript {
             DeposeCubes deposeCubes042 = new DeposeCubes(config, log, hookFactory);
             deposeCubes042.goToThenExec(3, gameState);
 
-//            gameState.robot.goTo(new Vec2(900,1100));
-//            gameState.robot.goTo(new Vec2(1200,1700));
+//            gameState.robot.goTo(new Vect(900,1100));
+//            gameState.robot.goTo(new Vect(1200,1700));
 
             ActiveAbeille activeAbeille1 = new ActiveAbeille(config, log, hookFactory);
             activeAbeille1.goToThenExec(1, gameState);
@@ -239,7 +239,7 @@ public class MatchScript extends AbstractScript {
     }
 
     @Override
-    public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
+    public Circle entryPosition(int version, Vect robotPosition) throws BadVersionException {
         return new Circle(robotPosition);
     }
 

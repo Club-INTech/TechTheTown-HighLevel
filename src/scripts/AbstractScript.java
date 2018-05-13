@@ -30,7 +30,8 @@ import exceptions.NoPathFound;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
 import utils.Log;
 
@@ -132,7 +133,7 @@ public abstract class AbstractScript implements Service
 	 * @param robotPosition la position actuelle du robot
 	 * @return la position du point d'entrée
 	 */
-	public abstract Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException;
+	public abstract Circle entryPosition(int version, Vect robotPosition) throws BadVersionException;
 
 	/**
 	 * Méthode appelée à la fin du script si une exception a lieu.
@@ -149,7 +150,7 @@ public abstract class AbstractScript implements Service
 	 * @param posRobot la position du robot
 	 * @return true si chemin dégagé, false sinon
 	 */
-	public boolean waitForEnnemy(GameState actualState, Vec2 posRobot, boolean forward)
+	public boolean waitForEnnemy(GameState actualState, Vect posRobot, boolean forward)
 	{
 		// Attente d'une seconde
 		try {
@@ -161,7 +162,7 @@ public abstract class AbstractScript implements Service
 
 		// Détermination du chemin suivi par le robot
 		int signe = forward ? 1 : -1;
-		Vec2 aim = posRobot.plusNewVector(new Vec2((int)(signe*300*Math.cos(actualState.robot.getOrientation())),(int)(signe*300*Math.sin(actualState.robot.getOrientation()))));
+		Vect aim = posRobot.plusNewVector(new VectCart((int)(signe*300*Math.cos(actualState.robot.getOrientation())),(int)(signe*300*Math.sin(actualState.robot.getOrientation()))));
 
 		// boucle d'attente de 4 secondes maximum
 		while(actualState.table.getObstacleManager().isDiscObstructed(aim, 100))

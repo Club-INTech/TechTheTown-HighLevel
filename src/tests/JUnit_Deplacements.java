@@ -4,15 +4,13 @@ import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
-import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 import robot.EthWrapper;
 import robot.Locomotion;
 import robot.Robot;
-import scripts.ScriptManager;
-import simulator.ThreadSimulator;
-import smartMath.Vec2;
+import smartMath.Vect;
+import smartMath.VectCart;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadTimer;
@@ -41,7 +39,7 @@ public class JUnit_Deplacements extends JUnit_Test {
             container.getService(ThreadTimer.class);
             container.startInstanciedThreads();
             robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
-            robot.setPosition(new Vec2(0,1000));
+            robot.setPosition(new VectCart(0,1000));
         } catch (Exception e) {
             e.printStackTrace();
         }
