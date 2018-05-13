@@ -48,26 +48,6 @@ public class Vect {
 		a = 0;
 	}
 
-	/**
-	 * Construit un vecteur à partir de ses coordonnées polaires
-	 *
-	 * @param requestedR rayon
-	 * @param requestedA angle
-	 */
-	public Vect(double requestedR, double requestedA) {
-		if (requestedR < 0){
-			r = Math.abs(requestedR);
-			a = Geometry.moduloSpec(requestedA + Math.PI, Math.PI);
-		}
-		else{
-			r = requestedR;
-			a = requestedA;
-		}
-		//Attention, si r*Math.cos(a) torp grand, le cast du long en int provoque des pertes de données
-		x = (int) Math.round(r * Math.cos(a));
-		y = (int) Math.round(r * Math.sin(a));
-	}
-
 	// Il est plus performant de trouver la longueur au carré et de la comparer à des distances au carré que d'en extraire la racine
 
 	/**
