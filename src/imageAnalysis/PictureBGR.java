@@ -2,6 +2,7 @@ package imageAnalysis;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.util.Arrays;
 
 public class PictureBGR extends Picture<Integer> {
 
@@ -75,44 +76,20 @@ public class PictureBGR extends Picture<Integer> {
     }
 
     /**
-     * Set une image RGB
-     * @param array  array
-     * @param width  largeur de l'image
-     * @param height hauteur de l'image
+     * Set une image BGR
+     * @param array array BGR ayant des valeurs de 0 à 255
      */
-    public void setImage(int[] array, int width, int height) {
-        if (array.length == width * height * 3) {
-            this.width = width;
-            this.height = height;
-            for (int i = 0; i < width * height * 3; i += 3) {
-                if (!(array[i] > 255 || array[i] < 0 || array[i + 1] > 255 || array[i + 1] < 0 || array[i + 2] > 255 || array[i + 2] < 0)) {
-                    this.imgArray[i / width][i % width][0] = array[i];
-                    this.imgArray[i / width][i % width][1] = array[i + 1];
-                    this.imgArray[i / width][i % width][2] = array[i + 2];
-                } else {
-                    this.imgArray = null;
-                    return;
-                }
-            }
-        } else {
-            System.out.println("Bad height and width when setting array:");
-            System.out.println("Array length: " + array.length + " // Picture size: " + this.width + "*" + this.height + "*3");
-        }
+    public void setImage(Integer[][][] array) {
+        super.setImage(array, 0, 255);
     }
 
     /**
-     * Set une image RGB
-     * @param buffImg l'image en question
+     * Set une image BGR
+     * @param array array
+     * @param width largeur de l'image
+     * @param height hauteur de l'image
      */
-    public void setImage(BufferedImage buffImg) {
-        if (buffImg.getType() == 1) {
-            this.width = buffImg.getWidth();
-            this.height = buffImg.getHeight();
-            int[] array = new int[this.width * this.height * 3];
-            buffImg.getRaster().getPixels(0, 0, this.width, this.height, array);
-            this.setImage(array, this.width, this.height);
-        } else {
-            System.out.println("Bad image type: not RGB");
-        }
+    public void setImage(Integer[] array, int width, int height) {
+        super.setImage(array,width,height,0,255);
     }
 }
