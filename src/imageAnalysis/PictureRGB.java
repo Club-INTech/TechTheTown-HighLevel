@@ -2,7 +2,6 @@ package imageAnalysis;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.util.Arrays;
 
 public class PictureRGB extends Picture<Integer> {
 
