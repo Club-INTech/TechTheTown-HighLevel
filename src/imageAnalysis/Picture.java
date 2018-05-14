@@ -59,6 +59,60 @@ public class Picture {
         this.imgHSBArray=null;
     }
 
+    /**
+     * Convertit l'image en RGB
+     */
+    public void convertToRGB(){
+        if (this.pictureEncoding!=PictureEncoding.RGB){
+            this.imgRGBArray=getRGBImageArray(true);
+            this.pictureEncoding=PictureEncoding.RGB;
+            this.imgBGRArray=null;
+            this.imgHSBArray=null;
+        }
+    }
+
+    /**
+     * Convertit l'image en BGR
+     */
+    public void convertToBGR(){
+        if (this.pictureEncoding!=PictureEncoding.BGR){
+            this.imgBGRArray=getBGRImageArray(true);
+            this.pictureEncoding=PictureEncoding.BGR;
+            this.imgRGBArray=null;
+            this.imgHSBArray=null;
+        }
+    }
+
+    /**
+     * Convertit l'image en HSB
+     */
+    public void convertToHSB(){
+        if (this.pictureEncoding!=PictureEncoding.HSB){
+            this.imgHSBArray=getHSBImageArray(true);
+            this.pictureEncoding=PictureEncoding.HSB;
+            this.imgRGBArray=null;
+            this.imgBGRArray=null;
+        }
+    }
+
+    public BufferedImage toBufferedImage(){
+        BufferedImage buffImg;
+        if (this.pictureEncoding==PictureEncoding.RGB) {
+            buffImg = new BufferedImage(this.width, this.height,1);
+        }
+        else if(this.pictureEncoding==PictureEncoding.BGR){
+            buffImg = new BufferedImage(this.width, this.height, 4);
+        }
+        else if (this.pictureEncoding==PictureEncoding.HSB){
+            convertToRGB();
+            buffImg = new BufferedImage(this.width, this.height, 1);
+        }
+        else{
+            System.out.println("Ce cas ne devrait pas arriver");
+            buffImg=null;
+        }
+        return buffImg;
+    }
 
 
     /////////////// Getters et Setters //////////////////
