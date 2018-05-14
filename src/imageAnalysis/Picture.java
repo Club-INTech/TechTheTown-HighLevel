@@ -201,9 +201,9 @@ public abstract class Picture<T> {
                     for (int x = xStart; x < xStart + width; x++) {
                         for (int y = yStart; y < yStart + height; y++) {
                             nbPixelsChecked++;
-                            firstParamSum += (float) this.imgArray[x][y][0];
-                            secondParamSum += (float)this.imgArray[x][y][1];
-                            thirdParamSum += (float) this.imgArray[x][y][2];
+                            firstParamSum += (Float) this.imgArray[x][y][0];
+                            secondParamSum += (Float)this.imgArray[x][y][1];
+                            thirdParamSum += (Float) this.imgArray[x][y][2];
                         }
                     }
                     float firstParamAverage=firstParamSum/nbPixelsChecked;
@@ -218,9 +218,9 @@ public abstract class Picture<T> {
                     for (int x = xStart; x < xStart + width; x++) {
                         for (int y = yStart; y < yStart + height; y++) {
                             nbPixelsChecked++;
-                            firstParamSum += (int) this.imgArray[x][y][0];
-                            secondParamSum += (int)this.imgArray[x][y][1];
-                            thirdParamSum += (int) this.imgArray[x][y][2];
+                            firstParamSum += (Integer) this.imgArray[x][y][0];
+                            secondParamSum += (Integer)this.imgArray[x][y][1];
+                            thirdParamSum += (Integer) this.imgArray[x][y][2];
                         }
                     }
                     int firstParamAverage=Math.round(firstParamSum*1f/nbPixelsChecked);
