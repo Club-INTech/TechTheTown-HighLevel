@@ -2,8 +2,8 @@ package tests;
 
 import org.junit.Before;
 import org.junit.Test;
-import patternRecognition.PatternRecognition;
-import patternRecognition.UseWebcam;
+import imageAnalysis.PatternRecognition;
+import imageAnalysis.UseWebcam;
 import strategie.GameState;
 
 import java.io.File;

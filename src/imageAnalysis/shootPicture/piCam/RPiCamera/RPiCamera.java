@@ -1,7 +1,7 @@
-package patternRecognition.shootPicture.piCam.RPiCamera;
+package imageAnalysis.shootPicture.piCam.RPiCamera;
 
-import patternRecognition.shootPicture.piCam.cameraEnums.*;
-import patternRecognition.shootPicture.piCam.cameraExceptions.*;
+import imageAnalysis.shootPicture.piCam.cameraEnums.*;
+import imageAnalysis.shootPicture.piCam.cameraExceptions.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

@@ -18,12 +18,11 @@
  */
 
 import container.Container;
-import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
-import patternRecognition.PatternRecognition;
+import imageAnalysis.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;

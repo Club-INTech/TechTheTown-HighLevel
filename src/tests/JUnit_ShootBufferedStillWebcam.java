@@ -1,7 +1,7 @@
 package tests;
 
 import org.junit.Test;
-import patternRecognition.UseWebcam;
+import imageAnalysis.UseWebcam;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

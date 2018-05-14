@@ -1,4 +1,4 @@
-package patternRecognition;
+package imageAnalysis;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class LocatePatternAutomated {
     private static void MakeLocalization(){
         List<String> command = new ArrayList<>();
         command.add(pythonCommand);
-        command.add("./src/patternRecognition/LocatePatternAutomated.py");
+        command.add("./src/imageAnalysis/LocatePatternAutomated.py");
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.inheritIO();
         Process p = null;

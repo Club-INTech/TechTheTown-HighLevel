@@ -1,4 +1,4 @@
-package patternRecognition.shootPicture.piCam.cameraEnums;
+package imageAnalysis.shootPicture.piCam.cameraEnums;
 
 /**
  * DRC mode options.

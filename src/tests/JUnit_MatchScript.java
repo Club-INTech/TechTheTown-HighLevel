@@ -5,7 +5,7 @@ import enums.Speed;
 import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
-import patternRecognition.PatternRecognition;
+import imageAnalysis.PatternRecognition;
 import robot.Locomotion;
 import robot.Robot;
 import scripts.ScriptManager;
