@@ -1,7 +1,4 @@
-package imageAnalysis.imageProcessing;
-
-import imageAnalysis.Picture;
-import imageAnalysis.PictureEncoding;
+package imageAnalysis;
 
 public class PictureEncodingConversion {
 
@@ -22,35 +19,30 @@ public class PictureEncodingConversion {
      * @param height la hauteur de la zone de traitement
      * @return renvoie l'équivalent RGB d'une partie d'image HSB
      */
-    public static int[][][] getRGBfromHSB(Picture picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds){
+    public static Integer[][][] getRGBfromHSB(PictureHSB picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds){
         if (width>0 && height>0) {
             int pictureWidth = picture.getWidth();
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
-                if (picture.getPictureEncoding() == PictureEncoding.HSB) {
-                    if (canGoOutOfBounds) {
-                        width = Math.min(pictureWidth - xStart - 1, width);
-                        height = Math.min(pictureHeight - yStart - 1, height);
-                        xStart = Math.max(xStart, 0);
-                        yStart = Math.max(yStart, 0);
-                    }
-                    if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
-                        float[][][] hsbArray = picture.getHSBImageArray();
-                        int[][][] rgbArray = new int[width][height][3];
-                        for (int x = xStart; x < xStart + width; x++) {
-                            for (int y = yStart; y < yStart + height; y++) {
-                                rgbArray[x][y] = getRGBfromHSB(hsbArray[x][y][0], hsbArray[x][y][1], hsbArray[x][y][2]);
-                            }
+                if (canGoOutOfBounds) {
+                    width = Math.min(pictureWidth - xStart - 1, width);
+                    height = Math.min(pictureHeight - yStart - 1, height);
+                    xStart = Math.max(xStart, 0);
+                    yStart = Math.max(yStart, 0);
+                }
+                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                    Float[][][] hsbArray = picture.getImageArray();
+                    Integer[][][] rgbArray = new Integer[width][height][3];
+                    for (int x = xStart; x < xStart + width; x++) {
+                        for (int y = yStart; y < yStart + height; y++) {
+                            rgbArray[x][y] = getRGBfromHSB(hsbArray[x][y][0], hsbArray[x][y][1], hsbArray[x][y][2]);
                         }
-                        return rgbArray;
-                    } else {
-                        System.out.println("Bad parameters given:");
-                        System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
-                        System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
-                        return null;
                     }
+                    return rgbArray;
                 } else {
-                    System.out.println("Bad image type: RGB -> HSB conversion wanted, but " + picture.getPictureEncoding() + " given");
+                    System.out.println("Bad parameters given:");
+                    System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
+                    System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
                     return null;
                 }
             }
@@ -74,7 +66,7 @@ public class PictureEncodingConversion {
      * @param brightness luminosité de la couleur (éclairé ou sombre)
      * @return renvoie une couleur en RGB
      */
-    public static int[] getRGBfromHSB(float hue, float saturation, float brightness){
+    public static Integer[] getRGBfromHSB(float hue, float saturation, float brightness){
         int r=0;
         int g=0;
         int b=0;
@@ -119,7 +111,7 @@ public class PictureEncodingConversion {
                     break;
             }
         }
-        return new int[]{r,g,b};
+        return new Integer[]{r,g,b};
     }
 
     /**
@@ -127,7 +119,7 @@ public class PictureEncodingConversion {
      * @param hsb le triplé ordonné HSB
      * @return renvoie le triplé ordonné RGB
      */
-    public static int[] getRGBfromHSB(float[] hsb){
+    public static Integer[] getRGBfromHSB(float[] hsb){
         if (hsb.length==3){
             return getRGBfromHSB(hsb[0],hsb[1],hsb[2]);
         }
@@ -146,35 +138,30 @@ public class PictureEncodingConversion {
      * @param height la hauteur de la zone de traitement
      * @return renvoie l'équivalent HSB d'une partie d'image RGB
      */
-    public static float[][][] getHSBfromRGB(Picture picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds){
+    public static Float[][][] getHSBfromRGB(PictureRGB picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds){
         if (width>0 && height>0) {
             int pictureWidth = picture.getWidth();
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
-                if (picture.getPictureEncoding() == PictureEncoding.RGB) {
-                    if (canGoOutOfBounds) {
-                        width = Math.min(pictureWidth - xStart - 1, width);
-                        height = Math.min(pictureHeight - yStart - 1, height);
-                        xStart = Math.max(xStart, 0);
-                        yStart = Math.max(yStart, 0);
-                    }
-                    if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
-                        int[][][] rgbArray = picture.getRGBImageArray();
-                        float[][][] hsbArray = new float[width][height][3];
-                        for (int x = xStart; x < xStart + width; x++) {
-                            for (int y = yStart; y < yStart + height; y++) {
-                                hsbArray[x][y] = getHSBfromRGB(rgbArray[x][y][0], rgbArray[x][y][1], rgbArray[x][y][2]);
-                            }
+                if (canGoOutOfBounds) {
+                    width = Math.min(pictureWidth - xStart - 1, width);
+                    height = Math.min(pictureHeight - yStart - 1, height);
+                    xStart = Math.max(xStart, 0);
+                    yStart = Math.max(yStart, 0);
+                }
+                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                    Integer[][][] rgbArray = picture.getImageArray();
+                    Float[][][] hsbArray = new Float[width][height][3];
+                    for (int x = xStart; x < xStart + width; x++) {
+                        for (int y = yStart; y < yStart + height; y++) {
+                            hsbArray[x][y] = getHSBfromRGB(rgbArray[x][y][0], rgbArray[x][y][1], rgbArray[x][y][2]);
                         }
-                        return hsbArray;
-                    } else {
-                        System.out.println("Bad parameters given:");
-                        System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
-                        System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
-                        return null;
                     }
+                    return hsbArray;
                 } else {
-                    System.out.println("Bad image type: RGB -> HSB conversion wanted, but " + picture.getPictureEncoding() + " given");
+                    System.out.println("Bad parameters given:");
+                    System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
+                    System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
                     return null;
                 }
             }
@@ -199,8 +186,11 @@ public class PictureEncodingConversion {
      * @param b composante bleue (B)
      * @return renvoie la couleur HSB
      */
-    public static float[] getHSBfromRGB(int r, int g, int b){
-        float[] hsb=new float[]{0,0,0};
+    public static Float[] getHSBfromRGB(int r, int g, int b){
+        float h=0;
+        float s=0;
+        float v=0;
+        Float[] hsb=new Float[]{h,s,v};
         float hue, saturation, brightness;
         int cmax = (r > g) ? r : g;
         if (b > cmax) cmax = b;
@@ -246,7 +236,7 @@ public class PictureEncodingConversion {
      * @param rgb le triplé ordonné RGB
      * @return renvoie le triplé ordonné HSB
      */
-    public static float[] getHSBfromRGB(int[] rgb){
+    public static Float[] getHSBfromRGB(int[] rgb){
         if (rgb.length==3){
             return getHSBfromRGB(rgb[0],rgb[1],rgb[2]);
         }
@@ -274,35 +264,30 @@ public class PictureEncodingConversion {
      * @param height la hauteur de la zone de traitement
      * @return renvoie l'équivalent RGB d'une partie d'image BGR
      */
-    public static int[][][] getRGBfromBGR(Picture picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds) {
+    public static Integer[][][] getRGBfromBGR(PictureBGR picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds) {
         if (width>0 && height>0) {
             int pictureWidth = picture.getWidth();
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
-                if (picture.getPictureEncoding() == PictureEncoding.BGR) {
-                    if (canGoOutOfBounds) {
-                        width = Math.min(pictureWidth - xStart - 1, width);
-                        height = Math.min(pictureHeight - yStart - 1, height);
-                        xStart = Math.max(xStart, 0);
-                        yStart = Math.max(yStart, 0);
-                    }
-                    if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
-                        int[][][] bgrArray = picture.getBGRImageArray();
-                        int[][][] rgbArray = new int[width][height][3];
-                        for (int x = xStart; x < xStart + width; x++) {
-                            for (int y = yStart; y < yStart + height; y++) {
-                                rgbArray[x][y] = getRGBfromBGR(bgrArray[x][y][0], bgrArray[x][y][1], bgrArray[x][y][2]);
-                            }
+                if (canGoOutOfBounds) {
+                    width = Math.min(pictureWidth - xStart - 1, width);
+                    height = Math.min(pictureHeight - yStart - 1, height);
+                    xStart = Math.max(xStart, 0);
+                    yStart = Math.max(yStart, 0);
+                }
+                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                    Integer[][][] bgrArray = picture.getImageArray();
+                    Integer[][][] rgbArray = new Integer[width][height][3];
+                    for (int x = xStart; x < xStart + width; x++) {
+                        for (int y = yStart; y < yStart + height; y++) {
+                            rgbArray[x][y] = getRGBfromBGR(bgrArray[x][y][0], bgrArray[x][y][1], bgrArray[x][y][2]);
                         }
-                        return rgbArray;
-                    } else {
-                        System.out.println("Bad parameters given:");
-                        System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
-                        System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
-                        return null;
                     }
+                    return rgbArray;
                 } else {
-                    System.out.println("Bad image type: RGB -> HSB conversion wanted, but " + picture.getPictureEncoding() + " given");
+                    System.out.println("Bad parameters given:");
+                    System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
+                    System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
                     return null;
                 }
             }
@@ -326,8 +311,8 @@ public class PictureEncodingConversion {
      * @param r composante rouge (R)
      * @return renvoie la couleur RGB
      */
-    public static int[] getRGBfromBGR(int b, int g, int r){
-        return new int[]{r,g,b};
+    public static Integer[] getRGBfromBGR(int b, int g, int r){
+        return new Integer[]{r,g,b};
     }
 
     /**
@@ -335,9 +320,9 @@ public class PictureEncodingConversion {
      * @param bgr le triplé ordonné BGR
      * @return renvoie le triplé ordonné RGB
      */
-    public static int[] getRGBfromBGR(int[] bgr){
+    public static Integer[] getRGBfromBGR(int[] bgr){
         if (bgr.length==3){
-            return new int[]{bgr[2],bgr[1],bgr[0]};
+            return new Integer[]{bgr[2],bgr[1],bgr[0]};
         }
         else{
             System.out.println("Bad length of given BGR");
@@ -356,35 +341,30 @@ public class PictureEncodingConversion {
      * @param height la hauteur de la zone de traitement
      * @return renvoie l'équivalent BGR d'une partie d'image RGB
      */
-    public static int[][][] getBGRfromRGB(Picture picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds) {
+    public static Integer[][][] getBGRfromRGB(PictureRGB picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds) {
         if (width>0 && height>0) {
             int pictureWidth = picture.getWidth();
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
-                if (picture.getPictureEncoding() == PictureEncoding.RGB) {
-                    if (canGoOutOfBounds) {
-                        width = Math.min(pictureWidth - xStart - 1, width);
-                        height = Math.min(pictureHeight - yStart - 1, height);
-                        xStart = Math.max(xStart, 0);
-                        yStart = Math.max(yStart, 0);
-                    }
-                    if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
-                        int[][][] rgbArray = picture.getRGBImageArray();
-                        int[][][] bgrArray = new int[width][height][3];
-                        for (int x = xStart; x < xStart + width; x++) {
-                            for (int y = yStart; y < yStart + height; y++) {
-                                bgrArray[x][y] = getRGBfromBGR(rgbArray[x][y][0], rgbArray[x][y][1], rgbArray[x][y][2]);
-                            }
+                if (canGoOutOfBounds) {
+                    width = Math.min(pictureWidth - xStart - 1, width);
+                    height = Math.min(pictureHeight - yStart - 1, height);
+                    xStart = Math.max(xStart, 0);
+                    yStart = Math.max(yStart, 0);
+                }
+                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                    Integer[][][] rgbArray = picture.getImageArray();
+                    Integer[][][] bgrArray = new Integer[width][height][3];
+                    for (int x = xStart; x < xStart + width; x++) {
+                        for (int y = yStart; y < yStart + height; y++) {
+                            bgrArray[x][y] = getRGBfromBGR(rgbArray[x][y][0], rgbArray[x][y][1], rgbArray[x][y][2]);
                         }
-                        return bgrArray;
-                    } else {
-                        System.out.println("Bad parameters given:");
-                        System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
-                        System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
-                        return null;
                     }
+                    return bgrArray;
                 } else {
-                    System.out.println("Bad image type: RGB -> HSB conversion wanted, but " + picture.getPictureEncoding() + " given");
+                    System.out.println("Bad parameters given:");
+                    System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
+                    System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
                     return null;
                 }
             }
@@ -445,35 +425,30 @@ public class PictureEncodingConversion {
      * @param height la hauteur de la zone de traitement
      * @return Renvoie l'équivalent BGR d'une partie d'image HSB
      */
-    public static int[][][] getBGRfromHSB(Picture picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds){
+    public static Integer[][][] getBGRfromHSB(PictureHSB picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds){
         if (width>0 && height>0) {
             int pictureWidth = picture.getWidth();
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
-                if (picture.getPictureEncoding() == PictureEncoding.HSB) {
-                    if (canGoOutOfBounds) {
-                        width = Math.min(pictureWidth - xStart - 1, width);
-                        height = Math.min(pictureHeight - yStart - 1, height);
-                        xStart = Math.max(xStart, 0);
-                        yStart = Math.max(yStart, 0);
-                    }
-                    if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
-                        float[][][] hsbArray = picture.getHSBImageArray();
-                        int[][][] bgrArray = new int[width][height][3];
-                        for (int x = xStart; x < xStart + width; x++) {
-                            for (int y = yStart; y < yStart + height; y++) {
-                                bgrArray[x][y] = getBGRfromHSB(hsbArray[x][y][0], hsbArray[x][y][1], hsbArray[x][y][2]);
-                            }
+                if (canGoOutOfBounds) {
+                    width = Math.min(pictureWidth - xStart - 1, width);
+                    height = Math.min(pictureHeight - yStart - 1, height);
+                    xStart = Math.max(xStart, 0);
+                    yStart = Math.max(yStart, 0);
+                }
+                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                    Float[][][] hsbArray = picture.getImageArray();
+                    Integer[][][] bgrArray = new Integer[width][height][3];
+                    for (int x = xStart; x < xStart + width; x++) {
+                        for (int y = yStart; y < yStart + height; y++) {
+                            bgrArray[x][y] = getBGRfromHSB(hsbArray[x][y][0], hsbArray[x][y][1], hsbArray[x][y][2]);
                         }
-                        return bgrArray;
-                    } else {
-                        System.out.println("Bad parameters given:");
-                        System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
-                        System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
-                        return null;
                     }
+                    return bgrArray;
                 } else {
-                    System.out.println("Bad image type: RGB -> HSB conversion wanted, but " + picture.getPictureEncoding() + " given");
+                    System.out.println("Bad parameters given:");
+                    System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
+                    System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
                     return null;
                 }
             }
@@ -497,7 +472,7 @@ public class PictureEncodingConversion {
      * @param brightness luminosité de la couleur (éclairé ou sombre)
      * @return renvoie une couleur en BGR
      */
-    public static int[] getBGRfromHSB(float hue, float saturation, float brightness){
+    public static Integer[] getBGRfromHSB(float hue, float saturation, float brightness){
         int r=0;
         int g=0;
         int b=0;
@@ -542,7 +517,7 @@ public class PictureEncodingConversion {
                     break;
             }
         }
-        return new int[]{b,g,r};
+        return new Integer[]{b,g,r};
     }
 
     /**
@@ -550,7 +525,7 @@ public class PictureEncodingConversion {
      * @param hsb le triplé ordonné HSB
      * @return renvoie le triplé ordonné BGR
      */
-    public static int[] getBGRfromHSB(float[] hsb){
+    public static Integer[] getBGRfromHSB(float[] hsb){
         if (hsb.length==3){
             return getBGRfromHSB(hsb[0],hsb[1],hsb[2]);
         }
@@ -569,35 +544,30 @@ public class PictureEncodingConversion {
      * @param height la hauteur de la zone de traitement
      * @return Renvoie l'équivalent HSB d'une partie d'image BGR
      */
-    public static float[][][] getHSBfromBGR(Picture picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds){
+    public static Float[][][] getHSBfromBGR(PictureBGR picture, int xStart, int yStart, int width, int height, boolean canGoOutOfBounds){
         if (width>0 && height>0) {
             int pictureWidth = picture.getWidth();
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
-                if (picture.getPictureEncoding() == PictureEncoding.BGR) {
-                    if (canGoOutOfBounds) {
-                        width = Math.min(pictureWidth - xStart - 1, width);
-                        height = Math.min(pictureHeight - yStart - 1, height);
-                        xStart = Math.max(xStart, 0);
-                        yStart = Math.max(yStart, 0);
-                    }
-                    if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
-                        int[][][] bgrArray = picture.getBGRImageArray();
-                        float[][][] hsbArray = new float[width][height][3];
-                        for (int x = xStart; x < xStart + width; x++) {
-                            for (int y = yStart; y < yStart + height; y++) {
-                                hsbArray[x][y] = getHSBfromBGR(bgrArray[x][y][0], bgrArray[x][y][1], bgrArray[x][y][2]);
-                            }
+                if (canGoOutOfBounds) {
+                    width = Math.min(pictureWidth - xStart - 1, width);
+                    height = Math.min(pictureHeight - yStart - 1, height);
+                    xStart = Math.max(xStart, 0);
+                    yStart = Math.max(yStart, 0);
+                }
+                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                    Integer[][][] bgrArray = picture.getImageArray();
+                    Float[][][] hsbArray = new Float[width][height][3];
+                    for (int x = xStart; x < xStart + width; x++) {
+                        for (int y = yStart; y < yStart + height; y++) {
+                            hsbArray[x][y] = getHSBfromBGR(bgrArray[x][y][0], bgrArray[x][y][1], bgrArray[x][y][2]);
                         }
-                        return hsbArray;
-                    } else {
-                        System.out.println("Bad parameters given:");
-                        System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
-                        System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
-                        return null;
                     }
+                    return hsbArray;
                 } else {
-                    System.out.println("Bad image type: RGB -> HSB conversion wanted, but " + picture.getPictureEncoding() + " given");
+                    System.out.println("Bad parameters given:");
+                    System.out.println("xStart:" + xStart + " yStart:" + yStart + " width:" + width + " height:" + height);
+                    System.out.println("Picture width:" + pictureWidth + " Picture height:" + pictureHeight);
                     return null;
                 }
             }
@@ -622,8 +592,11 @@ public class PictureEncodingConversion {
      * @param r composante rouge (R)
      * @return renvoie la couleur HSB
      */
-    public static float[] getHSBfromBGR(int b, int g, int r){
-        float[] hsb=new float[]{0,0,0};
+    public static Float[] getHSBfromBGR(int b, int g, int r){
+        float h=0;
+        float s=0;
+        float v=0;
+        Float[] hsb=new Float[]{h,s,v};
         float hue, saturation, brightness;
         int cmax = (r > g) ? r : g;
         if (b > cmax) cmax = b;
@@ -669,7 +642,7 @@ public class PictureEncodingConversion {
      * @param bgr le triplé ordonné BGR
      * @return renvoie le triplé ordonné HSB
      */
-    public static float[] getHSBfromBGR(int[] bgr){
+    public static Float[] getHSBfromBGR(int[] bgr){
         if (bgr.length==3){
             return getHSBfromBGR(bgr[0],bgr[1],bgr[2]);
         }
