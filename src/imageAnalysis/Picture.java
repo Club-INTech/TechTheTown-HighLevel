@@ -76,7 +76,7 @@ public abstract class Picture<T> {
      * @param height hauteur de l'image
      */
     public void setImage(T[] array, int width, int height, int thresholdMin, int thresholdMax) {
-        if (array instanceof Float[]) {
+        if (array instanceof Float[]){
             Float[] convertedArray = (Float[]) array;
             if (array.length == width * height * 3) {
                 this.width = width;
@@ -85,15 +85,17 @@ public abstract class Picture<T> {
                     if (!(convertedArray[i] > thresholdMax || convertedArray[i] < thresholdMin ||
                             convertedArray[i + 1] > thresholdMax || convertedArray[i + 1] < thresholdMin ||
                             convertedArray[i + 2] > thresholdMax || convertedArray[i + 2] < thresholdMin)) {
-                        this.imgArray[i / width][i % width][0] = array[i];
-                        this.imgArray[i / width][i % width][1] = array[i + 1];
-                        this.imgArray[i / width][i % width][2] = array[i + 2];
+                        int j=i/3;
+                        this.imgArray[j % width][j / width][0] = array[i];
+                        this.imgArray[j % width][j / width][1] = array[i + 1];
+                        this.imgArray[j % width][j / width][2] = array[i + 2];
                     } else {
                         this.imgArray = null;
                         return;
                     }
                 }
-            }else {
+            }
+            else {
                 System.out.println("Bad height and width when setting array:");
                 System.out.println("Array length: " + array.length + " // Picture size: " + this.width + "*" + this.height + "*3");
             }
@@ -107,15 +109,18 @@ public abstract class Picture<T> {
                     if (!(convertedArray[i] > thresholdMax || convertedArray[i] < thresholdMin ||
                             convertedArray[i + 1] > thresholdMax || convertedArray[i + 1] < thresholdMin ||
                             convertedArray[i + 2] > thresholdMax || convertedArray[i + 2] < thresholdMin)) {
-                        this.imgArray[i / width][i % width][0] = array[i];
-                        this.imgArray[i / width][i % width][1] = array[i + 1];
-                        this.imgArray[i / width][i % width][2] = array[i + 2];
+                        int j=i/3;
+                        this.imgArray[j % width][j / width][0] = array[i];
+                        this.imgArray[j % width][j / width][1] = array[i + 1];
+                        this.imgArray[j % width][j / width][2] = array[i + 2];
                     } else {
                         this.imgArray = null;
                         return;
                     }
                 }
-            }else {
+                System.out.println(this.imgArray[0][0][0]);
+            }
+            else {
                 System.out.println("Bad height and width when setting array:");
                 System.out.println("Array length: " + array.length + " // Picture size: " + this.width + "*" + this.height + "*3");
             }
@@ -131,9 +136,11 @@ public abstract class Picture<T> {
      * @param buffImg la BufferedImage à utiliser
      */
     public void setImage(BufferedImage buffImg) {
+        System.out.println(buffImg.getType());
         if (buffImg.getType() == 1 || buffImg.getType() == 4) {
             this.width = buffImg.getWidth();
             this.height = buffImg.getHeight();
+            this.imgArray=(T[][][])new Integer[this.width][this.height][3];
             int[] array = new int[this.width * this.height * 3];
             buffImg.getRaster().getPixels(0, 0, this.width, this.height, array);
             Integer[] convertedArray = Arrays.stream( array ).boxed().toArray( Integer[]::new );
@@ -191,11 +198,12 @@ public abstract class Picture<T> {
                     List<Integer> thirdParamList = new ArrayList<>();
                     for (int x = xStart; x < xStart + width; x++) {
                         for (int y = yStart; y < yStart + height; y++) {
-                            firstParamList.add((Integer)this.imgArray[x][y][0]);
-                            secondParamList.add((Integer)this.imgArray[x][y][1]);
-                            thirdParamList.add((Integer)this.imgArray[x][y][2]);
+                            firstParamList.add((Integer) this.imgArray[x][y][0]);
+                            secondParamList.add((Integer) this.imgArray[x][y][1]);
+                            thirdParamList.add((Integer) this.imgArray[x][y][2]);
                         }
                     }
+                    System.out.println(width+" "+height+" "+xStart+" "+yStart);
                     Collections.sort(firstParamList);
                     Collections.sort(secondParamList);
                     Collections.sort(thirdParamList);
@@ -216,7 +224,7 @@ public abstract class Picture<T> {
         }
         else{
             System.out.println("Bad parameters: xStart("+xStart+") yStart("+yStart+") width("+width+") height("+height+")"+
-                    " canGoOutOfBounds("+canGoOutOfBounds+") imageWidth("+this.width+") imageHeight"+this.height+")");
+                    " canGoOutOfBounds("+canGoOutOfBounds+") imageWidth("+this.width+") imageHeight("+this.height+")");
             return null;
         }
     }
@@ -231,8 +239,8 @@ public abstract class Picture<T> {
      */
     public T[] medianOverCircle(int xCenter, int yCenter, int radius, boolean canGoOutOfBounds){
         if (xCenter<this.width && yCenter<this.height && xCenter>=0 && yCenter>=0 && radius>0){
-            if (!canGoOutOfBounds) {
-                if (xCenter + radius >= this.width) {
+            if (!canGoOutOfBounds){
+                if (xCenter + radius >= this.width){
                     System.out.println("Out of bounds");
                     return null;
                 }
@@ -264,7 +272,7 @@ public abstract class Picture<T> {
                                 thirdParamList.add((Float)this.imgArray[x][y][2]);
                             }
                             else{
-                                if (x<this.width && x>=0 && y<this.width && y>=0){
+                                if (x<this.width && x>=0 && y<this.height && y>=0){
                                     nbPixelsChecked++;
                                     firstParamList.add((Float)this.imgArray[x][y][0]);
                                     secondParamList.add((Float)this.imgArray[x][y][1]);
@@ -296,7 +304,7 @@ public abstract class Picture<T> {
                                 thirdParamList.add((Integer) this.imgArray[x][y][2]);
                             }
                             else{
-                                if (x<this.width && x>=0 && y<this.width && y>=0){
+                                if (x<this.width && x>=0 && y<this.height && y>=0){
                                     nbPixelsChecked++;
                                     firstParamList.add((Integer)this.imgArray[x][y][0]);
                                     secondParamList.add((Integer)this.imgArray[x][y][1]);
@@ -321,7 +329,7 @@ public abstract class Picture<T> {
         }
         else{
             System.out.println("Bad parameters: xCenter("+xCenter+") yCenter("+yCenter+") radius("+radius+")"+
-                    " canGoOutOfBounds("+canGoOutOfBounds+") imageWidth("+this.width+") imageHeight"+this.height+")");
+                    " canGoOutOfBounds("+canGoOutOfBounds+") imageWidth("+this.width+") imageHeight("+this.height+")");
             return null;
         }
     }
@@ -391,7 +399,7 @@ public abstract class Picture<T> {
         }
         else{
             System.out.println("Bad parameters: xStart("+xStart+") yStart("+yStart+") width("+width+") height("+height+")"+
-                    " canGoOutOfBounds("+canGoOutOfBounds+") imageWidth("+this.width+") imageHeight"+this.height+")");
+                    " canGoOutOfBounds("+canGoOutOfBounds+") imageWidth("+this.width+") imageHeight("+this.height+")");
             return null;
         }
     }
@@ -439,7 +447,7 @@ public abstract class Picture<T> {
                                 thirdParamSum += (Float) this.imgArray[x][y][2];
                             }
                             else{
-                                if (x<this.width && x>=0 && y<this.width && y>=0){
+                                if (x<this.width && x>=0 && y<this.height && y>=0){
                                     nbPixelsChecked++;
                                     firstParamSum += (Float) this.imgArray[x][y][0];
                                     secondParamSum += (Float) this.imgArray[x][y][1];
@@ -468,7 +476,7 @@ public abstract class Picture<T> {
                                 thirdParamSum += (Integer) this.imgArray[x][y][2];
                             }
                             else{
-                                if (x<this.width && x>=0 && y<this.width && y>=0){
+                                if (x<this.width && x>=0 && y<this.height && y>=0){
                                     nbPixelsChecked++;
                                     firstParamSum += (Integer) this.imgArray[x][y][0];
                                     secondParamSum += (Integer) this.imgArray[x][y][1];
@@ -490,7 +498,7 @@ public abstract class Picture<T> {
         }
         else{
             System.out.println("Bad parameters: xCenter("+xCenter+") yCenter("+yCenter+") radius("+radius+")"+
-                    " canGoOutOfBounds("+canGoOutOfBounds+") imageWidth("+this.width+") imageHeight"+this.height+")");
+                    " canGoOutOfBounds("+canGoOutOfBounds+") imageWidth("+this.width+") imageHeight("+this.height+")");
             return null;
         }
     }
