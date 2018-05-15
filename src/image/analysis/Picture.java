@@ -118,7 +118,6 @@ public abstract class Picture<T> {
                         return;
                     }
                 }
-                System.out.println(this.imgArray[0][0][0]);
             } else {
                 System.out.println("Bad height and width when setting array:");
                 System.out.println("Array length: " + array.length + " // Picture size: " + this.width + "*" + this.height + "*3");
@@ -135,7 +134,6 @@ public abstract class Picture<T> {
      * @param buffImg la BufferedImage à utiliser
      */
     public void setImage(BufferedImage buffImg) {
-        System.out.println(buffImg.getType());
         if (buffImg.getType() == 1 || buffImg.getType() == 4) {
             this.width = buffImg.getWidth();
             this.height = buffImg.getHeight();

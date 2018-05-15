@@ -187,10 +187,6 @@ public class PictureEncodingConversion {
      * @return renvoie la couleur HSB
      */
     public static Float[] getHSBfromRGB(int r, int g, int b){
-        float h=0;
-        float s=0;
-        float v=0;
-        Float[] hsb=new Float[]{h,s,v};
         float hue, saturation, brightness;
         int cmax = (r > g) ? r : g;
         if (b > cmax) cmax = b;
@@ -225,10 +221,7 @@ public class PictureEncodingConversion {
                 hue = hue + 1.0f;
             }
         }
-        hsb[0] = hue;
-        hsb[1] = saturation;
-        hsb[2] = brightness;
-        return hsb;
+        return new Float[]{hue, saturation, brightness};
     }
 
     /**
@@ -593,10 +586,6 @@ public class PictureEncodingConversion {
      * @return renvoie la couleur HSB
      */
     public static Float[] getHSBfromBGR(int b, int g, int r){
-        float h=0;
-        float s=0;
-        float v=0;
-        Float[] hsb=new Float[]{h,s,v};
         float hue, saturation, brightness;
         int cmax = (r > g) ? r : g;
         if (b > cmax) cmax = b;
@@ -631,10 +620,7 @@ public class PictureEncodingConversion {
                 hue = hue + 1.0f;
             }
         }
-        hsb[0] = hue;
-        hsb[1] = saturation;
-        hsb[2] = brightness;
-        return hsb;
+        return new Float[]{hue,saturation,brightness};
     }
 
     /**

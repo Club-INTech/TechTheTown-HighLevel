@@ -23,24 +23,31 @@ public class JUnit_Picture extends JUnit_Test{
                 img=null;
                 e.printStackTrace();
             }
+            System.out.println(System.currentTimeMillis());
             BufferedImage convertedImg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
             convertedImg.getGraphics().drawImage(img, 0, 0, null);
 
 
+            System.out.println(System.currentTimeMillis());
             PictureRGB rgb = new PictureRGB();
             rgb.setImage(convertedImg);
             Integer[] b;
             b = rgb.medianOverRectangle(400,50,20,20,false);
             System.out.println(b[0]+" "+b[1]+" "+b[2]);
+            System.out.println(System.currentTimeMillis());
 
             PictureHSB hsb = new PictureHSB();
             hsb.setImage(rgb.getHSBImageArray());
             Float[] c;
             c = hsb.medianOverRectangle(400,50,20,20,true);
-            c = hsb.averageOverRectangle(400,50,20,20,true);
-            c = hsb.medianOverCircle(400,50,20,true);
-            c = hsb.averageOverCircle(400,50,20,true);
             System.out.println(c[0]+" "+c[1]+" "+c[2]);
+            System.out.println(System.currentTimeMillis());
+
+            PictureRGB rgb2 = new PictureRGB();
+            rgb2.setImage(hsb.getRGBImageArray());
+            Integer[] d = rgb2.medianOverRectangle(400,50,20,20,true);
+            System.out.println(d[0]+" "+d[1]+" "+d[2]);
+            System.out.println(System.currentTimeMillis());
         }
     }
 }

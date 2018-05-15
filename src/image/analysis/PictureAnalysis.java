@@ -57,7 +57,6 @@ public class PictureAnalysis {
                             thirdParamList.add((Integer)picImgArray[x][y][2]);
                         }
                     }
-                    System.out.println(width+" "+height+" "+xStart+" "+yStart);
                     Collections.sort(firstParamList);
                     Collections.sort(secondParamList);
                     Collections.sort(thirdParamList);
