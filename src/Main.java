@@ -20,7 +20,7 @@
 import container.Container;
 import enums.*;
 import exceptions.ContainerException;
-import imageAnalysis.PatternRecognition;
+import image.patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;

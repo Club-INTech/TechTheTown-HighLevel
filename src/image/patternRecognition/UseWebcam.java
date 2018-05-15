@@ -1,4 +1,4 @@
-package imageAnalysis;
+package image.patternRecognition;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -46,7 +46,7 @@ public class UseWebcam {
         List<String> command = new ArrayList<>();
 
         command.add(pythonCommand);
-        command.add("./src/imageAnalysis/setPatternPosition/SetPatternPositionGreen.py");
+        command.add("./src/image/setPatternPosition/SetPatternPositionGreen.py");
 
         //On crée le processus qui va lancer python pour set la position des patterns
         ProcessBuilder pb = new ProcessBuilder(command);
@@ -83,7 +83,7 @@ public class UseWebcam {
         List<String> command = new ArrayList<>();
         //Camera FishEye
         command.add(pythonCommand);
-        command.add("./src/imageAnalysis/shootPicture/CaptureImage.py");
+        command.add("./src/image/shootPicture/CaptureImage.py");
 
         //On crée le processus qui va lancer python pour ouvrir la caméra
         ProcessBuilder pb = new ProcessBuilder(command);

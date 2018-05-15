@@ -1,7 +1,7 @@
 package tests;
 
-import imageAnalysis.Picture;
-import imageAnalysis.PictureRGB;
+import image.analysis.PictureHSB;
+import image.analysis.PictureRGB;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -27,11 +27,20 @@ public class JUnit_Picture extends JUnit_Test{
             convertedImg.getGraphics().drawImage(img, 0, 0, null);
 
 
-            Picture a = new PictureRGB();
-            a.setImage(convertedImg);
-            Object[] b;
-            b = a.medianOverCircle(849,599,50,true);
+            PictureRGB rgb = new PictureRGB();
+            rgb.setImage(convertedImg);
+            Integer[] b;
+            b = rgb.medianOverRectangle(400,50,20,20,false);
             System.out.println(b[0]+" "+b[1]+" "+b[2]);
+
+            PictureHSB hsb = new PictureHSB();
+            hsb.setImage(rgb.getHSBImageArray());
+            Float[] c;
+            c = hsb.medianOverRectangle(400,50,20,20,true);
+            c = hsb.averageOverRectangle(400,50,20,20,true);
+            c = hsb.medianOverCircle(400,50,20,true);
+            c = hsb.averageOverCircle(400,50,20,true);
+            System.out.println(c[0]+" "+c[1]+" "+c[2]);
         }
     }
 }

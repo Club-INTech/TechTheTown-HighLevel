@@ -1,7 +1,7 @@
-package imageAnalysis.shootPicture.piCam.RPiCamera;
+package image.patternRecognition.setPatternPosition.shootPicture.piCam.RPiCamera;
 
-import imageAnalysis.shootPicture.piCam.cameraEnums.*;
-import imageAnalysis.shootPicture.piCam.cameraExceptions.*;
+import image.patternRecognition.setPatternPosition.shootPicture.piCam.cameraEnums.*;
+import image.patternRecognition.setPatternPosition.shootPicture.piCam.cameraExceptions.FailedToRunRaspistillException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -52,7 +52,7 @@ public class RPiCamera {
 	/**
 	 * Creates new RPiCamera.RPiCamera. The resulting RPiCamera.RPiCamera's save directory will be set to
      * "/home/pi/Pictures" and will have a default image width and height of 500.
-	 * @throws FailedToRunRaspistillException 
+	 * @throws FailedToRunRaspistillException
 	 */
 	public RPiCamera() throws FailedToRunRaspistillException {
 		this("/home/pi/Pictures");

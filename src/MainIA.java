@@ -22,7 +22,7 @@ import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
-import imageAnalysis.PatternRecognition;
+import image.patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;

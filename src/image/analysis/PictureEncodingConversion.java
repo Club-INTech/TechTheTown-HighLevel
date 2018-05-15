@@ -1,4 +1,4 @@
-package imageAnalysis;
+package image.analysis;
 
 public class PictureEncodingConversion {
 
@@ -25,12 +25,12 @@ public class PictureEncodingConversion {
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
                 if (canGoOutOfBounds) {
-                    width = Math.min(pictureWidth - xStart - 1, width);
-                    height = Math.min(pictureHeight - yStart - 1, height);
+                    width = Math.min(pictureWidth - xStart, width);
+                    height = Math.min(pictureHeight - yStart, height);
                     xStart = Math.max(xStart, 0);
                     yStart = Math.max(yStart, 0);
                 }
-                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                if (xStart + width <= pictureWidth && yStart + height <= pictureHeight && xStart >= 0 && yStart >= 0) {
                     Float[][][] hsbArray = picture.getImageArray();
                     Integer[][][] rgbArray = new Integer[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {
@@ -144,12 +144,12 @@ public class PictureEncodingConversion {
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
                 if (canGoOutOfBounds) {
-                    width = Math.min(pictureWidth - xStart - 1, width);
-                    height = Math.min(pictureHeight - yStart - 1, height);
+                    width = Math.min(pictureWidth - xStart, width);
+                    height = Math.min(pictureHeight - yStart, height);
                     xStart = Math.max(xStart, 0);
                     yStart = Math.max(yStart, 0);
                 }
-                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                if (xStart + width <= pictureWidth && yStart + height <= pictureHeight && xStart >= 0 && yStart >= 0) {
                     Integer[][][] rgbArray = picture.getImageArray();
                     Float[][][] hsbArray = new Float[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {
@@ -270,12 +270,12 @@ public class PictureEncodingConversion {
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
                 if (canGoOutOfBounds) {
-                    width = Math.min(pictureWidth - xStart - 1, width);
-                    height = Math.min(pictureHeight - yStart - 1, height);
+                    width = Math.min(pictureWidth - xStart, width);
+                    height = Math.min(pictureHeight - yStart, height);
                     xStart = Math.max(xStart, 0);
                     yStart = Math.max(yStart, 0);
                 }
-                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                if (xStart + width <= pictureWidth && yStart + height <= pictureHeight && xStart >= 0 && yStart >= 0) {
                     Integer[][][] bgrArray = picture.getImageArray();
                     Integer[][][] rgbArray = new Integer[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {
@@ -347,12 +347,12 @@ public class PictureEncodingConversion {
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
                 if (canGoOutOfBounds) {
-                    width = Math.min(pictureWidth - xStart - 1, width);
-                    height = Math.min(pictureHeight - yStart - 1, height);
+                    width = Math.min(pictureWidth - xStart, width);
+                    height = Math.min(pictureHeight - yStart, height);
                     xStart = Math.max(xStart, 0);
                     yStart = Math.max(yStart, 0);
                 }
-                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                if (xStart + width <= pictureWidth && yStart + height <= pictureHeight && xStart >= 0 && yStart >= 0) {
                     Integer[][][] rgbArray = picture.getImageArray();
                     Integer[][][] bgrArray = new Integer[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {
@@ -431,12 +431,12 @@ public class PictureEncodingConversion {
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
                 if (canGoOutOfBounds) {
-                    width = Math.min(pictureWidth - xStart - 1, width);
-                    height = Math.min(pictureHeight - yStart - 1, height);
+                    width = Math.min(pictureWidth - xStart, width);
+                    height = Math.min(pictureHeight - yStart, height);
                     xStart = Math.max(xStart, 0);
                     yStart = Math.max(yStart, 0);
                 }
-                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                if (xStart + width <= pictureWidth && yStart + height <= pictureHeight && xStart >= 0 && yStart >= 0) {
                     Float[][][] hsbArray = picture.getImageArray();
                     Integer[][][] bgrArray = new Integer[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {
@@ -550,12 +550,12 @@ public class PictureEncodingConversion {
             int pictureHeight = picture.getHeight();
             if (xStart < pictureWidth && yStart < pictureHeight) {
                 if (canGoOutOfBounds) {
-                    width = Math.min(pictureWidth - xStart - 1, width);
-                    height = Math.min(pictureHeight - yStart - 1, height);
+                    width = Math.min(pictureWidth - xStart, width);
+                    height = Math.min(pictureHeight - yStart, height);
                     xStart = Math.max(xStart, 0);
                     yStart = Math.max(yStart, 0);
                 }
-                if (xStart + width < pictureWidth && yStart + height < pictureHeight && xStart >= 0 && yStart >= 0) {
+                if (xStart + width <= pictureWidth && yStart + height <= pictureHeight && xStart >= 0 && yStart >= 0) {
                     Integer[][][] bgrArray = picture.getImageArray();
                     Float[][][] hsbArray = new Float[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {

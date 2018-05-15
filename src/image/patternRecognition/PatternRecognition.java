@@ -1,4 +1,4 @@
-package imageAnalysis;
+package image.patternRecognition;
 
 import enums.Colors;
 import enums.Patterns;

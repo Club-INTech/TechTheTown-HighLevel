@@ -1,4 +1,4 @@
-package imageAnalysis;
+package image.patternRecognition;
 
 
 import org.opencv.core.Core;

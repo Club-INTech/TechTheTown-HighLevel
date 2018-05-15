@@ -1,8 +1,9 @@
-package imageAnalysis.shootPicture.piCam;
+package image.patternRecognition.setPatternPosition.shootPicture.piCam;
 
-import imageAnalysis.shootPicture.piCam.RPiCamera.*;
-import imageAnalysis.shootPicture.piCam.cameraEnums.*;
-import imageAnalysis.shootPicture.piCam.cameraExceptions.*;
+import image.patternRecognition.setPatternPosition.shootPicture.piCam.RPiCamera.RPiCamera;
+import image.patternRecognition.setPatternPosition.shootPicture.piCam.cameraEnums.AWB;
+import image.patternRecognition.setPatternPosition.shootPicture.piCam.cameraEnums.Exposure;
+import image.patternRecognition.setPatternPosition.shootPicture.piCam.cameraExceptions.FailedToRunRaspistillException;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

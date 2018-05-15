@@ -1,8 +1,8 @@
 package tests;
 
 import org.junit.Test;
-import imageAnalysis.shootPicture.piCam.ShootBufferedStill;
-import imageAnalysis.shootPicture.piCam.ShootStill;
+import image.patternRecognition.setPatternPosition.shootPicture.piCam.ShootBufferedStill;
+import image.patternRecognition.setPatternPosition.shootPicture.piCam.ShootStill;
 
 public class JUnit_TakePicture extends JUnit_Test {
 
