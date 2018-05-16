@@ -399,7 +399,7 @@ public class PictureAnalysis {
      * @return renvoie une array contenant les 3 composantes de la couleur du pixel choisi
      */
     public static Object[] getPixel(Picture pic, int x, int y){
-        return pic.getImageArray()[x][y];
+        return pic.getPixel(x,y);
     }
 
 

@@ -173,6 +173,9 @@ public abstract class Picture<T> {
     ///////////////////////// PictureAnalysis Wrapper ///////////////////////////////
 
 
+    public T[] getPixel(int x, int y){
+        return this.imgArray[x][y];
+    }
     public T[] medianOverRectangle(int xStart, int yStart, int width, int height, boolean canGoOutOfBounds) {
         return (T[]) PictureAnalysis.medianOverRectangle(this, xStart, yStart, width, height, canGoOutOfBounds);
     }
