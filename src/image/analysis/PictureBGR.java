@@ -7,6 +7,8 @@ public class PictureBGR extends Picture<Integer> {
 
     public PictureBGR() {
         super();
+        super.setMinValueInImgArray(0);
+        super.setMaxValueInImgArray(255);
     }
 
      /**
@@ -79,7 +81,7 @@ public class PictureBGR extends Picture<Integer> {
      * @param array array BGR ayant des valeurs de 0 à 255
      */
     public void setImage(Integer[][][] array) {
-        super.setImage(array, 0, 255);
+        super.setImage(array, this.minValueInImgArray, this.maxValueInImgArray);
     }
 
     /**
@@ -89,7 +91,7 @@ public class PictureBGR extends Picture<Integer> {
      * @param height hauteur de l'image
      */
     public void setImage(Integer[] array, int width, int height) {
-        super.setImage(array,width,height,0,255);
+        super.setImage(array,width,height,this.minValueInImgArray,this.maxValueInImgArray);
     }
 
 }

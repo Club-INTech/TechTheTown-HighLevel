@@ -7,6 +7,8 @@ public class PictureHSB extends Picture<Float> {
 
     public PictureHSB() {
         super();
+        super.setMinValueInImgArray((float)0);
+        super.setMaxValueInImgArray((float)1);
     }
 
     public BufferedImage toBufferedImage() {
@@ -56,7 +58,7 @@ public class PictureHSB extends Picture<Float> {
      * @param array array HSB ayant des valeurs de 0 à 255
      */
     public void setImage(Float[][][] array) {
-        super.setImage(array, 0, 1);
+        super.setImage(array, this.minValueInImgArray, this.maxValueInImgArray);
     }
 
     /**
@@ -66,6 +68,6 @@ public class PictureHSB extends Picture<Float> {
      * @param height hauteur de l'image
      */
     public void setImage(Float[] array, int width, int height) {
-        super.setImage(array,width,height,0,1);
+        super.setImage(array,width,height,this.minValueInImgArray,this.maxValueInImgArray);
     }
 }

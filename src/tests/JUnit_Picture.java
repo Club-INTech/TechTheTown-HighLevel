@@ -48,6 +48,12 @@ public class JUnit_Picture extends JUnit_Test{
             Integer[] d = rgb2.medianOverRectangle(400,50,20,20,true);
             System.out.println(d[0]+" "+d[1]+" "+d[2]);
             System.out.println(System.currentTimeMillis());
+
+            PictureRGB rgbSub = (PictureRGB)rgb2.getSubPicture(400,50,20,20,false);
+            Integer[] e = rgbSub.medianOverRectangle(0,0,20,20,false);
+            System.out.println(e[0]+" "+e[1]+" "+e[2]);
+            System.out.println(System.currentTimeMillis());
+
         }
     }
 }
