@@ -35,7 +35,7 @@ public class PictureEncodingConversion {
                     Integer[][][] rgbArray = new Integer[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {
                         for (int y = yStart; y < yStart + height; y++) {
-                            rgbArray[x][y] = getRGBfromHSB(hsbArray[x][y][0], hsbArray[x][y][1], hsbArray[x][y][2]);
+                            getRGBfromHSB(hsbArray[x][y], rgbArray[x][y]);
                         }
                     }
                     return rgbArray;
@@ -61,71 +61,44 @@ public class PictureEncodingConversion {
     }
 
     /** Convertit une couleur en RGB à partir d'une couleur en HSB
-     * @param hue angle de la couleur (rouge, orange, jaune, vert, bleu, violet...)
-     * @param saturation saturation de la couleur (coloré ou décoloré)
-     * @param brightness luminosité de la couleur (éclairé ou sombre)
-     * @return renvoie une couleur en RGB
      */
-    public static Integer[] getRGBfromHSB(float hue, float saturation, float brightness){
-        int r=0;
-        int g=0;
-        int b=0;
-        if (saturation == 0) {
-            r = g = b = (int) (brightness * 255.0f + 0.5f);
+    public static void getRGBfromHSB(Float[] fromColor, Integer[] toColor){
+        if (fromColor[1] == 0) {
+            toColor[0] = toColor[1] = toColor[2] = (int) (fromColor[2] * 255.0f + 0.5f);
         } else {
-            float h = (hue - (float) Math.floor(hue)) * 6.0f;
-            float f = h - (float) java.lang.Math.floor(h);
-            float p = brightness * (1.0f - saturation);
-            float q = brightness * (1.0f - saturation * f);
-            float t = brightness * (1.0f - (saturation * (1.0f - f)));
+            float h = (fromColor[0] - (float) Math.floor(fromColor[0])) * 6.0f;
             switch ((int) h) {
                 case 0:
-                    r = (int) (brightness * 255.0f + 0.5f);
-                    g = (int) (t * 255.0f + 0.5f);
-                    b = (int) (p * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * (1.0f - (fromColor[1] * (1.0f - (h - (float) java.lang.Math.floor(h))))) * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
                     break;
                 case 1:
-                    r = (int) (q * 255.0f + 0.5f);
-                    g = (int) (brightness * 255.0f + 0.5f);
-                    b = (int) (p * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * (1.0f - fromColor[1] * (h - (float) java.lang.Math.floor(h))) * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
                     break;
                 case 2:
-                    r = (int) (p * 255.0f + 0.5f);
-                    g = (int) (brightness * 255.0f + 0.5f);
-                    b = (int) (t * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * (1.0f - (fromColor[1] * (1.0f - (h - (float) java.lang.Math.floor(h))))) * 255.0f + 0.5f);
                     break;
                 case 3:
-                    r = (int) (p * 255.0f + 0.5f);
-                    g = (int) (q * 255.0f + 0.5f);
-                    b = (int) (brightness * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * (1.0f - fromColor[1] * (h - (float) java.lang.Math.floor(h))) * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * 255.0f + 0.5f);
                     break;
                 case 4:
-                    r = (int) (t * 255.0f + 0.5f);
-                    g = (int) (p * 255.0f + 0.5f);
-                    b = (int) (brightness * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * (1.0f - (fromColor[1] * (1.0f - (h - (float) java.lang.Math.floor(h))))) * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * 255.0f + 0.5f);
                     break;
                 case 5:
-                    r = (int) (brightness * 255.0f + 0.5f);
-                    g = (int) (p * 255.0f + 0.5f);
-                    b = (int) (q * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * (1.0f - fromColor[1] * (h - (float) java.lang.Math.floor(h))) * 255.0f + 0.5f);
                     break;
             }
-        }
-        return new Integer[]{r,g,b};
-    }
-
-    /**
-     * Convertit une couleur HSB en RGB
-     * @param hsb le triplé ordonné HSB
-     * @return renvoie le triplé ordonné RGB
-     */
-    public static Integer[] getRGBfromHSB(float[] hsb){
-        if (hsb.length==3){
-            return getRGBfromHSB(hsb[0],hsb[1],hsb[2]);
-        }
-        else{
-            System.out.println("Bad length of given HSB");
-            return null;
         }
     }
 
@@ -154,7 +127,7 @@ public class PictureEncodingConversion {
                     Float[][][] hsbArray = new Float[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {
                         for (int y = yStart; y < yStart + height; y++) {
-                            hsbArray[x][y] = getHSBfromRGB(rgbArray[x][y][0], rgbArray[x][y][1], rgbArray[x][y][2]);
+                            getHSBfromRGB(rgbArray[x][y],hsbArray[x][y]);
                         }
                     }
                     return hsbArray;
@@ -181,61 +154,37 @@ public class PictureEncodingConversion {
 
 
     /** Convertit une couleur RGB en HSB
-     * @param r composante rouge (R)
-     * @param g composante verte (G)
-     * @param b composante bleue (B)
      * @return renvoie la couleur HSB
      */
-    public static Float[] getHSBfromRGB(int r, int g, int b){
-        float hue, saturation, brightness;
-        int cmax = (r > g) ? r : g;
-        if (b > cmax) cmax = b;
-        int cmin = (r < g) ? r : g;
-        if (b < cmin) cmin = b;
+    public static void getHSBfromRGB(Integer[] fromColor, Float[] toColor) {
+        int cmax = (fromColor[0] > fromColor[1]) ? fromColor[0] : fromColor[1];
+        if (fromColor[2] > cmax) cmax = fromColor[2];
+        int cmin = (fromColor[0] < fromColor[1]) ? fromColor[0] : fromColor[1];
+        if (fromColor[2] < cmin) cmin = fromColor[2];
 
-        brightness = ((float) cmax) / 255.0f;
+        toColor[2] = ((float) cmax) / 255.0f;
         if (cmax != 0) {
-            saturation = ((float) (cmax - cmin)) / ((float) cmax);
+            toColor[1] = ((float) (cmax - cmin)) / ((float) cmax);
+        } else {
+            toColor[1] = (float) 0;
         }
-        else {
-            saturation = 0;
-        }
-        if (saturation == 0) {
-            hue = 0;
-        }
-        else {
-            float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
-            float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
-            float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
-            if (r == cmax) {
-                hue = bluec - greenc;
+        if (toColor[1] == 0) {
+            toColor[0] = (float) 0;
+        } else {
+            float redc = ((float) (cmax - fromColor[0])) / ((float) (cmax - cmin));
+            float greenc = ((float) (cmax - fromColor[1])) / ((float) (cmax - cmin));
+            float bluec = ((float) (cmax - fromColor[2])) / ((float) (cmax - cmin));
+            if (fromColor[0] == cmax) {
+                toColor[0] = bluec - greenc;
+            } else if (fromColor[1] == cmax) {
+                toColor[0] = 2.0f + redc - bluec;
+            } else {
+                toColor[0] = 4.0f + greenc - redc;
             }
-            else if (g == cmax) {
-                hue = 2.0f + redc - bluec;
+            toColor[0] = toColor[0] / 6.0f;
+            if (toColor[0] < 0) {
+                toColor[0] = toColor[0] + 1.0f;
             }
-            else {
-                hue = 4.0f + greenc - redc;
-            }
-            hue = hue / 6.0f;
-            if (hue < 0) {
-                hue = hue + 1.0f;
-            }
-        }
-        return new Float[]{hue, saturation, brightness};
-    }
-
-    /**
-     * Convertit une couleur RGB en HSB
-     * @param rgb le triplé ordonné RGB
-     * @return renvoie le triplé ordonné HSB
-     */
-    public static Float[] getHSBfromRGB(int[] rgb){
-        if (rgb.length==3){
-            return getHSBfromRGB(rgb[0],rgb[1],rgb[2]);
-        }
-        else{
-            System.out.println("Bad length of given RGB");
-            return null;
         }
     }
 
@@ -273,7 +222,7 @@ public class PictureEncodingConversion {
                     Integer[][][] rgbArray = new Integer[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {
                         for (int y = yStart; y < yStart + height; y++) {
-                            rgbArray[x][y] = getRGBfromBGR(bgrArray[x][y][0], bgrArray[x][y][1], bgrArray[x][y][2]);
+                            getRGBfromBGR(bgrArray[x][y], rgbArray[x][y]);
                         }
                     }
                     return rgbArray;
@@ -298,33 +247,17 @@ public class PictureEncodingConversion {
         }
     }
 
+
     /** Convertit une couleur BGR en RGB
-     * @param b composante bleue (B)
-     * @param g composante verte (G)
-     * @param r composante rouge (R)
+     * @param fromColor couleur de laquelle on part
+     * @param toColor couleur vers laquelle on convertit
      * @return renvoie la couleur RGB
      */
-    public static Integer[] getRGBfromBGR(int b, int g, int r){
-        return new Integer[]{r,g,b};
+    public static void getRGBfromBGR(Integer[] fromColor, Integer[] toColor){
+        toColor[0]=fromColor[2];
+        toColor[1]=fromColor[1];
+        toColor[2]=fromColor[0];
     }
-
-    /**
-     * Convertit une couleur BGR en RGB
-     * @param bgr le triplé ordonné BGR
-     * @return renvoie le triplé ordonné RGB
-     */
-    public static Integer[] getRGBfromBGR(int[] bgr){
-        if (bgr.length==3){
-            return new Integer[]{bgr[2],bgr[1],bgr[0]};
-        }
-        else{
-            System.out.println("Bad length of given BGR");
-            return null;
-        }
-    }
-
-
-
     /**
      * Donne l'équivalent BGR d'une partie d'image RGB
      * @param picture l'image
@@ -350,7 +283,7 @@ public class PictureEncodingConversion {
                     Integer[][][] bgrArray = new Integer[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {
                         for (int y = yStart; y < yStart + height; y++) {
-                            bgrArray[x][y] = getRGBfromBGR(rgbArray[x][y][0], rgbArray[x][y][1], rgbArray[x][y][2]);
+                            getBGRfromRGB(rgbArray[x][y], bgrArray[x][y]);
                         }
                     }
                     return bgrArray;
@@ -375,28 +308,14 @@ public class PictureEncodingConversion {
         }
     }
     /** Convertit une couleur RGB en BGR
-     * @param r composante rouge (R)
-     * @param g composante verte (G)
-     * @param b composante bleue (B)
+     * @param fromColor couleur de laquelle on part
+     * @param toColor couleur vers laquelle on convertit
      * @return renvoie la couleur BGR
      */
-    public static int[] getBGRfromRGB(int r, int g, int b){
-        return new int[]{b,g,r};
-    }
-
-    /**
-     * Convertit une couleur RGB en BGR
-     * @param rgb le triplé ordonné RGB
-     * @return renvoie le triplé ordonné BGR
-     */
-    public static int[] getBGRfromRGB(int[] rgb){
-        if (rgb.length==3){
-            return new int[]{rgb[2],rgb[1],rgb[0]};
-        }
-        else{
-            System.out.println("Bad length of given RGB");
-            return null;
-        }
+    public static void getBGRfromRGB(Integer[] fromColor, Integer[] toColor){
+        toColor[0]=fromColor[2];
+        toColor[1]=fromColor[1];
+        toColor[2]=fromColor[0];
     }
 
 
@@ -434,7 +353,7 @@ public class PictureEncodingConversion {
                     Integer[][][] bgrArray = new Integer[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {
                         for (int y = yStart; y < yStart + height; y++) {
-                            bgrArray[x][y] = getBGRfromHSB(hsbArray[x][y][0], hsbArray[x][y][1], hsbArray[x][y][2]);
+                            getBGRfromHSB(hsbArray[x][y], bgrArray[x][y]);
                         }
                     }
                     return bgrArray;
@@ -460,71 +379,45 @@ public class PictureEncodingConversion {
     }
 
     /** Convertit une couleur en HSB en une couleur BGR
-     * @param hue angle de la couleur (rouge, orange, jaune, vert, bleu, violet...)
-     * @param saturation saturation de la couleur (coloré ou décoloré)
-     * @param brightness luminosité de la couleur (éclairé ou sombre)
      * @return renvoie une couleur en BGR
      */
-    public static Integer[] getBGRfromHSB(float hue, float saturation, float brightness){
-        int r=0;
-        int g=0;
-        int b=0;
-        if (saturation == 0) {
-            r = g = b = (int) (brightness * 255.0f + 0.5f);
+    public static void getBGRfromHSB(Float[] fromColor, Integer[] toColor){
+        if (fromColor[1] == 0) {
+            toColor[0] = toColor[1] = toColor[2] = (int) (fromColor[2] * 255.0f + 0.5f);
         } else {
-            float h = (hue - (float) Math.floor(hue)) * 6.0f;
-            float f = h - (float) java.lang.Math.floor(h);
-            float p = brightness * (1.0f - saturation);
-            float q = brightness * (1.0f - saturation * f);
-            float t = brightness * (1.0f - (saturation * (1.0f - f)));
+            float h = (fromColor[0] - (float) Math.floor(fromColor[0])) * 6.0f;
             switch ((int) h) {
                 case 0:
-                    r = (int) (brightness * 255.0f + 0.5f);
-                    g = (int) (t * 255.0f + 0.5f);
-                    b = (int) (p * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * (1.0f - (fromColor[1] * (1.0f - (h - (float) java.lang.Math.floor(h))))) * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
                     break;
                 case 1:
-                    r = (int) (q * 255.0f + 0.5f);
-                    g = (int) (brightness * 255.0f + 0.5f);
-                    b = (int) (p * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * (1.0f - fromColor[1] * (h - (float) java.lang.Math.floor(h))) * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
                     break;
                 case 2:
-                    r = (int) (p * 255.0f + 0.5f);
-                    g = (int) (brightness * 255.0f + 0.5f);
-                    b = (int) (t * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * (1.0f - (fromColor[1] * (1.0f - (h - (float) java.lang.Math.floor(h))))) * 255.0f + 0.5f);
                     break;
                 case 3:
-                    r = (int) (p * 255.0f + 0.5f);
-                    g = (int) (q * 255.0f + 0.5f);
-                    b = (int) (brightness * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * (1.0f - fromColor[1] * (h - (float) java.lang.Math.floor(h))) * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * 255.0f + 0.5f);
                     break;
                 case 4:
-                    r = (int) (t * 255.0f + 0.5f);
-                    g = (int) (p * 255.0f + 0.5f);
-                    b = (int) (brightness * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * (1.0f - (fromColor[1] * (1.0f - (h - (float) java.lang.Math.floor(h))))) * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * 255.0f + 0.5f);
                     break;
                 case 5:
-                    r = (int) (brightness * 255.0f + 0.5f);
-                    g = (int) (p * 255.0f + 0.5f);
-                    b = (int) (q * 255.0f + 0.5f);
+                    toColor[2] = (int) (fromColor[2] * 255.0f + 0.5f);
+                    toColor[1] = (int) (fromColor[2] * (1.0f - fromColor[1]) * 255.0f + 0.5f);
+                    toColor[0] = (int) (fromColor[2] * (1.0f - fromColor[1] * (h - (float) java.lang.Math.floor(h))) * 255.0f + 0.5f);
                     break;
             }
-        }
-        return new Integer[]{b,g,r};
-    }
-
-    /**
-     * Convertit une couleur HSB en BGR
-     * @param hsb le triplé ordonné HSB
-     * @return renvoie le triplé ordonné BGR
-     */
-    public static Integer[] getBGRfromHSB(float[] hsb){
-        if (hsb.length==3){
-            return getBGRfromHSB(hsb[0],hsb[1],hsb[2]);
-        }
-        else{
-            System.out.println("Bad length of given HSB");
-            return null;
         }
     }
 
@@ -553,7 +446,7 @@ public class PictureEncodingConversion {
                     Float[][][] hsbArray = new Float[width][height][3];
                     for (int x = xStart; x < xStart + width; x++) {
                         for (int y = yStart; y < yStart + height; y++) {
-                            hsbArray[x][y] = getHSBfromBGR(bgrArray[x][y][0], bgrArray[x][y][1], bgrArray[x][y][2]);
+                            getHSBfromBGR(bgrArray[x][y],hsbArray[x][y]);
                         }
                     }
                     return hsbArray;
@@ -580,63 +473,42 @@ public class PictureEncodingConversion {
 
 
     /** Convertit une couleur BGR en HSB
-     * @param b composante bleue (B)
-     * @param g composante verte (G)
-     * @param r composante rouge (R)
-     * @return renvoie la couleur HSB
+     * @param fromColor array de la couleur RGB de laquelle convertir
+     * @param toColor array de la couleur HSB qui sera rempli
      */
-    public static Float[] getHSBfromBGR(int b, int g, int r){
-        float hue, saturation, brightness;
-        int cmax = (r > g) ? r : g;
-        if (b > cmax) cmax = b;
-        int cmin = (r < g) ? r : g;
-        if (b < cmin) cmin = b;
+    public static void getHSBfromBGR(Integer[] fromColor, Float[] toColor){
+        int cmax = (fromColor[2] > fromColor[1]) ? fromColor[2] : fromColor[1];
+        if (fromColor[0] > cmax) cmax = fromColor[0];
+        int cmin = (fromColor[2] < fromColor[1]) ? fromColor[2] : fromColor[1];
+        if (fromColor[0] < cmin) cmin = fromColor[0];
 
-        brightness = ((float) cmax) / 255.0f;
+        toColor[2] = ((float) cmax) / 255.0f;
         if (cmax != 0) {
-            saturation = ((float) (cmax - cmin)) / ((float) cmax);
+            toColor[1] = ((float) (cmax - cmin)) / ((float) cmax);
         }
         else {
-            saturation = 0;
+            toColor[1] = (float)0;
         }
-        if (saturation == 0) {
-            hue = 0;
+        if (toColor[1] == 0) {
+            toColor[0] = (float)0;
         }
         else {
-            float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
-            float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
-            float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
-            if (r == cmax) {
-                hue = bluec - greenc;
+            float redc = ((float) (cmax - fromColor[0])) / ((float) (cmax - cmin));
+            float greenc = ((float) (cmax - fromColor[1])) / ((float) (cmax - cmin));
+            float bluec = ((float) (cmax - fromColor[2])) / ((float) (cmax - cmin));
+            if (fromColor[2] == cmax) {
+                toColor[0] = bluec - greenc;
             }
-            else if (g == cmax) {
-                hue = 2.0f + redc - bluec;
+            else if (fromColor[1] == cmax) {
+                toColor[0] = 2.0f + redc - bluec;
             }
             else {
-                hue = 4.0f + greenc - redc;
+                toColor[0] = 4.0f + greenc - redc;
             }
-            hue = hue / 6.0f;
-            if (hue < 0) {
-                hue = hue + 1.0f;
+            toColor[0] = toColor[0] / 6.0f;
+            if (toColor[0] < 0) {
+                toColor[0] = toColor[0] + 1.0f;
             }
-        }
-        return new Float[]{hue,saturation,brightness};
-    }
-
-    /**
-     * Convertit une couleur BGR en HSB
-     * @param bgr le triplé ordonné BGR
-     * @return renvoie le triplé ordonné HSB
-     */
-    public static Float[] getHSBfromBGR(int[] bgr){
-        if (bgr.length==3){
-            return getHSBfromBGR(bgr[0],bgr[1],bgr[2]);
-        }
-        else{
-            System.out.println("Bad length of given BGR");
-            return null;
         }
     }
-
-
 }
