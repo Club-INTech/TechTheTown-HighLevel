@@ -11,6 +11,10 @@ public class PictureRGB extends Picture<Integer> {
         super.setMaxValueInImgArray(255);
     }
 
+    /**
+     * Convertit l'image en BufferedImage
+     * @return renvoie une bufferedImage
+     */
     public BufferedImage toBufferedImage() {
         BufferedImage buffImg = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
         WritableRaster raster = (WritableRaster) buffImg.getData();

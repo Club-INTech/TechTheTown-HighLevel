@@ -371,16 +371,16 @@ public class PictureAnalysis {
     public static float computeDistanceBetweenTwoColors(Object[] firstColor, Object[] secondColor){
         if (firstColor instanceof Integer[] && secondColor instanceof Integer[]){
             int distance=0;
-            distance+=((Integer)firstColor[0]-(Integer)firstColor[0])*((Integer)firstColor[0]-(Integer)firstColor[0]);
-            distance+=((Integer)firstColor[1]-(Integer)firstColor[1])*((Integer)firstColor[1]-(Integer)firstColor[1]);
-            distance+=((Integer)firstColor[2]-(Integer)firstColor[2])*((Integer)firstColor[2]-(Integer)firstColor[2]);
+            distance+=((Integer)firstColor[0]-(Integer)secondColor[0])*((Integer)firstColor[0]-(Integer)secondColor[0]);
+            distance+=((Integer)firstColor[1]-(Integer)secondColor[1])*((Integer)firstColor[1]-(Integer)secondColor[1]);
+            distance+=((Integer)firstColor[2]-(Integer)secondColor[2])*((Integer)firstColor[2]-(Integer)secondColor[2]);
             return distance;
         }
         else if (firstColor instanceof Float[][][] && secondColor instanceof Float[]){
             float distance=0;
-            distance+=((Float)firstColor[0]-(Float)firstColor[0])*((Float)firstColor[0]-(Float)firstColor[0]);
-            distance+=((Float)firstColor[1]-(Float)firstColor[1])*((Float)firstColor[1]-(Float)firstColor[1]);
-            distance+=((Float)firstColor[2]-(Float)firstColor[2])*((Float)firstColor[2]-(Float)firstColor[2]);
+            distance+=((Float)firstColor[0]-(Float)secondColor[0])*((Float)firstColor[0]-(Float)secondColor[0]);
+            distance+=((Float)firstColor[1]-(Float)secondColor[1])*((Float)firstColor[1]-(Float)secondColor[1]);
+            distance+=((Float)firstColor[2]-(Float)secondColor[2])*((Float)firstColor[2]-(Float)secondColor[2]);
             return distance;
         }
         else{
