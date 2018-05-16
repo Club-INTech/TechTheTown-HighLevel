@@ -61,6 +61,8 @@ public class PictureEncodingConversion {
     }
 
     /** Convertit une couleur en RGB à partir d'une couleur en HSB
+     * @param fromColor array des composantes de la couleur RGB de laquelle partir
+     * @param toColor array des composantes de la couleur HSB qu'on recoit
      */
     public static void getRGBfromHSB(Float[] fromColor, Integer[] toColor){
         if (fromColor[1] == 0) {
@@ -153,8 +155,9 @@ public class PictureEncodingConversion {
     }
 
 
-    /** Convertit une couleur RGB en HSB
-     * @return renvoie la couleur HSB
+    /** Convertit une couleur en HSB à partir d'une couleur en RGB
+     * @param fromColor array des composantes de la couleur HSB de laquelle partir
+     * @param toColor array des composantes de la couleur RGB qu'on recoit
      */
     public static void getHSBfromRGB(Integer[] fromColor, Float[] toColor) {
         int cmax = (fromColor[0] > fromColor[1]) ? fromColor[0] : fromColor[1];
@@ -248,10 +251,9 @@ public class PictureEncodingConversion {
     }
 
 
-    /** Convertit une couleur BGR en RGB
-     * @param fromColor couleur de laquelle on part
-     * @param toColor couleur vers laquelle on convertit
-     * @return renvoie la couleur RGB
+    /** Convertit une couleur en BGR à partir d'une couleur en RGB
+     * @param fromColor array des composantes de la couleur BGR de laquelle partir
+     * @param toColor array des composantes de la couleur RGB qu'on recoit
      */
     public static void getRGBfromBGR(Integer[] fromColor, Integer[] toColor){
         toColor[0]=fromColor[2];
@@ -307,10 +309,10 @@ public class PictureEncodingConversion {
             return null;
         }
     }
-    /** Convertit une couleur RGB en BGR
-     * @param fromColor couleur de laquelle on part
-     * @param toColor couleur vers laquelle on convertit
-     * @return renvoie la couleur BGR
+
+    /** Convertit une couleur en BGR à partir d'une couleur en RGB
+     * @param fromColor array des composantes de la couleur RGB de laquelle partir
+     * @param toColor array des composantes de la couleur BGR qu'on recoit
      */
     public static void getBGRfromRGB(Integer[] fromColor, Integer[] toColor){
         toColor[0]=fromColor[2];
@@ -378,8 +380,9 @@ public class PictureEncodingConversion {
         }
     }
 
-    /** Convertit une couleur en HSB en une couleur BGR
-     * @return renvoie une couleur en BGR
+    /** Convertit une couleur en BGR à partir d'une couleur en HSB
+     * @param fromColor array des composantes de la couleur HSB de laquelle partir
+     * @param toColor array des composantes de la couleur BGR qu'on recoit
      */
     public static void getBGRfromHSB(Float[] fromColor, Integer[] toColor){
         if (fromColor[1] == 0) {
@@ -472,9 +475,9 @@ public class PictureEncodingConversion {
     }
 
 
-    /** Convertit une couleur BGR en HSB
-     * @param fromColor array de la couleur RGB de laquelle convertir
-     * @param toColor array de la couleur HSB qui sera rempli
+    /** Convertit une couleur en HSB à partir d'une couleur en BGR
+     * @param fromColor array des composantes de la couleur BGR de laquelle partir
+     * @param toColor array des composantes de la couleur HSB qu'on recoit
      */
     public static void getHSBfromBGR(Integer[] fromColor, Float[] toColor){
         int cmax = (fromColor[2] > fromColor[1]) ? fromColor[2] : fromColor[1];
