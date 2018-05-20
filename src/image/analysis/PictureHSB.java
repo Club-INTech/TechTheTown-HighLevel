@@ -62,6 +62,14 @@ public class PictureHSB extends Picture<Float> {
     }
 
     /**
+     * Set une image HSB
+     * @param pic image HSB ayant des valeurs de 0 à 1
+     */
+    public void setImage(PictureHSB pic){
+        this.setImage(pic.getImageArray());
+    }
+
+    /**
      * Set une image RGB
      * @param array array
      * @param width largeur de l'image

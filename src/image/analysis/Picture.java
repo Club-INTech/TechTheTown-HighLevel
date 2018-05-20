@@ -170,6 +170,47 @@ public abstract class Picture<T> {
         }
     }
 
+
+    public void setImage(Picture pic){
+        this.setImage((T[][][]) pic.getImageArray(), (T)pic.getMinValueInImgArray(), (T)pic.getMaxValueInImgArray());
+    }
+
+
+    ///////////////////////// Paste SubImage ///////////////////////////////
+
+    /**
+     * Remplace une partie de l'array de cette image par une autre array
+     * @param array array qui va remplacer une partie de l'array de cette image
+     * @param xStart abscisse début de l'array
+     * @param yStart ordonnée de début de l'array
+     */
+    public void pasteArrayAtCoords(T[][][] array, int xStart, int yStart){
+        if (array instanceof Float[][][] && this.imgArray instanceof Float[][][]) {
+            for (int x=0; x<array.length; x++){
+                System.arraycopy(array[x], 0, this.imgArray[x + xStart], yStart, array[0].length);
+            }
+        } else if (array instanceof Integer[][][] && this.imgArray instanceof Integer[][][]) {
+            for (int x=0; x<array.length; x++){
+                System.arraycopy(array[x], 0, this.imgArray[x + xStart], yStart, array[0].length);
+            }
+        } else {
+            System.out.println("Array type not implemented (ce cas ne devrait pas arriver)");
+        }
+    }
+
+    /**
+     * Remplace une partie de cette image par une autre image
+     * @param pic image qui va remplacer une partie de cette image
+     * @param xStart abscisse de début de l'endroit où l'on va appliquer l'image
+     * @param yStart ordonnée de début de l'endroit où l'on va appliquer l'image
+     */
+    public void pasteImageAtCoords(Picture<T> pic, int xStart, int yStart){
+        pasteArrayAtCoords(pic.getImageArray(), xStart, yStart);
+    }
+
+
+
+
     ///////////////////////// PictureAnalysis Wrapper ///////////////////////////////
 
 

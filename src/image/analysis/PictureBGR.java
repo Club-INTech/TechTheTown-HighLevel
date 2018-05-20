@@ -44,7 +44,7 @@ public class PictureBGR extends Picture<Integer> {
     /**
      * Renvoie une array BGR correspondant à l'image
      */
-    public Integer[][][] getBGRImageArray(boolean forceConversion) {
+    public Integer[][][] getBGRImageArray() {
         return this.imgArray;
     }
 
@@ -62,6 +62,14 @@ public class PictureBGR extends Picture<Integer> {
      */
     public void setImage(Integer[][][] array) {
         super.setImage(array, this.minValueInImgArray, this.maxValueInImgArray);
+    }
+
+    /**
+     * Set une image BGR
+     * @param pic image BGR ayant des valeurs de 0 à 255
+     */
+    public void setImage(PictureBGR pic){
+        this.setImage(pic.getImageArray());
     }
 
     /**

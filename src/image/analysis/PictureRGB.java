@@ -65,6 +65,14 @@ public class PictureRGB extends Picture<Integer> {
 
     /**
      * Set une image RGB
+     * @param pic image RGB ayant des valeurs de 0 à 255
+     */
+    public void setImage(PictureRGB pic){
+        this.setImage(pic.getImageArray());
+    }
+
+    /**
+     * Set une image RGB
      * @param array array
      * @param width largeur de l'image
      * @param height hauteur de l'image

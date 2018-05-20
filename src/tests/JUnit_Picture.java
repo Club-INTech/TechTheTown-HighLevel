@@ -1,5 +1,6 @@
 package tests;
 
+import image.analysis.PictureEnhancement;
 import image.analysis.PictureHSB;
 import image.analysis.PictureRGB;
 import org.junit.Test;
@@ -23,37 +24,50 @@ public class JUnit_Picture extends JUnit_Test{
                 img=null;
                 e.printStackTrace();
             }
+
+
             System.out.println(System.currentTimeMillis());
             BufferedImage convertedImg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
             convertedImg.getGraphics().drawImage(img, 0, 0, null);
-
-
             System.out.println(System.currentTimeMillis());
+            System.out.println(System.currentTimeMillis());
+            System.out.println(System.currentTimeMillis());
+            System.out.println(" ");
+
             PictureRGB rgb = new PictureRGB();
             rgb.setImage(convertedImg);
-            Integer[] b;
-            b = rgb.medianOverRectangle(400,50,20,20,false);
+            System.out.println(System.currentTimeMillis());
+            System.out.println(System.currentTimeMillis());
+            System.out.println(System.currentTimeMillis());
+            System.out.println(" ");
+
+            Integer[] b = rgb.medianOverRectangle(400,50,200,200,false);
             System.out.println(b[0]+" "+b[1]+" "+b[2]);
             System.out.println(System.currentTimeMillis());
-
-            PictureHSB hsb = new PictureHSB();
-            hsb.setImage(rgb.getHSBImageArray());
-            Float[] c;
-            c = hsb.medianOverRectangle(400,50,20,20,true);
-            System.out.println(c[0]+" "+c[1]+" "+c[2]);
             System.out.println(System.currentTimeMillis());
+            System.out.println(System.currentTimeMillis());
+            System.out.println(" ");
 
             PictureRGB rgb2 = new PictureRGB();
-            rgb2.setImage(hsb.getRGBImageArray());
-            Integer[] d = rgb2.medianOverRectangle(400,50,20,20,true);
-            System.out.println(d[0]+" "+d[1]+" "+d[2]);
+            rgb2.setImage(rgb.getSubPicture(400,50,200,200,false));
+            PictureHSB hsb = new PictureHSB();
+            PictureHSB hsb2 = new PictureHSB();
+            hsb.setImage(rgb2.getHSBImageArray());
+            hsb2.setImage(rgb2.getHSBImageArray());
+            PictureEnhancement.multiplyPictureThirdComponent(hsb,0.1);
+            rgb.pasteArrayAtCoords(hsb.getRGBImageArray(),400,50);
             System.out.println(System.currentTimeMillis());
-
-            PictureRGB rgbSub = (PictureRGB)rgb2.getSubPicture(400,50,20,20,false);
-            Integer[] e = rgbSub.medianOverRectangle(0,0,20,20,false);
-            System.out.println(e[0]+" "+e[1]+" "+e[2]);
             System.out.println(System.currentTimeMillis());
+            System.out.println(System.currentTimeMillis());
+            System.out.println(" ");
 
+
+            Integer[] c = rgb.medianOverRectangle(400,50,200,200,false);
+            System.out.println(c[0]+" "+c[1]+" "+c[2]);
+            System.out.println(System.currentTimeMillis());
+            System.out.println(System.currentTimeMillis());
+            System.out.println(System.currentTimeMillis());
+            System.out.println(" ");
         }
     }
 }
