@@ -376,17 +376,18 @@ public class Container implements Service
 		// Le Thread Simulateur doit etre démarré avant l'Eth
 		if (instanciedThreads.containsKey(ThreadSimulatorMotion.class.getSimpleName())) {
 			instanciedThreads.get(ThreadSimulatorMotion.class.getSimpleName()).start();
+			instanciedThreads.get(ThreadSimulator.class.getSimpleName()).start();
 		}
 
 		for (AbstractThread thread : instanciedThreads.values()) {
-			if (!(thread instanceof ThreadSimulatorMotion)) {
+			if (!(thread instanceof ThreadSimulatorMotion) && !(thread instanceof ThreadSimulator)) {
 				thread.start();
 			}
 		}
 
 		// On évite d'essayer de parler au LL lorsqu'on a pas de stream...
 		while (!((ThreadEth) instanciedThreads.get(ThreadEth.class.getSimpleName())).isInterfaceCreated()){
-			Thread.sleep(2);
+			Thread.sleep(1);
 		}
 	}
 	

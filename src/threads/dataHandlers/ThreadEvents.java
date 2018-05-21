@@ -93,6 +93,7 @@ public class ThreadEvents extends AbstractThread
                     event = events.poll();
                     if (event.length()>3) {
                         String eventID = event.substring(0,4);
+                        log.debug("Id de l'event : " + eventID);
                         if (!eventIDReceived.contains(eventID)) {
                             boolean validEvent=false;
                             String[] message = event.substring(4).split(" ");

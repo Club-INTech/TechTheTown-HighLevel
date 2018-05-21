@@ -43,8 +43,13 @@ public class ThreadSimulator extends AbstractThread implements Service {
     /** Buffers pour fichiers de debug */
     private BufferedWriter out;
 
+    /** Identifiant du dernier message recu */
+    private char idLastMessage;
+    private int eventId;
+
     /** Shutdown... */
     public static boolean shutdown = false;
+    public static boolean ready = false;
 
     /**
      * Constructeur du Simulateur ! Tout s'instancie automatiquement à partir du moment où l'on instancie un ThreadSimulatorMotion
@@ -56,6 +61,8 @@ public class ThreadSimulator extends AbstractThread implements Service {
         super(config, log);
         this.name = "simulator";
         this.state = state;
+        this.idLastMessage = 'A';
+        this.eventId = 1000;
     }
 
     /**
@@ -64,12 +71,23 @@ public class ThreadSimulator extends AbstractThread implements Service {
     private void createInterface(){
         try {
             server = new ServerSocket(23500);
+            server.setReuseAddress(true);
+            ready = true;
             client = server.accept();
             input = new BufferedReader(new InputStreamReader(client.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 
         }catch(IOException e){
             log.debug("IO Exception : manque de droits pour IO");
+            e.printStackTrace();
+        }
+    }
+
+    public void shutdown() {
+        try {
+            server.close();
+            shutdown = true;
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -85,6 +103,10 @@ public class ThreadSimulator extends AbstractThread implements Service {
                 if(header != null){
                     output.write(header.getFirstHeader());
                     output.write(header.getSecondHeader());
+                    if(header == CommunicationHeaders.EVENT) {
+                        output.write(String.format("%d",eventId));
+                        eventId++;
+                    }
                 }
                 output.write(mess);
                 output.newLine();
@@ -103,16 +125,18 @@ public class ThreadSimulator extends AbstractThread implements Service {
         String[] messages;
         String head;
 
-        communicate(CommunicationHeaders.ACKNOWLEDGEMENT, "Message recu : " + request);
+        communicate(CommunicationHeaders.ACKNOWLEDGEMENT, Character.toString(idLastMessage));
+        request = request.substring(1);
+        communicate(CommunicationHeaders.DEBUG, "Message recu : " + request);
         messages = request.split(" ");
         head = messages[0];
 
         /** INFORMATIONS */
         if (head.equals(ActuatorOrder.IS_ROBOT_MOVING.getEthernetOrder())) {
-            communicate(null, String.format("%s", state.isRobotMoving()), String.format("%s", state.isMoveNormal()));
+            communicate(CommunicationHeaders.STANDARD, String.format("%s", state.isRobotMoving()), String.format("%s", state.isMoveNormal()));
         }
         else if (head.equals(ActuatorOrder.SEND_POSITION.getEthernetOrder())) {
-            communicate(null, String.format("%s",state.getPosition().getX()),
+            communicate(CommunicationHeaders.STANDARD, String.format("%s",state.getPosition().getX()),
                     String.format("%s",state.getPosition().getY()),
                     String.format("%s", state.getOrientation()));
         }
@@ -166,6 +190,11 @@ public class ThreadSimulator extends AbstractThread implements Service {
             //TODO condition à compléter
             communicate(CommunicationHeaders.DEBUG, "Mode Simu : balec' frère...");
         }
+
+        this.idLastMessage+=1;
+        if (idLastMessage>'Z'){
+            idLastMessage='A';
+        }
     }
 
     /** Getters & Setters */
@@ -178,6 +207,7 @@ public class ThreadSimulator extends AbstractThread implements Service {
         String buffer;
         createInterface();
         log.debug("ThreadSimulator started");
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
 
         while(!shutdown){
             try{

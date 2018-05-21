@@ -23,6 +23,7 @@ import container.Service;
 import enums.CommunicationHeaders;
 import enums.ConfigInfoRobot;
 import pfg.config.Config;
+import simulator.ThreadSimulator;
 import smartMath.XYO;
 import table.Table;
 import threads.AbstractThread;
@@ -260,6 +261,9 @@ public class ThreadEth extends AbstractThread implements Service {
         try {
             synchronized (socketLock) {
                 if (simulation) {
+                    while (!ThreadSimulator.ready) {
+                        Thread.sleep(1);
+                    }
                     socket = new Socket(localAdress, 23500);
                 } else {
                     socket = new Socket(teensyAdress, 23500);
@@ -275,6 +279,8 @@ public class ThreadEth extends AbstractThread implements Service {
             log.debug("Socket créée");
         } catch (IOException e) {
             log.critical("On n'a pas réussi à créer la socket");
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -351,7 +357,7 @@ public class ThreadEth extends AbstractThread implements Service {
                     acknowledgementBuffer.clear();
                 }
                 else{
-                    log.critical("Mauvais charID de message");
+                    log.critical("Mauvais charID de message, recu : " + id + " (expected : " + charIDLastMessage + ")");
                 }
             }
 
