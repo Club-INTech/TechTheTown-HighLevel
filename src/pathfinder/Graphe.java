@@ -4,7 +4,6 @@ import container.Service;
 import enums.ConfigInfoRobot;
 import enums.TasCubes;
 import pfg.config.Config;
-import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
 import table.Table;
@@ -34,20 +33,17 @@ public class Graphe implements Service {
     private CopyOnWriteArrayList<ObstacleProximity> mobileEnnemies;
 
     /** Le graphe ! */
-    private ArrayList<Noeud> nodes;
-    private ArrayList<Arete> bonesList;
+    private ArrayList<Node> nodes;
 
     /** Paramètres du graphe */
     private int espacementRect;
-    private double espCoeff;
     private int nbNoeudObstCirc;
+    private double espCoeff;
 
     /**
-     * Constructeur du graphe, un graphe c'est des noeuds reliés par des arêtes,
-     * on utilise la méthode createNodes et createAretes (Voir la documentation de
-     * ces méthodes pour plus de détails)
+     * Constructeur du graphe, un graphe c'est des noeuds reliés par des arêtes, on utilise la méthode createNodes
+     * et createAretes (Voir la documentation de ces méthodes pour plus de détails)
      */
-
     public Graphe(Log log, Config config, Table table) {
         this.log = log;
         this.config = config;
@@ -57,7 +53,6 @@ public class Graphe implements Service {
 
         this.mobileEnnemies = new CopyOnWriteArrayList<>();
         this.nodes = new ArrayList<>();
-        bonesList = new ArrayList<>();
 
         updateConfig();
 
@@ -71,7 +66,6 @@ public class Graphe implements Service {
      * Méthode générant des noeuds sur la table : on créer des noeuds autour des obstacles
      * (circulaires & rectanngulaires), ainsi que des noeuds fixes
      */
-
     private void initNodes() {
         for (ObstacleCircular circle : listCircu) {
             placeNodes(circle);
@@ -80,20 +74,20 @@ public class Graphe implements Service {
             placeNodes(rectangular);
         }
 
-        nodes.add(new Noeud(Table.entryPosition)); // 1252 455
-        nodes.add(new Noeud(new Vec2(0, 1200)));
-        nodes.add(new Noeud(new Vec2(0, 900)));
-        nodes.add(new Noeud(new Vec2(0, 600)));
-        nodes.add(new Noeud(new Vec2(0, 300)));
-        nodes.add(new Noeud(new Vec2(650, 215)));
+        nodes.add(new Node(Table.entryPosition)); // 1252 455
+        nodes.add(new Node(new Vec2(0, 1200)));
+        nodes.add(new Node(new Vec2(0, 900)));
+        nodes.add(new Node(new Vec2(0, 600)));
+        nodes.add(new Node(new Vec2(0, 300)));
+        nodes.add(new Node(new Vec2(650, 215)));
 
         int xCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getX())/3;
         int yCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getY())/3;
-        nodes.add(new Noeud(new Vec2(xCentreGravite, yCentreGravite)));
+        nodes.add(new Node(new Vec2(xCentreGravite, yCentreGravite)));
 
         int xCentreGraviteEnnemy=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getX())/3;
         int yCentreGraviteEnnemy=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getY())/3;
-        nodes.add(new Noeud(new Vec2(xCentreGraviteEnnemy, yCentreGraviteEnnemy)));
+        nodes.add(new Node(new Vec2(xCentreGraviteEnnemy, yCentreGraviteEnnemy)));
     }
 
     /**
@@ -101,9 +95,9 @@ public class Graphe implements Service {
      */
     private void initRidges() {
         for (int i=0; i<nodes.size(); i++) {
-            Noeud node1 = nodes.get(i);
+            Node node1 = nodes.get(i);
             for (int j=i; j<nodes.size(); j++) {
-                Noeud node2 = nodes.get(j);
+                Node node2 = nodes.get(j);
                 if (!table.getObstacleManager().intersectAnyObstacle(new Segment(node1.getPosition(), node2.getPosition()))){
                     node1.addVoisin(node2);
                     node2.addVoisin(node1);
@@ -113,43 +107,29 @@ public class Graphe implements Service {
     }
 
     /**
-     * Méthode ajoutant un noeud au graphe. Cela consiste à remplir le champ de ses noeuds voisins.
-     * Cette méthode est appelée par le pathfinding
-     */
-
-    public void addNode(Noeud noeud) {
-
-    }
-
-    /**
-     * Cette méthode supprime un noeud, un noeud a des voisins, ce noeud n'existe plus s'il est supprimé de la liste des voisins de ses voisins
-     * @param noeud
-     */
-
-    public void removeNode(Noeud noeud){
-
-    }
-
-    /**
      * Place des noeuds autour d'un obstacles circulaire, en vérifiant biensur si ce dernier n'est pas dans un autre
      * obstacle
+     *
+     * @param circle l'obstacle circulaire
      */
-    public void placeNodes(ObstacleCircular circle){
+    private void placeNodes(ObstacleCircular circle){
         Vec2 center = circle.getPosition();
         for (int i = 0; i<nbNoeudObstCirc; i++) {
             Vec2 posNode = new Vec2(espCoeff *circle.getRadius(), i*2*Math.PI/nbNoeudObstCirc);
             posNode.plus(center);
 
             if(!table.getObstacleManager().isPositionInObstacle(posNode) && table.getObstacleManager().isRobotInTable(posNode)) {
-                nodes.add(new Noeud(posNode));
+                nodes.add(new Node(posNode));
             }
         }
     }
 
     /**
      * Place des noeuds autour d'un obstacle rectangulaire, en vérifiant qu'il n'empiete pas sur les autres obstacles
+     *
+     * @param rect l'obstacle rectangulaire
      */
-    public void placeNodes(ObstacleRectangular rect) {
+    private void placeNodes(ObstacleRectangular rect) {
         Vec2 upLeft = rect.getPosition().plusNewVector(new Vec2(-espCoeff*rect.getSizeX()/2, espCoeff*rect.getSizeY()/2));
         Vec2 downLeft = rect.getPosition().plusNewVector(new Vec2(-espCoeff*rect.getSizeX()/2, -espCoeff*rect.getSizeY()/2));
 
@@ -158,37 +138,62 @@ public class Graphe implements Service {
             Vec2 posNode2 = downLeft.plusNewVector(new Vec2(i, 0));
 
             if(!table.getObstacleManager().isPositionInObstacle(posNode1) && table.getObstacleManager().isRobotInTable(posNode1)) {
-                nodes.add(new Noeud(posNode1));
+                nodes.add(new Node(posNode1));
             }
 
             if(!table.getObstacleManager().isPositionInObstacle(posNode2) && table.getObstacleManager().isRobotInTable(posNode2)) {
-                nodes.add(new Noeud(posNode2));
+                nodes.add(new Node(posNode2));
             }
+        }
+    }
+
+    /**
+     * Méthode ajoutant un noeud au graphe. Cela consiste à remplir le champ de ses noeuds voisins.
+     * Cette méthode est appelée par le pathfinding
+     *
+     * @param noeud le noeud à ajouter
+     */
+    public void addNode(Node noeud) {
+        nodes.add(noeud);
+        for (Node node : nodes) {
+            if (!table.getObstacleManager().intersectAnyObstacle(new Segment(node.getPosition(), noeud.getPosition()))){
+                node.addVoisin(noeud);
+                noeud.addVoisin(node);
+            }
+        }
+    }
+
+    /**
+     * Méthode supprimant un node dans le graphe, c'est-à-dire que tout ses voisins doivent également le retirer
+     *
+     * @param node le node à supprimer
+     */
+    public void removeNode(Node node){
+        nodes.remove(node);
+        for (Node neighbours : node.getVoisins().keySet()) {
+            neighbours.getVoisins().remove(node);
         }
     }
 
     /**
      * Méthode réinitialisant le graphe, à appeler après chaque utilisation de findmyway
      */
-
-    public void reInit(Noeud noeudDepart, Noeud noeudArrive) {
-        for (Noeud node :this.getNodes()) {
+    public void reInit() {
+        for (Node node : nodes) {
             node.setPred(null);
-            node.setCout(Noeud.DEFAULT_COST);
-            node.setHeuristique(Noeud.DEFAULT_HEURISTIC);
+            node.setCout(Node.DEFAULT_COST);
+            node.setHeuristique(Node.DEFAULT_HEURISTIC);
         }
-        this.removeNode(noeudDepart);
-        this.removeNode(noeudArrive);
     }
 
     /**
      * Cette méthode retourne le noeud du graphe qui est le plus proche d'une position
      * Elle servira quand on sera bloqués dans un obstacle
+     *
      * @param position
      * @return le noeud du graphe le plus proche
      */
-
-    public Noeud closestNodeToPosition(Vec2 position){
+    public Node closestNodeToPosition(Vec2 position){
         float distanceMin=nodes.get(0).getPosition().distance(position);
         int iMin=0;
         for(int i=1; i<nodes.size();i++){
@@ -203,13 +208,14 @@ public class Graphe implements Service {
 
     /**
      * Cette méthode retourne true si le point indiqué correspond déjà à un noeud
+     *
      * @param position
      * @return
      */
     public boolean isAlreadyANode(Vec2 position){
         ArrayList<Vec2> points=new ArrayList<>();
-        for(Noeud noeud : nodes){
-            points.add(noeud.getPosition());
+        for(Node node : nodes){
+            points.add(node.getPosition());
         }
         return points.contains(position);
     }
@@ -222,12 +228,8 @@ public class Graphe implements Service {
     }
 
     /** Getters & Setters */
-    public ArrayList<Noeud> getNodes() {
+    public ArrayList<Node> getNodes() {
         return nodes;
-    }
-
-    public ArrayList<Arete> getBoneslist() {
-        return bonesList;
     }
 
     public CopyOnWriteArrayList<ObstacleCircular> getListCircu() {

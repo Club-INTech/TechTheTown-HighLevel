@@ -2,7 +2,7 @@ package pathfinder;
 
 import java.util.Comparator;
 
-public class BetterNode implements Comparator<Noeud> {
+public class BetterNode implements Comparator<Node> {
 
     /**
      *     Methode comparant la qualité de deux noeuds.
@@ -10,12 +10,12 @@ public class BetterNode implements Comparator<Noeud> {
      */
 
     @Override
-    public int compare(Noeud noeud1, Noeud noeud2){
+    public int compare(Node node1, Node node2){
 
-        if(noeud1.getCout()+noeud1.getHeuristique()>noeud2.getCout()+noeud2.getHeuristique()){
+        if(node1.getCout()+ node1.getHeuristique()> node2.getCout()+ node2.getHeuristique()){
             return 1;
         }
-        else if(noeud1.getCout()+noeud1.getHeuristique()<noeud2.getCout()+noeud2.getHeuristique()){
+        else if(node1.getCout()+ node1.getHeuristique()< node2.getCout()+ node2.getHeuristique()){
             return -1;
         }
         else{

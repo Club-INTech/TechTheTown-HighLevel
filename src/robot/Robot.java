@@ -39,6 +39,7 @@ import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Vec2;
 import table.Table;
+import threads.ThreadPathfinder;
 import utils.Log;
 import utils.Sleep;
 
@@ -101,7 +102,7 @@ public class Robot implements Service {
     /**
      * Pathfinding
      */
-    private Pathfinding pathfinding;
+    private ThreadPathfinder pathfinding;
 
     /**
      * Chemin en court par le robot, utilise par l'interface graphique
@@ -147,7 +148,7 @@ public class Robot implements Service {
      * @param log          fichier de log
      * @param ethWrapper   protocole communication série
      */
-    public Robot(Locomotion deplacements, Config config, Log log, EthWrapper ethWrapper, Pathfinding pathfinding) {
+    public Robot(Locomotion deplacements, Config config, Log log, EthWrapper ethWrapper, ThreadPathfinder pathfinding) {
         this.config = config;
         this.log = log;
         updateConfig();
@@ -194,13 +195,12 @@ public class Robot implements Service {
      * Cette méthode est bloquante: son exécution ne se termine que lorsque le robot a atteint le point d'arrivée
      *
      * @param aim   le point de destination du mouvement
-     * @param table la table sur laquelle le robot se deplace
      * @throws UnableToMoveException losrque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
      */
-    public void moveToLocation(Vec2 aim, Table table) throws UnableToMoveException, PointInObstacleException, NoPathFound,ImmobileEnnemyForOneSecondAtLeast {
-        log.debug("Appel de Robot.moveToLocation(" + aim + "," + table + ")");
+    public void moveToLocation(Vec2 aim) throws UnableToMoveException, PointInObstacleException, NoPathFound,ImmobileEnnemyForOneSecondAtLeast {
+        log.debug("Appel de Robot.moveToLocation(" + aim + ")");
         //On crée bêtement un cercle de rayon nul pour lancer moveToCircle, sachant que la position de ce cercle est extraite pour le pathDiniDing (et après on dit qu'à INTech on code comme des porcs...)
-        moveToCircle(new Circle(aim), table);
+        moveToCircle(new Circle(aim));
     }
 
     /**
@@ -208,13 +208,11 @@ public class Robot implements Service {
      * methode bloquante : l'execution ne se termine que lorsque le robot est arrive
      *
      * @param aim   le cercle ou l'on veut se rendre
-     * @param table la table sur laquelle on est sensé se déplacer
      * @throws UnableToMoveException lorsque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
      */
-    public void moveToCircle(Circle aim, Table table) throws UnableToMoveException, PointInObstacleException, NoPathFound,ImmobileEnnemyForOneSecondAtLeast {
+    public void moveToCircle(Circle aim) throws UnableToMoveException, PointInObstacleException, NoPathFound,ImmobileEnnemyForOneSecondAtLeast {
         Vec2 aimPosition = Geometry.closestPointOnCircle(this.getPosition(), aim);
-        // TODO : Appel du followpath & Pathfinding !
-        followPath(pathfinding.findmyway(position, aimPosition));
+        // TODO : Appel au thread Pathfinder !
     }
 
     /**
@@ -748,10 +746,6 @@ public class Robot implements Service {
 
     public EthWrapper getEthWrapper() {
         return ethWrapper;
-    }
-
-    public Pathfinding getPathfinding() {
-        return pathfinding;
     }
 
     /**

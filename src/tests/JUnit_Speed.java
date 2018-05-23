@@ -65,8 +65,8 @@ public class JUnit_Speed extends JUnit_Test {
 			robot.setLocomotionSpeed(speed);
 			log.debug("PWM rotation : "+speed.rotationSpeed+"\nPWM translation : "+speed.translationSpeed);
 			try {
-				robot.moveToLocation(new Vec2(-1000, 1000), table);
-				robot.moveToLocation(new Vec2(1000, 1000), table);
+				robot.moveToLocation(new Vec2(-1000, 1000));
+				robot.moveToLocation(new Vec2(1000, 1000));
 			}
 			catch (NoPathFound e){
 				log.debug("pas de chemin trouvé");

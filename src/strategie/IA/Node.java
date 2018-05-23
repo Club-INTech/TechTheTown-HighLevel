@@ -42,7 +42,7 @@ public abstract class Node {
     protected HookFactory hookFactory;
 
 
-    /** Noeud d'action, principale composant du graphe de décision. Il permet de lancer les scripts et de gérer les
+    /** Node d'action, principale composant du graphe de décision. Il permet de lancer les scripts et de gérer les
      * exeptions. Il possède plusieurs paramètre utilisé pour calculer le coup d'une arrete en points/s.
      *
      * @param versionToExecute

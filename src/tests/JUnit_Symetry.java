@@ -75,8 +75,8 @@ public class JUnit_Symetry extends JUnit_Test
 		try 
 		{
 			real_state.robot.moveLengthwise(500);
-			real_state.robot.moveToLocation(new Vec2(-500,800), real_state.table);
-			real_state.robot.moveToLocation(new Vec2(-500,400), real_state.table);
+			real_state.robot.moveToLocation(new Vec2(-500,800));
+			real_state.robot.moveToLocation(new Vec2(-500,400));
 		}
 		catch (Exception e)
 		{

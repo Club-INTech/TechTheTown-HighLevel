@@ -21,8 +21,7 @@
 
 package graphics;
 
-import pathfinder.Arete;
-import pathfinder.Noeud;
+import pathfinder.Node;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -31,7 +30,6 @@ import table.Table;
 import javax.swing.JFrame;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Interface graphique pour faciliter le debugage HL
@@ -131,9 +129,6 @@ public class Window extends JFrame
 	}
 
 	/** Permet d'afficher les aretes/le chemin */
-	public void setArete(ArrayList<Arete> aretes){
-		tablePanel.setAretes(aretes);
-	}
 	public void setPath(ArrayList<Vec2> path){
 		tablePanel.setPath(path);
 	}
@@ -141,7 +136,7 @@ public class Window extends JFrame
 		tablePanel.setPoint(point);
 		repaint();
 	}
-	public void setNode(ArrayList<Noeud> nodes){
+	public void setNode(ArrayList<Node> nodes){
 		tablePanel.setNodes(nodes);;
 	}
 

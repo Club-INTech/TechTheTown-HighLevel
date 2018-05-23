@@ -10,6 +10,7 @@ import hook.HookFactory;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import scripts.*;
+import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -425,8 +426,7 @@ public class IA implements Service {
 
 
                 //On cherche un nouveau chemin pour y aller
-                ArrayList<Vec2> pathToFollow = gameState.robot.getPathfinding().findmyway(gameState.robot.getPosition(), aim);
-                gameState.robot.followPath(pathToFollow);
+                gameState.robot.moveToCircle(new Circle(aim));
                 ennemyDodged = true;
 
             } catch (ImmobileEnnemyForOneSecondAtLeast immobileEnnemyForOneSecondAtLeast) {

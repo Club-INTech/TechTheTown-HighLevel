@@ -3,7 +3,6 @@ package pathfinder;
 import container.Service;
 import enums.ConfigInfoRobot;
 import exceptions.Locomotion.PointInObstacleException;
-import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import pfg.config.Config;
 import smartMath.Vec2;
@@ -13,7 +12,6 @@ import table.obstacles.ObstacleManager;
 import utils.Log;
 
 import java.util.ArrayList;
-import java.util.PriorityQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static enums.TasCubes.*;
@@ -123,10 +121,7 @@ public class Pathfinding implements Service {
                 this.tasStationEpurationEnnemiRemoved =true;
             }
         }
-        if (grapheHasToBeRecreated){
-        }
     }
-
 
     /**
      * Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemin le plus rapide
@@ -158,9 +153,9 @@ public class Pathfinding implements Service {
 
     @Override
     public void updateConfig() {
-       this.coutFixe = config.getInt(ConfigInfoRobot.COUT_FIXE);
-       this.robot_linear_speed = config.getInt(ConfigInfoRobot.ROBOT_LINEAR_SPEED);
-       this.robot_angular_speed = config.getDouble(ConfigInfoRobot.ROBOT_ANGULAR_SPEED);
+        this.coutFixe = config.getInt(ConfigInfoRobot.COUT_FIXE);
+        this.robot_linear_speed = config.getInt(ConfigInfoRobot.ROBOT_LINEAR_SPEED);
+        this.robot_angular_speed = config.getDouble(ConfigInfoRobot.ROBOT_ANGULAR_SPEED);
 
     }
 }

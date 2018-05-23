@@ -111,7 +111,6 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
         Window window = new Window(table);
         Graphe graphe = new Graphe(log, config, table);
-        window.setArete(graphe.getBoneslist());
         // Thread.sleep(20000);
 
 //        Pathfinding pathfinding = new Pathfinding(log, config, table);
@@ -139,7 +138,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
                 //position d'entree de ActivationPanneauDomotique
                 Vec2 arrivee = new Vec2(370, 350);
                 Circle aim = new Circle(arrivee, 0);
-                robotReal.moveToCircle(aim, table);
+                robotReal.moveToCircle(aim);
                 window.setPath(path);
             } catch (PointInObstacleException e) {
 
@@ -277,7 +276,6 @@ public class JUnit_Pathfinding extends JUnit_Test {
 //        }
         ArrayList<Vec2> clics = new ArrayList<>();
         ArrayList<Vec2> path = new ArrayList<>();
-        window.setArete(pathfinding.getGraphe().getBoneslist());
         window.repaint();
         while (true) {
 

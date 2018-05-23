@@ -129,7 +129,7 @@ public abstract class JUnit_Test
 	public void returnToEntryPosition(GameState state) throws UnableToMoveException, PointInObstacleException,ImmobileEnnemyForOneSecondAtLeast
 	{
 		try {
-			state.robot.moveToLocation(new Vec2(Table.entryPosition.getX() - 120, Table.entryPosition.getY() + 90), state.table);
+			state.robot.moveToLocation(new Vec2(Table.entryPosition.getX() - 120, Table.entryPosition.getY() + 90));
 		}
 		catch(NoPathFound e){
 			log.debug("pas de chemin trouvé");
