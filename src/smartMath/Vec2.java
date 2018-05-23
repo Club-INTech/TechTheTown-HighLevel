@@ -173,7 +173,7 @@ public class Vec2 {
 	 * @param other le second vecteur
 	 * @return distance au carré entre les deux vecteurs
 	 */
-	public float squaredDistance(Vec2 other) {
+	public int squaredDistance(Vec2 other) {
 		return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
 	}
 
@@ -188,14 +188,26 @@ public class Vec2 {
 	}
 
 	/**
-	 * Compare deux vecteurs
-	 *
-	 * @param other le second vecteur
-	 * @return vrai si les coordonnées sont égales
-	 */
-	public boolean equals(Vec2 other) {
-		return x == other.x && y == other.y;
-	}
+     * Distance entre le vecteur actuel et un second renvoyant un entier
+     * Utilise la méthode de Héron fournissant un arrondit en minimisant le temps de calcul
+     *
+     * @param other le second vecteur
+     * @return approximation de la distance entre les deux vecteurs
+     */
+	public int intDistance(Vec2 other) {
+        int squaredDistance = squaredDistance(other);
+        if(squaredDistance < 1){
+            return 0;
+        }
+
+        double approx = squaredDistance/2.0;
+
+        // Méthode de héron
+        while ((Math.abs(squaredDistance - approx*approx)/(2*approx)) > 1){
+            approx += (squaredDistance - approx*approx)/(2*approx);
+        }
+        return (int) approx;
+    }
 
 	/**
 	 * Multiplication par un scalaire

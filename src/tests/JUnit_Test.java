@@ -73,7 +73,7 @@ public abstract class JUnit_Test
 		config = container.getConfig();
 		log = container.getService(Log.class);
 		mEthWrapper = container.getService(EthWrapper.class);
-		gameState=container.getService(GameState.class);
+		gameState = container.getService(GameState.class);
 		this.usingJumper=config.getBoolean(ConfigInfoRobot.ATTENTE_JUMPER);
 	}
 

@@ -21,23 +21,16 @@ import container.Container;
 import enums.*;
 import exceptions.ContainerException;
 import patternRecognition.PatternRecognition;
-import patternRecognition.UseWebcam;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
-import smartMath.Circle;
-import smartMath.Geometry;
-import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
-import threads.dataHandlers.ThreadSensor;
 import threads.threadScore.ThreadScore;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
-
-import javax.print.Doc;
 
 /**
  * Code qui démarre le robot en début de match
@@ -78,9 +71,6 @@ public class Main {
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
             }
             Thread.currentThread().setPriority(6);
-            if (config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)) {
-                container.getService(ThreadSensor.class);
-            }
             container.getService(ThreadEth.class);
             container.getService(ThreadTimer.class);
             container.getService(ThreadScore.class);

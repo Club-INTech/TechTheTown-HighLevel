@@ -75,7 +75,7 @@ public class TablePanel extends JPanel
 	private Color robotColor = new Color(50, 180, 50, 100);
 	private Color teamColor = new Color(50, 80, 50, 220);
 	private Color pathColor = new Color(200, 0, 80, 220);
-	private Color graphColor = new Color(50, 80, 120, 50);
+	private Color graphColor = new Color(50, 80, 120, 40);
 
 	/** Construit un panel pour du l'interface full
 	 * @param table
@@ -201,16 +201,13 @@ public class TablePanel extends JPanel
 		// Le graphe
 		if(showGraph){
 			graphics.setColor(graphColor);
-			for(Noeud noeud : robot.getPathfinding().getGraphe().getNodes()){
+			for (Noeud noeud : robot.getPathfinding().getGraphe().getNodes()){
 				pathNode3=changeRefToDisplay(noeud.getPosition());
-				graphics.fillOval(pathNode3.getX()-4,pathNode3.getY()-4,8,8);
-			}
-			for (Arete ridge : robot.getPathfinding().getGraphe().getBoneslist()){
-				pathNode1 = changeRefToDisplay(ridge.noeud1.getPosition());
-				pathNode2 = changeRefToDisplay(ridge.noeud2.getPosition());
-				graphics.drawLine(pathNode1.getX(), pathNode1.getY(), pathNode2.getX(), pathNode2.getY());
-				graphics.fillOval(pathNode1.getX() - 4, pathNode1.getY() - 4, 8, 8);
-				graphics.fillOval(pathNode2.getX() - 4, pathNode2.getY() - 4, 8, 8);
+				graphics.fillOval(pathNode3.getX()-2,pathNode3.getY()-2,4,4);
+				for (Noeud noeud1 : noeud.getVoisins().keySet()) {
+				    Vec2 displayNode = changeRefToDisplay(noeud1.getPosition());
+				    graphics.drawLine(pathNode3.getX(), pathNode3.getY(), displayNode.getX(), displayNode.getY());
+                }
 			}
 		}
 

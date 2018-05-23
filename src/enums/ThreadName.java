@@ -22,10 +22,11 @@ package enums;
 import simulator.ThreadSimulator;
 import threads.AbstractThread;
 import simulator.ThreadSimulatorMotion;
+import threads.ThreadPathfinder;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadEvents;
-import threads.dataHandlers.ThreadSensor;
+import threads.dataHandlers.ThreadLidar;
 
 /**
  * Tous les threads à instancier au début du match. Utilisé par le container
@@ -36,8 +37,9 @@ public enum ThreadName
 {
 	TIMER(ThreadTimer.class),
 	EVENTS(ThreadEvents.class),
-	SENSOR(ThreadSensor.class),
 	ETHERNET(ThreadEth.class),
+	LIDAR(ThreadLidar.class),
+    PATHFINDING(ThreadPathfinder.class),
 	SIMULATOR(ThreadSimulator.class),
 	SIMULATOR_MOTION(ThreadSimulatorMotion.class),
 	;

@@ -296,4 +296,14 @@ public class JUnit_Pathfinding extends JUnit_Test {
         }
     }
 
+    @Test
+    public void testGraphe() throws InterruptedException, ContainerException {
+        pathfinding = container.getService(Pathfinding.class);
+        table = container.getService(Table.class);
+        state = container.getService(GameState.class);
+        anInterface = container.getService(ThreadInterface.class);
+        container.startInstanciedThreads();
+
+        while (true);
+    }
 }

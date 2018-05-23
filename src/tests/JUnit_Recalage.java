@@ -19,33 +19,21 @@
 
 package tests;
 
-import enums.ConfigInfoRobot;
 import enums.ScriptNames;
-import enums.Speed;
 import exceptions.*;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import graphics.Window;
-import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
-import pathfinder.Graphe;
-import pathfinder.Pathfinding;
 import robot.Robot;
 import scripts.ScriptManager;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
-import smartMath.Circle;
-import smartMath.Vec2;
 import strategie.GameState;
 import strategie.IA.IA;
 import table.Table;
-import table.obstacles.ObstacleManager;
 import threads.ThreadInterface;
-import threads.dataHandlers.ThreadSensor;
-
-import java.util.ArrayList;
 
 /**
  * Tests Unitaires pour le pathfinding : utiliser ce JUnit pour faire des petits tests de java
@@ -58,7 +46,6 @@ public class JUnit_Recalage extends JUnit_Test {
     private GameState state;
     private ThreadSimulator simulator;
     private ThreadSimulatorMotion simulatorMotion;
-    private ThreadSensor threadSensor;
     private Table table;
 
     private IA ia;
@@ -72,7 +59,6 @@ public class JUnit_Recalage extends JUnit_Test {
             scriptManager = container.getService(ScriptManager.class);
             state = container.getService(GameState.class);
             table = container.getService(Table.class);
-            threadSensor=container.getService(ThreadSensor.class);
             container.getService(ThreadInterface.class);
             ia=container.getService(IA.class);
 

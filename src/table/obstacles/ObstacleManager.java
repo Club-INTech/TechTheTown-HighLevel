@@ -692,7 +692,25 @@ public class ObstacleManager implements Service
 		return false;
 	}
 
-
+    /**
+     * Methode servant à créer des arretes
+     *
+     * @param segment le segment à tetser
+     * @return true si le segment intersecte un obstacle
+     */
+	public boolean intersectAnyObstacle(Segment segment) {
+	    for (ObstacleCircular circle : mCircularObstacle) {
+	        if (Geometry.intersects(segment, circle.circle)) {
+	            return true;
+            }
+        }
+        for (ObstacleRectangular rectangular : mRectangles) {
+	        if (Geometry.intersects(segment, rectangular.getRectangle())) {
+	            return true;
+            }
+        }
+        return false;
+    }
 
 	/**
 	 * Rend le gestionnaire d'obstacle fourni en argument explicite égal a ce gestionnaire.
@@ -1115,19 +1133,6 @@ public class ObstacleManager implements Service
 			}
 		}
 		return mCircularObstacle.get(iMin);
-	}
-
-	/**
-	 * Supprime TOUS les obstacles fixes de la table
-	 * http://cdn.meme.am/instances/500x/21541512.jpg
-	 */
-	public void destroyEverything()
-	{
-		mRectangles.clear();
-		mLines.clear();
-		mCircularObstacle.clear();
-		mMobileObstacles.clear();
-		mUntestedMobileObstacles.clear();
 	}
 
 	public CopyOnWriteArrayList<ObstacleCircular> getmEnnemies() {

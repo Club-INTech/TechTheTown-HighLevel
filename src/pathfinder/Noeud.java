@@ -36,31 +36,12 @@ public class Noeud {
     }
 
     /**
-     * Cette méthode supprime un voisin de la liste des voisins, elle est appelée
-     * par le pathfinding
-     * @param noeud
-     */
-    public void removeNeighbour(Noeud noeud){ voisins.remove(noeud);}
-
-
-    /**
-     * Cette méthode est appelée par createAretes de Graphe afin de set les voisins
-     * de chaque noeud : un voisin est un noeud qu'on pourrait atteindre, c'est à dire
-     * une arete pourrait etre tracée facilement sans qu'elle passe par un obstacle
-     * circulaire ou rectangulaire
-     * @param voisin
+     * Ajoute un voisin au noeud, le cout de l'arete est calculée
+     *
+     * @param voisin le noeud voisin à ajouter
      */
     public void addVoisin(Noeud voisin){
-    }
-
-    /**
-     * Cette méthode ajoute à un noeud un voisin, elle est appelée par le addNodeInGraphe
-     * qui est appelée par le pathfinding
-     * @param voisins
-     */
-    public void addVoisins(ArrayList<Noeud> voisins){
-        for (Noeud voisin : voisins) {
-        }
+        voisins.put(voisin, this.position.intDistance(voisin.position));
     }
 
     /**
@@ -84,7 +65,6 @@ public class Noeud {
         final int prime = 31;
         int result = 1;
         result = prime * result + position.hashCode();
-        result = prime * result + heuristique;
         return result;
     }
 

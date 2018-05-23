@@ -28,7 +28,6 @@ import org.junit.runner.JUnitCore;
 import scripts.ScriptManager;
 import strategie.GameState;
 import table.Table;
-import threads.dataHandlers.ThreadSensor;
 
 /**
  * Utile pour faire des tests fourre-tout
@@ -53,7 +52,6 @@ public class JUnit_BorneArcade extends JUnit_Test
         
 		win = new Window(container.getService(Table.class), real_state, container.getService(ScriptManager.class),true);
 
-		container.getService(ThreadSensor.class);
 		container.startInstanciedThreads();
 
 		real_state.robot.setPosition(Table.entryPosition);

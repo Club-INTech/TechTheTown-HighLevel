@@ -11,7 +11,6 @@ import strategie.GameState;
 import table.Table;
 import strategie.IA.*;
 import threads.ThreadInterface;
-import threads.dataHandlers.ThreadSensor;
 
 /*
  * Copyright (c) 2016, INTech.
@@ -40,7 +39,6 @@ public class JUnit_IA extends JUnit_Test{
         private GameState state;
         private ThreadSimulator simulator;
         private ThreadSimulatorMotion simulatorMotion;
-        private ThreadSensor threadSensor;
         private Table table;
 
         private IA ia;
@@ -56,7 +54,6 @@ public class JUnit_IA extends JUnit_Test{
                 scriptManager = container.getService(ScriptManager.class);
                 state = container.getService(GameState.class);
                 table = container.getService(Table.class);
-                threadSensor=container.getService(ThreadSensor.class);
                 container.getService(ThreadInterface.class);
 
                 ia=container.getService(IA.class);

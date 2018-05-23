@@ -31,7 +31,6 @@ import strategie.GameState;
 import table.Table;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
-import threads.dataHandlers.ThreadSensor;
 import utils.Log;
 
 /**
@@ -60,7 +59,6 @@ public class MainHomologation {
             mEthWrapper = container.getService(EthWrapper.class);
             mLocomotion = container.getService(Locomotion.class);
             Thread.currentThread().setPriority(6);
-            container.getService(ThreadSensor.class);
             container.getService(ThreadEth.class);
             container.getService(ThreadTimer.class);
             container.startInstanciedThreads();

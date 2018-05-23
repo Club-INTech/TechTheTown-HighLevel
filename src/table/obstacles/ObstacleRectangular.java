@@ -39,8 +39,6 @@ public class ObstacleRectangular extends Obstacle
 	/** taille du rectangle en mm selon l'axe Y */
 	protected int sizeY;
 
-
-
 	/**
 	 *	crée un nouvel obstacle rectangulaire sur la table a la position désirée.
 	 *

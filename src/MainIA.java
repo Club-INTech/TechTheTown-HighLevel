@@ -18,7 +18,6 @@
  */
 
 import container.Container;
-import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
@@ -34,7 +33,6 @@ import table.Table;
 import threads.ThreadInterface;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
-import threads.dataHandlers.ThreadSensor;
 import threads.threadScore.ThreadScore;
 import utils.Log;
 
@@ -71,8 +69,7 @@ public class MainIA {
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
             }
-            Thread.currentThread().setPriority(6);
-            container.getService(ThreadSensor.class);
+            Thread.currentThread().setPriority(6);;
             container.getService(ThreadEth.class);
             container.getService(ThreadTimer.class);
             patternRecognition=container.getService(PatternRecognition.class);

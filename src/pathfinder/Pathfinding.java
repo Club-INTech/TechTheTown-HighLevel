@@ -124,7 +124,6 @@ public class Pathfinding implements Service {
             }
         }
         if (grapheHasToBeRecreated){
-            graphe.createGraphe();
         }
     }
 

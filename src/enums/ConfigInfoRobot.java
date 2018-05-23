@@ -80,7 +80,6 @@ public enum ConfigInfoRobot implements ConfigInfo
     PEREMP_OBST(2000),
 
     /** Paramètres capteurs */
-
     ROBOT_EN_RADIUS(220),           //en mm
     MAX_SENSOR_RANGE(600),          //en mm
     MIN_SENSOR_RANGEAV(30),         //en mm
@@ -149,9 +148,14 @@ public enum ConfigInfoRobot implements ConfigInfo
     saturationModifierLightingUp(1.3),
     brightnessModifierLightingUp(1.1),
 
-    /**Paramètres scripts*/
+    /** Paramètres scripts */
     DISTANCE_INTERRUPTEUR(50),
     DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES(70),
+
+    /** Paramètres du graphe */
+    ESPACEMENT_RECT(10),
+    NB_NOEUDS_OBST_CIR(8),
+    ESPACEMENT_OBSTACLE_COEFF(1.2)
 
     ;
     private Object defaultValue;

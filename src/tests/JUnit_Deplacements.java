@@ -1,22 +1,17 @@
 package tests;
 
-import enums.ConfigInfoRobot;
 import enums.Speed;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
-import hook.HookFactory;
 import org.junit.Before;
 import org.junit.Test;
 import robot.EthWrapper;
 import robot.Locomotion;
 import robot.Robot;
-import scripts.ScriptManager;
-import simulator.ThreadSimulator;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadTimer;
-import threads.dataHandlers.ThreadSensor;
 
 public class JUnit_Deplacements extends JUnit_Test {
 
@@ -35,9 +30,6 @@ public class JUnit_Deplacements extends JUnit_Test {
             locomotion = container.getService(Locomotion.class);
             mEthWrapper = container.getService(EthWrapper.class);
             table = container.getService(Table.class);
-            if (config.getBoolean(ConfigInfoRobot.BASIC_DETECTION)){
-                container.getService(ThreadSensor.class);
-            }
             container.getService(ThreadTimer.class);
             container.startInstanciedThreads();
             robot.setLocomotionSpeed(Speed.MEDIUM_ALL);
