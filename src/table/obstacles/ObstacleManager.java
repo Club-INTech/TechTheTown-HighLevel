@@ -57,11 +57,11 @@ public class ObstacleManager implements Service
 	private CopyOnWriteArrayList<ObstacleProximity> mMobileObstacles;
 
 	/** Ensemble des obstacles circulaires */
-	public CopyOnWriteArrayList<ObstacleCircular> mCircularObstacle;
+	private CopyOnWriteArrayList<ObstacleCircular> mCircularObstacle;
 
 	/**Robot(s) Ennemi(s) qui bouge plus au bout d'une seconde, c'est une liste
 	 * qui sera filée au graphe pour qu'il puise l'ajouter comme obstacle**/
-	public CopyOnWriteArrayList<ObstacleCircular> mEnnemies;
+	private CopyOnWriteArrayList<ObstacleCircular> mEnnemies;
 
 	/** Ensemble des obstacles mobiles/temporaires a tester pour les placer sur la table */
 	private CopyOnWriteArrayList<ObstacleProximity> mUntestedMobileObstacles;
@@ -70,10 +70,10 @@ public class ObstacleManager implements Service
 	private CopyOnWriteArrayList<Segment> mLines;
 
 	/** Les obstacles rectangulaires de la table */
-	public CopyOnWriteArrayList<ObstacleRectangular> mRectangles;
+	private CopyOnWriteArrayList<ObstacleRectangular> mRectangles;
 
 	/** Rayon de notre robot */
-	public int mRobotRadius;
+	private int mRobotRadius;
 
 	/** Dimensions de notre robot
 	 * Override par la config */

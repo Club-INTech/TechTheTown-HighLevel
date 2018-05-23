@@ -229,11 +229,15 @@ public class Vec2 {
 		return r;
 	}
 
+	/**
+	 * Methode qui permet de symetriser un vecteur par rapport à la table
+	 */
 	public Vec2 symetrize(){
 		this.x=-x;
 		return new Vec2(x,y);
 	}
 
+	/** true si le vecteur est nul */
 	public boolean isNull() {
 		return (this.x == 0 && this.y == 0);
 	}
@@ -241,48 +245,39 @@ public class Vec2 {
 	/**
 	 * Tous les setters et getters parce que private :p
 	 */
-
 	public void set(Vec2 other) {
 		x = other.x;
 		y = other.y;
 		r = other.r;
 		a = other.a;
 	}
-
 	public int getX() {
 		return x;
 	}
-
 	public void setX(int x) {
 		this.x = x;
 		r = Math.sqrt(x * x + y * y);
 		a = this.angle();
 	}
-
 	public int getY() {
 		return y;
 	}
-
 	public void setY(int y) {
 		this.y = y;
 		r = Math.sqrt(x * x + y * y);
 		a = this.angle();
 	}
-
 	public double getR() {
 		return r;
 	}
-
 	public void setR(double r) {
 		this.r = r;
 		x = (int) Math.round(r * Math.cos(a));
 		y = (int) Math.round(r * Math.sin(a));
 	}
-
 	public double getA() {
 		return a;
 	}
-
 	public void setA(double a) {
 		//TODO ; utiliser Geometry.moduloSpec ?
 		this.a = a % Math.PI;
@@ -290,8 +285,9 @@ public class Vec2 {
 		y = (int) Math.round(r * Math.sin(a));
 	}
 
-	/** Le hashCode permet d'identifier un objet par un id géneré en fonction des paramètres (ici x et y);
-	 * ca sert pour la fonction equals notamment
+	/**
+	 * Le hashCode permet d'identifier un objet par un id géneré en fonction des paramètres (ici x et y);
+	 * ca sert pour les collection (HashSet, HashMap)
 	 */
 	/* (non-Javadoc)
  * @see java.lang.Object#hashCode()

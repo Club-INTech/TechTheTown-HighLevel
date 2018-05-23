@@ -17,18 +17,24 @@ import utils.Log;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Classe paramétrant la table en noeuds et arrête permettant d'y naviguer via un algorithme de pathfinding
+ *
+ * @author ?
+ */
 public class Graphe implements Service {
 
-
+    /** Config & Log */
     private Log log;
     private Config config;
+
+    /** La table... */
+    private Table table;
     private CopyOnWriteArrayList<ObstacleCircular> listCircu;
     private CopyOnWriteArrayList<ObstacleRectangular> listRectangu;
     private CopyOnWriteArrayList<ObstacleProximity> mobileEnnemies;
 
-    private Table table;
     private ArrayList<Noeud> nodes;
-    private ArrayList<Noeud> nodesFixes;
     private ArrayList<Arete> bonesList;
     private boolean basicDetection;
 
@@ -48,19 +54,13 @@ public class Graphe implements Service {
     public Graphe(Log log, Config config, Table table) {
         this.log = log;
         this.config = config;
-        updateConfig();
-        this.listCircu = (CopyOnWriteArrayList<ObstacleCircular>) table.getObstacleManager().getmCircularObstacle().clone();
-        this.listRectangu = (CopyOnWriteArrayList<ObstacleRectangular>) table.getObstacleManager().getRectangles().clone();
-        this.mobileEnnemies = new CopyOnWriteArrayList<>();
         this.table = table;
-        this.nodes = new ArrayList<>();
-        this.nodesFixes = new ArrayList<>();
-        this.bonesList=new ArrayList<>();
+        this.listCircu = table.getObstacleManager().getmCircularObstacle();
+        this.listRectangu = table.getObstacleManager().getRectangles();
+        this.mobileEnnemies = new CopyOnWriteArrayList<>();
+
         createNodes();
-        long time1 = System.currentTimeMillis();
         createAretes();
-        long time2 = System.currentTimeMillis() - time1;
-        log.debug("Time to create graph (ms): " + time2);
     }
 
     /** Méthode générant des noeuds sur la table : on crée des noeuds autour
@@ -70,35 +70,20 @@ public class Graphe implements Service {
 
     public void createNodes() {
 
-        this.nodes=new ArrayList<>();
+        this.nodes = new ArrayList<>();
         this.createNodesAroundCircularObstacles();
 
-        Vec2 positionmilieu=new Vec2(0,1000);
-        Noeud nodemilieu=new Noeud(positionmilieu,0,0, new ArrayList<>());
-        nodes.add(nodemilieu);
-        nodesFixes.add(nodemilieu);
-
-        Vec2 positiondepart=new Vec2(1252, 455);
-        Noeud nodeDepart=new Noeud(positiondepart,0,0, new ArrayList<>());
-        nodes.add(nodeDepart);
-        nodesFixes.add(nodeDepart);
-
-        Vec2 positioninterr=new Vec2(650,215);
-        Noeud noeudinterr=new Noeud(positioninterr,0,0, new ArrayList<>());
-        nodes.add(noeudinterr);
-        nodesFixes.add(noeudinterr);
+        nodes.add(new Noeud(new Vec2(0, 1000)));
+        nodes.add(new Noeud(Table.entryPosition)); // 1252 455
+        nodes.add(new Noeud(new Vec2(650, 215)));
 
         int xCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getX())/3;
         int yCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getY())/3;
-        Vec2 noeudEnPlusCoteVert=new Vec2(xCentreGravite,yCentreGravite);
-        nodes.add(new Noeud(noeudEnPlusCoteVert,0,0,new ArrayList<>()));
-        nodesFixes.add(new Noeud(noeudEnPlusCoteVert,0,0,new ArrayList<>()));
+        nodes.add(new Noeud(new Vec2(xCentreGravite, yCentreGravite)));
 
         int xCentreGraviteEnnemy=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getX())/3;
         int yCentreGraviteEnnemy=(TasCubes.TAS_BASE_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU_ENNEMI.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION_ENNEMI.getCoordsVec2().getY())/3;
-        Vec2 noeudEnPlusCoteOrange=new Vec2(xCentreGraviteEnnemy,yCentreGraviteEnnemy);
-        nodes.add(new Noeud(noeudEnPlusCoteOrange,0,0,new ArrayList<>()));
-        nodesFixes.add(new Noeud(noeudEnPlusCoteOrange,0,0,new ArrayList<>()));
+        nodes.add(new Noeud(new Vec2(xCentreGravite, yCentreGravite)));
     }
 
     /**
@@ -201,13 +186,7 @@ public class Graphe implements Service {
      */
 
     public void removeNode(Noeud noeud){
-        ArrayList<Noeud> voisins=noeud.getVoisins();
-        for(Noeud node : voisins){
-            if(node.getVoisins().contains(noeud)){
-                node.getVoisins().remove(noeud);
-            }
-        }
-        nodes.remove(noeud);
+
     }
 
     /**
@@ -281,7 +260,7 @@ public class Graphe implements Service {
             }
         }
         for(Vec2 coords : finalPointsToReturn){
-            nodes.add(new Noeud(coords,0,0,new ArrayList<>()));
+            nodes.add(new Noeud(coords));
         }
         //C'est pour la méthode qui permet de get les noeuds les plus proches
         ArrayList<Vec2> finalPointsFixesToReturn = new ArrayList<>();
@@ -311,7 +290,7 @@ public class Graphe implements Service {
             }
         }
         for(Vec2 coords : finalPointsFixesToReturn){
-            nodesFixes.add(new Noeud(coords,0,0,new ArrayList<>()));
+            nodes.add(new Noeud(coords));
         }
     }
 
@@ -353,15 +332,15 @@ public class Graphe implements Service {
      */
 
     public Noeud closestNodeToPosition(Vec2 position){
-        float distanceMin=nodesFixes.get(0).getPosition().distance(position);
+        float distanceMin=nodes.get(0).getPosition().distance(position);
         int iMin=0;
-        for(int i=1; i<nodesFixes.size();i++){
-            if(nodesFixes.get(i).getPosition().distance(position)<distanceMin){
-                distanceMin=nodesFixes.get(i).getPosition().distance(position);
+        for(int i=1; i<nodes.size();i++){
+            if(nodes.get(i).getPosition().distance(position)<distanceMin){
+                distanceMin=nodes.get(i).getPosition().distance(position);
                 iMin=i;
             }
         }
-        return nodesFixes.get(iMin);
+        return nodes.get(iMin);
 
     }
 
