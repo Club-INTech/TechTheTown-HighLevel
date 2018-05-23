@@ -22,7 +22,7 @@ package enums;
 import simulator.ThreadSimulator;
 import threads.AbstractThread;
 import simulator.ThreadSimulatorMotion;
-import threads.ThreadPathfinder;
+import threads.ThreadPathFollower;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadEvents;
@@ -39,7 +39,7 @@ public enum ThreadName
 	EVENTS(ThreadEvents.class),
 	ETHERNET(ThreadEth.class),
 	LIDAR(ThreadLidar.class),
-    PATHFINDING(ThreadPathfinder.class),
+    PATHFOLLOWER(ThreadPathFollower.class),
 	SIMULATOR(ThreadSimulator.class),
 	SIMULATOR_MOTION(ThreadSimulatorMotion.class),
 	;

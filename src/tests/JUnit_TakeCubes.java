@@ -8,6 +8,7 @@ import org.junit.Test;
 import pathfinder.Pathfinding;
 import robot.Robot;
 import scripts.ScriptManager;
+import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import java.util.ArrayList;
@@ -48,8 +49,7 @@ public class JUnit_TakeCubes extends JUnit_Test {
             //retour du robot
             pathfinding = container.getService(Pathfinding.class);
             ArrayList<Vec2> pathToFollow = new ArrayList<>();
-            pathToFollow = pathfinding.findmyway(robotReal.getPosition(), new Vec2(1222, 455));
-            robotReal.followPath(pathToFollow);
+            robotReal.moveToCircle(new Circle(new Vec2(1222, 455)));
             robotReal.turn(Math.PI);
             robotReal.moveLengthwise(30);
 

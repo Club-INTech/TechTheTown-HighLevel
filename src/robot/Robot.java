@@ -39,7 +39,6 @@ import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Vec2;
 import table.Table;
-import threads.ThreadPathfinder;
 import utils.Log;
 import utils.Sleep;
 
@@ -102,7 +101,7 @@ public class Robot implements Service {
     /**
      * Pathfinding
      */
-    private ThreadPathfinder pathfinding;
+    private Pathfinding pathfinding;
 
     /**
      * Chemin en court par le robot, utilise par l'interface graphique
@@ -139,7 +138,6 @@ public class Robot implements Service {
      */
     private Locomotion mLocomotion;
 
-
     /**
      * Constructeur
      *
@@ -148,7 +146,7 @@ public class Robot implements Service {
      * @param log          fichier de log
      * @param ethWrapper   protocole communication série
      */
-    public Robot(Locomotion deplacements, Config config, Log log, EthWrapper ethWrapper, ThreadPathfinder pathfinding) {
+    public Robot(Locomotion deplacements, Config config, Log log, EthWrapper ethWrapper, Pathfinding pathfinding) {
         this.config = config;
         this.log = log;
         updateConfig();
@@ -210,9 +208,9 @@ public class Robot implements Service {
      * @param aim   le cercle ou l'on veut se rendre
      * @throws UnableToMoveException lorsque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
      */
-    public void moveToCircle(Circle aim) throws UnableToMoveException, PointInObstacleException, NoPathFound,ImmobileEnnemyForOneSecondAtLeast {
+    public void moveToCircle(Circle aim) throws NoPathFound, PointInObstacleException{
         Vec2 aimPosition = Geometry.closestPointOnCircle(this.getPosition(), aim);
-        // TODO : Appel au thread Pathfinder !
+        pathfinding.moveTo(aimPosition);
     }
 
     /**

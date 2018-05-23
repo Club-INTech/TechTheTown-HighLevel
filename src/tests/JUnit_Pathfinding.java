@@ -165,7 +165,6 @@ public class JUnit_Pathfinding extends JUnit_Test {
         state = container.getService(GameState.class);
         container.startInstanciedThreads();
 
-        pathfinding.initGraphe();
         robotReal.setPosition(new Vec2(890, 835));
         robotReal.setOrientation(Math.PI);
 

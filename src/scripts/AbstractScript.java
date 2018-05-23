@@ -84,13 +84,7 @@ public abstract class AbstractScript implements Service
 				log.debug("Appel au PathFinding, car Position du robot :" + actualState.robot.getPosition() + " et entrée du script :" + entryPosition(versionToExecute, actualState.robot.getPosition()).getCenter());
 				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPosition()));
 			}
-		}
-		catch (UnableToMoveException e)
-		{
-			log.debug("Catch de "+e+" Impossible de goToThenExec : abandon d'exec, throw de "+e);
-			throw e;
-		}
-		catch(NoPathFound e){
+		} catch(NoPathFound e){
 			log.debug("pas de chemin trouvé");
 			throw e;
 		}

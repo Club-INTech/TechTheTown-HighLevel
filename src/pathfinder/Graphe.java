@@ -156,7 +156,7 @@ public class Graphe implements Service {
     public void addNode(Node noeud) {
         nodes.add(noeud);
         for (Node node : nodes) {
-            if (!table.getObstacleManager().intersectAnyObstacle(new Segment(node.getPosition(), noeud.getPosition()))){
+            if (!table.getObstacleManager().intersectAnyObstacle(new Segment(node.getPosition(), noeud.getPosition()))) {
                 node.addVoisin(noeud);
                 noeud.addVoisin(node);
             }
@@ -231,11 +231,9 @@ public class Graphe implements Service {
     public ArrayList<Node> getNodes() {
         return nodes;
     }
-
     public CopyOnWriteArrayList<ObstacleCircular> getListCircu() {
         return listCircu;
     }
-
     public CopyOnWriteArrayList<ObstacleProximity> getMobileEnnemies() {
         return mobileEnnemies;
     }

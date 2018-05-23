@@ -1,5 +1,6 @@
 package threads.dataHandlers;
 
+import pathfinder.Graphe;
 import threads.AbstractThread;
 
 /**
@@ -9,6 +10,19 @@ import threads.AbstractThread;
  */
 public class ThreadLidar extends AbstractThread {
 
+    /** Graphe à modifier en fonction des données recues par le Lidar */
+    private Graphe graph;
+
+    /** Constructeur */
+    private ThreadLidar(Graphe graph) {
+        this.graph = graph;
+    }
+
     @Override
     public void run() {}
+
+    /** Getters & Setters */
+    public Graphe getGraph() {
+        return graph;
+    }
 }
