@@ -13,9 +13,7 @@ import table.obstacles.ObstacleProximity;
 import threads.AbstractThread;
 import utils.Log;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -48,6 +46,11 @@ public class ThreadLidar extends AbstractThread implements Service {
     private boolean symetry;
     private int ennemyRadius;
 
+    /** Fichiers & Buffers de debug */
+    private File lidarData;
+    private File lidarDataTmp;
+    private BufferedWriter out;
+
     /** Constructeur */
     private ThreadLidar(Log log, Config config, Graphe graph, Table table, EthWrapper ethWrapper) {
         this.log = log;
@@ -55,6 +58,26 @@ public class ThreadLidar extends AbstractThread implements Service {
         this.graph = graph;
         this.table = table;
         this.ethWrapper = ethWrapper;
+
+        try {
+            this.lidarData = new File("./lidar.txt");
+            this.lidarDataTmp = new File("/tmp/lidar.txt");
+
+            if (!lidarData.exists()) {
+                this.lidarData.createNewFile();
+            }
+            if (!lidarDataTmp.exists()) {
+                this.lidarDataTmp.createNewFile();
+            }
+
+            out = new BufferedWriter(new FileWriter(this.lidarData));
+            out.write("Données du Lidar : de la donnée du script python jusqu'à son traitement !");
+            out.newLine();
+            out.flush();
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     /** Initialisation de la connexion */
@@ -86,8 +109,8 @@ public class ThreadLidar extends AbstractThread implements Service {
         if (symetry) {
             robotPosOr.symetrize();
         }
-        vec.plus(robotPosOr.getPosition());
         vec.setA(vec.getA() + robotPosOr.getOrientation());
+        vec.plus(robotPosOr.getPosition());
         return vec;
     }
 
@@ -103,6 +126,10 @@ public class ThreadLidar extends AbstractThread implements Service {
         while (true) {
             try {
                 buffer = input.readLine();
+                out.write(buffer);
+                out.newLine();
+                out.flush();
+
                 bufferList = buffer.split(";");
 
                 // Mise à jour de la table
@@ -112,7 +139,17 @@ public class ThreadLidar extends AbstractThread implements Service {
                     if (symetry) {
                         pos.symetrize();
                     }
-                    table.getObstacleManager().addObstacle(this.changeRef(pos), ennemyRadius);
+                    out.write("Position calculée dans le référentiel du robot : " + pos.toStringEth());
+                    out.newLine();
+                    out.flush();
+
+                    pos = this.changeRef(pos);
+                    out.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth());
+                    out.newLine();
+                    out.newLine();
+                    out.flush();
+
+                    table.getObstacleManager().addObstacle(pos, ennemyRadius);
                 }
 
                 // Mise à jour du graphe

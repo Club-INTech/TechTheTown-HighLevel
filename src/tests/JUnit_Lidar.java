@@ -11,8 +11,6 @@ import utils.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class JUnit_Lidar extends JUnit_Test {
 
@@ -65,7 +63,7 @@ public class JUnit_Lidar extends JUnit_Test {
             container.startInstanciedThreads();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
 
-            Thread.sleep(1000);
+            Thread.sleep(500);
             process = pBuilder.start();
             log.debug("Process python lancé");
 
