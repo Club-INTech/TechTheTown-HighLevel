@@ -12,11 +12,7 @@ LONGUEUR_CUBE                        = 58
 LONGUEUR_BRAS_AVANT                  = 317
 LONGUEUR_BRAS_ARRIERE                = 333
 DIMENSION_PORTES                     = 110
-COUT_FIXE                            = 42
 INDICE_PATTERN_SIMULATION            = 0
-
-
-
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
@@ -25,52 +21,9 @@ ATTENTE_JUMPER                       = true
 
 # VERSION DE MATCHSCRIPT TO EXECUTE
 MATCHSCRIPT_TO_EXECUTE               = 42
-
-
-
-
-
-
-
-
-################ PARAMETRES POUR LES CAPTEURS ##################
-# horizon_capteurs                   = 500
-# angle_detection_capteur            = 0.79
-# angle_position_capteur_av          = 0.01
-# angle_position_capteur_ar          = 0.17
-# duree_peremption_obstacles         = 5000
-# capteurs_frequence                 = 10
-# capteurs_temporisation_obstacles   = 100
-# rayon_detection                    = 150
-# distance_detection                 = 250
-# capteurs_on                        = false
-# basic_distance                     = 200
-# portee_mini_capteurs_av            = 60
-# portee_mini_capteurs_ar            = 30
-# temps_untested_obstacle            = 250
-# 200 homologation ; 150 match
-
 BASIC_DETECTION                      = true
 ADVANCED_DETECTION                   = false
 SENSOR_ANGLE_WIDENESS                = 1.04
-
-
-############## PARAMETRES POUR LES DÉPLACEMENTS ################
-# hooks_tolerance_mm                 = 20
-# disque_tolerance_maj               = 100
-# disque_tolerance_consigne          = 40
-# trajectoire_courbe                 = false
-# nb_tentatives                      = 30
-# anticipation_trajectoire_courbe    = 200
-# tolerance_patinage_ms              = 200
-# duree_attente_ennemie              = 100000
-# duree_checkout_ennemie             = 1000
-# tolerance_orientation_recalage     = 0.15
-
-# PARAMETRES DE DEGAGEMENT EN CAS DE COLLISION
-# angle_degagement_robot             = 0.4
-# distance_degagement_robot          = 50
-
 
 # PARAMETRES OBSTACLES
 TAS_BASE_PRIS=false
@@ -80,6 +33,11 @@ TAS_BASE_ENNEMI_PRIS=false
 TAS_CHATEAU_ENNEMI_PRIS=false
 TAS_STATION_EPURATION_ENNEMI_PRIS=false
 
+# PARAMETRES PATHFINDING
+COUT_FIXE                            = 42
+ESPACEMENT_RECT                      = 12
+NB_NOEUDS_OBST_CIR                   = 10
+ESPACEMENT_OBSTACLE_COEFF            = 1.2
 
 
 ############ PARAMETRES RECONNAISSANCE DE COULEURS #############
@@ -97,39 +55,39 @@ THIRD_COLOR                          = null
 
 ### Calibration des couleurs pour l'image prémodifiée
 #RGB pour la couleur orange
-rorange=173
-gorange=65
-borange=0
+rorange                              = 173
+gorange                              = 65
+borange                              = 0
 
 #RGB pour la couleur jaune
-rjaune=173
-gjaune=161
-bjaune=0
+rjaune                               = 173
+gjaune                               = 161
+bjaune                               = 0
 
 #RGB pour la couleur bleue
-rbleu=0
-gbleu=22
-bbleu=105
+rbleu                                = 0
+gbleu                                = 22
+bbleu                                = 105
 
 #RGB pour la couleur noire
-rnoir=45
-gnoir=60
-bnoir=60
+rnoir                                = 45
+gnoir                                = 60
+bnoir                                = 60
 
 #RGB pour la couleur vert
-rvert=73
-gvert=153
-bvert=0
+rvert                                = 73
+gvert                                = 153
+bvert                                = 0
 
 #Modifieurs pour la reconnaissance de couleur
-saturationPreModifier=3
-brightnessPreModifier=1
-saturationModifierLightingUp=1.2
-brightnessModifierLightingUp=1.5
+saturationPreModifier                = 3
+brightnessPreModifier                = 1
+saturationModifierLightingUp         = 1.2
+brightnessModifierLightingUp         = 1.5
 
 ###################### PARAMETRES SCRIPT #######################
 #ActivationPanneauDomotique
-DISTANCE_INTERRUPTEUR=65
+DISTANCE_INTERRUPTEUR                = 65
 
 #DéposeCube
 DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES=90

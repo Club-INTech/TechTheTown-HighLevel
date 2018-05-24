@@ -67,8 +67,16 @@ public class XYO {
         this.orientation = Double.parseDouble(infos[2]);
     }
 
+    /** Méthode de symetrisation de l'objet par rapport à la table */
+    public void symetrize() {
+        this.position.symetrize();
+        this.orientation = Geometry.moduloSpec(Math.PI - orientation, Math.PI);
+    }
 
-
+    @Override
+    public XYO clone() {
+        return new XYO(this.position, this.orientation);
+    }
 
     /** Getters & Setters */
     public Vec2 getPosition() {

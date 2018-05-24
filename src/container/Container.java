@@ -386,8 +386,8 @@ public class Container implements Service
 		}
 
 		// On évite d'essayer de parler au LL lorsqu'on a pas de stream...
-		while (!((ThreadEth) instanciedThreads.get(ThreadEth.class.getSimpleName())).isInterfaceCreated()){
-			Thread.sleep(1);
+        while (instanciedThreads.containsKey(ThreadEth.class.getSimpleName()) && !((ThreadEth) instanciedThreads.get(ThreadEth.class.getSimpleName())).isInterfaceCreated()) {
+		    Thread.sleep(1);
 		}
 	}
 	

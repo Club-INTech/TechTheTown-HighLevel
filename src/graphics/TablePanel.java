@@ -101,7 +101,7 @@ public class TablePanel extends JPanel
 	{
 		path = new ArrayList<>();
 		clics = new ArrayList<>();
-		nodes=new ArrayList<>();
+		nodes = new ArrayList<>();
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;

@@ -24,6 +24,7 @@ import enums.*;
 import exceptions.Locomotion.BlockedException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.Vec2;
@@ -170,12 +171,12 @@ public class Locomotion implements Service {
      * Rayon du cercle autour du robot pour savoir s'il peut tourner (detectionRay légèrement supérieur à celui du robot)
      * La zone de détection d'obstacle est un disque comme suit:
      * <p>
-     * o    o
-     * o  +----+  o
-     * robot ->  o   |    |   o
-     * o   |    |   o
-     * o  +----+	o
-     * o    o
+     *                 o    o
+     *              o  +----+  o
+     * robot ->    o   |    |   o
+     *             o   |    |   o
+     *              o  +----+	o
+     *                 o    o
      * <p>
      * Override par la config
      */
@@ -184,14 +185,14 @@ public class Locomotion implements Service {
     /**
      * Distance de detection : rectangle de détection :
      * <p>
-     * +-----------+
-     * +----+        |          Sens de déplacement du robot: ====>
-     * robot -> |    |        |
-     * |    |        |
-     * +----+        |
-     * +-----------+
-     * <------->
-     * detectionDistance
+     *              +-----------+
+     *            +----+        |          Sens de déplacement du robot: ====>
+     * robot ->   |    |        |
+     *            |    |        |
+     *            +----+        |
+     *              +-----------+
+     *                  <------->
+     *              detectionDistance
      * <p>
      * Override par la config
      */
@@ -305,7 +306,6 @@ public class Locomotion implements Service {
             getCurrentPositionAndOrientation();
             Vec2 aim = path.get(i);
             finalAim = aim;
-            log.debug("Pathfinding : going to node of coords "+aim.toStringEth());
             moveToPoint(aim, false, mustDetect);
         }
     }
@@ -323,7 +323,6 @@ public class Locomotion implements Service {
     public void moveToPoint(Vec2 pointVise, boolean expectedWallImpact, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
 
         thEvent.setIsMoving(true);
-        log.debug("isMoving variable has been defined to True");
 
         Vec2 move = pointVise.minusNewVector(highLevelPosition);
         int moveR = (int) move.getR();
@@ -370,7 +369,6 @@ public class Locomotion implements Service {
      */
     public void turn(double angle, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         thEvent.setIsMoving(true);
-        log.debug("isMoving variable has been defined to True");
         log.debug("Tourner vers " + Double.toString(angle));
 
         actualRetriesIfBlocked = 0;
@@ -399,7 +397,6 @@ public class Locomotion implements Service {
      */
     public void moveLengthwise(int distance, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
         thEvent.setIsMoving(true);
-        log.debug("isMoving variable has been defined to True");
 
         log.debug("Avancer de " + Integer.toString(distance));
 
@@ -408,10 +405,6 @@ public class Locomotion implements Service {
 
         Vec2 aim = highLevelPosition.plusNewVector(new Vec2((double)distance, highLevelOrientation));
         finalAim = aim;
-
-        /** TODO A adapté à l'annee en cours */
-        int totalTime = 0;
-        boolean isEnemy = table.getObstacleManager().isEnnemyForwardOrBackWard(detectionDistance, highLevelPosition, aim, highLevelOrientation);
 
         if (distance >= 0) {
             isRobotMovingForward = true;
@@ -447,47 +440,6 @@ public class Locomotion implements Service {
                 isRobotMovingForward = false;
                 isRobotMovingBackward = false;
             }
-//            catch (BlockedException e) {
-//                log.critical(e.logStack());
-//                log.critical("Haut : Catch de " + e.getMessage() + " dans moveToPointException");
-//
-//                /** Si on ne s'y attendait pas, on réagit en se dégageant légèrement avant de retenter : si on n'y
-//                 * arrive pas, on balance une UnableToMoveException(PHYSICALLY_BLOCKED) à l'IA
-//                 * TODO A adapter à l'année en cours
-//                 */
-//                if (!expectWallImpact && !isForcing) {
-//                    immobilise();
-//                    actualRetriesIfBlocked++;
-//
-//                    try {
-//                        log.warning("On est bloqué : on se dégage !");
-//                        if (turnOnly) {
-//                            /** TODO A faire ! cas ou on doit se dégager alors que l'on a cogné un mur en tournant...
-//                             /* Bonne chance pour trouver le sens vers lequel on doit tourner :p ! */
-//                        } else if (isMovementForward) {
-//                            isRobotMovingForward = false;
-//                            isRobotMovingBackward = true;
-//                            moveToPointDetectExceptions(highLevelPosition.minusNewVector(new Vec2(distanceToDisengage, highLevelOrientation)), false, false, true);
-//                        } else {
-//                            isRobotMovingForward = true;
-//                            isRobotMovingBackward = false;
-//                            moveToPointDetectExceptions(highLevelPosition.plusNewVector(new Vec2(distanceToDisengage, highLevelOrientation)), true, false, true);
-//                        }
-//                        // Si l'on arriver jusq'ici, c'est qu'aucune exception n'a été levé
-//                        doItAgain = (actualRetriesIfBlocked < maxRetriesIfBlocked);
-//                    } catch (BlockedException definitivelyBlocked) {
-//                        /** Cas très improbable... on balance à l'IA */
-//                        immobilise();
-//                        log.critical(definitivelyBlocked.logStack());
-//                        log.debug("Catch de " + definitivelyBlocked + " dans moveToPointHandleException");
-//                        log.critical("Lancement de UnableToMoveException dans MoveToPointException, visant " + finalAim.toString() + " cause physique");
-//                        throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
-//                    }
-//                } else if (!expectWallImpact) {
-//                    log.critical("Lancement de UnableToMoveException dans MoveToPointException, visant " + finalAim.getX() + " :: " + finalAim.getY() + " cause physique");
-//                    throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
-//                }
-//            }
             catch(BlockedException e){
                 if (!expectWallImpact){
                     immobilise();
@@ -496,13 +448,19 @@ public class Locomotion implements Service {
                     immobilise();
                 }
             }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            catch (UnexpectedObstacleOnPathException e) {
+                e.printStackTrace();
+            }
         }
         while (doItAgain);
     }
 
     /**
      * Bloquant.
-     * Gère la détection de l'adversaire
+     * Gère la détection de l'adversaire et des blocages
      *
      * @param aim               la position visee sur la table (consigne donné par plus haut niveau donc non symetrise)
      * @param isMovementForward vrai si on va en avant et faux si on va en arriere
@@ -510,93 +468,27 @@ public class Locomotion implements Service {
      * @param mustDetect        true si on veut detecter, false sinon.
      * @throws BlockedException
      */
-    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, ImmobileEnnemyForOneSecondAtLeast, UnableToMoveException {
-        thEvent.setIsMoving(true);
+    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, UnexpectedObstacleOnPathException, UnableToMoveException, InterruptedException {
+        this.thEvent.setIsMoving(true);
         this.orderSentMoveToPointDetectExceptions=false;
-        while (thEvent.getIsMoving()) {
 
+        // Boucle de vérification d'exceptions : vérification de l'event Blocked, de la basicDetection (BIND le ThreadEth), et de la detection Lidar
+        // On utilise maintenant la basicDetection comme arrêt d'urgence,
+        // Dans le cas de l'utilisation du Pathfinding, on le préviens directement avec une exception
+        // Dans le cas d'un mouvement atomique (script), on attend un certains temps
+        // Ou alors on attend un certain temps dans les 2 cas ?
+
+        if (detectEnemyAtDistance(detectionDistance, new Vec2(100.0, this.highLevelOrientation))) {
+
+        }
+
+        while (thEvent.getIsMoving()) {
             getCurrentPositionAndOrientation();
 
             if (thEvent.getUnableToMoveEvent().peek() != null) {
                 String unableToMoveReason = thEvent.getUnableToMoveEvent().poll();
                 if (unableToMoveReason.equals(UnableToMoveReason.PHYSICALLY_BLOCKED.getSerialOrder())) {
                     throw new BlockedException();
-                }
-            }
-
-            // TODO A adapté à l'année en cours
-            if (mustDetect) {
-                if (!advancedDetection){
-                    if (usingBasicDetection) {
-                        if (basicDetectionActivated) {
-                            boolean obstacleDetected = basicDetect(isMovementForward);
-                            boolean wasImmobilised = false;
-                            if (obstacleDetected) {
-                                immobilise();
-                                log.warning("BasicDetection Triggered");
-                                wasImmobilised = true;
-                            }
-                            while (obstacleDetected) {
-                                try {
-                                    Thread.sleep(basicDetectionLoopDelay);
-                                    log.warning("BasicDetection toujours triggered");
-                                    obstacleDetected = basicDetect(isMovementForward);
-                                } catch (InterruptedException e) {
-                                    log.debug("Interruption du sleep de la basicDetection, on sort de la boucle");
-                                    obstacleDetected = false;
-                                    e.printStackTrace();
-                                }
-                            }
-                            if (wasImmobilised) {
-                                updateCurrentPositonAndOrientation();
-                                moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
-                            }
-                        }
-                    }
-                }
-                else{
-                    if (usingBasicDetection) {
-                        if (basicDetectionActivated) {
-                            boolean obstacleDetected = basicDetect(isMovementForward);
-                            if (obstacleDetected) {
-                                immobilise();
-                                log.warning("BasicDetection Triggered");
-                                throw new UnableToMoveException(aim, UnableToMoveReason.OBSTACLE_DETECTED);
-                            }
-                        }
-                    }
-                    if (turnOnly){
-                        try{
-                            boolean hasDetectedSomething = detectEnemyArroundPosition(detectionRay);
-                            if (hasDetectedSomething){
-                                updateCurrentPositonAndOrientation();
-                                moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
-                            }
-                        }
-                        catch (InterruptedException e){
-                            e.printStackTrace();
-                        }
-                        catch(ImmobileEnnemyForOneSecondAtLeast e){
-                            log.debug("aimImmobileEnnemySecondAtLeast : " + aim);
-                            throw new ImmobileEnnemyForOneSecondAtLeast(aim);
-                        }
-                    }
-                    else{
-                        try{
-                            boolean hasDetectedSomething = detectEnemyAtDistance(detectionDistance, aim.minusNewVector(highLevelPosition));
-                            if (hasDetectedSomething){
-                                updateCurrentPositonAndOrientation();
-                                moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
-                            }
-                        }
-                        catch(InterruptedException e){
-                            e.printStackTrace();
-                        }
-                        catch(ImmobileEnnemyForOneSecondAtLeast e){
-                            log.debug("aimImmobileEnnemySecondAtLeast : " + aim);
-                            throw new ImmobileEnnemyForOneSecondAtLeast(aim);
-                        }
-                    }
                 }
             }
 
@@ -667,6 +559,8 @@ public class Locomotion implements Service {
      * Il s'agit d'une méthode qui throw une exception si la basic detection est activée,
      * que le LL détecte qqch à une distance qu'on set, cette exception sera catched par
      * le movetopointhandledexceptions qui immobilisera le robot
+     *
+     * @param isMovementForward true si le mouvement est vers l'avant
      */
     private boolean basicDetect(boolean isMovementForward) {
         int startIndice;
@@ -705,7 +599,7 @@ public class Locomotion implements Service {
      *
      * @param distance distance jusqu'a un ennemi en mm en dessous de laquelle on doit abandonner le mouvement
      */
-    public boolean detectEnemyArroundPosition(int distance) throws InterruptedException,ImmobileEnnemyForOneSecondAtLeast {
+    public boolean detectEnemyArroundPosition(int distance) throws InterruptedException, UnexpectedObstacleOnPathException {
         int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
         boolean hasDetectedSomething=false;
         if (closest <= distance) {
@@ -716,22 +610,21 @@ public class Locomotion implements Service {
             immobilise();
             int count = 0;
 
-
-            while(count < 100)
+            while(count < 10)
             {
                 //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
                 closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
                 if(closest > distance){
                     break;
                 }
-                Thread.sleep(10);
+                Thread.sleep(100);
                 count++;
             }
 
             if(closest <= distance){
                 table.getObstacleManager().getMobileObstacles().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
                 log.debug("ImmobileEnnemy est thrown");
-                throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
+                throw new UnexpectedObstacleOnPathException();
             }
         }
         return hasDetectedSomething;
@@ -740,34 +633,29 @@ public class Locomotion implements Service {
     /**
      * Lance une exception si un ennemi se trouve sur le chemin à "detection Distance"
      *
+     * @param distance la distance de detection (voir plus haut)
      * @param moveDirection direction du robot
      */
-    public boolean detectEnemyAtDistance(int distance, Vec2 moveDirection) throws InterruptedException,ImmobileEnnemyForOneSecondAtLeast{
-        boolean a =table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation);
-        boolean hasDetectedSomething = false;
-        if (a) {
-            hasDetectedSomething=true;
-            log.debug("Ennemy detected at distance(<"+distance+"mm): "+a);
+    public boolean detectEnemyAtDistance(int distance, Vec2 moveDirection) throws InterruptedException, UnexpectedObstacleOnPathException
+    {
+        if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)) {
+            log.debug("Ennemy detected at distance(<"+distance+"mm)");
             log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin : le robot va s'arrêter");
             immobilise();
-            int count = 0;
 
-            while(count < 50)
+            int count = 0;
+            while(count < 10 && table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation))
             {
-                if(!table.getObstacleManager().isEnnemyForwardOrBackWard((int)(distance*1.2), highLevelPosition, moveDirection, highLevelOrientation)){
-                    break;
-                }
-                Thread.sleep(10);
+                Thread.sleep(100);
                 count++;
             }
 
-            //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
-            if(table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)){
-                log.debug("ImmobileEnnemy est throw");
-                throw new ImmobileEnnemyForOneSecondAtLeast(new Vec2());
+            if(count >= 10){
+                throw new UnexpectedObstacleOnPathException();
             }
+            return true;
         }
-        return hasDetectedSomething;
+        return false;
     }
 
 
@@ -1040,7 +928,6 @@ public class Locomotion implements Service {
         usingBasicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
         distanceBasicDetectionTriggered=config.getInt(ConfigInfoRobot.BASIC_DETECTION_DISTANCE);
         advancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
-
         basicDetectionLoopDelay = config.getInt(ConfigInfoRobot.BASIC_DETECTION_LOOP_DELAY);
 
         /** BlockedException */
