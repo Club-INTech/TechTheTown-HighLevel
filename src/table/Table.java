@@ -67,7 +67,7 @@ public class Table implements Service
 
 	/** point de départ du match à modifier a chaque base roulante */
 	public static Vec2 entryPosition = new Vec2(500, 500); // 1270 455
-	public static double entryOrientation = Math.PI;
+	public static double entryOrientation = 0; // Math.PI
 
 	/**
 	 * Instancie une nouvelle table

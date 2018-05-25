@@ -5,6 +5,9 @@ import exceptions.ContainerException;
 import graphics.Window;
 import org.junit.Before;
 import org.junit.Test;
+import robot.Robot;
+import scripts.ScriptManager;
+import strategie.GameState;
 import table.Table;
 import threads.dataHandlers.ThreadLidar;
 import utils.Log;
@@ -23,6 +26,10 @@ public class JUnit_Lidar extends JUnit_Test {
     /** Le descripteur du processus python */
     private Process process;
     private ProcessBuilder pBuilder;
+
+    /** GameState & ScriptManager */
+    private GameState gameState;
+    private ScriptManager scriptManager;
 
     /** Méthode de mise à jour de la frame */
     private void show(Window frame) {
@@ -48,9 +55,11 @@ public class JUnit_Lidar extends JUnit_Test {
         config = container.getConfig();
         graphHandler = container.getService(ThreadLidar.class);
         table = container.getService(Table.class);
+        gameState = container.getService(GameState.class);
+        scriptManager = container.getService(ScriptManager.class);
 
         // Instanciation d'une classe ThreadInterface anonyme
-        (new Thread(() -> this.show(new Window(table)))).start();
+        (new Thread(() -> this.show(new Window(table, gameState, scriptManager, false)))).start();
 
         // Démarrage du script du Lidar !
         pBuilder = new ProcessBuilder("python3", "main.py");

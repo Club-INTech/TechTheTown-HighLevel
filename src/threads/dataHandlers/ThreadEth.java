@@ -51,7 +51,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ThreadEth extends AbstractThread implements Service {
 
     /** Nom */
-
     public String name;
 
     /**

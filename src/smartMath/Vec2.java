@@ -292,7 +292,7 @@ public class Vec2 {
 	}
 	public void setA(double a) {
 		//TODO ; utiliser Geometry.moduloSpec ?
-		this.a = a % Math.PI;
+        this.a = Geometry.moduloSpec(a, Math.PI);
 		x = (int) Math.round(r * Math.cos(a));
 		y = (int) Math.round(r * Math.sin(a));
 	}
