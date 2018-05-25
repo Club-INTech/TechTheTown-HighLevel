@@ -60,7 +60,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     ROBOT_LENGTH(300),
     ROBOT_WIDTH(300),
     ROBOT_RADIUS(212),
-    ENNEMY_RADIUS(400),
+    ENNEMY_RADIUS(220),
 
     /** Vitesses du robot */
     ROBOT_LINEAR_SPEED(840),        // mm/s

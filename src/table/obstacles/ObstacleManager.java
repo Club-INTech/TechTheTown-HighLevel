@@ -89,7 +89,7 @@ public class ObstacleManager implements Service
 	private Vec2 positionDetectionDisc=new Vec2(0,0);
 
 	/**	Temps donné aux obstacles pour qu'ils soit vérifiés */
-	private final int timeToTestObstacle = 500;
+	private final int timeToTestObstacle = 1000;
 
 	/** Temps de vie d'un robot ennemi */
 	private int defaultLifetime = 1000; //OVERRIDE PAR LA CONFIG
@@ -188,15 +188,17 @@ public class ObstacleManager implements Service
 	 */
 	public synchronized void addObstacle(final Vec2 position, final int radius) {
 		//vérification que l'on ne détecte pas un obstacle "normal"
-		if (isObstaclePositionValid(position)){
-			boolean isThereAnObstacleIntersecting = false;
-			ArrayList<ObstacleProximity> obstacleToBeRemoved = new ArrayList<>();
-			for (int i=0; i<mUntestedMobileObstacles.size(); i++) {
-				ObstacleProximity obstacleMobileUntested=mUntestedMobileObstacles.get(i);
+		if (isObstaclePositionValid(position))
+		{
+		    boolean isThereAnObstacleIntersecting = false;
+
+			for (int i=0; i<mUntestedMobileObstacles.size(); i++)
+			{
+				ObstacleProximity obstacleMobileUntested = mUntestedMobileObstacles.get(i);
 
 				//si l'obstacle est deja dans la liste des obstacles non-testés on l'ajoute dans la liste des obstacles
-				if (obstacleMobileUntested.getPosition().distance(position) < obstacleMobileUntested.getRadius()*2) {
-					isThereAnObstacleIntersecting = true;
+				if (obstacleMobileUntested.getPosition().distance(position) < (radius + obstacleMobileUntested.getRadius())/2)
+				{
 					obstacleMobileUntested.numberOfTimeDetected++;
 					obstacleMobileUntested.setPosition(position);
 					obstacleMobileUntested.setRadius(radius);
@@ -209,36 +211,36 @@ public class ObstacleManager implements Service
 
 					// si on valide sa vision et qu'il n'y a pas d'intersection avec un obstacle qui existe déjà
 					if (obstacleMobileUntested.numberOfTimeDetected >= obstacleMobileUntested.getThresholdConfirmedOrUnconfirmed()) {
-						boolean intersection=false;
-						for(ObstacleCircular obstacleCircularFixe : mCircularObstacle) {
+						boolean intersection = false;
+						for(ObstacleCircular obstacleCircularFixe : mCircularObstacle)
+						{
 							if(obstacleMobileUntested.getCircle().isInsideEnough(obstacleCircularFixe.getCircle())){
-								intersection=true;
+								intersection = true;
 								break;
 							}
 						}
-						if(!intersection){
-							ObstacleProximity obstacleToAdd = new ObstacleProximity(obstacleMobileUntested.getCircle(),this.defaultLifetime);
-							log.warning("Ajout d'un obstacle en position "+obstacleToAdd.getCircle().getCenter()+" avec lifeTime="+obstacleToAdd.getLifeTime());
-							mMobileObstacles.add(obstacleToAdd);
-							obstacleToBeRemoved.add(obstacleMobileUntested);
+						if(!intersection)
+						{
+						    isThereAnObstacleIntersecting = true;
+							mMobileObstacles.add(obstacleMobileUntested);
+							mUntestedMobileObstacles.remove(i);
 						}
 					}
 				}
 			}
-			mUntestedMobileObstacles.removeAll(obstacleToBeRemoved);
-
 
 			// on vérifie si l'on ne voit pas un obstacle confirmé déjà présent
-			for (int i=0; i<mMobileObstacles.size(); i++) {
+			for (int i=0; i<mMobileObstacles.size(); i++)
+			{
 				ObstacleProximity obstacleMobile=mMobileObstacles.get(i);
-				if (obstacleMobile.getPosition().distance(position) < obstacleMobile.getRadius()*2) {
+				if (obstacleMobile.getPosition().distance(position) < obstacleMobile.getRadius()*2)
+				{
 					isThereAnObstacleIntersecting = true;
 
 					obstacleMobile.numberOfTimeDetected++;
 					obstacleMobile.setPosition(position);
 					obstacleMobile.setRadius(radius);
 					obstacleMobile.setLifeTime(defaultLifetime);
-					log.warning("On actualise (lifetime +"+defaultLifetime+") l'obstacle en position "+obstacleMobile.getPosition());
 
 					// si on l'a deja vu plein de fois
 					if (obstacleMobile.numberOfTimeDetected >= obstacleMobile.getMaxNumberOfTimeDetected()) {
@@ -246,6 +248,7 @@ public class ObstacleManager implements Service
 					}
 				}
 			}
+
 			if (!isThereAnObstacleIntersecting) {
 				mUntestedMobileObstacles.add(new ObstacleProximity(new Circle(position, radius), timeToTestObstacle));
 			}

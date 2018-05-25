@@ -119,9 +119,11 @@ public class ThreadLidar extends AbstractThread implements Service {
         String buffer;
         String bufferList[];
         Thread.currentThread().setPriority(8);
+        updateConfig();
         initSocket();
         log.debug("ThreadLidar started");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
+        long time = System.currentTimeMillis();
 
         while (true) {
             try {
@@ -139,12 +141,12 @@ public class ThreadLidar extends AbstractThread implements Service {
                     if (symetry) {
                         pos.symetrize();
                     }
-                    out.write("Position calculée dans le référentiel du robot : " + pos.toStringEth());
+                    out.write("[" + (System.currentTimeMillis() - time)/1000 + "] Position calculée dans le référentiel du robot : " + pos.toStringEth());
                     out.newLine();
                     out.flush();
 
                     pos = this.changeRef(pos);
-                    out.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth());
+                    out.write("[" + (System.currentTimeMillis() - time)/1000 + "] Position caluclée dans le référentiel de la table : " + pos.toStringEth());
                     out.newLine();
                     out.newLine();
                     out.flush();
