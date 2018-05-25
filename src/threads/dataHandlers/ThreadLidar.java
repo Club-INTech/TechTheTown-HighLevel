@@ -125,6 +125,7 @@ public class ThreadLidar extends AbstractThread implements Service {
         log.debug("ThreadLidar started");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
         long time = System.currentTimeMillis();
+        Vec2 pos;
 
         while (true) {
             try {
@@ -138,24 +139,16 @@ public class ThreadLidar extends AbstractThread implements Service {
                 // Mise à jour de la table
                 for (String info : bufferList) {
                     info = info.substring(1, info.length() - 1);
-                    Vec2 pos = new Vec2(Double.parseDouble(info.split(",")[0]), Double.parseDouble(info.split(",")[1]));
+                    pos = new Vec2(Double.parseDouble(info.split(",")[0]), Double.parseDouble(info.split(",")[1]));
 
                     // Le référentiel des données Lidar repère les angles dans le sens horaire, c'est pourquoi l'on doit symetriser les vecteurs par rapport à x
                     pos.setA(-pos.getA());
                     if (symetry) {
                         pos.symetrize();
                     }
+                    pos = this.changeRef(pos);
+
                     out.write("[" + (System.currentTimeMillis() - time) / 1000 + "] Position calculée dans le référentiel du robot : " + pos.toStringEth());
-                    out.newLine();
-                    out.flush();
-
-                    pos.setA(pos.getA() + ethWrapper.getCurrentPositionAndOrientation().getOrientation());
-                    out.write("Position après ajout l'orientation du robot : " + pos.toStringEth());
-                    out.newLine();
-                    out.flush();
-
-                    pos.plus(ethWrapper.getCurrentPositionAndOrientation().getPosition());
-                    out.write("Position après ajout de la position du robot : " + pos.toStringEth());
                     out.newLine();
                     out.flush();
 
@@ -167,7 +160,6 @@ public class ThreadLidar extends AbstractThread implements Service {
                     table.getObstacleManager().addObstacle(pos, ennemyRadius);
                     table.getObstacleManager().removeOutdatedObstacles();
                 }
-
 
                 // Mise à jour du graphe
             } catch (IOException e) {
