@@ -138,7 +138,9 @@ public class ThreadLidar extends AbstractThread implements Service {
                 for (String info : bufferList) {
                     info = info.substring(1,  info.length()-1);
                     Vec2 pos = new Vec2(Double.parseDouble(info.split(",")[0]), Double.parseDouble(info.split(",")[1]));
-                    if (symetry) {
+
+                    // Le référentiel des données Lidar repère les angles dans le sens horaire, c'est pourquoi l'on doit symetriser les vecteurs par rapport à x
+                    if (!symetry) {
                         pos.symetrize();
                     }
                     out.write("[" + (System.currentTimeMillis() - time)/1000 + "] Position calculée dans le référentiel du robot : " + pos.toStringEth());
@@ -146,6 +148,7 @@ public class ThreadLidar extends AbstractThread implements Service {
                     out.flush();
 
                     pos = this.changeRef(pos);
+
                     out.write("[" + (System.currentTimeMillis() - time)/1000 + "] Position caluclée dans le référentiel de la table : " + pos.toStringEth());
                     out.newLine();
                     out.newLine();
