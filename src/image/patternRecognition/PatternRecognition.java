@@ -136,9 +136,9 @@ public class PatternRecognition extends AbstractThread{
         //Méthode pour récupérer les paramètres R, G et B de chaque pixel
         for (int x=0; x<width; x++){
             for (int y=0; y<height; y++) {
-                colorMatrix[x][y][0]=(int)array[x*height+y*3];
-                colorMatrix[x][y][1]=(int)array[x*height+y*3+1];
-                colorMatrix[x][y][2]=(int)array[x*height+y*3+2];
+                colorMatrix[x][y][0]=array[x*height+y*3];
+                colorMatrix[x][y][1]=array[x*height+y*3+1];
+                colorMatrix[x][y][2]=array[x*height+y*3+2];
             }
         }
         return colorMatrix;
