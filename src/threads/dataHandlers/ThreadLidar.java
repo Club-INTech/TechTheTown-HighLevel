@@ -5,11 +5,9 @@ import enums.ConfigInfoRobot;
 import pathfinder.Graphe;
 import pfg.config.Config;
 import robot.EthWrapper;
-import smartMath.Circle;
 import smartMath.Vec2;
 import smartMath.XYO;
 import table.Table;
-import table.obstacles.ObstacleProximity;
 import threads.AbstractThread;
 import utils.Log;
 
@@ -71,7 +69,7 @@ public class ThreadLidar extends AbstractThread implements Service {
             }
 
             out = new BufferedWriter(new FileWriter(this.lidarData));
-            out.write("Données du Lidar : de la donnée du script python jusqu'à son traitement !");
+            out.write("========Données du Lidar : de la donnée du script python jusqu'à son traitement !========");
             out.newLine();
             out.newLine();
             out.flush();
@@ -125,11 +123,13 @@ public class ThreadLidar extends AbstractThread implements Service {
         log.debug("ThreadLidar started");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
         long time = System.currentTimeMillis();
+        long timeStep;
         Vec2 pos;
 
         while (true) {
             try {
                 buffer = input.readLine();
+                timeStep = System.currentTimeMillis();
                 out.write(buffer);
                 out.newLine();
                 out.flush();
@@ -141,16 +141,17 @@ public class ThreadLidar extends AbstractThread implements Service {
                     info = info.substring(1, info.length() - 1);
                     pos = new Vec2(Double.parseDouble(info.split(",")[0]), Double.parseDouble(info.split(",")[1]));
 
-                    // Le référentiel des données Lidar repère les angles dans le sens horaire, c'est pourquoi l'on doit symetriser les vecteurs par rapport à x
-                    pos.setA(-pos.getA());
-                    if (symetry) {
-                        pos.symetrize();
+                    // Le référentiel des données Lidar repère les angles dans le sens horaire, c'est pourquoi l'on doit symetriser les vecteurs par rapport à x,
+                    // Dans le cas de le symétrie l'on doit aussi symétriser (faire un dessin)
+                    if(!symetry) {
+                        pos.setA(-pos.getA());
                     }
-                    pos = this.changeRef(pos);
 
                     out.write("[" + (System.currentTimeMillis() - time) / 1000 + "] Position calculée dans le référentiel du robot : " + pos.toStringEth());
                     out.newLine();
                     out.flush();
+
+                    pos = this.changeRef(pos);
 
                     out.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth());
                     out.newLine();
@@ -162,6 +163,12 @@ public class ThreadLidar extends AbstractThread implements Service {
                 }
 
                 // Mise à jour du graphe
+                graph.updateRidges();
+
+                out.write("Durée total du traitement : " + (System.currentTimeMillis() - timeStep));
+                out.newLine();
+                out.flush();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

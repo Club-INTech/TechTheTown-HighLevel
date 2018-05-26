@@ -233,7 +233,7 @@ public class ObstacleManager implements Service
 			for (int i=0; i<mMobileObstacles.size(); i++)
 			{
 				ObstacleProximity obstacleMobile=mMobileObstacles.get(i);
-				if (obstacleMobile.getPosition().distance(position) < obstacleMobile.getRadius()*2)
+				if (obstacleMobile.getPosition().distance(position) < (obstacleMobile.getRadius() + radius)/2)
 				{
 					isThereAnObstacleIntersecting = true;
 

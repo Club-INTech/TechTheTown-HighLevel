@@ -3,6 +3,7 @@ package pathfinder;
 import smartMath.Vec2;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 
 /**
  * Classe représentant un noeud du graphe
@@ -23,7 +24,7 @@ public class Node {
     private int cout;
 
     /** Noeuds voisins & predecesseur */
-    private HashMap<Node, Integer> voisins;
+    private Hashtable<Node, Ridge> neighbours;
     private Node pred;
 
     /** Constructeur */
@@ -31,16 +32,17 @@ public class Node {
         this.position = position;
         this.heuristique = DEFAULT_HEURISTIC;
         this.cout = DEFAULT_COST;
-        this.voisins = new HashMap<Node, Integer>();
+        this.neighbours = new Hashtable<Node, Ridge>();
     }
 
     /**
      * Ajoute un voisin au noeud, le cout de l'arete est calculée
      *
-     * @param voisin le noeud voisin à ajouter
+     * @param neighbour le noeud voisin à ajouter
+     * @param ridge l'arrête qui les relien
      */
-    public void addVoisin(Node voisin){
-        voisins.put(voisin, this.position.intDistance(voisin.position));
+    public void addNeighbour(Node neighbour, Ridge ridge){
+        neighbours.put(neighbour, ridge);
     }
 
     /**
@@ -95,7 +97,7 @@ public class Node {
     public Vec2 getPosition() {
         return position;
     }
-    public HashMap<Node, Integer> getVoisins() {
-        return voisins;
+    public Hashtable<Node, Ridge> getNeighbours() {
+        return neighbours;
     }
 }

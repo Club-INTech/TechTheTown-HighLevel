@@ -4,6 +4,7 @@ import container.Service;
 import enums.ConfigInfoRobot;
 import enums.TasCubes;
 import pfg.config.Config;
+import smartMath.Geometry;
 import smartMath.Segment;
 import smartMath.Vec2;
 import table.Table;
@@ -50,8 +51,7 @@ public class Graphe implements Service {
         this.table = table;
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
-
-        this.mobileEnnemies = new CopyOnWriteArrayList<>();
+        this.mobileEnnemies = table.getObstacleManager().getMobileObstacles();
         this.nodes = new ArrayList<>();
 
         updateConfig();
@@ -60,6 +60,7 @@ public class Graphe implements Service {
         initNodes();
         initRidges();
         log.debug("Time to create graph : " + (System.currentTimeMillis() - timeStep) + " ms");
+        table.setGraph(this);
     }
 
     /**
@@ -94,16 +95,22 @@ public class Graphe implements Service {
      * Initialise les arretes, ici les voisins des noeuds et le cout pour accéder à ce voisin
      */
     private void initRidges() {
+        Segment seg;
+        int n = 0;
         for (int i=0; i<nodes.size(); i++) {
             Node node1 = nodes.get(i);
             for (int j=i; j<nodes.size(); j++) {
                 Node node2 = nodes.get(j);
-                if (!table.getObstacleManager().intersectAnyObstacle(new Segment(node1.getPosition(), node2.getPosition()))){
-                    node1.addVoisin(node2);
-                    node2.addVoisin(node1);
+                seg = new Segment(node1.getPosition(), node2.getPosition());
+                if (!table.getObstacleManager().intersectAnyObstacle(seg)) {
+                    Ridge ridge = new Ridge(node1.getPosition().intDistance(node2.getPosition()));
+                    node1.addNeighbour(node2, ridge);
+                    node2.addNeighbour(node1, ridge);
+                    n++;
                 }
             }
         }
+        log.debug("Nombre de noeuds : " + nodes.size() + ", Nombre moyen de voisins par noeud : " + (float)n/nodes.size());
     }
 
     /**
@@ -151,14 +158,17 @@ public class Graphe implements Service {
      * Méthode ajoutant un noeud au graphe. Cela consiste à remplir le champ de ses noeuds voisins.
      * Cette méthode est appelée par le pathfinding
      *
-     * @param noeud le noeud à ajouter
+     * @param node le noeud à ajouter
      */
-    public void addNode(Node noeud) {
-        nodes.add(noeud);
-        for (Node node : nodes) {
-            if (!table.getObstacleManager().intersectAnyObstacle(new Segment(node.getPosition(), noeud.getPosition()))) {
-                node.addVoisin(noeud);
-                noeud.addVoisin(node);
+    public void addNode(Node node) {
+        Segment seg;
+        nodes.add(node);
+        for (Node neighbour : nodes) {
+            seg = new Segment(node.getPosition(), neighbour.getPosition());
+            if (!table.getObstacleManager().intersectAnyObstacle(seg)) {
+                Ridge ridge = new Ridge(node.getPosition().intDistance(neighbour.getPosition()));
+                node.addNeighbour(neighbour, ridge);
+                neighbour.addNeighbour(node, ridge);
             }
         }
     }
@@ -170,8 +180,8 @@ public class Graphe implements Service {
      */
     public void removeNode(Node node){
         nodes.remove(node);
-        for (Node neighbours : node.getVoisins().keySet()) {
-            neighbours.getVoisins().remove(node);
+        for (Node neighbours : node.getNeighbours().keySet()) {
+            neighbours.getNeighbours().remove(node);
         }
     }
 
@@ -183,6 +193,25 @@ public class Graphe implements Service {
             node.setPred(null);
             node.setCout(Node.DEFAULT_COST);
             node.setHeuristique(Node.DEFAULT_HEURISTIC);
+        }
+    }
+
+    /**
+     * Méthode appelée par le Gestionnaire de graphe : elle permet de mettre à jour les arrêtes en indiquant
+     * lesquelles sont encore franchissables
+     */
+    public void updateRidges() {
+        Segment seg;
+        for (Node node : nodes) {
+            for (Node neighbour : node.getNeighbours().keySet()) {
+                seg = new Segment(node.getPosition(), neighbour.getPosition());
+                node.getNeighbours().get(neighbour).setReachable(true);
+                for (ObstacleProximity movingObstacle : mobileEnnemies) {
+                    if(Geometry.intersects(seg, movingObstacle.getCircle())){
+                        node.getNeighbours().get(neighbour).setReachable(false);
+                    }
+                }
+            }
         }
     }
 
@@ -230,12 +259,6 @@ public class Graphe implements Service {
     /** Getters & Setters */
     public ArrayList<Node> getNodes() {
         return nodes;
-    }
-    public CopyOnWriteArrayList<ObstacleCircular> getListCircu() {
-        return listCircu;
-    }
-    public CopyOnWriteArrayList<ObstacleProximity> getMobileEnnemies() {
-        return mobileEnnemies;
     }
 
 }

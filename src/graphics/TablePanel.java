@@ -82,10 +82,10 @@ public class TablePanel extends JPanel
 	{
 		path = new ArrayList<>();
 		clics = new ArrayList<>();
-		nodes = new ArrayList<>();
+		nodes = table.getGraph().getNodes();
 		this.table = table;
 		this.robot = robot;
-		this.point=new Vec2();
+		this.point = new Vec2();
 
 		try{
 			tableBackground = ImageIO.read(new File("images/RobotCities_2018.png"));
@@ -101,7 +101,7 @@ public class TablePanel extends JPanel
 	{
 		path = new ArrayList<>();
 		clics = new ArrayList<>();
-		nodes = new ArrayList<>();
+		nodes = table.getGraph().getNodes();
         this.table = table;
 		isRobotPresent = false;
 		showGraph = true;
@@ -197,11 +197,13 @@ public class TablePanel extends JPanel
 		if(showGraph){
 			graphics.setColor(graphColor);
 			for (Node node : nodes){
-				pathNode3=changeRefToDisplay(node.getPosition());
+				pathNode3 = changeRefToDisplay(node.getPosition());
 				graphics.fillOval(pathNode3.getX()-2,pathNode3.getY()-2,4,4);
-				for (Node node1 : node.getVoisins().keySet()) {
-				    Vec2 displayNode = changeRefToDisplay(node1.getPosition());
-				    graphics.drawLine(pathNode3.getX(), pathNode3.getY(), displayNode.getX(), displayNode.getY());
+				for (Node node1 : node.getNeighbours().keySet()) {
+					if (node.getNeighbours().get(node1).isReachable()) {
+						Vec2 displayNode = changeRefToDisplay(node1.getPosition());
+						graphics.drawLine(pathNode3.getX(), pathNode3.getY(), displayNode.getX(), displayNode.getY());
+					}
                 }
 			}
 		}

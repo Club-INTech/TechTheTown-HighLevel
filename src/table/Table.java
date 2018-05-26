@@ -19,15 +19,16 @@
 
 package table;
 
-
 import container.Service;
 import enums.ConfigInfoRobot;
+import org.opencv.core.Mat;
+import pathfinder.Graphe;
 import pfg.config.Config;
 import smartMath.Vec2;
 import table.obstacles.ObstacleManager;
 import utils.Log;
 
-/* Positions :
+/* Positions :                      PI/2
  * 			_______________________________________________________
  * 			|-1500,2000         	0,2000		         1500,2000|
  * 			|           		      							  |
@@ -36,7 +37,7 @@ import utils.Log;
  * 			|           	 		  							  |
  * 			|           	 		  							  |
  * 			|-1500,0           		 0,0       				1500,0|
- *          -------------------------------------------------------
+ *   PI     -------------------------------------------------------     0
  *          
  * (0,0) = entre les deux zones de départ
  * (0,2000) = Stations de récupération
@@ -52,6 +53,9 @@ public class Table implements Service
 	/** Le gestionnaire d'obstacle. */
 	private ObstacleManager mObstacleManager;
 
+	/** Le grahe */
+	private Graphe graph;
+
 	/** système de log sur lequel écrire. */
 	private Log log;
 
@@ -66,8 +70,8 @@ public class Table implements Service
 	// Au besoin, créer les classes nécessaires dans le package table
 
 	/** point de départ du match à modifier a chaque base roulante */
-	public static Vec2 entryPosition = new Vec2(500, 500); // 1270 455
-	public static double entryOrientation = 0; // Math.PI
+	public static Vec2 entryPosition = new Vec2(250, 800); // 1270 455
+	public static double entryOrientation = Math.PI/2; // Math.PI
 
 	/**
 	 * Instancie une nouvelle table
@@ -89,7 +93,6 @@ public class Table implements Service
 		{
 			entryPosition = new Vec2(560, 176);
 		}
-		// TODO : initialiser les éléments de jeu définis plus haut
 	}
 
 	public ObstacleManager getObstacleManager()
@@ -110,5 +113,13 @@ public class Table implements Service
 	public Config getConfig() {
 		return config;
 	}
+
+    public Graphe getGraph() {
+        return graph;
+    }
+
+    public void setGraph(Graphe graph) {
+        this.graph = graph;
+    }
 }
 
