@@ -71,7 +71,6 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Lock strings
      */
-
     private static final String inputLock="inputLock";
     private static final String outputLock="outputLock";
     private static final String socketLock="socketLock";
@@ -156,7 +155,7 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Le "canal" position & orientation
      */
-    private volatile XYO positionAndOrientation = new XYO(Table.entryPosition, Table.entryOrientation);
+    private XYO positionAndOrientation;
     private String splitString = " ";
 
     /**

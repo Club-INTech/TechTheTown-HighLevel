@@ -2,11 +2,14 @@ package tests;
 
 import container.Container;
 import exceptions.ContainerException;
+import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
+import exceptions.Locomotion.UnableToMoveException;
 import graphics.Window;
 import org.junit.Before;
 import org.junit.Test;
 import robot.Robot;
 import scripts.ScriptManager;
+import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
 import threads.dataHandlers.ThreadLidar;
@@ -47,6 +50,16 @@ public class JUnit_Lidar extends JUnit_Test {
     private void shutdown() {
         process.destroy();
     }
+    private void removeObstacle() {
+        while (true) {
+            try {
+                table.getObstacleManager().removeOutdatedObstacles();
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Before
     public void setUp() throws ContainerException, InterruptedException {
@@ -76,11 +89,41 @@ public class JUnit_Lidar extends JUnit_Test {
             process = pBuilder.start();
             log.debug("Process python lancé");
 
+            (new Thread(() -> this.removeObstacle())).start();
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         while (true);
+    }
+
+    @Test
+    public void testLocomotionStop() {
+        try {
+            container.startInstanciedThreads();
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
+
+            Thread.sleep(500);
+            process = pBuilder.start();
+            log.debug("Process python lancé");
+
+            for (int i=0; i<5; i++) {
+                gameState.robot.goTo(new Vec2(-200, 600));
+                gameState.robot.goTo(new Vec2(-200, 1000));
+                gameState.robot.goTo(new Vec2(200, 1000));
+                gameState.robot.goTo(new Vec2(200, 600));
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (UnableToMoveException e) {
+            e.printStackTrace();
+        } catch (ImmobileEnnemyForOneSecondAtLeast e) {
+            e.printStackTrace();
+        }
     }
 }

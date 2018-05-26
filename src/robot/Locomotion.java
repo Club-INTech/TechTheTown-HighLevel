@@ -81,29 +81,18 @@ public class Locomotion implements Service {
      * Position "bas niveau" du robot, celle du robot
      * La vraie.
      */
-    private Vec2 lowLevelPosition = new Vec2();
+    private XYO lowLevelXYO;
 
     /**
      * Position "haut niveau" du robot, celle du robot
      * Celle côté vert
      */
-    private Vec2 highLevelPosition = new Vec2();
+    private XYO highLevelXYO;
 
     /**
      * Position visee au final par le deplacement
      */
     private Vec2 finalAim = new Vec2();
-
-    /**
-     * Orientation réelle du robot (symetrisee)
-     * non connue par les classes de plus haut niveau
-     */
-    private double lowLevelOrientation;
-
-    /**
-     * Orientation réelle du robot non symetrisée (vert)
-     */
-    private double highLevelOrientation;
 
     /**
      * Indique si la symétrie est activée (si le robot démarre du côté x<0)
@@ -274,6 +263,8 @@ public class Locomotion implements Service {
         this.table = table;
         this.USvalues = new int[]{0,0,0,0};
         this.thEvent = thEvent;
+        this.highLevelXYO = new XYO(Table.entryPosition, Table.entryOrientation);
+        this.lowLevelXYO = ethWrapper.getCurrentPositionAndOrientation();
         updateConfig();
     }
 
@@ -324,12 +315,12 @@ public class Locomotion implements Service {
 
         thEvent.setIsMoving(true);
 
-        Vec2 move = pointVise.minusNewVector(highLevelPosition);
+        Vec2 move = pointVise.minusNewVector(highLevelXYO.getPosition());
         int moveR = (int) move.getR();
         double moveA = move.getA();
 
         if (directionStrategy.equals(DirectionStrategy.FASTEST)) {
-            float sens = move.dot(new Vec2(100, highLevelOrientation));
+            float sens = move.dot(new Vec2(100, highLevelXYO.getOrientation()));
             if (sens >= 0) {    //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
                 log.debug("Angle de rotation: " + moveA);
                 log.debug("Distance de translation: " + moveR);
@@ -378,7 +369,7 @@ public class Locomotion implements Service {
          * calcul de la position visee du haut niveau
          *   on vise une position eloignee mais on ne s'y deplacera pas, le robot ne fera que tourner
          */
-        Vec2 aim = highLevelPosition.plusNewVector(new Vec2(1000.0, angle));
+        Vec2 aim = highLevelXYO.getPosition().plusNewVector(new Vec2(1000.0, angle));
         finalAim = aim;
 
         moveToPointHandledExceptions(aim, true, expectWallImpact, true, mustDetect);
@@ -403,7 +394,7 @@ public class Locomotion implements Service {
         actualRetriesIfBlocked = 0;
         getCurrentPositionAndOrientation();
 
-        Vec2 aim = highLevelPosition.plusNewVector(new Vec2((double)distance, highLevelOrientation));
+        Vec2 aim = highLevelXYO.getPosition().plusNewVector(new Vec2((double)distance, highLevelXYO.getOrientation()));
         finalAim = aim;
 
         if (distance >= 0) {
@@ -478,7 +469,7 @@ public class Locomotion implements Service {
         // Dans le cas d'un mouvement atomique (script), on attend un certains temps
         // Ou alors on attend un certain temps dans les 2 cas ?
 
-        if (detectEnemyAtDistance(detectionDistance, new Vec2(100.0, this.highLevelOrientation))) {
+        if (detectEnemyAtDistance(detectionDistance, new Vec2(100.0, this.highLevelXYO.getOrientation()))) {
 
         }
 
@@ -498,6 +489,7 @@ public class Locomotion implements Service {
                 moveToPointSymmetry(aim, turnOnly);
             }
         }
+        updateCurrentPositonAndOrientation();
     }
 
     /**
@@ -511,7 +503,7 @@ public class Locomotion implements Service {
         thEvent.setIsMoving(true);
         getCurrentPositionAndOrientation();
 
-        Vec2 positionSymetrized = highLevelPosition.clone();
+        Vec2 positionSymetrized = highLevelXYO.getPosition().clone();
         Vec2 aimSymetrized = aim.clone();
 
         if (symetry) {
@@ -520,9 +512,9 @@ public class Locomotion implements Service {
         }
 
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
-        log.debug("HighLevelOrientation: "+highLevelOrientation+" / HighLevelPosition: "+highLevelPosition);
+        log.debug("HighLevelOrientation: "+highLevelXYO.getOrientation()+" / HighLevelPosition: "+highLevelXYO.getPosition());
         if (!turnOnly) {
-            double produitScalaire = delta.dot(new Vec2(100.0, lowLevelOrientation));
+            double produitScalaire = delta.dot(new Vec2(100.0, lowLevelXYO.getOrientation()));
             if (produitScalaire > 0) {
                 moveToPointEthernetOrder(delta.getA(), delta.getR(), turnOnly);
             } else {
@@ -573,19 +565,19 @@ public class Locomotion implements Service {
         if (this.USvalues[startIndice]!=0 && this.USvalues[startIndice]<this.distanceBasicDetectionTriggered){
             if (this.USvalues[startIndice+1]!=0 && this.USvalues[startIndice+1]<this.distanceBasicDetectionTriggered){
                 int distance=Math.min(this.USvalues[startIndice],this.USvalues[startIndice+1]);
-                Vec2 basicDetectionAim = this.highLevelPosition.plusNewVector(new Vec2(distance,this.highLevelOrientation));
+                Vec2 basicDetectionAim = this.highLevelXYO.getPosition().plusNewVector(new Vec2(distance,this.highLevelXYO.getOrientation()));
                 return table.getObstacleManager().isObstaclePositionValid(basicDetectionAim);
             }
             else{
                 int distance=this.USvalues[startIndice];
-                Vec2 basicDetectionAim = this.highLevelPosition.plusNewVector(new Vec2(distance,this.highLevelOrientation));
+                Vec2 basicDetectionAim = this.highLevelXYO.getPosition().plusNewVector(new Vec2(distance,this.highLevelXYO.getOrientation()));
                 return table.getObstacleManager().isObstaclePositionValid(basicDetectionAim);
             }
         }
         else{
             if (this.USvalues[startIndice+1]!=0 && this.USvalues[startIndice+1]<this.distanceBasicDetectionTriggered){
                 int distance=this.USvalues[startIndice+1];
-                Vec2 basicDetectionAim = this.highLevelPosition.plusNewVector(new Vec2(distance,this.highLevelOrientation));
+                Vec2 basicDetectionAim = this.highLevelXYO.getPosition().plusNewVector(new Vec2(distance,this.highLevelXYO.getOrientation()));
                 return table.getObstacleManager().isObstaclePositionValid(basicDetectionAim);
             }
             else{
@@ -600,7 +592,7 @@ public class Locomotion implements Service {
      * @param distance distance jusqu'a un ennemi en mm en dessous de laquelle on doit abandonner le mouvement
      */
     public boolean detectEnemyArroundPosition(int distance) throws InterruptedException, UnexpectedObstacleOnPathException {
-        int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
+        int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelXYO.getPosition());
         boolean hasDetectedSomething=false;
         if (closest <= distance) {
             hasDetectedSomething=true;
@@ -613,7 +605,7 @@ public class Locomotion implements Service {
             while(count < 10)
             {
                 //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
-                closest = table.getObstacleManager().distanceToClosestEnemy(highLevelPosition);
+                closest = table.getObstacleManager().distanceToClosestEnemy(highLevelXYO.getPosition());
                 if(closest > distance){
                     break;
                 }
@@ -622,7 +614,7 @@ public class Locomotion implements Service {
             }
 
             if(closest <= distance){
-                table.getObstacleManager().getMobileObstacles().add(table.getObstacleManager().getClosestEnnemy(highLevelPosition));
+                table.getObstacleManager().getMobileObstacles().add(table.getObstacleManager().getClosestEnnemy(highLevelXYO.getPosition()));
                 log.debug("ImmobileEnnemy est thrown");
                 throw new UnexpectedObstacleOnPathException();
             }
@@ -638,13 +630,13 @@ public class Locomotion implements Service {
      */
     public boolean detectEnemyAtDistance(int distance, Vec2 moveDirection) throws InterruptedException, UnexpectedObstacleOnPathException
     {
-        if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation)) {
+        if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelXYO.getPosition(), moveDirection, highLevelXYO.getOrientation())) {
             log.debug("Ennemy detected at distance(<"+distance+"mm)");
             log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin : le robot va s'arrêter");
             immobilise();
 
             int count = 0;
-            while(count < 10 && table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelPosition, moveDirection, highLevelOrientation))
+            while(count < 10 && table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelXYO.getPosition(), moveDirection, highLevelXYO.getOrientation()))
             {
                 Thread.sleep(100);
                 count++;
@@ -704,17 +696,9 @@ public class Locomotion implements Service {
      * Met à jour la position du robot dans Locomotion avec la dernière position renvoyée par le LL
      */
     private void getCurrentPositionAndOrientation() {
-        XYO positionAndOrientation = ethWrapper.getCurrentPositionAndOrientation();
-
-        lowLevelPosition = positionAndOrientation.getPosition();
-        lowLevelOrientation = Geometry.moduloSpec(positionAndOrientation.getOrientation(), Math.PI);
-
-        highLevelPosition = lowLevelPosition.clone();
-        highLevelOrientation = lowLevelOrientation;
-
+        highLevelXYO = lowLevelXYO.clone();
         if (symetry) {
-            highLevelPosition.setX(-highLevelPosition.getX());
-            highLevelOrientation = Geometry.moduloSpec(Math.PI - lowLevelOrientation, Math.PI);
+            highLevelXYO.symetrize();
         }
     }
 
@@ -722,17 +706,11 @@ public class Locomotion implements Service {
      * Force l'envoi de la position actuelle par le LL, et la met à jour dans Locomotion et ThreadEth
      */
     private void updateCurrentPositonAndOrientation(){
-        XYO positionAndOrientation = ethWrapper.updateCurrentPositionAndOrientation();
+        lowLevelXYO = ethWrapper.updateCurrentPositionAndOrientation();
 
-        lowLevelPosition = positionAndOrientation.getPosition();
-        lowLevelOrientation = Geometry.moduloSpec(positionAndOrientation.getOrientation(), Math.PI);
-
-        highLevelPosition = lowLevelPosition.clone();
-        highLevelOrientation = lowLevelOrientation;
-
+        highLevelXYO = lowLevelXYO.clone();
         if (symetry) {
-            highLevelPosition.setX(-highLevelPosition.getX());
-            highLevelOrientation = Geometry.moduloSpec(Math.PI - lowLevelOrientation, Math.PI);
+            highLevelXYO.symetrize();
         }
     }
 
@@ -740,7 +718,7 @@ public class Locomotion implements Service {
      * Arrête le robot.
      */
     public void immobilise() {
-        log.warning("Arrêt du robot en " + lowLevelPosition);
+        log.warning("Arrêt du robot en " + lowLevelXYO);
         ethWrapper.immobilise();
         thEvent.setIsMoving(false);
         log.debug("isMoving variable has been defined to FALSE in Locomotion");
@@ -757,13 +735,13 @@ public class Locomotion implements Service {
      * @param positionWanted
      */
     public void setPosition(Vec2 positionWanted) {
-        this.lowLevelPosition = positionWanted.clone();
-        this.highLevelPosition = positionWanted.clone();
+        this.highLevelXYO.setPosition(positionWanted);
+        this.lowLevelXYO.setPosition(positionWanted);
         if (symetry) {
-            this.lowLevelPosition.setX(-this.lowLevelPosition.getX()); // on lui met la vraie position
+            lowLevelXYO.symetrize(); // on lui met la vraie position
         }
-        ethWrapper.setX(this.lowLevelPosition.getX());
-        ethWrapper.setY(this.lowLevelPosition.getY());
+        ethWrapper.setX(lowLevelXYO.getPosition().getX());
+        ethWrapper.setY(lowLevelXYO.getPosition().getY());
     }
 
     /**
@@ -771,8 +749,11 @@ public class Locomotion implements Service {
      */
     public Vec2 getPosition() {
         getCurrentPositionAndOrientation();
-        Vec2 out = highLevelPosition.clone();
-        return out;
+        return highLevelXYO.getPosition();
+    }
+
+    public XYO getHighLevelXYO() {
+        return highLevelXYO;
     }
 
     /**
@@ -781,12 +762,12 @@ public class Locomotion implements Service {
      * @param orientation
      */
     public void setOrientation(double orientation) {
-        this.lowLevelOrientation = orientation;
-        this.highLevelOrientation = orientation;
+        this.highLevelXYO.setOrientation(orientation);
+        this.lowLevelXYO.setOrientation(orientation);
         if (symetry) {
-            this.lowLevelOrientation = Math.PI - this.lowLevelOrientation; // la vraie orientation
+            this.lowLevelXYO.symetrize(); // la vraie orientation
         }
-        ethWrapper.setOrientation(this.lowLevelOrientation);
+        ethWrapper.setOrientation(lowLevelXYO.getOrientation());
     }
 
     /**
@@ -794,14 +775,7 @@ public class Locomotion implements Service {
      */
     public double getOrientation() {
         getCurrentPositionAndOrientation();
-        return highLevelOrientation;
-    }
-
-    /**
-     * De meme que la position mais pour l'orientation
-     */
-    public double getOrientationFast() {
-        return highLevelOrientation;
+        return highLevelXYO.getOrientation();
     }
 
     /**

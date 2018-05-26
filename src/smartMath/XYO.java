@@ -34,8 +34,6 @@ public class XYO {
     /** Orientation */
     private double orientation;
 
-
-
     /**
      * Constructeur normal
      * @param position
@@ -61,35 +59,39 @@ public class XYO {
      * Methode mettant à jour la position du robot
      * @param buffer
      */
-    public void update(String buffer, String splitString){
+    public synchronized void update(String buffer, String splitString){
         String[] infos = buffer.split(splitString);
-        this.position = new Vec2((int)Math.round(Double.parseDouble(infos[0])), (int)Math.round(Double.parseDouble(infos[1])));
+        this.position = new Vec2((int) Math.round(Double.parseDouble(infos[0])), (int) Math.round(Double.parseDouble(infos[1])));
         this.orientation = Double.parseDouble(infos[2]);
     }
 
     /** Méthode de symetrisation de l'objet par rapport à la table */
-    public void symetrize() {
+    public synchronized void symetrize() {
         this.position.symetrize();
         this.orientation = Geometry.moduloSpec(Math.PI - orientation, Math.PI);
     }
 
     @Override
-    public XYO clone() {
+    public synchronized XYO clone() {
         return new XYO(this.position, this.orientation);
     }
 
     /** Getters & Setters */
-    public Vec2 getPosition() {
-        return position.clone();
+    public synchronized Vec2 getPosition() {
+        return position;
     }
-    public void setPosition(Vec2 position) {
-        this.position = position;
+    public synchronized void setPosition(Vec2 position) {
+        synchronized (this) {
+            this.position = position;
+        }
     }
-    public double getOrientation() {
+    public synchronized double getOrientation() {
         return orientation;
     }
-    public void setOrientation(double orientation) {
-        this.orientation = orientation;
+    public synchronized void setOrientation(double orientation) {
+        synchronized (this) {
+            this.orientation = orientation;
+        }
     }
 
 

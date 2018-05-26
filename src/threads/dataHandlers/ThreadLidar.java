@@ -5,6 +5,7 @@ import enums.ConfigInfoRobot;
 import pathfinder.Graphe;
 import pfg.config.Config;
 import robot.EthWrapper;
+import robot.Locomotion;
 import smartMath.Vec2;
 import smartMath.XYO;
 import table.Table;
@@ -33,7 +34,7 @@ public class ThreadLidar extends AbstractThread implements Service {
     private Table table;
 
     /** Sert à connaître la position du robot */
-    private EthWrapper ethWrapper;
+    private XYO highlevelXYO;
 
     /** Gestion de la réception des données du Lidar */
     private ServerSocket server;
@@ -50,12 +51,12 @@ public class ThreadLidar extends AbstractThread implements Service {
     private BufferedWriter out;
 
     /** Constructeur */
-    private ThreadLidar(Log log, Config config, Graphe graph, Table table, EthWrapper ethWrapper) {
+    private ThreadLidar(Log log, Config config, Graphe graph, Table table, Locomotion locomotion) {
         this.log = log;
         this.config = config;
         this.graph = graph;
         this.table = table;
-        this.ethWrapper = ethWrapper;
+        this.highlevelXYO = locomotion.getHighLevelXYO();
 
         try {
             this.lidarData = new File("./lidar.txt");
@@ -104,12 +105,8 @@ public class ThreadLidar extends AbstractThread implements Service {
 
     /** Méthode de changement de référentiel (robot -> table) */
     private Vec2 changeRef(Vec2 vec) {
-        XYO robotPosOr = ethWrapper.getCurrentPositionAndOrientation().clone();
-        if (symetry) {
-            robotPosOr.symetrize();
-        }
-        vec.setA(vec.getA() + robotPosOr.getOrientation());
-        vec.plus(robotPosOr.getPosition());
+        vec.setA(vec.getA() + highlevelXYO.getOrientation());
+        vec.plus(highlevelXYO.getPosition());
         return vec;
     }
 
