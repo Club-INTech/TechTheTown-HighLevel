@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-
+import java.util.Arrays;
 
 
 /** Classe permettant de faire la reconnaissance de patterns
@@ -126,18 +126,19 @@ public class PatternRecognition extends AbstractThread{
      * y est l'ordonnée,
      * 0,1 ou 2, si on veut R, G ou B
      **/
-    private Short[][][] createColorMatrixFromBufferedImage(BufferedImage picture) {
-        Short[][][] colorMatrix;
+    private int[][][] createColorMatrixFromBufferedImage(BufferedImage picture) {
+
         int width = picture.getWidth();
         int height = picture.getHeight();
-        colorMatrix = new Short[width][height][3];
+        int[] array = new int[width*height*3];
+        picture.getRaster().getPixels(0, 0, width, height, array);
+        int[][][] colorMatrix = new int[width][height][3];
         //Méthode pour récupérer les paramètres R, G et B de chaque pixel
         for (int x=0; x<width; x++){
             for (int y=0; y<height; y++) {
-                Color color =  new Color(picture.getRGB(x, y));
-                colorMatrix[x][y][0]=(short)color.getRed();
-                colorMatrix[x][y][1]=(short)color.getGreen();
-                colorMatrix[x][y][2]=(short)color.getBlue();
+                colorMatrix[x][y][0]=(int)array[x*height+y*3];
+                colorMatrix[x][y][1]=(int)array[x*height+y*3+1];
+                colorMatrix[x][y][2]=(int)array[x*height+y*3+2];
             }
         }
         return colorMatrix;
@@ -154,7 +155,7 @@ public class PatternRecognition extends AbstractThread{
      * @return renvoe la liste normalisée des probabilités que la pattern pris en photo soit un des patterns de la liste
      * (correspondance entre les indices de la liste renvoyée et l'ID des patterns)
      */
-    private double[] computeProximity(Short[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends) {
+    private double[] computeProximity(int[][][] colorMatrix, int[] xstarts, int[] ystarts, int[] xends, int[] yends) {
         if (debug){
             log.debug("First color");
         }
@@ -179,7 +180,7 @@ public class PatternRecognition extends AbstractThread{
         double[] probabilitiesList = compareThreeRGBsToAllPatterns(this.mediansList);
         return probabilitiesList;
     }
-    private double[] computeProximity(Short[][][] colorMatrix, int[][] positionsColorsOnImage){
+    private double[] computeProximity(int[][][] colorMatrix, int[][] positionsColorsOnImage){
         double[] probabilitiesList = computeProximity(colorMatrix, positionsColorsOnImage[0], positionsColorsOnImage[1], positionsColorsOnImage[2], positionsColorsOnImage[3]);
         return probabilitiesList;
     }
@@ -323,7 +324,7 @@ public class PatternRecognition extends AbstractThread{
      * @param yend ordonnée de B (cf graphique docstring)
      * @return renvoie la liste de valeurs (int[3]) R,G et B de la couleur choisie
      */
-    private int[] getRGBMedianValues(Short[][][] colorMatrix, int xstart, int ystart, int xend, int yend){
+    private int[] getRGBMedianValues(int[][][] colorMatrix, int xstart, int ystart, int xend, int yend){
         int[] mediansListToReturn= new int[3];
         for (int i=0; i<3; i++){
             mediansListToReturn[i]=getMedianValue(colorMatrix, xstart, ystart, xend, yend, i);
@@ -360,7 +361,7 @@ public class PatternRecognition extends AbstractThread{
      * @param posRGB choix de la couleur à déterminer : 0, 1 ou 2 pour R, G ou B
      * @return renvoie la valeur (int) médiane de R, G ou B de la couleur choisie
      */
-    private int getMedianValue(Short[][][] colorMatrix, int xstart, int ystart, int xend, int yend, int posRGB) {
+    private int getMedianValue(int[][][] colorMatrix, int xstart, int ystart, int xend, int yend, int posRGB) {
         log.debug("xend:"+xend+" xstart:"+xstart+" yend:"+yend+" ystart:"+ystart);
         int width = xend - xstart;
         int height = yend - ystart;
@@ -493,10 +494,10 @@ public class PatternRecognition extends AbstractThread{
      * @param brightnessModifier multiplicateur de luminosité
      * @return la matrice de couleurs modifiée
      */
-    private Short[][][] lightUpSector(Short[][][] colorMatrixLitUp, int xstart, int ystart, int xend, int yend, double saturationModifier, double brightnessModifier){
+    private int[][][] lightUpSector(int[][][] colorMatrixLitUp, int xstart, int ystart, int xend, int yend, double saturationModifier, double brightnessModifier){
         for (int x=xstart; x<xend; x++){
             for (int y=ystart; y<yend; y++){
-                Short[] RGB = colorMatrixLitUp[x][y];
+                int[] RGB = colorMatrixLitUp[x][y];
                 float[] HSB=convertRGBtoHSB(RGB[0],RGB[1],RGB[2]);
 
                 //Improve saturation
@@ -511,7 +512,7 @@ public class PatternRecognition extends AbstractThread{
                 }
                 int[] intRGB=convertHSBtoRGB(HSB[0],HSB[1],HSB[2]);
                 for (int i=0; i<intRGB.length; i++){
-                    RGB[i]=(short)intRGB[i];
+                    RGB[i]=(int)intRGB[i];
                 }
                 colorMatrixLitUp[x][y]=RGB;
             }
@@ -519,7 +520,7 @@ public class PatternRecognition extends AbstractThread{
         return colorMatrixLitUp;
     }
 
-    private Short[][][] preModifyImage(Short[][][] colorMatrix, boolean automatedMode){
+    private int[][][] preModifyImage(int[][][] colorMatrix, boolean automatedMode){
         if (!(this.alreadyPreModified)) {
             if (debug) {
                 log.debug("Applying pre-modifications");
@@ -549,7 +550,7 @@ public class PatternRecognition extends AbstractThread{
      * @param colorMatrix matrice de couleur
      * @param path chemin de l'image
      */
-    private static void saveImage(Short[][][] colorMatrix, String path){
+    private static void saveImage(int[][][] colorMatrix, String path){
         BufferedImage image = new BufferedImage(colorMatrix.length,colorMatrix[0].length,BufferedImage.TYPE_INT_RGB);
         for (int x=0; x<colorMatrix.length-1; x++){
             for (int y=0; y<colorMatrix[0].length-1; y++){
@@ -591,7 +592,7 @@ public class PatternRecognition extends AbstractThread{
     /**Méthode permettant de faire la reconnaissance de pattenrs, dans le cas où une localisation automatique a due être faite
      * @return l'id du pattern (int de 0 à 9, bornes comprises)
      */
-    private int analysePatternAfterAutomaticLocalization(Short[][][] colorMatrix) {
+    private int analysePatternAfterAutomaticLocalization(int[][][] colorMatrix) {
         if (!(this.centerPointPattern[0] == 0 && this.centerPointPattern[1] == 0)) {
             double[][] distanceArrays = new double[5][20];
             int halfLengthSideOfSquareDetection = this.lengthSideOfSquareDetection / 2;
@@ -697,7 +698,7 @@ public class PatternRecognition extends AbstractThread{
     /**Méthode permettant de faire la reconnaissance de pattenrs, dans le cas où une localisation de pattern a été faite à la main
      * @return l'id du pattern (int de 0 à 9, bornes comprises)
      */
-    private int analysePatternAfterManualLocalization(Short[][][] colorMatrix) {
+    private int analysePatternAfterManualLocalization(int[][][] colorMatrix) {
         File file = new File("/tmp/CoordsPatternVideo.txt");
         String data = "";
         if (file.exists()) {
@@ -862,7 +863,7 @@ public class PatternRecognition extends AbstractThread{
             BufferedImage buffImg = UseWebcam.takeBufferedPicture();
             log.debug("Fin de la prise de photo");
             this.setMovementLocked(false);
-            Short[][][] colorMatrix = createColorMatrixFromBufferedImage(buffImg);
+            int[][][] colorMatrix = createColorMatrixFromBufferedImage(buffImg);
             if (!this.localizationAutomated) {
                 analysePatternAfterManualLocalization(colorMatrix);
             }
