@@ -796,9 +796,9 @@ public class ThreadEth extends AbstractThread implements Service {
             return this.positionAndOrientation;
         }
     }
-    public void setPositionAndOrientation(XYO positionAndOrientation) {
+    public void setPositionAndOrientation(XYO xyo) {
         synchronized (xyoLock) {
-            this.positionAndOrientation = positionAndOrientation;
+            this.positionAndOrientation = xyo;
         }
     }
 

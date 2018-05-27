@@ -40,8 +40,6 @@ public class ThreadPathFollower extends AbstractThread {
             // TODO : ajouter UnexpectedObstacleOnPathException, ainsi qu'un moyen de communiquer les exceptions au mainThread
         } catch (UnableToMoveException e) {
 
-        } catch (ImmobileEnnemyForOneSecondAtLeast e){
-
         }
     }
 }

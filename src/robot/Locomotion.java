@@ -25,6 +25,7 @@ import exceptions.Locomotion.BlockedException;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.Locomotion.UnexpectedObstacleOnPathException;
+import org.opencv.core.Mat;
 import pfg.config.Config;
 import smartMath.Geometry;
 import smartMath.Vec2;
@@ -280,7 +281,7 @@ public class Locomotion implements Service {
      * @param path le chemin a suivre (un arraylist de Vec2 qui sont les point de rotation du robot)
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    public void followPath(ArrayList<Vec2> path) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
+    public void followPath(ArrayList<Vec2> path) throws UnableToMoveException {
         followPath(path, true);// par defaut, on detecte
     }
 
@@ -291,7 +292,7 @@ public class Locomotion implements Service {
      * @param mustDetect true si on veut detecter, false sinon.
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    public void followPath(ArrayList<Vec2> path, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
+    public void followPath(ArrayList<Vec2> path, boolean mustDetect) throws UnableToMoveException {
         //On enleve le premier point, notre propre position
         for (int i = 1; i < path.size(); i++){
             getCurrentPositionAndOrientation();
@@ -310,10 +311,7 @@ public class Locomotion implements Service {
      * @param mustDetect
      * @throws UnableToMoveException
      */
-
-    public void moveToPoint(Vec2 pointVise, boolean expectedWallImpact, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-
-        thEvent.setIsMoving(true);
+    public void moveToPoint(Vec2 pointVise, boolean expectedWallImpact, boolean mustDetect) throws UnableToMoveException {
 
         Vec2 move = pointVise.minusNewVector(highLevelXYO.getPosition());
         int moveR = (int) move.getR();
@@ -358,8 +356,7 @@ public class Locomotion implements Service {
      * @param mustDetect true si on veut detecter, false sinon.
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    public void turn(double angle, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        thEvent.setIsMoving(true);
+    public void turn(double angle, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException {
         log.debug("Tourner vers " + Double.toString(angle));
 
         actualRetriesIfBlocked = 0;
@@ -386,7 +383,7 @@ public class Locomotion implements Service {
      * @param mustDetect       true si on veut detecter, false sinon.
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    public void moveLengthwise(int distance, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
+    public void moveLengthwise(int distance, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException {
         thEvent.setIsMoving(true);
 
         log.debug("Avancer de " + Integer.toString(distance));
@@ -421,7 +418,7 @@ public class Locomotion implements Service {
      * @param mustDetect        true si on veut detecter, false sinon.
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
-    private void moveToPointHandledExceptions(Vec2 aim, boolean isMovementForward, boolean expectWallImpact, boolean turnOnly, boolean mustDetect) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
+    private void moveToPointHandledExceptions(Vec2 aim, boolean isMovementForward, boolean expectWallImpact, boolean turnOnly, boolean mustDetect) throws UnableToMoveException {
         boolean doItAgain;
         do {
             doItAgain = false;
@@ -474,7 +471,6 @@ public class Locomotion implements Service {
         }
 
         while (thEvent.getIsMoving()) {
-            getCurrentPositionAndOrientation();
 
             if (thEvent.getUnableToMoveEvent().peek() != null) {
                 String unableToMoveReason = thEvent.getUnableToMoveEvent().poll();
@@ -489,7 +485,6 @@ public class Locomotion implements Service {
                 moveToPointSymmetry(aim, turnOnly);
             }
         }
-        updateCurrentPositonAndOrientation();
     }
 
     /**
@@ -500,8 +495,6 @@ public class Locomotion implements Service {
      * @param turnOnly vrai si on veut uniquement tourner (et pas avancer)
      */
     private void moveToPointSymmetry(Vec2 aim, boolean turnOnly) {
-        thEvent.setIsMoving(true);
-        getCurrentPositionAndOrientation();
 
         Vec2 positionSymetrized = highLevelXYO.getPosition().clone();
         Vec2 aimSymetrized = aim.clone();
@@ -591,7 +584,8 @@ public class Locomotion implements Service {
      *
      * @param distance distance jusqu'a un ennemi en mm en dessous de laquelle on doit abandonner le mouvement
      */
-    public boolean detectEnemyArroundPosition(int distance) throws InterruptedException, UnexpectedObstacleOnPathException {
+    public boolean detectEnemyArroundPosition(int distance) throws InterruptedException, UnexpectedObstacleOnPathException
+    {
         int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelXYO.getPosition());
         boolean hasDetectedSomething=false;
         if (closest <= distance) {
@@ -657,61 +651,71 @@ public class Locomotion implements Service {
 
 
     /**
-     * Boucle d'acquittement générique. Retourne des valeurs spécifiques en cas d'arrêt anormal (blocage, capteur)
-     * <p>
-     * false : si on roule
-     * true : si on est arrivé à destination
-     * exception : si patinage
-     *
-     * @return oui si le robot est arrivé à destination, non si encore en mouvement
-     * @throws BlockedException si patinage (donc bloquage mecanique)
+     * Interroge le LL pour connaitre la position & orientation actuelle du robot
+     * @return xyo actuel du robot
      */
-    private boolean isMotionEnded() throws BlockedException {
-
-        // récupérations des informations d'acquittement
-        boolean[] infos = ethWrapper.isRobotMovingAndAbnormal();
-        // 0-false : le robot ne bouge pas
-
-        //log.debug("Test deplacement : reponse "+ infos[0] +" :: "+ infos[1], this);
-
-        if (!infos[0])//si le robot ne bouge plus
-        {
-            if (infos[1])//si le robot patine, il est bloqué
-            {
-                log.critical("Robot bloqué, lancement de BlockedException dans isMotionEnded");
-                throw new BlockedException();
-            } else {
-                return !infos[0];//On est arrivés
-            }
-        } else if (isForcing && System.currentTimeMillis() > this.timeExpected) {
-            log.critical("Le robot force, on l'arrête.");
-            this.immobilise();
-            throw new BlockedException();
-        } else {
-            return !infos[0];//toujours pas arrivé
-        }
-    }
-
-    /**
-     * Met à jour la position du robot dans Locomotion avec la dernière position renvoyée par le LL
-     */
-    private void getCurrentPositionAndOrientation() {
+    public XYO getCurrentPositionAndOrientation() {
+        lowLevelXYO = ethWrapper.getCurrentPositionAndOrientation();
         highLevelXYO = lowLevelXYO.clone();
         if (symetry) {
             highLevelXYO.symetrize();
         }
+        return highLevelXYO;
     }
 
     /**
-     * Force l'envoi de la position actuelle par le LL, et la met à jour dans Locomotion et ThreadEth
+     * Set la position et l'orientation du LL
+     * @param xyo position & orientation souhaitées
      */
-    private void updateCurrentPositonAndOrientation(){
-        lowLevelXYO = ethWrapper.updateCurrentPositionAndOrientation();
-
-        highLevelXYO = lowLevelXYO.clone();
+    public void setCurrentPositionAndOrientation(XYO xyo) {
+        highLevelXYO = xyo;
+        lowLevelXYO = highLevelXYO.clone();
         if (symetry) {
-            highLevelXYO.symetrize();
+            lowLevelXYO.symetrize();
         }
+        ethWrapper.setPositionAndOrientation(lowLevelXYO);
+    }
+
+    /**
+     * Interroge le LL pour connaitre la position & orientation actuelle du robot
+     * @return xy actuel du robot
+     */
+    public Vec2 getCurrentPosition() {
+        return this.getCurrentPositionAndOrientation().getPosition();
+    }
+
+    /**
+     * Set la position du LL
+     * @param position position souhaitée
+     */
+    public void setCurrentPosition(Vec2 position) {
+        highLevelXYO.setPosition(position);
+        lowLevelXYO.setPosition(position);
+        if (symetry) {
+            lowLevelXYO.symetrize();
+        }
+        ethWrapper.setPosition(lowLevelXYO.getPosition());
+    }
+
+    /**
+     * Interroge le LL pour connaitre l'orientation actuelle du robot
+     * @return
+     */
+    public double getCurrentOrientation() {
+        return this.getCurrentPositionAndOrientation().getOrientation();
+    }
+
+    /**
+     * Set l'orientation du LL
+     * @param orientation orientation souhaitée
+     */
+    public void setCurrentOrientation(double orientation) {
+        highLevelXYO.setOrientation(Geometry.moduloSpec(orientation, Math.PI));
+        lowLevelXYO.setOrientation(Geometry.moduloSpec(orientation, Math.PI));
+        if (symetry) {
+            lowLevelXYO.symetrize();
+        }
+        ethWrapper.setOrientation(lowLevelXYO.getOrientation());
     }
 
     /**
@@ -722,90 +726,6 @@ public class Locomotion implements Service {
         ethWrapper.immobilise();
         thEvent.setIsMoving(false);
         log.debug("isMoving variable has been defined to FALSE in Locomotion");
-    }
-
-
-    /********************
-     * GUETTER & SETTER *
-     *******************/
-
-
-    /**
-     * Met à jour la position. A ne faire qu'en début de match, ou en cas de recalage
-     * @param positionWanted
-     */
-    public void setPosition(Vec2 positionWanted) {
-        this.highLevelXYO.setPosition(positionWanted);
-        this.lowLevelXYO.setPosition(positionWanted);
-        if (symetry) {
-            lowLevelXYO.symetrize(); // on lui met la vraie position
-        }
-        ethWrapper.setX(lowLevelXYO.getPosition().getX());
-        ethWrapper.setY(lowLevelXYO.getPosition().getY());
-    }
-
-    /**
-     * @return la position du robot en debut de match
-     */
-    public Vec2 getPosition() {
-        getCurrentPositionAndOrientation();
-        return highLevelXYO.getPosition();
-    }
-
-    public XYO getHighLevelXYO() {
-        return highLevelXYO;
-    }
-
-    /**
-     * Met à jour l'orientation. A ne faire qu'en début de match, ou en cas de recalage
-     *
-     * @param orientation
-     */
-    public void setOrientation(double orientation) {
-        this.highLevelXYO.setOrientation(orientation);
-        this.lowLevelXYO.setOrientation(orientation);
-        if (symetry) {
-            this.lowLevelXYO.symetrize(); // la vraie orientation
-        }
-        ethWrapper.setOrientation(lowLevelXYO.getOrientation());
-    }
-
-    /**
-     * @return l'orientation du robot en debut de match
-     */
-    public double getOrientation() {
-        getCurrentPositionAndOrientation();
-        return highLevelXYO.getOrientation();
-    }
-
-    /**
-     * Permet au ThreadSensor de mettre à jour la valeur des capteurs,
-     * utile pour la BasicDetection et pour la vérification d'obstacles lors d'appels directes à la série
-     * (le dégagement dans la BlockedException)
-     */
-    public void setUSvalues(int val, int capteurID) {
-        if (capteurID<this.USvalues.length) {
-            this.USvalues[capteurID] = val;
-        }
-    }
-
-    /**
-     * Stratégie de déplacement
-     */
-    public TurningStrategy getTurningOrders() {
-        return turningStrategy;
-    }
-
-    public void setTurningOrders(TurningStrategy turning) {
-        this.turningStrategy = turning;
-    }
-
-    public DirectionStrategy getDirectionStrategy() {
-        return directionStrategy;
-    }
-
-    public void setDirectionOrders(DirectionStrategy motion) {
-        this.directionStrategy = motion;
     }
 
     /**
@@ -832,26 +752,22 @@ public class Locomotion implements Service {
     public void disableRotationnalFeedbackLoop() {
         ethWrapper.disableRotationnalFeedbackLoop();
     }
-
     public void enableRotationnalFeedbackLoop() {
         ethWrapper.enableRotationnalFeedbackLoop();
     }
-
     public void disableTranslationalFeedbackLoop() {
         ethWrapper.disableTranslationnalFeedbackLoop();
     }
-
     public void enableTranslationalFeedbackLoop() {
         ethWrapper.enableTranslationnalFeedbackLoop();
     }
-
     public void disableSpeedFeedbackLoop() {
         ethWrapper.disableSpeedFeedbackLoop();
     }
-
     public void enableSpeedFeedbackLoop() {
         ethWrapper.enableSpeedFeedbackLoop();
     }
+
 
     /**
      * Vitesse de déplacement
@@ -883,11 +799,49 @@ public class Locomotion implements Service {
         }
     }
 
+    /********************
+     * GUETTER & SETTER *
+     *******************/
+
+    /**
+     * Dernières position & orientation recues par le LL
+     */
+    public XYO getHighLevelXYO() {
+        return highLevelXYO;
+    }
+    public Vec2 getPosition() {
+        return highLevelXYO.getPosition();
+    }
+    public double getOrientation() {
+        return highLevelXYO.getOrientation();
+    }
+
     /**
      * Active/désactive la basicDetection
      */
     public void setBasicDetection(boolean basicDetection) {
         this.basicDetectionActivated = basicDetection;
+    }
+
+    /**
+     * Stratégie de déplacement
+     */
+    public TurningStrategy getTurningOrders() {
+        return turningStrategy;
+    }
+    public void setTurningOrders(TurningStrategy turning) {
+        this.turningStrategy = turning;
+    }
+    public DirectionStrategy getDirectionStrategy() {
+        return directionStrategy;
+    }
+    public void setDirectionOrders(DirectionStrategy motion) {
+        this.directionStrategy = motion;
+    }
+
+    /** ThreadEvent */
+    public ThreadEvents getThEvent() {
+        return thEvent;
     }
 
     @Override
@@ -909,9 +863,6 @@ public class Locomotion implements Service {
         maxRetriesIfBlocked = config.getInt(ConfigInfoRobot.MAX_RETRIES_IF_BLOCKED);
     }
 
-    public ThreadEvents getThEvent() {
-        return thEvent;
-    }
     /**************************************************
      * 					JUNITS                        *
      **************************************************/

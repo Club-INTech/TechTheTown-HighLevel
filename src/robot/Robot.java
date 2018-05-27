@@ -672,15 +672,6 @@ public class Robot implements Service {
     }
 
     /**
-     * Forcer les valeurs des capteurs dans cet objet
-     *
-     * @param val les valeurs comme définies dans threadSensors
-     */
-    public void setUSvalues(int val, int capteurID) {
-        mLocomotion.setUSvalues(val, capteurID);
-    }
-
-    /**
      * Renvoie la valeur d'un capteur de contact
      *
      * @param sensor le capteur en question
@@ -701,25 +692,18 @@ public class Robot implements Service {
 
     /**
      * Getters & Setters des positions
-     *
-     * @param position
      */
     public void setPosition(Vec2 position) {
-        mLocomotion.setPosition(position);
+        mLocomotion.setCurrentPosition(position);
     }
-
     public Vec2 getPosition() {
-        position = mLocomotion.getPosition();
-        return position;
+        return mLocomotion.getPosition();
     }
-
     public void setOrientation(double orientation) {
-        mLocomotion.setOrientation(orientation);
+        mLocomotion.setCurrentOrientation(orientation);
     }
-
     public double getOrientation() {
-        orientation = mLocomotion.getOrientation();
-        return orientation;
+        return mLocomotion.getOrientation();
     }
 
     public void setRobotRadius(int radius) {

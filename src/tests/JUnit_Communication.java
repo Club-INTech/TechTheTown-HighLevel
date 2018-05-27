@@ -7,6 +7,7 @@ import robot.Locomotion;
 import simulator.ThreadSimulator;
 import simulator.ThreadSimulatorMotion;
 import smartMath.Vec2;
+import smartMath.XYO;
 import threads.dataHandlers.ThreadEth;
 import utils.Sleep;
 
@@ -40,7 +41,7 @@ public class JUnit_Communication extends JUnit_Test {
 
             container.startInstanciedThreads();
 
-            ethWrapper.setPositionAndOrientation(200, 500, 2.215);
+            ethWrapper.setPositionAndOrientation(new XYO(new Vec2(200, 500), 2.215));
             Thread.sleep(100);
             ethWrapper.getCurrentPositionAndOrientation();
             ethWrapper.setX(0);

@@ -198,40 +198,22 @@ public class EthWrapper implements Service {
     }
 
     /**
-     * Renvoie le dernier XYO que le LL nous a envoyé dans le canal position
-     * @return
+     * Interroge le LL pour avoir la position et orientation actuelle
+     * @return xyo actuel
      */
     public XYO getCurrentPositionAndOrientation()
     {
+        String[] response = eth.communicate(3, ActuatorOrder.SEND_POSITION.getEthernetOrder());
+        eth.setPositionAndOrientation(new XYO(new Vec2(Integer.parseInt(response[0]), Integer.parseInt(response[1])), Double.parseDouble(response[2])));
         return eth.getPositionAndOrientation();
     }
 
     /**
-     * Force la mise à jour de l'orientaton et de la position du robot
+     * Retourne la dernière position envoyée par le LL
+     * @return dernier xyo recu du LL
      */
-    public XYO updateCurrentPositionAndOrientation(){
-        String[] xyo = eth.communicate(3, ActuatorOrder.SEND_POSITION.getEthernetOrder());
-        int x;
-        int y;
-        double angle;
-        if (xyo.length==3) {
-            try {
-                x = (int) Float.parseFloat(xyo[0]);
-                y = (int) Float.parseFloat(xyo[1]);
-                angle = Double.parseDouble(xyo[2]);
-            } catch (NumberFormatException e) {
-                log.critical("BAD POSITION RECEIVED BY LL " + xyo[0] + " , " + xyo[1] + " , " + xyo[2]);
-                x = getCurrentPositionAndOrientation().getPosition().getX();
-                y = getCurrentPositionAndOrientation().getPosition().getY();
-                angle = getCurrentPositionAndOrientation().getOrientation();
-            }
-        }else{
-            log.critical("BAD POSITION RECEIVED BY LL : xyo bad length");
-            x = getCurrentPositionAndOrientation().getPosition().getX();
-            y = getCurrentPositionAndOrientation().getPosition().getY();
-            angle = getCurrentPositionAndOrientation().getOrientation();
-        }
-        eth.setPositionAndOrientation(new XYO(new Vec2(x,y),angle));
+    public XYO getPositionAndOrientation()
+    {
         return eth.getPositionAndOrientation();
     }
 
@@ -302,16 +284,24 @@ public class EthWrapper implements Service {
 
     /**
      * Ecrase la position et l'orientation du robot sur la carte
-     * @param x
-     * @param y
-     * @param orientation
+     * @param xyo
      */
-    public void setPositionAndOrientation(int x, int y, double orientation)
+    public void setPositionAndOrientation(XYO xyo)
     {
-        float floatX = (float)x;
-        float floatY = (float)y;
-        float floatO = (float)orientation;
+        float floatX = (float)xyo.getPosition().getX();
+        float floatY = (float)xyo.getPosition().getY();
+        float floatO = (float)xyo.getOrientation();
         eth.communicate(0, ActuatorOrder.SET_POSITION.getEthernetOrder(), String.format("%s",floatX), String.format("%s",floatY), String.format("%s",floatO));
+    }
+
+    /**
+     * Ecrase la position du robot sur la carte
+     * @param position
+     */
+    public void setPosition(Vec2 position)
+    {
+        this.setX(position.getX());
+        this.setY(position.getY());
     }
 
     /**
