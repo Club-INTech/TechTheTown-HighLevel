@@ -21,6 +21,7 @@ package table;
 
 import container.Service;
 import enums.ConfigInfoRobot;
+import enums.TasCubes;
 import org.opencv.core.Mat;
 import pathfinder.Graphe;
 import pfg.config.Config;
@@ -70,7 +71,7 @@ public class Table implements Service
 	// Au besoin, créer les classes nécessaires dans le package table
 
 	/** point de départ du match à modifier a chaque base roulante */
-	public static Vec2 entryPosition = new Vec2(200, 600); // 1270 455
+	public static Vec2 entryPosition = new Vec2(1270, 455); // 1270 455
 	public static double entryOrientation = Math.PI; // Math.PI
 
 	/**
@@ -84,16 +85,18 @@ public class Table implements Service
 		this.log = log;
 		this.config = config;
 		this.mObstacleManager = new ObstacleManager(log, config);
-		initialise();
 	}
 
-	public void initialise() // initialise la table du debut du jeu
-	{
-		if(symetry)
-		{
-			entryPosition = new Vec2(560, 176);
-		}
-	}
+    /**
+     * Mise à jour de la table et du graphe
+     * @param id
+     */
+	public void removeTasCube(TasCubes id) {
+	    mObstacleManager.getmCircularObstacle().remove(id.getID());
+	    synchronized (graph.lock) {
+	        graph.init();
+        }
+    }
 
 	public ObstacleManager getObstacleManager()
 	{

@@ -160,7 +160,9 @@ public class ThreadLidar extends AbstractThread implements Service {
                 }
 
                 // Mise à jour du graphe
-                graph.updateRidges();
+                synchronized (graph.lock) {
+                    graph.updateRidges();
+                }
 
                 out.write("Durée total du traitement : " + (System.currentTimeMillis() - timeStep));
                 out.newLine();

@@ -212,7 +212,9 @@ public class ThreadSimulator extends AbstractThread implements Service {
         while(!shutdown){
             try{
                 buffer = input.readLine();
-                respond(buffer);
+                if (buffer != null) {
+                    respond(buffer);
+                }
             }catch (IOException e){
                 e.printStackTrace();
             }

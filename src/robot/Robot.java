@@ -38,6 +38,7 @@ import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Vec2;
+import smartMath.XYO;
 import table.Table;
 import utils.Log;
 import utils.Sleep;
@@ -73,14 +74,9 @@ public class Robot implements Service {
     protected Speed speed;
 
     /**
-     * La position du robot
+     * La position & l'orientation du robot
      */
-    protected Vec2 position;
-
-    /**
-     * L'orientation du robot
-     */
-    protected double orientation;
+    private XYO robotXYO;
 
     /**
      * Rayon du robot provenant du fichier de config, modélise le robot comme un cercle.
@@ -154,6 +150,7 @@ public class Robot implements Service {
         this.ethWrapper = ethWrapper;
         this.mLocomotion = deplacements;
         speed = Speed.SLOW_ALL;
+        robotXYO = mLocomotion.getHighLevelXYO();
     }
 
 
@@ -285,14 +282,14 @@ public class Robot implements Service {
      * @throws UnableToMoveException
      */
     public void turnTo(Vec2 pointVise) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        position = getPosition();
-        Vec2 move = pointVise.minusNewVector(position);
+        updateCurrentPositionAndOrientation();
+        Vec2 move = pointVise.minusNewVector(robotXYO.getPosition());
         double a = move.getA();
         turn(a);
     }
     public void turnToWithoutDetection(Vec2 pointVise) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        position = getPosition();
-        Vec2 move = pointVise.minusNewVector(position);
+        updateCurrentPositionAndOrientation();
+        Vec2 move = pointVise.minusNewVector(robotXYO.getPosition());
         double a = move.getA();
         turnWithoutDetection(a,false,false);
     }
@@ -304,8 +301,8 @@ public class Robot implements Service {
      * @throws UnableToMoveException
      */
     public void turnTo(Vec2 pointVise, boolean expectsWallImpact) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        position = getPosition();
-        Vec2 move = pointVise.minusNewVector(position);
+        updateCurrentPositionAndOrientation();
+        Vec2 move = pointVise.minusNewVector(robotXYO.getPosition());
         double a = move.getA();
         turn(a,expectsWallImpact);
     }
@@ -397,7 +394,8 @@ public class Robot implements Service {
      */
 
     public void turnToPoint(Vec2 point) throws UnableToMoveException,ImmobileEnnemyForOneSecondAtLeast {
-        Vec2 vec = point.minusNewVector(position);
+        updateCurrentPositionAndOrientation();
+        Vec2 vec = point.minusNewVector(robotXYO.getPosition());
         double angle = vec.getA();
         log.debug("appel de Robot.turnToPoint(" + angle + ")");
         turn(angle, false, false);
@@ -563,15 +561,12 @@ public class Robot implements Service {
     public void enableRotationnalFeedbackLoop() {
         mLocomotion.enableRotationnalFeedbackLoop();
     }
-
     public void disableRotationnalFeedbackLoop() {
         mLocomotion.disableRotationnalFeedbackLoop();
     }
-
     public void enableFeedbackLoop() {
         mLocomotion.enableFeedbackLoop();
     }
-
     public void disableFeedbackLoop() {
         mLocomotion.disableFeedbackLoop();
     }
@@ -624,7 +619,6 @@ public class Robot implements Service {
      * DIVERS *
      **********/
 
-
     /**
      * Immobilise le robot
      */
@@ -654,6 +648,20 @@ public class Robot implements Service {
      */
     public void sleep(long duree) {
         Sleep.sleep(duree);
+    }
+
+    /**
+     * Met à jour la position & orientation du robot en demandant au LL
+     */
+    public void updateCurrentPositionAndOrientation() {
+        this.robotXYO = mLocomotion.getCurrentPositionAndOrientation();
+    }
+
+    /**
+     * Met à jour la position et l'orientation du robot en demandant au HL sa dernière position & orientation connue
+     */
+    public void updatePositionAndOrientation() {
+        this.robotXYO = mLocomotion.getHighLevelXYO();
     }
 
 
@@ -709,7 +717,6 @@ public class Robot implements Service {
     public void setRobotRadius(int radius) {
         this.robotRay = radius;
     }
-
     public int getRobotRadius() {
         return this.robotRay;
     }
@@ -726,10 +733,6 @@ public class Robot implements Service {
         return mLocomotion.isRobotMovingBackward;
     }
 
-    public EthWrapper getEthWrapper() {
-        return ethWrapper;
-    }
-
     /**
      * Met à jour la configuration de la classe via le fichier de configuration fourni par le sysème de container
      * et supprime les espaces (si si c'est utile)
@@ -742,8 +745,6 @@ public class Robot implements Service {
         robotRay = config.getInt(ConfigInfoRobot.ROBOT_RADIUS);
         robotLength = config.getInt(ConfigInfoRobot.ROBOT_LENGTH);
         robotWidth = config.getInt(ConfigInfoRobot.ROBOT_WIDTH);
-        position = Table.entryPosition;
-        orientation = Math.PI;
     }
 
     public Locomotion getmLocomotion() {

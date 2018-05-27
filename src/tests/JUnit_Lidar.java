@@ -34,18 +34,6 @@ public class JUnit_Lidar extends JUnit_Test {
     private GameState gameState;
     private ScriptManager scriptManager;
 
-    /** Méthode de mise à jour de la frame */
-    private void show(Window frame) {
-        try {
-            while (true) {
-                frame.repaint();
-                Thread.sleep(20);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     /** Méthode d'arrêt du mainThread */
     private void shutdown() {
         process.destroy();
@@ -72,7 +60,7 @@ public class JUnit_Lidar extends JUnit_Test {
         scriptManager = container.getService(ScriptManager.class);
 
         // Instanciation d'une classe ThreadInterface anonyme
-        (new Thread(() -> this.show(new Window(table, gameState, scriptManager, false)))).start();
+        (new Thread(() -> (new Window(table, gameState, scriptManager, false)).showHandled())).start();
 
         // Démarrage du script du Lidar !
         pBuilder = new ProcessBuilder("python3", "main.py");

@@ -77,7 +77,7 @@ public abstract class AbstractScript implements Service
 	public void goToThenExec(int versionToExecute,GameState actualState) throws UnableToMoveException, BadVersionException, ExecuteException, BlockedActuatorException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast, NoPathFound {
 		// va jusqu'au point d'entrée de la version demandée
 		log.debug("Lancement de " + this.toString() + " version " + versionToExecute);
-		actualState.robot.getEthWrapper().getCurrentPositionAndOrientation();
+		actualState.robot.updateCurrentPositionAndOrientation();
 		try
 		{
 			if ((entryPosition(versionToExecute,actualState.robot.getPosition()).getCenter().distance(actualState.robot.getPosition()))>2) {

@@ -36,6 +36,11 @@ public class PointInObstacleException extends Exception {
         this.departInOsbtacle = departInOsbtacle;
     }
 
+    public PointInObstacleException(String message, Vec2 point) {
+        super(message + point.toStringEth());
+        this.point = point;
+    }
+
     public Vec2 getPoint() {
         return point;
     }

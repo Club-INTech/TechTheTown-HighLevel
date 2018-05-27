@@ -13,8 +13,9 @@ import java.util.Hashtable;
 public class Node {
 
     /** Variables static pour l'initialistation des noeuds */
-    public static final int DEFAULT_HEURISTIC      = 1000000;
-    public static final int DEFAULT_COST           = -1;
+    private static final int DEFAULT_HEURISTIC      = -1;
+    private static final int DEFAULT_COST           = 1000000;
+    private static int FIX_COST                     = 0;
 
     /** Position du noeud */
     private Vec2 position;
@@ -24,7 +25,7 @@ public class Node {
     private int cout;
 
     /** Noeuds voisins & predecesseur */
-    private Hashtable<Node, Ridge> neighbours;
+    private HashMap<Node, Ridge> neighbours;
     private Node pred;
 
     /** Constructeur */
@@ -32,7 +33,7 @@ public class Node {
         this.position = position;
         this.heuristique = DEFAULT_HEURISTIC;
         this.cout = DEFAULT_COST;
-        this.neighbours = new Hashtable<Node, Ridge>();
+        this.neighbours = new HashMap<>();
     }
 
     /**
@@ -97,7 +98,19 @@ public class Node {
     public Vec2 getPosition() {
         return position;
     }
-    public Hashtable<Node, Ridge> getNeighbours() {
+    public HashMap<Node, Ridge> getNeighbours() {
         return neighbours;
+    }
+    public static void setFixCost(int fixCost) {
+        FIX_COST = fixCost;
+    }
+    public static int getDefaultHeuristic() {
+        return DEFAULT_HEURISTIC;
+    }
+    public static int getDefaultCost() {
+        return DEFAULT_COST;
+    }
+    public static int getFixCost() {
+        return FIX_COST;
     }
 }

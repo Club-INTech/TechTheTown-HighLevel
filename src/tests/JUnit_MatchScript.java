@@ -47,13 +47,14 @@ public class JUnit_MatchScript extends JUnit_Test {
 //            Vec2 positionDepart = new Vec2(1252, 455);
 //            robotReal.setPosition(positionDepart);
 //            robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
+
             robotReal.setPosition(Table.entryPosition);
             robotReal.setOrientation(Table.entryOrientation);
 
-/**          Vitesse du robot (ULTRA_SLOW_ALL, SLOW_ALL, MEDIUM_ALL, FAST_ALL, ULTRA_FAST_ALL, DEFAULT_SPEED) */
+            /** Vitesse du robot (ULTRA_SLOW_ALL, SLOW_ALL, MEDIUM_ALL, FAST_ALL, ULTRA_FAST_ALL, DEFAULT_SPEED) */
             robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
 
-            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
+            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(2, state);
 
         } catch (Exception e) {
             e.printStackTrace();

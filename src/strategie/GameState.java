@@ -21,6 +21,7 @@ package strategie;
 
 import container.Service;
 import enums.ScriptNames;
+import enums.TasCubes;
 import pfg.config.Config;
 import robot.Robot;
 import table.Table;
@@ -171,6 +172,19 @@ public class GameState implements Service
         this.lastScript=null;
     }
 
+    /**
+     * Met à jour la table vis-à-vis du tas de cube pris
+     * @param idTas
+     */
+    public void updateTable(int idTas) {
+        for (TasCubes tas : TasCubes.values()) {
+            if (tas.getID() == idTas) {
+                tas.setTaken(true);
+                table.removeTasCube(tas);
+            }
+        }
+    }
+
     /* (non-Javadoc)
      * @see container.Service#updateConfig()
      */
@@ -207,7 +221,6 @@ public class GameState implements Service
 	    this.obtainedPoints+=pointsToAdd;
     }
 
-
     public int getIndicePattern() {
         return this.indicePattern;
     }
@@ -215,8 +228,6 @@ public class GameState implements Service
     public void setIndicePattern(int indicePattern) {
         this.indicePattern = indicePattern;
     }
-
-
 
     public boolean isRecognitionDone() {
         return this.recognitionDone;

@@ -1,11 +1,8 @@
 package threads;
 
-import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
-import pfg.config.Config;
 import robot.Locomotion;
 import smartMath.Vec2;
-import utils.Log;
 
 import java.util.ArrayList;
 

@@ -245,11 +245,6 @@ public class Locomotion implements Service {
     private ThreadEvents thEvent;
 
     /**
-     * Si on a déjà envoyé l'ordre
-     */
-    boolean orderSentMoveToPointDetectExceptions;
-
-    /**
      * Constructeur de Locomotion
      *
      * @param log        le fichier de log
@@ -265,7 +260,10 @@ public class Locomotion implements Service {
         this.USvalues = new int[]{0,0,0,0};
         this.thEvent = thEvent;
         this.highLevelXYO = new XYO(Table.entryPosition, Table.entryOrientation);
-        this.lowLevelXYO = ethWrapper.getCurrentPositionAndOrientation();
+        this.lowLevelXYO = highLevelXYO.clone();
+        if (symetry) {
+            lowLevelXYO.symetrize();
+        }
         updateConfig();
     }
 
@@ -360,7 +358,6 @@ public class Locomotion implements Service {
         log.debug("Tourner vers " + Double.toString(angle));
 
         actualRetriesIfBlocked = 0;
-        getCurrentPositionAndOrientation();
 
         /**
          * calcul de la position visee du haut niveau
@@ -384,12 +381,10 @@ public class Locomotion implements Service {
      * @throws UnableToMoveException si le robot a un bloquage mecanique
      */
     public void moveLengthwise(int distance, boolean expectWallImpact, boolean mustDetect) throws UnableToMoveException {
-        thEvent.setIsMoving(true);
 
         log.debug("Avancer de " + Integer.toString(distance));
 
         actualRetriesIfBlocked = 0;
-        getCurrentPositionAndOrientation();
 
         Vec2 aim = highLevelXYO.getPosition().plusNewVector(new Vec2((double)distance, highLevelXYO.getOrientation()));
         finalAim = aim;
@@ -422,6 +417,7 @@ public class Locomotion implements Service {
         boolean doItAgain;
         do {
             doItAgain = false;
+            // TODO Gérer les exceptions
 
             try {
                 moveToPointDetectExceptions(aim, isMovementForward, turnOnly, mustDetect);
@@ -429,12 +425,7 @@ public class Locomotion implements Service {
                 isRobotMovingBackward = false;
             }
             catch(BlockedException e){
-                if (!expectWallImpact){
-                    immobilise();
-                    throw new UnableToMoveException(finalAim, UnableToMoveReason.PHYSICALLY_BLOCKED);
-                } else {
-                    immobilise();
-                }
+                e.printStackTrace();
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
@@ -457,8 +448,6 @@ public class Locomotion implements Service {
      * @throws BlockedException
      */
     private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, UnexpectedObstacleOnPathException, UnableToMoveException, InterruptedException {
-        this.thEvent.setIsMoving(true);
-        this.orderSentMoveToPointDetectExceptions=false;
 
         // Boucle de vérification d'exceptions : vérification de l'event Blocked, de la basicDetection (BIND le ThreadEth), et de la detection Lidar
         // On utilise maintenant la basicDetection comme arrêt d'urgence,
@@ -466,25 +455,14 @@ public class Locomotion implements Service {
         // Dans le cas d'un mouvement atomique (script), on attend un certains temps
         // Ou alors on attend un certain temps dans les 2 cas ?
 
-        if (detectEnemyAtDistance(detectionDistance, new Vec2(100.0, this.highLevelXYO.getOrientation()))) {
-
-        }
-
-        while (thEvent.getIsMoving()) {
-
-            if (thEvent.getUnableToMoveEvent().peek() != null) {
-                String unableToMoveReason = thEvent.getUnableToMoveEvent().poll();
-                if (unableToMoveReason.equals(UnableToMoveReason.PHYSICALLY_BLOCKED.getSerialOrder())) {
-                    throw new BlockedException();
-                }
-            }
-
-            //On le met à la fin, afin de savoir si on détecte déjà un obstacle, et le cas échéant directement renoyer une exception
-            if (!this.orderSentMoveToPointDetectExceptions) {
-                this.orderSentMoveToPointDetectExceptions=true;
+        boolean sent = false;
+        // TODO Detecter les exceptions
+        do {
+            if(!sent) {
                 moveToPointSymmetry(aim, turnOnly);
+                sent = true;
             }
-        }
+        } while (this.thEvent.isMoving);
     }
 
     /**
@@ -768,7 +746,6 @@ public class Locomotion implements Service {
         ethWrapper.enableSpeedFeedbackLoop();
     }
 
-
     /**
      * Vitesse de déplacement
      */
@@ -806,14 +783,24 @@ public class Locomotion implements Service {
     /**
      * Dernières position & orientation recues par le LL
      */
+    public void updatePositionAndOrientation() {
+        highLevelXYO = ethWrapper.getPositionAndOrientation();
+        lowLevelXYO = highLevelXYO.clone();
+        if (symetry) {
+            lowLevelXYO.symetrize();
+        }
+    }
     public XYO getHighLevelXYO() {
+        updatePositionAndOrientation();
         return highLevelXYO;
     }
     public Vec2 getPosition() {
+        updatePositionAndOrientation();
         return highLevelXYO.getPosition();
     }
     public double getOrientation() {
-        return highLevelXYO.getOrientation();
+        updatePositionAndOrientation();
+        return lowLevelXYO.getOrientation();
     }
 
     /**

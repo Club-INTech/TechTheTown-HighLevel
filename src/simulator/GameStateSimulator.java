@@ -76,8 +76,6 @@ public class GameStateSimulator implements Service {
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
 
-        log.debug(String.format("Move delay : %d, DistancePerDelay : %s", moveDelay, distanceLoop));
-
         while (done < Math.abs(distance)) {
             Thread.sleep(moveDelay);
             if (done+distanceLoop>Math.abs(distance)){
@@ -97,10 +95,6 @@ public class GameStateSimulator implements Service {
                 done += distanceLoop;
             }
             simulator.communicate(CommunicationHeaders.POSITION, String.format("%d %d %s", Math.round(position.getX()), Math.round(position.getY()), orientation));
-
-            if(table.getObstacleManager().isObstructed(position.toVec2()) || !table.getObstacleManager().isRobotInTable(position.toVec2())){
-                log.critical("SIMULATOR : Robot dans un obstacle (theorique) : UnableToMoveException / Position : "+position);
-            }
         }
         this.setRobotMoving(false);
 

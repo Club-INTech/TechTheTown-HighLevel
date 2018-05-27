@@ -21,6 +21,7 @@
 
 package graphics;
 
+import pathfinder.Graphe;
 import pathfinder.Node;
 import robot.Robot;
 import smartMath.Vec2;
@@ -37,6 +38,7 @@ import java.awt.Graphics;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * panneau sur lequel est dessine la table
@@ -52,12 +54,13 @@ public class TablePanel extends JPanel
 	private ArrayList<Vec2> path;
 	private ArrayList<Vec2> clics;
 	private Vec2 point;
-	private ArrayList<Node> nodes;
+	private CopyOnWriteArrayList<Node> nodes;
 	public static boolean showGraph = true;
 
 	/** Table & robot */
 	private Table table;
 	private Robot robot;
+	private Graphe graphe;
 
 	/** Pour de l'affichage dynamique lorsque l'on test avec le robot */
 	private boolean isRobotPresent = true;
@@ -82,9 +85,10 @@ public class TablePanel extends JPanel
 	{
 		path = new ArrayList<>();
 		clics = new ArrayList<>();
-		nodes = table.getGraph().getNodes();
 		this.table = table;
 		this.robot = robot;
+		this.graphe = table.getGraph();
+		this.nodes = table.getGraph().getNodes();
 		this.point = new Vec2();
 
 		try{
@@ -101,8 +105,9 @@ public class TablePanel extends JPanel
 	{
 		path = new ArrayList<>();
 		clics = new ArrayList<>();
-		nodes = table.getGraph().getNodes();
         this.table = table;
+        this.graphe = table.getGraph();
+        nodes = graphe.getNodes();
 		isRobotPresent = false;
 		showGraph = true;
 		this.point=new Vec2();
@@ -195,17 +200,19 @@ public class TablePanel extends JPanel
 
 		// Le graphe
 		if(showGraph){
-			graphics.setColor(graphColor);
-			for (Node node : nodes){
-				pathNode3 = changeRefToDisplay(node.getPosition());
-				graphics.fillOval(pathNode3.getX()-2,pathNode3.getY()-2,4,4);
-				for (Node node1 : node.getNeighbours().keySet()) {
-					if (node.getNeighbours().get(node1).isReachable()) {
-						Vec2 displayNode = changeRefToDisplay(node1.getPosition());
-						graphics.drawLine(pathNode3.getX(), pathNode3.getY(), displayNode.getX(), displayNode.getY());
-					}
+		    synchronized (graphe.lock) {
+                graphics.setColor(graphColor);
+                for (Node node : nodes) {
+                    pathNode3 = changeRefToDisplay(node.getPosition());
+                    graphics.fillOval(pathNode3.getX() - 2, pathNode3.getY() - 2, 4, 4);
+                    for (Node node1 : node.getNeighbours().keySet()) {
+                        if (node.getNeighbours().get(node1).isReachable()) {
+                            Vec2 displayNode = changeRefToDisplay(node1.getPosition());
+                            graphics.drawLine(pathNode3.getX(), pathNode3.getY(), displayNode.getX(), displayNode.getY());
+                        }
+                    }
                 }
-			}
+            }
 		}
 
 		// Print les clics et leur position
@@ -248,11 +255,6 @@ public class TablePanel extends JPanel
 	}
 	public void setPoint(Vec2 point ){
 		this.point=point;
-		removeAll();
-		revalidate();
-	}
-	public void setNodes(ArrayList<Node> nodes){
-		this.nodes=nodes;
 		removeAll();
 		revalidate();
 	}

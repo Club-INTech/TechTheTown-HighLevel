@@ -3,6 +3,7 @@ package tests;
 import enums.Speed;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.UnableToMoveException;
+import graphics.Window;
 import org.junit.Before;
 import org.junit.Test;
 import robot.EthWrapper;

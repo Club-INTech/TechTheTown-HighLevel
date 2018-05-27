@@ -14,6 +14,7 @@ import table.obstacles.ObstacleRectangular;
 import utils.Log;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -34,12 +35,15 @@ public class Graphe implements Service {
     private CopyOnWriteArrayList<ObstacleProximity> mobileEnnemies;
 
     /** Le graphe ! */
-    private ArrayList<Node> nodes;
+    private CopyOnWriteArrayList<Node> nodes;
 
     /** Paramètres du graphe */
     private int espacementRect;
     private int nbNoeudObstCirc;
     private double espCoeff;
+
+    /** Lock */
+    public final String lock = "GraphLock";
 
     /**
      * Constructeur du graphe, un graphe c'est des noeuds reliés par des arêtes, on utilise la méthode createNodes
@@ -52,15 +56,23 @@ public class Graphe implements Service {
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
         this.mobileEnnemies = table.getObstacleManager().getMobileObstacles();
-        this.nodes = new ArrayList<>();
+        this.nodes = new CopyOnWriteArrayList<>();
 
         updateConfig();
 
         long timeStep = System.currentTimeMillis();
-        initNodes();
-        initRidges();
+        init();
         log.debug("Time to create graph : " + (System.currentTimeMillis() - timeStep) + " ms");
         table.setGraph(this);
+    }
+
+    /**
+     * Calcule la position des noeuds et leurs liens (arêtes)
+     */
+    public void init() {
+        nodes.clear();
+        initNodes();
+        initRidges();
     }
 
     /**
@@ -99,7 +111,7 @@ public class Graphe implements Service {
         int n = 0;
         for (int i=0; i<nodes.size(); i++) {
             Node node1 = nodes.get(i);
-            for (int j=i; j<nodes.size(); j++) {
+            for (int j=i+1; j<nodes.size(); j++) {
                 Node node2 = nodes.get(j);
                 seg = new Segment(node1.getPosition(), node2.getPosition());
                 if (!table.getObstacleManager().intersectAnyObstacle(seg)) {
@@ -162,7 +174,6 @@ public class Graphe implements Service {
      */
     public void addNode(Node node) {
         Segment seg;
-        nodes.add(node);
         for (Node neighbour : nodes) {
             seg = new Segment(node.getPosition(), neighbour.getPosition());
             if (!table.getObstacleManager().intersectAnyObstacle(seg)) {
@@ -171,6 +182,7 @@ public class Graphe implements Service {
                 neighbour.addNeighbour(node, ridge);
             }
         }
+        nodes.add(node);
     }
 
     /**
@@ -180,8 +192,8 @@ public class Graphe implements Service {
      */
     public void removeNode(Node node){
         nodes.remove(node);
-        for (Node neighbours : node.getNeighbours().keySet()) {
-            neighbours.getNeighbours().remove(node);
+        for (Node neighbour : node.getNeighbours().keySet()) {
+            neighbour.getNeighbours().remove(node);
         }
     }
 
@@ -191,8 +203,8 @@ public class Graphe implements Service {
     public void reInit() {
         for (Node node : nodes) {
             node.setPred(null);
-            node.setCout(Node.DEFAULT_COST);
-            node.setHeuristique(Node.DEFAULT_HEURISTIC);
+            node.setCout(Node.getDefaultCost());
+            node.setHeuristique(Node.getDefaultHeuristic());
         }
     }
 
@@ -257,7 +269,7 @@ public class Graphe implements Service {
     }
 
     /** Getters & Setters */
-    public ArrayList<Node> getNodes() {
+    public CopyOnWriteArrayList<Node> getNodes() {
         return nodes;
     }
 

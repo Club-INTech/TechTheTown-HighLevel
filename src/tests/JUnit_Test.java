@@ -56,6 +56,7 @@ public abstract class JUnit_Test
 
 	/** The GameState */
 	protected GameState gameState;
+	protected Robot robot;
 
 	/** On regarde si on utilise ou non le jumper */
 	private boolean usingJumper;

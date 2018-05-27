@@ -86,7 +86,6 @@ public class TakeCubes extends AbstractScript {
         //On récupère le tas correspondant à l'indice
         this.currentTas = TasCubes.getTasFromID(indiceTas);
 
-
         if (state.isTourAvantRemplie()){
             if (state.isTourArriereRemplie()){
                 return;
@@ -109,7 +108,6 @@ public class TakeCubes extends AbstractScript {
                 }
             }
         }
-
 
         Cubes additionalCube;
         if(!(config.getBoolean(ConfigInfoRobot.SIMULATION))){
@@ -198,26 +196,6 @@ public class TakeCubes extends AbstractScript {
                     this.directionRobot="forward";
                     state.setTourAvantRemplie(true);
                     this.longueurBrasUtilise=this.longueurBrasAvant;
-                }
-
-                if (indiceTas == 0) {
-                    config.override(ConfigInfoRobot.TAS_BASE_PRIS, true);
-                    state.setTas_base_pris(true);
-                } else if (indiceTas == 1) {
-                    config.override(ConfigInfoRobot.TAS_CHATEAU_PRIS, true);
-                    state.setTas_chateau_eau_pris(true);
-                } else if (indiceTas == 2) {
-                    config.override(ConfigInfoRobot.TAS_STATION_EPURATION_PRIS, true);
-                    state.setTas_station_epuration_pris(true);
-                } else if (indiceTas == 3) {
-                    config.override(ConfigInfoRobot.TAS_BASE_ENNEMI_PRIS, true);
-                    state.setTas_base_ennemi_pris(true);
-                } else if (indiceTas == 4) {
-                    config.override(ConfigInfoRobot.TAS_CHATEAU_ENNEMI_PRIS, true);
-                    state.setTas_chateau_ennemi_eau_pris(true);
-                } else if (indiceTas == 5) {
-                    config.override(ConfigInfoRobot.TAS_STATION_EPURATION_ENNEMI_PRIS, true);
-                    state.setTas_station_epuration_ennemi_pris(true);
                 }
 
                 for (int i=0; i<3; i++) {
@@ -326,7 +304,7 @@ public class TakeCubes extends AbstractScript {
                     }
                 }
 
-
+                state.updateTable(indiceTas);
 
                 //On se décale du tas
                 Circle aimArcCircle;
@@ -364,20 +342,6 @@ public class TakeCubes extends AbstractScript {
             throw new ExecuteException(new PatternNotYetCalculatedException("Le pattern n'a pas encore été calculé"));
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

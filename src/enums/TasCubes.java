@@ -50,7 +50,12 @@ public enum TasCubes{
 
     private static boolean symetry;
     private static int matchScriptVersion=2;
-    TasCubes(int id, Vec2 greenCoordsMatchScript0, Vec2 orangeCoordsMatchScript0, Vec2 greenCoordsMatchScript2, Vec2 orangeCoordsMatchScript2, Vec2 greenCoordsMatchScript42, Vec2 orangeCoordsMatchScript42){
+
+    /** True si le tas est pris */
+    private boolean taken;
+
+    TasCubes(int id, Vec2 greenCoordsMatchScript0, Vec2 orangeCoordsMatchScript0, Vec2 greenCoordsMatchScript2, Vec2 orangeCoordsMatchScript2, Vec2 greenCoordsMatchScript42, Vec2 orangeCoordsMatchScript42)
+    {
         this.id=id;
         this.greenCoordsMatchScript0=greenCoordsMatchScript0;
         this.orangeCoordsMatchScript0=orangeCoordsMatchScript0;
@@ -58,6 +63,7 @@ public enum TasCubes{
         this.orangeCoordsMatchScript2=orangeCoordsMatchScript2;
         this.greenCoordsMatchScript42=greenCoordsMatchScript42;
         this.orangeCoordsMatchScript42=orangeCoordsMatchScript42;
+        this.taken = false;
     }
 
     public int[] getCoords(){
@@ -124,4 +130,12 @@ public enum TasCubes{
         symetry = value;
     }
     public static void setMatchScriptVersion(int value) { matchScriptVersion = value;}
+
+    public boolean isTaken() {
+        return taken;
+    }
+
+    public void setTaken(boolean taken) {
+        this.taken = taken;
+    }
 }

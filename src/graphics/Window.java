@@ -136,9 +136,18 @@ public class Window extends JFrame
 		tablePanel.setPoint(point);
 		repaint();
 	}
-	public void setNode(ArrayList<Node> nodes){
-		tablePanel.setNodes(nodes);;
-	}
+
+	/** Méthode static utilisée par le Thread gérant l'affichage graphique */
+	public void showHandled() {
+	    try {
+            while (true) {
+                this.repaint();
+                Thread.sleep(20);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
 	/** Getters */
 	public TablePanel getPanel()
