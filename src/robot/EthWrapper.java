@@ -397,6 +397,11 @@ public class EthWrapper implements Service {
         sensorState = !sensorState;
     }
 
+    /** Accès aux dernières valeurs recues par le LL */
+    public String getUSBuffer() {
+        return eth.getUltrasoundBuffer();
+    }
+
     /**
      * Change le type de mouvement forcé/normal
      * @param choice true pour forcer les mouvements

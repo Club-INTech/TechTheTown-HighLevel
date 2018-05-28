@@ -2,6 +2,7 @@ package pathfinder;
 
 import container.Service;
 import enums.ConfigInfoRobot;
+import enums.UnableToMoveReason;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
@@ -10,11 +11,14 @@ import robot.Locomotion;
 import smartMath.Vec2;
 import strategie.IA.Graph;
 import table.Table;
+import threads.ThreadPathFollower;
 import threads.dataHandlers.ThreadLidar;
 import utils.Log;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Pathfinding du robot ! Contient l'algorithme
@@ -43,6 +47,8 @@ public class Pathfinding implements Service {
     /** Liste ouverte & fermée */
     private PriorityQueue<Node> openList;
     private ArrayList<Node> closedList;
+    private Path path;
+    private ConcurrentLinkedQueue<UnableToMoveException> eventQueue;
 
     /** Noeud de départ et d'arrivé à mettre à jour */
     private Node beginNode;
@@ -58,6 +64,8 @@ public class Pathfinding implements Service {
         this.table = table;
         this.openList = new PriorityQueue<>(new BetterNode());
         this.closedList = new ArrayList<>();
+        this.eventQueue = new ConcurrentLinkedQueue<>();
+        this.path = new Path(new ConcurrentLinkedQueue());
         updateConfig();
     }
 
@@ -66,44 +74,71 @@ public class Pathfinding implements Service {
      *
      * @param aim le point à atteindre
      */
-    public void moveTo(Vec2 aim) throws PointInObstacleException, NoPathFound{
+    public void moveTo(Vec2 aim) throws PointInObstacleException, NoPathFound, UnableToMoveException {
         /* Algo :
         initialisation du Graphe, c-à-d : ajout des noeuds de départ et d'arrivé & calcul d(heuristique
+        Premier calcul du plus court chemin
+        Lancement du Thread de suivit de trajectoire
         Tant qu'on est pas arrivé :
             Calcul du plus court chemin
-            Lancement du thread de suivit de trajectoire
             Attente de changements du graphe ou d'un evenement du gestionnaire de trajectoire, c-a-d obstacle sur la ligne droite suivit par le robot
             Mise à jour du graphe en cas d'evenement du gestionnaire de trajectoire, c-a-d retrait du noeud de départ initial et ajout d'un nouveau noeud de départ
          */
-        try {
-            init(aim);
-            locomotion.followPath(findmyway(aimNode));
-            clean();
-        } catch (UnableToMoveException e) {
-            e.printStackTrace();
+        Vec2 next;
+        // TODO Gérer le cas ou les positions de départ et d'arrivé sont déjà des noeuds
+
+        init(aim);
+        findmyway(beginNode, aimNode);
+        (new ThreadPathFollower(path, eventQueue, locomotion)).start();
+
+        while (!locomotion.getHighLevelXYO().getPosition().equals(aim)) {
+            if (graphe.isUpdated()) {
+                synchronized (path.lock) {
+                    graphe.setUpdated(false);
+                    next = path.getPath().peek();
+                    findmyway(graphe.findNode(next), aimNode);
+                }
+            }
+            if (eventQueue.peek() != null) {
+                UnableToMoveException exception = eventQueue.poll();
+                if (exception.getReason().equals(UnableToMoveReason.OBSTACLE_DETECTED)) {
+                    clean();
+                    init(aim);
+                    findmyway(beginNode, aimNode);
+                    (new ThreadPathFollower(path, eventQueue, locomotion)).start();
+                }
+                else if (exception.getReason().equals(UnableToMoveReason.PHYSICALLY_BLOCKED)) {
+                    throw exception;
+                }
+            }
         }
+        clean();
     }
 
     /**
      * Methode basée sur l'algorithme A* renvoyant une liste de vecteurs qui contient le chemin le plus rapide
      * entre les deux positions d'entrée.
      *
+     * @param begin la position de départ
      * @param aim la position visée
      * @return un bon chemin jusqu'au point visé
      */
-    public ArrayList<Vec2> findmyway(Node aim) throws NoPathFound {
+    private void findmyway(Node begin, Node aim) throws NoPathFound {
 
         int currentCost;
+        Set<Node> neighbours;
         synchronized (graphe.lock) {
             // Algorithme en lui-même
             while (!openList.isEmpty()) {
                 Node visited = openList.poll();
 
                 if (visited.equals(aim)) {
-                    return reconstructPath();
+                    reconstructPath(begin);
                 }
 
-                for (Node neighbour : visited.getNeighbours().keySet()) {
+                neighbours = visited.getNeighbours().keySet();
+
+                for (Node neighbour : neighbours) {
                     Ridge ridge = visited.getNeighbours().get(neighbour);
                     if (ridge.isReachable()) {
                         currentCost = visited.getCout() + ridge.getCost();
@@ -156,10 +191,11 @@ public class Pathfinding implements Service {
         if (!table.getObstacleManager().isRobotInTable(aim) || table.getObstacleManager().isPositionInObstacle(aim)) {
             throw new PointInObstacleException("Position visée dans un obstacle ", aim);
         }
-        beginNode = new Node(locomotion.getPosition());
-        aimNode = new Node(aim);
-
         synchronized (graphe.lock) {
+            beginNode = new Node(locomotion.getPosition());
+            aimNode = new Node(aim);
+
+            eventQueue.clear();
             graphe.addNode(beginNode);
             graphe.addNode(aimNode);
             graphe.reInit();
@@ -175,6 +211,7 @@ public class Pathfinding implements Service {
      */
     private void clean() {
         synchronized (graphe.lock) {
+            eventQueue.clear();
             graphe.removeNode(aimNode);
             graphe.removeNode(beginNode);
             graphe.reInit();
@@ -182,21 +219,22 @@ public class Pathfinding implements Service {
     }
 
     /**
-     * Reconstruit le chemin à partir des prédecesseurs de chaque noeud
+     * Reconstruit le chemin à partir des prédecesseurs de chaque noeud jusqu'au noeud de départ spécifié
+     * @param beginNode noeud qui termine la reconstruction de chemin
      * @return le chemin trouvé par le Pathfinding
      */
-    private ArrayList<Vec2> reconstructPath() {
-        ArrayList<Vec2> toReturn = new ArrayList<>();
+    private void reconstructPath(Node beginNode) {
+        ArrayList<Vec2> toAdd = new ArrayList<>();
         Node visited = aimNode;
-        toReturn.add(aimNode.getPosition());
+        toAdd.add(aimNode.getPosition());
 
         do {
             visited = visited.getPred();
-            toReturn.add(0, visited.getPosition());
+            toAdd.add(0, visited.getPosition());
         } while (!(visited.equals(beginNode)));
+        path.getPath().addAll(toAdd);
         openList.clear();
         closedList.clear();
-        return toReturn;
     }
 
     /** Getters & Setters */

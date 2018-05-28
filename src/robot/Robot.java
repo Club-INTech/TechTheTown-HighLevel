@@ -205,7 +205,7 @@ public class Robot implements Service {
      * @param aim   le cercle ou l'on veut se rendre
      * @throws UnableToMoveException lorsque quelque chose sur le chemin cloche et que le robot ne peut s'en défaire simplement: bloquage mécanique immobilisant le robot ou obstacle percu par les capteurs
      */
-    public void moveToCircle(Circle aim) throws NoPathFound, PointInObstacleException{
+    public void moveToCircle(Circle aim) throws NoPathFound, PointInObstacleException, UnableToMoveException {
         Vec2 aimPosition = Geometry.closestPointOnCircle(this.getPosition(), aim);
         pathfinding.moveTo(aimPosition);
     }

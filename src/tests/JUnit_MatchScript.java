@@ -42,12 +42,6 @@ public class JUnit_MatchScript extends JUnit_Test {
     @Test
     public void testScript() {
         try {
-            //Définition des paramètres de base
-//            robotReal.setOrientation(Math.PI);
-//            Vec2 positionDepart = new Vec2(1252, 455);
-//            robotReal.setPosition(positionDepart);
-//            robotReal.useActuator(ActuatorOrder.SEND_POSITION,true);
-
             robotReal.setPosition(Table.entryPosition);
             robotReal.setOrientation(Table.entryOrientation);
 

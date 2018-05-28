@@ -44,6 +44,7 @@ public class Graphe implements Service {
 
     /** Lock */
     public final String lock = "GraphLock";
+    private boolean updated = false;
 
     /**
      * Constructeur du graphe, un graphe c'est des noeuds reliés par des arêtes, on utilise la méthode createNodes
@@ -228,6 +229,20 @@ public class Graphe implements Service {
     }
 
     /**
+     * Retourne le noeud dont la position est spécifiée
+     * @param position position du noeud recherché
+     * @return
+     */
+    public Node findNode(Vec2 position) {
+        for (Node node : nodes) {
+            if (node.getPosition().equals(position)) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Cette méthode retourne le noeud du graphe qui est le plus proche d'une position
      * Elle servira quand on sera bloqués dans un obstacle
      *
@@ -272,7 +287,12 @@ public class Graphe implements Service {
     public CopyOnWriteArrayList<Node> getNodes() {
         return nodes;
     }
-
+    public synchronized boolean isUpdated() {
+        return updated;
+    }
+    public synchronized void setUpdated(boolean updated) {
+        this.updated = updated;
+    }
 }
 
 

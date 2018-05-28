@@ -42,6 +42,7 @@ import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Classe implémentant une communication via Ethernet pour communiquer avec le Bas Niveau,
@@ -71,10 +72,11 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Lock strings
      */
-    private static final String inputLock="inputLock";
-    private static final String outputLock="outputLock";
-    private static final String socketLock="socketLock";
-    private static final String xyoLock="xyoLock";
+    private final String inputLock="inputLock";
+    private final String outputLock="outputLock";
+    private final String socketLock="socketLock";
+    private final String xyoLock="xyoLock";
+    public static final String usLock ="USLock";
 
     /**
      * IP Teensy & local
@@ -148,9 +150,9 @@ public class ThreadEth extends AbstractThread implements Service {
      */
     private volatile ConcurrentLinkedQueue<String> standardBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
-    private volatile ConcurrentLinkedQueue<String> ultrasoundBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> acknowledgementBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
+    private volatile String ultrasoundBuffer;
 
     /**
      * Le "canal" position & orientation
@@ -710,7 +712,7 @@ public class ThreadEth extends AbstractThread implements Service {
                                 e.printStackTrace();
                             }
                         } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
-                            ultrasoundBuffer.add(infosFromBuffer);
+                            ultrasoundBuffer = infosFromBuffer;
                             try {
                                 outSensor.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
                                 outSensor.newLine();
@@ -781,7 +783,7 @@ public class ThreadEth extends AbstractThread implements Service {
     public ConcurrentLinkedQueue<String> getEventBuffer() {
         return eventBuffer;
     }
-    public ConcurrentLinkedQueue<String> getUltrasoundBuffer() {
+    public String getUltrasoundBuffer() {
         return ultrasoundBuffer;
     }
     public ConcurrentLinkedQueue<String> getStandardBuffer() {

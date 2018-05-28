@@ -79,6 +79,9 @@ public class UnableToMoveException extends Exception
 	public Vec2 getAim(){
 		return this.aim;
 	}
-	
+
+	public UnableToMoveReason getReason() {
+		return reason;
+	}
 }
  

@@ -31,6 +31,7 @@ import smartMath.Geometry;
 import smartMath.Vec2;
 import smartMath.XYO;
 import table.Table;
+import threads.dataHandlers.ThreadEth;
 import threads.dataHandlers.ThreadEvents;
 import utils.Log;
 import utils.Sleep;
@@ -211,7 +212,7 @@ public class Locomotion implements Service {
     /**
      * Valeurs des ultrasons filtrés par le LL pour la détection basique
      */
-    private int[] USvalues;
+    private String USbuffer;
 
     /*************************
      *   BLOCAGE MECANIQUE   *
@@ -257,7 +258,7 @@ public class Locomotion implements Service {
         this.config = config;
         this.ethWrapper = ethWrapper;
         this.table = table;
-        this.USvalues = new int[]{0,0,0,0};
+        this.USbuffer = ethWrapper.getUSBuffer();
         this.thEvent = thEvent;
         this.highLevelXYO = new XYO(Table.entryPosition, Table.entryOrientation);
         this.lowLevelXYO = highLevelXYO.clone();
@@ -426,12 +427,15 @@ public class Locomotion implements Service {
             }
             catch(BlockedException e){
                 e.printStackTrace();
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
+                log.critical("Blocage mécanique du robot en : " + highLevelXYO);
+                if (!expectWallImpact) {
+                    throw new UnableToMoveException(aim, UnableToMoveReason.PHYSICALLY_BLOCKED);
+                }
             }
             catch (UnexpectedObstacleOnPathException e) {
                 e.printStackTrace();
+                log.critical("Obstacle detecté sur le chemin, arrêt du robot en : " + highLevelXYO);
+                throw new UnableToMoveException(aim, UnableToMoveReason.OBSTACLE_DETECTED);
             }
         }
         while (doItAgain);
@@ -447,7 +451,7 @@ public class Locomotion implements Service {
      * @param mustDetect        true si on veut detecter, false sinon.
      * @throws BlockedException
      */
-    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, UnexpectedObstacleOnPathException, UnableToMoveException, InterruptedException {
+    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, UnexpectedObstacleOnPathException {
 
         // Boucle de vérification d'exceptions : vérification de l'event Blocked, de la basicDetection (BIND le ThreadEth), et de la detection Lidar
         // On utilise maintenant la basicDetection comme arrêt d'urgence,
@@ -456,12 +460,34 @@ public class Locomotion implements Service {
         // Ou alors on attend un certain temps dans les 2 cas ?
 
         boolean sent = false;
+        int detectionDistance = (int) (this.detectionDistance*0.7);
         // TODO Detecter les exceptions
         do {
-            if(!sent) {
+            if (thEvent.getUnableToMoveEvent().peek() !=null) {
+                thEvent.getUnableToMoveEvent().poll();
+                throw new BlockedException();
+            }
+
+            if (mustDetect) {
+                if (basicDetectionActivated && basicDetect(isMovementForward)) {
+                    immobilise();
+                    throw new UnexpectedObstacleOnPathException();
+                }
+
+                if (turnOnly) {
+                    detectEnemyArroundPosition(detectionRay);
+                }
+                else {
+                    detectEnemyAtDistance(detectionDistance, new Vec2(100.0, highLevelXYO.getOrientation()));
+                }
+            }
+
+            if (!sent) {
                 moveToPointSymmetry(aim, turnOnly);
                 sent = true;
+                detectionDistance = (int) (this.detectionDistance*transSpeed/Speed.MEDIUM_ALL.translationSpeed);
             }
+
         } while (this.thEvent.isMoving);
     }
 
@@ -527,27 +553,34 @@ public class Locomotion implements Service {
      */
     private boolean basicDetect(boolean isMovementForward) {
         int startIndice;
+        int[] USvalues = new int[4];
+        synchronized (ThreadEth.usLock) {
+            String[] infos = USbuffer.split(" ");
+            for (int i=0; i<4; i++) {
+                USvalues[i] = Integer.parseInt(infos[i]);
+            }
+        }
         if (isMovementForward){
             startIndice=0;
         }
         else{
             startIndice=2;
         }
-        if (this.USvalues[startIndice]!=0 && this.USvalues[startIndice]<this.distanceBasicDetectionTriggered){
-            if (this.USvalues[startIndice+1]!=0 && this.USvalues[startIndice+1]<this.distanceBasicDetectionTriggered){
-                int distance=Math.min(this.USvalues[startIndice],this.USvalues[startIndice+1]);
+        if (USvalues[startIndice]!=0 && USvalues[startIndice]<this.distanceBasicDetectionTriggered){
+            if (USvalues[startIndice+1]!=0 && USvalues[startIndice+1]<this.distanceBasicDetectionTriggered){
+                int distance=Math.min(USvalues[startIndice],USvalues[startIndice+1]);
                 Vec2 basicDetectionAim = this.highLevelXYO.getPosition().plusNewVector(new Vec2(distance,this.highLevelXYO.getOrientation()));
                 return table.getObstacleManager().isObstaclePositionValid(basicDetectionAim);
             }
             else{
-                int distance=this.USvalues[startIndice];
+                int distance=USvalues[startIndice];
                 Vec2 basicDetectionAim = this.highLevelXYO.getPosition().plusNewVector(new Vec2(distance,this.highLevelXYO.getOrientation()));
                 return table.getObstacleManager().isObstaclePositionValid(basicDetectionAim);
             }
         }
         else{
-            if (this.USvalues[startIndice+1]!=0 && this.USvalues[startIndice+1]<this.distanceBasicDetectionTriggered){
-                int distance=this.USvalues[startIndice+1];
+            if (USvalues[startIndice+1]!=0 && USvalues[startIndice+1]<this.distanceBasicDetectionTriggered){
+                int distance=USvalues[startIndice+1];
                 Vec2 basicDetectionAim = this.highLevelXYO.getPosition().plusNewVector(new Vec2(distance,this.highLevelXYO.getOrientation()));
                 return table.getObstacleManager().isObstaclePositionValid(basicDetectionAim);
             }
@@ -562,36 +595,14 @@ public class Locomotion implements Service {
      *
      * @param distance distance jusqu'a un ennemi en mm en dessous de laquelle on doit abandonner le mouvement
      */
-    public boolean detectEnemyArroundPosition(int distance) throws InterruptedException, UnexpectedObstacleOnPathException
+    public void detectEnemyArroundPosition(int distance) throws UnexpectedObstacleOnPathException
     {
         int closest = table.getObstacleManager().distanceToClosestEnemy(highLevelXYO.getPosition());
-        boolean hasDetectedSomething=false;
-        if (closest <= distance) {
-            hasDetectedSomething=true;
-            log.debug("Closest ennemy detected (arroundPosition) at distance: "+closest);
-            log.debug("DetectEnemyAtDistance voit un ennemi trop proche pour continuer le déplacement (distance de "
-                    + closest + " mm)");
+        if(closest <= distance && closest > -150)
+        {
             immobilise();
-            int count = 0;
-
-            while(count < 10)
-            {
-                //on teste si l'ennemi n'a pas bougé depuis, au bout d'une seconde on l'ajoute dans la liste des obstacles à fournir au graphe
-                closest = table.getObstacleManager().distanceToClosestEnemy(highLevelXYO.getPosition());
-                if(closest > distance){
-                    break;
-                }
-                Thread.sleep(100);
-                count++;
-            }
-
-            if(closest <= distance){
-                table.getObstacleManager().getMobileObstacles().add(table.getObstacleManager().getClosestEnnemy(highLevelXYO.getPosition()));
-                log.debug("ImmobileEnnemy est thrown");
-                throw new UnexpectedObstacleOnPathException();
-            }
+            throw new UnexpectedObstacleOnPathException();
         }
-        return hasDetectedSomething;
     }
 
     /**
@@ -600,26 +611,13 @@ public class Locomotion implements Service {
      * @param distance la distance de detection (voir plus haut)
      * @param moveDirection direction du robot
      */
-    public boolean detectEnemyAtDistance(int distance, Vec2 moveDirection) throws InterruptedException, UnexpectedObstacleOnPathException
+    public void detectEnemyAtDistance(int distance, Vec2 moveDirection) throws UnexpectedObstacleOnPathException
     {
-        if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelXYO.getPosition(), moveDirection, highLevelXYO.getOrientation())) {
-            log.debug("Ennemy detected at distance(<"+distance+"mm)");
-            log.debug("DetectEnemyAtDistance voit un ennemi sur le chemin : le robot va s'arrêter");
+        if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelXYO.getPosition(), moveDirection, highLevelXYO.getOrientation()))
+        {
             immobilise();
-
-            int count = 0;
-            while(count < 10 && table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelXYO.getPosition(), moveDirection, highLevelXYO.getOrientation()))
-            {
-                Thread.sleep(100);
-                count++;
-            }
-
-            if(count >= 10){
-                throw new UnexpectedObstacleOnPathException();
-            }
-            return true;
+            throw new UnexpectedObstacleOnPathException();
         }
-        return false;
     }
 
 
@@ -790,7 +788,7 @@ public class Locomotion implements Service {
             lowLevelXYO.symetrize();
         }
     }
-    public XYO getHighLevelXYO() {
+    public synchronized XYO getHighLevelXYO() {
         updatePositionAndOrientation();
         return highLevelXYO;
     }

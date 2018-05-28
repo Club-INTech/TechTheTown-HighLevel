@@ -22,6 +22,7 @@ package tests;
 import container.Container;
 import exceptions.ContainerException;
 import exceptions.Locomotion.PointInObstacleException;
+import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
 import graphics.Window;
 import org.junit.Before;
@@ -73,6 +74,8 @@ public class JUnit_Pathfinding extends JUnit_Test {
         } catch (PointInObstacleException e) {
             e.printStackTrace();
         } catch (NoPathFound e) {
+            e.printStackTrace();
+        } catch (UnableToMoveException e) {
             e.printStackTrace();
         }
     }

@@ -11,11 +11,10 @@ import smartMath.Circle;
 import smartMath.Geometry;
 import smartMath.Vec2;
 import strategie.GameState;
-import tests.container.A;
 import utils.Log;
 
-
-/** Script permettant de récupérer les cubes de n'importe quel tas, selon n'importe quel pattern, dans n'importe quelle direction
+/**
+ * Script permettant de récupérer les cubes de n'importe quel tas, selon n'importe quel pattern, dans n'importe quelle direction
  */
 public class TakeCubes extends AbstractScript {
     private int largeurCubes;
