@@ -260,12 +260,12 @@ public class Locomotion implements Service {
         this.table = table;
         this.USbuffer = ethWrapper.getUSBuffer();
         this.thEvent = thEvent;
-        this.highLevelXYO = new XYO(Table.entryPosition, Table.entryOrientation);
+        this.highLevelXYO = new XYO(Table.entryPosition.clone(), Table.entryOrientation);
         this.lowLevelXYO = highLevelXYO.clone();
+        updateConfig();
         if (symetry) {
             lowLevelXYO.symetrize();
         }
-        updateConfig();
     }
 
 
@@ -504,8 +504,8 @@ public class Locomotion implements Service {
         Vec2 aimSymetrized = aim.clone();
 
         if (symetry) {
-            positionSymetrized.setX(-positionSymetrized.getX());
-            aimSymetrized.setX(-aimSymetrized.getX());
+            positionSymetrized.symetrize();
+            aimSymetrized.symetrize();
         }
 
         Vec2 delta = aimSymetrized.minusNewVector(positionSymetrized);
@@ -666,7 +666,7 @@ public class Locomotion implements Service {
      */
     public void setCurrentPosition(Vec2 position) {
         highLevelXYO.setPosition(position);
-        lowLevelXYO.setPosition(position);
+        lowLevelXYO = highLevelXYO.clone();
         if (symetry) {
             lowLevelXYO.symetrize();
         }
@@ -687,7 +687,7 @@ public class Locomotion implements Service {
      */
     public void setCurrentOrientation(double orientation) {
         highLevelXYO.setOrientation(Geometry.moduloSpec(orientation, Math.PI));
-        lowLevelXYO.setOrientation(Geometry.moduloSpec(orientation, Math.PI));
+        lowLevelXYO = highLevelXYO.clone();
         if (symetry) {
             lowLevelXYO.symetrize();
         }
@@ -782,10 +782,10 @@ public class Locomotion implements Service {
      * Dernières position & orientation recues par le LL
      */
     public void updatePositionAndOrientation() {
-        highLevelXYO = ethWrapper.getPositionAndOrientation();
-        lowLevelXYO = highLevelXYO.clone();
+        lowLevelXYO = ethWrapper.getPositionAndOrientation();
+        highLevelXYO = lowLevelXYO.clone();
         if (symetry) {
-            lowLevelXYO.symetrize();
+            highLevelXYO.symetrize();
         }
     }
     public synchronized XYO getHighLevelXYO() {
@@ -798,7 +798,7 @@ public class Locomotion implements Service {
     }
     public double getOrientation() {
         updatePositionAndOrientation();
-        return lowLevelXYO.getOrientation();
+        return highLevelXYO.getOrientation();
     }
 
     /**

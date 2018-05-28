@@ -75,7 +75,7 @@ public class Main {
             container.getService(ThreadTimer.class);
             container.getService(ThreadScore.class);
             container.startInstanciedThreads();
-            realState.robot.setPosition(Table.entryPosition);
+            realState.robot.setPosition(Table.entryPosition.clone());
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
         } catch (ContainerException p) {

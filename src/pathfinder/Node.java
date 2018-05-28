@@ -43,7 +43,9 @@ public class Node {
      * @param ridge l'arrête qui les relien
      */
     public void addNeighbour(Node neighbour, Ridge ridge){
-        neighbours.put(neighbour, ridge);
+        if (!this.equals(neighbour)) {
+            neighbours.put(neighbour, ridge);
+        }
     }
 
     /**

@@ -116,7 +116,10 @@ public class IA implements Service {
             log.warning("IA HANDLED EXCEPTION : PointInObstacleException");
             boolean isDepartInObstacle = ((PointInObstacleException) e).isDepartInOsbtacle();
             if (isDepartInObstacle){
-                Vec2 aimToExitObstacle = pathfinding.getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition();
+                Vec2 aimToExitObstacle;
+                synchronized (pathfinding.getGraphe().lock) {
+                    aimToExitObstacle = pathfinding.getGraphe().closestNodeToPosition(gameState.robot.getPosition()).getPosition();
+                }
                 goToHandleException(aimToExitObstacle);
                 executeHandleException(this.lastNodeTried);
             }

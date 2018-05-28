@@ -53,6 +53,8 @@ public class Pathfinding implements Service {
     /** Noeud de départ et d'arrivé à mettre à jour */
     private Node beginNode;
     private Node aimNode;
+    private boolean removeStart;
+    private boolean removeAim;
 
     /** Constructeur */
     public Pathfinding(Log log, Config config, Locomotion locomotion, ThreadLidar graphHandler, Table table) {
@@ -89,9 +91,10 @@ public class Pathfinding implements Service {
 
         init(aim);
         findmyway(beginNode, aimNode);
+        path.getPath().poll();
         (new ThreadPathFollower(path, eventQueue, locomotion)).start();
 
-        while (!locomotion.getHighLevelXYO().getPosition().equals(aim)) {
+        while (!(locomotion.getHighLevelXYO().getPosition().intDistance(aim) < 3)) {
             if (graphe.isUpdated()) {
                 synchronized (path.lock) {
                     graphe.setUpdated(false);
@@ -134,6 +137,7 @@ public class Pathfinding implements Service {
 
                 if (visited.equals(aim)) {
                     reconstructPath(begin);
+                    return;
                 }
 
                 neighbours = visited.getNeighbours().keySet();
@@ -185,19 +189,33 @@ public class Pathfinding implements Service {
      * @param aim position visée
      */
     private void init(Vec2 aim) throws PointInObstacleException {
-        if (!table.getObstacleManager().isRobotInTable(locomotion.getPosition()) || table.getObstacleManager().isPositionInObstacle(locomotion.getPosition())) {
-            throw new PointInObstacleException("Position de départ dans un obstacle ", locomotion.getPosition());
+        Vec2 begin = locomotion.getPosition().clone();
+        if (!table.getObstacleManager().isRobotInTable(begin) || table.getObstacleManager().isPositionInObstacle(begin)) {
+            throw new PointInObstacleException("Position de départ dans un obstacle ", begin);
         }
         if (!table.getObstacleManager().isRobotInTable(aim) || table.getObstacleManager().isPositionInObstacle(aim)) {
             throw new PointInObstacleException("Position visée dans un obstacle ", aim);
         }
         synchronized (graphe.lock) {
-            beginNode = new Node(locomotion.getPosition());
-            aimNode = new Node(aim);
+            removeAim = false;
+            removeStart = false;
+            beginNode = graphe.findNode(begin);
+            aimNode = graphe.findNode(aim);
+
+            if (beginNode == null) {
+                beginNode = new Node (begin);
+                graphe.addNode(beginNode);
+                removeStart = true;
+            }
+
+            if (aimNode == null) {
+                aimNode = new Node(aim);
+                graphe.addNode(aimNode);
+                removeAim = true;
+            }
 
             eventQueue.clear();
-            graphe.addNode(beginNode);
-            graphe.addNode(aimNode);
+
             graphe.reInit();
 
             BetterNode.setAim(aim);
@@ -212,8 +230,13 @@ public class Pathfinding implements Service {
     private void clean() {
         synchronized (graphe.lock) {
             eventQueue.clear();
-            graphe.removeNode(aimNode);
-            graphe.removeNode(beginNode);
+
+            if (removeStart) {
+                graphe.removeNode(beginNode);
+            }
+            if (removeAim) {
+                graphe.removeNode(aimNode);
+            }
             graphe.reInit();
         }
     }

@@ -61,7 +61,7 @@ public abstract class Node {
         this.isDone = false;
         this.scriptManager = scriptManager;
         this.gameState = gameState;
-        this.position = Table.entryPosition;
+        this.position = Table.entryPosition.clone();
         this.pathfinding=pathfinding;
         this.hookFactory=hookFactory;
         this.config=config;

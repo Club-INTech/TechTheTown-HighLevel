@@ -73,7 +73,7 @@ public class XYO {
 
     @Override
     public synchronized XYO clone() {
-        return new XYO(this.position, this.orientation);
+        return new XYO(this.position.clone(), this.orientation);
     }
 
     /** Getters & Setters */

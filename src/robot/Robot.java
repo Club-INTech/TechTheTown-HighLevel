@@ -702,15 +702,19 @@ public class Robot implements Service {
      * Getters & Setters des positions
      */
     public void setPosition(Vec2 position) {
-        mLocomotion.setCurrentPosition(position);
+        mLocomotion.setCurrentPosition(position.clone());
+        robotXYO = mLocomotion.getHighLevelXYO();
     }
     public Vec2 getPosition() {
-        return mLocomotion.getPosition();
+        robotXYO = mLocomotion.getHighLevelXYO();
+        return mLocomotion.getPosition().clone();
     }
     public void setOrientation(double orientation) {
         mLocomotion.setCurrentOrientation(orientation);
+        robotXYO = mLocomotion.getHighLevelXYO();
     }
     public double getOrientation() {
+        robotXYO = mLocomotion.getHighLevelXYO();
         return mLocomotion.getOrientation();
     }
 

@@ -149,8 +149,6 @@ public class MatchScript extends AbstractScript {
             TakeCubes tk0=new TakeCubes(config,log,hookFactory);
             tk0.goToThenExec(0,gameState);
 
-
-
             //On dépose les cubes à la deuxième position
             DeposeCubes dpCubes2=new DeposeCubes(config,log,hookFactory);
             dpCubes2.goToThenExec(2, gameState);

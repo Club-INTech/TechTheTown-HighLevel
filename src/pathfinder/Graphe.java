@@ -14,6 +14,7 @@ import table.obstacles.ObstacleRectangular;
 import utils.Log;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -88,7 +89,7 @@ public class Graphe implements Service {
             placeNodes(rectangular);
         }
 
-        nodes.add(new Node(Table.entryPosition)); // 1252 455
+        nodes.add(new Node(Table.entryPosition.clone())); // 1252 455
         nodes.add(new Node(new Vec2(0, 1200)));
         nodes.add(new Node(new Vec2(0, 900)));
         nodes.add(new Node(new Vec2(0, 600)));
@@ -110,6 +111,7 @@ public class Graphe implements Service {
     private void initRidges() {
         Segment seg;
         int n = 0;
+
         for (int i=0; i<nodes.size(); i++) {
             Node node1 = nodes.get(i);
             for (int j=i+1; j<nodes.size(); j++) {
@@ -249,17 +251,17 @@ public class Graphe implements Service {
      * @param position
      * @return le noeud du graphe le plus proche
      */
-    public Node closestNodeToPosition(Vec2 position){
-        float distanceMin=nodes.get(0).getPosition().distance(position);
-        int iMin=0;
-        for(int i=1; i<nodes.size();i++){
-            if(nodes.get(i).getPosition().distance(position)<distanceMin){
-                distanceMin=nodes.get(i).getPosition().distance(position);
-                iMin=i;
+    public Node closestNodeToPosition(Vec2 position) {
+        Node best = nodes.get(0);
+        float min = best.getPosition().distance(position);
+
+        for (int i=1; i<nodes.size(); i++) {
+            if (nodes.get(i).getPosition().distance(position) < min) {
+                min = nodes.get(i).getPosition().distance(position);
+                best = nodes.get(i);
             }
         }
-        return nodes.get(iMin);
-
+        return best;
     }
 
     /**

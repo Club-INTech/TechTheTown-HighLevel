@@ -95,6 +95,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private boolean debug = true;
     private volatile boolean comFlag;
     private long timeRef;
+    private boolean symetry;
 
     /**
      * Emplacement des fichiers
@@ -152,7 +153,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private volatile ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> acknowledgementBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
-    private volatile String ultrasoundBuffer;
+    private volatile String ultrasoundBuffer = new String("1000 1000 1000 1000");
 
     /**
      * Le "canal" position & orientation
@@ -179,7 +180,10 @@ public class ThreadEth extends AbstractThread implements Service {
     private ThreadEth(Log log, Config config) {
         super(config, log);
         updateConfig();
-        this.positionAndOrientation = new XYO(Table.entryPosition,Table.entryOrientation);
+        this.positionAndOrientation = new XYO(Table.entryPosition.clone(),Table.entryOrientation);
+        if(symetry) {
+            this.positionAndOrientation.symetrize();
+        }
         this.name = "Teensy";
         this.nbRepeatMessage=0;
         this.charIDLastMessage ='A';
@@ -814,5 +818,6 @@ public class ThreadEth extends AbstractThread implements Service {
     @Override
     public void updateConfig() {
         simulation = config.getBoolean(ConfigInfoRobot.SIMULATION);
+        symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
     }
 }
