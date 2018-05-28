@@ -299,6 +299,7 @@ public class Graphe implements Service {
         espacementRect = config.getInt(ConfigInfoRobot.ESPACEMENT_RECT);
         espCoeff = config.getDouble(ConfigInfoRobot.ESPACEMENT_OBSTACLE_COEFF);
         nbNoeudObstCirc = config.getInt(ConfigInfoRobot.NB_NOEUDS_OBST_CIR);
+        Ridge.setStaticCost(config.getInt(ConfigInfoRobot.COUT_FIXE));
     }
 
     /** Getters & Setters */

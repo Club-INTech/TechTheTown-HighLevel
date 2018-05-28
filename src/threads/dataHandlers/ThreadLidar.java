@@ -45,6 +45,7 @@ public class ThreadLidar extends AbstractThread implements Service {
     /** La symetrie ... */
     private boolean symetry;
     private int ennemyRadius;
+    private int loopDelay;
 
     /** Fichiers & Buffers de debug */
     private File lidarData;
@@ -189,7 +190,11 @@ public class ThreadLidar extends AbstractThread implements Service {
                 out.newLine();
                 out.flush();
 
+                Thread.sleep(loopDelay);
+
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -199,6 +204,7 @@ public class ThreadLidar extends AbstractThread implements Service {
     public void updateConfig() {
         symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
         ennemyRadius = config.getInt(ConfigInfoRobot.ENNEMY_RADIUS);
+        loopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
     }
 
     /** Getters & Setters */

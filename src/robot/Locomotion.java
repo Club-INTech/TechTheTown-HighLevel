@@ -476,6 +476,7 @@ public class Locomotion implements Service {
             Thread.sleep(feedbackLoopDelay);
 
         } while (this.thEvent.isMoving);
+        log.debug("Fin du mouvement");
     }
 
     /**

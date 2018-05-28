@@ -39,6 +39,7 @@ public class Pathfinding implements Service {
 
     /** Le pathfinding gère aussi la trajectoire via un autre Thread */
     private Locomotion locomotion;
+    private int loopDelay;
 
     /** Vitesses du robot */
     private int robot_linear_speed;
@@ -94,7 +95,7 @@ public class Pathfinding implements Service {
         path.getPath().poll();
         (new ThreadPathFollower(path, eventQueue, locomotion)).start();
 
-        while (!(locomotion.getHighLevelXYO().getPosition().intDistance(aim) < 3)) {
+        while (!(locomotion.getHighLevelXYO().getPosition().intDistance(aim) < 4)) {
             if (graphe.isUpdated()) {
                 synchronized (path.lock) {
                     graphe.setUpdated(false);
@@ -113,6 +114,11 @@ public class Pathfinding implements Service {
                 else if (exception.getReason().equals(UnableToMoveReason.PHYSICALLY_BLOCKED)) {
                     throw exception;
                 }
+            }
+            try {
+                Thread.sleep(loopDelay);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
         clean();
@@ -189,7 +195,7 @@ public class Pathfinding implements Service {
      * @param aim position visée
      */
     private void init(Vec2 aim) throws PointInObstacleException {
-        Vec2 begin = locomotion.getPosition().clone();
+        Vec2 begin = locomotion.getCurrentPosition().clone();
         if (!table.getObstacleManager().isRobotInTable(begin) || table.getObstacleManager().isPositionInObstacle(begin)) {
             throw new PointInObstacleException("Position de départ dans un obstacle ", begin);
         }
@@ -267,8 +273,8 @@ public class Pathfinding implements Service {
 
     @Override
     public void updateConfig() {
-        Node.setFixCost(config.getInt(ConfigInfoRobot.COUT_FIXE));
         this.robot_linear_speed = config.getInt(ConfigInfoRobot.ROBOT_LINEAR_SPEED);
         this.robot_angular_speed = config.getDouble(ConfigInfoRobot.ROBOT_ANGULAR_SPEED);
+        loopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
     }
 }

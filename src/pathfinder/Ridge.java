@@ -14,9 +14,12 @@ public class Ridge {
     /** Disponibilité : true si franchissable */
     private boolean reachable;
 
+    /** Coût fixe de l'arrête */
+    private static int staticCost;
+
     /** Constructeur */
     public Ridge(int cost) {
-        this.cost = cost;
+        this.cost = cost + staticCost;
         this.reachable = true;
     }
 
@@ -29,5 +32,8 @@ public class Ridge {
     }
     public void setReachable(boolean reachable) {
         this.reachable = reachable;
+    }
+    public static void setStaticCost(int staticCost) {
+        Ridge.staticCost = staticCost;
     }
 }

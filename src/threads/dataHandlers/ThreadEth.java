@@ -426,7 +426,6 @@ public class ThreadEth extends AbstractThread implements Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        log.debug("Fichiers de debug fermés");
         try { Files.copy(fullDebugFileTmp.toPath(), fullDebugFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
         catch (IOException e) { e.printStackTrace(); }
 
@@ -451,7 +450,6 @@ public class ThreadEth extends AbstractThread implements Service {
         try { Files.copy(ordersFileTmp.toPath(), ordersFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
         catch (IOException e) { e.printStackTrace(); }
 
-        log.debug("Fichiers de debug bien copiés dans le répertoire courant");
         Log.stop();
 
         try { Files.copy(logFileTmp.toPath(),logFile.toPath(), StandardCopyOption.REPLACE_EXISTING); }
@@ -776,6 +774,12 @@ public class ThreadEth extends AbstractThread implements Service {
                         log.critical("///////// FIN MESSAGE CORROMPU /////////");
                     }
                 }
+            }
+
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }

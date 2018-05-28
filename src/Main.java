@@ -28,9 +28,13 @@ import scripts.ScriptManager;
 import strategie.GameState;
 import table.Table;
 import threads.ThreadInterface;
+import threads.dataHandlers.ThreadLidar;
 import threads.threadScore.ThreadScore;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Code qui démarre le robot en début de match
@@ -61,6 +65,10 @@ public class Main {
             symetry=config.getString(ConfigInfoRobot.COULEUR).equals("orange");
             TasCubes.setSymetry(symetry);
             TasCubes.setMatchScriptVersion(matchScriptVersionToExecute);
+
+            ProcessBuilder pBuilder = new ProcessBuilder("python3", "main.py");
+            pBuilder.directory(new File("../lidar"));
+
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
@@ -73,19 +81,22 @@ public class Main {
             container.getService(ThreadEth.class);
             container.getService(ThreadTimer.class);
             container.getService(ThreadScore.class);
+            container.getService(ThreadLidar.class);
             container.startInstanciedThreads();
             realState.robot.setPosition(Table.entryPosition.clone());
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+            pBuilder.start();
         } catch (ContainerException p) {
             System.out.println("bug container");
             p.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         try {
 
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
             System.out.println("MatchScript to execute: "+matchScriptVersionToExecute);
-
             System.out.println("Le robot commence le match");
 
             waitMatchBegin();

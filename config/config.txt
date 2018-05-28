@@ -34,14 +34,15 @@ TAS_CHATEAU_ENNEMI_PRIS=false
 TAS_STATION_EPURATION_ENNEMI_PRIS=false
 
 # PARAMETRES PATHFINDING
-COUT_FIXE                            = 42
+COUT_FIXE                            = 60
 ESPACEMENT_RECT                      = 200
 NB_NOEUDS_OBST_CIR                   = 10
 ESPACEMENT_OBSTACLE_COEFF            = 1.2
 
 # PARAMETRES DETECTION
-
-
+FEEDBACK_LOOPDELAY                   = 20
+DETECTION_DISTANCE                   = 250
+BASIC_DETECTION_DISTANCE             = 250
 
 ############ PARAMETRES RECONNAISSANCE DE COULEURS #############
 # A LA MAIN : FALSE /// AUTOMATIQUE : TRUE

@@ -48,7 +48,7 @@ public class JUnit_MatchScript extends JUnit_Test {
             /** Vitesse du robot (ULTRA_SLOW_ALL, SLOW_ALL, MEDIUM_ALL, FAST_ALL, ULTRA_FAST_ALL, DEFAULT_SPEED) */
             robotReal.setLocomotionSpeed(Speed.MEDIUM_ALL);
 
-            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(2, state);
+            scriptManager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(0, state);
 
         } catch (Exception e) {
             e.printStackTrace();
