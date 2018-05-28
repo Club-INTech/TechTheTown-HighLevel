@@ -57,7 +57,6 @@ public class Main {
             // TODO : initialisation des variables globales du robot & objets...
             container = new Container();
             config = container.getConfig();
-            config.override(ConfigInfoRobot.ADVANCED_DETECTION,false);
             matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
             symetry=config.getString(ConfigInfoRobot.COULEUR).equals("orange");
             TasCubes.setSymetry(symetry);

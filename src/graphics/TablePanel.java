@@ -129,6 +129,7 @@ public class TablePanel extends JPanel
 		Vec2 pathNode1;
 		Vec2 pathNode2;
 		Vec2 pathNode3;
+		int robotRadius = robot.getRobotRadius();
 
 		// Background
 		graphics.drawImage(tableBackground,0, 0, 900, 600, this);
@@ -163,16 +164,16 @@ public class TablePanel extends JPanel
 	    graphics.setColor(adverseColor);
 		for(ObstacleProximity adverse : table.getObstacleManager().getMobileObstacles())
 		{
-			upLeftCorner = changeRefToDisplay(adverse.getPosition().plusNewVector(new Vec2(-adverse.getRadius(), adverse.getRadius())));
-			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int)(adverse.getRadius()*0.6), (int)(adverse.getRadius()*0.6));
+			upLeftCorner = changeRefToDisplay(adverse.getPosition().plusNewVector(new Vec2(-adverse.getRadius() - robotRadius, adverse.getRadius() - robotRadius)));
+			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int) ((adverse.getRadius() - robotRadius)*0.6), (int) ((adverse.getRadius() - robotRadius)*0.6));
 		}
 
 	    // Robot adverse non confirmé
 		graphics.setColor(unconfirmedColor);
 		for(ObstacleProximity unconfirmed : table.getObstacleManager().getUntestedArrayList())
 		{
-			upLeftCorner = changeRefToDisplay(unconfirmed.getPosition().plusNewVector(new Vec2(-unconfirmed.getRadius(), unconfirmed.getRadius())));
-			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int)(unconfirmed.getRadius()*0.6), (int)(unconfirmed.getRadius()*0.6));
+			upLeftCorner = changeRefToDisplay(unconfirmed.getPosition().plusNewVector(new Vec2(-unconfirmed.getRadius() - robotRadius , unconfirmed.getRadius() - robotRadius)));
+			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int)((unconfirmed.getRadius() - robotRadius)*0.6), (int)((unconfirmed.getRadius() - robotRadius)*0.6));
 		}
 
 		// Notre robot

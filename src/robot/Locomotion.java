@@ -145,18 +145,7 @@ public class Locomotion implements Service {
     /**
      * Si la détection basique est activée ou non
      */
-    private boolean basicDetectionActivated = true;
-
-    /**
-     * Si on utilise la basic detection
-     * Override par la config
-     */
-    private boolean usingBasicDetection;
-
-    /**
-     * On regarde si on utilise l'IA ou non
-     */
-    private boolean advancedDetection;
+    private boolean basicDetectionActivated;
 
     /**
      * Rayon du cercle autour du robot pour savoir s'il peut tourner (detectionRay légèrement supérieur à celui du robot)
@@ -195,13 +184,6 @@ public class Locomotion implements Service {
      * Override par la config
      */
     private int distanceBasicDetectionTriggered=300;
-
-
-    /**
-     * Temps d'attente lorsqu'il y a un ennemie devant
-     * Override par la config
-     */
-    private int basicDetectionLoopDelay;
 
     /**
      * Temps d'attente entre deux boucles d'acquitement
@@ -437,6 +419,9 @@ public class Locomotion implements Service {
                 log.critical("Obstacle detecté sur le chemin, arrêt du robot en : " + highLevelXYO);
                 throw new UnableToMoveException(aim, UnableToMoveReason.OBSTACLE_DETECTED);
             }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         while (doItAgain);
     }
@@ -451,7 +436,7 @@ public class Locomotion implements Service {
      * @param mustDetect        true si on veut detecter, false sinon.
      * @throws BlockedException
      */
-    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, UnexpectedObstacleOnPathException {
+    private void moveToPointDetectExceptions(Vec2 aim, boolean isMovementForward, boolean turnOnly, boolean mustDetect) throws BlockedException, UnexpectedObstacleOnPathException, InterruptedException {
 
         // Boucle de vérification d'exceptions : vérification de l'event Blocked, de la basicDetection (BIND le ThreadEth), et de la detection Lidar
         // On utilise maintenant la basicDetection comme arrêt d'urgence,
@@ -487,6 +472,8 @@ public class Locomotion implements Service {
                 sent = true;
                 detectionDistance = (int) (this.detectionDistance*transSpeed/Speed.MEDIUM_ALL.translationSpeed);
             }
+
+            Thread.sleep(feedbackLoopDelay);
 
         } while (this.thEvent.isMoving);
     }
@@ -838,10 +825,8 @@ public class Locomotion implements Service {
         detectionDistance = config.getInt(ConfigInfoRobot.DETECTION_DISTANCE);
         detectionRay = config.getInt(ConfigInfoRobot.DETECTION_RAY);
         feedbackLoopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
-        usingBasicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-        distanceBasicDetectionTriggered=config.getInt(ConfigInfoRobot.BASIC_DETECTION_DISTANCE);
-        advancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
-        basicDetectionLoopDelay = config.getInt(ConfigInfoRobot.BASIC_DETECTION_LOOP_DELAY);
+        basicDetectionActivated = config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        distanceBasicDetectionTriggered = config.getInt(ConfigInfoRobot.BASIC_DETECTION_DISTANCE);
 
         /** BlockedException */
         distanceToDisengage = config.getInt(ConfigInfoRobot.DISTANCE_TO_DISENGAGE);

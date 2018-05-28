@@ -15,6 +15,7 @@ import utils.Log;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.Buffer;
 
 /**
  * Thread qui récupère les informations du Lidar et les traite en mettant à jour le graphe
@@ -49,6 +50,7 @@ public class ThreadLidar extends AbstractThread implements Service {
     private File lidarData;
     private File lidarDataTmp;
     private BufferedWriter out;
+    private BufferedWriter outTmp;
 
     /** Constructeur */
     private ThreadLidar(Log log, Config config, Graphe graph, Table table, Locomotion locomotion) {
@@ -70,10 +72,15 @@ public class ThreadLidar extends AbstractThread implements Service {
             }
 
             out = new BufferedWriter(new FileWriter(this.lidarData));
+            outTmp = new BufferedWriter(new FileWriter(this.lidarDataTmp));
             out.write("========Données du Lidar : de la donnée du script python jusqu'à son traitement !========");
             out.newLine();
             out.newLine();
             out.flush();
+            outTmp.write("========Données du Lidar : de la donnée du script python jusqu'à son traitement !========");
+            outTmp.newLine();
+            outTmp.newLine();
+            outTmp.flush();
 
         } catch (IOException e){
             e.printStackTrace();
@@ -127,9 +134,14 @@ public class ThreadLidar extends AbstractThread implements Service {
             try {
                 buffer = input.readLine();
                 timeStep = System.currentTimeMillis();
+
                 out.write(buffer);
                 out.newLine();
                 out.flush();
+
+                outTmp.write(buffer);
+                outTmp.newLine();
+                outTmp.flush();
 
                 bufferList = buffer.split(";");
 
@@ -148,12 +160,20 @@ public class ThreadLidar extends AbstractThread implements Service {
                     out.newLine();
                     out.flush();
 
+                    outTmp.write("[" + (System.currentTimeMillis() - time) / 1000 + "] Position calculée dans le référentiel du robot : " + pos.toStringEth());
+                    outTmp.newLine();
+                    outTmp.flush();
+
                     pos = this.changeRef(pos);
 
                     out.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth());
                     out.newLine();
                     out.newLine();
                     out.flush();
+
+                    outTmp.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth());
+                    outTmp.newLine();
+                    outTmp.flush();
 
                     table.getObstacleManager().addObstacle(pos, ennemyRadius);
                     table.getObstacleManager().removeOutdatedObstacles();

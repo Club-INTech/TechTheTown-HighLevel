@@ -29,7 +29,6 @@ public class ActivationPanneauDomotique extends AbstractScript{
 
     private int distanceInterrupteur;
     private boolean usingBasicDetection;
-    private boolean usingAdvancedDetection;
 
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -45,10 +44,6 @@ public class ActivationPanneauDomotique extends AbstractScript{
     @Override
     public void execute(int versionToExecute, GameState state) throws UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution ActivePanneauDomotique version "+versionToExecute+" //////////");
-        if (usingAdvancedDetection) {
-            state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-            state.setCapteursActivated(false);
-        }
         if(usingBasicDetection){
             state.robot.setBasicDetection(false);
         }
@@ -58,10 +53,6 @@ public class ActivationPanneauDomotique extends AbstractScript{
         state.robot.goToWithoutDetection(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur),true);
         state.addObtainedPoints(25);
         state.setPanneauActive(true);
-        if (usingAdvancedDetection) {
-            state.robot.useActuator(ActuatorOrder.SUS_ON,true);
-            state.setCapteursActivated(true);
-        }
         if(usingBasicDetection){
             state.robot.setBasicDetection(true);
         }
@@ -95,6 +86,5 @@ public class ActivationPanneauDomotique extends AbstractScript{
         super.updateConfig();
         this.distanceInterrupteur = config.getInt(ConfigInfoRobot.DISTANCE_INTERRUPTEUR);
         this.usingBasicDetection = config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-        this.usingAdvancedDetection = config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
     }
 }

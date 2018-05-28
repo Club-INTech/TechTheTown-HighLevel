@@ -590,6 +590,5 @@ public class TakeCubes extends AbstractScript {
         this.longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
         this.longueurBrasArriere=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_ARRIERE);
         this.usingBasicDetection =config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-        this.usingAdvancedDetection =config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
     }
 }

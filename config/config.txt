@@ -39,6 +39,9 @@ ESPACEMENT_RECT                      = 12
 NB_NOEUDS_OBST_CIR                   = 10
 ESPACEMENT_OBSTACLE_COEFF            = 1.2
 
+# PARAMETRES DETECTION
+
+
 
 ############ PARAMETRES RECONNAISSANCE DE COULEURS #############
 # A LA MAIN : FALSE /// AUTOMATIQUE : TRUE

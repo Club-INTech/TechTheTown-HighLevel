@@ -1,6 +1,5 @@
 package scripts;
 
-import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import exceptions.BadVersionException;
 import exceptions.BlockedActuatorException;
@@ -15,13 +14,11 @@ import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
-import strategie.IA.Panneau;
 import utils.Log;
 
 public class MatchScript extends AbstractScript {
 
     private boolean usingBasicDetection;
-    private boolean usingAdvancedDetection;
 
     public MatchScript(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -34,10 +31,6 @@ public class MatchScript extends AbstractScript {
         log.debug("////////// Execution MatchScript version "+version+" //////////");
         hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE,HookNames.BASIC_DETECTION_DISABLE);
         if(version==0){
-            if (usingAdvancedDetection) {
-                gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-                gameState.setCapteursActivated(false);
-            }
             if(usingBasicDetection){
                 gameState.robot.setBasicDetection(false);
             }
@@ -76,10 +69,6 @@ public class MatchScript extends AbstractScript {
         }
 
         if(version==1){
-            if (usingAdvancedDetection) {
-                gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-                gameState.setCapteursActivated(false);
-            }
             if(usingBasicDetection){
                 gameState.robot.setBasicDetection(false);
             }
@@ -118,10 +107,6 @@ public class MatchScript extends AbstractScript {
         }
 
         if(version==2){
-            if (usingAdvancedDetection) {
-                gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-                gameState.setCapteursActivated(false);
-            }
             if(usingBasicDetection){
                 gameState.robot.setBasicDetection(false);
             }
@@ -156,10 +141,6 @@ public class MatchScript extends AbstractScript {
         }
 
         if(version==3){
-            if (usingAdvancedDetection) {
-                gameState.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-                gameState.setCapteursActivated(false);
-            }
             if(usingBasicDetection){
                 gameState.robot.setBasicDetection(false);
             }
@@ -242,7 +223,6 @@ public class MatchScript extends AbstractScript {
 
     public void updateConfig(){
         this.usingBasicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-        this.usingAdvancedDetection=config.getBoolean(ConfigInfoRobot.ADVANCED_DETECTION);
     }
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {

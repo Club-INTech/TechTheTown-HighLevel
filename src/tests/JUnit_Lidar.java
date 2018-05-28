@@ -60,7 +60,7 @@ public class JUnit_Lidar extends JUnit_Test {
         scriptManager = container.getService(ScriptManager.class);
 
         // Instanciation d'une classe ThreadInterface anonyme
-        (new Thread(() -> (new Window(table, gameState, scriptManager, false)).showHandled())).start();
+        // (new Thread(() -> (new Window(table, gameState, scriptManager, false)).showHandled())).start();
 
         // Démarrage du script du Lidar !
         pBuilder = new ProcessBuilder("python3", "main.py");
