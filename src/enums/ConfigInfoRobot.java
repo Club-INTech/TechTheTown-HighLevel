@@ -151,7 +151,7 @@ public enum ConfigInfoRobot implements ConfigInfo
     DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES(70),
 
     /** Paramètres du graphe */
-    ESPACEMENT_RECT(10),
+    ESPACEMENT_RECT(100),
     NB_NOEUDS_OBST_CIR(8),
     ESPACEMENT_OBSTACLE_COEFF(1.2)
 

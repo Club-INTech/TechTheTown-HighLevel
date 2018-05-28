@@ -16,7 +16,7 @@ INDICE_PATTERN_SIMULATION            = 0
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
-SIMULATION                           = true
+SIMULATION                           = false
 ATTENTE_JUMPER                       = true
 
 # VERSION DE MATCHSCRIPT TO EXECUTE
@@ -35,7 +35,7 @@ TAS_STATION_EPURATION_ENNEMI_PRIS=false
 
 # PARAMETRES PATHFINDING
 COUT_FIXE                            = 42
-ESPACEMENT_RECT                      = 12
+ESPACEMENT_RECT                      = 200
 NB_NOEUDS_OBST_CIR                   = 10
 ESPACEMENT_OBSTACLE_COEFF            = 1.2
 

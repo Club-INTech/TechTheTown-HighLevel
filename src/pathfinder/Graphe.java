@@ -88,13 +88,9 @@ public class Graphe implements Service {
         for (ObstacleRectangular rectangular : listRectangu) {
             placeNodes(rectangular);
         }
+        placeNodes();
 
         nodes.add(new Node(Table.entryPosition.clone())); // 1252 455
-        nodes.add(new Node(new Vec2(0, 1200)));
-        nodes.add(new Node(new Vec2(0, 900)));
-        nodes.add(new Node(new Vec2(0, 600)));
-        nodes.add(new Node(new Vec2(0, 300)));
-        nodes.add(new Node(new Vec2(650, 215)));
 
         int xCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getX()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getX()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getX())/3;
         int yCentreGravite=(TasCubes.TAS_BASE.getCoordsVec2().getY()+TasCubes.TAS_CHATEAU_EAU.getCoordsVec2().getY()+TasCubes.TAS_STATION_EPURATION.getCoordsVec2().getY())/3;
@@ -165,6 +161,26 @@ public class Graphe implements Service {
 
             if(!table.getObstacleManager().isPositionInObstacle(posNode2) && table.getObstacleManager().isRobotInTable(posNode2)) {
                 nodes.add(new Node(posNode2));
+            }
+        }
+    }
+
+    /**
+     * Créer un quadriallage de noeuds sur la table, afin de pouvoir aisément esquiver l'adversaire
+     */
+    private void placeNodes() {
+        Vec2 position;
+
+        for (int line = 0; line < 2000/espacementRect; line++) {
+            for (int i = -1500; i < 1500; i += espacementRect + 20) {
+                if (line % 2 == 0) {
+                    position = new Vec2(i, espacementRect * line + 20);
+                } else {
+                    position = new Vec2(i + espacementRect / 2 + 10, espacementRect * line + 20);
+                }
+                if (!table.getObstacleManager().isPositionInObstacle(position) && table.getObstacleManager().isRobotInTable(position)) {
+                    nodes.add(new Node(position));
+                }
             }
         }
     }
