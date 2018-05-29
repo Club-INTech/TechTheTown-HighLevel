@@ -107,7 +107,7 @@ public class Main {
             //TODO : lancer l'IA
 
             // scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
-            scriptmanager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(6, realState);
+            scriptmanager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(5, realState);
 
         } catch (Exception e) {
             e.printStackTrace();
