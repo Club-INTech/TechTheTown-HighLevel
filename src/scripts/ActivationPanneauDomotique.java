@@ -1,6 +1,5 @@
 package scripts;
 
-import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;

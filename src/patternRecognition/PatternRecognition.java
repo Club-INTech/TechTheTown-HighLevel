@@ -99,7 +99,7 @@ public class PatternRecognition extends AbstractThread{
 
         //Paramètres de débug
         this.alreadyPrintedColorMatchingProba=false;
-        this.debug=true;
+        this.debug=false;
         this.isSavingImages=true;
 
         //Paramètres de prémodification de l'image avant la reconnaissance
