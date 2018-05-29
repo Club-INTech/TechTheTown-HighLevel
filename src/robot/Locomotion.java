@@ -183,7 +183,7 @@ public class Locomotion implements Service {
      * Distance de trigger de la basicDetection
      * Override par la config
      */
-    private int distanceBasicDetectionTriggered=300;
+    private int distanceBasicDetectionTriggered;
 
     /**
      * Temps d'attente entre deux boucles d'acquitement
@@ -794,6 +794,22 @@ public class Locomotion implements Service {
      */
     public void setBasicDetection(boolean basicDetection) {
         this.basicDetectionActivated = basicDetection;
+    }
+
+    public int getDetectionDistance() {
+        return detectionDistance;
+    }
+
+    public void setDetectionDistance(int detectionDistance) {
+        this.detectionDistance = detectionDistance;
+    }
+
+    public int getDistanceBasicDetectionTriggered() {
+        return distanceBasicDetectionTriggered;
+    }
+
+    public void setDistanceBasicDetectionTriggered(int distanceBasicDetectionTriggered) {
+        this.distanceBasicDetectionTriggered = distanceBasicDetectionTriggered;
     }
 
     /**

@@ -203,8 +203,8 @@ public class EthWrapper implements Service {
      */
     public XYO getCurrentPositionAndOrientation()
     {
-        String[] response = eth.communicate(3, ActuatorOrder.SEND_POSITION.getEthernetOrder());
-        eth.setPositionAndOrientation(new XYO(new Vec2(Integer.parseInt(response[0]), Integer.parseInt(response[1])), Double.parseDouble(response[2])));
+        String[] response = eth.communicate(1, ActuatorOrder.SEND_POSITION.getEthernetOrder());
+        eth.getPositionAndOrientation().update(response[0], " ");
         return eth.getPositionAndOrientation();
     }
 

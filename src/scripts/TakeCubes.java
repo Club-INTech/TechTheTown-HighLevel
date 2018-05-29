@@ -59,6 +59,13 @@ public class TakeCubes extends AbstractScript {
     public void execute(int indiceTas, GameState state)
             throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
+
+        int basicDetectionDistance = state.robot.getmLocomotion().getDistanceBasicDetectionTriggered();
+        int detectionDistance = state.robot.getmLocomotion().getDetectionDistance();
+
+        state.robot.getmLocomotion().setDetectionDistance(20);
+        state.robot.getmLocomotion().setDistanceBasicDetectionTriggered(20);
+
         state.robot.setBasicDetection(false);
         this.alreadyTriedCorrection=false;
         this.alreadyRemovedObstacle=false;
@@ -69,6 +76,9 @@ public class TakeCubes extends AbstractScript {
         this.normalVersions(indiceTas, state);
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
         state.robot.setBasicDetection(true);
+
+        state.robot.getmLocomotion().setDistanceBasicDetectionTriggered(basicDetectionDistance);
+        state.robot.getmLocomotion().setDetectionDistance(detectionDistance);
     }
 
     /**
