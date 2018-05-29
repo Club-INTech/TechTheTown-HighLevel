@@ -142,7 +142,7 @@ public class Window extends JFrame
 	    try {
             while (true) {
                 this.repaint();
-                Thread.sleep(20);
+                Thread.sleep(50);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -129,10 +129,12 @@ public class ThreadLidar extends AbstractThread implements Service {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
         long time = System.currentTimeMillis();
         long timeStep;
+        int counter = 0;
         Vec2 pos;
 
         while (true) {
             try {
+                counter++;
                 buffer = input.readLine();
                 timeStep = System.currentTimeMillis();
 
@@ -157,13 +159,15 @@ public class ThreadLidar extends AbstractThread implements Service {
                         pos.setA(-pos.getA());
                     }
 
-                    out.write("[" + (System.currentTimeMillis() - time) / 1000 + "] Position calculée dans le référentiel du robot : " + pos.toStringEth());
+                    out.write("[" + (System.currentTimeMillis() - time) / 1000 + ", " + counter + "] Position calculée dans le référentiel du robot : " + pos.toStringEth());
                     out.newLine();
                     out.flush();
 
+                    /*
                     outTmp.write("[" + (System.currentTimeMillis() - time) / 1000 + "] Position calculée dans le référentiel du robot : " + pos.toStringEth());
                     outTmp.newLine();
                     outTmp.flush();
+                    */
 
                     pos = this.changeRef(pos);
 
@@ -172,9 +176,11 @@ public class ThreadLidar extends AbstractThread implements Service {
                     out.newLine();
                     out.flush();
 
+                    /*
                     outTmp.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth());
                     outTmp.newLine();
                     outTmp.flush();
+                    */
 
                     table.getObstacleManager().addObstacle(pos, ennemyRadius);
                     table.getObstacleManager().removeOutdatedObstacles();

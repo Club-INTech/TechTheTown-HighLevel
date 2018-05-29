@@ -38,16 +38,6 @@ public class JUnit_Lidar extends JUnit_Test {
     private void shutdown() {
         process.destroy();
     }
-    private void removeObstacle() {
-        while (true) {
-            try {
-                table.getObstacleManager().removeOutdatedObstacles();
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     @Before
     public void setUp() throws ContainerException, InterruptedException {
@@ -73,11 +63,10 @@ public class JUnit_Lidar extends JUnit_Test {
             container.startInstanciedThreads();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
 
-            Thread.sleep(500);
+            Thread.sleep(10000);
             process = pBuilder.start();
             log.debug("Process python lancé");
-
-            (new Thread(() -> this.removeObstacle())).start();
+            log.debug("XYO : " + gameState.robot.getPosition() + " " + gameState.robot.getOrientation());
 
         } catch (IOException e) {
             e.printStackTrace();

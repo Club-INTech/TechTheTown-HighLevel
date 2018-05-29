@@ -38,7 +38,6 @@ import java.awt.Graphics;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -123,13 +122,14 @@ public class TablePanel extends JPanel
 	@Override
 	public void paintComponent(Graphics graphics)
 	{
-		// La table
-		int wideDisplay = (int)(table.getObstacleManager().getRobotRadius()*0.3);
-		Vec2 upLeftCorner;
-		Vec2 pathNode1;
-		Vec2 pathNode2;
-		Vec2 pathNode3;
-		int robotRadius = robot.getRobotRadius();
+		// Variables
+		int robotRadius = (int) (robot.getRobotRadius()*0.3);
+		double robotOrientation = robot.getOrientation();
+		Vec2 robotPosition = robot.getPosition();
+		Vec2 vec1;
+		Vec2 vec2;
+		Vec2 vec3;
+		Vec2 vec4;
 
 		// Background
 		graphics.drawImage(tableBackground,0, 0, 900, 600, this);
@@ -140,64 +140,67 @@ public class TablePanel extends JPanel
 
 	    // Obstacle de la table
 	    graphics.setColor(obstacleColor);
-		graphics.fillRect(0,0, 900, wideDisplay);
-		graphics.fillRect(0, 600 - wideDisplay, 900, wideDisplay);
-		graphics.fillRect(0, wideDisplay, wideDisplay, 600 - 2*wideDisplay);
-		graphics.fillRect(900 - wideDisplay, wideDisplay, wideDisplay, 600 - 2*wideDisplay);
+		graphics.fillRect(0,0, 900, robotRadius);
+		graphics.fillRect(0, 600 - robotRadius, 900, robotRadius);
+		graphics.fillRect(0, robotRadius, robotRadius, 600 - 2*robotRadius);
+		graphics.fillRect(900 - robotRadius, robotRadius, robotRadius, 600 - 2*robotRadius);
 
 
 	    // Obstacles rectangulaires
 	    for(ObstacleRectangular rectangular : table.getObstacleManager().getRectangles())
 	    {
-	    	upLeftCorner = changeRefToDisplay(rectangular.getPosition().plusNewVector(new Vec2(-rectangular.getSizeX()/2, rectangular.getSizeY()/2)));
-	    	graphics.fillRect(upLeftCorner.getX(), upLeftCorner.getY(), (int)(rectangular.getSizeX()*0.3), (int)(rectangular.getSizeY()*0.3));
+	        vec1 = new Vec2(-rectangular.getSizeX()/2, rectangular.getSizeY()/2);
+	    	vec2 = changeRefToDisplay(rectangular.getPosition().plusNewVector(vec1));
+	    	graphics.fillRect(vec2.getX(), vec2.getY(), (int)(rectangular.getSizeX()*0.3), (int)(rectangular.getSizeY()*0.3));
 	    }
 
 	    // Obstacles ciculaires
 	    for(ObstacleCircular circular : table.getObstacleManager().getmCircularObstacle())
 	    {
-	    	upLeftCorner = changeRefToDisplay(circular.getPosition().plusNewVector(new Vec2(-circular.getRadius(), circular.getRadius())));
-			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int)(circular.getRadius()*0.6), (int)(circular.getRadius()*0.6));
+	        vec1 = new Vec2(-circular.getRadius(), circular.getRadius());
+	    	vec2 = changeRefToDisplay(circular.getPosition().plusNewVector(vec1));
+			graphics.fillOval(vec2.getX(), vec2.getY(), (int)(circular.getRadius()*0.6), (int)(circular.getRadius()*0.6));
 	    }
 
 	    // Robot adverse
 	    graphics.setColor(adverseColor);
 		for(ObstacleProximity adverse : table.getObstacleManager().getMobileObstacles())
 		{
-			upLeftCorner = changeRefToDisplay(adverse.getPosition().plusNewVector(new Vec2(-adverse.getRadius() - robotRadius, adverse.getRadius() - robotRadius)));
-			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int) ((adverse.getRadius() - robotRadius)*0.6), (int) ((adverse.getRadius() - robotRadius)*0.6));
+		    vec1 = new Vec2(-adverse.getRadius() - robotRadius*3.3, adverse.getRadius() - robotRadius*3.3);
+			vec2 = changeRefToDisplay(adverse.getPosition().plusNewVector(vec1));
+			graphics.fillOval(vec2.getX(), vec2.getY(), (int) ((adverse.getRadius() - robotRadius)*0.6), (int) ((adverse.getRadius() - robotRadius)*0.6));
 		}
 
 	    // Robot adverse non confirmé
 		graphics.setColor(unconfirmedColor);
 		for(ObstacleProximity unconfirmed : table.getObstacleManager().getUntestedArrayList())
 		{
-			upLeftCorner = changeRefToDisplay(unconfirmed.getPosition().plusNewVector(new Vec2(-unconfirmed.getRadius() - robotRadius , unconfirmed.getRadius() - robotRadius)));
-			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), (int)((unconfirmed.getRadius() - robotRadius)*0.6), (int)((unconfirmed.getRadius() - robotRadius)*0.6));
+		    vec1 = new Vec2(-unconfirmed.getRadius() - robotRadius*3.3, unconfirmed.getRadius() - robotRadius*3.3);
+			vec2 = changeRefToDisplay(unconfirmed.getPosition().plusNewVector(vec1));
+			graphics.fillOval(vec2.getX(), vec2.getY(), (int)((unconfirmed.getRadius() - robotRadius)*0.6), (int)((unconfirmed.getRadius() - robotRadius)*0.6));
 		}
 
 		// Notre robot
 	    if(isRobotPresent)
 	    {
 		    graphics.setColor(robotColor);
-			Vec2 robotPosition = robot.getPosition();
-			Vec2 robotPositionDisplay = changeRefToDisplay(robotPosition);
-			double robotOrientation = robot.getOrientation();
-			Vec2 orentationIndicator = changeRefToDisplay(robotPosition.plusNewVector(new Vec2(new Double(robot.getRobotRadius()), robotOrientation)));
+		    vec1 = new Vec2(new Double(robotRadius), robotOrientation);
+			vec2 = changeRefToDisplay(robotPosition).plusNewVector(vec1);
 
-			upLeftCorner = changeRefToDisplay(robotPosition).plusNewVector(new Vec2(-wideDisplay, -wideDisplay));
-			graphics.fillOval(upLeftCorner.getX(), upLeftCorner.getY(), wideDisplay*2, wideDisplay*2);
+			vec3 = new Vec2(-robotRadius, -robotRadius);
+			vec4 = changeRefToDisplay(robotPosition).plusNewVector(vec3);
+			graphics.fillOval(vec4.getX(), vec4.getY(), robotRadius*2, robotRadius*2);
 
 			graphics.setColor(teamColor);
-			graphics.drawLine(robotPositionDisplay.getX(), robotPositionDisplay.getY(), orentationIndicator.getX(), orentationIndicator.getY());
+			graphics.drawLine(vec2.getX(), vec2.getY(), vec4.getX(), vec4.getY());
 	    }
 
 		// Le chemin suivi
 		graphics.setColor(pathColor);
 		for(int i=0; i<path.size()-1; i++){
-			pathNode1 = changeRefToDisplay(path.get(i));
-			pathNode2 = changeRefToDisplay(path.get(i+1));
-			graphics.drawLine(pathNode1.getX(), pathNode1.getY(), pathNode2.getX(), pathNode2.getY());
+			vec1 = changeRefToDisplay(path.get(i));
+			vec2 = changeRefToDisplay(path.get(i+1));
+			graphics.drawLine(vec1.getX(), vec1.getY(), vec2.getX(), vec2.getY());
 		}
 
 		// Le graphe
@@ -205,12 +208,12 @@ public class TablePanel extends JPanel
 		    synchronized (graphe.lock) {
                 graphics.setColor(graphColor);
                 for (Node node : nodes) {
-                    pathNode3 = changeRefToDisplay(node.getPosition());
-                    graphics.fillOval(pathNode3.getX() - 2, pathNode3.getY() - 2, 4, 4);
+                    vec1 = changeRefToDisplay(node.getPosition());
+                    graphics.fillOval(vec1.getX() - 2, vec1.getY() - 2, 4, 4);
                     for (Node node1 : node.getNeighbours().keySet()) {
                         if (node.getNeighbours().get(node1).isReachable()) {
-                            Vec2 displayNode = changeRefToDisplay(node1.getPosition());
-                            graphics.drawLine(pathNode3.getX(), pathNode3.getY(), displayNode.getX(), displayNode.getY());
+                            vec2 = changeRefToDisplay(node1.getPosition());
+                            graphics.drawLine(vec1.getX(), vec1.getY(), vec2.getX(), vec2.getY());
                         }
                     }
                 }

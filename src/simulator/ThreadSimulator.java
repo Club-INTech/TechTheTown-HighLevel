@@ -136,9 +136,10 @@ public class ThreadSimulator extends AbstractThread implements Service {
             communicate(CommunicationHeaders.STANDARD, String.format("%s", state.isRobotMoving()), String.format("%s", state.isMoveNormal()));
         }
         else if (head.equals(ActuatorOrder.SEND_POSITION.getEthernetOrder())) {
-            communicate(CommunicationHeaders.STANDARD, String.format("%s",state.getPosition().getX()),
-                    String.format("%s",state.getPosition().getY()),
-                    String.format("%s", state.getOrientation()));
+            communicate(CommunicationHeaders.STANDARD, String.format("%s %s %s",
+                    state.getPosition().getX(),
+                    state.getPosition().getY(),
+                    state.getOrientation()));
         }
 
         /** SETTINGS */

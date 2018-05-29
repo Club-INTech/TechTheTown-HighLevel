@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -268,24 +269,22 @@ public class ObstacleManager implements Service
     public synchronized void removeOutdatedObstacles()
     {
         // enlève les obstacles confirmés s'ils sont périmés
-        ArrayList<ObstacleProximity> confirmedObstaclesToBeRemoved = new ArrayList<>();
-        for(ObstacleProximity obstacle : mMobileObstacles) {
-            if (obstacle.getOutDatedTime() < System.currentTimeMillis()) {
-                confirmedObstaclesToBeRemoved.add(obstacle);
-                log.warning("Retire l'obstacle :" + obstacle.getPosition() + "(lifeTime: " + obstacle.getLifeTime()+")");
+        ArrayList<ObstacleProximity> remove = new ArrayList<>();
+        for (ObstacleProximity obstacleProximity : mMobileObstacles) {
+            if (obstacleProximity.getOutDatedTime() < System.currentTimeMillis()) {
+                remove.add(obstacleProximity);
             }
         }
-        mMobileObstacles.removeAll(confirmedObstaclesToBeRemoved);
+        mMobileObstacles.removeAll(remove);
 
-
-        ArrayList<ObstacleProximity> untestedObstaclesToBeRemoved = new ArrayList<>();
         // enlève les obstacles en attente s'ils sont périmés
-        for(ObstacleProximity obstacle : mUntestedMobileObstacles) {
-            if (obstacle.getOutDatedTime() < System.currentTimeMillis()) {
-                untestedObstaclesToBeRemoved.add(obstacle);
+        remove.clear();
+        for (ObstacleProximity obstacleProximity : mUntestedMobileObstacles) {
+            if (obstacleProximity.getOutDatedTime() < System.currentTimeMillis()) {
+                remove.add(obstacleProximity);
             }
         }
-        mUntestedMobileObstacles.removeAll(untestedObstaclesToBeRemoved);
+        mUntestedMobileObstacles.removeAll(remove);
     }
 
     /**
@@ -585,8 +584,7 @@ public class ObstacleManager implements Service
         radiusDetectionDisc=radius;
         positionDetectionDisc=discCenter;
 
-        for(int i=0; i<mMobileObstacles.size(); i++)
-        {
+        for(int i=0; i<mMobileObstacles.size(); i++) {
             if ((radius+mMobileObstacles.get(i).getRadius())*(radius+mMobileObstacles.get(i).getRadius())
                     > (discCenter.getX()-mMobileObstacles.get(i).getPosition().getX())*(discCenter.getX()-mMobileObstacles.get(i).getPosition().getX())
                     + (discCenter.getY()-mMobileObstacles.get(i).getPosition().getY())*(discCenter.getY()-mMobileObstacles.get(i).getPosition().getY()))

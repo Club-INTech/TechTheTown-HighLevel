@@ -11,6 +11,8 @@ import scripts.ScriptManager;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
+import threads.ThreadInterface;
+
 import java.util.ArrayList;
 
 public class JUnit_TakeCubes extends JUnit_Test {
@@ -28,6 +30,7 @@ public class JUnit_TakeCubes extends JUnit_Test {
             robotReal = container.getService(Robot.class);
             scriptManager = container.getService(ScriptManager.class);
             state = container.getService(GameState.class);
+            container.getService(ThreadInterface.class);
             container.startInstanciedThreads();
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,8 +46,7 @@ public class JUnit_TakeCubes extends JUnit_Test {
             robotReal.setPosition(positionDepart);
             //robotReal.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
 
-            //goToThenExec
-            scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(TasCubes.TAS_CHATEAU_EAU.getID(), state);
+            scriptManager.getScript(ScriptNames.TAKE_CUBES).goToThenExec(TasCubes.TAS_BASE_ENNEMI.getID(), state);
 
             //retour du robot
             pathfinding = container.getService(Pathfinding.class);
