@@ -198,20 +198,9 @@ public class ObstacleManager implements Service
 
                     // si on valide sa vision et qu'il n'y a pas d'intersection avec un obstacle qui existe déjà
                     if (obstacleMobileUntested.numberOfTimeDetected >= obstacleMobileUntested.getThresholdConfirmedOrUnconfirmed()) {
-                        boolean intersection = false;
-                        for(ObstacleCircular obstacleCircularFixe : mCircularObstacle)
-                        {
-                            if(obstacleMobileUntested.getCircle().isInsideEnough(obstacleCircularFixe.getCircle())){
-                                intersection = true;
-                                break;
-                            }
-                        }
-                        if(!intersection)
-                        {
-                            isThereAnObstacleIntersecting = true;
-                            mMobileObstacles.add(obstacleMobileUntested);
-                            mUntestedMobileObstacles.remove(i);
-                        }
+                        isThereAnObstacleIntersecting = true;
+                        mMobileObstacles.add(obstacleMobileUntested);
+                        mUntestedMobileObstacles.remove(i);
                     }
                 }
             }

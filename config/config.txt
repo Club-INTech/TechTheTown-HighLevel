@@ -20,7 +20,7 @@ SIMULATION                           = false
 ATTENTE_JUMPER                       = true
 
 # VERSION DE MATCHSCRIPT TO EXECUTE
-MATCHSCRIPT_TO_EXECUTE               = 42
+MATCHSCRIPT_TO_EXECUTE               = 2
 BASIC_DETECTION                      = true
 ADVANCED_DETECTION                   = false
 SENSOR_ANGLE_WIDENESS                = 1.04
