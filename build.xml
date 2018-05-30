@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="techthetown-highlevel" default="all">
-  
-  
+
+
   <property file="build.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
   <property name="skip.tests" value="true"/>
    -->
-  
+
   <!-- Compiler options -->
-  
+
   <property name="compiler.debug" value="on"/>
   <property name="compiler.generate.no.warnings" value="off"/>
   <property name="compiler.args" value=""/>
@@ -37,8 +37,8 @@
     <include name="*.ear"/>
     <include name="*.swc"/>
     <include name="*.war"/>
-    <include name="*.ane"/>
     <include name="*.zip"/>
+    <include name="*.ane"/>
   </patternset>
   <patternset id="compiler.resources">
     <exclude name="**/?*.java"/>
@@ -51,12 +51,100 @@
     <exclude name="**/?*.clj"/>
     <exclude name="**/?*.aj"/>
   </patternset>
-  
-  
+
+  <!-- JDK definitions -->
+
+  <property name="jdk.bin.10" value="${jdk.home.10}/bin"/>
+  <path id="jdk.classpath.10">
+    <fileset dir="${jdk.home.10}">
+      <include name="../java-10-openjdk!/java.activation"/>
+      <include name="../java-10-openjdk!/java.base"/>
+      <include name="../java-10-openjdk!/java.compiler"/>
+      <include name="../java-10-openjdk!/java.corba"/>
+      <include name="../java-10-openjdk!/java.datatransfer"/>
+      <include name="../java-10-openjdk!/java.desktop"/>
+      <include name="../java-10-openjdk!/java.instrument"/>
+      <include name="../java-10-openjdk!/java.logging"/>
+      <include name="../java-10-openjdk!/java.management"/>
+      <include name="../java-10-openjdk!/java.management.rmi"/>
+      <include name="../java-10-openjdk!/java.naming"/>
+      <include name="../java-10-openjdk!/java.prefs"/>
+      <include name="../java-10-openjdk!/java.rmi"/>
+      <include name="../java-10-openjdk!/java.scripting"/>
+      <include name="../java-10-openjdk!/java.se"/>
+      <include name="../java-10-openjdk!/java.se.ee"/>
+      <include name="../java-10-openjdk!/java.security.jgss"/>
+      <include name="../java-10-openjdk!/java.security.sasl"/>
+      <include name="../java-10-openjdk!/java.smartcardio"/>
+      <include name="../java-10-openjdk!/java.sql"/>
+      <include name="../java-10-openjdk!/java.sql.rowset"/>
+      <include name="../java-10-openjdk!/java.transaction"/>
+      <include name="../java-10-openjdk!/java.xml"/>
+      <include name="../java-10-openjdk!/java.xml.bind"/>
+      <include name="../java-10-openjdk!/java.xml.crypto"/>
+      <include name="../java-10-openjdk!/java.xml.ws"/>
+      <include name="../java-10-openjdk!/java.xml.ws.annotation"/>
+      <include name="../java-10-openjdk!/jdk.accessibility"/>
+      <include name="../java-10-openjdk!/jdk.aot"/>
+      <include name="../java-10-openjdk!/jdk.attach"/>
+      <include name="../java-10-openjdk!/jdk.charsets"/>
+      <include name="../java-10-openjdk!/jdk.compiler"/>
+      <include name="../java-10-openjdk!/jdk.crypto.cryptoki"/>
+      <include name="../java-10-openjdk!/jdk.crypto.ec"/>
+      <include name="../java-10-openjdk!/jdk.dynalink"/>
+      <include name="../java-10-openjdk!/jdk.editpad"/>
+      <include name="../java-10-openjdk!/jdk.hotspot.agent"/>
+      <include name="../java-10-openjdk!/jdk.httpserver"/>
+      <include name="../java-10-openjdk!/jdk.incubator.httpclient"/>
+      <include name="../java-10-openjdk!/jdk.internal.ed"/>
+      <include name="../java-10-openjdk!/jdk.internal.jvmstat"/>
+      <include name="../java-10-openjdk!/jdk.internal.le"/>
+      <include name="../java-10-openjdk!/jdk.internal.opt"/>
+      <include name="../java-10-openjdk!/jdk.internal.vm.ci"/>
+      <include name="../java-10-openjdk!/jdk.internal.vm.compiler"/>
+      <include name="../java-10-openjdk!/jdk.internal.vm.compiler.management"/>
+      <include name="../java-10-openjdk!/jdk.jartool"/>
+      <include name="../java-10-openjdk!/jdk.javadoc"/>
+      <include name="../java-10-openjdk!/jdk.jcmd"/>
+      <include name="../java-10-openjdk!/jdk.jconsole"/>
+      <include name="../java-10-openjdk!/jdk.jdeps"/>
+      <include name="../java-10-openjdk!/jdk.jdi"/>
+      <include name="../java-10-openjdk!/jdk.jdwp.agent"/>
+      <include name="../java-10-openjdk!/jdk.jlink"/>
+      <include name="../java-10-openjdk!/jdk.jshell"/>
+      <include name="../java-10-openjdk!/jdk.jsobject"/>
+      <include name="../java-10-openjdk!/jdk.jstatd"/>
+      <include name="../java-10-openjdk!/jdk.localedata"/>
+      <include name="../java-10-openjdk!/jdk.management"/>
+      <include name="../java-10-openjdk!/jdk.management.agent"/>
+      <include name="../java-10-openjdk!/jdk.naming.dns"/>
+      <include name="../java-10-openjdk!/jdk.naming.rmi"/>
+      <include name="../java-10-openjdk!/jdk.net"/>
+      <include name="../java-10-openjdk!/jdk.pack"/>
+      <include name="../java-10-openjdk!/jdk.rmic"/>
+      <include name="../java-10-openjdk!/jdk.scripting.nashorn"/>
+      <include name="../java-10-openjdk!/jdk.scripting.nashorn.shell"/>
+      <include name="../java-10-openjdk!/jdk.sctp"/>
+      <include name="../java-10-openjdk!/jdk.security.auth"/>
+      <include name="../java-10-openjdk!/jdk.security.jgss"/>
+      <include name="../java-10-openjdk!/jdk.unsupported"/>
+      <include name="../java-10-openjdk!/jdk.xml.bind"/>
+      <include name="../java-10-openjdk!/jdk.xml.dom"/>
+      <include name="../java-10-openjdk!/jdk.xml.ws"/>
+      <include name="../java-10-openjdk!/jdk.zipfs"/>
+    </fileset>
+  </path>
+
+  <property name="project.jdk.home" value="${jdk.home.10}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.10}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.10"/>
+
+
   <!-- Project Libraries -->
-  
+
   <path id="library.lib.classpath">
     <pathelement location="${basedir}/lib/Jama-1.0.2.jar"/>
+    <pathelement location="${basedir}/lib/bridj-0.7.0.jar"/>
     <pathelement location="${basedir}/lib/config-1.3.jar"/>
     <pathelement location="${basedir}/lib/hamcrest-core-1.3.jar"/>
     <pathelement location="${basedir}/lib/ini4j-0.5.1.jar"/>
@@ -64,20 +152,102 @@
     <pathelement location="${basedir}/lib/jfreechart-1.0.13.jar"/>
     <pathelement location="${basedir}/lib/junit-4.12.jar"/>
     <pathelement location="${basedir}/lib/opencv-340.jar"/>
+    <pathelement location="${basedir}/lib/slf4j-api-1.7.2.jar"/>
+    <pathelement location="${basedir}/lib/slf4j-simple-1.6.1.jar"/>
+    <pathelement location="${basedir}/lib/webcam-capture-0.3.12.jar"/>
   </path>
-  
+
   <!-- Modules -->
-  
-  <import file="${basedir}/module_techthetown-highlevel.xml"/>
-  
+
+  <dirname property="module.techthetown-highlevel.basedir" file="${ant.file}"/>
+
+
+  <property name="module.jdk.home.techthetown-highlevel" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.techthetown-highlevel" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.techthetown-highlevel" value="${project.jdk.classpath}"/>
+
+  <property name="compiler.args.techthetown-highlevel" value="-encoding UTF-8 -source 10 -target 10 ${compiler.args}"/>
+
+  <property name="techthetown-highlevel.output.dir" value="${module.techthetown-highlevel.basedir}/out/production/TechTheTown-HighLevel"/>
+  <property name="techthetown-highlevel.testoutput.dir" value="${module.techthetown-highlevel.basedir}/out/test/TechTheTown-HighLevel"/>
+
+  <path id="techthetown-highlevel.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+
+  <path id="techthetown-highlevel.module.production.classpath">
+    <path refid="${module.jdk.classpath.techthetown-highlevel}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+
+  <path id="techthetown-highlevel.runtime.production.module.classpath">
+    <pathelement location="${techthetown-highlevel.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+
+  <path id="techthetown-highlevel.module.classpath">
+    <path refid="${module.jdk.classpath.techthetown-highlevel}"/>
+    <pathelement location="${techthetown-highlevel.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+
+  <path id="techthetown-highlevel.runtime.module.classpath">
+    <pathelement location="${techthetown-highlevel.testoutput.dir}"/>
+    <pathelement location="${techthetown-highlevel.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+
+
+  <patternset id="excluded.from.module.techthetown-highlevel">
+    <patternset refid="ignored.files"/>
+  </patternset>
+
+  <patternset id="excluded.from.compilation.techthetown-highlevel">
+    <patternset refid="excluded.from.module.techthetown-highlevel"/>
+  </patternset>
+
+  <path id="techthetown-highlevel.module.sourcepath">
+    <dirset dir="${module.techthetown-highlevel.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+
+
+  <target name="compile.module.techthetown-highlevel" depends="compile.module.techthetown-highlevel.production,compile.module.techthetown-highlevel.tests" description="Compile module TechTheTown-HighLevel"/>
+
+  <target name="compile.module.techthetown-highlevel.production" description="Compile module TechTheTown-HighLevel; production classes">
+    <mkdir dir="${techthetown-highlevel.output.dir}"/>
+    <javac destdir="${techthetown-highlevel.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.techthetown-highlevel}/javac">
+      <compilerarg line="${compiler.args.techthetown-highlevel}"/>
+      <bootclasspath refid="techthetown-highlevel.module.bootclasspath"/>
+      <classpath refid="techthetown-highlevel.module.production.classpath"/>
+      <src refid="techthetown-highlevel.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.techthetown-highlevel"/>
+    </javac>
+
+    <copy todir="${techthetown-highlevel.output.dir}">
+      <fileset dir="${module.techthetown-highlevel.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="compile.module.techthetown-highlevel.tests" depends="compile.module.techthetown-highlevel.production" description="compile module TechTheTown-HighLevel; test classes" unless="skip.tests"/>
+
+  <target name="clean.module.techthetown-highlevel" description="cleanup module">
+    <delete dir="${techthetown-highlevel.output.dir}"/>
+    <delete dir="${techthetown-highlevel.testoutput.dir}"/>
+  </target>
+
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
-  
+
   <target name="clean" depends="clean.module.techthetown-highlevel" description="cleanup all"/>
-  
+
   <target name="build.modules" depends="init, clean, compile.module.techthetown-highlevel" description="build all modules"/>
-  
+
   <target name="all" depends="build.modules" description="build all"/>
 
   <target name="jar" depends="all">
@@ -85,36 +255,6 @@
     <jar destfile="techthetown-highlevel.jar" basedir="${techthetown-highlevel.output.dir}">
       <manifest>
         <attribute name="Main-Class" value="Main"/>
-      </manifest>
-      <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
-    </jar>
-  </target>
-
-  <target name="pattern" depends="all">
-    <delete file="Ptechthetown-highlevel.jar"/>
-    <jar destfile="Ptechthetown-highlevel.jar" basedir="${techthetown-highlevel.output.dir}">
-      <manifest>
-        <attribute name="Main-Class" value="MainPattern"/>
-      </manifest>
-      <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
-    </jar>
-  </target>
-
-  <target name="ia" depends="all">
-    <delete file="Atechthetown-highlevel.jar"/>
-    <jar destfile="Atechthetown-highlevel.jar" basedir="${techthetown-highlevel.output.dir}">
-      <manifest>
-        <attribute name="Main-Class" value="MainIA"/>
-      </manifest>
-      <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
-    </jar>
-  </target>
-
-  <target name="homologation" depends="all">
-    <delete file="Htechthetown-highlevel.jar"/>
-    <jar destfile="Htechthetown-highlevel.jar" basedir="${techthetown-highlevel.output.dir}">
-      <manifest>
-        <attribute name="Main-Class" value="MainHomologation"/>
       </manifest>
       <zipgroupfileset dir="${basedir}/lib" includes="**/*.jar"/>
     </jar>
