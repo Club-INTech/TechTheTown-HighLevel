@@ -76,6 +76,11 @@ public class XYO {
         return new XYO(this.position.clone(), this.orientation);
     }
 
+    @Override
+    public String toString() {
+        return "XY : " + this.position.toStringEth() + ", O : " + this.orientation;
+    }
+
     /** Getters & Setters */
     public synchronized Vec2 getPosition() {
         return position;

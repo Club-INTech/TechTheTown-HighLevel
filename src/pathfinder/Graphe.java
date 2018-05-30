@@ -247,7 +247,6 @@ public class Graphe implements Service {
                 }
             }
         }
-        log.debug("Nombre d'arrêtes plus accessibles : " + counter);
     }
 
     /**

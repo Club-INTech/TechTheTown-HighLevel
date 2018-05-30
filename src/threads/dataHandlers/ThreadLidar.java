@@ -157,23 +157,12 @@ public class ThreadLidar extends AbstractThread implements Service {
                         pos.setA(-pos.getA());
                     }
 
-                    out.write("[" + (System.currentTimeMillis() - time) / 1000 + ", " + counter + "] Position calculée dans le référentiel du robot : " + pos.toStringEth());
-                    out.newLine();
-                    out.flush();
-
-                    outTmp.write("[" + (System.currentTimeMillis() - time) / 1000 + "] Position calculée dans le référentiel du robot : " + pos.toStringEth());
-                    outTmp.newLine();
+                    outTmp.write("[" + (System.currentTimeMillis() - time) / 1000 +", " + counter + "] Position calculée dans le référentiel du robot : " + pos.toStringEth() + "\n");
                     outTmp.flush();
 
                     pos = this.changeRef(pos);
 
-                    out.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth());
-                    out.newLine();
-                    out.newLine();
-                    out.flush();
-
-                    outTmp.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth());
-                    outTmp.newLine();
+                    outTmp.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth() + "\n\n");
                     outTmp.flush();
 
                     table.getObstacleManager().addObstacle(pos, ennemyRadius);
@@ -186,15 +175,11 @@ public class ThreadLidar extends AbstractThread implements Service {
                     graph.setUpdated(true);
                 }
 
-                out.write("Durée total du traitement : " + (System.currentTimeMillis() - timeStep));
-                out.newLine();
-                out.flush();
-
-                Thread.sleep(loopDelay);
+                outTmp.write("Durée total du traitement : " + (System.currentTimeMillis() - timeStep));
+                outTmp.newLine();
+                outTmp.flush();
 
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
