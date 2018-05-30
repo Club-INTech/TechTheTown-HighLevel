@@ -35,12 +35,8 @@ public class JUnit_Lidar extends JUnit_Test {
 
     /** Méthode d'arrêt du mainThread */
     private void shutdown() {
-        try {
-            Runtime.getRuntime().exec("kill -f -SIGINT " + Integer.toString((int) process.pid()));
-            graphHandler.shutdown();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        process.destroy();
+        graphHandler.shutdown();
     }
 
     @Before
