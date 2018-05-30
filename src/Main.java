@@ -49,6 +49,7 @@ public class Main {
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
     static PatternRecognition patternRecognition;
+    static Process process;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
@@ -86,7 +87,7 @@ public class Main {
             realState.robot.setPosition(Table.entryPosition.clone());
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
-            pBuilder.start();
+            process = pBuilder.start();
         } catch (ContainerException p) {
             System.out.println("bug container");
             p.printStackTrace();
@@ -107,9 +108,11 @@ public class Main {
             //TODO : lancer l'IA
 
             scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
+            process.destroyForcibly();
 
         } catch (Exception e) {
             e.printStackTrace();
+            process.destroyForcibly();
             container.getLog().critical(e);
         }
     }

@@ -72,13 +72,9 @@ public class ThreadLidar extends AbstractThread implements Service {
 
             out = new BufferedWriter(new FileWriter(this.lidarData));
             outTmp = new BufferedWriter(new FileWriter(this.lidarDataTmp));
-            out.write("========Données du Lidar : de la donnée du script python jusqu'à son traitement !========");
-            out.newLine();
-            out.newLine();
+            out.write("========Données du Lidar : de la donnée du script python jusqu'à son traitement !========\n");
             out.flush();
-            outTmp.write("========Données du Lidar : de la donnée du script python jusqu'à son traitement !========");
-            outTmp.newLine();
-            outTmp.newLine();
+            outTmp.write("========Données du Lidar : de la donnée du script python jusqu'à son traitement !========\n");
             outTmp.flush();
 
         } catch (IOException e){
@@ -136,12 +132,10 @@ public class ThreadLidar extends AbstractThread implements Service {
                 buffer = input.readLine();
                 timeStep = System.currentTimeMillis();
 
-                out.write(buffer);
-                out.newLine();
+                out.write(buffer + "\n");
                 out.flush();
 
-                outTmp.write(buffer);
-                outTmp.newLine();
+                outTmp.write(buffer + "\n");
                 outTmp.flush();
 
                 bufferList = buffer.split(";");
@@ -162,7 +156,8 @@ public class ThreadLidar extends AbstractThread implements Service {
 
                     pos = this.changeRef(pos);
 
-                    outTmp.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth() + "\n\n");
+                    outTmp.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth() + "\n");
+                    outTmp.write("Position du robot : " + highlevelXYO + "\n\n");
                     outTmp.flush();
 
                     table.getObstacleManager().addObstacle(pos, ennemyRadius);
@@ -175,8 +170,7 @@ public class ThreadLidar extends AbstractThread implements Service {
                     graph.setUpdated(true);
                 }
 
-                outTmp.write("Durée total du traitement : " + (System.currentTimeMillis() - timeStep));
-                outTmp.newLine();
+                outTmp.write("Durée total du traitement : " + (System.currentTimeMillis() - timeStep) + "\n");
                 outTmp.flush();
 
             } catch (IOException e) {
