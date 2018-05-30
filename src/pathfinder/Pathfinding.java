@@ -261,6 +261,7 @@ public class Pathfinding implements Service {
             visited = visited.getPred();
             toAdd.add(0, visited.getPosition());
         } while (!(visited.equals(beginNode)));
+        path.getPath().clear();
         path.getPath().addAll(toAdd);
         openList.clear();
         closedList.clear();
