@@ -212,7 +212,7 @@ public class SensorPanel extends JPanel
 	public void drawInteger(Integer value1, Integer value2, Integer value3, Integer value4)
 	{
 		values1.add(value1);
-		times.add(new Integer((int)(System.currentTimeMillis() - startTime)));
+		times.add(Integer.valueOf((int)(System.currentTimeMillis() - startTime)));
 		values2.add(value2);
 		values3.add(value3);
 		values4.add(value4);

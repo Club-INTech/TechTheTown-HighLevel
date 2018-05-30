@@ -7,7 +7,6 @@ import exceptions.Locomotion.UnableToMoveException;
 import graphics.Window;
 import org.junit.Before;
 import org.junit.Test;
-import robot.Robot;
 import scripts.ScriptManager;
 import smartMath.Vec2;
 import strategie.GameState;
@@ -36,7 +35,12 @@ public class JUnit_Lidar extends JUnit_Test {
 
     /** Méthode d'arrêt du mainThread */
     private void shutdown() {
-        process.destroy();
+        try {
+            Runtime.getRuntime().exec("kill -f -SIGINT " + Integer.toString((int) process.pid()));
+            graphHandler.shutdown();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Before
@@ -50,10 +54,10 @@ public class JUnit_Lidar extends JUnit_Test {
         scriptManager = container.getService(ScriptManager.class);
 
         // Instanciation d'une classe ThreadInterface anonyme
-        // (new Thread(() -> (new Window(table, gameState, scriptManager, false)).showHandled())).start();
+        (new Thread(() -> (new Window(table, gameState, scriptManager, false)).showHandled())).start();
 
         // Démarrage du script du Lidar !
-        pBuilder = new ProcessBuilder("python3", "main.py");
+        pBuilder = new ProcessBuilder( "python3", "main.py");
         pBuilder.directory(new File("../lidar"));
     }
 
@@ -63,10 +67,9 @@ public class JUnit_Lidar extends JUnit_Test {
             container.startInstanciedThreads();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
 
-            Thread.sleep(10000);
+            Thread.sleep(500);
             process = pBuilder.start();
             log.debug("Process python lancé");
-            log.debug("XYO : " + gameState.robot.getPosition() + " " + gameState.robot.getOrientation());
 
         } catch (IOException e) {
             e.printStackTrace();

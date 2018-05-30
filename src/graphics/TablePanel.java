@@ -23,8 +23,10 @@ package graphics;
 
 import pathfinder.Graphe;
 import pathfinder.Node;
+import pathfinder.Ridge;
 import robot.Robot;
 import smartMath.Vec2;
+import smartMath.XYO;
 import table.Table;
 import table.obstacles.ObstacleCircular;
 import table.obstacles.ObstacleProximity;
@@ -38,7 +40,7 @@ import java.awt.Graphics;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.TreeSet;
 
 /**
  * panneau sur lequel est dessine la table
@@ -54,7 +56,8 @@ public class TablePanel extends JPanel
 	private ArrayList<Vec2> path;
 	private ArrayList<Vec2> clics;
 	private Vec2 point;
-	private CopyOnWriteArrayList<Node> nodes;
+	private ArrayList<Node> nodes;
+	private ArrayList<Ridge> ridges;
 	public static boolean showGraph = true;
 
 	/** Table & robot */
@@ -89,6 +92,7 @@ public class TablePanel extends JPanel
 		this.robot = robot;
 		this.graphe = table.getGraph();
 		this.nodes = table.getGraph().getNodes();
+		this.ridges = table.getGraph().getRidges();
 		this.point = new Vec2();
 
 		try{
@@ -124,8 +128,7 @@ public class TablePanel extends JPanel
 	{
 		// Variables
 		int robotRadius = (int) (robot.getRobotRadius()*0.3);
-		double robotOrientation = robot.getOrientation();
-		Vec2 robotPosition = robot.getPosition();
+        XYO robotXYO = robot.getmLocomotion().getHighLevelXYO();
 		Vec2 vec1;
 		Vec2 vec2;
 		Vec2 vec3;
@@ -166,33 +169,34 @@ public class TablePanel extends JPanel
 	    graphics.setColor(adverseColor);
 		for(ObstacleProximity adverse : table.getObstacleManager().getMobileObstacles())
 		{
-		    vec1 = new Vec2(-adverse.getRadius() - robotRadius*3.3, adverse.getRadius() - robotRadius*3.3);
+		    vec1 = new Vec2(-adverse.getRadius(), adverse.getRadius());
 			vec2 = changeRefToDisplay(adverse.getPosition().plusNewVector(vec1));
-			graphics.fillOval(vec2.getX(), vec2.getY(), (int) ((adverse.getRadius() - robotRadius)*0.6), (int) ((adverse.getRadius() - robotRadius)*0.6));
+			graphics.fillOval(vec2.getX(), vec2.getY(), (int)(adverse.getRadius()*0.6), (int)(adverse.getRadius()*0.6));
 		}
 
 	    // Robot adverse non confirmé
 		graphics.setColor(unconfirmedColor);
 		for(ObstacleProximity unconfirmed : table.getObstacleManager().getUntestedArrayList())
 		{
-		    vec1 = new Vec2(-unconfirmed.getRadius() - robotRadius*3.3, unconfirmed.getRadius() - robotRadius*3.3);
+		    vec1 = new Vec2(-unconfirmed.getRadius(), unconfirmed.getRadius());
 			vec2 = changeRefToDisplay(unconfirmed.getPosition().plusNewVector(vec1));
-			graphics.fillOval(vec2.getX(), vec2.getY(), (int)((unconfirmed.getRadius() - robotRadius)*0.6), (int)((unconfirmed.getRadius() - robotRadius)*0.6));
+			graphics.fillOval(vec2.getX(), vec2.getY(), (int)(unconfirmed.getRadius()*0.6), (int)(unconfirmed.getRadius()*0.6));
 		}
 
 		// Notre robot
 	    if(isRobotPresent)
 	    {
 		    graphics.setColor(robotColor);
-		    vec1 = new Vec2(new Double(robotRadius), robotOrientation);
-			vec2 = changeRefToDisplay(robotPosition).plusNewVector(vec1);
 
-			vec3 = new Vec2(-robotRadius, -robotRadius);
-			vec4 = changeRefToDisplay(robotPosition).plusNewVector(vec3);
-			graphics.fillOval(vec4.getX(), vec4.getY(), robotRadius*2, robotRadius*2);
+			vec1 = new Vec2(-robotRadius, -robotRadius);
+			vec2 = changeRefToDisplay(robotXYO.getPosition()).plusNewVector(vec1);
+			graphics.fillOval(vec2.getX(), vec2.getY(), robotRadius*2, robotRadius*2);
 
 			graphics.setColor(teamColor);
-			graphics.drawLine(vec2.getX(), vec2.getY(), vec4.getX(), vec4.getY());
+			vec1 = changeRefToDisplay(robotXYO.getPosition());
+			vec2 = new Vec2(robotRadius*3.3, robotXYO.getOrientation());
+			vec3 = changeRefToDisplay(robotXYO.getPosition().plusNewVector(vec2));
+			graphics.drawLine(vec1.getX(), vec1.getY(), vec3.getX(), vec3.getY());
 	    }
 
 		// Le chemin suivi
@@ -210,11 +214,12 @@ public class TablePanel extends JPanel
                 for (Node node : nodes) {
                     vec1 = changeRefToDisplay(node.getPosition());
                     graphics.fillOval(vec1.getX() - 2, vec1.getY() - 2, 4, 4);
-                    for (Node node1 : node.getNeighbours().keySet()) {
-                        if (node.getNeighbours().get(node1).isReachable()) {
-                            vec2 = changeRefToDisplay(node1.getPosition());
-                            graphics.drawLine(vec1.getX(), vec1.getY(), vec2.getX(), vec2.getY());
-                        }
+                }
+                for (Ridge ridge : ridges) {
+                    if (ridge.isReachable()) {
+                        vec1 = changeRefToDisplay(ridge.getSeg().getA());
+                        vec2 = changeRefToDisplay(ridge.getSeg().getB());
+                        graphics.drawLine(vec1.getX(), vec1.getY(), vec2.getX(), vec2.getY());
                     }
                 }
             }
@@ -244,7 +249,7 @@ public class TablePanel extends JPanel
 	 * @param vec
 	 */
 	private Vec2 changeRefToDisplay(Vec2 vec){
-		return new Vec2(new Integer((int)((vec.getX() + 1500)*0.3)),new Integer((int)((2000 - vec.getY())*0.3)-5));
+		return new Vec2(Integer.valueOf((int)((vec.getX() + 1500)*0.3)),Integer.valueOf((int)((2000 - vec.getY())*0.3)-5));
 	}
 
 	/** Setters */

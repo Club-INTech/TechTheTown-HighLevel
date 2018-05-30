@@ -42,7 +42,6 @@ import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Classe implémentant une communication via Ethernet pour communiquer avec le Bas Niveau,
@@ -158,7 +157,7 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * Le "canal" position & orientation
      */
-    private XYO positionAndOrientation;
+    private volatile XYO xyo;
     private String splitString = " ";
 
     /**
@@ -180,9 +179,9 @@ public class ThreadEth extends AbstractThread implements Service {
     private ThreadEth(Log log, Config config) {
         super(config, log);
         updateConfig();
-        this.positionAndOrientation = new XYO(Table.entryPosition.clone(),Table.entryOrientation);
+        this.xyo = new XYO(Table.entryPosition.clone(),Table.entryOrientation);
         if(symetry) {
-            this.positionAndOrientation.symetrize();
+            this.xyo.symetrize();
         }
         this.name = "Teensy";
         this.nbRepeatMessage=0;
@@ -725,7 +724,7 @@ public class ThreadEth extends AbstractThread implements Service {
                             }
                         } else if (CommunicationHeaders.POSITION.getFirstHeader() == headers[0] && CommunicationHeaders.POSITION.getSecondHeader() == headers[1]) {
                             synchronized (xyoLock) {
-                                positionAndOrientation.update(infosFromBuffer, splitString);
+                                xyo.update(infosFromBuffer, splitString);
                                 try {
                                     outPosition.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
                                     outPosition.newLine();
@@ -801,14 +800,9 @@ public class ThreadEth extends AbstractThread implements Service {
     /**
      * On stocke la position et l'orientation ici : les classes qui en ont besoin l'a mettre à jour via le Wrapper
      */
-    public XYO getPositionAndOrientation() {
+    public XYO getXYO() {
         synchronized (xyoLock) {
-            return this.positionAndOrientation;
-        }
-    }
-    public void setPositionAndOrientation(XYO xyo) {
-        synchronized (xyoLock) {
-            this.positionAndOrientation = xyo;
+            return this.xyo;
         }
     }
 

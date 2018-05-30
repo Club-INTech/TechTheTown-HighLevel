@@ -238,10 +238,10 @@ public class Geometry
 	 * @return
 	 */
 	public static boolean intersects(Segment segment, Rectangle rectangle){
-		Vec2 pointhautgauche=new Vec2(new Integer((int) rectangle.getLocation().getX()),new Integer((int) rectangle.getLocation().getY()));
-		Vec2 pointbasgauche=new Vec2(new Integer((int) pointhautgauche.getX()),new Integer((int) (pointhautgauche.getY()-rectangle.getHeight())));
-		Vec2 pointhautdroite=new Vec2(new Integer((int) (pointhautgauche.getX()+rectangle.getWidth())),new Integer((int) pointhautgauche.getY()));
-		Vec2 pointbasdroite=new Vec2(new Integer((int) (pointhautgauche.getX()+rectangle.getWidth())),new Integer((int) (pointhautgauche.getY()-rectangle.getHeight())));
+		Vec2 pointhautgauche=new Vec2(Integer.valueOf((int) rectangle.getLocation().getX()),Integer.valueOf((int) rectangle.getLocation().getY()));
+		Vec2 pointbasgauche=new Vec2(Integer.valueOf((int) pointhautgauche.getX()),Integer.valueOf((int) (pointhautgauche.getY()-rectangle.getHeight())));
+		Vec2 pointhautdroite=new Vec2(Integer.valueOf((int) (pointhautgauche.getX()+rectangle.getWidth())),Integer.valueOf((int) pointhautgauche.getY()));
+		Vec2 pointbasdroite=new Vec2(Integer.valueOf((int) (pointhautgauche.getX()+rectangle.getWidth())),Integer.valueOf((int) (pointhautgauche.getY()-rectangle.getHeight())));
 		Segment segment1=new Segment(pointhautgauche,pointhautdroite);
 		Segment segment2=new Segment(pointhautdroite,pointbasdroite);
 		Segment segment3=new Segment(pointbasdroite,pointbasgauche);

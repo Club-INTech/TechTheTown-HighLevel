@@ -4,7 +4,6 @@ import container.Service;
 import enums.ConfigInfoRobot;
 import pathfinder.Graphe;
 import pfg.config.Config;
-import robot.EthWrapper;
 import robot.Locomotion;
 import smartMath.Vec2;
 import smartMath.XYO;
@@ -15,7 +14,6 @@ import utils.Log;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.Buffer;
 
 /**
  * Thread qui récupère les informations du Lidar et les traite en mettant à jour le graphe
@@ -102,7 +100,7 @@ public class ThreadLidar extends AbstractThread implements Service {
     }
 
     /** Méthode appelée à la fin du Thread */
-    private void shutdown() {
+    public void shutdown() {
         try {
             input.close();
             client.close();
@@ -163,11 +161,9 @@ public class ThreadLidar extends AbstractThread implements Service {
                     out.newLine();
                     out.flush();
 
-                    /*
                     outTmp.write("[" + (System.currentTimeMillis() - time) / 1000 + "] Position calculée dans le référentiel du robot : " + pos.toStringEth());
                     outTmp.newLine();
                     outTmp.flush();
-                    */
 
                     pos = this.changeRef(pos);
 
@@ -176,11 +172,9 @@ public class ThreadLidar extends AbstractThread implements Service {
                     out.newLine();
                     out.flush();
 
-                    /*
                     outTmp.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth());
                     outTmp.newLine();
                     outTmp.flush();
-                    */
 
                     table.getObstacleManager().addObstacle(pos, ennemyRadius);
                     table.getObstacleManager().removeOutdatedObstacles();
@@ -189,8 +183,8 @@ public class ThreadLidar extends AbstractThread implements Service {
                 // Mise à jour du graphe
                 synchronized (graph.lock) {
                     graph.updateRidges();
+                    graph.setUpdated(true);
                 }
-                graph.setUpdated(true);
 
                 out.write("Durée total du traitement : " + (System.currentTimeMillis() - timeStep));
                 out.newLine();

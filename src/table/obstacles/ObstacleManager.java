@@ -29,13 +29,7 @@ import smartMath.Segment;
 import smartMath.Vec2;
 import utils.Log;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Traite tout ce qui concerne la gestion des obstacles sur la table.
@@ -47,7 +41,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ObstacleManager implements Service
 {
-
     /** système de log sur lequel écrire. */
     private Log log;
 
@@ -55,23 +48,23 @@ public class ObstacleManager implements Service
     private Config config;
 
     /** Ensemble des obstacles mobiles/temporaires se trouvant sur la table */
-    private CopyOnWriteArrayList<ObstacleProximity> mMobileObstacles;
+    private ArrayList<ObstacleProximity> mMobileObstacles;
 
     /** Ensemble des obstacles circulaires */
-    private CopyOnWriteArrayList<ObstacleCircular> mCircularObstacle;
+    private ArrayList<ObstacleCircular> mCircularObstacle;
 
     /**Robot(s) Ennemi(s) qui bouge plus au bout d'une seconde, c'est une liste
      * qui sera filée au graphe pour qu'il puise l'ajouter comme obstacle**/
-    private CopyOnWriteArrayList<ObstacleCircular> mEnnemies;
+    private ArrayList<ObstacleCircular> mEnnemies;
 
     /** Ensemble des obstacles mobiles/temporaires a tester pour les placer sur la table */
-    private CopyOnWriteArrayList<ObstacleProximity> mUntestedMobileObstacles;
+    private ArrayList<ObstacleProximity> mUntestedMobileObstacles;
 
     /** Ensembles des lignes modélisant les bords de la table */
-    private CopyOnWriteArrayList<Segment> mLines;
+    private ArrayList<Segment> mLines;
 
     /** Les obstacles rectangulaires de la table */
-    private CopyOnWriteArrayList<ObstacleRectangular> mRectangles;
+    private ArrayList<ObstacleRectangular> mRectangles;
 
     /** Rayon de notre robot */
     private int mRobotRadius;
@@ -115,12 +108,12 @@ public class ObstacleManager implements Service
         updateConfig();
 
         //creation des listes qui contiendront les differents types d'obstacles
-        mMobileObstacles = new CopyOnWriteArrayList<ObstacleProximity>();
-        mCircularObstacle = new CopyOnWriteArrayList<ObstacleCircular>();
-        mLines = new CopyOnWriteArrayList<Segment>();
-        mRectangles = new CopyOnWriteArrayList<ObstacleRectangular>();
-        mEnnemies=new CopyOnWriteArrayList<>();
-        mUntestedMobileObstacles= new CopyOnWriteArrayList<ObstacleProximity>();
+        mMobileObstacles = new ArrayList<>();
+        mCircularObstacle = new ArrayList<>();
+        mLines = new ArrayList<>();
+        mRectangles = new ArrayList<>();
+        mEnnemies=new ArrayList<>();
+        mUntestedMobileObstacles= new ArrayList<>();
 
         initObstacle();
 
@@ -248,7 +241,7 @@ public class ObstacleManager implements Service
      * @param position position de l'obstacle sur laquelle on veut une validation
      * @return renvoie true si la position peut être un obstacle, false sinon
      */
-    public boolean isObstaclePositionValid(Vec2 position){
+    public synchronized boolean isObstaclePositionValid(Vec2 position){
         // TODO: Prévoir les cas où l'on détecte des éléments de jeu dans la condition
         if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius
                 && position.getY() > mEnnemyRadius && position.getY() < 2000 - mEnnemyRadius  // Hors de la table
@@ -484,69 +477,6 @@ public class ObstacleManager implements Service
 
     }
 
-    /**
-     * Ajoute l'obstacle mobile le plus proche (l'ennemi quoi) aux obstacles permanants
-     * La fonction est appelée uniquement si l'ennemie ne bouge pas pendant un TimeOut
-     * @param position la position de notre robot
-     * @param direction direction selon laquelle on doit considérer les ennemies
-     * @return l'ennemie le plus proche
-     */
-    public synchronized void crashEnnemyAdd (Vec2 position, Vec2 direction){
-        try
-        {
-            int squaredDistanceToClosestEnemy = 10000000;
-            int squaredDistanceToEnemyTested = 10000000;
-
-            ObstacleProximity closestEnnemy = null;
-
-            // Trouve l'ennemi le plus proche parmis les obstacles confirmés
-            for (int i = 0; i < mMobileObstacles.size(); i++) {
-                Vec2 ennemyRelativeCoords = mMobileObstacles.get(i).getPosition().minusNewVector(position);
-                if (direction.dot(ennemyRelativeCoords) > 0) {
-                    squaredDistanceToEnemyTested = ennemyRelativeCoords.squaredLength();
-                    if (squaredDistanceToEnemyTested < squaredDistanceToClosestEnemy) {
-                        squaredDistanceToClosestEnemy = squaredDistanceToEnemyTested;
-                        closestEnnemy = mMobileObstacles.get(i);
-                    }
-                }
-            }
-
-            if (closestEnnemy != null) {
-                if(crashRobot == 0) {
-                    log.debug("Premier crash de l'ennemi, on l'ajoute ici :" + closestEnnemy.getPosition());
-                    ObstacleCircular ennemyToAdd = closestEnnemy.clone();
-                    ennemyToAdd.setRadius(mEnnemyRadius + mRobotRadius);
-                    mCircularObstacle.add(0,ennemyToAdd);
-                    crashRobot+=1;
-                }
-
-                else if(!cDesFousEnFace){
-                    ObstacleCircular ennemyCrashed = mCircularObstacle.get(0);
-                    int distanceToEnemyCrashed = (int) closestEnnemy.getPosition().minusNewVector(ennemyCrashed.getPosition()).length();
-
-                    if(distanceToEnemyCrashed < mEnnemyRadius){
-                        log.debug("Detection de l'ennemi crashé en :" + closestEnnemy.getPosition());
-                    }
-                    else if(distanceToEnemyCrashed < mEnnemyRadius + mRobotRadius) {
-                        log.debug("Detection de l'ennemi crashé, qui s'est déplacé en :" + closestEnnemy.getPosition());
-                        mCircularObstacle.get(0).setPosition(closestEnnemy.getPosition());
-                    }
-                    else{
-                        log.debug("Detection de l'ennemi crashé bien loin; il s'était pas crash enfaite... On modifie sa position en :" + closestEnnemy.getPosition());
-                        mCircularObstacle.get(0).setPosition(closestEnnemy.getPosition());
-                    }
-                }
-                else{
-                    // TODO Prévoir le cas où un ou plusieurs robot(s) vient/viennent nous faire chier, si jamais c'est des fous en face
-                }
-            }
-        }
-        catch(IndexOutOfBoundsException e)
-        {
-            log.critical("Ah bah oui, out of bound");
-            throw e;
-        }
-    }
 
 
     /***************
@@ -692,7 +622,7 @@ public class ObstacleManager implements Service
      * @param position
      * @return
      */
-    public boolean isRobotInTable(Vec2 position){
+    public synchronized boolean isRobotInTable(Vec2 position){
         return ((Math.abs(position.getX())+mRobotRadius) < 1500 && (Math.abs(position.getY() - 1000)+mRobotRadius) < 1000);
     }
 
@@ -707,7 +637,7 @@ public class ObstacleManager implements Service
      * Retourne tout les les obstacles temporaires/mobiles. (détectés par la balise laser, les capteurs de distance, etc.)
      * @return la liste des obstacles temporaires/mobiles de la table
      */
-    public CopyOnWriteArrayList<ObstacleProximity> getMobileObstacles()
+    public ArrayList<ObstacleProximity> getMobileObstacles()
     {
         return mMobileObstacles;
     }
@@ -723,7 +653,7 @@ public class ObstacleManager implements Service
         return mMobileObstacles.size();
     }
 
-    public CopyOnWriteArrayList<ObstacleProximity> getUntestedArrayList()
+    public ArrayList<ObstacleProximity> getUntestedArrayList()
     {
         return mUntestedMobileObstacles;
     }
@@ -732,7 +662,7 @@ public class ObstacleManager implements Service
      * Retourne tout les les obstacles fixes de la table.
      * @return la liste des obstacles fixes de la table
      */
-    public CopyOnWriteArrayList<ObstacleCircular> getmCircularObstacle()
+    public ArrayList<ObstacleCircular> getmCircularObstacle()
     {
         return mCircularObstacle;
     }
@@ -740,7 +670,7 @@ public class ObstacleManager implements Service
     /**
      * @return la liste des lignes formant les bords des obstacles sous forme de segments
      */
-    public CopyOnWriteArrayList<Segment> getLines()
+    public ArrayList<Segment> getLines()
     {
         return mLines;
     }
@@ -748,7 +678,7 @@ public class ObstacleManager implements Service
     /**
      * @return la liste des rectangles formant les obstacles rectangulaires
      */
-    public CopyOnWriteArrayList<ObstacleRectangular> getRectangles()
+    public ArrayList<ObstacleRectangular> getRectangles()
     {
         return mRectangles;
     }
@@ -1088,7 +1018,7 @@ public class ObstacleManager implements Service
         return mCircularObstacle.get(iMin);
     }
 
-    public CopyOnWriteArrayList<ObstacleCircular> getmEnnemies() {
+    public ArrayList<ObstacleCircular> getmEnnemies() {
         return mEnnemies;
     }
 }

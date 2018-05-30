@@ -14,9 +14,7 @@ import table.obstacles.ObstacleRectangular;
 import utils.Log;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.TreeSet;
 
 /**
  * Classe paramétrant la table en noeuds et arrête permettant d'y naviguer via un algorithme de pathfinding
@@ -31,12 +29,13 @@ public class Graphe implements Service {
 
     /** La table... */
     private Table table;
-    private CopyOnWriteArrayList<ObstacleCircular> listCircu;
-    private CopyOnWriteArrayList<ObstacleRectangular> listRectangu;
-    private CopyOnWriteArrayList<ObstacleProximity> mobileEnnemies;
+    private ArrayList<ObstacleCircular> listCircu;
+    private ArrayList<ObstacleRectangular> listRectangu;
+    private ArrayList<ObstacleProximity> mobileEnnemies;
 
     /** Le graphe ! */
-    private CopyOnWriteArrayList<Node> nodes;
+    private ArrayList<Node> nodes;
+    private ArrayList<Ridge> ridges;
 
     /** Paramètres du graphe */
     private int espacementRect;
@@ -58,7 +57,8 @@ public class Graphe implements Service {
         this.listCircu = table.getObstacleManager().getmCircularObstacle();
         this.listRectangu = table.getObstacleManager().getRectangles();
         this.mobileEnnemies = table.getObstacleManager().getMobileObstacles();
-        this.nodes = new CopyOnWriteArrayList<>();
+        this.nodes = new ArrayList<>();
+        this.ridges = new ArrayList<>();
 
         updateConfig();
 
@@ -108,13 +108,15 @@ public class Graphe implements Service {
         Segment seg;
         int n = 0;
 
-        for (int i=0; i<nodes.size(); i++) {
+        ridges.clear();
+        for (int i = 0; i < nodes.size(); i++) {
             Node node1 = nodes.get(i);
-            for (int j=i+1; j<nodes.size(); j++) {
+            for (int j = i + 1; j < nodes.size(); j++) {
                 Node node2 = nodes.get(j);
                 seg = new Segment(node1.getPosition(), node2.getPosition());
                 if (!table.getObstacleManager().intersectAnyObstacle(seg)) {
-                    Ridge ridge = new Ridge(node1.getPosition().intDistance(node2.getPosition()));
+                    Ridge ridge = new Ridge(node1.getPosition().intDistance(node2.getPosition()), seg);
+                    ridges.add(ridge);
                     node1.addNeighbour(node2, ridge);
                     node2.addNeighbour(node1, ridge);
                     n++;
@@ -196,7 +198,8 @@ public class Graphe implements Service {
         for (Node neighbour : nodes) {
             seg = new Segment(node.getPosition(), neighbour.getPosition());
             if (!table.getObstacleManager().intersectAnyObstacle(seg)) {
-                Ridge ridge = new Ridge(node.getPosition().intDistance(neighbour.getPosition()));
+                Ridge ridge = new Ridge(node.getPosition().intDistance(neighbour.getPosition()), seg);
+                ridges.add(ridge);
                 node.addNeighbour(neighbour, ridge);
                 neighbour.addNeighbour(node, ridge);
             }
@@ -212,6 +215,7 @@ public class Graphe implements Service {
     public void removeNode(Node node){
         nodes.remove(node);
         for (Node neighbour : node.getNeighbours().keySet()) {
+            ridges.remove(neighbour.getNeighbours().get(node));
             neighbour.getNeighbours().remove(node);
         }
     }
@@ -232,18 +236,18 @@ public class Graphe implements Service {
      * lesquelles sont encore franchissables
      */
     public void updateRidges() {
-        Segment seg;
-        for (Node node : nodes) {
-            for (Node neighbour : node.getNeighbours().keySet()) {
-                seg = new Segment(node.getPosition(), neighbour.getPosition());
-                node.getNeighbours().get(neighbour).setReachable(true);
-                for (ObstacleProximity movingObstacle : mobileEnnemies) {
-                    if(Geometry.intersects(seg, movingObstacle.getCircle())){
-                        node.getNeighbours().get(neighbour).setReachable(false);
-                    }
+        int counter = 0;
+        for (Ridge ridge: ridges) {
+            ridge.setReachable(true);
+            for (ObstacleProximity obstacleProximity : mobileEnnemies) {
+                if (Geometry.intersects(ridge.getSeg(), obstacleProximity.getCircle())) {
+                    ridge.setReachable(false);
+                    counter++;
+                    break;
                 }
             }
         }
+        log.debug("Nombre d'arrêtes plus accessibles : " + counter);
     }
 
     /**
@@ -303,7 +307,7 @@ public class Graphe implements Service {
     }
 
     /** Getters & Setters */
-    public CopyOnWriteArrayList<Node> getNodes() {
+    public ArrayList<Node> getNodes() {
         return nodes;
     }
     public synchronized boolean isUpdated() {
@@ -311,6 +315,9 @@ public class Graphe implements Service {
     }
     public synchronized void setUpdated(boolean updated) {
         this.updated = updated;
+    }
+    public ArrayList<Ridge> getRidges() {
+        return ridges;
     }
 }
 

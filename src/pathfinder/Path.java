@@ -1,7 +1,6 @@
 package pathfinder;
 
 import smartMath.Vec2;
-import sun.misc.Queue;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
