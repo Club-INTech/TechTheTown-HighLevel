@@ -95,7 +95,6 @@ public class Pathfinding implements Service {
         findmyway(beginNode, aimNode);
         path.getPath().poll();
         (new ThreadPathFollower(log, config, path, eventQueue, locomotion)).start();
-        log.debug("Debut de suivit de chemin : " + path.getPath());
 
         // Tant que l'on a pas démarrer, on attend
         while (!locomotion.getThEvent().isMoving) {

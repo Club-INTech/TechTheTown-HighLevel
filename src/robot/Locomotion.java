@@ -301,6 +301,7 @@ public class Locomotion implements Service {
         if (directionStrategy.equals(DirectionStrategy.FASTEST)) {
             float sens = move.dot(new Vec2(100, highLevelXYO.getOrientation()));
             if (sens >= 0) {    //si il est orienté vers l'avant par rapport au point visé (produit scalaire > 0)
+                log.debug("Visé : " + pointVise);
                 log.debug("Angle de rotation: " + moveA);
                 log.debug("Distance de translation: " + moveR);
                 turn(moveA, expectedWallImpact, mustDetect);

@@ -38,7 +38,7 @@ public class ThreadPathFollower extends AbstractThread {
         try {
             Vec2 aim;
             boolean hasNext;
-            log.debug("Thread Pathfollower lancé");
+            log.debug("Thread Pathfollower lancé, début de suivit de chemin : " + path.getPath());
             do {
                 synchronized (path.lock) {
                     aim = path.getPath().poll();
