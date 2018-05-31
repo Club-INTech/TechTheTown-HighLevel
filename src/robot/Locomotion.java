@@ -449,6 +449,7 @@ public class Locomotion implements Service {
         int detectionDistance = (int) (this.detectionDistance*0.7);
         // TODO Detecter les exceptions
         do {
+            updatePositionAndOrientation();
             if (thEvent.getUnableToMoveEvent().peek() !=null) {
                 thEvent.getUnableToMoveEvent().poll();
                 throw new BlockedException();
