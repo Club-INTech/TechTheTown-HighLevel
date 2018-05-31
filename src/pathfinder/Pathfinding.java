@@ -95,12 +95,16 @@ public class Pathfinding implements Service {
         path.getPath().poll();
         (new ThreadPathFollower(path, eventQueue, locomotion)).start();
 
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // Tant que l'on a pas démarrer, on attend
+        while (!locomotion.getThEvent().isMoving) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
+        // On recalcule le chemin tant qu'on est pas immobile
         while (locomotion.getThEvent().isMoving) {
             if (graphe.isUpdated()) {
                 synchronized (path.lock) {

@@ -137,7 +137,6 @@ public class ActiveAbeille extends AbstractScript {
 
     @Override
     public Circle entryPosition(int version, Vec2 robotPosition) throws BadVersionException {
-        log.debug("Position d'entrée ActiveAbeille : "+robotPosition);
         if(version==0){
             return new Circle(robotPosition);
         }
