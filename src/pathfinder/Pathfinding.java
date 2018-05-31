@@ -49,7 +49,7 @@ public class Pathfinding implements Service {
     private PriorityQueue<Node> openList;
     private ArrayList<Node> closedList;
     private Path path;
-    private ConcurrentLinkedQueue<UnableToMoveException> eventQueue;
+    private ConcurrentLinkedQueue<Object> eventQueue;
 
     /** Noeud de départ et d'arrivé à mettre à jour */
     private Node beginNode;
@@ -88,12 +88,14 @@ public class Pathfinding implements Service {
             Mise à jour du graphe en cas d'evenement du gestionnaire de trajectoire, c-a-d retrait du noeud de départ initial et ajout d'un nouveau noeud de départ
          */
         Vec2 next;
+        boolean follow = true;
         // TODO Gérer le cas ou les positions de départ et d'arrivé sont déjà des noeuds
 
         init(aim);
         findmyway(beginNode, aimNode);
         path.getPath().poll();
-        (new ThreadPathFollower(path, eventQueue, locomotion)).start();
+        (new ThreadPathFollower(log, config, path, eventQueue, locomotion)).start();
+        log.debug("Debut de suivit de chemin : " + path.getPath());
 
         // Tant que l'on a pas démarrer, on attend
         while (!locomotion.getThEvent().isMoving) {
@@ -104,8 +106,8 @@ public class Pathfinding implements Service {
             }
         }
 
-        // On recalcule le chemin tant qu'on est pas immobile
-        while (locomotion.getThEvent().isMoving) {
+        // On recalcule le chemin tant qu'on est pas immobile et proche de l'arrivé
+        while (follow) {
             if (graphe.isUpdated()) {
                 synchronized (path.lock) {
                     graphe.setUpdated(false);
@@ -114,15 +116,21 @@ public class Pathfinding implements Service {
                 }
             }
             if (eventQueue.peek() != null) {
-                UnableToMoveException exception = eventQueue.poll();
-                if (exception.getReason().equals(UnableToMoveReason.OBSTACLE_DETECTED)) {
-                    clean();
-                    init(aim);
-                    findmyway(beginNode, aimNode);
-                    (new ThreadPathFollower(path, eventQueue, locomotion)).start();
-                }
-                else if (exception.getReason().equals(UnableToMoveReason.PHYSICALLY_BLOCKED)) {
-                    throw exception;
+                Object event = eventQueue.poll();
+                if (event instanceof UnableToMoveException) {
+                    if (((UnableToMoveException) event).getReason().equals(UnableToMoveReason.OBSTACLE_DETECTED)) {
+                        clean();
+                        init(aim);
+                        findmyway(beginNode, aimNode);
+                        (new ThreadPathFollower(log, config, path, eventQueue, locomotion)).start();
+                    } else if (((UnableToMoveException) event).getReason().equals(UnableToMoveReason.PHYSICALLY_BLOCKED)) {
+                        throw ((UnableToMoveException) event);
+                    }
+                } else if (event instanceof Boolean) {
+                    if((Boolean) event) {
+                        log.debug("Fin de suivit du chemin");
+                        follow = false;
+                    }
                 }
             }
             try {

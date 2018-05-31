@@ -2,8 +2,10 @@ package threads;
 
 import exceptions.Locomotion.UnableToMoveException;
 import pathfinder.Path;
+import pfg.config.Config;
 import robot.Locomotion;
 import smartMath.Vec2;
+import utils.Log;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -21,10 +23,11 @@ public class ThreadPathFollower extends AbstractThread {
     private Path path;
 
     /** La File d'evement */
-    private ConcurrentLinkedQueue<UnableToMoveException> eventQueue;
+    private ConcurrentLinkedQueue<Object> eventQueue;
 
     /** Constructeur : on construit un ThreadPathFollower à chaque requête du robot */
-    public ThreadPathFollower(Path path, ConcurrentLinkedQueue<UnableToMoveException> eventQueue, Locomotion locomotion) {
+    public ThreadPathFollower(Log log, Config config, Path path, ConcurrentLinkedQueue<Object> eventQueue, Locomotion locomotion) {
+        super(config, log);
         this.locomotion = locomotion;
         this.path = path;
         this.eventQueue = eventQueue;
@@ -35,6 +38,7 @@ public class ThreadPathFollower extends AbstractThread {
         try {
             Vec2 aim;
             boolean hasNext;
+            log.debug("Thread Pathfollower lancé");
             do {
                 synchronized (path.lock) {
                     aim = path.getPath().poll();
@@ -42,6 +46,7 @@ public class ThreadPathFollower extends AbstractThread {
                 locomotion.moveToPoint(aim, false, true);
                 hasNext = !path.getPath().isEmpty();
             } while (hasNext);
+            eventQueue.add(new Boolean(true));
         } catch (UnableToMoveException e) {
             eventQueue.add(e);
         }
