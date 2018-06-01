@@ -148,7 +148,9 @@ public class Pathfinding implements Service {
                     si le point d'arrivé est obstrué, on espère qu'il ne le sera plus d'ici à ce qu'il y arrive... Si ce n'est pas le cas,
                     une NoPathFoundException est générée
                     */
-                    if (!table.getObstacleManager().isPositionInEnnemy(next.getPosition()) && !table.getObstacleManager().isPositionInEnnemy(aimNode.getPosition()))
+                    if (!table.getObstacleManager().isPositionInEnnemy(next.getPosition()) &&
+                            !table.getObstacleManager().isPositionInEnnemy(aimNode.getPosition()) &&
+                            !next.equals(aimNode))
                     {
                         next.setCout(0);
                         openList.add(next);
