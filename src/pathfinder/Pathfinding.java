@@ -113,7 +113,7 @@ public class Pathfinding implements Service {
             Attente de changements du graphe ou d'un evenement du gestionnaire de trajectoire, c-a-d obstacle sur la ligne droite suivit par le robot
             Mise à jour du graphe en cas d'evenement du gestionnaire de trajectoire, c-a-d retrait du noeud de départ initial et ajout d'un nouveau noeud de départ
          */
-        Vec2 next;
+        Node next;
         boolean follow = true;
         int counter = 0;
         // TODO Gérer le cas ou les positions de départ et d'arrivé sont déjà des noeuds
@@ -139,16 +139,20 @@ public class Pathfinding implements Service {
                 synchronized (path.lock) {
                     counter++;
                     graphe.setUpdated(false);
-                    next = path.getPath().peek();
+                    next = graphe.findNode(path.getPath().peek());
 
-                    // Si la position visée ou le nouveau point de départ du pathfinding est temporairement obstrué(e), on ne recalcule
-                    // pas le chemin, sous peine de générer une NoPathFound Exception :
-                    // si le point de départ est obstrué, le robot va s'arréter et lancer une nouvelle recherche de chemin (voir plus bas)
-                    // si le point d'arrivé est obstrué, on espère qu'il ne le sera plus d'ici à ce qu'il y arrive... Si ce n'est pas le cas,
-                    // une NoPathFoundException est générée
-                    if (!table.getObstacleManager().isPositionInEnnemy(next) && !table.getObstacleManager().isPositionInEnnemy(aimNode.getPosition()))
+                    /*
+                    Si la position visée ou le nouveau point de départ du pathfinding est temporairement obstrué(e), on ne recalcule
+                    pas le chemin, sous peine de générer une NoPathFound Exception :
+                    si le point de départ est obstrué, le robot va s'arréter et lancer une nouvelle recherche de chemin (voir plus bas)
+                    si le point d'arrivé est obstrué, on espère qu'il ne le sera plus d'ici à ce qu'il y arrive... Si ce n'est pas le cas,
+                    une NoPathFoundException est générée
+                    */
+                    if (!table.getObstacleManager().isPositionInEnnemy(next.getPosition()) && !table.getObstacleManager().isPositionInEnnemy(aimNode.getPosition()))
                     {
-                        findmyway(graphe.findNode(next), aimNode);
+                        next.setCout(0);
+                        openList.add(next);
+                        findmyway(next, aimNode);
                     }
                     try {
                         out.write("Counter : " + counter + ", Chemin trouvé : " + path.getPath() + "\n");
