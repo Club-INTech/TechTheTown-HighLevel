@@ -194,7 +194,7 @@ public class Locomotion implements Service {
     /**
      * Valeurs des ultrasons filtrés par le LL pour la détection basique
      */
-    private String USbuffer;
+    private volatile String USbuffer;
 
     /*************************
      *   BLOCAGE MECANIQUE   *

@@ -204,7 +204,9 @@ public class Pathfinding implements Service {
         Set<Node> neighbours;
         synchronized (graphe.lock) {
             // Algorithme en lui-même
+            int conter = 0;
             while (!openList.isEmpty()) {
+                conter++;
                 Node visited = openList.poll();
 
                 if (visited.equals(aim)) {
@@ -238,7 +240,7 @@ public class Pathfinding implements Service {
                 closedList.add(visited);
             }
 
-            throw new NoPathFound(aim.getPosition(), "Aucun chemin trouvé entre " + begin + " et " + aim);
+            throw new NoPathFound(aim.getPosition(), "Aucun chemin trouvé entre " + begin + " et " + aim + ",\nNombre de tours de boucles : " + conter);
         }
     }
 

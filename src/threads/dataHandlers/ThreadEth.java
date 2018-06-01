@@ -152,7 +152,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private volatile ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> acknowledgementBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
-    private volatile String ultrasoundBuffer = new String("1000 1000 1000 1000");
+    private volatile String ultrasoundBuffer;
 
     /**
      * Le "canal" position & orientation
