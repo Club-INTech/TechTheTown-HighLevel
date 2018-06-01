@@ -11,10 +11,16 @@ import robot.Locomotion;
 import smartMath.Vec2;
 import strategie.IA.Graph;
 import table.Table;
+import table.obstacles.Obstacle;
+import table.obstacles.ObstacleProximity;
 import threads.ThreadPathFollower;
 import threads.dataHandlers.ThreadLidar;
 import utils.Log;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -57,6 +63,10 @@ public class Pathfinding implements Service {
     private boolean removeStart;
     private boolean removeAim;
 
+    /** Debug */
+    private BufferedWriter out;
+    private File pdd;
+
     /** Constructeur */
     public Pathfinding(Log log, Config config, Locomotion locomotion, ThreadLidar graphHandler, Table table) {
         this.log = log;
@@ -69,6 +79,22 @@ public class Pathfinding implements Service {
         this.closedList = new ArrayList<>();
         this.eventQueue = new ConcurrentLinkedQueue<>();
         this.path = new Path(new ConcurrentLinkedQueue());
+
+        try {
+            this.pdd = new File("pathfinding.txt");
+
+            if (!pdd.exists()) {
+                this.pdd.createNewFile();
+            }
+
+            out = new BufferedWriter(new FileWriter(this.pdd));
+
+            out.write("======== Calculs de Chemins par le Pathfinding ========\n");
+            out.flush();
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
         updateConfig();
     }
 
@@ -89,6 +115,7 @@ public class Pathfinding implements Service {
          */
         Vec2 next;
         boolean follow = true;
+        int counter = 0;
         // TODO Gérer le cas ou les positions de départ et d'arrivé sont déjà des noeuds
 
         init(aim);
@@ -107,13 +134,31 @@ public class Pathfinding implements Service {
 
         // On recalcule le chemin tant qu'on est pas immobile et proche de l'arrivé
         while (follow) {
+            // Si le graphe a été mis à jour (s'il ne l'a pas été, on ne recalcule pas de chemin...)
             if (graphe.isUpdated()) {
                 synchronized (path.lock) {
+                    counter++;
                     graphe.setUpdated(false);
                     next = path.getPath().peek();
-                    findmyway(graphe.findNode(next), aimNode);
+
+                    // Si la position visée ou le nouveau point de départ du pathfinding est temporairement obstrué(e), on ne recalcule
+                    // pas le chemin, sous peine de générer une NoPathFound Exception :
+                    // si le point de départ est obstrué, le robot va s'arréter et lancer une nouvelle recherche de chemin (voir plus bas)
+                    // si le point d'arrivé est obstrué, on espère qu'il ne le sera plus d'ici à ce qu'il y arrive... Si ce n'est pas le cas,
+                    // une NoPathFoundException est générée
+                    if (!table.getObstacleManager().isPositionInEnnemy(next) && !table.getObstacleManager().isPositionInEnnemy(aimNode.getPosition()))
+                    {
+                        findmyway(graphe.findNode(next), aimNode);
+                    }
+                    try {
+                        out.write("Counter : " + counter + ", Chemin trouvé : " + path.getPath() + "\n");
+                        out.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+            // Si l'on a recu un message du ThreadPathFollower
             if (eventQueue.peek() != null) {
                 Object event = eventQueue.poll();
                 if (event instanceof UnableToMoveException) {

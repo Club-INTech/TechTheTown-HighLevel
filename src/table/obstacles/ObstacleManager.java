@@ -562,13 +562,27 @@ public class ObstacleManager implements Service
      * @return
      */
     public synchronized boolean isPositionInObstacle(Vec2 position){
-        for(Obstacle obstacle : mCircularObstacle){
+        for(Obstacle obstacle : mCircularObstacle) {
             if(isPositionInObstacle(position,obstacle)){
                 return true;
             }
         }
-        for(Obstacle obstacle : mRectangles){
+        for(Obstacle obstacle : mRectangles) {
             if(isPositionInObstacle(position,obstacle)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Cette méthode vérifie si le point est obstrué par un adversaire ou non
+     * @param position
+     * @return true si la position n'est pas atteignable
+     */
+    public synchronized boolean isPositionInEnnemy(Vec2 position) {
+        for (ObstacleProximity proximity : mMobileObstacles) {
+            if (isPositionInObstacle(position,proximity)) {
                 return true;
             }
         }
