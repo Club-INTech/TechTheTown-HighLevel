@@ -546,6 +546,7 @@ public class Locomotion implements Service {
         int[] USvalues = new int[4];
         synchronized (ThreadEth.usLock) {
             String[] infos = USbuffer.split(" ");
+            log.debug(USbuffer);
             for (int i=0; i<4; i++) {
                 USvalues[i] = Integer.parseInt(infos[i]);
             }
