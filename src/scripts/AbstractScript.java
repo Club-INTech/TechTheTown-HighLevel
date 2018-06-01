@@ -85,7 +85,7 @@ public abstract class AbstractScript implements Service
 				actualState.robot.moveToCircle(entryPosition(versionToExecute, actualState.robot.getPosition()));
 			}
 		} catch(NoPathFound e){
-			log.debug("pas de chemin trouvé");
+			log.debug(e.getMessage());
 			throw e;
 		}
 

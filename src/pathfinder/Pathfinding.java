@@ -234,7 +234,7 @@ public class Pathfinding implements Service {
                 closedList.add(visited);
             }
 
-            throw new NoPathFound(aim.getPosition());
+            throw new NoPathFound(aim.getPosition(), "Aucun chemin trouvé entre " + begin + " et " + aim);
         }
     }
 
