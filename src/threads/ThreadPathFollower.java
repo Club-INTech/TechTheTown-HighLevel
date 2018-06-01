@@ -41,9 +41,12 @@ public class ThreadPathFollower extends AbstractThread {
             log.debug("Thread Pathfollower lancé, début de suivit de chemin : " + path.getPath());
             do {
                 synchronized (path.lock) {
-                    aim = path.getPath().poll();
+                    aim = path.getPath().peek();
                 }
                 locomotion.moveToPoint(aim, false, true);
+                synchronized (path.lock) {
+                    path.getPath().poll();
+                }
                 hasNext = !path.getPath().isEmpty();
             } while (hasNext);
             log.debug("Thread Pathfollower terminé");
