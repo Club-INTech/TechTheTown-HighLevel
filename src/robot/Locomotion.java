@@ -457,6 +457,7 @@ public class Locomotion implements Service {
 
             if (mustDetect) {
                 if (basicDetectionActivated && basicDetect(isMovementForward)) {
+                    log.warning("Basic Detection Triggered");
                     immobilise();
                     throw new UnexpectedObstacleOnPathException();
                 }
@@ -605,6 +606,7 @@ public class Locomotion implements Service {
     {
         if (table.getObstacleManager().isEnnemyForwardOrBackWard(distance, highLevelXYO.getPosition(), moveDirection, highLevelXYO.getOrientation()))
         {
+            log.debug("Lidar Detection Triggered");
             immobilise();
             throw new UnexpectedObstacleOnPathException();
         }

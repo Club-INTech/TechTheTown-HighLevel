@@ -64,7 +64,7 @@ public class TakeCubes extends AbstractScript {
         int detectionDistance = state.robot.getmLocomotion().getDetectionDistance();
 
         state.robot.getmLocomotion().setDetectionDistance(20);
-        state.robot.getmLocomotion().setDistanceBasicDetectionTriggered(20);
+        state.robot.getmLocomotion().setDistanceBasicDetectionTriggered(10);
 
         state.robot.setBasicDetection(false);
         this.alreadyTriedCorrection=false;
