@@ -88,6 +88,7 @@ public class ThreadLidar extends AbstractThread implements Service {
             server = new ServerSocket(15550);
             server.setReuseAddress(true);
             client = server.accept();
+            log.debug("Socket Initiée");
             input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();

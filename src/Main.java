@@ -87,6 +87,7 @@ public class Main {
             realState.robot.setPosition(Table.entryPosition.clone());
             realState.robot.setOrientation(Table.entryOrientation);
             realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+            Thread.sleep(500);
             process = pBuilder.start();
         } catch (ContainerException p) {
             System.out.println("bug container");
