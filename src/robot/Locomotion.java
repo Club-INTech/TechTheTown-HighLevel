@@ -194,7 +194,7 @@ public class Locomotion implements Service {
     /**
      * Valeurs des ultrasons filtrés par le LL pour la détection basique
      */
-    private volatile String USbuffer;
+    private volatile StringBuffer USbuffer;
 
     /*************************
      *   BLOCAGE MECANIQUE   *
@@ -545,8 +545,7 @@ public class Locomotion implements Service {
         int startIndice;
         int[] USvalues = new int[4];
         synchronized (ThreadEth.usLock) {
-            String[] infos = USbuffer.split(" ");
-            log.debug(USbuffer);
+            String[] infos = USbuffer.toString().split(" ");
             for (int i=0; i<4; i++) {
                 USvalues[i] = Integer.parseInt(infos[i]);
             }

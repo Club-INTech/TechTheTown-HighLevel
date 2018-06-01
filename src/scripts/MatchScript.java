@@ -18,8 +18,6 @@ import utils.Log;
 
 public class MatchScript extends AbstractScript {
 
-    private boolean usingBasicDetection;
-
     public MatchScript(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
         versions = new int[]{0,1,2,3,42};
@@ -31,9 +29,6 @@ public class MatchScript extends AbstractScript {
         log.debug("////////// Execution MatchScript version "+version+" //////////");
         hookFactory.configureHook(HookNames.ACTIVE_BRAS_AVANT_ABEILLE, HookNames.ACTIVE_BRAS_ARRIERE_ABEILLE,HookNames.BASIC_DETECTION_DISABLE);
         if(version==0){
-            if(usingBasicDetection){
-                gameState.robot.setBasicDetection(false);
-            }
 
             //On active le panneau domotique
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
@@ -69,9 +64,7 @@ public class MatchScript extends AbstractScript {
         }
 
         if(version==1){
-            if(usingBasicDetection){
-                gameState.robot.setBasicDetection(false);
-            }
+
             //Pile cube n°1
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);
             tk1.goToThenExec(1,gameState);
@@ -107,9 +100,7 @@ public class MatchScript extends AbstractScript {
         }
 
         if(version==2){
-            if(usingBasicDetection){
-                gameState.robot.setBasicDetection(false);
-            }
+
             //On active l'abeille
             ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
             activeAbeille.goToThenExec(2,gameState);
@@ -141,9 +132,6 @@ public class MatchScript extends AbstractScript {
         }
 
         if(version==3){
-            if(usingBasicDetection){
-                gameState.robot.setBasicDetection(false);
-            }
 
             //On active le panneau domotique
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
@@ -221,9 +209,6 @@ public class MatchScript extends AbstractScript {
         return new Circle(robotPosition);
     }
 
-    public void updateConfig(){
-        this.usingBasicDetection=config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
-    }
     @Override
     public int remainingScoreOfVersion(int version, final GameState state) {
         return 0;

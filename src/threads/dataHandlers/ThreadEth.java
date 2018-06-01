@@ -152,7 +152,7 @@ public class ThreadEth extends AbstractThread implements Service {
     private volatile ConcurrentLinkedQueue<String> eventBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> acknowledgementBuffer = new ConcurrentLinkedQueue<>();
     private volatile ConcurrentLinkedQueue<String> debugBuffer = new ConcurrentLinkedQueue<>();
-    private volatile String ultrasoundBuffer;
+    private volatile StringBuffer ultrasoundBuffer = new StringBuffer("1000 1000 1000 1000");
 
     /**
      * Le "canal" position & orientation
@@ -713,7 +713,7 @@ public class ThreadEth extends AbstractThread implements Service {
                                 e.printStackTrace();
                             }
                         } else if (CommunicationHeaders.ULTRASON.getFirstHeader() == headers[0] && CommunicationHeaders.ULTRASON.getSecondHeader() == headers[1]) {
-                            ultrasoundBuffer = infosFromBuffer;
+                            ultrasoundBuffer.replace(0, infosFromBuffer.length(), infosFromBuffer);
                             try {
                                 outSensor.write(String.format("[%d ms] ", ThreadTimer.getMatchCurrentTime()) + infosFromBuffer);
                                 outSensor.newLine();
@@ -784,7 +784,7 @@ public class ThreadEth extends AbstractThread implements Service {
     public ConcurrentLinkedQueue<String> getEventBuffer() {
         return eventBuffer;
     }
-    public String getUltrasoundBuffer() {
+    public StringBuffer getUltrasoundBuffer() {
         return ultrasoundBuffer;
     }
     public ConcurrentLinkedQueue<String> getStandardBuffer() {

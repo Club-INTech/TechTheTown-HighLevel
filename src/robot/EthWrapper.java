@@ -398,7 +398,7 @@ public class EthWrapper implements Service {
     }
 
     /** Accès aux dernières valeurs recues par le LL */
-    public String getUSBuffer() {
+    public StringBuffer getUSBuffer() {
         return eth.getUltrasoundBuffer();
     }
 
