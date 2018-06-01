@@ -136,10 +136,13 @@ public class Pathfinding implements Service {
         while (follow) {
             // Si le graphe a été mis à jour (s'il ne l'a pas été, on ne recalcule pas de chemin...)
             if (graphe.isUpdated()) {
-                synchronized (path.lock) {
-                    counter++;
-                    graphe.setUpdated(false);
-                    next = graphe.findNode(path.getPath().peek());
+                try {
+                    synchronized (path.lock) {
+                        counter++;
+                        graphe.setUpdated(false);
+                        next = graphe.findNode(path.getPath().peek());
+                        out.write("Actual Path : " + path.getPath() + "Next : " + next + "\n\n");
+                        out.flush();
 
                     /*
                     Si la position visée ou le nouveau point de départ du pathfinding est temporairement obstrué(e), on ne recalcule
@@ -148,21 +151,23 @@ public class Pathfinding implements Service {
                     si le point d'arrivé est obstrué, on espère qu'il ne le sera plus d'ici à ce qu'il y arrive... Si ce n'est pas le cas,
                     une NoPathFoundException est générée
                     */
-                    if (next!= null &&
-                            !table.getObstacleManager().isPositionInEnnemy(next.getPosition()) &&
-                            !table.getObstacleManager().isPositionInEnnemy(aimNode.getPosition()) &&
-                            !next.equals(aimNode))
-                    {
-                        next.setCout(0);
-                        openList.add(next);
-                        findmyway(next, aimNode);
-                        try {
-                            out.write("Counter : " + counter + ", Chemin trouvé : " + path.getPath() + "\n");
-                            out.flush();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        if (next != null &&
+                                !table.getObstacleManager().isPositionInEnnemy(next.getPosition()) &&
+                                !table.getObstacleManager().isPositionInEnnemy(aimNode.getPosition()) &&
+                                !next.equals(aimNode)) {
+                            next.setCout(0);
+                            openList.add(next);
+                            findmyway(next, aimNode);
+                            try {
+                                out.write("Counter : " + counter + ", Chemin trouvé : " + path.getPath() + "\n");
+                                out.flush();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
             // Si l'on a recu un message du ThreadPathFollower

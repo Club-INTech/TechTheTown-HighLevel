@@ -114,7 +114,7 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
             process.destroyForcibly();
-            container.getLog().critical(e);
+            container.getLog().critical(e.getStackTrace());
         }
     }
 
