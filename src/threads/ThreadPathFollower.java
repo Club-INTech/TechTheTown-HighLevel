@@ -46,6 +46,7 @@ public class ThreadPathFollower extends AbstractThread {
                 locomotion.moveToPoint(aim, false, true);
                 hasNext = !path.getPath().isEmpty();
             } while (hasNext);
+            log.debug("Thread Pathfollower terminé");
             eventQueue.add(new Boolean(true));
         } catch (UnableToMoveException e) {
             eventQueue.add(e);

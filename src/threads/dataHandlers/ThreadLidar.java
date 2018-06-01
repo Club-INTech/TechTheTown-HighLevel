@@ -119,8 +119,8 @@ public class ThreadLidar extends AbstractThread implements Service {
         String bufferList[];
         Thread.currentThread().setPriority(8);
         updateConfig();
-        initSocket();
         log.debug("ThreadLidar started");
+        initSocket();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
         long time = System.currentTimeMillis();
         long timeStep;
