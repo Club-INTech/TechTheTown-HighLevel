@@ -46,6 +46,7 @@ public class Pathfinding implements Service {
     /** Le pathfinding gère aussi la trajectoire via un autre Thread */
     private Locomotion locomotion;
     private int loopDelay;
+    private int distanceToDisengage;
 
     /** Vitesses du robot */
     private int robot_linear_speed;
@@ -175,6 +176,16 @@ public class Pathfinding implements Service {
                 Object event = eventQueue.poll();
                 if (event instanceof UnableToMoveException) {
                     if (((UnableToMoveException) event).getReason().equals(UnableToMoveReason.OBSTACLE_DETECTED)) {
+                        if (table.getObstacleManager().isPositionInEnnemy(locomotion.getPosition())) {
+                            Vec2 vec = table.getObstacleManager().getClosestEnnemy(locomotion.getPosition()).getPosition().minusNewVector(locomotion.getPosition());
+                            int signe;
+                            if (vec.dot(new Vec2(100.0, locomotion.getOrientation())) > 0) {
+                                signe = -1;
+                            } else {
+                                signe = 1;
+                            }
+                            locomotion.moveLengthwise(distanceToDisengage*signe, false, false);
+                        }
                         clean();
                         init(aim);
                         findmyway(beginNode, aimNode);
@@ -352,6 +363,7 @@ public class Pathfinding implements Service {
     public void updateConfig() {
         this.robot_linear_speed = config.getInt(ConfigInfoRobot.ROBOT_LINEAR_SPEED);
         this.robot_angular_speed = config.getDouble(ConfigInfoRobot.ROBOT_ANGULAR_SPEED);
-        loopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
+        this.loopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
+        this.distanceToDisengage = config.getInt(ConfigInfoRobot.DISTANCE_TO_DISENGAGE);
     }
 }

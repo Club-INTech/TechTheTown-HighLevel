@@ -32,8 +32,6 @@ import java.io.StringWriter;
  */
 public class UnableToMoveException extends Exception
 {
-
-	
 	/** La position où on voulait aller au moment de l'exception */
 	private Vec2 aim;
 	
