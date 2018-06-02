@@ -106,8 +106,8 @@ public class Main {
             ArrayList<Pair> scriptsToExecute = new ArrayList<>();
             scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 2));
             scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 1));
-            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.DEPOSE_CUBES), 0));
             scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE), 0));
+            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.DEPOSE_CUBES), 0));
             scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 0));
             scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.DEPOSE_CUBES), 2));
 
