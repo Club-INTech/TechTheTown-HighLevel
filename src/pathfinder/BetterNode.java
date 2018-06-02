@@ -27,7 +27,7 @@ public class BetterNode implements Comparator<Node> {
 
     /** Calcul l'heuristique si elle n'a pas déjà été calculée avant */
     private int computeHeuristic(Node node) {
-        if (node.getHeuristique() == -1 && !node.getPosition().equals(aim)) {
+        if (node.getHeuristique() == Node.getDefaultHeuristic() && !node.getPosition().equals(aim)) {
             node.setHeuristique(node.getPosition().intDistance(aim));
         }
         return node.getHeuristique();

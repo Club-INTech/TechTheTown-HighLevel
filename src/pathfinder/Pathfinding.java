@@ -142,7 +142,7 @@ public class Pathfinding implements Service {
                         counter++;
                         graphe.setUpdated(false);
                         next = graphe.findNode(path.getPath().peek());
-                        out.write("Actual Path : " + path.getPath() + "Next : " + next + "\n\n");
+                        out.write("Actual Path : " + path.getPath() + "Next : " + next + "\n");
                         out.flush();
 
                     /*
@@ -168,6 +168,8 @@ public class Pathfinding implements Service {
                             }
                         }
                     }
+
+                    out.write("\n");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

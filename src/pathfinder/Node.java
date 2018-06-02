@@ -13,7 +13,7 @@ import java.util.Hashtable;
 public class Node {
 
     /** Variables static pour l'initialistation des noeuds */
-    private static final int DEFAULT_HEURISTIC      = -1;
+    private static final int DEFAULT_HEURISTIC      = 1000000;
     private static final int DEFAULT_COST           = 1000000;
     private static int FIX_COST                     = 0;
 
