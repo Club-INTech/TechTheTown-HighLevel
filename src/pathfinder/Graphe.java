@@ -13,6 +13,7 @@ import table.obstacles.ObstacleProximity;
 import table.obstacles.ObstacleRectangular;
 import utils.Log;
 
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
@@ -240,7 +241,12 @@ public class Graphe implements Service {
         for (Ridge ridge: ridges) {
             ridge.setReachable(true);
             for (ObstacleProximity obstacleProximity : mobileEnnemies) {
-                if (Geometry.intersects(ridge.getSeg(), obstacleProximity.getCircle())) {
+                if (Line2D.ptSegDist(ridge.getSeg().getA().getX(),
+                        ridge.getSeg().getA().getY(),
+                        ridge.getSeg().getB().getX(),
+                        ridge.getSeg().getB().getY(),
+                        obstacleProximity.getPosition().getX(),
+                        obstacleProximity.getPosition().getY())<= obstacleProximity.getRadius() + 20) {
                     ridge.setReachable(false);
                     counter++;
                     break;

@@ -43,6 +43,7 @@ ESPACEMENT_OBSTACLE_COEFF            = 1.2
 FEEDBACK_LOOPDELAY                   = 20
 DETECTION_DISTANCE                   = 250
 BASIC_DETECTION_DISTANCE             = 30
+DETECTION_RAY                        = 200
 
 ############ PARAMETRES RECONNAISSANCE DE COULEURS #############
 # A LA MAIN : FALSE /// AUTOMATIQUE : TRUE
