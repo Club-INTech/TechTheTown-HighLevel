@@ -67,7 +67,7 @@ public class Main {
             TasCubes.setSymetry(symetry);
             TasCubes.setMatchScriptVersion(matchScriptVersionToExecute);
 
-            ProcessBuilder pBuilder = new ProcessBuilder("nice -n -20 python3", "main.py");
+            ProcessBuilder pBuilder = new ProcessBuilder("python3", "main.py");
             pBuilder.directory(new File("../lidar"));
 
             realState = container.getService(GameState.class);
