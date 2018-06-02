@@ -243,7 +243,7 @@ public class ObstacleManager implements Service
      */
     public synchronized boolean isObstaclePositionValid(Vec2 position){
         // TODO: Prévoir les cas où l'on détecte des éléments de jeu dans la condition
-        if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius
+        if (position.getX() > -1500 + mEnnemyRadius && position.getX() < 1500 - mEnnemyRadius - 100
                 && position.getY() > mEnnemyRadius && position.getY() < 2000 - mEnnemyRadius  // Hors de la table
                 && !(position.getX() > 1100 - mEnnemyRadius && position.getY() < 600 + mEnnemyRadius) // Dans la zone de départ
                 && !(position.getX() > 550 - mEnnemyRadius && position.getY() < 170 + mEnnemyRadius) // Dans la zone de construction

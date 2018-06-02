@@ -27,7 +27,8 @@ public class ActivationPanneauDomotique extends AbstractScript{
     /** Eléments appelés par la config */
 
     private int distanceInterrupteur;
-    private boolean usingBasicDetection;
+    private int basicDetectionDistance;
+    private int detectionDistance;
 
     public ActivationPanneauDomotique(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
@@ -43,6 +44,9 @@ public class ActivationPanneauDomotique extends AbstractScript{
     @Override
     public void execute(int versionToExecute, GameState state) throws UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution ActivePanneauDomotique version "+versionToExecute+" //////////");
+        state.robot.getmLocomotion().setDistanceBasicDetectionTriggered(15);
+        state.robot.getmLocomotion().setDetectionDistance(20);
+
         state.robot.turn(-Math.PI/2);
         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         //Il se peut qu'on fonce dans un mur
@@ -51,12 +55,17 @@ public class ActivationPanneauDomotique extends AbstractScript{
         state.setPanneauActive(true);
         state.robot.goTo(new Vec2(xEntry, yEntry));
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+
+        state.robot.getmLocomotion().setDetectionDistance(detectionDistance);
+        state.robot.getmLocomotion().setDistanceBasicDetectionTriggered(basicDetectionDistance);
         log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");
     }
 
     @Override
     public void finalize(GameState state, Exception e) {
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+        state.robot.getmLocomotion().setDetectionDistance(detectionDistance);
+        state.robot.getmLocomotion().setDistanceBasicDetectionTriggered(basicDetectionDistance);
     }
 
     @Override
@@ -78,6 +87,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
     public void updateConfig() {
         super.updateConfig();
         this.distanceInterrupteur = config.getInt(ConfigInfoRobot.DISTANCE_INTERRUPTEUR);
-        this.usingBasicDetection = config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        this.basicDetectionDistance = config.getInt(ConfigInfoRobot.BASIC_DETECTION_DISTANCE);
+        this.detectionDistance = config.getInt(ConfigInfoRobot.DETECTION_DISTANCE);
     }
 }
