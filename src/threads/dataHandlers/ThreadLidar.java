@@ -182,6 +182,13 @@ public class ThreadLidar extends AbstractThread implements Service {
             } catch (IOException e) {
                 e.printStackTrace();
                 log.critical(e);
+                try {
+                    table.getObstacleManager().getMobileObstacles().clear();
+                    client.close();
+                    server.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         }
     }
