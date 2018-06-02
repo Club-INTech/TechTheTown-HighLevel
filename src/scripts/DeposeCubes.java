@@ -16,6 +16,7 @@ import pfg.config.Config;
 import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
+import table.obstacles.ObstacleRectangular;
 import utils.Log;
 
 public class DeposeCubes extends AbstractScript {
@@ -30,6 +31,7 @@ public class DeposeCubes extends AbstractScript {
     private int[] yEntry;
     private int shift;       //Décalage entre les deux versions pour ne pas rentrer dans les obstacles.
 
+    /** Constructeur */
     public DeposeCubes(Config config, Log log, HookFactory hookFactory) {
         super(config, log, hookFactory);
         updateConfig();
@@ -122,7 +124,6 @@ public class DeposeCubes extends AbstractScript {
                     if (state.getTimeEllapsed()<98000) {
                         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
                     }
-
                 }
             }
 
@@ -174,8 +175,6 @@ public class DeposeCubes extends AbstractScript {
                         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
                     }
 
-
-
                     state.robot.turn(Math.PI / 2);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_ARRIERE, true);
                     state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
@@ -210,8 +209,6 @@ public class DeposeCubes extends AbstractScript {
                         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE, false);
                     }
 
-
-
                     state.robot.turn(-Math.PI / 2);
                     state.robot.useActuator(ActuatorOrder.OUVRE_LA_PORTE_AVANT, true);
                     state.robot.setLocomotionSpeed(Speed.VERY_SLOW_ALL);
@@ -224,6 +221,12 @@ public class DeposeCubes extends AbstractScript {
                         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT, false);
                     }
                 }
+            }
+            state.table.getObstacleManager().getRectangles().add(new ObstacleRectangular(new Vec2(xEntry[version], 30),
+                    60 + 2*state.robot.getRobotRadius(),
+                    30 + 2*state.robot.getRobotRadius()));
+            synchronized (state.table.getGraph().lock) {
+                state.table.getGraph().init();
             }
             state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
         }

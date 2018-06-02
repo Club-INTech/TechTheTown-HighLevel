@@ -115,7 +115,7 @@ public class Main {
             System.out.println("MatchScript to execute: "+matchScriptVersionToExecute);
             System.out.println("Le robot commence le match");
 
-            waitMatchBegin();
+            // waitMatchBegin();
             while(patternRecognition.isMovementLocked()) {
                 Thread.sleep(10);
             }
