@@ -30,6 +30,7 @@ import smartMath.Vec2;
 import utils.Log;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Traite tout ce qui concerne la gestion des obstacles sur la table.
@@ -262,22 +263,23 @@ public class ObstacleManager implements Service
     public synchronized void removeOutdatedObstacles()
     {
         // enlève les obstacles confirmés s'ils sont périmés
-        ArrayList<ObstacleProximity> remove = new ArrayList<>();
-        for (ObstacleProximity obstacleProximity : mMobileObstacles) {
+        Iterator<ObstacleProximity> iterator = mMobileObstacles.iterator();
+        ObstacleProximity obstacleProximity;
+        while (iterator.hasNext()) {
+            obstacleProximity = iterator.next();
             if (obstacleProximity.getOutDatedTime() < System.currentTimeMillis()) {
-                remove.add(obstacleProximity);
+                iterator.remove();
             }
         }
-        mMobileObstacles.removeAll(remove);
 
         // enlève les obstacles en attente s'ils sont périmés
-        remove.clear();
-        for (ObstacleProximity obstacleProximity : mUntestedMobileObstacles) {
+        iterator = mUntestedMobileObstacles.iterator();
+        while (iterator.hasNext()){
+            obstacleProximity = iterator.next();
             if (obstacleProximity.getOutDatedTime() < System.currentTimeMillis()) {
-                remove.add(obstacleProximity);
+                iterator.remove();
             }
         }
-        mUntestedMobileObstacles.removeAll(remove);
     }
 
     /**
