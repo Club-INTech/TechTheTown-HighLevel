@@ -7,7 +7,7 @@ SAVE_LOG                             = true
 ROBOT_LENGTH                         = 300
 ROBOT_WIDTH                          = 380
 ROBOT_RADIUS                         = 200
-ENNEMY_RADIUS                        = 100
+ENNEMY_RADIUS                        = 180
 LONGUEUR_CUBE                        = 58
 LONGUEUR_BRAS_AVANT                  = 317
 LONGUEUR_BRAS_ARRIERE                = 333
@@ -16,11 +16,11 @@ INDICE_PATTERN_SIMULATION            = 0
 
 # ETAT INITIAL DES ROBOTS
 COULEUR                              = vert
-SIMULATION                           = true
+SIMULATION                           = false
 ATTENTE_JUMPER                       = true
 
 # VERSION DE MATCHSCRIPT TO EXECUTE
-MATCHSCRIPT_TO_EXECUTE               = 0
+MATCHSCRIPT_TO_EXECUTE               = 2
 BASIC_DETECTION                      = true
 ADVANCED_DETECTION                   = false
 SENSOR_ANGLE_WIDENESS                = 1.04
