@@ -26,6 +26,7 @@ import enums.ConfigInfoRobot;
 import enums.ActuatorOrder;
 import enums.Speed;
 import hook.HookNames;
+import org.opencv.core.Mat;
 import pfg.config.Config;
 import smartMath.Vec2;
 import smartMath.XYO;
@@ -203,8 +204,10 @@ public class EthWrapper implements Service {
      */
     public XYO getCurrentPositionAndOrientation()
     {
-        String[] response = eth.communicate(1, ActuatorOrder.SEND_POSITION.getEthernetOrder());
-        eth.getXYO().update(response[0], " ");
+        String[] response = eth.communicate(3, ActuatorOrder.SEND_POSITION.getEthernetOrder());
+        eth.getXYO().getPosition().setX((int)Math.round(Double.parseDouble(response[0])));
+        eth.getXYO().getPosition().setY((int)Math.round(Double.parseDouble(response[1])));
+        eth.getXYO().setOrientation(Double.parseDouble(response[2]));
         return eth.getXYO();
     }
 
