@@ -50,16 +50,9 @@ public class MatchScript extends AbstractScript {
             TakeCubes tk2 = new TakeCubes(config,log,hookFactory);
             tk2.goToThenExec(2,gameState);
 
-            //On active l'abeille
-            ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
-            activeAbeille.goToThenExec(2,gameState);
-
             //On prend le tas de cubes 1
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);
             tk1.goToThenExec(1,gameState);
-
-            //On évite que les cubes soient poussés vers la zone de construction
-            gameState.robot.goTo(new Vec2(970,1400));
 
             //On dépose les cubes à la première position
             DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
@@ -87,13 +80,6 @@ public class MatchScript extends AbstractScript {
             TakeCubes tk1=new TakeCubes(config,log,hookFactory);
             tk1.goToThenExec(1,gameState);
             //Pile cube n°1
-
-            //On évite que les cubes soient poussés vers l'abeille
-            gameState.robot.goTo(new Vec2(970,1100));
-
-            //On active l'abeille
-            ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
-            activeAbeille.goToThenExec(0,gameState);
 
             //Pile de cube n°2
             TakeCubes tk2=new TakeCubes(config,log,hookFactory);
@@ -125,9 +111,6 @@ public class MatchScript extends AbstractScript {
             if(usingBasicDetection){
                 gameState.robot.setBasicDetection(false);
             }
-            //On active l'abeille
-            ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
-            activeAbeille.goToThenExec(2,gameState);
 
             //On prend le tas de cubes 2
             TakeCubes tk2 = new TakeCubes(config,log,hookFactory);
@@ -185,10 +168,6 @@ public class MatchScript extends AbstractScript {
             DeposeCubes dpCubes0 = new DeposeCubes(config, log, hookFactory);
             dpCubes0.goToThenExec(0, gameState);
 
-            //On active l'abeille
-            ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
-            activeAbeille.goToThenExec(2,gameState);
-
             //On prend le tas de cubes 2
             TakeCubes tk2=new TakeCubes(config,log,hookFactory);
             tk2.goToThenExec(2, gameState);
@@ -225,13 +204,6 @@ public class MatchScript extends AbstractScript {
 
             DeposeCubes deposeCubes0 = new DeposeCubes(config, log, hookFactory);
             deposeCubes0.goToThenExec(0, gameState);
-
-            //
-
-        ActiveAbeille activeAbeille1 = new ActiveAbeille(config, log, hookFactory);
-        activeAbeille1.goToThenExec(1, gameState);
-
-
 
         }
         log.debug("////////// End MatchScript version "+version+" //////////");
