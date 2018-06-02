@@ -34,6 +34,7 @@ public class ThreadLidar extends AbstractThread implements Service {
 
     /** Sert à connaître la position du robot */
     private XYO highlevelXYO;
+    private Locomotion locomotion;
 
     /** Gestion de la réception des données du Lidar */
     private ServerSocket server;
@@ -57,6 +58,7 @@ public class ThreadLidar extends AbstractThread implements Service {
         this.config = config;
         this.graph = graph;
         this.table = table;
+        this.locomotion = locomotion;
         this.highlevelXYO = locomotion.getHighLevelXYO();
 
         try {
@@ -129,25 +131,6 @@ public class ThreadLidar extends AbstractThread implements Service {
 
         while (true) {
             try {
-                /*
-                while (!input.ready()) {
-                    Thread.sleep(1);
-                }
-
-                char character = (char) input.read();
-                StringBuilder sBuilder = new StringBuilder();
-                sBuilder.append(character);
-
-                while ((int) character != 10) {
-                    if (input.ready()) {
-                        character = (char) input.read();
-                        sBuilder.append(character);
-                    } else {
-                        Thread.sleep(1);
-                    }
-                }
-                buffer = sBuilder.toString();
-                */
                 buffer = input.readLine();
 
                 timeStep = System.currentTimeMillis();
@@ -160,6 +143,8 @@ public class ThreadLidar extends AbstractThread implements Service {
                 outTmp.flush();
 
                 bufferList = buffer.split(";");
+
+                highlevelXYO = locomotion.getHighLevelXYO();
 
                 // Mise à jour de la table
                 for (String info : bufferList) {
