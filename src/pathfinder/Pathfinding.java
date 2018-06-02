@@ -133,6 +133,8 @@ public class Pathfinding implements Service {
             }
         }
 
+        long timeStep = System.currentTimeMillis();
+
         // On recalcule le chemin tant qu'on est pas immobile et proche de l'arrivé
         while (follow) {
             // Si le graphe a été mis à jour (s'il ne l'a pas été, on ne recalcule pas de chemin...)
@@ -193,6 +195,11 @@ public class Pathfinding implements Service {
                             }
                             clean();
 
+                            // Si on galère trop, on s'arrête
+                            if (System.currentTimeMillis() - timeStep > 5000) {
+                                throw new NoPathFound(aim);
+                            }
+
                             Thread.sleep(500);
                             synchronized (graphe.lock) {
                                 init(aim);
@@ -232,6 +239,9 @@ public class Pathfinding implements Service {
 
         int currentCost;
         Set<Node> neighbours;
+        int reachableRidges = 0;
+        int totalRidges = 0;
+
         synchronized (graphe.lock) {
             // Algorithme en lui-même
             int conter = 0;
@@ -240,6 +250,12 @@ public class Pathfinding implements Service {
                 Node visited = openList.poll();
 
                 if (visited.equals(aim)) {
+                    try {
+                        out.write("Nombre de ridge OK : " + reachableRidges + "\n");
+                        out.write("Nombre de ridge totale parcourue " + totalRidges + "\n");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     reconstructPath(begin);
                     return;
                 }
@@ -248,7 +264,9 @@ public class Pathfinding implements Service {
 
                 for (Node neighbour : neighbours) {
                     Ridge ridge = visited.getNeighbours().get(neighbour);
+                    totalRidges++;
                     if (ridge.isReachable()) {
+                        reachableRidges++;
                         currentCost = visited.getCout() + ridge.getCost();
                         // Si l'on a déjà évalué ce noeud et que visited est un meilleur prédecesseur, on l'update !
                         if ((openList.contains(neighbour) || closedList.contains(neighbour)) && currentCost < neighbour.getCout()) {

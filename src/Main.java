@@ -20,12 +20,17 @@
 import container.Container;
 import enums.*;
 import exceptions.ContainerException;
+import exceptions.Locomotion.PointInObstacleException;
+import exceptions.Locomotion.UnableToMoveException;
+import exceptions.NoPathFound;
 import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
+import scripts.AbstractScript;
 import scripts.ScriptManager;
 import strategie.GameState;
+import strategie.Pair;
 import table.Table;
 import threads.ThreadInterface;
 import threads.dataHandlers.ThreadLidar;
@@ -35,6 +40,10 @@ import threads.dataHandlers.ThreadEth;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Code qui démarre le robot en début de match
@@ -96,6 +105,14 @@ public class Main {
             e.printStackTrace();
         }
         try {
+            int index = 0;
+            ArrayList<Pair> scriptsToExecute = new ArrayList<>();
+            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 2));
+            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 1));
+            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.DEPOSE_CUBES), 0));
+            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE), 0));
+            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 0));
+            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.DEPOSE_CUBES), 2));
 
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
             System.out.println("MatchScript to execute: "+matchScriptVersionToExecute);
@@ -107,8 +124,16 @@ public class Main {
             }
 
             //TODO : lancer l'IA
+            for (Pair pair : scriptsToExecute) {
+                try {
+                    pair.getScript().goToThenExec(pair.getVersion(), realState);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    pair.getScript().finalize(realState, e);
+                }
+            }
 
-            scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
+            // scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
             process.destroyForcibly();
 
         } catch (Exception e) {
