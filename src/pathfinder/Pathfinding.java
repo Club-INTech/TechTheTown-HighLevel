@@ -156,6 +156,7 @@ public class Pathfinding implements Service {
                                 !table.getObstacleManager().isPositionInEnnemy(next.getPosition()) &&
                                 !table.getObstacleManager().isPositionInEnnemy(aimNode.getPosition()) &&
                                 !next.equals(aimNode)) {
+                            graphe.reInit();
                             next.setCout(0);
                             openList.add(next);
                             findmyway(next, aimNode);
@@ -189,6 +190,7 @@ public class Pathfinding implements Service {
                         clean();
                         init(aim);
                         findmyway(beginNode, aimNode);
+                        path.getPath().poll();
                         (new ThreadPathFollower(log, config, path, eventQueue, locomotion)).start();
                     } else if (((UnableToMoveException) event).getReason().equals(UnableToMoveReason.PHYSICALLY_BLOCKED)) {
                         throw ((UnableToMoveException) event);
