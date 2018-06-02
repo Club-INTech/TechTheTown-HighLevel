@@ -198,9 +198,9 @@ public class MatchScript extends AbstractScript {
 
             TakeCubes takeCubesD = new TakeCubes(config, log, hookFactory);
             takeCubesD.goToThenExec(0, gameState);
-            
+
             DeposeCubes deposeCubes2 = new DeposeCubes(config, log, hookFactory);
-            deposeCubes0.goToThenExec(2, gameState);
+            deposeCubes2.goToThenExec(2, gameState);
 
         }
         log.debug("////////// End MatchScript version "+version+" //////////");
