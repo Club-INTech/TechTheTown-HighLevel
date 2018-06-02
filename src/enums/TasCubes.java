@@ -14,7 +14,7 @@ public enum TasCubes{
     //Position orange décalée de +10 en Y par rapport à la position théorique
     TAS_CHATEAU_EAU(1,new Vec2(1200,1200),  new Vec2(1195,1215),  //MatchScript 0
             new Vec2(1200,1200),  new Vec2(1200,1200), //MatchScript 2
-            new Vec2(1200,1200),  new Vec2(1170,1230)), //MatchScript 42
+            new Vec2(1200,1200),  new Vec2(1165,1235)), //MatchScript 42
 
 
     //Position verte décalée de -10 en X par rapport à la position théorique
@@ -26,7 +26,7 @@ public enum TasCubes{
 
     TAS_STATION_EPURATION_ENNEMI(3,new Vec2(-400,1500), new Vec2(-400,1500), //MatchScript 0
             new Vec2(-400,1500), new Vec2(-400,1500), //MatchScript 2
-            new Vec2(-400,1500), new Vec2(-390,1485)), //MatchScript 42
+            new Vec2(-400,1500), new Vec2(-390,1520)), //MatchScript 42
 
 
     TAS_CHATEAU_EAU_ENNEMI(4,new Vec2(-1200,1190), new Vec2(-1200,1190), //MatchScript 0
