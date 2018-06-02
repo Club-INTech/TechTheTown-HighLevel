@@ -40,10 +40,7 @@ import threads.dataHandlers.ThreadEth;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Code qui démarre le robot en début de match
@@ -124,12 +121,22 @@ public class Main {
             }
 
             //TODO : lancer l'IA
-            for (Pair pair : scriptsToExecute) {
+            Pair currentPair;
+            while (!scriptsToExecute.isEmpty()){
+                currentPair = scriptsToExecute.get(index);
                 try {
-                    pair.getScript().goToThenExec(pair.getVersion(), realState);
+                    currentPair.getScript().goToThenExec(currentPair.getVersion(), realState);
+                    scriptsToExecute.remove(index);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    pair.getScript().finalize(realState, e);
+                    currentPair.getScript().finalize(realState, e);
+                    if (realState.table.getObstacleManager().isPositionInObstacle(realState.robot.getPosition())) {
+                        realState.robot.goTo(realState.table.getGraph().closestNodeToPosition(realState.robot.getPosition()).getPosition());
+                    }
+                    index++;
+                    if (index >= scriptsToExecute.size()) {
+                        index = 0;
+                    }
                 }
             }
 
