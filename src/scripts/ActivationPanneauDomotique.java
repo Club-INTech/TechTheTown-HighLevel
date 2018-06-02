@@ -50,7 +50,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
         state.robot.turn(-Math.PI/2);
         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         //Il se peut qu'on fonce dans un mur
-        state.robot.goToWithoutDetection(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur),true);
+        state.robot.goTo(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur),true, false);
         state.addObtainedPoints(25);
         state.setPanneauActive(true);
         state.robot.goTo(new Vec2(xEntry, yEntry));
