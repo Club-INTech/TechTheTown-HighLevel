@@ -246,7 +246,7 @@ public class Graphe implements Service {
                         ridge.getSeg().getB().getX(),
                         ridge.getSeg().getB().getY(),
                         obstacleProximity.getPosition().getX(),
-                        obstacleProximity.getPosition().getY())<= obstacleProximity.getRadius() + 20) {
+                        obstacleProximity.getPosition().getY())<= obstacleProximity.getRadius() + 50) {
                     ridge.setReachable(false);
                     counter++;
                     break;
