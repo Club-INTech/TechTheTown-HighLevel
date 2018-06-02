@@ -98,6 +98,7 @@ public class MatchScript extends AbstractScript {
             //Interrupteur
             ActivationPanneauDomotique actPD=new ActivationPanneauDomotique(config,log,hookFactory);
             actPD.goToThenExec(0,gameState);
+
             //On dépose les cubes à la deuxième position
             DeposeCubes dpCubes2=new DeposeCubes(config,log,hookFactory);
             dpCubes2.goToThenExec(2, gameState);
@@ -180,30 +181,26 @@ public class MatchScript extends AbstractScript {
         // Script de la victoire !
         if (version == 42) {
 
-            TakeCubes takeCubes2 = new TakeCubes(config, log, hookFactory);
-            takeCubes2.goToThenExec(2,gameState);
+            TakeCubes takeCubesA = new TakeCubes(config, log, hookFactory);
+            takeCubesA.goToThenExec(3,gameState);
 
-            TakeCubes takeCubes0 = new TakeCubes(config, log, hookFactory);
-            takeCubes0.goToThenExec(0, gameState);
+            TakeCubes takeCubesB = new TakeCubes(config, log, hookFactory);
+            takeCubesB.goToThenExec(1, gameState);
 
-            //On évite de pousser un cube entre le robot et le panneau domotique
-            gameState.robot.goTo(new Vec2(320,500)); //Position bonne
+            DeposeCubes deposeCubes0 = new DeposeCubes(config, log, hookFactory);
+            deposeCubes0.goToThenExec(0,gameState);
+
+            TakeCubes takeCubesC = new TakeCubes(config, log, hookFactory);
+            takeCubesC.goToThenExec(2, gameState);
 
             ActivationPanneauDomotique activationPanneauDomotique = new ActivationPanneauDomotique(config, log, hookFactory);
             activationPanneauDomotique.goToThenExec(0,gameState);
 
+            TakeCubes takeCubesD = new TakeCubes(config, log, hookFactory);
+            takeCubesD.goToThenExec(0, gameState);
+
             DeposeCubes deposeCubes2 = new DeposeCubes(config, log, hookFactory);
-            deposeCubes2.goToThenExec(2,gameState);
-
-            //On évite qu'on pousse le cube du tas 0 en allant vers le tas 1
-            gameState.robot.goTo(new Vec2(900,560));
-            //TODO : Position à corriger
-
-            TakeCubes takeCubes1 = new TakeCubes(config, log, hookFactory);
-            takeCubes1.goToThenExec(1, gameState);
-
-            DeposeCubes deposeCubes0 = new DeposeCubes(config, log, hookFactory);
-            deposeCubes0.goToThenExec(0, gameState);
+            deposeCubes2.goToThenExec(2, gameState);
 
         }
         log.debug("////////// End MatchScript version "+version+" //////////");
