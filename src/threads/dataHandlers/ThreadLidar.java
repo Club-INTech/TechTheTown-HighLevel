@@ -168,6 +168,9 @@ public class ThreadLidar extends AbstractThread implements Service {
 
                     table.getObstacleManager().addObstacle(pos, ennemyRadius);
                     table.getObstacleManager().removeOutdatedObstacles();
+
+                    outTmp.write("Size of mobile obstacle list : " + table.getObstacleManager().getMobileObstacles().size() + "\n");
+                    outTmp.flush();
                 }
 
                 // Mise à jour du graphe
