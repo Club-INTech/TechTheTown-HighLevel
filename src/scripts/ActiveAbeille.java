@@ -102,9 +102,6 @@ public class ActiveAbeille extends AbstractScript {
         }
         if(versionToExecute==1) {
             //On vérifie quel bras de l'abeille on va devoir utiliser, à l'aide d'un produit scalaire
-            if (usingBasicDetection) {
-                state.robot.setBasicDetection(false);
-            }
 
             if (prodScal > 0) {
                 //ON UTILISE LE BRAS AVANT
@@ -127,9 +124,6 @@ public class ActiveAbeille extends AbstractScript {
             //On retourne à une position atteignable par le pathfinding
             Vec2 aim = new Vec2(xEntryPathfindingAvaible, yEntryPathfindingAvaible);
             state.robot.goTo(aim);
-            if (usingBasicDetection) {
-                state.robot.setBasicDetection(true);
-            }
             log.debug("////////// End ActiveAbeille version " + versionToExecute + " //////////");
         }
     }

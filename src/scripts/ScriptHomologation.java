@@ -11,7 +11,6 @@ import exceptions.NoPathFound;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
-import smartMath.Geometry;
 import smartMath.Vec2;
 import strategie.GameState;
 import utils.Log;
@@ -23,10 +22,14 @@ public class ScriptHomologation extends AbstractScript {
     private int longueurBrasAv;
     private int longueurBrasAR;
     private int indiceTasCubeAPrendre;
+    private TakeCubes takeCubes;
+    private DeposeCubes deposeCubes;
 
     public ScriptHomologation(Config config, Log log, HookFactory hookFactory){
         super(config,log,hookFactory);
         indiceTasCubeAPrendre=2;
+        takeCubes=new TakeCubes(config,log,hookFactory);
+        deposeCubes=new DeposeCubes(config,log,hookFactory);
         updateConfig();
     }
 
@@ -35,8 +38,8 @@ public class ScriptHomologation extends AbstractScript {
     public void execute(int versionToExecute, GameState actualState) throws InterruptedException, UnableToMoveException, ExecuteException, BlockedActuatorException, BadVersionException, PointInObstacleException, ImmobileEnnemyForOneSecondAtLeast, NoPathFound {
         actualState.setRecognitionDone(true);
         actualState.setIndicePattern(0);
-        ActiveAbeille activeAbeille=new ActiveAbeille(config,log,hookFactory);
-        activeAbeille.goToThenExec(2,actualState );
+        takeCubes.goToThenExec(2,actualState);
+        deposeCubes.goToThenExec(0,actualState);
 
     }
 
@@ -62,7 +65,6 @@ public class ScriptHomologation extends AbstractScript {
 
     public void takeThisCube(GameState state,String direction){
 
-        state.robot.setBasicDetection(false);
         state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
         state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_ARRIERE,false);
         state.robot.useActuator(ActuatorOrder.ACTIVE_LA_POMPE, false);
@@ -89,7 +91,6 @@ public class ScriptHomologation extends AbstractScript {
         state.robot.useActuator(ActuatorOrder.DESACTIVE_LA_POMPE, false);
         state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_AVANT, false);
         state.robot.useActuator(ActuatorOrder.DESACTIVE_ELECTROVANNE_ARRIERE, false);
-        state.robot.setBasicDetection(true);
     }
 
     @Override

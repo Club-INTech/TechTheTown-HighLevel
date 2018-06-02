@@ -129,6 +129,7 @@ public class ThreadLidar extends AbstractThread implements Service {
 
         while (true) {
             try {
+                /*
                 while (!input.ready()) {
                     Thread.sleep(1);
                 }
@@ -137,7 +138,7 @@ public class ThreadLidar extends AbstractThread implements Service {
                 StringBuilder sBuilder = new StringBuilder();
                 sBuilder.append(character);
 
-                while (character != '\n') {
+                while ((int) character != 10) {
                     if (input.ready()) {
                         character = (char) input.read();
                         sBuilder.append(character);
@@ -146,6 +147,8 @@ public class ThreadLidar extends AbstractThread implements Service {
                     }
                 }
                 buffer = sBuilder.toString();
+                */
+                buffer = input.readLine();
 
                 timeStep = System.currentTimeMillis();
                 counter++;
@@ -193,10 +196,10 @@ public class ThreadLidar extends AbstractThread implements Service {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                log.debug(e);
-            } catch (InterruptedException e) {
+                log.critical(e);
+            } /* catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 

@@ -22,8 +22,8 @@ public class TakeCubes extends AbstractScript {
     private int longueurBrasArriere;
     private int longueurBrasUtilise;
 
-    private boolean usingBasicDetection;
-    private boolean usingAdvancedDetection;
+    private int basicDetectionDistance;
+    private int detectionDistance;
 
     private int indicePattern;
     private TasCubes currentTas;
@@ -60,13 +60,9 @@ public class TakeCubes extends AbstractScript {
             throws InterruptedException, ExecuteException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution TakeCubes version "+indiceTas+" //////////");
 
-        int basicDetectionDistance = state.robot.getmLocomotion().getDistanceBasicDetectionTriggered();
-        int detectionDistance = state.robot.getmLocomotion().getDetectionDistance();
-
         state.robot.getmLocomotion().setDetectionDistance(20);
-        state.robot.getmLocomotion().setDistanceBasicDetectionTriggered(10);
+        state.robot.getmLocomotion().setDistanceBasicDetectionTriggered(15);
 
-        state.robot.setBasicDetection(false);
         this.alreadyTriedCorrection=false;
         this.alreadyRemovedObstacle=false;
         this.currentIdealPositionInTower=0;
@@ -75,7 +71,6 @@ public class TakeCubes extends AbstractScript {
         log.debug("Execute: AlreadyTriedCorrection; "+this.alreadyTriedCorrection);
         this.normalVersions(indiceTas, state);
         log.debug("////////// End TakeCubes version "+indiceTas+" //////////");
-        state.robot.setBasicDetection(true);
 
         state.robot.getmLocomotion().setDistanceBasicDetectionTriggered(basicDetectionDistance);
         state.robot.getmLocomotion().setDetectionDistance(detectionDistance);
@@ -353,7 +348,6 @@ public class TakeCubes extends AbstractScript {
     }
 
 
-
     /**
      *
      * @param state
@@ -365,13 +359,6 @@ public class TakeCubes extends AbstractScript {
      */
     private boolean takeThisCube(GameState state, Cubes currentCube) throws InterruptedException, UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         boolean cubeSuccessfullyTaken=false;
-        if (usingAdvancedDetection) {
-            state.robot.useActuator(ActuatorOrder.SUS_OFF,true);
-            state.setCapteursActivated(false);
-        }
-        if(usingBasicDetection){
-            state.robot.setBasicDetection(false);
-        }
         if (this.brasUtilise.equals(BrasUtilise.AVANT)){
             //Vazy wesh si t'as besoin d'explications pour ça c'est que tu sais pas lire
             state.robot.useActuator(ActuatorOrder.ACTIVE_ELECTROVANNE_AVANT,false);
@@ -425,15 +412,6 @@ public class TakeCubes extends AbstractScript {
                     }
                 }
             }
-        }
-
-
-        if (usingAdvancedDetection) {
-            state.robot.useActuator(ActuatorOrder.SUS_ON,true);
-            state.setCapteursActivated(true);
-        }
-        if(usingBasicDetection){
-            state.robot.setBasicDetection(true);
         }
 
         return cubeSuccessfullyTaken;
@@ -559,6 +537,9 @@ public class TakeCubes extends AbstractScript {
         state.robot.useActuator(ActuatorOrder.RELEVE_LE_BRAS_ARRIERE,true);
         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_AVANT,false);
         state.robot.useActuator(ActuatorOrder.FERME_LA_PORTE_ARRIERE,true);
+
+        state.robot.getmLocomotion().setDistanceBasicDetectionTriggered(basicDetectionDistance);
+        state.robot.getmLocomotion().setDetectionDistance(detectionDistance);
     }
 
     /**
@@ -599,6 +580,7 @@ public class TakeCubes extends AbstractScript {
         this.largeurCubes=config.getInt(ConfigInfoRobot.LONGUEUR_CUBE);
         this.longueurBrasAvant=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_AVANT);
         this.longueurBrasArriere=config.getInt(ConfigInfoRobot.LONGUEUR_BRAS_ARRIERE);
-        this.usingBasicDetection =config.getBoolean(ConfigInfoRobot.BASIC_DETECTION);
+        this.basicDetectionDistance=config.getInt(ConfigInfoRobot.BASIC_DETECTION_DISTANCE);
+        this.detectionDistance=config.getInt(ConfigInfoRobot.DETECTION_DISTANCE);
     }
 }

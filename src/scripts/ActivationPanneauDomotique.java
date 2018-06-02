@@ -43,18 +43,12 @@ public class ActivationPanneauDomotique extends AbstractScript{
     @Override
     public void execute(int versionToExecute, GameState state) throws UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
         log.debug("////////// Execution ActivePanneauDomotique version "+versionToExecute+" //////////");
-        if(usingBasicDetection){
-            state.robot.setBasicDetection(false);
-        }
         state.robot.turn(-Math.PI/2);
         state.robot.setLocomotionSpeed(Speed.SLOW_ALL);
         //Il se peut qu'on fonce dans un mur
         state.robot.goToWithoutDetection(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur),true);
         state.addObtainedPoints(25);
         state.setPanneauActive(true);
-        if(usingBasicDetection){
-            state.robot.setBasicDetection(true);
-        }
         state.robot.goTo(new Vec2(xEntry, yEntry));
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
         log.debug("////////// End ActivePanneauDomotique version "+versionToExecute+" //////////");

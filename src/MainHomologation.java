@@ -23,12 +23,14 @@ import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
 import exceptions.ContainerException;
+import graphics.Window;
 import pfg.config.Config;
 import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.ScriptManager;
 import strategie.GameState;
 import table.Table;
+import threads.ThreadInterface;
 import threads.ThreadTimer;
 import threads.dataHandlers.ThreadEth;
 import utils.Log;
@@ -71,8 +73,8 @@ public class MainHomologation {
             p.printStackTrace();
         }
         try {
-            realState.robot.useActuator(ActuatorOrder.BASIC_DETECTION_ENABLE,true);
             waitMatchBegin();
+            mLocomotion.setBothSpeed(Speed.SLOW_ALL);
             scriptmanager.getScript(ScriptNames.SCRIPT_HOMOLOGATION).goToThenExec(0, realState);
 
 
