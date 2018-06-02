@@ -129,15 +129,15 @@ public class PatternRecognition extends AbstractThread{
     private int[][][] createColorMatrixFromBufferedImage(BufferedImage picture) {
         int width = picture.getWidth();
         int height = picture.getHeight();
-        int[] array = new int[width*height*3];
-        picture.getRaster().getPixels(0, 0, width, height, array);
         int[][][] colorMatrix = new int[width][height][3];
+        Color color;
         //Méthode pour récupérer les paramètres R, G et B de chaque pixel
         for (int x=0; x<width; x++){
             for (int y=0; y<height; y++) {
-                colorMatrix[x][y][0]=array[x*height+y*3];
-                colorMatrix[x][y][1]=array[x*height+y*3+1];
-                colorMatrix[x][y][2]=array[x*height+y*3+2];
+                color = new Color(picture.getRGB(x, y));
+                colorMatrix[x][y][0]=color.getRed();
+                colorMatrix[x][y][1]=color.getGreen();
+                colorMatrix[x][y][2]=color.getBlue();
             }
         }
         return colorMatrix;
@@ -612,17 +612,17 @@ public class PatternRecognition extends AbstractThread{
                 int imageHeightMinusOne = this.imageHeight - 1;
                 this.positionsColorsOnImage = new int[][]
                         {{Math.max(Math.min(this.centerPointPattern[0] - halfLengthSideOfSquareDetection - this.distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne), 0),
-                          Math.max(Math.min(this.centerPointPattern[0] - halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne), 0),
-                          Math.max(Math.min(this.centerPointPattern[0] - halfLengthSideOfSquareDetection + this.distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne), 0)},
-                         {Math.max(this.centerPointPattern[1] - halfLengthSideOfSquareDetection, 0),
-                          Math.max(this.centerPointPattern[1] - halfLengthSideOfSquareDetection, 0),
-                          Math.max(this.centerPointPattern[1] - halfLengthSideOfSquareDetection, 0)},
-                         {Math.max(Math.min(this.centerPointPattern[0] + halfLengthSideOfSquareDetection - this.distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne), 0),
-                          Math.max(Math.min(this.centerPointPattern[0] + halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne), 0),
-                          Math.max(Math.min(this.centerPointPattern[0] + halfLengthSideOfSquareDetection + this.distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne), 0)},
-                         {Math.min(this.centerPointPattern[1] + halfLengthSideOfSquareDetection, imageHeightMinusOne),
-                          Math.min(this.centerPointPattern[1] + halfLengthSideOfSquareDetection, imageHeightMinusOne),
-                          Math.min(this.centerPointPattern[1] + halfLengthSideOfSquareDetection, imageHeightMinusOne)}};
+                                Math.max(Math.min(this.centerPointPattern[0] - halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne), 0),
+                                Math.max(Math.min(this.centerPointPattern[0] - halfLengthSideOfSquareDetection + this.distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne), 0)},
+                                {Math.max(this.centerPointPattern[1] - halfLengthSideOfSquareDetection, 0),
+                                        Math.max(this.centerPointPattern[1] - halfLengthSideOfSquareDetection, 0),
+                                        Math.max(this.centerPointPattern[1] - halfLengthSideOfSquareDetection, 0)},
+                                {Math.max(Math.min(this.centerPointPattern[0] + halfLengthSideOfSquareDetection - this.distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne), 0),
+                                        Math.max(Math.min(this.centerPointPattern[0] + halfLengthSideOfSquareDetection + i * halfDistanceBetweenTwoColors, imageWidthMinusOne), 0),
+                                        Math.max(Math.min(this.centerPointPattern[0] + halfLengthSideOfSquareDetection + this.distanceBetweenTwoColors + i * halfDistanceBetweenTwoColors, imageWidthMinusOne), 0)},
+                                {Math.min(this.centerPointPattern[1] + halfLengthSideOfSquareDetection, imageHeightMinusOne),
+                                        Math.min(this.centerPointPattern[1] + halfLengthSideOfSquareDetection, imageHeightMinusOne),
+                                        Math.min(this.centerPointPattern[1] + halfLengthSideOfSquareDetection, imageHeightMinusOne)}};
                 distanceArrays[i - iStartValue] = computeProximity(colorMatrix, this.positionsColorsOnImage);
             }
             double maxProba = this.tempMaxProba;
@@ -725,9 +725,9 @@ public class PatternRecognition extends AbstractThread{
                 /** De la forme : {xstart, ystart, width, height} */
                 this.zoneToPerformLocalisationManual = new int[]
                         {Math.min(Math.max(minX-100, 0),this.imageWidth - 1),
-                         Math.min(Math.max(minY-100, 0),this.imageHeight - 1),
-                         Math.min(Math.max((maxX-minX)+200, 0), this.imageWidth - 1),
-                         Math.min(Math.max((maxY-minY)+200, 0), this.imageHeight - 1)};
+                                Math.min(Math.max(minY-100, 0),this.imageHeight - 1),
+                                Math.min(Math.max((maxX-minX)+200, 0), this.imageWidth - 1),
+                                Math.min(Math.max((maxY-minY)+200, 0), this.imageHeight - 1)};
                 colorMatrix = preModifyImage(colorMatrix, this.localizationAutomated);
                 int halfLengthSideOfSquareDetection = this.lengthSideOfSquareDetection / 2;
                 int imageWidthMinusOne = this.imageWidth - 1;
@@ -743,20 +743,20 @@ public class PatternRecognition extends AbstractThread{
                  */
                 this.positionsColorsOnImage = new int[][]{
                         {Math.max(coords[0] - halfLengthSideOfSquareDetection, 0),
-                         Math.max(coords[2] - halfLengthSideOfSquareDetection, 0),
-                         Math.max(coords[4] - halfLengthSideOfSquareDetection, 0)
+                                Math.max(coords[2] - halfLengthSideOfSquareDetection, 0),
+                                Math.max(coords[4] - halfLengthSideOfSquareDetection, 0)
                         },
                         {Math.max(coords[1] - halfLengthSideOfSquareDetection, 0),
-                         Math.max(coords[3] - halfLengthSideOfSquareDetection, 0),
-                         Math.max(coords[5] - halfLengthSideOfSquareDetection, 0)
+                                Math.max(coords[3] - halfLengthSideOfSquareDetection, 0),
+                                Math.max(coords[5] - halfLengthSideOfSquareDetection, 0)
                         },
                         {Math.min(coords[0] + halfLengthSideOfSquareDetection, imageWidthMinusOne),
-                         Math.min(coords[2] + halfLengthSideOfSquareDetection, imageWidthMinusOne),
-                         Math.min(coords[4] + halfLengthSideOfSquareDetection, imageWidthMinusOne)
+                                Math.min(coords[2] + halfLengthSideOfSquareDetection, imageWidthMinusOne),
+                                Math.min(coords[4] + halfLengthSideOfSquareDetection, imageWidthMinusOne)
                         },
                         {Math.min(coords[1] + halfLengthSideOfSquareDetection, imageHeightMinusOne),
-                         Math.min(coords[3] + halfLengthSideOfSquareDetection, imageHeightMinusOne),
-                         Math.min(coords[5] + halfLengthSideOfSquareDetection, imageHeightMinusOne)
+                                Math.min(coords[3] + halfLengthSideOfSquareDetection, imageHeightMinusOne),
+                                Math.min(coords[5] + halfLengthSideOfSquareDetection, imageHeightMinusOne)
                         }
                 };
                 double[] distanceArray = computeProximity(colorMatrix, this.positionsColorsOnImage);
