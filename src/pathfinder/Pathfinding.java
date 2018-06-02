@@ -174,38 +174,45 @@ public class Pathfinding implements Service {
                     e.printStackTrace();
                 }
             }
-            // Si l'on a recu un message du ThreadPathFollower
-            if (eventQueue.peek() != null) {
-                Object event = eventQueue.poll();
-                if (event instanceof UnableToMoveException) {
-                    if (((UnableToMoveException) event).getReason().equals(UnableToMoveReason.OBSTACLE_DETECTED)) {
-                        if (table.getObstacleManager().isPositionInEnnemy(locomotion.getPosition())) {
-                            Vec2 vec = table.getObstacleManager().getClosestEnnemy(locomotion.getPosition()).getPosition().minusNewVector(locomotion.getPosition());
-                            int signe;
-                            if (vec.dot(new Vec2(100.0, locomotion.getOrientation())) > 0) {
-                                signe = -1;
-                            } else {
-                                signe = 1;
+
+            try {
+                // Si l'on a recu un message du ThreadPathFollower
+                if (eventQueue.peek() != null) {
+                    Object event = eventQueue.poll();
+                    if (event instanceof UnableToMoveException) {
+                        if (((UnableToMoveException) event).getReason().equals(UnableToMoveReason.OBSTACLE_DETECTED)) {
+                            if (table.getObstacleManager().isPositionInEnnemy(locomotion.getPosition())) {
+                                Vec2 vec = table.getObstacleManager().getClosestEnnemy(locomotion.getPosition()).getPosition().minusNewVector(locomotion.getPosition());
+                                int signe;
+                                if (vec.dot(new Vec2(100.0, locomotion.getOrientation())) > 0) {
+                                    signe = -1;
+                                } else {
+                                    signe = 1;
+                                }
+                                locomotion.moveLengthwise(distanceToDisengage*signe, false, false);
                             }
-                            locomotion.moveLengthwise(distanceToDisengage*signe, false, false);
+                            clean();
+
+                            Thread.sleep(500);
+                            synchronized (graphe.lock) {
+                                init(aim);
+                                findmyway(beginNode, aimNode);
+                                path.getPath().poll();
+                            }
+                            (new ThreadPathFollower(log, config, path, eventQueue, locomotion)).start();
+                        } else if (((UnableToMoveException) event).getReason().equals(UnableToMoveReason.PHYSICALLY_BLOCKED)) {
+                            throw ((UnableToMoveException) event);
                         }
-                        clean();
-                        init(aim);
-                        findmyway(beginNode, aimNode);
-                        path.getPath().poll();
-                        (new ThreadPathFollower(log, config, path, eventQueue, locomotion)).start();
-                    } else if (((UnableToMoveException) event).getReason().equals(UnableToMoveReason.PHYSICALLY_BLOCKED)) {
-                        throw ((UnableToMoveException) event);
-                    }
-                } else if (event instanceof Boolean) {
-                    if((Boolean) event) {
-                        log.debug("Fin de suivit du chemin");
-                        follow = false;
+                    } else if (event instanceof Boolean) {
+                        if((Boolean) event) {
+                            log.debug("Fin de suivit du chemin");
+                            follow = false;
+                        }
                     }
                 }
-            }
-            try {
-                Thread.sleep(loopDelay);
+
+                Thread.sleep(200);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
