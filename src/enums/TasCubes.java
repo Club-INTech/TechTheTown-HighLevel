@@ -26,7 +26,7 @@ public enum TasCubes{
 
     TAS_STATION_EPURATION_ENNEMI(3,new Vec2(-400,1500), new Vec2(-400,1500), //MatchScript 0
             new Vec2(-400,1500), new Vec2(-400,1500), //MatchScript 2
-            new Vec2(-400,1500), new Vec2(-400,1500)), //MatchScript 42
+            new Vec2(-400,1500), new Vec2(-390,1490)), //MatchScript 42
 
 
     TAS_CHATEAU_EAU_ENNEMI(4,new Vec2(-1200,1190), new Vec2(-1200,1190), //MatchScript 0
