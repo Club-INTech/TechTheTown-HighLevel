@@ -447,6 +447,7 @@ public class Locomotion implements Service {
 
         boolean sent = false;
         int detectionDistance = (int) (this.detectionDistance*0.7);
+        Vec2 vec;
         // TODO Detecter les exceptions
         do {
             updatePositionAndOrientation();
@@ -466,7 +467,12 @@ public class Locomotion implements Service {
                     detectEnemyArroundPosition(detectionRay);
                 }
                 else {
-                    detectEnemyAtDistance(detectionDistance, new Vec2(100.0, highLevelXYO.getOrientation()));
+                    if (isMovementForward) {
+                        vec = new Vec2(100.0, highLevelXYO.getOrientation());
+                    } else {
+                        vec = new Vec2(100.0, Geometry.moduloSpec(highLevelXYO.getOrientation() - Math.PI, Math.PI));
+                    }
+                    detectEnemyAtDistance(detectionDistance, vec);
                 }
             }
 
