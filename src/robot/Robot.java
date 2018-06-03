@@ -33,6 +33,7 @@ import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
+import pathfinder.Path;
 import pathfinder.Pathfinding;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -735,6 +736,10 @@ public class Robot implements Service {
 
     public boolean getIsRobotMovingBackward() {
         return mLocomotion.isRobotMovingBackward;
+    }
+
+    public Path getPath() {
+        return pathfinding.getPath();
     }
 
     /**

@@ -387,6 +387,9 @@ public class Pathfinding implements Service {
     public Graphe getGraphe() {
         return grapheHandler.getGraph();
     }
+    public Path getPath() {
+        return path;
+    }
 
     @Override
     public void updateConfig() {

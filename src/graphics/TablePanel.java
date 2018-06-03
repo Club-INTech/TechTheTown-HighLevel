@@ -23,6 +23,7 @@ package graphics;
 
 import pathfinder.Graphe;
 import pathfinder.Node;
+import pathfinder.Path;
 import pathfinder.Ridge;
 import robot.Robot;
 import smartMath.Vec2;
@@ -40,7 +41,9 @@ import java.awt.Graphics;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * panneau sur lequel est dessine la table
@@ -53,7 +56,8 @@ public class TablePanel extends JPanel
 	private static final long serialVersionUID = -3033815690221481964L;
 
 	/** Champs pour l'interface Pathfinding : n'ayant pas de robot instancié, on récupère en brut les données */
-	private ArrayList<Vec2> path;
+	private Path path;
+	private ArrayList<Vec2> realPath;
 	private ArrayList<Vec2> clics;
 	private Vec2 point;
 	private ArrayList<Node> nodes;
@@ -86,7 +90,8 @@ public class TablePanel extends JPanel
 	 */
 	public TablePanel(Table table, Robot robot)
 	{
-		path = new ArrayList<>();
+	    realPath = new ArrayList<>();
+		path = robot.getPath();
 		clics = new ArrayList<>();
 		this.table = table;
 		this.robot = robot;
@@ -107,7 +112,7 @@ public class TablePanel extends JPanel
 	 */
 	public TablePanel(Table table)
 	{
-		path = new ArrayList<>();
+		path = new Path(new ConcurrentLinkedQueue());
 		clics = new ArrayList<>();
         this.table = table;
         this.graphe = table.getGraph();
@@ -201,11 +206,15 @@ public class TablePanel extends JPanel
 
 		// Le chemin suivi
 		graphics.setColor(pathColor);
-		for(int i=0; i<path.size()-1; i++){
-			vec1 = changeRefToDisplay(path.get(i));
-			vec2 = changeRefToDisplay(path.get(i+1));
-			graphics.drawLine(vec1.getX(), vec1.getY(), vec2.getX(), vec2.getY());
-		}
+		synchronized (path.lock) {
+		    realPath.clear();
+		    realPath.addAll(path.getPath());
+            for (int i = 0; i < realPath.size() - 1; i++) {
+                vec1 = changeRefToDisplay(realPath.get(i));
+                vec2 = changeRefToDisplay(realPath.get(i + 1));
+                graphics.drawLine(vec1.getX(), vec1.getY(), vec2.getX(), vec2.getY());
+            }
+        }
 
 		// Le graphe
 		if(showGraph){
@@ -254,7 +263,7 @@ public class TablePanel extends JPanel
 
 	/** Setters */
 	public void setPath(ArrayList<Vec2> path) {
-		this.path = path;
+		this.realPath = path;
 		removeAll();
 		revalidate();
 	}
