@@ -139,8 +139,8 @@ public class Main {
                     if (currentPair.getScript() instanceof TakeCubes && currentPair.getVersion() == 2) {
                         scriptsToExecute.add(2, new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 0));
                         scriptsToExecute.remove(4);
-                        index+=1;
                     }
+                    index+=1;
                 }
                 if (index >= scriptsToExecute.size()) {
                     index = 0;
