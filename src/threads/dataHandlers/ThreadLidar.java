@@ -119,7 +119,7 @@ public class ThreadLidar extends AbstractThread implements Service {
     public void run() {
         String buffer;
         String bufferList[];
-        Thread.currentThread().setPriority(8);
+        Thread.currentThread().setPriority(7);
         updateConfig();
         log.debug("ThreadLidar started");
         initSocket();
@@ -163,7 +163,7 @@ public class ThreadLidar extends AbstractThread implements Service {
                     pos = this.changeRef(pos);
 
                     outTmp.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth() + "\n");
-                    outTmp.write("Position du robot : " + highlevelXYO + "\n\n");
+                    outTmp.write("Position du robot : " + highlevelXYO + "\n");
                     outTmp.flush();
 
                     table.getObstacleManager().addObstacle(pos, ennemyRadius);
@@ -179,7 +179,7 @@ public class ThreadLidar extends AbstractThread implements Service {
                     graph.setUpdated(true);
                 }
 
-                outTmp.write("Durée total du traitement : " + (System.currentTimeMillis() - timeStep) + "\n");
+                outTmp.write("Durée total du traitement : " + (System.currentTimeMillis() - timeStep) + "\n\n");
                 outTmp.flush();
 
             } catch (IOException e) {
