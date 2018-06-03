@@ -77,6 +77,8 @@ public class Main {
             ProcessBuilder pBuilder = new ProcessBuilder("python3", "main.py");
             pBuilder.directory(new File("../lidar"));
 
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
+
             realState = container.getService(GameState.class);
             scriptmanager = container.getService(ScriptManager.class);
             mEthWrapper = container.getService(EthWrapper.class);
@@ -123,30 +125,28 @@ public class Main {
 
             //TODO : lancer l'IA
             Pair currentPair;
-            while (!scriptsToExecute.isEmpty()){
+            while (!scriptsToExecute.isEmpty()) {
                 currentPair = scriptsToExecute.get(index);
                 try {
                     currentPair.getScript().goToThenExec(currentPair.getVersion(), realState);
-                    scriptsToExecute.remove(index);
+                    index +=1;
                 } catch (Exception e) {
                     e.printStackTrace();
                     currentPair.getScript().finalize(realState, e);
                     if (realState.table.getObstacleManager().isPositionInObstacle(realState.robot.getPosition())) {
                         realState.robot.goTo(realState.table.getGraph().closestNodeToPosition(realState.robot.getPosition()).getPosition());
                     }
-                    // Si l'on s'est raté sur cette croix, c'est qu'elle a disparue !
                     if (currentPair.getScript() instanceof TakeCubes && currentPair.getVersion() == 2) {
-                        scriptsToExecute.remove(index);
-                    } else {
-                        index++;
-                        if (index >= scriptsToExecute.size()) {
-                            index = 0;
-                        }
+                        scriptsToExecute.add(2, new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 0));
+                        scriptsToExecute.remove(4);
+                        index+=1;
                     }
+                }
+                if (index >= scriptsToExecute.size()) {
+                    index = 0;
                 }
             }
 
-            // scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
             Runtime.getRuntime().exec("killall -SIGINT python3");
 
         } catch (Exception e) {
@@ -198,6 +198,15 @@ public class Main {
             // maintenant que le jumper est retiré, le match a commencé
             ThreadTimer.matchStarted = true;
             System.out.println("Robot pret pour le match, pas d'attente du retrait de jumper");
+        }
+    }
+
+    /** Shutdown ! */
+    static void shutdown() {
+        try {
+            Runtime.getRuntime().exec("killall -SIGINT python3");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
