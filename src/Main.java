@@ -141,11 +141,15 @@ public class Main {
             }
 
             // scriptmanager.getScript(ScriptNames.MATCH_SCRIPT).goToThenExec(matchScriptVersionToExecute, realState);
-            process.destroyForcibly();
+            Runtime.getRuntime().exec("killall -SIGINT python3");
 
         } catch (Exception e) {
             e.printStackTrace();
-            process.destroyForcibly();
+            try {
+                Runtime.getRuntime().exec("killall -SIGINT python3");
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
             container.getLog().critical(e.getStackTrace());
         }
     }
