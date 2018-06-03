@@ -92,7 +92,7 @@ brightnessModifierLightingUp         = 1.5
 
 ###################### PARAMETRES SCRIPT #######################
 #ActivationPanneauDomotique
-DISTANCE_INTERRUPTEUR                = 65
+DISTANCE_INTERRUPTEUR                = 62
 
 #DéposeCube
 DISTANCE_PENETRATION_ZONE_DEPOSE_CUBES=90

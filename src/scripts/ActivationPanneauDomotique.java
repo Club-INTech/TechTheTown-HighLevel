@@ -53,7 +53,7 @@ public class ActivationPanneauDomotique extends AbstractScript{
         state.robot.goTo(new Vec2(this.xEntry, this.yEntry-distanceInterrupteur),true, false);
         state.addObtainedPoints(25);
         state.setPanneauActive(true);
-        state.robot.moveLengthwise(-distanceInterrupteur);
+        state.robot.moveLengthwise(-distanceInterrupteur*2);
         state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
 
         state.robot.getmLocomotion().setDetectionDistance(detectionDistance);
