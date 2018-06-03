@@ -897,7 +897,7 @@ public class PatternRecognition extends AbstractThread{
         this.setRecognitionDone(true);
         while (!this.isShutdown){
             try {
-                Thread.sleep(20);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 log.debug("Le thread a été interrompu");
                 e.printStackTrace();
