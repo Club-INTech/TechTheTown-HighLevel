@@ -113,6 +113,7 @@ public class Main {
             scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE), 0));
             scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 0));
             scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.DEPOSE_CUBES), 2));
+            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 3));
 
             // TODO : initialisation du robot avant retrait du jumper (actionneurs)
             System.out.println("MatchScript to execute: "+matchScriptVersionToExecute);
@@ -138,7 +139,7 @@ public class Main {
                     }
                     if (currentPair.getScript() instanceof TakeCubes && currentPair.getVersion() == 2) {
                         scriptsToExecute.add(2, new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 0));
-                        scriptsToExecute.remove(4);
+                        scriptsToExecute.remove(5);
                     }
                     index+=1;
                 }
