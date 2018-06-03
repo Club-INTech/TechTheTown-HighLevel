@@ -411,6 +411,7 @@ public class Locomotion implements Service {
             catch(BlockedException e){
                 e.printStackTrace();
                 log.critical("Blocage mécanique du robot en : " + highLevelXYO);
+                thEvent.getUnableToMoveEvent().clear();
                 if (!expectWallImpact) {
                     throw new UnableToMoveException(aim, UnableToMoveReason.PHYSICALLY_BLOCKED);
                 }
