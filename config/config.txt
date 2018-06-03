@@ -7,7 +7,7 @@ SAVE_LOG                             = true
 ROBOT_LENGTH                         = 300
 ROBOT_WIDTH                          = 380
 ROBOT_RADIUS                         = 200
-ENNEMY_RADIUS                        = 180
+ENNEMY_RADIUS                        = 120
 LONGUEUR_CUBE                        = 58
 LONGUEUR_BRAS_AVANT                  = 317
 LONGUEUR_BRAS_ARRIERE                = 333
@@ -41,7 +41,7 @@ ESPACEMENT_OBSTACLE_COEFF            = 1.2
 
 # PARAMETRES DETECTION
 FEEDBACK_LOOPDELAY                   = 40
-DETECTION_DISTANCE                   = 230
+DETECTION_DISTANCE                   = 150
 BASIC_DETECTION_DISTANCE             = 30
 DETECTION_RAY                        = 200
 

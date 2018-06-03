@@ -29,6 +29,7 @@ import robot.EthWrapper;
 import robot.Locomotion;
 import scripts.AbstractScript;
 import scripts.ScriptManager;
+import scripts.TakeCubes;
 import strategie.GameState;
 import strategie.Pair;
 import table.Table;
@@ -133,9 +134,14 @@ public class Main {
                     if (realState.table.getObstacleManager().isPositionInObstacle(realState.robot.getPosition())) {
                         realState.robot.goTo(realState.table.getGraph().closestNodeToPosition(realState.robot.getPosition()).getPosition());
                     }
-                    index++;
-                    if (index >= scriptsToExecute.size()) {
-                        index = 0;
+                    // Si l'on s'est raté sur cette croix, c'est qu'elle a disparue !
+                    if (currentPair.getScript() instanceof TakeCubes && currentPair.getVersion() == 2) {
+                        scriptsToExecute.remove(index);
+                    } else {
+                        index++;
+                        if (index >= scriptsToExecute.size()) {
+                            index = 0;
+                        }
                     }
                 }
             }
