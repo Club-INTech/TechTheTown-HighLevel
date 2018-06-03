@@ -202,6 +202,7 @@ public class TakeCubes extends AbstractScript {
                     this.longueurBrasUtilise=this.longueurBrasAvant;
                 }
 
+                boolean hasBrokenLoop=false;
                 for (int i=0; i<3; i++) {
                     //Si on n'a plus le temps pour prendre le reste des cubes, on va déposer ce qu'on a déjà
                     if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
@@ -221,6 +222,7 @@ public class TakeCubes extends AbstractScript {
                                     state.setTourAvantRemplie(false);
                                 }
                             }
+                            hasBrokenLoop=true;
                             break;
                         }
                         this.currentIdealPositionInTower++;
@@ -237,7 +239,7 @@ public class TakeCubes extends AbstractScript {
                 }
 
                 //Si un cube additionnel a été précisé
-                if (additionalCube.getColor()!=Colors.NULL){
+                if (additionalCube.getColor()!=Colors.NULL && !hasBrokenLoop){
                     //Si on n'a plus le temps pour prendre le reste des cubes, on va déposer ce qu'on a déjà
                     if(state.getTimeEllapsed()<this.timeAfterTakeCubesMustBeStopped) {
                         log.debug("Essaye de prendre le cube " + additionalCube.getColor().getName());
