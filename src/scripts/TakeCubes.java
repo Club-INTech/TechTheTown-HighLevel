@@ -212,6 +212,17 @@ public class TakeCubes extends AbstractScript {
                         //Le robot exception les actions pour prendre le cube
                         Cubes currentCube = Cubes.getCubeFromColor(pattern[i]);
                         boolean cubeSuccessfullyTaken = takeThisCube(state, currentCube);
+                        if (!cubeSuccessfullyTaken) {
+                            if (i==0) {
+                                if (this.brasUtilise.equals(BrasUtilise.ARRIERE)){
+                                    state.setTourArriereRemplie(false);
+                                }
+                                else{
+                                    state.setTourAvantRemplie(false);
+                                }
+                            }
+                            break;
+                        }
                         this.currentIdealPositionInTower++;
                     }
                     else {

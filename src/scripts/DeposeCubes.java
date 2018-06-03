@@ -4,13 +4,10 @@ import enums.ActuatorOrder;
 import enums.ConfigInfoRobot;
 import enums.ScriptNames;
 import enums.Speed;
-import exceptions.BadVersionException;
-import exceptions.BlockedActuatorException;
-import exceptions.ExecuteException;
+import exceptions.*;
 import exceptions.Locomotion.ImmobileEnnemyForOneSecondAtLeast;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.NoPathFound;
 import hook.HookFactory;
 import pfg.config.Config;
 import smartMath.Circle;
@@ -48,7 +45,7 @@ public class DeposeCubes extends AbstractScript {
      * @throws UnableToMoveException
      */
     @Override
-    public void execute(int version, GameState state) throws UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast {
+    public void execute(int version, GameState state) throws UnableToMoveException, ImmobileEnnemyForOneSecondAtLeast, ExecuteException {
         log.debug("////////// Execution DeposeCubes version "+version+" //////////");
         int numberTowersToDepose=0;
         //Ou exclusif
@@ -229,6 +226,10 @@ public class DeposeCubes extends AbstractScript {
                 state.table.getGraph().init();
             }
             state.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+        }
+        else{
+            log.debug("Pas de tours à déposer, on lève une exception");
+            throw new ExecuteException(new NoTowerToDepose());
         }
 
         log.debug("////////// End DeposeCubes version "+version+" //////////");
