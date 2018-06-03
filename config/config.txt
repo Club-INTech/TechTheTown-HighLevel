@@ -34,7 +34,7 @@ TAS_CHATEAU_ENNEMI_PRIS=false
 TAS_STATION_EPURATION_ENNEMI_PRIS=false
 
 # PARAMETRES PATHFINDING
-COUT_FIXE                            = 100
+COUT_FIXE                            = 150
 ESPACEMENT_RECT                      = 200
 NB_NOEUDS_OBST_CIR                   = 10
 ESPACEMENT_OBSTACLE_COEFF            = 1.2
