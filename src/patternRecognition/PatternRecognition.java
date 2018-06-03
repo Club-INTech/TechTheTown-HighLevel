@@ -839,7 +839,7 @@ public class PatternRecognition extends AbstractThread{
      * On run le thread
      */
     public void run(){
-        this.setPriority(5);
+        this.setPriority(7);
         //On lance le programme de capture de la webcam
         if (this.firstColorShown==Colors.NULL || this.secondColorShown==Colors.NULL || this.thirdColorShown==Colors.NULL) {
             log.debug("Ouverture de la caméra");
