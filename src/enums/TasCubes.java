@@ -13,14 +13,14 @@ public enum TasCubes{
 
     //Position orange décalée de +10 en Y par rapport à la position théorique
     TAS_CHATEAU_EAU(1,new Vec2(1200,1200),  new Vec2(1195,1215),  //MatchScript 0
-            new Vec2(1212,1200),  new Vec2(1200,1200), //MatchScript 2
+            new Vec2(1212,1200),  new Vec2(1202,1200), //MatchScript 2
             new Vec2(1200,1200),  new Vec2(1165,1235)), //MatchScript 42
 
 
     //Position verte décalée de -10 en X par rapport à la position théorique
     //Position orange décalée de -10 en X par rapport à la position théorique
     TAS_STATION_EPURATION(2,new Vec2(395,1500), new Vec2(397,1520), //MatchScript 0
-            new Vec2(410,1510), new Vec2(398,1510), //MatchScript 2
+            new Vec2(410,1510), new Vec2(400,1510), //MatchScript 2
             new Vec2(395,1500), new Vec2(390,1520)), //MatchScript 42
 
 

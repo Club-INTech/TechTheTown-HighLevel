@@ -448,6 +448,7 @@ public class Locomotion implements Service {
 
         boolean sent = false;
         int detectionDistance = (int) (this.detectionDistance*0.7);
+        long timeStep = System.currentTimeMillis();
         Vec2 vec;
         // TODO Detecter les exceptions
         do {
@@ -485,7 +486,8 @@ public class Locomotion implements Service {
 
             Thread.sleep(feedbackLoopDelay);
 
-        } while (this.thEvent.isMoving);
+        } while (this.thEvent.isMoving && System.currentTimeMillis() - timeStep < 5000);
+        thEvent.setIsMoving(false);
         log.debug("Fin du mouvement");
     }
 
