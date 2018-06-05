@@ -116,7 +116,7 @@ public class Keyboard extends AbstractThread implements KeyListener {
 		else if(isRightPressed) {
 			goRight();
 		}
-		else{
+		else if (isMoving){
 			isMoving = false;
 			sstop();
 		}

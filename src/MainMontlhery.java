@@ -96,6 +96,16 @@ public class MainMontlhery {
 
             win.getKeyboard().run();
 
+            while(true)
+            {
+                realState.robot.getPosition();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
