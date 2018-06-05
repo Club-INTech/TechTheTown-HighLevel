@@ -47,7 +47,7 @@ public class Keyboard extends AbstractThread implements KeyListener {
 		while(true) {
 			doThat();
 			try {
-				Thread.sleep(10);
+				Thread.sleep(30);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
