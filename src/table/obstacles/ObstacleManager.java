@@ -140,25 +140,27 @@ public class ObstacleManager implements Service
         //TODO initialiser tout les obstacles de la table
 
         //mRectangles.add(new ObstacleRectangular(new Vec2(1300, 325), 400 + 2*mRobotRadius, 650 + 2*mRobotRadius)); //-1446, 678, 108, 472
-        mRectangles.add(new ObstacleRectangular(new Vec2(-1300, 325),  400 + 2*mRobotRadius, 650 + 2*mRobotRadius));
-        mRectangles.add(new ObstacleRectangular(new Vec2(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
+        //mRectangles.add(new ObstacleRectangular(new Vec2(-1300, 325),  400 + 2*mRobotRadius, 650 + 2*mRobotRadius));
+        //mRectangles.add(new ObstacleRectangular(new Vec2(0, 1875),  1212 + 2*mRobotRadius, 250 + 2*mRobotRadius));
 
         /** Tas de cubes*/
         int d = 10;
         for (int i=0; i<6; i++) {
-            mCircularObstacle.add(new ObstacleCircular(new Circle(TasCubes.getTasFromID(i).getCoordsVec2(), 87 + mRobotRadius + d)));
+            //mCircularObstacle.add(new ObstacleCircular(new Circle(TasCubes.getTasFromID(i).getCoordsVec2(), 87 + mRobotRadius + d)));
         }
 
         /** Petits tas de cubes qui ne serons pas retirés après un takeCubes*/
         for (int i=1; i<6; i++) {
-            mCircularObstacle.add(new ObstacleCircular(new Circle(TasCubes.getTasFromID(i).getCoordsVec2(), mRobotRadius / 3 + 87 + d)));
+            //mCircularObstacle.add(new ObstacleCircular(new Circle(TasCubes.getTasFromID(i).getCoordsVec2(), mRobotRadius / 3 + 87 + d)));
         }
 
         /**Récupérateur des eaux usées*/
+        /*
         mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 1500,840), 105 + mRobotRadius)));
         mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -1500, 840), 105 + mRobotRadius)));
         mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( 890,2000), 105 + mRobotRadius)));
         mCircularObstacle.add(new ObstacleCircular(new Circle(new Vec2( -890, 2000), 105 + mRobotRadius)));
+        */
     }
 
     /**

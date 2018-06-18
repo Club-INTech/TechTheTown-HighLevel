@@ -23,6 +23,8 @@ import exceptions.ContainerException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
 import exceptions.NoPathFound;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import patternRecognition.PatternRecognition;
 import pfg.config.Config;
 import robot.EthWrapper;
@@ -30,6 +32,8 @@ import robot.Locomotion;
 import scripts.AbstractScript;
 import scripts.ScriptManager;
 import scripts.TakeCubes;
+import smartMath.Circle;
+import smartMath.Vec2;
 import strategie.GameState;
 import strategie.Pair;
 import table.Table;
@@ -52,11 +56,11 @@ public class Main {
     static Container container;
     static Config config;
     static GameState realState;
-    static ScriptManager scriptmanager;
+    static Table table;
     static EthWrapper mEthWrapper;
     static Locomotion mLocomotion;
-    static PatternRecognition patternRecognition;
     static Process process;
+    static ThreadLidar threadLidar;
 
     // dans la config de debut de match, toujours demander une entrée clavier assez longue (ex "oui" au lieu de "o", pour éviter les fautes de frappes. Une erreur a ce stade coûte cher.
 // ---> En même temps si tu tapes n à la place de o, c'est que tu es vraiment con.  -Discord
@@ -69,10 +73,6 @@ public class Main {
             // TODO : initialisation des variables globales du robot & objets...
             container = new Container();
             config = container.getConfig();
-            matchScriptVersionToExecute=config.getInt(ConfigInfoRobot.MATCHSCRIPT_TO_EXECUTE);
-            symetry=config.getString(ConfigInfoRobot.COULEUR).equals("orange");
-            TasCubes.setSymetry(symetry);
-            TasCubes.setMatchScriptVersion(matchScriptVersionToExecute);
 
             ProcessBuilder pBuilder = new ProcessBuilder("python3", "main.py");
             pBuilder.directory(new File("../lidar"));
@@ -80,22 +80,21 @@ public class Main {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
 
             realState = container.getService(GameState.class);
-            scriptmanager = container.getService(ScriptManager.class);
-            mEthWrapper = container.getService(EthWrapper.class);
-            mLocomotion = container.getService(Locomotion.class);
-            patternRecognition = container.getService(PatternRecognition.class);
+            table = container.getService(Table.class);
+            container.getService(ThreadEth.class);
+            threadLidar = container.getService(ThreadLidar.class);
+
             if (config.getBoolean(ConfigInfoRobot.SIMULATION)){
                 ThreadInterface anInterface = container.getService(ThreadInterface.class);
+                threadLidar.setWindow(anInterface.getWindow());
             }
+
             Thread.currentThread().setPriority(6);
-            container.getService(ThreadEth.class);
-            container.getService(ThreadTimer.class);
-            container.getService(ThreadScore.class);
-            container.getService(ThreadLidar.class);
+
             container.startInstanciedThreads();
             realState.robot.setPosition(Table.entryPosition.clone());
             realState.robot.setOrientation(Table.entryOrientation);
-            realState.robot.setLocomotionSpeed(Speed.DEFAULT_SPEED);
+            realState.robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
             Thread.sleep(500);
             process = pBuilder.start();
         } catch (ContainerException p) {
@@ -104,65 +103,14 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         try {
-            int index = 0;
-            ArrayList<Pair> scriptsToExecute = new ArrayList<>();
-            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 2));
-            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 1));
-            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.DEPOSE_CUBES), 0));
-            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.ACTIVATION_PANNEAU_DOMOTIQUE), 0));
-            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 0));
-            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.DEPOSE_CUBES), 2));
-            scriptsToExecute.add(new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 3));
-
-            // TODO : initialisation du robot avant retrait du jumper (actionneurs)
-            System.out.println("MatchScript to execute: "+matchScriptVersionToExecute);
-            System.out.println("Le robot commence le match");
-
-            waitMatchBegin();
-            while(patternRecognition.isMovementLocked()) {
-                Thread.sleep(10);
-            }
-
-            //TODO : lancer l'IA
-            Pair currentPair;
-            while (!scriptsToExecute.isEmpty()) {
-                currentPair = scriptsToExecute.get(index);
-                try {
-                    currentPair.getScript().goToThenExec(currentPair.getVersion(), realState);
-                    index +=1;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    currentPair.getScript().finalize(realState, e);
-                    if (realState.table.getObstacleManager().isPositionInObstacle(realState.robot.getPosition())) {
-                        realState.robot.goTo(realState.table.getGraph().closestNodeToPosition(realState.robot.getPosition()).getPosition());
-                    }
-                    if (currentPair.getScript() instanceof TakeCubes && currentPair.getVersion() == 2) {
-                        scriptsToExecute.add(2, new Pair(scriptmanager.getScript(ScriptNames.TAKE_CUBES), 0));
-                        scriptsToExecute.remove(5);
-                    }
-                    index+=1;
-                }
-                if (index >= scriptsToExecute.size()) {
-                    index = 0;
-                }
-            }
-
-            Runtime.getRuntime().exec("killall -SIGINT python3");
-
+            realState.robot.moveToCircle(new Circle(new Vec2(300, 1700)));
+            container.destructor();
         } catch (Exception e) {
             e.printStackTrace();
-            try {
-                Runtime.getRuntime().exec("killall -SIGINT python3");
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-            container.getLog().critical(e.getStackTrace());
         }
     }
-
-
-
 
 
     /**

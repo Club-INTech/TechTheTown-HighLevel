@@ -170,16 +170,27 @@ public class Pathfinding implements Service {
                         }
                     }
 
+                    log.debug("Retry to reach the goal");
+
                     init(aim);
                     eventQueue.clear();
                     path.getPath().clear();
                     findmyway(beginNode, aimNode);
                     path.getPath().poll();
                     (new ThreadPathFollower(log, config, path, eventQueue, locomotion)).start();
+
+                    while (!locomotion.getThEvent().isMoving) {
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         }
         clean();
+        log.debug("Fin Pathfinding");
     }
 
     /**
@@ -327,6 +338,10 @@ public class Pathfinding implements Service {
         ArrayList<Vec2> toAdd = new ArrayList<>();
         Node visited = aimNode;
         toAdd.add(aimNode.getPosition());
+
+        if (aimNode.getPred() == null) {
+            return;
+        }
 
         do {
             visited = visited.getPred();
