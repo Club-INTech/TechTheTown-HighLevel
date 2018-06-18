@@ -20,6 +20,7 @@
 package tests;
 
 import container.Container;
+import enums.Speed;
 import exceptions.ContainerException;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
@@ -61,21 +62,25 @@ public class JUnit_Pathfinding extends JUnit_Test {
             container.startInstanciedThreads();
             robot.setPosition(Table.entryPosition);
             robot.setOrientation(Table.entryOrientation);
+            robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
 
-            (new Thread(() -> (new Window(table, gameState, scriptManager, false)).showHandled())).start();
+            Window win = new Window(table, gameState, scriptManager, false);
 
-            try {
-                robot.moveToCircle(new Circle(new Vec2(0, 500)));
-            } catch (ConcurrentModificationException ce) {
-                ce.printStackTrace();
+            (new Thread(() -> win.showHandled())).start();
+
+            while (true) {
+                try {
+                    Vec2 point = win.waitLClic();
+                    robot.moveToCircle(new Circle(point));
+                } catch (PointInObstacleException e) {
+                    e.printStackTrace();
+                } catch (UnableToMoveException e) {
+                    e.printStackTrace();
+                } catch (NoPathFound e) {
+                    e.printStackTrace();
+                }
             }
         } catch (InterruptedException e ) {
-            e.printStackTrace();
-        } catch (PointInObstacleException e) {
-            e.printStackTrace();
-        } catch (NoPathFound e) {
-            e.printStackTrace();
-        } catch (UnableToMoveException e) {
             e.printStackTrace();
         }
     }

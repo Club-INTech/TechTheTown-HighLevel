@@ -45,6 +45,7 @@ public class ThreadLidar extends AbstractThread implements Service {
     private boolean symetry;
     private int ennemyRadius;
     private int loopDelay;
+    private boolean simulation;
 
     /** Fichiers & Buffers de debug */
     private File lidarData;

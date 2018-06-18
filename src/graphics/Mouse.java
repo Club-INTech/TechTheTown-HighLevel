@@ -88,7 +88,7 @@ public class Mouse implements MouseListener
 	 * @param position */
     private void changeRefToTable(Vec2 position){
 		position.setX((int)(position.getX()*10/3.0) - 1500);
-		position.setY((int)(-position.getY()*40/13.0) + 2000);
+		position.setY((int)(-position.getY()*40/13.0) + 2020);
 	}
 
 	/** Set les clics à 0 */
