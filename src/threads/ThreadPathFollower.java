@@ -1,6 +1,7 @@
 package threads;
 
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import pathfinder.Path;
 import pfg.config.Config;
 import robot.Locomotion;
@@ -49,10 +50,13 @@ public class ThreadPathFollower extends AbstractThread {
                 }
                 hasNext = !path.getPath().isEmpty();
             } while (hasNext);
-            log.debug("Thread Pathfollower terminé");
+            log.debug("Thread Pathfollower ended with success");
             eventQueue.add(new Boolean(true));
         } catch (UnableToMoveException e) {
+            log.debug("Thread Pathfollower ended with error");
+            e.printStackTrace();
             eventQueue.add(e);
+            Thread.currentThread().interrupt();
         }
     }
 }

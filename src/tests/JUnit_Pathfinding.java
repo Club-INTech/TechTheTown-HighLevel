@@ -34,6 +34,7 @@ import smartMath.Circle;
 import smartMath.Vec2;
 import strategie.GameState;
 import table.Table;
+import threads.dataHandlers.ThreadLidar;
 
 import java.util.ConcurrentModificationException;
 
@@ -46,6 +47,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
     /** Table */
     private Table table;
     private ScriptManager scriptManager;
+    private ThreadLidar graphHandler;
 
     @Before
     public void setUp() throws ContainerException, InterruptedException {
@@ -54,17 +56,19 @@ public class JUnit_Pathfinding extends JUnit_Test {
         robot = container.getService(Robot.class);
         table = container.getService(Table.class);
         scriptManager = container.getService(ScriptManager.class);
+        graphHandler = container.getService(ThreadLidar.class);
     }
 
     @Test
     public void testMoveToCircle() {
         try {
+            Window win = new Window(table, gameState, scriptManager, false);
+            graphHandler.setWindow(win);
             container.startInstanciedThreads();
+
             robot.setPosition(Table.entryPosition);
             robot.setOrientation(Table.entryOrientation);
-            robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
-
-            Window win = new Window(table, gameState, scriptManager, false);
+            robot.setLocomotionSpeed(Speed.SLOW_ALL);
 
             (new Thread(() -> win.showHandled())).start();
 

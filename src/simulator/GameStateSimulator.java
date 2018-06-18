@@ -76,7 +76,7 @@ public class GameStateSimulator implements Service {
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
 
-        while (done < Math.abs(distance)) {
+        while (done < Math.abs(distance) && !mustStop) {
             Thread.sleep(moveDelay);
             if (done+distanceLoop>Math.abs(distance)){
                 double distanceToAdd=Math.abs(distance)-done;
@@ -132,7 +132,7 @@ public class GameStateSimulator implements Service {
         this.setRobotMoving(true);
         this.setMoveAbnormal(false);
 
-        while (done < angleToTurn){
+        while (done < angleToTurn && !mustStop){
             Thread.sleep(moveDelay);
             if (done+Math.abs(angleStep)>angleToTurn){
                 double angleToAdd=(angleToTurn-done);

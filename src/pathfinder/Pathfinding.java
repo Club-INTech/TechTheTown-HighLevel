@@ -5,6 +5,7 @@ import enums.ConfigInfoRobot;
 import enums.UnableToMoveReason;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
+import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import pfg.config.Config;
 import robot.Locomotion;
@@ -137,91 +138,32 @@ public class Pathfinding implements Service {
 
         // On recalcule le chemin tant qu'on est pas immobile et proche de l'arrivé
         while (follow) {
-            // Si le graphe a été mis à jour (s'il ne l'a pas été, on ne recalcule pas de chemin...)
-            if (graphe.isUpdated()) {
-                try {
-                    synchronized (path.lock) {
-                        counter++;
-                        graphe.setUpdated(false);
-                        next = graphe.findNode(path.getPath().peek());
-                        out.write("Actual Path : " + path.getPath() + "Next : " + next + "\n");
-                        out.flush();
+            if (eventQueue.peek() != null) {
+                Object resp = eventQueue.poll();
+                if (resp instanceof Boolean) {
+                    follow = false;
+                }
+                else if (resp instanceof UnableToMoveException) {
+                    clean();
 
-                    /*
-                    Si la position visée ou le nouveau point de départ du pathfinding est temporairement obstrué(e), on ne recalcule
-                    pas le chemin, sous peine de générer une NoPathFound Exception :
-                    si le point de départ est obstrué, le robot va s'arréter et lancer une nouvelle recherche de chemin (voir plus bas)
-                    si le point d'arrivé est obstrué, on espère qu'il ne le sera plus d'ici à ce qu'il y arrive... Si ce n'est pas le cas,
-                    une NoPathFoundException est générée
-                    */
-                        if (next != null &&
-                                !table.getObstacleManager().isPositionInEnnemy(next.getPosition()) &&
-                                !table.getObstacleManager().isPositionInEnnemy(aimNode.getPosition()) &&
-                                !next.equals(aimNode)) {
-                            graphe.reInit();
-                            next.setCout(0);
-                            openList.add(next);
-                            findmyway(next, aimNode);
-                            try {
-                                out.write("Counter : " + counter + ", Chemin trouvé : " + path.getPath() + "\n");
-                                out.flush();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                    // Si l'on se considère comme étant dans l'adversaire...
+                    if (table.getObstacleManager().isPositionInObstacle(locomotion.getPosition())) {
+                        Vec2 ennemyPos = table.getObstacleManager().getClosestEnnemy(locomotion.getPosition()).getPosition();
+                        int dot = ennemyPos.minusNewVector(locomotion.getPosition()).dot(new Vec2(100.0, locomotion.getOrientation()));
+                        if (dot >= 0) {
+                            locomotion.moveLengthwise(-100, false, false);
+                        } else {
+                            locomotion.moveLengthwise(100, false, false);
                         }
                     }
 
-                    out.write("\n");
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    init(aim);
+                    eventQueue.clear();
+                    path.getPath().clear();
+                    findmyway(beginNode, aimNode);
+                    path.getPath().poll();
+                    (new ThreadPathFollower(log, config, path, eventQueue, locomotion)).start();
                 }
-            }
-
-            try {
-                // Si l'on a recu un message du ThreadPathFollower
-                if (eventQueue.peek() != null) {
-                    Object event = eventQueue.poll();
-                    if (event instanceof UnableToMoveException) {
-                        if (((UnableToMoveException) event).getReason().equals(UnableToMoveReason.OBSTACLE_DETECTED)) {
-                            if (table.getObstacleManager().isPositionInEnnemy(locomotion.getPosition())) {
-                                Vec2 vec = table.getObstacleManager().getClosestEnnemy(locomotion.getPosition()).getPosition().minusNewVector(locomotion.getPosition());
-                                int signe;
-                                if (vec.dot(new Vec2(100.0, locomotion.getOrientation())) > 0) {
-                                    signe = -1;
-                                } else {
-                                    signe = 1;
-                                }
-                                locomotion.moveLengthwise(distanceToDisengage*signe, false, false);
-                            }
-                            clean();
-
-                            // Si on galère trop, on s'arrête
-                            if (System.currentTimeMillis() - timeStep > 5000) {
-                                throw new NoPathFound(aim);
-                            }
-
-                            Thread.sleep(500);
-                            synchronized (graphe.lock) {
-                                init(aim);
-                                findmyway(beginNode, aimNode);
-                                path.getPath().poll();
-                            }
-                            (new ThreadPathFollower(log, config, path, eventQueue, locomotion)).start();
-                        } else if (((UnableToMoveException) event).getReason().equals(UnableToMoveReason.PHYSICALLY_BLOCKED)) {
-                            throw ((UnableToMoveException) event);
-                        }
-                    } else if (event instanceof Boolean) {
-                        if((Boolean) event) {
-                            log.debug("Fin de suivit du chemin");
-                            follow = false;
-                        }
-                    }
-                }
-
-                Thread.sleep(200);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
         clean();

@@ -114,15 +114,27 @@ public class Window extends JFrame
 		return clics;
 	}
 
-	/** Attend que l'on clic gauche et renvoie la position des clics (gauche puis droit) */
+	/** Attend que l'on clic gauche et renvoie la position des clics */
 	public Vec2 waitLClic() throws InterruptedException{
 		mouse.resetClics();
 		ArrayList<Vec2> clics = new ArrayList<>();
 		while(mouse.getLeftClicPosition() == null ){
 			Thread.sleep(100);
-			// TODO Mettre une vérification de la position du clic : accès à Table par le tablePanel
 		}
 		clics.add(mouse.getLeftClicPosition().clone());
+		tablePanel.setClics(new ArrayList<Vec2>(clics));
+		mouse.resetClics();
+		return clics.get(0);
+	}
+
+	/** Attend que l'on clic droit et renvoie la position des clics */
+	public Vec2 waitRClic() throws InterruptedException{
+		mouse.resetClics();
+		ArrayList<Vec2> clics = new ArrayList<>();
+		while(mouse.getRightClicPosition() == null ){
+			Thread.sleep(100);
+		}
+		clics.add(mouse.getRightClicPosition().clone());
 		tablePanel.setClics(new ArrayList<Vec2>(clics));
 		mouse.resetClics();
 		return clics.get(0);

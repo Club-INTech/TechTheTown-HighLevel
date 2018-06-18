@@ -44,6 +44,7 @@ FEEDBACK_LOOPDELAY                   = 40
 DETECTION_DISTANCE                   = 200
 BASIC_DETECTION_DISTANCE             = 30
 DETECTION_RAY                        = 200
+PEREMP_OBST                          = 10000
 
 ############ PARAMETRES RECONNAISSANCE DE COULEURS #############
 # A LA MAIN : FALSE /// AUTOMATIQUE : TRUE

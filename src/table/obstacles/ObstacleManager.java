@@ -608,6 +608,11 @@ public class ObstacleManager implements Service
                 return true;
             }
         }
+        for (ObstacleProximity ennemy : mMobileObstacles) {
+            if (Geometry.intersects(segment, ennemy.getCircle())) {
+                return true;
+            }
+        }
         return false;
     }
 

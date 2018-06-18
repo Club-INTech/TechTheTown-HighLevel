@@ -2,6 +2,7 @@ package threads.dataHandlers;
 
 import container.Service;
 import enums.ConfigInfoRobot;
+import graphics.Window;
 import pathfinder.Graphe;
 import pfg.config.Config;
 import robot.Locomotion;
@@ -31,6 +32,7 @@ public class ThreadLidar extends AbstractThread implements Service {
 
     /** Table sur laquelle on va ajouter les obstacles */
     private Table table;
+    private Window win;
 
     /** Sert à connaître la position du robot */
     private XYO highlevelXYO;
@@ -122,8 +124,13 @@ public class ThreadLidar extends AbstractThread implements Service {
         String bufferList[];
         Thread.currentThread().setPriority(7);
         updateConfig();
-        log.debug("ThreadLidar started");
-        initSocket();
+
+        if (simulation) {
+            log.debug("ThreadLidar started (simulation)");
+        } else {
+            log.debug("ThreadLidar started");
+            initSocket();
+        }
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown()));
         long time = System.currentTimeMillis();
         long timeStep;
@@ -131,67 +138,81 @@ public class ThreadLidar extends AbstractThread implements Service {
         Vec2 pos;
 
         while (true) {
-            try {
-                buffer = input.readLine();
+            if (simulation) {
+                try {
+                    Vec2 point = win.waitRClic();
+                    table.getObstacleManager().addObstacle(point, ennemyRadius);
+                    table.getObstacleManager().removeOutdatedObstacles();
+                    synchronized (graph.lock) {
+                        graph.updateRidges();
+                        graph.setUpdated(true);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                try {
+                    buffer = input.readLine();
 
-                timeStep = System.currentTimeMillis();
-                counter++;
+                    timeStep = System.currentTimeMillis();
+                    counter++;
 
-                out.write(buffer + "\n");
-                out.flush();
+                    out.write(buffer + "\n");
+                    out.flush();
 
-                outTmp.write(buffer + "\n");
-                outTmp.flush();
+                    outTmp.write(buffer + "\n");
+                    outTmp.flush();
 
-                bufferList = buffer.split(";");
+                    bufferList = buffer.split(";");
 
-                highlevelXYO = locomotion.getHighLevelXYO();
+                    highlevelXYO = locomotion.getHighLevelXYO();
 
-                // Mise à jour de la table
-                for (String info : bufferList) {
-                    info = info.substring(1, info.length() - 1);
-                    pos = new Vec2(Double.parseDouble(info.split(",")[0]), Double.parseDouble(info.split(",")[1]));
+                    // Mise à jour de la table
+                    for (String info : bufferList) {
+                        info = info.substring(1, info.length() - 1);
+                        pos = new Vec2(Double.parseDouble(info.split(",")[0]), Double.parseDouble(info.split(",")[1]));
 
-                    // Le référentiel des données Lidar repère les angles dans le sens horaire, c'est pourquoi l'on doit symetriser les vecteurs par rapport à x,
-                    // Dans le cas de le symétrie l'on doit aussi symétriser (faire un dessin)
-                    if(!symetry) {
-                        pos.setA(-pos.getA());
+                        // Le référentiel des données Lidar repère les angles dans le sens horaire, c'est pourquoi l'on doit symetriser les vecteurs par rapport à x,
+                        // Dans le cas de le symétrie l'on doit aussi symétriser (faire un dessin)
+                        if (!symetry) {
+                            pos.setA(-pos.getA());
+                        }
+
+                        outTmp.write("[" + (System.currentTimeMillis() - time) / 1000 + ", " + counter + "] Position calculée dans le référentiel du robot : " + pos.toStringEth() + "\n");
+                        outTmp.flush();
+
+                        pos = this.changeRef(pos);
+
+                        outTmp.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth() + "\n");
+                        outTmp.write("Position du robot : " + highlevelXYO + "\n");
+                        outTmp.flush();
+
+                        table.getObstacleManager().addObstacle(pos, ennemyRadius);
+                        table.getObstacleManager().removeOutdatedObstacles();
+
+                        outTmp.write("Size of mobile obstacle list : " + table.getObstacleManager().getMobileObstacles().size() + "\n");
+                        outTmp.flush();
                     }
 
-                    outTmp.write("[" + (System.currentTimeMillis() - time) / 1000 +", " + counter + "] Position calculée dans le référentiel du robot : " + pos.toStringEth() + "\n");
+                    // Mise à jour du graphe
+                    synchronized (graph.lock) {
+                        graph.updateRidges();
+                        graph.setUpdated(true);
+                    }
+
+                    outTmp.write("Durée total du traitement : " + (System.currentTimeMillis() - timeStep) + "\n\n");
                     outTmp.flush();
 
-                    pos = this.changeRef(pos);
-
-                    outTmp.write("Position caluclée dans le référentiel de la table : " + pos.toStringEth() + "\n");
-                    outTmp.write("Position du robot : " + highlevelXYO + "\n");
-                    outTmp.flush();
-
-                    table.getObstacleManager().addObstacle(pos, ennemyRadius);
-                    table.getObstacleManager().removeOutdatedObstacles();
-
-                    outTmp.write("Size of mobile obstacle list : " + table.getObstacleManager().getMobileObstacles().size() + "\n");
-                    outTmp.flush();
-                }
-
-                // Mise à jour du graphe
-                synchronized (graph.lock) {
-                    graph.updateRidges();
-                    graph.setUpdated(true);
-                }
-
-                outTmp.write("Durée total du traitement : " + (System.currentTimeMillis() - timeStep) + "\n\n");
-                outTmp.flush();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                log.critical(e);
-                try {
-                    table.getObstacleManager().getMobileObstacles().clear();
-                    client.close();
-                    server.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    log.critical(e);
+                    try {
+                        table.getObstacleManager().getMobileObstacles().clear();
+                        client.close();
+                        server.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         }
@@ -202,10 +223,14 @@ public class ThreadLidar extends AbstractThread implements Service {
         symetry = (config.getString(ConfigInfoRobot.COULEUR).equals("orange"));
         ennemyRadius = config.getInt(ConfigInfoRobot.ENNEMY_RADIUS);
         loopDelay = config.getInt(ConfigInfoRobot.FEEDBACK_LOOPDELAY);
+        simulation = config.getBoolean(ConfigInfoRobot.SIMULATION);
     }
 
     /** Getters & Setters */
     public Graphe getGraph() {
         return graph;
+    }
+    public void setWindow(Window win) {
+        this.win = win;
     }
 }
