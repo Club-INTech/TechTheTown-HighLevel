@@ -2,18 +2,13 @@ package pathfinder;
 
 import container.Service;
 import enums.ConfigInfoRobot;
-import enums.UnableToMoveReason;
 import exceptions.Locomotion.PointInObstacleException;
 import exceptions.Locomotion.UnableToMoveException;
-import exceptions.Locomotion.UnexpectedObstacleOnPathException;
 import exceptions.NoPathFound;
 import pfg.config.Config;
 import robot.Locomotion;
 import smartMath.Vec2;
-import strategie.IA.Graph;
 import table.Table;
-import table.obstacles.Obstacle;
-import table.obstacles.ObstacleProximity;
 import threads.ThreadPathFollower;
 import threads.dataHandlers.ThreadLidar;
 import utils.Log;
@@ -138,6 +133,24 @@ public class Pathfinding implements Service {
 
         // On recalcule le chemin tant qu'on est pas immobile et proche de l'arrivé
         while (follow) {
+            if (graphe.isUpdated()) {
+                next = graphe.findNode(path.getPath().peek());
+                if (next != null) {
+                    try {
+                        graphe.reInit();
+
+                        openList.clear();
+                        next.setCout(0);
+                        openList.add(next);
+
+                        findmyway(next, aimNode);
+                    } catch (NoPathFound e) {
+                    }
+                    graphe.setUpdated(false);
+                }
+            }
+
+            // Si l'on a recu un messsage de la part du Thread Pathfollower
             if (eventQueue.peek() != null) {
                 Object resp = eventQueue.poll();
                 if (resp instanceof Boolean) {

@@ -68,7 +68,7 @@ public class JUnit_Pathfinding extends JUnit_Test {
 
             robot.setPosition(Table.entryPosition);
             robot.setOrientation(Table.entryOrientation);
-            robot.setLocomotionSpeed(Speed.SLOW_ALL);
+            robot.setLocomotionSpeed(Speed.ULTRA_SLOW_ALL);
 
             (new Thread(() -> win.showHandled())).start();
 
